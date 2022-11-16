@@ -296,15 +296,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomHeartbeatRequestSerializer">A delegate to serialize custom heartbeat requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatRequest>? CustomHeartbeatRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatRequest>? CustomHeartbeatRequestSerializer = null)
         {
 
             var json = JSONObject.Create();
@@ -386,7 +379,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="HeartbeatRequest">A heartbeat request to compare with.</param>
         public override Boolean Equals(HeartbeatRequest? HeartbeatRequest)
 
-            => HeartbeatRequest is not null;
+            => HeartbeatRequest is not null &&
+
+               base.GenericEquals(HeartbeatRequest);
 
         #endregion
 

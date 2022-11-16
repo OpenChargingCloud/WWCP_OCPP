@@ -37,21 +37,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The time for which the status is reported.
         /// </summary>
+        [Mandatory]
         public DateTime         Timestamp          { get; }
 
         /// <summary>
         /// The current status of the connector.
         /// </summary>
+        [Mandatory]
         public ConnectorStatus  ConnectorStatus    { get; }
 
         /// <summary>
         /// The identification of the EVSE to which the connector belongs for which the the status is reported.
         /// </summary>
+        [Mandatory]
         public EVSE_Id          EVSEId             { get; }
 
         /// <summary>
         /// The identification of the connector within the EVSE for which the status is reported.
         /// </summary>
+        [Mandatory]
         public Connector_Id     ConnectorId        { get; }
 
         #endregion
@@ -133,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //         "Unavailable",
         //         "Faulted"
         //       ]
-        // }
+        //     }
         //   },
         //   "type": "object",
         //   "additionalProperties": false,
@@ -342,13 +346,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomStatusNotificationRequestSerializer">A delegate to serialize custom StatusNotification requests.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestSerializer   = null,
@@ -450,8 +447,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                EVSEId.         Equals(StatusNotificationRequest.EVSEId)          &&
                ConnectorId.    Equals(StatusNotificationRequest.ConnectorId)     &&
 
-             ((CustomData is     null && StatusNotificationRequest.CustomData is     null) ||
-              (CustomData is not null && StatusNotificationRequest.CustomData is not null && CustomData.Equals(StatusNotificationRequest.CustomData)));
+               base.    GenericEquals(StatusNotificationRequest);
 
         #endregion
 
@@ -473,7 +469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                        EVSEId.         GetHashCode() *  5 ^
                        ConnectorId.    GetHashCode() *  3 ^
 
-                       CustomData?.    GetHashCode() ?? 0;
+                       base.           GetHashCode();
 
             }
         }
@@ -492,7 +488,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                              " => ", ConnectorStatus);
 
         #endregion
-
 
     }
 

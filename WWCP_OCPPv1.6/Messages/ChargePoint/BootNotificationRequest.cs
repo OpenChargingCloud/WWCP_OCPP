@@ -594,15 +594,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomBootNotificationRequestSerializer">A delegate to serialize custom BootNotification requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<BootNotificationRequest>? CustomBootNotificationRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<BootNotificationRequest>? CustomBootNotificationRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -768,7 +761,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 (MeterSerialNumber       is not null && BootNotificationRequest.MeterSerialNumber       is not null &&
                  String.Equals(MeterSerialNumber,
                                BootNotificationRequest.MeterSerialNumber,
-                               StringComparison.OrdinalIgnoreCase)));
+                               StringComparison.OrdinalIgnoreCase))) &&
+
+               base.GenericEquals(BootNotificationRequest);
 
         #endregion
 
@@ -785,16 +780,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return ChargePointVendor.      GetHashCode() * 23 ^
-                       ChargePointModel.       GetHashCode() * 19 ^
+                return ChargePointVendor.       GetHashCode()       * 27 ^
+                       ChargePointModel.        GetHashCode()       * 23 ^
 
-                       (ChargePointSerialNumber?.GetHashCode() ?? 0) * 17 ^
-                       (ChargeBoxSerialNumber?.  GetHashCode() ?? 0) * 13 ^
-                       (FirmwareVersion?.        GetHashCode() ?? 0) * 11 ^
-                       (Iccid?.                  GetHashCode() ?? 0) *  7 ^
-                       (IMSI?.                   GetHashCode() ?? 0) *  5 ^
-                       (MeterType?.              GetHashCode() ?? 0) *  3 ^
-                       (MeterSerialNumber?.      GetHashCode() ?? 0);
+                      (ChargePointSerialNumber?.GetHashCode() ?? 0) * 19 ^
+                      (ChargeBoxSerialNumber?.  GetHashCode() ?? 0) * 17 ^
+                      (FirmwareVersion?.        GetHashCode() ?? 0) * 13 ^
+                      (Iccid?.                  GetHashCode() ?? 0) * 11 ^
+                      (IMSI?.                   GetHashCode() ?? 0) *  7 ^
+                      (MeterType?.              GetHashCode() ?? 0) *  5 ^
+                      (MeterSerialNumber?.      GetHashCode() ?? 0) *  3 ^
+
+                       base.                    GetHashCode();
 
             }
         }

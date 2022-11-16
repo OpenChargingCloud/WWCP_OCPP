@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A sampled (energy) meter value.
     /// </summary>
-    public class SampledValue
+    public class SampledValue : ACustomData
     {
 
         #region Properties
@@ -69,11 +69,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public UnitsOfMeasure?        UnitOfMeasure       { get; }
 
-        /// <summary>
-        /// An optional custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData?            CustomData          { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -97,6 +92,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                             SignedMeterValue?      SignedMeterValue   = null,
                             UnitsOfMeasure?        UnitOfMeasure      = null,
                             CustomData?            CustomData         = null)
+
+            : base(CustomData)
+
         {
 
             this.Value             = Value;
@@ -106,7 +104,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             this.Location          = Location;
             this.SignedMeterValue  = SignedMeterValue;
             this.UnitOfMeasure     = UnitOfMeasure;
-            this.CustomData        = CustomData;
 
         }
 
@@ -509,8 +506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             ((UnitOfMeasure    is     null && SampledValue.UnitOfMeasure    is     null) ||
              (UnitOfMeasure    is not null && SampledValue.UnitOfMeasure    is not null   && UnitOfMeasure.   Equals(SampledValue.UnitOfMeasure)))    &&
 
-            ((CustomData       is     null && SampledValue.CustomData       is     null) ||
-             (CustomData       is not null && SampledValue.CustomData       is not null   && CustomData.      Equals(SampledValue.CustomData)));
+              base.  Equals(SampledValue);
 
         #endregion
 
@@ -535,7 +531,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                       (Location?.        GetHashCode() ?? 0) *  7 ^
                       (SignedMeterValue?.GetHashCode() ?? 0) *  5 ^
                       (UnitOfMeasure?.   GetHashCode() ?? 0) *  3 ^
-                      (CustomData?.      GetHashCode() ?? 0);
+
+                      base.              GetHashCode();
 
             }
         }

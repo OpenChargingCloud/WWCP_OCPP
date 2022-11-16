@@ -279,15 +279,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomLogStatusNotificationSerializer">A delegate to serialize custom log status notification requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<LogStatusNotificationRequest>? CustomLogStatusNotificationSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<LogStatusNotificationRequest>? CustomLogStatusNotificationSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -379,10 +372,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             => LogStatusNotificationRequest is not null &&
 
-               Status.Equals(LogStatusNotificationRequest.Status) &&
+               Status.     Equals(LogStatusNotificationRequest.Status) &&
 
             ((!LogRequestId.HasValue && !LogStatusNotificationRequest.LogRequestId.HasValue) ||
-              (LogRequestId.HasValue &&  LogStatusNotificationRequest.LogRequestId.HasValue && LogRequestId.Value.Equals(LogStatusNotificationRequest.LogRequestId.Value)));
+              (LogRequestId.HasValue &&  LogStatusNotificationRequest.LogRequestId.HasValue && LogRequestId.Value.Equals(LogStatusNotificationRequest.LogRequestId.Value))) &&
+
+               base.GenericEquals(LogStatusNotificationRequest);
 
         #endregion
 
@@ -399,8 +394,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return Status.      GetHashCode() * 3 ^
-                      (LogRequestId?.GetHashCode() ?? 0);
+                return Status.       GetHashCode()       * 5 ^
+
+                      (LogRequestId?.GetHashCode() ?? 0) * 3 ^
+
+                       base.         GetHashCode();
 
             }
         }

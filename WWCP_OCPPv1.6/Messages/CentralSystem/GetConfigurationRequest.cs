@@ -356,15 +356,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomGetConfigurationRequestSerializer">A delegate to serialize custom start transaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetConfigurationRequest>? CustomGetConfigurationRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetConfigurationRequest>? CustomGetConfigurationRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -454,8 +447,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => GetConfigurationRequest is not null &&
 
-               Keys.Count().Equals(GetConfigurationRequest.Keys.Count()) &&
-               Keys.All(key => GetConfigurationRequest.Keys.Contains(key));
+               Keys.Count().Equals(GetConfigurationRequest.Keys.Count())   &&
+               Keys.All(key =>     GetConfigurationRequest.Keys.Contains(key)) &&
+
+               base. GenericEquals(GetConfigurationRequest);
 
         #endregion
 
@@ -468,8 +463,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => Keys.GetHashCode();
+                return Keys.GetHashCode() * 3 ^
+                       base.GetHashCode();
+
+            }
+        }
 
         #endregion
 

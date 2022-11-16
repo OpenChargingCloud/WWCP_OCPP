@@ -462,15 +462,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomUpdateFirmwareRequestSerializer">A delegate to serialize custom start transaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateFirmwareRequest>? CustomUpdateFirmwareRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateFirmwareRequest>? CustomUpdateFirmwareRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -574,7 +567,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                  (Retries.      HasValue &&  UpdateFirmwareRequest.Retries.      HasValue && Retries.      Value.Equals(UpdateFirmwareRequest.Retries.      Value))) &&
 
                ((!RetryInterval.HasValue && !UpdateFirmwareRequest.RetryInterval.HasValue) ||
-                 (RetryInterval.HasValue &&  UpdateFirmwareRequest.RetryInterval.HasValue && RetryInterval.Value.Equals(UpdateFirmwareRequest.RetryInterval.Value)));
+                 (RetryInterval.HasValue &&  UpdateFirmwareRequest.RetryInterval.HasValue && RetryInterval.Value.Equals(UpdateFirmwareRequest.RetryInterval.Value))) &&
+
+               base. GenericEquals(UpdateFirmwareRequest);
 
         #endregion
 
@@ -591,11 +586,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return Location.      GetHashCode()       * 7 ^
-                       RetrieveDate.  GetHashCode()       * 5 ^
+                return Location.      GetHashCode()       * 11 ^
+                       RetrieveDate.  GetHashCode()       *  7 ^
 
-                      (Retries?.      GetHashCode() ?? 0) * 3 ^
-                      (RetryInterval?.GetHashCode() ?? 0);
+                      (Retries?.      GetHashCode() ?? 0) *  5 ^
+                      (RetryInterval?.GetHashCode() ?? 0) *  3 ^
+
+                       base.          GetHashCode();
 
             }
         }
@@ -622,7 +619,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                  : "");
 
         #endregion
-
 
     }
 

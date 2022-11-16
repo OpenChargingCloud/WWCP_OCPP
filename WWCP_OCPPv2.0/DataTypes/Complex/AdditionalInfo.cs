@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -29,48 +27,51 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// A case insensitive identifier to use for the authorization.
-    /// Supports multiple identifier types.
+    /// An additional case insensitive identifier to use for the authorization
+    /// and the type of authorization to support multiple forms of identifiers.
     /// </summary>
-    public class AdditionalInfo
+    public class AdditionalInfo : ACustomData
     {
 
         #region Properties
 
         /// <summary>
-        /// This field specifies the additional IdToken. 36
+        /// This field specifies the additional IdToken. [max 36]
         /// </summary>
-        public String      AdditionalIdToken    { get; }
+        public String  AdditionalIdToken    { get; }
 
         /// <summary>
         /// This defines the type of the additionalIdToken.
-        /// This is a custom type, so the implementation needs to be agreed upon by all involved parties. 50
+        /// This is a custom type, so the implementation needs to be agreed upon by all involved parties. [max 50]
         /// </summary>
-        public String      Type                 { get; }
-
-        /// <summary>
-        /// An optional custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData  CustomData           { get; }
+        public String  Type                 { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new case insensitive authorization identifier.
+        /// Create a new additional case insensitive authorization identifier.
         /// </summary>
         /// <param name="AdditionalIdToken">This field specifies the additional IdToken.</param>
         /// <param name="Type">This defines the type of the additionalIdToken. This is a custom type, so the implementation needs to be agreed upon by all involved parties.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public AdditionalInfo(String      AdditionalIdToken,
-                              String      Type,
-                              CustomData  CustomData  = null)
+        public AdditionalInfo(String       AdditionalIdToken,
+                              String       Type,
+                              CustomData?  CustomData   = null)
+
+            : base(CustomData)
+
         {
 
-            this.AdditionalIdToken  = AdditionalIdToken?.Trim() ?? throw new ArgumentNullException(nameof(AdditionalIdToken), "The given additional identification token must not be null or empty!");
-            this.Type               = Type?.             Trim() ?? throw new ArgumentNullException(nameof(Type),              "The given type must not be null or empty!");
-            this.CustomData         = CustomData;
+            this.AdditionalIdToken  = AdditionalIdToken.Trim();
+            this.Type               = Type.             Trim();
+
+            if (this.AdditionalIdToken.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(AdditionalIdToken),  "The given additional identification token must not be null or empty!");
+
+            if (this.Type.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Type),               "The given type must not be null or empty!");
 
         }
 
@@ -79,10 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Documentation
 
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:AdditionalInfoType",
-        //   "comment": "OCPP 2.0.1 FINAL",
+        // "AdditionalInfoType": {
         //   "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.\r\n",
         //   "javaType": "AdditionalInfo",
         //   "type": "object",
@@ -113,49 +111,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) Parse   (JSON, CustomAdditionalInfoParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a additional info.
+        /// Parse the given JSON representation of an additional info.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomAdditionalInfoParser">A delegate to parse custom AdditionalInfo JSON objects.</param>
-        public static AdditionalInfo Parse(JObject                                      JSON,
-                                           CustomJObjectParserDelegate<AdditionalInfo>  CustomAdditionalInfoParser   = null)
+        /// <param name="CustomAdditionalInfoParser">A delegate to parse custom additional info JSON objects.</param>
+        public static AdditionalInfo Parse(JObject                                       JSON,
+                                           CustomJObjectParserDelegate<AdditionalInfo>?  CustomAdditionalInfoParser   = null)
         {
 
             if (TryParse(JSON,
-                         out AdditionalInfo  additionalInfo,
-                         out String          ErrorResponse,
+                         out var additionalInfo,
+                         out var errorResponse,
                          CustomAdditionalInfoParser))
             {
-                return additionalInfo;
+                return additionalInfo!;
             }
 
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) Parse   (Text, CustomAdditionalInfoParser = null)
-
-        /// <summary>
-        /// Parse the given text representation of a additional info.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="CustomAdditionalInfoParser">A delegate to parse custom AdditionalInfo JSON objects.</param>
-        public static AdditionalInfo Parse(String                                       Text,
-                                           CustomJObjectParserDelegate<AdditionalInfo>  CustomAdditionalInfoParser   = null)
-        {
-
-
-            if (TryParse(Text,
-                         out AdditionalInfo  additionalInfo,
-                         out String          ErrorResponse,
-                         CustomAdditionalInfoParser))
-            {
-                return additionalInfo;
-            }
-
-            return default;
+            throw new ArgumentException("The given JSON representation of an additional info is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
@@ -166,10 +139,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a additional info.
+        /// Try to parse the given JSON representation of an additional info.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="AdditionalInfo">The parsed connector type.</param>
+        /// <param name="AdditionalInfo">The parsed additional info.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject             JSON,
                                        out AdditionalInfo  AdditionalInfo,
@@ -181,16 +154,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a additional info.
+        /// Try to parse the given JSON representation of an additional info.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="AdditionalInfo">The parsed connector type.</param>
+        /// <param name="AdditionalInfo">The parsed additional info.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAdditionalInfoParser">A delegate to parse custom AdditionalInfo JSON objects.</param>
-        public static Boolean TryParse(JObject                                      JSON,
-                                       out AdditionalInfo                           AdditionalInfo,
-                                       out String                                   ErrorResponse,
-                                       CustomJObjectParserDelegate<AdditionalInfo>  CustomAdditionalInfoParser)
+        /// <param name="CustomAdditionalInfoParser">A delegate to parse custom additional info JSON objects.</param>
+        public static Boolean TryParse(JObject                                       JSON,
+                                       out AdditionalInfo?                           AdditionalInfo,
+                                       out String?                                   ErrorResponse,
+                                       CustomJObjectParserDelegate<AdditionalInfo>?  CustomAdditionalInfoParser)
         {
 
             try
@@ -202,8 +175,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatoryText("additionalIdToken",
                                              "additional identification token",
-                                             out String  AdditionalIdToken,
-                                             out         ErrorResponse))
+                                             out String AdditionalIdToken,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -214,8 +187,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatoryText("type",
                                              "type",
-                                             out String  Type,
-                                             out         ErrorResponse))
+                                             out String Type,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
@@ -230,10 +203,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                            out CustomData CustomData,
                                            out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -243,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                     Type.             Trim(),
                                                     CustomData);
 
-                if (CustomAdditionalInfoParser != null)
+                if (CustomAdditionalInfoParser is not null)
                     AdditionalInfo = CustomAdditionalInfoParser(JSON,
                                                                 AdditionalInfo);
 
@@ -253,41 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             catch (Exception e)
             {
                 AdditionalInfo  = default;
-                ErrorResponse   = "The given JSON representation of an AdditionalInfo is invalid: " + e.Message;
-                return false;
-            }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Text, out AdditionalInfo, CustomAdditionalInfoParser = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a additional info.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="AdditionalInfo">The parsed connector type.</param>
-        /// <param name="CustomAdditionalInfoParser">A delegate to parse custom AdditionalInfo JSON objects.</param>
-        public static Boolean TryParse(String                                       Text,
-                                       out AdditionalInfo                           AdditionalInfo,
-                                       out String                                   ErrorResponse,
-                                       CustomJObjectParserDelegate<AdditionalInfo>  CustomAdditionalInfoParser)
-        {
-
-            try
-            {
-
-                return TryParse(JObject.Parse(Text),
-                                out AdditionalInfo,
-                                out ErrorResponse,
-                                CustomAdditionalInfoParser);
-
-            }
-            catch (Exception e)
-            {
-                AdditionalInfo  = default;
-                ErrorResponse   = "The given text representation of an AdditionalInfo is invalid: " + e.Message;
+                ErrorResponse   = "The given JSON representation of an additional info is invalid: " + e.Message;
                 return false;
             }
 
@@ -302,8 +239,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom AdditionalInfo objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<AdditionalInfo>  CustomAdditionalInfoResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>      CustomCustomDataResponseSerializer       = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AdditionalInfo>?  CustomAdditionalInfoResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataResponseSerializer       = null)
         {
 
             var JSON = JSONObject.Create(
@@ -336,7 +273,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="AdditionalInfo1">An id tag info.</param>
         /// <param name="AdditionalInfo2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (AdditionalInfo AdditionalInfo1, AdditionalInfo AdditionalInfo2)
+        public static Boolean operator == (AdditionalInfo AdditionalInfo1,
+                                           AdditionalInfo AdditionalInfo2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -346,9 +284,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             // If one is null, but not both, return false.
             if (AdditionalInfo1 is null || AdditionalInfo2 is null)
                 return false;
-
-            if (AdditionalInfo1 is null)
-                throw new ArgumentNullException(nameof(AdditionalInfo1),  "The given id tag info must not be null!");
 
             return AdditionalInfo1.Equals(AdditionalInfo2);
 
@@ -364,7 +299,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="AdditionalInfo1">An id tag info.</param>
         /// <param name="AdditionalInfo2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (AdditionalInfo AdditionalInfo1, AdditionalInfo AdditionalInfo2)
+        public static Boolean operator != (AdditionalInfo AdditionalInfo1,
+                                           AdditionalInfo AdditionalInfo2)
+
             => !(AdditionalInfo1 == AdditionalInfo2);
 
         #endregion
@@ -380,18 +317,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is AdditionalInfo AdditionalInfo))
-                return false;
-
-            return Equals(AdditionalInfo);
-
-        }
+            => Object is AdditionalInfo additionalInfo &&
+                   Equals(additionalInfo);
 
         #endregion
 
@@ -401,20 +330,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two id tag infos for equality.
         /// </summary>
         /// <param name="AdditionalInfo">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(AdditionalInfo AdditionalInfo)
-        {
 
-            if (AdditionalInfo is null)
-                return false;
+            => AdditionalInfo is not null &&
 
-            return String.Equals(AdditionalIdToken, AdditionalInfo.AdditionalIdToken, StringComparison.OrdinalIgnoreCase) &&
-                   String.Equals(Type,              AdditionalInfo.Type,              StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(AdditionalIdToken, AdditionalInfo.AdditionalIdToken, StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(Type,              AdditionalInfo.Type,              StringComparison.OrdinalIgnoreCase) &&
 
-                   ((CustomData == null && AdditionalInfo.CustomData == null) ||
-                    (CustomData is not null && AdditionalInfo.CustomData is not null && CustomData.Equals(AdditionalInfo.CustomData)));
-
-        }
+               base.  Equals(AdditionalInfo);
 
         #endregion
 
@@ -434,9 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 return AdditionalIdToken.GetHashCode() * 5 ^
                        Type.             GetHashCode() * 3 ^
 
-                       (CustomData is not null
-                            ? CustomData.GetHashCode()
-                            : 0);
+                       base.             GetHashCode();
 
             }
         }

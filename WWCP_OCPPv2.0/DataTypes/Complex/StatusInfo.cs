@@ -27,27 +27,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// An element providing more information about the boot notification status.
+    /// An element providing more information about the status.
     /// </summary>
-    public class StatusInfo
+    public class StatusInfo : ACustomData
     {
 
         #region Properties
 
         /// <summary>
-        /// A predefined case-insensitive code for the reason why the status is returned in this response. 20
+        /// A predefined case-insensitive code for the reason why the status is returned in this response. [max 20]
         /// </summary>
-        public String       ReasonCode        { get; }
+        public String   ReasonCode        { get; }
 
         /// <summary>
-        /// Additional text to provide detailed information. 512
+        /// Additional text to provide detailed information. [max 512]
         /// </summary>
-        public String?      AdditionalInfo    { get; }
-
-        /// <summary>
-        /// An optional custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData?  CustomData        { get; }
+        public String?  AdditionalInfo    { get; }
 
         #endregion
 
@@ -62,11 +57,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public StatusInfo(String       ReasonCode,
                           String?      AdditionalInfo   = null,
                           CustomData?  CustomData       = null)
+
+            : base(CustomData)
+
         {
 
             this.ReasonCode      = ReasonCode.Trim();
             this.AdditionalInfo  = AdditionalInfo;
-            this.CustomData      = CustomData;
 
             if (ReasonCode.IsNullOrEmpty())
                  throw new ArgumentNullException(nameof(ReasonCode), "The given reason code must not be null or empty!");
@@ -78,10 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Documentation
 
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:StatusInfoType",
-        //   "comment": "OCPP 2.0.1 FINAL",
+        // "StatusInfoType": {
         //   "description": "Element providing more information about the status.\r\n",
         //   "javaType": "StatusInfo",
         //   "type": "object",
@@ -345,8 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
              ((AdditionalInfo is     null && StatusInfo.AdditionalInfo is     null) ||
               (AdditionalInfo is not null && StatusInfo.AdditionalInfo is not null && AdditionalInfo.Equals(StatusInfo.AdditionalInfo))) &&
 
-             ((CustomData     is     null && StatusInfo.CustomData     is     null) ||
-              (CustomData     is not null && StatusInfo.CustomData     is not null && CustomData.    Equals(StatusInfo.CustomData)));
+               base.      Equals(StatusInfo);
 
         #endregion
 
@@ -363,10 +356,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return ReasonCode.      GetHashCode()       * 5 ^
+                return ReasonCode.     GetHashCode()       * 5 ^
 
-                       (AdditionalInfo?.GetHashCode() ?? 0) * 3 ^
-                       (CustomData?.    GetHashCode() ?? 0);
+                      (AdditionalInfo?.GetHashCode() ?? 0) * 3 ^
+
+                       base.           GetHashCode();
 
             }
         }

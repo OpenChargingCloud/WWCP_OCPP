@@ -694,19 +694,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomStopTransactionRequestRequestSerializer">A delegate to serialize custom StopTransaction requests.</param>
         /// <param name="CustomMeterValueSerializer">A delegate to serialize custom meter values.</param>
         /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StopTransactionRequest>?  CustomStopTransactionRequestRequestSerializer,
-                              CustomJObjectSerializerDelegate<MeterValue>?              CustomMeterValueSerializer     = null,
-                              CustomJObjectSerializerDelegate<SampledValue>?            CustomSampledValueSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StopTransactionRequest>?  CustomStopTransactionRequestRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<MeterValue>?              CustomMeterValueSerializer                      = null,
+                              CustomJObjectSerializerDelegate<SampledValue>?            CustomSampledValueSerializer                    = null)
         {
 
             var json = JSONObject.Create(
@@ -810,17 +803,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             => StopTransactionRequest is not null &&
 
                TransactionId.Equals(StopTransactionRequest.TransactionId) &&
-               StopTimestamp.    Equals(StopTransactionRequest.StopTimestamp)     &&
+               StopTimestamp.Equals(StopTransactionRequest.StopTimestamp) &&
                MeterStop.    Equals(StopTransactionRequest.MeterStop)     &&
 
             ((!IdTag.HasValue  && !StopTransactionRequest.IdTag. HasValue) ||
-              (IdTag.HasValue  &&  StopTransactionRequest.IdTag. HasValue && IdTag. Equals(StopTransactionRequest.IdTag))) &&
+              (IdTag.HasValue  &&  StopTransactionRequest.IdTag. HasValue && IdTag. Equals(StopTransactionRequest.IdTag)))  &&
 
             ((!Reason.HasValue && !StopTransactionRequest.Reason.HasValue) ||
               (Reason.HasValue &&  StopTransactionRequest.Reason.HasValue && Reason.Equals(StopTransactionRequest.Reason))) &&
 
-               TransactionData.Count().Equals(StopTransactionRequest.TransactionData.Count()) &&
-               TransactionData.All(transactionData => StopTransactionRequest.TransactionData.Contains(transactionData));
+               TransactionData.Count().        Equals(StopTransactionRequest.TransactionData.Count()) &&
+               TransactionData.All(transactionData => StopTransactionRequest.TransactionData.Contains(transactionData))     &&
+
+               base.GenericEquals(StopTransactionRequest);
 
         #endregion
 
@@ -837,13 +832,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return TransactionId.  GetHashCode()       * 13 ^
-                       StopTimestamp.      GetHashCode()       * 11 ^
-                       MeterStop.      GetHashCode()       *  7 ^
-                       TransactionData.GetHashCode()       *  5 ^
+                return TransactionId.  GetHashCode()       * 17 ^
+                       StopTimestamp.  GetHashCode()       * 13 ^
+                       MeterStop.      GetHashCode()       * 11 ^
+                       TransactionData.GetHashCode()       *  7 ^
 
-                       (IdTag?.        GetHashCode() ?? 0) *  3 ^
-                       (Reason?.       GetHashCode() ?? 0);
+                      (IdTag?.         GetHashCode() ?? 0) *  5 ^
+                      (Reason?.        GetHashCode() ?? 0) *  3 ^
+
+                       base.           GetHashCode();
 
             }
         }

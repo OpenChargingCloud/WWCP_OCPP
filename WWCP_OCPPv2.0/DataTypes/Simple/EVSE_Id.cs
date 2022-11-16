@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -27,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// An EVSE identification.
+    /// An EVSE identification (but in OCPP this is just an integer!).
     /// </summary>
     public readonly struct EVSE_Id : IId,
                                      IEquatable<EVSE_Id>,

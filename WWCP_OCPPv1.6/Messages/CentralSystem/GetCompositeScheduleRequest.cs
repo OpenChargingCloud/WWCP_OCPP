@@ -420,15 +420,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomGetCompositeScheduleRequestSerializer">A delegate to serialize custom start transaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>? CustomGetCompositeScheduleRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>? CustomGetCompositeScheduleRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -525,7 +518,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                Duration.   Equals(GetCompositeScheduleRequest.Duration)    &&
 
             ((!ChargingRateUnit.HasValue && !GetCompositeScheduleRequest.ChargingRateUnit.HasValue) ||
-              (ChargingRateUnit.HasValue &&  GetCompositeScheduleRequest.ChargingRateUnit.HasValue && ChargingRateUnit.Value.Equals(GetCompositeScheduleRequest.ChargingRateUnit.Value)));
+              (ChargingRateUnit.HasValue &&  GetCompositeScheduleRequest.ChargingRateUnit.HasValue && ChargingRateUnit.Value.Equals(GetCompositeScheduleRequest.ChargingRateUnit.Value))) &&
+
+               base.GenericEquals(GetCompositeScheduleRequest);
 
         #endregion
 
@@ -542,10 +537,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return ConnectorId.      GetHashCode() * 5 ^
-                       Duration.         GetHashCode() * 3 ^
+                return ConnectorId.      GetHashCode()       * 7 ^
+                       Duration.         GetHashCode()       * 5 ^
 
-                       ChargingRateUnit?.GetHashCode() ?? 0;
+                      (ChargingRateUnit?.GetHashCode() ?? 0) * 3 ^
+
+                       base.             GetHashCode();
 
             }
         }

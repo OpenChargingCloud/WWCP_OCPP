@@ -17,7 +17,7 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -31,20 +31,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     {
 
         /// <summary>
-        /// The unique identification of the request.
+        /// The charge box identification.
         /// </summary>
-        Request_Id  RequestId           { get; }
+        [Mandatory]
+        ChargeBox_Id        ChargeBoxId          { get; }
+
+        /// <summary>
+        /// The request identification.
+        /// </summary>
+        [Mandatory]
+        Request_Id          RequestId            { get; }
 
         /// <summary>
         /// The timestamp of the request message creation.
         /// </summary>
-        DateTime    RequestTimestamp    { get; }
-
+        [Mandatory]
+        DateTime            RequestTimestamp     { get; }
 
         /// <summary>
-        /// Return a JSON representation of this object.
+        /// The timeout of this request.
         /// </summary>
-        JObject ToJSON();
+        [Mandatory]
+        TimeSpan            RequestTimeout       { get; }
+
+        /// <summary>
+        /// An event tracking identification for correlating this request with other events.
+        /// </summary>
+        [Mandatory]
+        EventTracking_Id    EventTrackingId      { get; }
+
+        /// <summary>
+        /// The OCPP SOAP and HTTP Web Socket action.
+        /// </summary>
+        [Mandatory]
+        String              Action               { get; }
+
+        /// <summary>
+        /// An optional token to cancel this request.
+        /// </summary>
+        CancellationToken?  CancellationToken    { get; }
+
 
     }
 

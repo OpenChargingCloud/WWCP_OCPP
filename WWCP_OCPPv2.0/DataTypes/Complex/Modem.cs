@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A wireless communication module.
     /// </summary>
-    public class Modem
+    public class Modem : ACustomData
     {
 
         #region Properties
@@ -37,17 +37,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The ICCID of the modem’s SIM card. 20
         /// </summary>
-        public String?      ICCID         { get; }
+        public String?  ICCID    { get; }
 
         /// <summary>
         /// The IMSI of the modem’s SIM card. 20
         /// </summary>
-        public String?      IMSI          { get; }
-
-        /// <summary>
-        /// An optional custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData?  CustomData    { get; }
+        public String?  IMSI     { get; }
 
         #endregion
 
@@ -62,11 +57,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public Modem(String?      ICCID,
                      String?      IMSI,
                      CustomData?  CustomData   = null)
+
+            : base(CustomData)
+
         {
 
-            this.ICCID       = ICCID;
-            this.IMSI        = IMSI;
-            this.CustomData  = CustomData;
+            this.ICCID  = ICCID;
+            this.IMSI   = IMSI;
 
         }
 
@@ -75,10 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Documentation
 
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:ModemType",
-        //   "comment": "OCPP 2.0.1 FINAL",
+        // "ModemType": {
         //   "description": "Wireless_ Communication_ Module\r\nurn:x-oca:ocpp:uid:2:233306\r\nDefines parameters required for initiating and maintaining wireless communication with other devices.\r\n",
         //   "javaType": "Modem",
         //   "type": "object",
@@ -333,14 +327,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => Modem is not null &&
 
-             ((ICCID      is     null && Modem.ICCID      is     null) ||
-              (ICCID      is not null && Modem.ICCID      is not null && ICCID.     Equals(Modem.ICCID))) &&
+             ((ICCID is     null && Modem.ICCID is     null) ||
+              (ICCID is not null && Modem.ICCID is not null && ICCID.Equals(Modem.ICCID))) &&
 
-             ((IMSI       is     null && Modem.IMSI       is     null) ||
-              (IMSI       is not null && Modem.IMSI       is not null && IMSI.      Equals(Modem.IMSI)))  &&
+             ((IMSI  is     null && Modem.IMSI  is     null) ||
+              (IMSI  is not null && Modem.IMSI  is not null && IMSI. Equals(Modem.IMSI)))  &&
 
-             ((CustomData is     null && Modem.CustomData is     null) ||
-              (CustomData is not null && Modem.CustomData is not null && CustomData.Equals(Modem.CustomData)));
+               base.Equals(Modem);
 
         #endregion
 
@@ -357,9 +350,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return (ICCID?.     GetHashCode() ?? 0) * 5 ^
-                       (IMSI?.      GetHashCode() ?? 0) * 3 ^
-                       (CustomData?.GetHashCode() ?? 0);
+                return (ICCID?.GetHashCode() ?? 0) * 5 ^
+                       (IMSI?. GetHashCode() ?? 0) * 3 ^
+
+                       base.   GetHashCode();
 
             }
         }

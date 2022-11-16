@@ -353,17 +353,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomSignedUpdateFirmwareRequestSerializer">A delegate to serialize custom start transaction requests.</param>
         /// <param name="CustomFirmwareImageSerializer">A delegate to serialize custom firmware images.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SignedUpdateFirmwareRequest>?  CustomSignedUpdateFirmwareRequestSerializer,
-                              CustomJObjectSerializerDelegate<FirmwareImage>?                CustomFirmwareImageSerializer    = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SignedUpdateFirmwareRequest>?  CustomSignedUpdateFirmwareRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<FirmwareImage>?                CustomFirmwareImageSerializer                 = null)
         {
 
             var json = JSONObject.Create(
@@ -467,7 +460,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                  (Retries.      HasValue &&  SignedUpdateFirmwareRequest.Retries.      HasValue && Retries.      Value.Equals(SignedUpdateFirmwareRequest.Retries.      Value))) &&
 
                ((!RetryInterval.HasValue && !SignedUpdateFirmwareRequest.RetryInterval.HasValue) ||
-                 (RetryInterval.HasValue &&  SignedUpdateFirmwareRequest.RetryInterval.HasValue && RetryInterval.Value.Equals(SignedUpdateFirmwareRequest.RetryInterval.Value)));
+                 (RetryInterval.HasValue &&  SignedUpdateFirmwareRequest.RetryInterval.HasValue && RetryInterval.Value.Equals(SignedUpdateFirmwareRequest.RetryInterval.Value))) &&
+
+               base.    GenericEquals(SignedUpdateFirmwareRequest);
 
         #endregion
 
@@ -484,11 +479,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return Firmware.       GetHashCode()      * 7 ^
-                       UpdateRequestId.GetHashCode()      * 5 ^
+                return Firmware.       GetHashCode()       * 11 ^
+                       UpdateRequestId.GetHashCode()       *  7 ^
 
-                      (Retries?.      GetHashCode() ?? 0) * 3 ^
-                      (RetryInterval?.GetHashCode() ?? 0);
+                      (Retries?.       GetHashCode() ?? 0) *  5 ^
+                      (RetryInterval?. GetHashCode() ?? 0) *  3 ^
+
+                       base.           GetHashCode();
 
             }
         }
@@ -515,7 +512,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                  : "");
 
         #endregion
-
 
     }
 

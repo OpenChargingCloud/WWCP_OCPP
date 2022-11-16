@@ -296,15 +296,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomGetLocalListVersionRequestSerializer">A delegate to serialize custom GetLocalListVersion requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetLocalListVersionRequest>? CustomGetLocalListVersionRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetLocalListVersionRequest>? CustomGetLocalListVersionRequestSerializer = null)
         {
 
             var json = JSONObject.Create();
@@ -386,7 +379,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="GetLocalListVersionRequest">A get local list version request to compare with.</param>
         public override Boolean Equals(GetLocalListVersionRequest? GetLocalListVersionRequest)
 
-            => GetLocalListVersionRequest is not null;
+            => GetLocalListVersionRequest is not null &&
+
+               base.GenericEquals(GetLocalListVersionRequest);
 
         #endregion
 

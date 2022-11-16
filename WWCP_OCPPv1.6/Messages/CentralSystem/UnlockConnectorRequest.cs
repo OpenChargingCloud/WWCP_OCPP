@@ -347,15 +347,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomUnlockConnectorRequestSerializer">A delegate to serialize custom unlock connector requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<UnlockConnectorRequest>? CustomUnlockConnectorRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<UnlockConnectorRequest>? CustomUnlockConnectorRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -440,7 +433,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public override Boolean Equals(UnlockConnectorRequest? UnlockConnectorRequest)
 
             => UnlockConnectorRequest is not null &&
-                   ConnectorId.Equals(UnlockConnectorRequest.ConnectorId);
+
+               ConnectorId.Equals(UnlockConnectorRequest.ConnectorId) &&
+
+               base.GenericEquals(UnlockConnectorRequest);
 
         #endregion
 
@@ -453,8 +449,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => ConnectorId.GetHashCode();
+                return ConnectorId.GetHashCode() * 3 ^
+                       base.       GetHashCode();
+
+            }
+        }
 
         #endregion
 

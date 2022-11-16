@@ -401,15 +401,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomDataTransferRequestSerializer">A delegate to serialize custom DataTransfer requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest>? CustomDataTransferRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest>? CustomDataTransferRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -511,7 +504,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
               (MessageId is not null && DataTransferRequest.MessageId is not null && MessageId.Equals(DataTransferRequest.MessageId))) &&
 
              ((Data      is     null && DataTransferRequest.Data      is     null) ||
-              (Data      is not null && DataTransferRequest.Data      is not null && Data.     Equals(DataTransferRequest.Data)));
+              (Data      is not null && DataTransferRequest.Data      is not null && Data.     Equals(DataTransferRequest.Data)))      &&
+
+               base.GenericEquals(DataTransferRequest);
 
         #endregion
 
@@ -528,10 +523,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return VendorId.   GetHashCode()       * 5 ^
+                return VendorId.   GetHashCode()       * 7 ^
 
-                       (MessageId?.GetHashCode() ?? 0) * 3^
-                       (Data?.     GetHashCode() ?? 0);
+                       (MessageId?.GetHashCode() ?? 0) * 5 ^
+                       (Data?.     GetHashCode() ?? 0) * 3 ^
+
+                       base.       GetHashCode();
 
             }
         }

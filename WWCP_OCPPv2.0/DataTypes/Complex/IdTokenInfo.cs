@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Linq;
 
 #endregion
 
@@ -30,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Status information about an identifier.
     /// </summary>
-    public class IdTokenInfo
+    public class IdTokenInfo : ACustomData
     {
 
         #region Properties
@@ -76,11 +75,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public MessageContent?       PersonalMessage        { get; }
 
-        /// <summary>
-        /// The custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData?           CustomData             { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -106,6 +100,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                            Language_Id?           Language2             = null,
                            MessageContent?        PersonalMessage       = null,
                            CustomData?            CustomData            = null)
+
+            : base(CustomData)
+
         {
 
             this.Status               = Status;
@@ -116,7 +113,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             this.Language1            = Language1;
             this.Language2            = Language2;
             this.PersonalMessage      = PersonalMessage;
-            this.CustomData           = CustomData;
 
         }
 
@@ -125,57 +121,57 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Documentation
 
-        //     "IdTokenInfoType": {
-        //       "description": "ID_ Token\r\nurn:x-oca:ocpp:uid:2:233247\r\nContains status information about an identifier.\r\nIt is advised to not stop charging for a token that expires during charging, as ExpiryDate is only used for caching purposes. If ExpiryDate is not given, the status has no end date.\r\n",
-        //       "javaType": "IdTokenInfo",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "status": {
-        //           "$ref": "#/definitions/AuthorizationStatusEnumType"
-        //         },
-        //         "cacheExpiryDateTime": {
-        //           "description": "ID_ Token. Expiry. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569373\r\nDate and Time after which the token must be considered invalid.\r\n",
-        //           "type": "string",
-        //           "format": "date-time"
-        //         },
-        //         "chargingPriority": {
-        //           "description": "Priority from a business point of view. Default priority is 0, The range is from -9 to 9. Higher values indicate a higher priority. The chargingPriority in &lt;&lt;transactioneventresponse,TransactionEventResponse&gt;&gt; overrules this one. \r\n",
-        //           "type": "integer"
-        //         },
-        //         "language1": {
-        //           "description": "ID_ Token. Language1. Language_ Code\r\nurn:x-oca:ocpp:uid:1:569374\r\nPreferred user interface language of identifier user. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.\r\n\r\n",
-        //           "type": "string",
-        //           "maxLength": 8
-        //         },
-        //         "evseId": {
-        //           "description": "Only used when the IdToken is only valid for one or more specific EVSEs, not for the entire Charging Station.\r\n\r\n",
-        //           "type": "array",
-        //           "additionalItems": false,
-        //           "items": {
-        //             "type": "integer"
-        //           },
-        //           "minItems": 1
-        //         },
-        //         "groupIdToken": {
-        //           "$ref": "#/definitions/IdTokenType"
-        //         },
-        //         "language2": {
-        //           "description": "ID_ Token. Language2. Language_ Code\r\nurn:x-oca:ocpp:uid:1:569375\r\nSecond preferred user interface language of identifier user. Don’t use when language1 is omitted, has to be different from language1. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.\r\n",
-        //           "type": "string",
-        //           "maxLength": 8
-        //         },
-        //         "personalMessage": {
-        //           "$ref": "#/definitions/MessageContentType"
-        //         }
+        // "IdTokenInfoType": {
+        //   "description": "ID_ Token\r\nurn:x-oca:ocpp:uid:2:233247\r\nContains status information about an identifier.\r\nIt is advised to not stop charging for a token that expires during charging, as ExpiryDate is only used for caching purposes. If ExpiryDate is not given, the status has no end date.\r\n",
+        //   "javaType": "IdTokenInfo",
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     },
+        //     "status": {
+        //       "$ref": "#/definitions/AuthorizationStatusEnumType"
+        //     },
+        //     "cacheExpiryDateTime": {
+        //       "description": "ID_ Token. Expiry. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569373\r\nDate and Time after which the token must be considered invalid.\r\n",
+        //       "type": "string",
+        //       "format": "date-time"
+        //     },
+        //     "chargingPriority": {
+        //       "description": "Priority from a business point of view. Default priority is 0, The range is from -9 to 9. Higher values indicate a higher priority. The chargingPriority in &lt;&lt;transactioneventresponse,TransactionEventResponse&gt;&gt; overrules this one. \r\n",
+        //       "type": "integer"
+        //     },
+        //     "language1": {
+        //       "description": "ID_ Token. Language1. Language_ Code\r\nurn:x-oca:ocpp:uid:1:569374\r\nPreferred user interface language of identifier user. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.\r\n\r\n",
+        //       "type": "string",
+        //       "maxLength": 8
+        //     },
+        //     "evseId": {
+        //       "description": "Only used when the IdToken is only valid for one or more specific EVSEs, not for the entire Charging Station.\r\n\r\n",
+        //       "type": "array",
+        //       "additionalItems": false,
+        //       "items": {
+        //         "type": "integer"
         //       },
-        //       "required": [
-        //         "status"
-        //       ]
+        //       "minItems": 1
+        //     },
+        //     "groupIdToken": {
+        //       "$ref": "#/definitions/IdTokenType"
+        //     },
+        //     "language2": {
+        //       "description": "ID_ Token. Language2. Language_ Code\r\nurn:x-oca:ocpp:uid:1:569375\r\nSecond preferred user interface language of identifier user. Don’t use when language1 is omitted, has to be different from language1. Contains a language code as defined in &lt;&lt;ref-RFC5646,[RFC5646]&gt;&gt;.\r\n",
+        //       "type": "string",
+        //       "maxLength": 8
+        //     },
+        //     "personalMessage": {
+        //       "$ref": "#/definitions/MessageContentType"
         //     }
+        //   },
+        //   "required": [
+        //     "status"
+        //   ]
+        // }
 
         #endregion
 
@@ -425,8 +421,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                ? new JProperty("cacheExpiryDateTime",  CacheExpiryDateTime.Value.ToIso8601())
                                : null,
 
-                           ValidEVSEIds.SafeAny()
-                               ? new JProperty("evseId",               new JArray(ValidEVSEIds.SafeSelect(evseId => evseId.ToString())))
+                           ValidEVSEIds.Any()
+                               ? new JProperty("evseId",               new JArray(ValidEVSEIds))
                                : null,
 
                            GroupIdToken is not null
@@ -518,8 +514,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Object">Id token information to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is MeterValue meterValue &&
-                   Equals(meterValue);
+            => Object is IdTokenInfo idTokenInfo &&
+                   Equals(idTokenInfo);
 
         #endregion
 
@@ -554,8 +550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
              ((PersonalMessage is     null  &&  IdTokenInfo.PersonalMessage  is     null) ||
               (PersonalMessage is not null  &&  IdTokenInfo.PersonalMessage  is not null && PersonalMessage.    Equals(IdTokenInfo.PersonalMessage)))     &&
 
-             ((CustomData      is     null  &&  IdTokenInfo.CustomData       is     null) ||
-              (CustomData      is not null  &&  IdTokenInfo.CustomData       is not null && CustomData.         Equals(IdTokenInfo.CustomData)));
+               base.            Equals(IdTokenInfo);
 
         #endregion
 
@@ -572,17 +567,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Status.               GetHashCode()       * 19 ^
-                       ChargingPriority.     GetHashCode()       * 17 ^
+                return Status.              GetHashCode()       * 19 ^
+                       ChargingPriority.    GetHashCode()       * 17 ^
 
                        //ToDo: Add ValidEVSEIds!
 
-                       (CacheExpiryDateTime?.GetHashCode() ?? 0) * 13 ^
-                       (GroupIdToken?.       GetHashCode() ?? 0) * 11 ^
-                       (Language1?.          GetHashCode() ?? 0) *  7 ^
-                       (Language2?.          GetHashCode() ?? 0) *  5 ^
-                       (PersonalMessage?.    GetHashCode() ?? 0) *  3 ^
-                       (CustomData?.         GetHashCode() ?? 0);
+                      (CacheExpiryDateTime?.GetHashCode() ?? 0) * 13 ^
+                      (GroupIdToken?.       GetHashCode() ?? 0) * 11 ^
+                      (Language1?.          GetHashCode() ?? 0) *  7 ^
+                      (Language2?.          GetHashCode() ?? 0) *  5 ^
+                      (PersonalMessage?.    GetHashCode() ?? 0) *  3 ^
+
+                       base.                GetHashCode();
 
             }
         }

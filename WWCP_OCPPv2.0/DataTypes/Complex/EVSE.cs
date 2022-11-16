@@ -17,12 +17,9 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.JSON;
 
 #endregion
 
@@ -32,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A electric vehicle supply equipment (EVSE).
     /// </summary>
-    public class EVSE
+    public class EVSE : ACustomData
     {
 
         #region Properties
@@ -47,11 +44,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public Connector_Id?  ConnectorId    { get; }
 
-        /// <summary>
-        /// An optional custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData     CustomData     { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -64,12 +56,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public EVSE(EVSE_Id        Id,
                     Connector_Id?  ConnectorId   = null,
-                    CustomData     CustomData    = null)
+                    CustomData?    CustomData    = null)
+
+            : base(CustomData)
+
         {
 
             this.Id           = Id;
             this.ConnectorId  = ConnectorId;
-            this.CustomData   = CustomData;
 
         }
 
@@ -106,66 +100,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (EVSEJSON, OnException = null)
+        #region (static) Parse   (JSON, CustomEVSEParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a communication module.
+        /// Parse the given JSON representation of an EVSE.
         /// </summary>
-        /// <param name="EVSEJSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static EVSE Parse(JObject              EVSEJSON,
-                                 OnExceptionDelegate  OnException   = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomEVSEParser">A delegate to parse custom EVSEs.</param>
+        public static EVSE Parse(JObject                             JSON,
+                                 CustomJObjectParserDelegate<EVSE>?  CustomEVSEParser   = null)
         {
 
-            if (TryParse(EVSEJSON,
-                         out EVSE evse,
-                         OnException))
+            if (TryParse(JSON,
+                         out var evse,
+                         out var errorResponse,
+                         CustomEVSEParser))
             {
-                return evse;
+                return evse!;
             }
 
-            return default;
+            throw new ArgumentException("The given JSON representation of an EVSE is invalid: " + errorResponse,
+                                        nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) Parse   (EVSEText, OnException = null)
+        #region (static) TryParse(JSON, out EVSE, out ErrorResponse, CustomEVSEParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Parse the given text representation of a communication module.
+        /// Try to parse the given JSON representation of an EVSE.
         /// </summary>
-        /// <param name="EVSEText">The text to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static EVSE Parse(String               EVSEText,
-                                 OnExceptionDelegate  OnException   = null)
-        {
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="EVSE">The parsed EVSE.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject      JSON,
+                                       out EVSE?    EVSE,
+                                       out String?  ErrorResponse)
 
+            => TryParse(JSON,
+                        out EVSE,
+                        out ErrorResponse,
+                        null);
 
-            if (TryParse(EVSEText,
-                         out EVSE evse,
-                         OnException))
-            {
-                return evse;
-            }
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(EVSEJSON, out EVSE, OnException = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a communication module.
+        /// Try to parse the given JSON representation of an EVSE.
         /// </summary>
-        /// <param name="EVSEJSON">The JSON to be parsed.</param>
-        /// <param name="EVSE">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(JObject              EVSEJSON,
-                                       out EVSE             EVSE,
-                                       OnExceptionDelegate  OnException  = null)
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="EVSE">The parsed EVSE.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomEVSEParser">A delegate to parse custom EVSEs.</param>
+        public static Boolean TryParse(JObject                             JSON,
+                                       out EVSE?                           EVSE,
+                                       out String?                         ErrorResponse,
+                                       CustomJObjectParserDelegate<EVSE>?  CustomEVSEParser)
         {
 
             try
@@ -173,47 +164,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 EVSE = default;
 
-                #region EVSEId
+                #region EVSEId         [mandatory]
 
-                if (!EVSEJSON.ParseMandatory("id",
-                                             "evse identification",
-                                             EVSE_Id.TryParse,
-                                             out EVSE_Id  EVSEId,
-                                             out String   ErrorResponse))
+                if (!JSON.ParseMandatory("id",
+                                         "evse identification",
+                                         EVSE_Id.TryParse,
+                                         out EVSE_Id EVSEId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ConnectorId
+                #region ConnectorId    [optional]
 
-                if (EVSEJSON.ParseOptionalStruct("connectorId",
-                                                 "connector identification",
-                                                 Connector_Id.TryParse,
-                                                 out Connector_Id?  ConnectorId,
-                                                 out                ErrorResponse))
+                if (JSON.ParseOptionalStruct("connectorId",
+                                             "connector identification",
+                                             Connector_Id.TryParse,
+                                             out Connector_Id? ConnectorId,
+                                             out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
 
                 #region CustomData
 
-                if (EVSEJSON.ParseOptionalJSON("customData",
-                                               "custom data",
-                                               OCPPv2_0.CustomData.TryParse,
-                                               out CustomData  CustomData,
-                                               out             ErrorResponse))
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -223,57 +210,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                 ConnectorId,
                                 CustomData);
 
+                if (CustomEVSEParser is not null)
+                    EVSE = CustomEVSEParser(JSON,
+                                            EVSE);
+
                 return true;
 
             }
             catch (Exception e)
             {
-
-                OnException?.Invoke(DateTime.UtcNow, EVSEJSON, e);
-
-                EVSE = default;
+                EVSE           = default;
+                ErrorResponse  = "The given JSON representation of an EVSE is invalid: " + e.Message;
                 return false;
-
             }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(EVSEText, out EVSE, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given text representation of a communication module.
-        /// </summary>
-        /// <param name="EVSEText">The text to be parsed.</param>
-        /// <param name="EVSE">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               EVSEText,
-                                       out EVSE             EVSE,
-                                       OnExceptionDelegate  OnException  = null)
-        {
-
-            try
-            {
-
-                EVSEText = EVSEText?.Trim();
-
-                if (EVSEText.IsNotNullOrEmpty() &&
-                    TryParse(JObject.Parse(EVSEText),
-                             out EVSE,
-                             OnException))
-                {
-                    return true;
-                }
-
-            }
-            catch (Exception e)
-            {
-                OnException?.Invoke(DateTime.UtcNow, EVSEText, e);
-            }
-
-            EVSE = default;
-            return false;
 
         }
 
@@ -323,7 +272,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="EVSE1">An id tag info.</param>
         /// <param name="EVSE2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (EVSE EVSE1, EVSE EVSE2)
+        public static Boolean operator == (EVSE EVSE1,
+                                           EVSE EVSE2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -333,9 +283,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             // If one is null, but not both, return false.
             if (EVSE1 is null || EVSE2 is null)
                 return false;
-
-            if (EVSE1 is null)
-                throw new ArgumentNullException(nameof(EVSE1),  "The given id tag info must not be null!");
 
             return EVSE1.Equals(EVSE2);
 
@@ -351,7 +298,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="EVSE1">An id tag info.</param>
         /// <param name="EVSE2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (EVSE EVSE1, EVSE EVSE2)
+        public static Boolean operator != (EVSE EVSE1,
+                                           EVSE EVSE2)
+
             => !(EVSE1 == EVSE2);
 
         #endregion
@@ -363,47 +312,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two EVSEs for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">An EVSE to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is EVSE EVSE))
-                return false;
-
-            return Equals(EVSE);
-
-        }
+            => Object is EVSE evse &&
+                   Equals(evse);
 
         #endregion
 
         #region Equals(EVSE)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two EVSEs for equality.
         /// </summary>
-        /// <param name="EVSE">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="EVSE">An EVSE to compare with.</param>
         public Boolean Equals(EVSE EVSE)
-        {
 
-            if (EVSE is null)
-                return false;
+            => EVSE is not null &&
 
-            return Id.Equals(EVSE.Id) &&
+               Id.  Equals(EVSE.Id) &&
 
-                   ((!ConnectorId.HasValue && !EVSE.ConnectorId.HasValue) ||
-                     (ConnectorId.HasValue &&  EVSE.ConnectorId.HasValue && ConnectorId.Value.Equals(EVSE.ConnectorId.Value))) &&
+            ((!ConnectorId.HasValue && !EVSE.ConnectorId.HasValue) ||
+              (ConnectorId.HasValue &&  EVSE.ConnectorId.HasValue && ConnectorId.Value.Equals(EVSE.ConnectorId.Value))) &&
 
-                   ((CustomData == null    &&  EVSE.CustomData == null) ||
-                    (CustomData is not null    &&  EVSE.CustomData is not null   && CustomData.Equals(EVSE.CustomData)));
-
-        }
+               base.Equals(EVSE);
 
         #endregion
 
@@ -420,15 +354,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Id.GetHashCode() * 5 ^
+                return Id.           GetHashCode()       * 5 ^
 
-                       (ConnectorId.HasValue
-                            ? ConnectorId.GetHashCode() * 3
-                            : 0) ^
+                       (ConnectorId?.GetHashCode() ?? 0) * 3 ^
 
-                       (CustomData is not null
-                            ? CustomData.GetHashCode()
-                            : 0);
+                       base.         GetHashCode();
 
             }
         }
@@ -442,7 +372,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Id, ConnectorId.HasValue ? " (" + ConnectorId.Value + ")" : "");
+            => String.Concat(Id,
+                             ConnectorId.HasValue ? " (" + ConnectorId.Value + ")" : "");
 
         #endregion
 

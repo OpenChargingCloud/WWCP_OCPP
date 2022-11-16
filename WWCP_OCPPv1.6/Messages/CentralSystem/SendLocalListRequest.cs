@@ -483,22 +483,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-
-            => ToJSON(null,
-                      null,
-                      null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomSendLocalListRequestSerializer">A delegate to serialize custom start transaction requests.</param>
         /// <param name="CustomAuthorizationDataSerializer">A delegate to serialize custom start transaction requests.</param>
         /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SendLocalListRequest>?  CustomSendLocalListRequestSerializer,
-                              CustomJObjectSerializerDelegate<AuthorizationData>?     CustomAuthorizationDataSerializer   = null,
-                              CustomJObjectSerializerDelegate<IdTagInfo>?             CustomIdTagInfoResponseSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SendLocalListRequest>?  CustomSendLocalListRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<AuthorizationData>?     CustomAuthorizationDataSerializer      = null,
+                              CustomJObjectSerializerDelegate<IdTagInfo>?             CustomIdTagInfoResponseSerializer      = null)
         {
 
             var json = JSONObject.Create(
@@ -595,8 +585,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                ListVersion.                   Equals(SendLocalListRequest.ListVersion) &&
                UpdateType.                    Equals(SendLocalListRequest.UpdateType)  &&
 
-               LocalAuthorizationList.Count().Equals(SendLocalListRequest.LocalAuthorizationList.Count()) &&
-               LocalAuthorizationList.All(authorizationData => SendLocalListRequest.LocalAuthorizationList.Contains(authorizationData));
+               LocalAuthorizationList.Count().Equals(SendLocalListRequest.LocalAuthorizationList.Count())                               &&
+               LocalAuthorizationList.All(authorizationData => SendLocalListRequest.LocalAuthorizationList.Contains(authorizationData)) &&
+
+               base.                   GenericEquals(SendLocalListRequest);
 
         #endregion
 
@@ -613,9 +605,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return ListVersion.           GetHashCode() * 5 ^
-                       UpdateType.            GetHashCode() * 3 ^
-                       LocalAuthorizationList.GetHashCode();
+                return ListVersion.           GetHashCode() * 7 ^
+                       UpdateType.            GetHashCode() * 5 ^
+                       LocalAuthorizationList.GetHashCode() * 3 ^
+
+                       base.                  GetHashCode();
 
             }
         }

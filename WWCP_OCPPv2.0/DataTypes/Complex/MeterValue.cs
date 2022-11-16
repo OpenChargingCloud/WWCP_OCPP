@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A meter value.
     /// </summary>
-    public class MeterValue
+    public class MeterValue : ACustomData
     {
 
         #region Properties
@@ -44,11 +44,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public DateTime                   Timestamp        { get; }
 
-        /// <summary>
-        /// An optional custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData?                CustomData       { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -62,11 +57,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public MeterValue(IEnumerable<SampledValue>  SampledValues,
                           DateTime                   Timestamp,
                           CustomData?                CustomData   = null)
+
+            : base(CustomData)
+
         {
 
             this.SampledValues  = SampledValues;
             this.Timestamp      = Timestamp;
-            this.CustomData     = CustomData;
 
             if (!this.SampledValues.SafeAny())
                 throw new ArgumentNullException(nameof(SampledValues), "The given enumeration of sampled meter values must not be null or empty!");
@@ -349,11 +346,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public Boolean Equals(MeterValue MeterValue)
 
             => MeterValue is not null &&
+
                //ToDo: Compare SampledValues!
                Timestamp.Equals(MeterValue.Timestamp) &&
 
-             ((CustomData is     null && MeterValue.CustomData is     null) ||
-              (CustomData is not null && MeterValue.CustomData is not null && CustomData.Equals(MeterValue.CustomData)));
+               base.     Equals(MeterValue);
 
         #endregion
 
@@ -370,10 +367,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return //ToDo: Add SampledValues!
-                       Timestamp.  GetHashCode() * 3 ^
+                return Timestamp.GetHashCode() * 3 ^
 
-                       CustomData?.GetHashCode() ?? 0;
+                       //ToDo: Add SampledValues!
+
+                       base.     GetHashCode();
 
             }
         }

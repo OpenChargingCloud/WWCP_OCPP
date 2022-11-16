@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         //         "vendorId"
         //       ]
         //     }
-        // },
+        //   },
         //   "type": "object",
         //   "additionalProperties": false,
         //   "properties": {
@@ -339,7 +339,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             => "StatusNotificationResponse";
 
         #endregion
-
 
     }
 

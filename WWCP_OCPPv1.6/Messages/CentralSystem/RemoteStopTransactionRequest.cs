@@ -348,15 +348,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomRemoteStopTransactionRequestSerializer">A delegate to serialize custom remote stop transaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>? CustomRemoteStopTransactionRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>? CustomRemoteStopTransactionRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -441,7 +434,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public override Boolean Equals(RemoteStopTransactionRequest? RemoteStopTransactionRequest)
 
             => RemoteStopTransactionRequest is not null &&
-                   TransactionId.Equals(RemoteStopTransactionRequest.TransactionId);
+
+               TransactionId.Equals(RemoteStopTransactionRequest.TransactionId) &&
+
+               base.  GenericEquals(RemoteStopTransactionRequest);
 
         #endregion
 
@@ -454,8 +450,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => TransactionId.GetHashCode();
+                return TransactionId.GetHashCode() * 3 ^
+                       base.         GetHashCode();
+
+            }
+        }
 
         #endregion
 

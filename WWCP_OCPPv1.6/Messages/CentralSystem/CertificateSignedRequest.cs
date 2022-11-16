@@ -237,15 +237,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomCertificateSignedRequestSerializer">A delegate to serialize custom certificate signed requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<CertificateSignedRequest>? CustomCertificateSignedRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<CertificateSignedRequest>? CustomCertificateSignedRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -330,7 +323,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public override Boolean Equals(CertificateSignedRequest? CertificateSignedRequest)
 
             => CertificateSignedRequest is not null &&
-                   CertificateChain.Equals(CertificateSignedRequest.CertificateChain);
+
+               CertificateChain.Equals(CertificateSignedRequest.CertificateChain) &&
+
+               base.     GenericEquals(CertificateSignedRequest);
 
         #endregion
 
@@ -343,8 +339,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => CertificateChain.GetHashCode();
+                return CertificateChain.GetHashCode() * 3 ^
+                       base.            GetHashCode();
+
+            }
+        }
 
         #endregion
 

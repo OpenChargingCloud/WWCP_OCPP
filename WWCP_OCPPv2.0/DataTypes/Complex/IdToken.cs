@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A case insensitive authorization identifier.
     /// </summary>
-    public class IdToken
+    public class IdToken : ACustomData
     {
 
         #region Properties
@@ -49,11 +49,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public IEnumerable<AdditionalInfo>  AdditionalInfos    { get; }
 
-        /// <summary>
-        /// An optional custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData?                  CustomData         { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -69,12 +64,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        IdTokenTypes                 Type,
                        IEnumerable<AdditionalInfo>  AdditionalInfos,
                        CustomData?                  CustomData   = null)
+
+            : base(CustomData)
+
         {
 
             this.Value            = Value?.Trim()   ?? throw new ArgumentNullException(nameof(Value), "The given identifier must not be null or empty!");
             this.Type             = Type;
             this.AdditionalInfos  = AdditionalInfos ?? Array.Empty<AdditionalInfo>();
-            this.CustomData       = CustomData;
 
         }
 
@@ -83,10 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Documentation
 
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:IdTokenType",
-        //   "comment": "OCPP 2.0.1 FINAL",
+        // "IdTokenType": {
         //   "description": "Contains a case insensitive identifier to use for the authorization and the type of authorization to support multiple forms of identifiers.\r\n",
         //   "javaType": "IdToken",
         //   "type": "object",
@@ -133,12 +127,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             if (TryParse(JSON,
                          out var idToken,
-                         out var errorResponse))
+                         out var errorResponse,
+                         CustomIdTokenParser))
             {
                 return idToken!;
             }
 
-            throw new ArgumentException("The given JSON representation of a charging schedule is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an authorization identification is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -256,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             catch (Exception e)
             {
                 IdToken        = default;
-                ErrorResponse  = "The given JSON representation of a charging schedule is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of an authorization identification is invalid: " + e.Message;
                 return false;
             }
 
@@ -376,8 +371,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                //ToDo: Compare enumeration of AdditionalInfos!
 
-             ((CustomData is     null && IdToken.CustomData is     null) ||
-              (CustomData is not null && IdToken.CustomData is not null && CustomData.Equals(IdToken.CustomData)));
+               base.Equals(IdToken);
 
         #endregion
 
@@ -394,12 +388,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Value.      GetHashCode() * 5 ^
-                       Type.       GetHashCode() * 3 ^
+                return Value.GetHashCode() * 5 ^
+                       Type. GetHashCode() * 3 ^
 
                        //ToDo: Add enumeration of AdditionalInfos!
 
-                       CustomData?.GetHashCode() ?? 0;
+                       base. GetHashCode();
 
             }
         }

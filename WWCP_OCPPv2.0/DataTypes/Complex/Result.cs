@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -40,9 +38,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public ResultCodes  ResultCode     { get; }
 
         /// <summary>
-        /// A human-readable error description.
+        /// An optional human-readable error description.
         /// </summary>
-        public String       Description    { get; }
+        public String?      Description    { get; }
 
         #endregion
 
@@ -52,16 +50,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Create a new generic OCPP result.
         /// </summary>
         /// <param name="ResultCode">The machine-readable result code.</param>
-        /// <param name="Description">A human-readable error description.</param>
+        /// <param name="Description">An optional human-readable error description.</param>
         public Result(ResultCodes  ResultCode,
-                      String       Description = null)
+                      String?      Description   = null)
         {
 
             this.ResultCode   = ResultCode;
-
-            this.Description  = Description.IsNotNullOrEmpty()
-                                    ? Description.Trim()
-                                    : "";
+            this.Description  = Description;
 
         }
 
@@ -73,71 +68,71 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Unknown result code.
         /// </summary>
-        /// <param name="Description">A human-readable error description.</param>
-        public static Result Unknown(String Description = null)
+        /// <param name="Description">An optional human-readable error description.</param>
+        public static Result Unknown(String? Description = null)
 
-            => new Result(ResultCodes.Unknown,
-                          Description);
+            => new (ResultCodes.Unknown,
+                    Description);
 
 
         /// <summary>
         /// Data accepted and processed.
         /// </summary>
-        /// <param name="Description">A human-readable error description.</param>
-        public static Result OK(String Description = null)
+        /// <param name="Description">An optional human-readable error description.</param>
+        public static Result OK(String? Description = null)
 
-            => new Result(ResultCodes.Unknown,
-                          Description);
+            => new (ResultCodes.Unknown,
+                    Description);
 
 
         /// <summary>
         /// Only part of the data was accepted.
         /// </summary>
-        /// <param name="Description">A human-readable error description.</param>
-        public static Result Partly(String Description = null)
+        /// <param name="Description">An optional human-readable error description.</param>
+        public static Result Partly(String? Description = null)
 
-            => new Result(ResultCodes.Unknown,
-                          Description);
+            => new (ResultCodes.Unknown,
+                    Description);
 
 
         /// <summary>
         /// Wrong username and/or password.
         /// </summary>
-        /// <param name="Description">A human-readable error description.</param>
-        public static Result NotAuthorized(String Description = null)
+        /// <param name="Description">An optional human-readable error description.</param>
+        public static Result NotAuthorized(String? Description = null)
 
-            => new Result(ResultCodes.Unknown,
-                          Description);
+            => new (ResultCodes.Unknown,
+                    Description);
 
 
         /// <summary>
         /// One or more ID (EVSE/Contract) were not valid for this user.
         /// </summary>
-        /// <param name="Description">A human-readable error description.</param>
-        public static Result InvalidId(String Description = null)
+        /// <param name="Description">An optional human-readable error description.</param>
+        public static Result InvalidId(String? Description = null)
 
-            => new Result(ResultCodes.Unknown,
-                          Description);
+            => new (ResultCodes.Unknown,
+                    Description);
 
 
         /// <summary>
         /// Internal server error.
         /// </summary>
-        /// <param name="Description">A human-readable error description.</param>
-        public static Result Server(String Description = null)
+        /// <param name="Description">An optional human-readable error description.</param>
+        public static Result Server(String? Description = null)
 
-            => new Result(ResultCodes.Unknown,
-                          Description);
+            => new (ResultCodes.Unknown,
+                    Description);
 
 
         /// <summary>
         /// Data has technical errors.
         /// </summary>
-        /// <param name="Description">A human-readable error description.</param>
-        public static Result Format(String Description = null)
+        /// <param name="Description">An optional human-readable error description.</param>
+        public static Result Format(String? Description = null)
 
-            => new Result(ResultCodes.Unknown,
-                          Description);
+            => new (ResultCodes.Unknown,
+                    Description);
 
         #endregion
 
@@ -152,7 +147,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Result1">A result.</param>
         /// <param name="Result2">Another result.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (Result Result1, Result Result2)
+        public static Boolean operator == (Result Result1,
+                                           Result Result2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -160,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Result1 == null) || ((Object) Result2 == null))
+            if (Result1 is null || Result2 is null)
                 return false;
 
             return Result1.Equals(Result2);
@@ -177,7 +173,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Result1">A result.</param>
         /// <param name="Result2">Another result.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (Result Result1, Result Result2)
+        public static Boolean operator != (Result Result1,
+                                           Result Result2)
 
             => !(Result1 == Result2);
 
@@ -190,24 +187,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two results for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A result to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            // Check if the given object is a result.
-            var Result = Object as Result;
-            if ((Object) Result == null)
-                return false;
-
-            return this.Equals(Result);
-
-        }
+            => Object is Result result &&
+                   Equals(result);
 
         #endregion
 
@@ -216,18 +202,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two results for equality.
         /// </summary>
-        /// <param name="Result">An result to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Result Result)
-        {
+        /// <param name="Result">A result to compare with.</param>
+        public Boolean Equals(Result? Result)
 
-            if ((Object) Result == null)
-                return false;
+            => Result is not null &&
 
-            return this.ResultCode. Equals(Result.ResultCode) &&
-                   this.Description.Equals(Result.Description);
+               ResultCode. Equals(Result.ResultCode) &&
 
-        }
+             ((Description is     null && Result.Description is     null) ||
+              (Description is not null && Result.Description is not null && String.Equals(Description, Result.Description, StringComparison.OrdinalIgnoreCase)));
 
         #endregion
 
@@ -244,11 +227,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return ResultCode. GetHashCode() * 11 ^
+                return ResultCode.            GetHashCode() * 3 ^
 
-                       (Description != null
-                            ? Description.GetHashCode()
-                            : 0);
+                       Description?.ToLower().GetHashCode() ?? 0;
 
             }
         }
@@ -262,7 +243,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public override String ToString()
 
-            => ResultCode + (Description.IsNotNullOrEmpty() ? " - " + Description : "");
+            => ResultCode +
+              (Description.IsNotNullOrEmpty() ? " - " + Description : "");
 
         #endregion
 

@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A message to be displayed at a charging station.
     /// </summary>
-    public class MessageContent
+    public class MessageContent : ACustomData
     {
 
         #region Properties
@@ -37,22 +37,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The message content. [max 512]
         /// </summary>
-        public String          Content       { get; }
+        public String          Content     { get; }
 
         /// <summary>
         /// The message language identifier, as defined in rfc5646. [max 8]
         /// </summary>
-        public Language_Id     Language      { get; }
+        public Language_Id     Language    { get; }
 
         /// <summary>
         /// The message format.
         /// </summary>
-        public MessageFormats  Format        { get; }
-
-        /// <summary>
-        /// An optional custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData?     CustomData    { get; }
+        public MessageFormats  Format      { get; }
 
         #endregion
 
@@ -69,12 +64,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               Language_Id     Language,
                               MessageFormats  Format,
                               CustomData?     CustomData   = null)
+
+            : base(CustomData)
+
         {
 
-            this.Content     = Content.Trim();
-            this.Language    = Language;
-            this.Format      = Format;
-            this.CustomData  = CustomData;
+            this.Content   = Content.Trim();
+            this.Language  = Language;
+            this.Format    = Format;
 
             if (this.Content.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Content), "The given message content must not be null or empty!");
@@ -86,10 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Documentation
 
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:MessageContentType",
-        //   "comment": "OCPP 2.0.1 FINAL",
+        // "MessageContentType": {
         //   "description": "Message_ Content\r\nurn:x-enexis:ecdm:uid:2:234490\r\nContains message details, for a message to be displayed on a Charging Station.\r\n\r\n",
         //   "javaType": "MessageContent",
         //   "type": "object",
@@ -225,15 +219,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
-                                                         "custom data",
-                                                         OCPPv2_0.CustomData.TryParse,
-                                                         out CustomData  CustomData,
-                                                         out             ErrorResponse))
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -275,12 +267,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("content",   Content),
-                           new JProperty("language",  Language.ToString()),
-                           new JProperty("format",    Format.  AsText()),
+                           new JProperty("content",           Content),
+                           new JProperty("language",          Language.  ToString()),
+                           new JProperty("format",            Format.    AsText()),
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
@@ -371,8 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                Language.Equals(MessageContent.Language) &&
                Format.  Equals(MessageContent.Format)   &&
 
-             ((CustomData is     null && MessageContent.CustomData is     null) ||
-              (CustomData is not null && MessageContent.CustomData is not null && CustomData.Equals(MessageContent.CustomData)));
+               base.    Equals(MessageContent);
 
         #endregion
 
@@ -389,11 +380,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Content.    GetHashCode() * 7 ^
-                       Language.   GetHashCode() * 5 ^
-                       Format.     GetHashCode() * 3 ^
+                return Content. GetHashCode() * 7 ^
+                       Language.GetHashCode() * 5 ^
+                       Format.  GetHashCode() * 3 ^
 
-                       CustomData?.GetHashCode() ?? 0;
+                       base.    GetHashCode();
 
             }
         }

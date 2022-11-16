@@ -378,16 +378,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomGetLogRequestSerializer">A delegate to serialize custom start transaction requests.</param>
         /// <param name="CustomLogParametersSerializer">A delegate to serialize custom log parameters.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetLogRequest>?  CustomGetLogRequestSerializer,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetLogRequest>?  CustomGetLogRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<LogParameters>?  CustomLogParametersSerializer   = null)
         {
 
@@ -490,10 +483,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                Log.         Equals(GetLogRequest.Log)          &&
 
             ((!Retries.      HasValue && !GetLogRequest.Retries.      HasValue) ||
-              (Retries.      HasValue &&  GetLogRequest.Retries.      HasValue && Retries.      Value.Equals(GetLogRequest.Retries.Value))) &&
+              (Retries.      HasValue &&  GetLogRequest.Retries.      HasValue && Retries.      Value.Equals(GetLogRequest.Retries.Value)))       &&
 
              ((RetryInterval.HasValue && !GetLogRequest.RetryInterval.HasValue) ||
-              (RetryInterval.HasValue &&  GetLogRequest.RetryInterval.HasValue && RetryInterval.Value.Equals(GetLogRequest.RetryInterval.Value)));
+              (RetryInterval.HasValue &&  GetLogRequest.RetryInterval.HasValue && RetryInterval.Value.Equals(GetLogRequest.RetryInterval.Value))) &&
+
+               base. GenericEquals(GetLogRequest);
 
         #endregion
 
@@ -510,12 +505,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return LogType.        GetHashCode()       * 11 ^
-                       LogRequestId.   GetHashCode()       *  7 ^
-                       Log.            GetHashCode()       *  5 ^
+                return LogType.       GetHashCode()       * 13 ^
+                       LogRequestId.  GetHashCode()       * 11 ^
+                       Log.           GetHashCode()       *  7 ^
 
-                       (Retries?.      GetHashCode() ?? 0) *  3 ^
-                       (RetryInterval?.GetHashCode() ?? 0);
+                      (Retries?.      GetHashCode() ?? 0) *  5 ^
+                      (RetryInterval?.GetHashCode() ?? 0) *  3 ^
+                       base.          GetHashCode();
 
             }
         }

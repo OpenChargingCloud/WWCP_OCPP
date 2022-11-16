@@ -377,15 +377,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomChangeConfigurationRequestSerializer">A delegate to serialize custom ChangeConfiguration requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeConfigurationRequest>? CustomChangeConfigurationRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeConfigurationRequest>? CustomChangeConfigurationRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -470,10 +463,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ChangeConfigurationRequest">A change configuration request to compare with.</param>
         public override Boolean Equals(ChangeConfigurationRequest? ChangeConfigurationRequest)
 
-            => ChangeConfigurationRequest is not null       &&
+            => ChangeConfigurationRequest is not null &&
 
-               Key.  Equals(ChangeConfigurationRequest.Key) &&
-               Value.Equals(ChangeConfigurationRequest.Value);
+               Key.        Equals(ChangeConfigurationRequest.Key)   &&
+               Value.      Equals(ChangeConfigurationRequest.Value) &&
+
+               base.GenericEquals(ChangeConfigurationRequest);
 
         #endregion
 
@@ -490,8 +485,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return Key.  GetHashCode() * 3 ^
-                       Value.GetHashCode();
+                return Key.  GetHashCode() * 5 ^
+                       Value.GetHashCode() * 3 ^
+
+                       base. GetHashCode();
 
             }
         }

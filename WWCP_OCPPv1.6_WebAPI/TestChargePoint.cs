@@ -21,6 +21,8 @@ using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
@@ -147,6 +149,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             public IRequest        Request           { get; }
 
+            public JObject         RequestJSON       { get; }
+
             public DateTime        EnqueTimestamp    { get; }
 
             public EnquedStatus    Status            { get; set; }
@@ -155,6 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             public EnquedRequest(String          Command,
                                  IRequest        Request,
+                                 JObject         RequestJSON,
                                  DateTime        EnqueTimestamp,
                                  EnquedStatus    Status,
                                  Action<Object>  ResponseAction)
@@ -162,6 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 this.Command         = Command;
                 this.Request         = Request;
+                this.RequestJSON     = RequestJSON;
                 this.EnqueTimestamp  = EnqueTimestamp;
                 this.Status          = Status;
                 this.ResponseAction  = ResponseAction;
@@ -1920,14 +1926,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                         EnquedRequests.Add(new EnquedRequest("StartTransaction",
                                                              startTransactionRequest,
+                                                             startTransactionRequest.ToJSON(),
                                                              Timestamp.Now,
                                                              EnquedRequest.EnquedStatus.New,
                                                              response => {
                                                                  if (response is WebSockets.OCPP_WebSocket_ResponseMessage wsResponseMessage &&
                                                                      CS.StartTransactionResponse.TryParse(startTransactionRequest,
                                                                                                           wsResponseMessage.Message,
-                                                                                                          out CS.StartTransactionResponse  startTransactionResponse,
-                                                                                                          out String                       ErrorResponse))
+                                                                                                          out var startTransactionResponse,
+                                                                                                          out var ErrorResponse))
                                                                  {
 
 
@@ -1949,6 +1956,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                         EnquedRequests.Add(new EnquedRequest("StatusNotification",
                                                              statusNotificationRequest,
+                                                             statusNotificationRequest.ToJSON(),
                                                              Timestamp.Now,
                                                              EnquedRequest.EnquedStatus.New,
                                                              response => {
@@ -2059,24 +2067,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         connector.StopTimestamp  = Timestamp.Now;
                         connector.IsCharging     = false;
 
-                        var request = new StopTransactionRequest(ChargeBoxId,
-                                                                 Request.TransactionId,
-                                                                 Timestamp.Now,
-                                                                 connector.MeterStopValue,
-                                                                 null,  // IdTag
-                                                                 Reasons.Remote,
-                                                                 null);
+                        var stopTransactionRequest = new StopTransactionRequest(ChargeBoxId,
+                                                                                Request.TransactionId,
+                                                                                Timestamp.Now,
+                                                                                connector.MeterStopValue,
+                                                                                null,  // IdTag
+                                                                                Reasons.Remote,
+                                                                                null);
 
                         EnquedRequests.Add(new EnquedRequest("StopTransaction",
-                                                             request, // TransactionData
+                                                             stopTransactionRequest, // TransactionData
+                                                             stopTransactionRequest.ToJSON(),
                                                              Timestamp.Now,
                                                              EnquedRequest.EnquedStatus.New,
                                                              response => {
                                                                  if (response is WebSockets.OCPP_WebSocket_ResponseMessage wsResponseMessage &&
-                                                                     CS.StopTransactionResponse.TryParse(request,
+                                                                     CS.StopTransactionResponse.TryParse(stopTransactionRequest,
                                                                                                          wsResponseMessage.Message,
-                                                                                                         out CS.StopTransactionResponse  stopTransactionResponse,
-                                                                                                         out String                      ErrorResponse))
+                                                                                                         out var stopTransactionResponse,
+                                                                                                         out var ErrorResponse))
                                                                  {
                                                                      DebugX.Log(nameof(TestChargePoint), "Connector " + connector.Id + " stopped charging...");
                                                                  }
@@ -2091,6 +2100,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                         EnquedRequests.Add(new EnquedRequest("StatusNotification",
                                                              statusNotificationRequest,
+                                                             statusNotificationRequest.ToJSON(),
                                                              Timestamp.Now,
                                                              EnquedRequest.EnquedStatus.New,
                                                              response => {
@@ -2723,7 +2733,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     var response = await wsClient.SendRequest(
                                              enquedRequest.Command,
                                              enquedRequest.Request.RequestId,
-                                             enquedRequest.Request.ToJSON()
+                                             enquedRequest.RequestJSON
                                          );
 
                     enquedRequest.ResponseAction(response);

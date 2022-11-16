@@ -586,15 +586,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomStatusNotificationRequestSerializer">A delegate to serialize custom StatusNotification requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StatusNotificationRequest>? CustomStatusNotificationRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StatusNotificationRequest>? CustomStatusNotificationRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -702,13 +695,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                Status.         Equals(StatusNotificationRequest.Status)      &&
                ErrorCode.      Equals(StatusNotificationRequest.ErrorCode)   &&
 
-               Info.Equals(StatusNotificationRequest.Info) &&
+             ((Info is     null            &&  StatusNotificationRequest.Info            is     null) ||
+              (Info is not null            &&  StatusNotificationRequest.Info            is not null && Info.                 Equals(StatusNotificationRequest.Info)))                  &&
 
-            ((!StatusTimestamp.HasValue && !StatusNotificationRequest.StatusTimestamp.HasValue) ||
-              (StatusTimestamp.HasValue &&  StatusNotificationRequest.StatusTimestamp.HasValue && StatusTimestamp.Value.Equals(StatusNotificationRequest.StatusTimestamp.Value))) &&
+            ((!StatusTimestamp.HasValue    && !StatusNotificationRequest.StatusTimestamp.HasValue)    ||
+              (StatusTimestamp.HasValue    &&  StatusNotificationRequest.StatusTimestamp.HasValue    && StatusTimestamp.Value.Equals(StatusNotificationRequest.StatusTimestamp.Value))) &&
 
-               VendorId.       Equals(StatusNotificationRequest.VendorId)    &&
-               VendorErrorCode.Equals(StatusNotificationRequest.VendorErrorCode);
+             ((VendorId is     null        &&  StatusNotificationRequest.VendorId        is     null) ||
+              (VendorId is not null        &&  StatusNotificationRequest.VendorId        is not null && VendorId.             Equals(StatusNotificationRequest.VendorId)))              &&
+
+             ((VendorErrorCode is     null &&  StatusNotificationRequest.VendorErrorCode is     null) ||
+              (VendorErrorCode is not null &&  StatusNotificationRequest.VendorErrorCode is not null && VendorErrorCode.      Equals(StatusNotificationRequest.VendorErrorCode)))       &&
+
+               base.GenericEquals(StatusNotificationRequest);
 
         #endregion
 
@@ -725,14 +724,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return ConnectorId.     GetHashCode()       * 17 ^
-                       Status.          GetHashCode()       * 13 ^
-                       ErrorCode.       GetHashCode()       * 11 ^
+                return ConnectorId.     GetHashCode()       * 19 ^
+                       Status.          GetHashCode()       * 17 ^
+                       ErrorCode.       GetHashCode()       * 13 ^
 
-                      (Info?.           GetHashCode() ?? 0) *  7 ^
-                      (StatusTimestamp?.GetHashCode() ?? 0) *  5 ^
-                      (VendorId?.       GetHashCode() ?? 0) *  3 ^
-                       VendorErrorCode?.GetHashCode() ?? 0;
+                      (Info?.           GetHashCode() ?? 0) * 11 ^
+                      (StatusTimestamp?.GetHashCode() ?? 0) *  7 ^
+                      (VendorId?.       GetHashCode() ?? 0) *  5 ^
+                      (VendorErrorCode?.GetHashCode() ?? 0) *  3 ^
+
+                       base.GetHashCode();
 
             }
         }

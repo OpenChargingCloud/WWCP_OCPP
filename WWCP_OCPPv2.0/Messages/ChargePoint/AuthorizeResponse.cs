@@ -607,8 +607,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => IdTokenInfo.GetHashCode();
+                return IdTokenInfo.       GetHashCode()       * 5 ^
+
+                      (CertificateStatus?.GetHashCode() ?? 0) * 3 ^
+
+                       CustomData?.       GetHashCode() ?? 0;
+
+            }
+        }
 
         #endregion
 
@@ -622,7 +632,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             => IdTokenInfo.ToString();
 
         #endregion
-
 
     }
 

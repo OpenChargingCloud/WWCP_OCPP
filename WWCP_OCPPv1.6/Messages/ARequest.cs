@@ -17,8 +17,6 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -27,14 +25,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// An abstract generic OCPP request message.
+    /// An abstract generic OCPP request.
     /// </summary>
-    public abstract class ARequest<T> : IRequest,
-                                        IEquatable<T>
+    public abstract class ARequest<TRequest> : IRequest,
+                                               IEquatable<TRequest>
 
-        where T : class
+        where TRequest : class, IRequest
 
     {
+
+        #region Data
+
+        /// <summary>
+        /// The default request timeout.
+        /// </summary>
+        public static readonly TimeSpan DefaultRequestTimeout = TimeSpan.FromSeconds(30);
+
+        #endregion
 
         #region Properties
 
@@ -59,25 +66,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The timeout of this request.
         /// </summary>
-        [Optional]
-        public TimeSpan?           RequestTimeout       { get; }
+        [Mandatory]
+        public TimeSpan            RequestTimeout       { get; }
 
         /// <summary>
         /// An event tracking identification for correlating this request with other events.
         /// </summary>
+        [Mandatory]
         public EventTracking_Id    EventTrackingId      { get; }
-
-        /// <summary>
-        /// An optional token to cancel this request.
-        /// </summary>
-        public CancellationToken?  CancellationToken    { get; }
-
 
         /// <summary>
         /// The OCPP SOAP and HTTP Web Socket action.
         /// </summary>
         [Mandatory]
         public String              Action               { get; }
+
+        /// <summary>
+        /// An optional token to cancel this request.
+        /// </summary>
+        public CancellationToken?  CancellationToken    { get; }
 
         #endregion
 
@@ -109,8 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             this.RequestId          = RequestId        ?? Request_Id.NewRandom();
             this.RequestTimestamp   = RequestTimestamp ?? Timestamp.Now;
-            this.RequestTimeout     = RequestTimeout;
-
+            this.RequestTimeout     = RequestTimeout   ?? DefaultRequestTimeout;
             this.EventTrackingId    = EventTrackingId  ?? EventTracking_Id.New;
             this.CancellationToken  = CancellationToken;
 
@@ -122,14 +128,54 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region IEquatable<ARequest> Members
 
         /// <summary>
-        /// Compare two requests for equality.
+        /// Compare two abstract generic OCPP requests for equality.
         /// </summary>
         /// <param name="ARequest">Another abstract generic OCPP request.</param>
-        public abstract Boolean Equals(T? ARequest);
+        public abstract Boolean Equals(TRequest? ARequest);
 
         #endregion
 
-        public abstract JObject ToJSON();
+        #region GenericEquals(ARequest)
+
+        /// <summary>
+        /// Compare two abstract generic OCPP requests for equality.
+        /// </summary>
+        /// <param name="ARequest">Another abstract generic OCPP request.</param>
+        public Boolean GenericEquals(ARequest<TRequest>? ARequest)
+
+            => ARequest is not null &&
+
+               ChargeBoxId.     Equals(ARequest.ChargeBoxId)      &&
+               RequestId.       Equals(ARequest.RequestId)        &&
+               RequestTimestamp.Equals(ARequest.RequestTimestamp) &&
+               RequestTimeout.  Equals(ARequest.RequestTimeout)   &&
+               EventTrackingId. Equals(ARequest.EventTrackingId)  &&
+               Action.          Equals(ARequest.Action);
+
+        #endregion
+
+        #region (override) GetHashCode()
+
+        /// <summary>
+        /// Return the HashCode of this object.
+        /// </summary>
+        /// <returns>The HashCode of this object.</returns>
+        public override Int32 GetHashCode()
+        {
+            unchecked
+            {
+
+                return ChargeBoxId.     GetHashCode() * 13 ^
+                       RequestId.       GetHashCode() * 11 ^
+                       RequestTimestamp.GetHashCode() *  7 ^
+                       RequestTimeout.  GetHashCode() *  5 ^
+                       EventTrackingId. GetHashCode() *  3 ^
+                       Action.          GetHashCode();
+
+            }
+        }
+
+        #endregion
 
     }
 

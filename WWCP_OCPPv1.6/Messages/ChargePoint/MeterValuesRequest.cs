@@ -581,22 +581,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-
-            => ToJSON(null,
-                      null,
-                      null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomMeterValuesRequestSerializer">A delegate to serialize custom MeterValues requests.</param>
         /// <param name="CustomMeterValueSerializer">A delegate to serialize custom MeterValues.</param>
         /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesRequest>?  CustomMeterValuesRequestSerializer,
-                              CustomJObjectSerializerDelegate<MeterValue>?          CustomMeterValueSerializer     = null,
-                              CustomJObjectSerializerDelegate<SampledValue>?        CustomSampledValueSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesRequest>?  CustomMeterValuesRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<MeterValue>?          CustomMeterValueSerializer           = null,
+                              CustomJObjectSerializerDelegate<SampledValue>?        CustomSampledValueSerializer         = null)
         {
 
             var json = JSONObject.Create(
@@ -698,7 +688,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             ((!TransactionId.HasValue && !MeterValuesRequest.TransactionId.HasValue) ||
               (TransactionId.HasValue &&  MeterValuesRequest.TransactionId.HasValue && TransactionId.Value.Equals(MeterValuesRequest.TransactionId.Value))) &&
 
-               MeterValues.Count().Equals(MeterValuesRequest.MeterValues.Count());
+               MeterValues.Count().   Equals(MeterValuesRequest.MeterValues.Count()) &&
+               MeterValues.All(meterValue => MeterValuesRequest.MeterValues.Contains(meterValue)) &&
+
+               base.GenericEquals(MeterValuesRequest);
 
         #endregion
 
@@ -715,10 +708,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return ConnectorId.   GetHashCode()       * 5 ^
+                return ConnectorId.   GetHashCode()       * 7 ^
+                       MeterValues.   GetHashCode()       * 5 ^
 
                       (TransactionId?.GetHashCode() ?? 0) * 3 ^
-                       MeterValues.   GetHashCode();
+
+                       base.          GetHashCode();
 
             }
         }

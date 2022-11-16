@@ -296,15 +296,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomClearCacheRequestSerializer">A delegate to serialize custom ClearCache requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearCacheRequest>? CustomClearCacheRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearCacheRequest>? CustomClearCacheRequestSerializer = null)
         {
 
             var json = JSONObject.Create();
@@ -386,7 +379,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ClearCacheRequest">A clear cache request to compare with.</param>
         public override Boolean Equals(ClearCacheRequest? ClearCacheRequest)
 
-            => ClearCacheRequest is not null;
+            => ClearCacheRequest is not null &&
+
+               base.GenericEquals(ClearCacheRequest);
 
         #endregion
 

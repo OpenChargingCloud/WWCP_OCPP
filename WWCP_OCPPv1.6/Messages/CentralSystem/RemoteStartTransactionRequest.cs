@@ -570,25 +570,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-
-            => ToJSON(null,
-                      null,
-                      null,
-                      null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomRemoteStartTransactionRequestSerializer">A delegate to serialize custom remote start transaction requests.</param>
         /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
         /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedule requests.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStartTransactionRequest>?  CustomRemoteStartTransactionRequestSerializer,
-                              CustomJObjectSerializerDelegate<ChargingProfile>?                CustomChargingProfileSerializer          = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedule>?               CustomChargingScheduleSerializer         = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?         CustomChargingSchedulePeriodSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<RemoteStartTransactionRequest>?  CustomRemoteStartTransactionRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<ChargingProfile>?                CustomChargingProfileSerializer                 = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedule>?               CustomChargingScheduleSerializer                = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?         CustomChargingSchedulePeriodSerializer          = null)
         {
 
             var json = JSONObject.Create(
@@ -686,13 +675,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => RemoteStartTransactionRequest is not null &&
 
-               IdTag.Equals(RemoteStartTransactionRequest.IdTag) &&
+               IdTag.      Equals(RemoteStartTransactionRequest.IdTag) &&
 
             ((!ConnectorId.HasValue       && !RemoteStartTransactionRequest.ConnectorId.HasValue) ||
               (ConnectorId.HasValue       &&  RemoteStartTransactionRequest.ConnectorId.HasValue        && ConnectorId.Value.Equals(RemoteStartTransactionRequest.ConnectorId.Value))) &&
 
-            ((ChargingProfile is     null && RemoteStartTransactionRequest. ChargingProfile is     null) ||
-             (ChargingProfile is not null && RemoteStartTransactionRequest. ChargingProfile is not null && ChargingProfile.  Equals(RemoteStartTransactionRequest.ChargingProfile)));
+             ((ChargingProfile is     null && RemoteStartTransactionRequest. ChargingProfile is     null) ||
+              (ChargingProfile is not null && RemoteStartTransactionRequest. ChargingProfile is not null && ChargingProfile.  Equals(RemoteStartTransactionRequest.ChargingProfile)))  &&
+
+               base.GenericEquals(RemoteStartTransactionRequest);
 
         #endregion
 
@@ -709,10 +700,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return IdTag.            GetHashCode()       * 7 ^
+                return IdTag.           GetHashCode()       * 7 ^
 
-                       (ConnectorId?.    GetHashCode() ?? 0) * 5 ^
-                       (ChargingProfile?.GetHashCode() ?? 0) * 3;
+                      (ConnectorId?.    GetHashCode() ?? 0) * 5 ^
+                      (ChargingProfile?.GetHashCode() ?? 0) * 3 ^
+
+                       base.            GetHashCode();
 
             }
         }

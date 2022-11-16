@@ -504,15 +504,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomGetDiagnosticsRequestSerializer">A delegate to serialize custom start transaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetDiagnosticsRequest>? CustomGetDiagnosticsRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetDiagnosticsRequest>? CustomGetDiagnosticsRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -628,7 +621,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
               (Retries.      HasValue &&  GetDiagnosticsRequest.Retries.      HasValue && Retries.      Value.Equals(GetDiagnosticsRequest.Retries.      Value))) &&
 
             ((!RetryInterval.HasValue && !GetDiagnosticsRequest.RetryInterval.HasValue) ||
-              (RetryInterval.HasValue &&  GetDiagnosticsRequest.RetryInterval.HasValue && RetryInterval.Value.Equals(GetDiagnosticsRequest.RetryInterval.Value)));
+              (RetryInterval.HasValue &&  GetDiagnosticsRequest.RetryInterval.HasValue && RetryInterval.Value.Equals(GetDiagnosticsRequest.RetryInterval.Value))) &&
+
+               base.GenericEquals(GetDiagnosticsRequest);
 
         #endregion
 
@@ -645,12 +640,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return Location.       GetHashCode()       * 11 ^
+                return Location.      GetHashCode()       * 13 ^
 
-                       (StartTime?.    GetHashCode() ?? 0) *  7 ^
-                       (StopTime?.     GetHashCode() ?? 0) *  5 ^
-                       (Retries?.      GetHashCode() ?? 0) *  3 ^
-                       (RetryInterval?.GetHashCode() ?? 0);
+                      (StartTime?.    GetHashCode() ?? 0) * 11 ^
+                      (StopTime?.     GetHashCode() ?? 0) *  7 ^
+                      (Retries?.      GetHashCode() ?? 0) *  5 ^
+                      (RetryInterval?.GetHashCode() ?? 0) *  3 ^
+
+                       base.          GetHashCode();
 
             }
         }

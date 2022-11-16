@@ -18,7 +18,6 @@
 #region Usings
 
 using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -346,15 +345,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomAuthorizeRequestSerializer">A delegate to serialize custom authorize requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeRequest>? CustomAuthorizeRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeRequest>? CustomAuthorizeRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -439,7 +431,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public override Boolean Equals(AuthorizeRequest? AuthorizeRequest)
 
             => AuthorizeRequest is not null &&
-                   IdTag.Equals(AuthorizeRequest.IdTag);
+
+               IdTag.      Equals(AuthorizeRequest.IdTag) &&
+
+               base.GenericEquals(AuthorizeRequest);
 
         #endregion
 
@@ -452,8 +447,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => IdTag.GetHashCode();
+                return IdTag.GetHashCode() * 3 ^
+                       base. GetHashCode();
+
+            }
+        }
 
         #endregion
 
@@ -467,7 +469,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             => IdTag.ToString();
 
         #endregion
-
 
     }
 

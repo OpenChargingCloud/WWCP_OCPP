@@ -339,13 +339,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomBootNotificationRequestSerializer">A delegate to serialize custom boot notification requests.</param>
         /// <param name="CustomChargingStationResponseSerializer">A delegate to serialize custom ChargingStations.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
@@ -447,8 +440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                ChargingStation.Equals(BootNotificationRequest.ChargingStation) &&
                Reason.         Equals(BootNotificationRequest.Reason)          &&
 
-             ((CustomData is     null && BootNotificationRequest.CustomData is     null) ||
-              (CustomData is not null && BootNotificationRequest.CustomData is not null && CustomData.Equals(BootNotificationRequest.CustomData)));
+               base.    GenericEquals(BootNotificationRequest);
 
         #endregion
 
@@ -468,9 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 return ChargingStation.GetHashCode() * 5 ^
                        Reason.         GetHashCode() * 3 ^
 
-                       (CustomData is not null
-                            ? CustomData.GetHashCode()
-                            : 0);
+                       base.           GetHashCode();
 
             }
         }
@@ -487,7 +477,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             => String.Concat("Boot reason: " + Reason.AsText());
 
         #endregion
-
 
     }
 

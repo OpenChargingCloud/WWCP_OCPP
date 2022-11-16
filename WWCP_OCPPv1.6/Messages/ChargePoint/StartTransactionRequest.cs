@@ -480,15 +480,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomStartTransactionRequestSerializer">A delegate to serialize custom StartTransaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StartTransactionRequest>? CustomStartTransactionRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StartTransactionRequest>? CustomStartTransactionRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -589,7 +582,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                MeterStart.    Equals(StartTransactionRequest.MeterStart)     &&
 
             ((!ReservationId.HasValue && !StartTransactionRequest.ReservationId.HasValue) ||
-              (ReservationId.HasValue &&  StartTransactionRequest.ReservationId.HasValue && ReservationId.Equals(StartTransactionRequest.ReservationId)));
+              (ReservationId.HasValue &&  StartTransactionRequest.ReservationId.HasValue && ReservationId.Equals(StartTransactionRequest.ReservationId))) &&
+
+               base.   GenericEquals(StartTransactionRequest);
 
         #endregion
 
@@ -606,12 +601,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return ConnectorId.   GetHashCode() * 11 ^
-                       IdTag.         GetHashCode() *  7 ^
-                       StartTimestamp.GetHashCode() *  5 ^
-                       MeterStart.    GetHashCode() *  3 ^
+                return ConnectorId.   GetHashCode()       * 13 ^
+                       IdTag.         GetHashCode()       * 11 ^
+                       StartTimestamp.GetHashCode()       *  7 ^
+                       MeterStart.    GetHashCode()       *  5 ^
 
-                       ReservationId?.GetHashCode() ?? 0;
+                      (ReservationId?.GetHashCode() ?? 0) *  3 ^
+
+                       base.          GetHashCode();
 
             }
         }

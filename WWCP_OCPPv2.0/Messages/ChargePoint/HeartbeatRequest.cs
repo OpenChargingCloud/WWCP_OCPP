@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //         "vendorId"
         //       ]
         //     }
-        // },
+        //   },
         //   "type": "object",
         //   "additionalProperties": false,
         //   "properties": {
@@ -211,13 +211,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomHeartbeatRequestSerializer">A delegate to serialize custom heartbeat requests.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatRequest>?  CustomHeartbeatRequestSerializer     = null,
@@ -308,7 +301,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="HeartbeatRequest">A heartbeat request to compare with.</param>
         public override Boolean Equals(HeartbeatRequest? HeartbeatRequest)
 
-            => HeartbeatRequest is not null;
+            => HeartbeatRequest is not null &&
+
+               base.GenericEquals(HeartbeatRequest);
 
         #endregion
 
@@ -336,7 +331,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             => "HeartbeatRequest";
 
         #endregion
-
 
     }
 

@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Information to verify the electric vehicle/user contract certificate via OCSP.
     /// </summary>
-    public class OCSPRequestData
+    public class OCSPRequestData : ACustomData
     {
 
         #region Properties
@@ -40,29 +40,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public HashAlgorithms  HashAlgorithm     { get; }
 
         /// <summary>
-        /// The hashed value of the issuer distinguished name (DN). 128
+        /// The hashed value of the issuer distinguished name (DN). [max 128]
         /// </summary>
         public String          IssuerNameHash    { get; }
 
         /// <summary>
-        /// The hashed value of the issuers public key. 128
+        /// The hashed value of the issuers public key. [max 128]
         /// </summary>
         public String          IssuerKeyHash     { get; }
 
         /// <summary>
-        /// The serial number of the certificate to verify. 40
+        /// The serial number of the certificate to verify. [max 40]
         /// </summary>
         public String          SerialNumber      { get; }
 
         /// <summary>
-        /// The case-insensitive responder URL. 512
+        /// The case-insensitive responder URL. [max 512]
         /// </summary>
         public String          ResponderURL      { get; }
-
-        /// <summary>
-        /// An optional custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData?     CustomData        { get; }
 
         #endregion
 
@@ -83,6 +78,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                String          SerialNumber,
                                String          ResponderURL,
                                CustomData?     CustomData   = null)
+
+            : base(CustomData)
+
         {
 
             this.HashAlgorithm   = HashAlgorithm;
@@ -90,7 +88,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             this.IssuerKeyHash   = IssuerKeyHash. Trim();
             this.SerialNumber    = SerialNumber.  Trim();
             this.ResponderURL    = ResponderURL.  Trim();
-            this.CustomData      = CustomData;
 
             if (this.IssuerNameHash.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(IssuerNameHash),  "The given issuer name hash must not be null or empty!");
@@ -111,11 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Documentation
 
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:OCSPRequestDataType",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "description": "Information needed to verify the EV Contract Certificate via OCSP",
+        // "OCSPRequestDataType": {
         //   "javaType": "OCSPRequestData",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -433,8 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                SerialNumber.  Equals(OCSPRequestData.SerialNumber)   &&
                ResponderURL.  Equals(OCSPRequestData.ResponderURL)   &&
 
-             ((CustomData is     null && OCSPRequestData.CustomData is     null) ||
-              (CustomData is not null && OCSPRequestData.CustomData is not null && CustomData.Equals(OCSPRequestData.CustomData)));
+               base.          Equals(OCSPRequestData);
 
         #endregion
 
@@ -457,7 +449,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        SerialNumber.  GetHashCode() *  5 ^
                        ResponderURL.  GetHashCode() *  3 ^
 
-                       CustomData?.   GetHashCode() ?? 0;
+                       base.          GetHashCode();
 
             }
         }

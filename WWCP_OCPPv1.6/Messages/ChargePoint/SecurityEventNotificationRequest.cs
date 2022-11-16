@@ -287,15 +287,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomSecurityEventNotificationSerializer">A delegate to serialize custom security event notification requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SecurityEventNotificationRequest>? CustomSecurityEventNotificationSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SecurityEventNotificationRequest>? CustomSecurityEventNotificationSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -389,11 +382,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             => SecurityEventNotificationRequest is not null &&
 
-               Type.     Equals(SecurityEventNotificationRequest.Type)      &&
-               Timestamp.Equals(SecurityEventNotificationRequest.Timestamp) &&
+               Type.       Equals(SecurityEventNotificationRequest.Type)      &&
+               Timestamp.  Equals(SecurityEventNotificationRequest.Timestamp) &&
 
              ((TechInfo is     null && SecurityEventNotificationRequest.TechInfo is     null) ||
-              (TechInfo is not null && SecurityEventNotificationRequest.TechInfo is not null && TechInfo.Equals(SecurityEventNotificationRequest.TechInfo)));
+              (TechInfo is not null && SecurityEventNotificationRequest.TechInfo is not null && TechInfo.Equals(SecurityEventNotificationRequest.TechInfo))) &&
+
+               base.GenericEquals(SecurityEventNotificationRequest);
 
         #endregion
 
@@ -410,10 +405,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return Type.     GetHashCode() * 5 ^
-                       Timestamp.GetHashCode() * 3 ^
+                return Type.     GetHashCode()       * 7 ^
+                       Timestamp.GetHashCode()       * 5 ^
 
-                      (TechInfo?.GetHashCode() ?? 0);
+                      (TechInfo?.GetHashCode() ?? 0) * 3 ^
+
+                       base.     GetHashCode();
 
             }
         }

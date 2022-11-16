@@ -356,15 +356,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomResetRequestSerializer">A delegate to serialize custom reset requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ResetRequest>? CustomResetRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ResetRequest>? CustomResetRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -449,7 +442,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public override Boolean Equals(ResetRequest? ResetRequest)
 
             => ResetRequest is not null &&
-                   ResetType.Equals(ResetRequest.ResetType);
+
+               ResetType.  Equals(ResetRequest.ResetType) &&
+
+               base.GenericEquals(ResetRequest);
 
         #endregion
 
@@ -462,8 +458,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => ResetType.GetHashCode();
+                return ResetType.GetHashCode() * 3 ^
+                       base.     GetHashCode();
+
+            }
+        }
 
         #endregion
 

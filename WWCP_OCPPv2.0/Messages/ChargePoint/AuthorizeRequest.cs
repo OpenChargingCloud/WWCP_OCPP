@@ -37,17 +37,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The identifier that needs to be authorized.
         /// </summary>
-        public IdToken                        IdToken                        { get; }
+        public IdToken                       IdToken                        { get; }
 
         /// <summary>
         /// The optional X.509 certificated presented by the electric vehicle/user (PEM format) 5500
         /// </summary>
-        public String?                        Certificate                    { get; }
+        public Certificate?                  Certificate                    { get; }
 
         /// <summary>
         /// Optional information to verify the electric vehicle/user contract certificate via OCSP. [0...4]
         /// </summary>
-        public IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData    { get; }
+        public IEnumerable<OCSPRequestData>  ISO15118CertificateHashData    { get; }
 
         #endregion
 
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public AuthorizeRequest(ChargeBox_Id                   ChargeBoxId,
                                 IdToken                        IdToken,
-                                String?                        Certificate                   = null,
+                                Certificate?                   Certificate                   = null,
                                 IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData   = null,
 
                                 CustomData?                    CustomData                    = null,
@@ -346,8 +346,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #region Certificate                    [optional]
 
                 if (JSON.ParseOptional("certificate",
-                                       "electric vehicle/user certificate",
-                                       out String? Certificate,
+                                       "PEM encoded electric vehicle/user certificate",
+                                       OCPPv2_0.Certificate.TryParse,
+                                       out Certificate? Certificate,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -406,7 +407,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 AuthorizeRequest = new AuthorizeRequest(ChargeBoxId,
                                                         IdToken,
-                                                        Certificate?.Trim(),
+                                                        Certificate,
                                                         ISO15118CertificateHashData,
                                                         CustomData,
                                                         RequestId);
@@ -434,13 +435,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomAuthorizeRequestSerializer">A delegate to serialize custom authorize requests.</param>
         /// <param name="CustomIdTokenResponseSerializer">A delegate to serialize custom IdTokens.</param>
         /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom AdditionalInfo objects.</param>
@@ -459,8 +453,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                                                                               CustomAdditionalInfoResponseSerializer,
                                                                                               CustomCustomDataResponseSerializer)),
 
-                           Certificate.IsNotNullOrEmpty()
-                               ? new JProperty("certificate",                  Certificate)
+                           Certificate.HasValue
+                               ? new JProperty("certificate",                  Certificate.Value.ToString())
                                : null,
 
                            ISO15118CertificateHashData is not null && ISO15118CertificateHashData.Any()
@@ -552,7 +546,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         public override Boolean Equals(AuthorizeRequest? AuthorizeRequest)
 
             => AuthorizeRequest is not null &&
-                   IdToken.Equals(AuthorizeRequest.IdToken);
+
+               IdToken.Equals(AuthorizeRequest.IdToken) &&
+
+             ((Certificate is     null && AuthorizeRequest.Certificate is     null) ||
+              (Certificate is not null && AuthorizeRequest.Certificate is not null && Certificate.Equals(AuthorizeRequest.Certificate))) &&
+
+               ISO15118CertificateHashData.Count() ==  AuthorizeRequest.ISO15118CertificateHashData.Count()         &&
+               ISO15118CertificateHashData.All(data => AuthorizeRequest.ISO15118CertificateHashData.Contains(data)) &&
+
+               base.GenericEquals(AuthorizeRequest);
 
         #endregion
 
@@ -565,8 +568,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => IdToken.GetHashCode();
+                return IdToken.     GetHashCode()       * 7 ^
+
+                      (Certificate?.GetHashCode() ?? 0) * 5 ^
+
+                       //ToDo: Add ISO15118CertificateHashData!
+
+                       base.        GetHashCode();
+
+            }
+        }
 
         #endregion
 
@@ -580,7 +595,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             => IdToken.ToString();
 
         #endregion
-
 
     }
 

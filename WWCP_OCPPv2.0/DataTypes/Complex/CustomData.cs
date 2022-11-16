@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -57,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         {
 
-            this.VendorId = VendorId;
+            this.VendorId    = VendorId;
 
         }
 
@@ -68,20 +66,23 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:CustomDataType",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:AuthorizeResponse",
         //   "comment": "OCPP 2.0.1 FINAL",
-        //   "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //   "javaType": "CustomData",
-        //   "type": "object",
-        //   "properties": {
-        //     "vendorId": {
-        //       "type": "string",
-        //       "maxLength": 255
+        //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
+        //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
         //     }
-        //   },
-        //   "required": [
-        //     "vendorId"
-        //   ]
         // }
 
         #endregion
@@ -200,7 +201,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             foreach (var jtoken in Children())
             {
-                JSON.Add(jtoken);
+                try
+                {
+                    JSON.Add(jtoken);
+                }
+                catch { }
             }
 
             return CustomCustomDataResponseSerializer is not null
@@ -222,7 +227,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="CustomData1">An id tag info.</param>
         /// <param name="CustomData2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (CustomData CustomData1, CustomData CustomData2)
+        public static Boolean operator == (CustomData CustomData1,
+                                           CustomData CustomData2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -230,11 +236,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) CustomData1 == null) || ((Object) CustomData2 == null))
+            if (CustomData1 is null || CustomData2 is null)
                 return false;
-
-            if ((Object) CustomData1 == null)
-                throw new ArgumentNullException(nameof(CustomData1),  "The given id tag info must not be null!");
 
             return CustomData1.Equals(CustomData2);
 
@@ -250,7 +253,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="CustomData1">An id tag info.</param>
         /// <param name="CustomData2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (CustomData CustomData1, CustomData CustomData2)
+        public static Boolean operator != (CustomData CustomData1,
+                                           CustomData CustomData2)
+
             => !(CustomData1 == CustomData2);
 
         #endregion
@@ -262,42 +267,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two custom data objects for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A custom data object to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is CustomData CustomData))
-                return false;
-
-            return Equals(CustomData);
-
-        }
+            => Object is CustomData customData &&
+                   Equals(customData);
 
         #endregion
 
         #region Equals(CustomData)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two custom data objects for equality.
         /// </summary>
-        /// <param name="CustomData">An id tag info to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="CustomData">A custom data object to compare with.</param>
         public Boolean Equals(CustomData CustomData)
-        {
 
-            if (CustomData is null)
-                return false;
+            => CustomData is not null &&
 
-            return VendorId.Equals(CustomData.VendorId) &&
-                   Equals(CustomData);
-
-        }
+               VendorId.Equals(CustomData.VendorId) &&
+               base.    Equals(CustomData);
 
         #endregion
 
@@ -314,8 +305,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return VendorId.GetHashCode() * 5 ^
-                       base.GetHashCode();
+                return VendorId.GetHashCode() * 3 ^
+                       base.    GetHashCode();
 
             }
         }
@@ -340,7 +331,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public override String ToString()
 
-            => base.ToString();
+            => String.Concat("VendorId: ", VendorId,
+                             base.ToString());
 
         #endregion
 

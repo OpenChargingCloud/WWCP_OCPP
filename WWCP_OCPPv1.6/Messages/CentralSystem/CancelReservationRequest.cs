@@ -347,15 +347,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomCancelReservationRequestSerializer">A delegate to serialize custom cancel reservation requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationRequest>? CustomCancelReservationRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationRequest>? CustomCancelReservationRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -440,7 +433,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public override Boolean Equals(CancelReservationRequest? CancelReservationRequest)
 
             => CancelReservationRequest is not null &&
-                   ReservationId.Equals(CancelReservationRequest.ReservationId);
+
+               ReservationId.Equals(CancelReservationRequest.ReservationId) &&
+
+               base.  GenericEquals(CancelReservationRequest);
 
         #endregion
 
@@ -453,8 +449,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => ReservationId.GetHashCode();
+                return ReservationId.GetHashCode() * 3 ^
+                       base.         GetHashCode();
+
+            }
+        }
 
         #endregion
 

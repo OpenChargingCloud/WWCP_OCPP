@@ -41,27 +41,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// A value of 0 means that the reservation is not for
         /// a specific connector.
         /// </summary>
+        [Mandatory]
         public Connector_Id    ConnectorId      { get; }
 
         /// <summary>
         /// The unique identification of this reservation.
         /// </summary>
+        [Mandatory]
         public Reservation_Id  ReservationId    { get; }
 
         /// <summary>
         /// The timestamp when the reservation ends.
         /// </summary>
+        [Mandatory]
         public DateTime        ExpiryDate       { get; }
 
         /// <summary>
         /// The identifier for which the charge point has to
         /// reserve a connector.
         /// </summary>
+        [Mandatory]
         public IdToken         IdTag            { get; }
 
         /// <summary>
         /// An optional parent idTag.
         /// </summary>
+        [Optional]
         public IdToken?        ParentIdTag      { get; }
 
         #endregion
@@ -483,15 +488,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomReserveNowRequestSerializer">A delegate to serialize custom reserve now requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowRequest>? CustomReserveNowRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowRequest>? CustomReserveNowRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -592,7 +590,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                IdTag.        Equals(ReserveNowRequest.IdTag)         &&
 
             ((!ParentIdTag.HasValue && !ReserveNowRequest.ParentIdTag.HasValue) ||
-              (ParentIdTag.HasValue &&  ReserveNowRequest.ParentIdTag.HasValue && ParentIdTag.Equals(ReserveNowRequest.ParentIdTag)));
+              (ParentIdTag.HasValue &&  ReserveNowRequest.ParentIdTag.HasValue && ParentIdTag.Equals(ReserveNowRequest.ParentIdTag))) &&
+
+               base.  GenericEquals(ReserveNowRequest);
 
         #endregion
 
@@ -609,12 +609,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return ReservationId.GetHashCode() * 23 ^
-                       ConnectorId.  GetHashCode() * 19 ^
-                       ExpiryDate.   GetHashCode() * 17 ^
-                       IdTag.        GetHashCode() * 11 ^
+                return ReservationId.GetHashCode()       * 13 ^
+                       ConnectorId.  GetHashCode()       * 11 ^
+                       ExpiryDate.   GetHashCode()       *  7 ^
+                       IdTag.        GetHashCode()       *  5 ^
 
-                       ParentIdTag?. GetHashCode() ?? 0;
+                      (ParentIdTag?. GetHashCode() ?? 0) *  3 ^
+
+                       base.         GetHashCode();
 
             }
         }

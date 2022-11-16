@@ -393,15 +393,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomTriggerMessageRequestSerializer">A delegate to serialize custom trigger message requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<TriggerMessageRequest>? CustomTriggerMessageRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<TriggerMessageRequest>? CustomTriggerMessageRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -496,7 +489,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                RequestedMessage.Equals(TriggerMessageRequest.RequestedMessage) &&
 
             ((!ConnectorId.HasValue && !TriggerMessageRequest.ConnectorId.HasValue) ||
-              (ConnectorId.HasValue &&  TriggerMessageRequest.ConnectorId.HasValue && ConnectorId.Equals(TriggerMessageRequest.ConnectorId)));
+              (ConnectorId.HasValue &&  TriggerMessageRequest.ConnectorId.HasValue && ConnectorId.Equals(TriggerMessageRequest.ConnectorId))) &&
+
+               base.     GenericEquals(TriggerMessageRequest);
 
         #endregion
 
@@ -513,8 +508,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return RequestedMessage.GetHashCode() * 5 ^
-                       ConnectorId?.    GetHashCode() ?? 0;
+                return RequestedMessage.GetHashCode()       * 5 ^
+                      (ConnectorId?.    GetHashCode() ?? 0) * 3 ^
+
+                       base.            GetHashCode();
 
             }
         }

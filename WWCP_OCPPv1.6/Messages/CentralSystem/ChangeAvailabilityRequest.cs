@@ -388,15 +388,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomChangeAvailabilityRequestSerializer">A delegate to serialize custom ChangeAvailability requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>? CustomChangeAvailabilityRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>? CustomChangeAvailabilityRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -483,8 +476,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => ChangeAvailabilityRequest is not null &&
 
-               ConnectorId. Equals(ChangeAvailabilityRequest.ConnectorId) &&
-               Availability.Equals(ChangeAvailabilityRequest.Availability);
+               ConnectorId. Equals(ChangeAvailabilityRequest.ConnectorId)  &&
+               Availability.Equals(ChangeAvailabilityRequest.Availability) &&
+
+               base. GenericEquals(ChangeAvailabilityRequest);
 
         #endregion
 
@@ -501,8 +496,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return ConnectorId. GetHashCode() * 3 ^
-                       Availability.GetHashCode();
+                return ConnectorId. GetHashCode() * 5 ^
+                       Availability.GetHashCode() * 3 ^
+
+                       base.        GetHashCode();
 
             }
         }

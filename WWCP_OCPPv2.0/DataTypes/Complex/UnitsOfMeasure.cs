@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A unit of measure and a multiplier.
     /// </summary>
-    public class UnitsOfMeasure
+    public class UnitsOfMeasure : ACustomData
     {
 
         #region Properties
@@ -37,17 +37,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The unit of the measured value. 20
         /// </summary>
-        public String       Unit          { get; }
+        public String  Unit          { get; }
 
         /// <summary>
         /// Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.
         /// </summary>
-        public Int32        Multiplier    { get; }
-
-        /// <summary>
-        /// An optional custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData?  CustomData    { get; }
+        public Int32   Multiplier    { get; }
 
         #endregion
 
@@ -62,11 +57,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public UnitsOfMeasure(String       Unit,
                               Int32        Multiplier,
                               CustomData?  CustomData  = null)
+
+            : base(CustomData)
+
         {
 
-            this.Unit        = Unit?.Trim() ?? throw new ArgumentNullException(nameof(Unit), "The given unit of measure must not be null or empty!");
+            this.Unit        = Unit.Trim();
             this.Multiplier  = Multiplier;
-            this.CustomData  = CustomData;
+
+            if (this.Unit.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Unit), "The given unit of measure must not be null or empty!");
 
         }
 
@@ -332,14 +332,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => UnitsOfMeasure is not null &&
 
-               String.Equals(Unit,
-                             UnitsOfMeasure.Unit,
-                             StringComparison.OrdinalIgnoreCase) &&
+               String.    Equals(Unit,
+                                 UnitsOfMeasure.Unit,
+                                 StringComparison.OrdinalIgnoreCase) &&
 
                Multiplier.Equals(UnitsOfMeasure.Multiplier) &&
 
-               ((CustomData is     null && UnitsOfMeasure.CustomData is     null) ||
-                (CustomData is not null && UnitsOfMeasure.CustomData is not null && CustomData.Equals(UnitsOfMeasure.CustomData)));
+               base.      Equals(UnitsOfMeasure);
 
         #endregion
 
@@ -356,10 +355,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Unit.       GetHashCode() * 5 ^
-                       Multiplier. GetHashCode() * 3 ^
+                return Unit.      GetHashCode() * 5 ^
+                       Multiplier.GetHashCode() * 3 ^
 
-                       CustomData?.GetHashCode() ?? 0;
+                       base.      GetHashCode();
 
             }
         }

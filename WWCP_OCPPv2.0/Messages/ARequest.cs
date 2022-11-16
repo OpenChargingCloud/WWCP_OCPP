@@ -17,8 +17,6 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -27,14 +25,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// An abstract generic OCPP request message.
+    /// An abstract generic OCPP request.
     /// </summary>
-    public abstract class ARequest<T> : IRequest,
-                                        IEquatable<T>
+    /// <typeparam name="TRequest">The type of the OCPP request.</typeparam>
+    public abstract class ARequest<TRequest> : IRequest,
+                                               IEquatable<TRequest>
 
-        where T : class
+        where TRequest : class, IRequest
 
     {
+
+        #region Data
+
+        /// <summary>
+        /// The default request timeout.
+        /// </summary>
+        public static readonly TimeSpan DefaultRequestTimeout = TimeSpan.FromSeconds(30);
+
+        #endregion
 
         #region Properties
 
@@ -59,30 +67,31 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The timeout of this request.
         /// </summary>
-        [Optional]
-        public TimeSpan?           RequestTimeout       { get; }
-
-        /// <summary>
-        /// The custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData?         CustomData           { get; }
+        [Mandatory]
+        public TimeSpan            RequestTimeout       { get; }
 
         /// <summary>
         /// An event tracking identification for correlating this request with other events.
         /// </summary>
+        [Mandatory]
         public EventTracking_Id    EventTrackingId      { get; }
+
+        /// <summary>
+        /// The OCPP HTTP Web Socket action.
+        /// </summary>
+        [Mandatory]
+        public String              Action               { get; }
+
+        /// <summary>
+        /// The custom data object to allow to store any kind of customer specific data.
+        /// </summary>
+        [Optional]
+        public CustomData?         CustomData           { get; }
 
         /// <summary>
         /// An optional token to cancel this request.
         /// </summary>
         public CancellationToken?  CancellationToken    { get; }
-
-
-        /// <summary>
-        /// The OCPP SOAP and HTTP Web Socket action.
-        /// </summary>
-        [Mandatory]
-        public String              Action               { get; }
 
         #endregion
 
@@ -92,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Create a new generic OCPP request message.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="Action">The OCPP SOAP and HTTP Web Socket action.</param>
+        /// <param name="Action">The OCPP HTTP Web Socket action.</param>
         /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
@@ -120,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             this.RequestId          = RequestId        ?? Request_Id.NewRandom();
             this.RequestTimestamp   = RequestTimestamp ?? Timestamp.Now;
-            this.RequestTimeout     = RequestTimeout;
+            this.RequestTimeout     = RequestTimeout   ?? DefaultRequestTimeout;
             this.EventTrackingId    = EventTrackingId  ?? EventTracking_Id.New;
             this.CancellationToken  = CancellationToken;
 
@@ -132,14 +141,59 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region IEquatable<ARequest> Members
 
         /// <summary>
-        /// Compare two requests for equality.
+        /// Compare two abstract generic OCPP requests for equality.
         /// </summary>
         /// <param name="ARequest">Another abstract generic OCPP request.</param>
-        public abstract Boolean Equals(T? ARequest);
+        public abstract Boolean Equals(TRequest? ARequest);
 
         #endregion
 
-        public abstract JObject ToJSON();
+        #region GenericEquals(ARequest)
+
+        /// <summary>
+        /// Compare two abstract generic OCPP requests for equality.
+        /// </summary>
+        /// <param name="ARequest">Another abstract generic OCPP request.</param>
+        public Boolean GenericEquals(ARequest<TRequest>? ARequest)
+
+            => ARequest is not null &&
+
+               ChargeBoxId.     Equals(ARequest.ChargeBoxId)      &&
+               RequestId.       Equals(ARequest.RequestId)        &&
+               RequestTimestamp.Equals(ARequest.RequestTimestamp) &&
+               RequestTimeout.  Equals(ARequest.RequestTimeout)   &&
+               EventTrackingId. Equals(ARequest.EventTrackingId)  &&
+               Action.          Equals(ARequest.Action)           &&
+
+             ((CustomData is     null && ARequest.CustomData is     null) ||
+              (CustomData is not null && ARequest.CustomData is not null && CustomData.Equals(ARequest.CustomData)));
+
+        #endregion
+
+        #region (override) GetHashCode()
+
+        /// <summary>
+        /// Return the HashCode of this object.
+        /// </summary>
+        /// <returns>The HashCode of this object.</returns>
+        public override Int32 GetHashCode()
+        {
+            unchecked
+            {
+
+                return ChargeBoxId.     GetHashCode() * 17 ^
+                       RequestId.       GetHashCode() * 13 ^
+                       RequestTimestamp.GetHashCode() * 11 ^
+                       RequestTimeout.  GetHashCode() *  7 ^
+                       EventTrackingId. GetHashCode() *  5 ^
+                       Action.          GetHashCode() *  3 ^
+
+                       CustomData?.     GetHashCode() ?? 0;
+
+            }
+        }
+
+        #endregion
 
     }
 

@@ -38,11 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// The registration status.
         /// </summary>
+        [Mandatory]
         public RegistrationStatus  Status        { get; }
 
         /// <summary>
         /// The current time at the central system. [UTC]
         /// </summary>
+        [Mandatory]
         public DateTime            CurrentTime   { get; }
 
         /// <summary>
@@ -52,11 +54,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// the minimum wait time before sending a next BootNotification
         /// request.
         /// </summary>
+        [Mandatory]
         public TimeSpan            Interval      { get; }
 
         /// <summary>
         /// An optional element providing more information about the registration status.
         /// </summary>
+        [Optional]
         public StatusInfo?         StatusInfo    { get; }
 
         #endregion
@@ -112,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         {
 
             this.Status       = RegistrationStatus.Rejected;
-            this.CurrentTime  = DateTime.UtcNow;
+            this.CurrentTime  = Timestamp.Now;
             this.Interval     = TimeSpan.Zero;
 
         }
@@ -430,7 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if ((BootNotificationResponse1 is null) || (BootNotificationResponse2 is null))
+            if (BootNotificationResponse1 is null || BootNotificationResponse2 is null)
                 return false;
 
             return BootNotificationResponse1.Equals(BootNotificationResponse2);

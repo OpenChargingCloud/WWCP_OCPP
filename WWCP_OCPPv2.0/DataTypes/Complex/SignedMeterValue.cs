@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A signed meter value.
     /// </summary>
-    public class SignedMeterValue
+    public class SignedMeterValue : ACustomData
     {
 
         #region Properties
@@ -37,27 +37,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The signed meter value (base64 encoded). 2500
         /// </summary>
-        public String       SignedMeterData    { get; }
+        public String   SignedMeterData    { get; }
 
         /// <summary>
         /// Method used to create the digital signature. 50
         /// </summary>
-        public String       SigningMethod      { get; }
+        public String   SigningMethod      { get; }
 
         /// <summary>
         /// Method used to encode the meter values before applying the digital signature algorithm. 50
         /// </summary>
-        public String       EncodingMethod     { get; }
+        public String   EncodingMethod     { get; }
 
         /// <summary>
         /// The optional public key (base64 encoded). 2500
         /// </summary>
-        public String?      PublicKey          { get; }
-
-        /// <summary>
-        /// An optional custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData?  CustomData         { get; }
+        public String?  PublicKey          { get; }
 
         #endregion
 
@@ -76,13 +71,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                 String       EncodingMethod,
                                 String?      PublicKey    = null,
                                 CustomData?  CustomData   = null)
+
+            : base(CustomData)
+
         {
 
             this.SignedMeterData  = SignedMeterData;
             this.SigningMethod    = SigningMethod;
             this.EncodingMethod   = EncodingMethod;
             this.PublicKey        = PublicKey;
-            this.CustomData       = CustomData;
 
         }
 
@@ -398,8 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
              ((PublicKey is     null  && SignedMeterValue.PublicKey  is     null) ||
               (PublicKey is not null  && SignedMeterValue.PublicKey  is not null && PublicKey. Equals(SignedMeterValue.PublicKey))) &&
 
-             ((CustomData is     null && SignedMeterValue.CustomData is     null) ||
-              (CustomData is not null && SignedMeterValue.CustomData is not null && CustomData.Equals(SignedMeterValue.CustomData)));
+               base.  Equals(SignedMeterValue);
 
         #endregion
 
@@ -421,7 +417,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        EncodingMethod. GetHashCode()       *  5 ^
 
                        (PublicKey?.    GetHashCode() ?? 0) *  3 ^
-                       (CustomData?.   GetHashCode() ?? 0);
+                       base.           GetHashCode();
 
             }
         }

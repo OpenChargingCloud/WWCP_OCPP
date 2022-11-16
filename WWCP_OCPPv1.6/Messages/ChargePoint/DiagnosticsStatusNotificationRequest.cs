@@ -350,15 +350,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomDiagnosticsStatusNotificationRequestSerializer">A delegate to serialize custom DiagnosticsStatusNotification requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<DiagnosticsStatusNotificationRequest>? CustomDiagnosticsStatusNotificationRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DiagnosticsStatusNotificationRequest>? CustomDiagnosticsStatusNotificationRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -443,7 +436,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public override Boolean Equals(DiagnosticsStatusNotificationRequest? DiagnosticsStatusNotificationRequest)
 
             => DiagnosticsStatusNotificationRequest is not null &&
-                   Status.Equals(DiagnosticsStatusNotificationRequest.Status);
+
+               Status.     Equals(DiagnosticsStatusNotificationRequest.Status) &&
+
+               base.GenericEquals(DiagnosticsStatusNotificationRequest);
 
         #endregion
 
@@ -456,8 +452,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => Status.GetHashCode();
+                return Status.GetHashCode() * 3 ^
+                       base.  GetHashCode();
+
+            }
+        }
 
         #endregion
 

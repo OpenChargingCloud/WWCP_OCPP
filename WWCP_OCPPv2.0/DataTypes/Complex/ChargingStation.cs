@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Net.Http.Headers;
 
 #endregion
 
@@ -30,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A charging station is a physical system where an electrical vehicle can be charged.
     /// </summary>
-    public class ChargingStation
+    public class ChargingStation : ACustomData
     {
 
         #region Properties
@@ -39,35 +38,29 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// The model of the charging station. 20
         /// </summary>
         [Mandatory]
-        public String       Model              { get; }
+        public String   Model              { get; }
 
         /// <summary>
         /// The vendor name/identification (not necessarily unique). 50
         /// </summary>
         [Mandatory]
-        public String       VendorName         { get; }
+        public String   VendorName         { get; }
 
         /// <summary>
         /// A vendor-specific charging station identifier.
         /// It must match the "Common Name" within the TLS client certificate.   25
         /// </summary>
-        public String?      SerialNumber       { get; }
+        public String?  SerialNumber       { get; }
 
         /// <summary>
         /// The wireless communication module.
         /// </summary>
-        public Modem?       Modem              { get; }
+        public Modem?   Modem              { get; }
 
         /// <summary>
         /// The firmware version of the charging station. 50
         /// </summary>
-        public String?      FirmwareVersion    { get; }
-
-
-        /// <summary>
-        /// The custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData?  CustomData         { get; }
+        public String?  FirmwareVersion    { get; }
 
         #endregion
 
@@ -88,6 +81,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                Modem?       Modem             = null,
                                String?      FirmwareVersion   = null,
                                CustomData?  CustomData        = null)
+
+            : base(CustomData)
+
         {
 
             this.Model            = Model;
@@ -95,7 +91,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             this.SerialNumber     = SerialNumber;
             this.Modem            = Modem;
             this.FirmwareVersion  = FirmwareVersion;
-            this.CustomData       = CustomData;
 
         }
 
@@ -104,10 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Documentation
 
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:ChargingStationType",
-        //   "comment": "OCPP 2.0.1 FINAL",
+        // "ChargingStationType": {
         //   "description": "Charge_ Point\r\nurn:x-oca:ocpp:uid:2:233122\r\nThe physical system where an Electrical Vehicle (EV) can be charged.\r\n",
         //   "javaType": "ChargingStation",
         //   "type": "object",
@@ -167,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 return chargingStation!;
             }
 
-            throw new ArgumentException("The given JSON representation of a meter value is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a charging station is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -182,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Try to parse the given JSON representation of a custom data object.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ChargingStation">The parsed connector type.</param>
+        /// <param name="ChargingStation">The parsed charging station.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject               JSON,
                                        out ChargingStation?  ChargingStation,
@@ -198,13 +190,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Try to parse the given JSON representation of a custom data object.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ChargingStation">The parsed connector type.</param>
+        /// <param name="ChargingStation">The parsed charging station.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChargingStationParser">A delegate to parse custom charging stations.</param>
-        public static Boolean TryParse(JObject JSON,
+        public static Boolean TryParse(JObject                                        JSON,
                                        out ChargingStation?                           ChargingStation,
                                        out String?                                    ErrorResponse,
-                                       CustomJObjectParserDelegate<ChargingStation>?  CustomChargingStationParser   = null)
+                                       CustomJObjectParserDelegate<ChargingStation>?  CustomChargingStationParser)
         {
 
             try
@@ -422,16 +414,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                VendorName.Equals(ChargingStation.VendorName) &&
 
              ((CustomData      is     null && ChargingStation.CustomData      is     null) ||
-              (CustomData      is not null && ChargingStation.CustomData      is not null && CustomData.     Equals(ChargingStation.CustomData)))   &&
+              (CustomData      is not null && ChargingStation.CustomData      is not null && CustomData.     Equals(ChargingStation.CustomData)))      &&
 
              ((SerialNumber    is     null && ChargingStation.SerialNumber    is     null) ||
-              (SerialNumber    is not null && ChargingStation.SerialNumber    is not null && SerialNumber.   Equals(ChargingStation.SerialNumber))) &&
+              (SerialNumber    is not null && ChargingStation.SerialNumber    is not null && SerialNumber.   Equals(ChargingStation.SerialNumber)))    &&
 
              ((Modem           is     null && ChargingStation.Modem           is     null) ||
-              (Modem           is not null && ChargingStation.Modem           is not null && Modem.          Equals(ChargingStation.Modem)))        &&
+              (Modem           is not null && ChargingStation.Modem           is not null && Modem.          Equals(ChargingStation.Modem)))           &&
 
              ((FirmwareVersion is     null && ChargingStation.FirmwareVersion is     null) ||
-              (FirmwareVersion is not null && ChargingStation.FirmwareVersion is not null && FirmwareVersion.Equals(ChargingStation.FirmwareVersion)));
+              (FirmwareVersion is not null && ChargingStation.FirmwareVersion is not null && FirmwareVersion.Equals(ChargingStation.FirmwareVersion))) &&
+
+               base.Equals(ChargingStation);
 
         #endregion
 
@@ -454,7 +448,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                       (SerialNumber?.   GetHashCode() ?? 0) *  7 ^
                       (Modem?.          GetHashCode() ?? 0) *  5 ^
                       (FirmwareVersion?.GetHashCode() ?? 0) *  3 ^
-                      (CustomData?.     GetHashCode() ?? 0);
+
+                      base.             GetHashCode();
 
             }
         }

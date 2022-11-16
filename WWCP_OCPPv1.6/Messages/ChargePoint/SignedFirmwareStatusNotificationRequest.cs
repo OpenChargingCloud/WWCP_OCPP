@@ -261,15 +261,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomSignedFirmwareStatusNotificationRequestSerializer">A delegate to serialize custom signed firmware status notification requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SignedFirmwareStatusNotificationRequest>? CustomSignedFirmwareStatusNotificationRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SignedFirmwareStatusNotificationRequest>? CustomSignedFirmwareStatusNotificationRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -355,7 +348,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public override Boolean Equals(SignedFirmwareStatusNotificationRequest? SignedFirmwareStatusNotificationRequest)
 
             => SignedFirmwareStatusNotificationRequest is not null &&
-                   Status.Equals(SignedFirmwareStatusNotificationRequest.Status);
+
+               Status.     Equals(SignedFirmwareStatusNotificationRequest.Status) &&
+
+               base.GenericEquals(SignedFirmwareStatusNotificationRequest);
 
         #endregion
 
@@ -368,8 +364,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => Status.GetHashCode();
+                return Status.GetHashCode() * 3 ^
+                       base.  GetHashCode();
+
+            }
+        }
 
         #endregion
 

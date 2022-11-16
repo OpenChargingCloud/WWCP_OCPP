@@ -467,15 +467,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public override JObject ToJSON()
-            => ToJSON(null);
-
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
         /// <param name="CustomClearChargingProfileRequestSerializer">A delegate to serialize custom clear charging profile requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileRequest>? CustomClearChargingProfileRequestSerializer)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileRequest>? CustomClearChargingProfileRequestSerializer = null)
         {
 
             var json = JSONObject.Create(
@@ -587,7 +580,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
               (ChargingProfilePurpose.HasValue &&  ClearChargingProfileRequest.ChargingProfilePurpose.HasValue && ChargingProfilePurpose.Value.Equals(ClearChargingProfileRequest.ChargingProfilePurpose.Value))) &&
 
             ((!StackLevel.            HasValue && !ClearChargingProfileRequest.StackLevel.            HasValue) ||
-              (StackLevel.            HasValue &&  ClearChargingProfileRequest.StackLevel.            HasValue && StackLevel.            Value.Equals(ClearChargingProfileRequest.StackLevel.Value)));
+              (StackLevel.            HasValue &&  ClearChargingProfileRequest.StackLevel.            HasValue && StackLevel.            Value.Equals(ClearChargingProfileRequest.StackLevel.Value)))             &&
+
+               base.GenericEquals(ClearChargingProfileRequest);
 
         #endregion
 
@@ -607,7 +602,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 return (ChargingProfileId?.     GetHashCode() ?? 0) * 11 ^
                        (ConnectorId?.           GetHashCode() ?? 0) *  7 ^
                        (ChargingProfilePurpose?.GetHashCode() ?? 0) *  5 ^
-                       (StackLevel?.            GetHashCode() ?? 0) *  3;
+                       (StackLevel?.            GetHashCode() ?? 0) *  3 ^
+                       base.                    GetHashCode();
 
             }
         }
