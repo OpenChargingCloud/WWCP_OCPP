@@ -216,9 +216,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                 if (Certificate.TryParse(certificateTextLines,
                                                          out var certificate,
                                                          out var errorResponse,
-                                                         CustomCertificateParser) && certificate.HasValue)
+                                                         CustomCertificateParser) && certificate is not null)
                                 {
-                                    certificateChain.Add(certificate.Value);
+                                    certificateChain.Add(certificate);
                                 }
                                 else
                                 {
@@ -257,7 +257,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-
         #region (override) ToString()
 
         /// <summary>
@@ -270,7 +269,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    : "";
 
         #endregion
-
 
     }
 

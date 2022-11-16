@@ -449,12 +449,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("idToken",                            IdToken.ToJSON(CustomIdTokenResponseSerializer,
-                                                                                              CustomAdditionalInfoResponseSerializer,
-                                                                                              CustomCustomDataResponseSerializer)),
+                           new JProperty("idToken",                            IdToken.    ToJSON(CustomIdTokenResponseSerializer,
+                                                                                                  CustomAdditionalInfoResponseSerializer,
+                                                                                                  CustomCustomDataResponseSerializer)),
 
-                           Certificate.HasValue
-                               ? new JProperty("certificate",                  Certificate.Value.ToString())
+                           Certificate is not null
+                               ? new JProperty("certificate",                  Certificate.ToString())
                                : null,
 
                            ISO15118CertificateHashData is not null && ISO15118CertificateHashData.Any()
@@ -463,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",                   CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",                   CustomData. ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );

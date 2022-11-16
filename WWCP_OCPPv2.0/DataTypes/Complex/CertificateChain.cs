@@ -200,33 +200,40 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                     foreach (var line in Lines)
                     {
 
-                        if (line == "-----BEGIN CERTIFICATE-----")
-                            certificateTextLines.Add(line.Trim());
+                        var _line = line.Trim();
 
-                        else if (line == "-----END CERTIFICATE-----")
+                        if (line.IsNotNullOrEmpty())
                         {
 
-                            certificateTextLines.Add(line.Trim());
+                            if (line == "-----BEGIN CERTIFICATE-----")
+                                certificateTextLines.Add(_line);
 
-                            if (Certificate.TryParse(certificateTextLines,
-                                                     out var certificate,
-                                                     out var errorResponse,
-                                                     CustomCertificateParser) && certificate.HasValue)
+                            else if (line == "-----END CERTIFICATE-----")
                             {
-                                certificateChain.Add(certificate.Value);
+
+                                certificateTextLines.Add(_line);
+
+                                if (Certificate.TryParse(certificateTextLines,
+                                                         out var certificate,
+                                                         out var errorResponse,
+                                                         CustomCertificateParser) && certificate is not null)
+                                {
+                                    certificateChain.Add(certificate);
+                                }
+                                else
+                                {
+                                    errorResponse  = "Could not parse the " + (certificateChain.Count + 1) + " certificate: " + errorResponse;
+                                    return false;
+                                }
+
+                                certificateTextLines = new List<String>();
+
                             }
+
                             else
-                            {
-                                errorResponse  = "Could not parse the " + (certificateChain.Count + 1) + " certificate: " + errorResponse;
-                                return false;
-                            }
-
-                            certificateTextLines = new List<String>();
+                                certificateTextLines.Add(_line);
 
                         }
-
-                        else
-                            certificateTextLines.Add(line.Trim());
 
                     }
 
@@ -250,7 +257,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-
         #region (override) ToString()
 
         /// <summary>
@@ -259,11 +265,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public override String ToString()
 
             => Certificates.Any()
-                   ? Certificates.Select(certificate => certificate.ToString().Trim()).Aggregate()
+                   ? Certificates.Select(certificate => certificate.ToString().Trim()).AggregateWith('\n') + "\n\n"
                    : "";
 
         #endregion
-
 
     }
 

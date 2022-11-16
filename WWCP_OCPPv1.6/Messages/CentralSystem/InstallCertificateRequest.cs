@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 InstallCertificateRequest = new InstallCertificateRequest(ChargeBoxId,
                                                                           CertificateType,
-                                                                          Certificate.Value,
+                                                                          Certificate,
 
                                                                           RequestId);
 

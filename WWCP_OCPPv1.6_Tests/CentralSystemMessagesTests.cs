@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 var response1 = await testCentralSystem01.GetConfiguration(chargingStation1.ChargeBoxId);
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(3,                              response1.ConfigurationKeys.Count());
+                Assert.AreEqual(4,                              response1.ConfigurationKeys.Count());
                 Assert.AreEqual(0,                              response1.UnknownKeys.      Count());
 
                 Assert.AreEqual(1,                              getConfigurationRequests.Count);

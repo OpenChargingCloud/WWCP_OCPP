@@ -17,6 +17,8 @@
 
 #region Usings
 
+using Org.BouncyCastle.X509;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -25,34 +27,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extention methods for PEM encoded X.509 certificates.
-    /// </summary>
-    public static class CertificateExtentions
-    {
-
-        /// <summary>
-        /// Indicates whether this PEM encoded X.509 certificate is null or empty.
-        /// </summary>
-        /// <param name="Certificate">A PEM encoded X.509 certificate.</param>
-        public static Boolean IsNullOrEmpty(this Certificate? Certificate)
-            => !Certificate.HasValue || Certificate.Value.IsNullOrEmpty;
-
-        /// <summary>
-        /// Indicates whether this PEM encoded X.509 certificate is null or empty.
-        /// </summary>
-        /// <param name="Certificate">A PEM encoded X.509 certificate.</param>
-        public static Boolean IsNotNullOrEmpty(this Certificate? Certificate)
-            => Certificate.HasValue && Certificate.Value.IsNotNullOrEmpty;
-
-    }
-
-
-    /// <summary>
     /// A PEM encoded X.509 certificate (text).
     /// </summary>
-    public readonly struct Certificate : IId,
-                                         IEquatable<Certificate>,
-                                         IComparable<Certificate>
+    public class Certificate : IId,
+                               IEquatable<Certificate>,
+                               IComparable<Certificate>
     {
 
         #region Data
@@ -65,6 +44,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
         #region Properties
+
+        public X509Certificate?  Parsed    { get; }
+
 
         /// <summary>
         /// Indicates whether this PEM encoded X.509 certificate is null or empty.
@@ -91,10 +73,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Create a new PEM encoded X.509 certificate based on the given string.
         /// </summary>
-        /// <param name="String">The string representation of the PEM encoded X.509 certificate.</param>
-        private Certificate(String String)
+        /// <param name="Text">The string representation of the PEM encoded X.509 certificate.</param>
+        /// <param name="ParsedCertificate">The parsed X.509 certificate.</param>
+        private Certificate(String            Text,
+                            X509Certificate?  ParsedCertificate   = null)
         {
-            this.InternalText  = String;
+
+            this.InternalText  = Text;
+            this.Parsed          = ParsedCertificate;
+
         }
 
         #endregion
@@ -151,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomCertificateParser))
             {
-                return certificate!.Value;
+                return certificate!;
             }
 
             throw new ArgumentException("Invalid text representation of a PEM encoded X.509 certificate: '" + Text.SubstringMax(40) + "'!",
@@ -177,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomCertificateParser))
             {
-                return certificate!.Value;
+                return certificate!;
             }
 
             throw new ArgumentException("Invalid text representation of a PEM encoded X.509 certificate: '" + Lines.AggregateWith("").SubstringMax(40) + "'!",
@@ -203,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomCertificateParser))
             {
-                return certificate!.Value;
+                return certificate!;
             }
 
             return null;
@@ -228,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                          out var errorResponse,
                          CustomCertificateParser))
             {
-                return certificate!.Value;
+                return certificate!;
             }
 
             return null;
@@ -333,16 +320,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 try
                 {
 
-                    var lines        = Lines.Select       (line => line?.Trim()).
-                                             Where        (line => line is not null).
-                                             AggregateWith("\n") + "\n\n";
+                    var lines              = Lines.Select       (line => line?.Trim()).
+                                                   Where        (line => line is not null).
+                                                   AggregateWith("\n") + "\n\n";
 
-                    var certificate  = new Certificate(lines);
+                    var parsedCertificate  = new X509CertificateParser().ReadCertificate(lines.ToUTF8Bytes());
 
-                    Certificate      = CustomCertificateParser is not null
-                                           ? CustomCertificateParser(lines,
-                                                                     certificate)
-                                           : certificate;
+                    var certificate        = new Certificate(lines,
+                                                             parsedCertificate);
+
+                    Certificate            = CustomCertificateParser is not null
+                                                 ? CustomCertificateParser(lines,
+                                                                           certificate)
+                                                 : certificate;
 
                     return true;
 
@@ -387,8 +377,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <returns>true|false</returns>
         public static Boolean operator == (Certificate Certificate1,
                                            Certificate Certificate2)
+        {
 
-            => Certificate1.Equals(Certificate2);
+            // If both are null, or both are same instance, return true.
+            if (ReferenceEquals(Certificate1, Certificate2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (Certificate1 is null || Certificate2 is null)
+                return false;
+
+            return Certificate1.Equals(Certificate2);
+
+        }
 
         #endregion
 
@@ -403,7 +404,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator != (Certificate Certificate1,
                                            Certificate Certificate2)
 
-            => !Certificate1.Equals(Certificate2);
+            => !(Certificate1 == Certificate2);
 
         #endregion
 
@@ -417,8 +418,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <returns>true|false</returns>
         public static Boolean operator < (Certificate Certificate1,
                                           Certificate Certificate2)
+        {
 
-            => Certificate1.CompareTo(Certificate2) < 0;
+            if (Certificate1 is null)
+                throw new ArgumentNullException(nameof(Certificate1), "The given PEM encoded X.509 certificate must not be null!");
+
+            return Certificate1.CompareTo(Certificate2) < 0;
+
+        }
 
         #endregion
 
@@ -433,7 +440,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator <= (Certificate Certificate1,
                                            Certificate Certificate2)
 
-            => Certificate1.CompareTo(Certificate2) <= 0;
+            => !(Certificate1 > Certificate2);
 
         #endregion
 
@@ -447,8 +454,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <returns>true|false</returns>
         public static Boolean operator > (Certificate Certificate1,
                                           Certificate Certificate2)
+        {
 
-            => Certificate1.CompareTo(Certificate2) > 0;
+            if (Certificate1 is null)
+                throw new ArgumentNullException(nameof(Certificate1), "The given PEM encoded X.509 certificate must not be null!");
+
+            return Certificate1.CompareTo(Certificate2) > 0;
+
+        }
 
         #endregion
 
@@ -463,7 +476,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator >= (Certificate Certificate1,
                                            Certificate Certificate2)
 
-            => Certificate1.CompareTo(Certificate2) >= 0;
+            => !(Certificate1 < Certificate2);
 
         #endregion
 
@@ -492,11 +505,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two PEM encoded X.509 certificates.
         /// </summary>
         /// <param name="Certificate">A PEM encoded X.509 certificate to compare with.</param>
-        public Int32 CompareTo(Certificate Certificate)
+        public Int32 CompareTo(Certificate? Certificate)
+        {
 
-            => String.Compare(InternalText,
-                              Certificate.InternalText,
-                              StringComparison.Ordinal);
+            if (Certificate is null)
+                throw new ArgumentNullException(nameof(Certificate),
+                                                "The given certificate must not be null!");
+
+            return InternalText.CompareTo(Certificate.InternalText);
+
+        }
 
         #endregion
 
@@ -523,9 +541,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two PEM encoded X.509 certificates for equality.
         /// </summary>
         /// <param name="Certificate">A PEM encoded X.509 certificate to compare with.</param>
-        public Boolean Equals(Certificate Certificate)
+        public Boolean Equals(Certificate? Certificate)
 
-            => String.Equals(InternalText,
+            => Certificate is not null &&
+
+               String.Equals(InternalText,
                              Certificate.InternalText,
                              StringComparison.Ordinal);
 
