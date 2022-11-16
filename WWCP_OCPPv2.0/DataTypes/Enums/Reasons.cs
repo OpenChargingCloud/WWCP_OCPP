@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -33,150 +27,58 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Parse(Text)
 
         public static Reasons AsReasons(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "DeAuthorized":
-                    return Reasons.DeAuthorized;
-
-                case "EmergencyStop":
-                    return Reasons.EmergencyStop;
-
-                case "EnergyLimitReached":
-                    return Reasons.EnergyLimitReached;
-
-                case "EVDisconnected":
-                    return Reasons.EVDisconnected;
-
-                case "GroundFault":
-                    return Reasons.GroundFault;
-
-                case "ImmediateReset":
-                    return Reasons.ImmediateReset;
-
-                case "Local":
-                    return Reasons.Local;
-
-                case "LocalOutOfCredit":
-                    return Reasons.LocalOutOfCredit;
-
-                case "MasterPass":
-                    return Reasons.MasterPass;
-
-                case "Other":
-                    return Reasons.Other;
-
-                case "OvercurrentFault":
-                    return Reasons.OvercurrentFault;
-
-                case "PowerLoss":
-                    return Reasons.PowerLoss;
-
-                case "PowerQuality":
-                    return Reasons.PowerQuality;
-
-                case "Reboot":
-                    return Reasons.Reboot;
-
-                case "Remote":
-                    return Reasons.Remote;
-
-                case "SOCLimitReached":
-                    return Reasons.SOCLimitReached;
-
-                case "StoppedByEV":
-                    return Reasons.StoppedByEV;
-
-                case "TimeLimitReached":
-                    return Reasons.TimeLimitReached;
-
-                case "Timeout":
-                    return Reasons.Timeout;
-
-
-                default:
-                    return Reasons.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "DeAuthorized"        => Reasons.DeAuthorized,
+                   "EmergencyStop"       => Reasons.EmergencyStop,
+                   "EnergyLimitReached"  => Reasons.EnergyLimitReached,
+                   "EVDisconnected"      => Reasons.EVDisconnected,
+                   "GroundFault"         => Reasons.GroundFault,
+                   "ImmediateReset"      => Reasons.ImmediateReset,
+                   "Local"               => Reasons.Local,
+                   "LocalOutOfCredit"    => Reasons.LocalOutOfCredit,
+                   "MasterPass"          => Reasons.MasterPass,
+                   "Other"               => Reasons.Other,
+                   "OvercurrentFault"    => Reasons.OvercurrentFault,
+                   "PowerLoss"           => Reasons.PowerLoss,
+                   "PowerQuality"        => Reasons.PowerQuality,
+                   "Reboot"              => Reasons.Reboot,
+                   "Remote"              => Reasons.Remote,
+                   "SOCLimitReached"     => Reasons.SOCLimitReached,
+                   "StoppedByEV"         => Reasons.StoppedByEV,
+                   "TimeLimitReached"    => Reasons.TimeLimitReached,
+                   "Timeout"             => Reasons.Timeout,
+                   _                     => Reasons.Unknown
+               };
 
         #endregion
 
         #region AsText(this Reasons)
 
         public static String AsText(this Reasons Reasons)
-        {
 
-            switch (Reasons)
-            {
-
-                case Reasons.DeAuthorized:
-                    return "DeAuthorized";
-
-                case Reasons.EmergencyStop:
-                    return "EmergencyStop";
-
-                case Reasons.EnergyLimitReached:
-                    return "EnergyLimitReached";
-
-                case Reasons.EVDisconnected:
-                    return "EVDisconnected";
-
-                case Reasons.GroundFault:
-                    return "GroundFault";
-
-                case Reasons.ImmediateReset:
-                    return "ImmediateReset";
-
-                case Reasons.Local:
-                    return "Local";
-
-                case Reasons.LocalOutOfCredit:
-                    return "LocalOutOfCredit";
-
-                case Reasons.MasterPass:
-                    return "MasterPass";
-
-                case Reasons.Other:
-                    return "Other";
-
-                case Reasons.OvercurrentFault:
-                    return "OvercurrentFault";
-
-                case Reasons.PowerLoss:
-                    return "PowerLoss";
-
-                case Reasons.PowerQuality:
-                    return "PowerQuality";
-
-                case Reasons.Reboot:
-                    return "Reboot";
-
-                case Reasons.Remote:
-                    return "Remote";
-
-                case Reasons.SOCLimitReached:
-                    return "SOCLimitReached";
-
-                case Reasons.StoppedByEV:
-                    return "StoppedByEV";
-
-                case Reasons.TimeLimitReached:
-                    return "TimeLimitReached";
-
-                case Reasons.Timeout:
-                    return "Timeout";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => Reasons switch {
+                   Reasons.DeAuthorized        => "DeAuthorized",
+                   Reasons.EmergencyStop       => "EmergencyStop",
+                   Reasons.EnergyLimitReached  => "EnergyLimitReached",
+                   Reasons.EVDisconnected      => "EVDisconnected",
+                   Reasons.GroundFault         => "GroundFault",
+                   Reasons.ImmediateReset      => "ImmediateReset",
+                   Reasons.Local               => "Local",
+                   Reasons.LocalOutOfCredit    => "LocalOutOfCredit",
+                   Reasons.MasterPass          => "MasterPass",
+                   Reasons.Other               => "Other",
+                   Reasons.OvercurrentFault    => "OvercurrentFault",
+                   Reasons.PowerLoss           => "PowerLoss",
+                   Reasons.PowerQuality        => "PowerQuality",
+                   Reasons.Reboot              => "Reboot",
+                   Reasons.Remote              => "Remote",
+                   Reasons.SOCLimitReached     => "SOCLimitReached",
+                   Reasons.StoppedByEV         => "StoppedByEV",
+                   Reasons.TimeLimitReached    => "TimeLimitReached",
+                   Reasons.Timeout             => "Timeout",
+                   _                           => "unknown"
+               };
 
         #endregion
 

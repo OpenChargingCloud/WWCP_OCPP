@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -33,162 +27,62 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Parse(Text)
 
         public static TriggerReasons Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case  "Authorized":
-                    return TriggerReasons.Authorized;
-
-                case "CablePluggedIn":
-                    return TriggerReasons.CablePluggedIn;
-
-                case "ChargingRateChanged":
-                    return TriggerReasons.ChargingRateChanged;
-
-                case "ChargingStateChanged":
-                    return TriggerReasons.ChargingStateChanged;
-
-                case "Deauthorized":
-                    return TriggerReasons.Deauthorized;
-
-                case "EnergyLimitReached":
-                    return TriggerReasons.EnergyLimitReached;
-
-                case "EVCommunicationLost":
-                    return TriggerReasons.EVCommunicationLost;
-
-                case "EVConnectTimeout":
-                    return TriggerReasons.EVConnectTimeout;
-
-                case "MeterValueClock":
-                    return TriggerReasons.MeterValueClock;
-
-                case "MeterValuePeriodic":
-                    return TriggerReasons.MeterValuePeriodic;
-
-                case "TimeLimitReached":
-                    return TriggerReasons.TimeLimitReached;
-
-                case "Trigger":
-                    return TriggerReasons.Trigger;
-
-                case "UnlockCommand":
-                    return TriggerReasons.UnlockCommand;
-
-                case "StopAuthorized":
-                    return TriggerReasons.StopAuthorized;
-
-                case "EVDeparted":
-                    return TriggerReasons.EVDeparted;
-
-                case "EVDetected":
-                    return TriggerReasons.EVDetected;
-
-                case "RemoteStop":
-                    return TriggerReasons.RemoteStop;
-
-                case "RemoteStart":
-                    return TriggerReasons.RemoteStart;
-
-                case "AbnormalCondition":
-                    return TriggerReasons.AbnormalCondition;
-
-                case "SignedDataReceived":
-                    return TriggerReasons.SignedDataReceived;
-
-                case "ResetCommand":
-                    return TriggerReasons.ResetCommand;
-
-
-                default:
-                    return TriggerReasons.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Authorized"            => TriggerReasons.Authorized,
+                   "CablePluggedIn"        => TriggerReasons.CablePluggedIn,
+                   "ChargingRateChanged"   => TriggerReasons.ChargingRateChanged,
+                   "ChargingStateChanged"  => TriggerReasons.ChargingStateChanged,
+                   "Deauthorized"          => TriggerReasons.Deauthorized,
+                   "EnergyLimitReached"    => TriggerReasons.EnergyLimitReached,
+                   "EVCommunicationLost"   => TriggerReasons.EVCommunicationLost,
+                   "EVConnectTimeout"      => TriggerReasons.EVConnectTimeout,
+                   "MeterValueClock"       => TriggerReasons.MeterValueClock,
+                   "MeterValuePeriodic"    => TriggerReasons.MeterValuePeriodic,
+                   "TimeLimitReached"      => TriggerReasons.TimeLimitReached,
+                   "Trigger"               => TriggerReasons.Trigger,
+                   "UnlockCommand"         => TriggerReasons.UnlockCommand,
+                   "StopAuthorized"        => TriggerReasons.StopAuthorized,
+                   "EVDeparted"            => TriggerReasons.EVDeparted,
+                   "EVDetected"            => TriggerReasons.EVDetected,
+                   "RemoteStop"            => TriggerReasons.RemoteStop,
+                   "RemoteStart"           => TriggerReasons.RemoteStart,
+                   "AbnormalCondition"     => TriggerReasons.AbnormalCondition,
+                   "SignedDataReceived"    => TriggerReasons.SignedDataReceived,
+                   "ResetCommand"          => TriggerReasons.ResetCommand,
+                   _                       => TriggerReasons.Unknown
+               };
 
         #endregion
 
         #region AsText(this TriggerReasons)
 
         public static String AsText(this TriggerReasons TriggerReasons)
-        {
 
-            switch (TriggerReasons)
-            {
-
-                case TriggerReasons.Authorized:
-                    return "Authorized";
-
-                case TriggerReasons.CablePluggedIn:
-                    return "CablePluggedIn";
-
-                case TriggerReasons.ChargingRateChanged:
-                    return "ChargingRateChanged";
-
-                case TriggerReasons.ChargingStateChanged:
-                    return "ChargingStateChanged";
-
-                case TriggerReasons.Deauthorized:
-                    return "Deauthorized";
-
-                case TriggerReasons.EnergyLimitReached:
-                    return "EnergyLimitReached";
-
-                case TriggerReasons.EVCommunicationLost:
-                    return "EVCommunicationLost";
-
-                case TriggerReasons.EVConnectTimeout:
-                    return "EVConnectTimeout";
-
-                case TriggerReasons.MeterValueClock:
-                    return "MeterValueClock";
-
-                case TriggerReasons.MeterValuePeriodic:
-                    return "MeterValuePeriodic";
-
-                case TriggerReasons.TimeLimitReached:
-                    return "TimeLimitReached";
-
-                case TriggerReasons.Trigger:
-                    return "Trigger";
-
-                case TriggerReasons.UnlockCommand:
-                    return "UnlockCommand";
-
-                case TriggerReasons.StopAuthorized:
-                    return "StopAuthorized";
-
-                case TriggerReasons.EVDeparted:
-                    return "EVDeparted";
-
-                case TriggerReasons.EVDetected:
-                    return "EVDetected";
-
-                case TriggerReasons.RemoteStop:
-                    return "RemoteStop";
-
-                case TriggerReasons.RemoteStart:
-                    return "RemoteStart";
-
-                case TriggerReasons.AbnormalCondition:
-                    return "AbnormalCondition";
-
-                case TriggerReasons.SignedDataReceived:
-                    return "SignedDataReceived";
-
-                case TriggerReasons.ResetCommand:
-                    return "ResetCommand";
-
-
-                default:
-                    return "Unknown";
-
-            }
-
-        }
+            => TriggerReasons switch {
+                   TriggerReasons.Authorized            => "Authorized",
+                   TriggerReasons.CablePluggedIn        => "CablePluggedIn",
+                   TriggerReasons.ChargingRateChanged   => "ChargingRateChanged",
+                   TriggerReasons.ChargingStateChanged  => "ChargingStateChanged",
+                   TriggerReasons.Deauthorized          => "Deauthorized",
+                   TriggerReasons.EnergyLimitReached    => "EnergyLimitReached",
+                   TriggerReasons.EVCommunicationLost   => "EVCommunicationLost",
+                   TriggerReasons.EVConnectTimeout      => "EVConnectTimeout",
+                   TriggerReasons.MeterValueClock       => "MeterValueClock",
+                   TriggerReasons.MeterValuePeriodic    => "MeterValuePeriodic",
+                   TriggerReasons.TimeLimitReached      => "TimeLimitReached",
+                   TriggerReasons.Trigger               => "Trigger",
+                   TriggerReasons.UnlockCommand         => "UnlockCommand",
+                   TriggerReasons.StopAuthorized        => "StopAuthorized",
+                   TriggerReasons.EVDeparted            => "EVDeparted",
+                   TriggerReasons.EVDetected            => "EVDetected",
+                   TriggerReasons.RemoteStop            => "RemoteStop",
+                   TriggerReasons.RemoteStart           => "RemoteStart",
+                   TriggerReasons.AbnormalCondition     => "AbnormalCondition",
+                   TriggerReasons.SignedDataReceived    => "SignedDataReceived",
+                   TriggerReasons.ResetCommand          => "ResetCommand",
+                   _                                    => "Unknown"
+               };
 
         #endregion
 

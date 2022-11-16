@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -33,54 +27,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Parse(Text)
 
         public static TransactionEvents Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Started":
-                    return TransactionEvents.Started;
-
-                case "Updated":
-                    return TransactionEvents.Updated;
-
-                case "Ended":
-                    return TransactionEvents.Ended;
-
-
-                default:
-                    return TransactionEvents.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Started"  => TransactionEvents.Started,
+                   "Updated"  => TransactionEvents.Updated,
+                   "Ended"    => TransactionEvents.Ended,
+                   _          => TransactionEvents.Unknown
+               };
 
         #endregion
 
         #region AsText(this TransactionEvents)
 
         public static String AsText(this TransactionEvents TransactionEvents)
-        {
 
-            switch (TransactionEvents)
-            {
-
-                case TransactionEvents.Started:
-                    return "Started";
-
-                case TransactionEvents.Updated:
-                    return "Updated";
-
-                case TransactionEvents.Ended:
-                    return "Ended";
-
-
-                default:
-                    return "Unknown";
-
-            }
-
-        }
+            => TransactionEvents switch {
+                   TransactionEvents.Started  => "Started",
+                   TransactionEvents.Updated  => "Updated",
+                   TransactionEvents.Ended    => "Ended",
+                   _                          => "Unknown"
+               };
 
         #endregion
 

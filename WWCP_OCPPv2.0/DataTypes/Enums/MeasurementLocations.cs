@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -33,66 +27,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Parse(Text)
 
         public static MeasurementLocations Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Body":
-                    return MeasurementLocations.Body;
-
-                case "Cable":
-                    return MeasurementLocations.Cable;
-
-                case "EV":
-                    return MeasurementLocations.EV;
-
-                case "Inlet":
-                    return MeasurementLocations.Inlet;
-
-                case "Outlet":
-                    return MeasurementLocations.Outlet;
-
-
-                default:
-                    return MeasurementLocations.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Body"    => MeasurementLocations.Body,
+                   "Cable"   => MeasurementLocations.Cable,
+                   "EV"      => MeasurementLocations.EV,
+                   "Inlet"   => MeasurementLocations.Inlet,
+                   "Outlet"  => MeasurementLocations.Outlet,
+                   _         => MeasurementLocations.Unknown
+               };
 
         #endregion
 
         #region AsText(this MeasurementLocations)
 
         public static String AsText(this MeasurementLocations MeasurementLocations)
-        {
 
-            switch (MeasurementLocations)
-            {
-
-                case MeasurementLocations.Body:
-                    return "Body";
-
-                case MeasurementLocations.Cable:
-                    return "Cable";
-
-                case MeasurementLocations.EV:
-                    return "EV";
-
-                case MeasurementLocations.Inlet:
-                    return "Inlet";
-
-                case MeasurementLocations.Outlet:
-                    return "Outlet";
-
-
-                default:
-                    return "Unknown";
-
-            }
-
-        }
+            => MeasurementLocations switch {
+                   MeasurementLocations.Body    => "Body",
+                   MeasurementLocations.Cable   => "Cable",
+                   MeasurementLocations.EV      => "EV",
+                   MeasurementLocations.Inlet   => "Inlet",
+                   MeasurementLocations.Outlet  => "Outlet",
+                   _                            => "Unknown"
+               };
 
         #endregion
 

@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -37,27 +31,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="Text">A string representation of a registration status.</param>
         public static RegistrationStatus Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Accepted":
-                    return RegistrationStatus.Accepted;
-
-                case "Pending":
-                    return RegistrationStatus.Pending;
-
-                case "Rejected":
-                    return RegistrationStatus.Rejected;
-
-
-                default:
-                    return RegistrationStatus.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Accepted"  => RegistrationStatus.Accepted,
+                   "Pending"   => RegistrationStatus.Pending,
+                   "Rejected"  => RegistrationStatus.Rejected,
+                   _           => RegistrationStatus.Unknown
+               };
 
         #endregion
 
@@ -68,27 +48,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="RegistrationStatus">A registration status.</param>
         public static String AsText(this RegistrationStatus RegistrationStatus)
-        {
 
-            switch (RegistrationStatus)
-            {
-
-                case RegistrationStatus.Accepted:
-                    return "Accepted";
-
-                case RegistrationStatus.Pending:
-                    return "Pending";
-
-                case RegistrationStatus.Rejected:
-                    return "Rejected";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => RegistrationStatus switch {
+                   RegistrationStatus.Accepted  => "Accepted",
+                   RegistrationStatus.Pending   => "Pending",
+                   RegistrationStatus.Rejected  => "Rejected",
+                   _                            => "unknown"
+               };
 
         #endregion
 

@@ -44,13 +44,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static String AsText(this ConnectorStatus ConnectorStatus)
 
             => ConnectorStatus switch {
-                ConnectorStatus.Available    => "Available",
-                ConnectorStatus.Occupied     => "Occupied",
-                ConnectorStatus.Reserved     => "Reserved",
-                ConnectorStatus.Unavailable  => "Unavailable",
-                ConnectorStatus.Faulted      => "Faulted",
-                _                            => "unknown"
-            };
+                   ConnectorStatus.Available    => "Available",
+                   ConnectorStatus.Occupied     => "Occupied",
+                   ConnectorStatus.Reserved     => "Reserved",
+                   ConnectorStatus.Unavailable  => "Unavailable",
+                   ConnectorStatus.Faulted      => "Faulted",
+                   _                            => "unknown"
+               };
 
         #endregion
 

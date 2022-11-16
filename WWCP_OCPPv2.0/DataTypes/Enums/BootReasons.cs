@@ -29,17 +29,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static BootReasons Parse(this String Text)
 
             => Text.Trim() switch {
-                "ApplicationReset"  => BootReasons.ApplicationReset,
-                "FirmwareUpdate"    => BootReasons.FirmwareUpdate,
-                "LocalReset"        => BootReasons.LocalReset,
-                "PowerUp"           => BootReasons.PowerUp,
-                "RemoteReset"       => BootReasons.RemoteReset,
-                "ScheduledReset"    => BootReasons.ScheduledReset,
-                "Triggered"         => BootReasons.Triggered,
-                "Unknown"           => BootReasons.Unknown,
-                "Watchdog"          => BootReasons.Watchdog,
-                _                   => BootReasons.Unknown
-            };
+                   "ApplicationReset"  => BootReasons.ApplicationReset,
+                   "FirmwareUpdate"    => BootReasons.FirmwareUpdate,
+                   "LocalReset"        => BootReasons.LocalReset,
+                   "PowerUp"           => BootReasons.PowerUp,
+                   "RemoteReset"       => BootReasons.RemoteReset,
+                   "ScheduledReset"    => BootReasons.ScheduledReset,
+                   "Triggered"         => BootReasons.Triggered,
+                   "Unknown"           => BootReasons.Unknown,
+                   "Watchdog"          => BootReasons.Watchdog,
+                   _                   => BootReasons.Unknown
+               };
 
         #endregion
 
@@ -48,17 +48,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static String AsText(this BootReasons BootReason)
 
             => BootReason switch {
-                BootReasons.ApplicationReset  => "ApplicationReset",
-                BootReasons.FirmwareUpdate    => "FirmwareUpdate",
-                BootReasons.LocalReset        => "LocalReset",
-                BootReasons.PowerUp           => "PowerUp",
-                BootReasons.RemoteReset       => "RemoteReset",
-                BootReasons.ScheduledReset    => "ScheduledReset",
-                BootReasons.Triggered         => "Triggered",
-                BootReasons.Unknown           => "Unknown",
-                BootReasons.Watchdog          => "Watchdog",
-                _                             => "unknown"
-            };
+                   BootReasons.ApplicationReset  => "ApplicationReset",
+                   BootReasons.FirmwareUpdate    => "FirmwareUpdate",
+                   BootReasons.LocalReset        => "LocalReset",
+                   BootReasons.PowerUp           => "PowerUp",
+                   BootReasons.RemoteReset       => "RemoteReset",
+                   BootReasons.ScheduledReset    => "ScheduledReset",
+                   BootReasons.Triggered         => "Triggered",
+                   BootReasons.Unknown           => "Unknown",
+                   BootReasons.Watchdog          => "Watchdog",
+                   _                             => "unknown"
+               };
 
         #endregion
 

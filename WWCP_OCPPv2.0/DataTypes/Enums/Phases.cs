@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -33,96 +27,40 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Parse(Text)
 
         public static Phases Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "L1":
-                    return Phases.L1;
-
-                case "L2":
-                    return Phases.L2;
-
-                case "L3":
-                    return Phases.L3;
-
-                case "N":
-                    return Phases.N;
-
-                case "L1-N":
-                    return Phases.L1_N;
-
-                case "L2-N":
-                    return Phases.L2_N;
-
-                case "L3-N":
-                    return Phases.L3_N;
-
-                case "L1-L2":
-                    return Phases.L1_L2;
-
-                case "L2-L3":
-                    return Phases.L2_L3;
-
-                case "L3-L1":
-                    return Phases.L3_L1;
-
-
-                default:
-                    return Phases.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "L1"     => Phases.L1,
+                   "L2"     => Phases.L2,
+                   "L3"     => Phases.L3,
+                   "N"      => Phases.N,
+                   "L1-N"   => Phases.L1_N,
+                   "L2-N"   => Phases.L2_N,
+                   "L3-N"   => Phases.L3_N,
+                   "L1-L2"  => Phases.L1_L2,
+                   "L2-L3"  => Phases.L2_L3,
+                   "L3-L1"  => Phases.L3_L1,
+                   _        => Phases.Unknown
+               };
 
         #endregion
 
         #region AsText(this Phase)
 
         public static String AsText(this Phases Phase)
-        {
 
-            switch (Phase)
-            {
-
-                case Phases.L1:
-                    return "L1";
-
-                case Phases.L2:
-                    return "L2";
-
-                case Phases.L3:
-                    return "L3";
-
-                case Phases.N:
-                    return "N";
-
-                case Phases.L1_N:
-                    return "L1-N";
-
-                case Phases.L2_N:
-                    return "L2-N";
-
-                case Phases.L3_N:
-                    return "L3-N";
-
-                case Phases.L1_L2:
-                    return "L1-L2";
-
-                case Phases.L2_L3:
-                    return "L2-L3";
-
-                case Phases.L3_L1:
-                    return "L3-L1";
-
-
-                default:
-                    return "unknown";
-
-            }
-
-        }
+            => Phase switch {
+                   Phases.L1     => "L1",
+                   Phases.L2     => "L2",
+                   Phases.L3     => "L3",
+                   Phases.N      => "N",
+                   Phases.L1_N   => "L1-N",
+                   Phases.L2_N   => "L2-N",
+                   Phases.L3_N   => "L3-N",
+                   Phases.L1_L2  => "L1-L2",
+                   Phases.L2_L3  => "L2-L3",
+                   Phases.L3_L1  => "L3-L1",
+                   _             => "unknown"
+               };
 
         #endregion
 
@@ -191,7 +129,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Measured between L3 and L1.
         /// </summary>
         L3_L1
-
 
     }
 

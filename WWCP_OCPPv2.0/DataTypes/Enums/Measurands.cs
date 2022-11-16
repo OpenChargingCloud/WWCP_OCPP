@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
@@ -33,186 +27,70 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Parse(Text)
 
         public static Measurands Parse(String Text)
-        {
 
-            switch (Text?.Trim())
-            {
-
-                case "Current.Export":
-                    return Measurands.Current_Export;
-
-                case "Current.Import":
-                    return Measurands.Current_Import;
-
-                case "Current.Offered":
-                    return Measurands.Current_Offered;
-
-                case "Energy.Active.Export.Register":
-                    return Measurands.Energy_Active_Export_Register;
-
-                case "Energy.Active.Import.Register":
-                    return Measurands.Energy_Active_Import_Register;
-
-                case "Energy.Reactive.Export.Register":
-                    return Measurands.Energy_Reactive_Export_Register;
-
-                case "Energy.Reactive.Import.Register":
-                    return Measurands.Energy_Reactive_Import_Register;
-
-                case "Energy.Active.Export.Interval":
-                    return Measurands.Energy_Active_Export_Interval;
-
-                case "Energy.Active.Import.Interval":
-                    return Measurands.Energy_Active_Import_Interval;
-
-                case "Energy.Active.Net":
-                    return Measurands.Energy_Active_Net;
-
-                case "Energy.Reactive.Export.Interval":
-                    return Measurands.Energy_Reactive_Export_Interval;
-
-                case "Energy.Reactive.Import.Interval":
-                    return Measurands.Energy_Reactive_Import_Interval;
-
-                case "Energy.Reactive.Net":
-                    return Measurands.Energy_Reactive_Net;
-
-                case "Energy.Apparent.Net":
-                    return Measurands.Energy_Apparent_Net;
-
-                case "Energy.Apparent.Import":
-                    return Measurands.Energy_Apparent_Import;
-
-                case "Energy.Apparent.Export":
-                    return Measurands.Energy_Apparent_Export;
-
-                case "Frequency":
-                    return Measurands.Frequency;
-
-                case "Power.Active.Export":
-                    return Measurands.Power_Active_Export;
-
-                case "Power.Active.Import":
-                    return Measurands.Power_Active_Import;
-
-                case "Power.Factor":
-                    return Measurands.Power_Factor;
-
-                case "Power.Offered":
-                    return Measurands.Power_Offered;
-
-                case "Power.Reactive.Export":
-                    return Measurands.Power_Reactive_Export;
-
-                case "Power.Reactive.Import":
-                    return Measurands.Power_Reactive_Import;
-
-                case "SoC":
-                    return Measurands.SoC;
-
-                case "Voltage":
-                    return Measurands.Voltage;
-
-
-                default:
-                    return Measurands.Unknown;
-
-            }
-
-        }
+            => Text.Trim() switch {
+                   "Current.Export"                   => Measurands.Current_Export,
+                   "Current.Import"                   => Measurands.Current_Import,
+                   "Current.Offered"                  => Measurands.Current_Offered,
+                   "Energy.Active.Export.Register"    => Measurands.Energy_Active_Export_Register,
+                   "Energy.Active.Import.Register"    => Measurands.Energy_Active_Import_Register,
+                   "Energy.Reactive.Export.Register"  => Measurands.Energy_Reactive_Export_Register,
+                   "Energy.Reactive.Import.Register"  => Measurands.Energy_Reactive_Import_Register,
+                   "Energy.Active.Export.Interval"    => Measurands.Energy_Active_Export_Interval,
+                   "Energy.Active.Import.Interval"    => Measurands.Energy_Active_Import_Interval,
+                   "Energy.Active.Net"                => Measurands.Energy_Active_Net,
+                   "Energy.Reactive.Export.Interval"  => Measurands.Energy_Reactive_Export_Interval,
+                   "Energy.Reactive.Import.Interval"  => Measurands.Energy_Reactive_Import_Interval,
+                   "Energy.Reactive.Net"              => Measurands.Energy_Reactive_Net,
+                   "Energy.Apparent.Net"              => Measurands.Energy_Apparent_Net,
+                   "Energy.Apparent.Import"           => Measurands.Energy_Apparent_Import,
+                   "Energy.Apparent.Export"           => Measurands.Energy_Apparent_Export,
+                   "Frequency"                        => Measurands.Frequency,
+                   "Power.Active.Export"              => Measurands.Power_Active_Export,
+                   "Power.Active.Import"              => Measurands.Power_Active_Import,
+                   "Power.Factor"                     => Measurands.Power_Factor,
+                   "Power.Offered"                    => Measurands.Power_Offered,
+                   "Power.Reactive.Export"            => Measurands.Power_Reactive_Export,
+                   "Power.Reactive.Import"            => Measurands.Power_Reactive_Import,
+                   "SoC"                              => Measurands.SoC,
+                   "Voltage"                          => Measurands.Voltage,
+                   _                                  => Measurands.Unknown
+               };
 
         #endregion
 
         #region AsText(this Measurands)
 
         public static String AsText(this Measurands Measurands)
-        {
 
-            switch (Measurands)
-            {
-
-                case Measurands.Current_Export:
-                    return "Current.Export";
-
-                case Measurands.Current_Import:
-                    return "Current.Import";
-
-                case Measurands.Current_Offered:
-                    return "Current.Offered";
-
-                case Measurands.Energy_Active_Export_Register:
-                    return "Energy.Active.Export.Register";
-
-                case Measurands.Energy_Active_Import_Register:
-                    return "Energy.Active.Import.Register";
-
-                case Measurands.Energy_Reactive_Export_Register:
-                    return "Energy.Reactive.Export.Register";
-
-                case Measurands.Energy_Reactive_Import_Register:
-                    return "Energy.Reactive.Import.Register";
-
-                case Measurands.Energy_Active_Export_Interval:
-                    return "Energy.Active.Export.Interval";
-
-                case Measurands.Energy_Active_Import_Interval:
-                    return "Energy.Active.Import.Interval";
-
-                case Measurands.Energy_Active_Net:
-                    return "Energy.Active.Net";
-
-                case Measurands.Energy_Reactive_Export_Interval:
-                    return "Energy.Reactive.Export.Interval";
-
-                case Measurands.Energy_Reactive_Import_Interval:
-                    return "Energy.Reactive.Import.Interval";
-
-                case Measurands.Energy_Reactive_Net:
-                    return "Energy.Reactive.Net";
-
-                case Measurands.Energy_Apparent_Net:
-                    return "Energy.Apparent.Net";
-
-                case Measurands.Energy_Apparent_Import:
-                    return "Energy.Apparent.Import";
-
-                case Measurands.Energy_Apparent_Export:
-                    return "Energy.Apparent.Export";
-
-                case Measurands.Frequency:
-                    return "Frequency";
-
-                case Measurands.Power_Active_Export:
-                    return "Power.Active.Export";
-
-                case Measurands.Power_Active_Import:
-                    return "Power.Active.Import";
-
-                case Measurands.Power_Factor:
-                    return "Power.Factor";
-
-                case Measurands.Power_Offered:
-                    return "Power.Offered";
-
-                case Measurands.Power_Reactive_Export:
-                    return "Power.Reactive.Export";
-
-                case Measurands.Power_Reactive_Import:
-                    return "Power.Reactive.Import";
-
-                case Measurands.SoC:
-                    return "SoC";
-
-                case Measurands.Voltage:
-                    return "Voltage";
-
-
-                default:
-                    return "Unknown";
-
-            }
-
-        }
+            => Measurands switch {
+                Measurands.Current_Export                   => "Current.Export",
+                Measurands.Current_Import                   => "Current.Import",
+                Measurands.Current_Offered                  => "Current.Offered",
+                Measurands.Energy_Active_Export_Register    => "Energy.Active.Export.Register",
+                Measurands.Energy_Active_Import_Register    => "Energy.Active.Import.Register",
+                Measurands.Energy_Reactive_Export_Register  => "Energy.Reactive.Export.Register",
+                Measurands.Energy_Reactive_Import_Register  => "Energy.Reactive.Import.Register",
+                Measurands.Energy_Active_Export_Interval    => "Energy.Active.Export.Interval",
+                Measurands.Energy_Active_Import_Interval    => "Energy.Active.Import.Interval",
+                Measurands.Energy_Active_Net                => "Energy.Active.Net",
+                Measurands.Energy_Reactive_Export_Interval  => "Energy.Reactive.Export.Interval",
+                Measurands.Energy_Reactive_Import_Interval  => "Energy.Reactive.Import.Interval",
+                Measurands.Energy_Reactive_Net              => "Energy.Reactive.Net",
+                Measurands.Energy_Apparent_Net              => "Energy.Apparent.Net",
+                Measurands.Energy_Apparent_Import           => "Energy.Apparent.Import",
+                Measurands.Energy_Apparent_Export           => "Energy.Apparent.Export",
+                Measurands.Frequency                        => "Frequency",
+                Measurands.Power_Active_Export              => "Power.Active.Export",
+                Measurands.Power_Active_Import              => "Power.Active.Import",
+                Measurands.Power_Factor                     => "Power.Factor",
+                Measurands.Power_Offered                    => "Power.Offered",
+                Measurands.Power_Reactive_Export            => "Power.Reactive.Export",
+                Measurands.Power_Reactive_Import            => "Power.Reactive.Import",
+                Measurands.SoC                              => "SoC",
+                Measurands.Voltage                          => "Voltage",
+                _                                           => "Unknown"
+            };
 
         #endregion
 
