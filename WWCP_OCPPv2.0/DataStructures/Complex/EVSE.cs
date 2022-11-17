@@ -72,11 +72,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Documentation
 
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:EVSEType",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "description": EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment\r\n",
+        // "EVSEType": {
+        //   "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment\r\n",
         //   "javaType": "EVSE",
         //   "type": "object",
         //   "additionalProperties": false,
@@ -191,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region CustomData
+                #region CustomData     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -235,20 +232,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="CustomEVSEResponseSerializer">A delegate to serialize custom EVSE objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<EVSE>       CustomEVSEResponseSerializer         = null,
-                              CustomJObjectSerializerDelegate<CustomData> CustomCustomDataResponseSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<EVSE>?        CustomEVSEResponseSerializer         = null,
+                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataResponseSerializer   = null)
         {
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("id",                 Id.ToString()),
+                                 new JProperty("id",           Id.               ToString()),
 
                            ConnectorId.HasValue
                                ? new JProperty("connectorId",  ConnectorId.Value.ToString())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",   CustomData.       ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );

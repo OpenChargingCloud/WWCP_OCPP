@@ -108,6 +108,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
+        #region GetHashCode()
+
+        /// <summary>
+        /// Return the HashCode of this object.
+        /// </summary>
+        /// <returns>The HashCode of this object.</returns>
+        public override Int32 GetHashCode()
+        {
+            unchecked
+            {
+
+                return Request.GetHashCode() * 5 ^
+                       Runtime.GetHashCode() * 3 ^
+
+                       base.GetHashCode();
+
+            }
+        }
+
+        #endregion
 
     }
 
@@ -250,7 +270,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         {
             unchecked
             {
-                return Result.GetHashCode();
+
+                return Result.           GetHashCode() * 3 ^
+                       ResponseTimestamp.GetHashCode();
+
             }
         }
 

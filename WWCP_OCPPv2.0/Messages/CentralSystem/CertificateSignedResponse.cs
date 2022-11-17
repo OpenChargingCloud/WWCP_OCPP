@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CP
+namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
@@ -38,13 +38,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The success or failure of the certificate sign request.
         /// </summary>
-        public CertificateSignedStatus  Status    { get; }
+        public CertificateSignedStatus  Status        { get; }
+
+        /// <summary>
+        /// Optional detailed status information.
+        /// </summary>
+        public StatusInfo?              StatusInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region CertificateSignedResponse(Request, Status)
+        #region CertificateSignedResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new certificate signed response.
@@ -52,14 +57,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">The certificate signed request leading to this response.</param>
         /// <param name="Status">The success or failure of the certificate sign request.</param>
         public CertificateSignedResponse(CS.CertificateSignedRequest  Request,
-                                         CertificateSignedStatus      Status)
+                                         CertificateSignedStatus      Status,
+                                         StatusInfo?                  StatusInfo   = null,
+                                         CustomData?                  CustomData   = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   CustomData)
 
         {
 
-            this.Status = Status;
+            this.Status      = Status;
+            this.StatusInfo  = StatusInfo;
 
         }
 
@@ -89,24 +98,71 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:1.6:2020:3:CertificateSigned.conf",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:CertificateSignedResponse",
+        //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
+        //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
+        //     },
         //     "CertificateSignedStatusEnumType": {
+        //       "description": "Returns whether certificate signing has been accepted, otherwise rejected.\r\n",
+        //       "javaType": "CertificateSignedStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
         //         "Accepted",
         //         "Rejected"
         //       ]
+        //     },
+        //     "StatusInfoType": {
+        //       "description": "Element providing more information about the status.\r\n",
+        //       "javaType": "StatusInfo",
+        //       "type": "object",
+        //       "additionalProperties": false,
+        //       "properties": {
+        //         "customData": {
+        //           "$ref": "#/definitions/CustomDataType"
+        //         },
+        //         "reasonCode": {
+        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //           "type": "string",
+        //           "maxLength": 20
+        //         },
+        //         "additionalInfo": {
+        //           "description": "Additional text to provide detailed information.\r\n",
+        //           "type": "string",
+        //           "maxLength": 512
+        //         }
+        //       },
+        //       "required": [
+        //         "reasonCode"
+        //       ]
         //     }
-        // },
+        //   },
         //   "type": "object",
         //   "additionalProperties": false,
         //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     },
         //     "status": {
-        //         "$ref": "#/definitions/CertificateSignedStatusEnumType"
+        //       "$ref": "#/definitions/CertificateSignedStatusEnumType"
+        //     },
+        //     "statusInfo": {
+        //       "$ref": "#/definitions/StatusInfoType"
         //     }
-        // },
+        //   },
         //   "required": [
         //     "status"
         //   ]
@@ -165,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 CertificateSignedResponse = null;
 
-                #region Status    [mandatory]
+                #region Status        [mandatory]
 
                 if (!JSON.MapMandatory("status",
                                        "certificate signed status",
@@ -178,9 +234,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
+                #region StatusInfo    [optional]
+
+                if (JSON.ParseOptionalJSON("statusInfo",
+                                           "detailed status info",
+                                           OCPPv2_0.StatusInfo.TryParse,
+                                           out StatusInfo? StatusInfo,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 CertificateSignedResponse = new CertificateSignedResponse(Request,
-                                                                          Status);
+                                                                          Status,
+                                                                          StatusInfo,
+                                                                          CustomData);
 
                 if (CustomCertificateSignedResponseParser is not null)
                     CertificateSignedResponse = CustomCertificateSignedResponseParser(JSON,
@@ -200,17 +286,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToJSON(CustomCertificateSignedResponseSerializer = null)
+        #region ToJSON(CustomCertificateSignedResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomCertificateSignedResponseSerializer">A delegate to serialize custom certificate signed responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<CertificateSignedResponse>? CustomCertificateSignedResponseSerializer = null)
+        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom StatusInfo object.</param>
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<CertificateSignedResponse>?  CustomCertificateSignedResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                 CustomStatusInfoResponseSerializer          = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataResponseSerializer          = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("status",  Status.AsText())
+
+                                 new JProperty("status",      Status.    AsText()),
+
+                           StatusInfo is not null
+                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoResponseSerializer,
+                                                                                CustomCustomDataResponseSerializer))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               : null
+
                        );
 
             return CustomCertificateSignedResponseSerializer is not null
@@ -305,7 +406,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public override Boolean Equals(CertificateSignedResponse? CertificateSignedResponse)
 
             => CertificateSignedResponse is not null &&
-                   Status.Equals(CertificateSignedResponse.Status);
+
+               Status.Equals(CertificateSignedResponse.Status) &&
+
+             ((StatusInfo is     null && CertificateSignedResponse.StatusInfo is     null) ||
+               StatusInfo is not null && CertificateSignedResponse.StatusInfo is not null && StatusInfo.Equals(CertificateSignedResponse.StatusInfo));
 
         #endregion
 
@@ -318,8 +423,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => Status.GetHashCode();
+                return Status.     GetHashCode() * 3 ^
+                       StatusInfo?.GetHashCode() ?? 0;
+
+            }
+        }
 
         #endregion
 

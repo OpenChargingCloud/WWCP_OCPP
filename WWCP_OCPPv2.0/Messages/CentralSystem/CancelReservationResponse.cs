@@ -17,15 +17,13 @@
 
 #region Usings
 
-using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CP
+namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
@@ -42,11 +40,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public CancelReservationStatus  Status    { get; }
 
+        /// <summary>
+        /// Optional detailed status information.
+        /// </summary>
+        public StatusInfo?              StatusInfo    { get; }
+
         #endregion
 
         #region Constructor(s)
 
-        #region CancelReservationResponse(Request, Status)
+        #region CancelReservationResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new cancel reservation response.
@@ -54,10 +57,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">The cancel reservation request leading to this response.</param>
         /// <param name="Status">The success or failure of the reservation.</param>
         public CancelReservationResponse(CS.CancelReservationRequest  Request,
-                                         CancelReservationStatus      Status)
+                                         CancelReservationStatus      Status,
+                                         StatusInfo?                  StatusInfo   = null,
+                                         CustomData?                  CustomData   = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   CustomData)
 
         {
 
@@ -89,64 +95,77 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Documentation
 
-        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:ns   = "urn://Ocpp/Cp/2015/10/">
-        //    <soap:Header/>
-        //    <soap:Body>
-        //       <ns:cancelReservationStatus>
-        //
-        //          <ns:status>?</ns:status>
-        //
-        //       </ns:cancelReservationStatus>
-        //    </soap:Body>
-        // </soap:Envelope>
-
         // {
-        //     "$schema": "http://json-schema.org/draft-04/schema#",
-        //     "id":      "urn:OCPP:1.6:2019:12:CancelReservationResponse",
-        //     "title":   "CancelReservationResponse",
-        //     "type":    "object",
-        //     "properties": {
-        //         "status": {
-        //             "type": "string",
-        //             "additionalProperties": false,
-        //             "enum": [
-        //                 "Accepted",
-        //                 "Rejected"
-        //             ]
+        //   "$schema": "http://json-schema.org/draft-06/schema#",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:CancelReservationResponse",
+        //   "comment": "OCPP 2.0.1 FINAL",
+        //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
         //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
         //     },
-        //     "additionalProperties": false,
-        //     "required": [
-        //         "status"
-        //     ]
+        //     "CancelReservationStatusEnumType": {
+        //       "description": "This indicates the success or failure of the canceling of a reservation by CSMS.\r\n",
+        //       "javaType": "CancelReservationStatusEnum",
+        //       "type": "string",
+        //       "additionalProperties": false,
+        //       "enum": [
+        //         "Accepted",
+        //         "Rejected"
+        //       ]
+        //     },
+        //     "StatusInfoType": {
+        //       "description": "Element providing more information about the status.\r\n",
+        //       "javaType": "StatusInfo",
+        //       "type": "object",
+        //       "additionalProperties": false,
+        //       "properties": {
+        //         "customData": {
+        //           "$ref": "#/definitions/CustomDataType"
+        //         },
+        //         "reasonCode": {
+        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //           "type": "string",
+        //           "maxLength": 20
+        //         },
+        //         "additionalInfo": {
+        //           "description": "Additional text to provide detailed information.\r\n",
+        //           "type": "string",
+        //           "maxLength": 512
+        //         }
+        //       },
+        //       "required": [
+        //         "reasonCode"
+        //       ]
+        //     }
+        //   },
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     },
+        //     "status": {
+        //       "$ref": "#/definitions/CancelReservationStatusEnumType"
+        //     },
+        //     "statusInfo": {
+        //       "$ref": "#/definitions/StatusInfoType"
+        //     }
+        //   },
+        //   "required": [
+        //     "status"
+        //   ]
         // }
-
-        #endregion
-
-        #region (static) Parse   (Request, XML)
-
-        /// <summary>
-        /// Parse the given XML representation of a cancel reservation response.
-        /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        public static CancelReservationResponse Parse(CS.CancelReservationRequest  Request,
-                                                      XElement                     XML)
-        {
-
-            if (TryParse(Request,
-                         XML,
-                         out var cancelReservationResponse,
-                         out var errorResponse))
-            {
-                return cancelReservationResponse!;
-            }
-
-            throw new ArgumentException("The given XML representation of a cancel reservation response is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
 
         #endregion
 
@@ -179,48 +198,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out CancelReservationResponse, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a cancel reservation response.
-        /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="CancelReservationResponse">The parsed cancel reservation response.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CS.CancelReservationRequest     Request,
-                                       XElement                        XML,
-                                       out CancelReservationResponse?  CancelReservationResponse,
-                                       out String?                     ErrorResponse)
-        {
-
-            try
-            {
-
-                CancelReservationResponse = new CancelReservationResponse(
-
-                                                Request,
-
-                                                XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                   CancelReservationStatusExtentions.Parse)
-
-                                            );
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                CancelReservationResponse  = null;
-                ErrorResponse              = "The given XML representation of a cancel reservation response is invalid: " + e.Message;
-                return false;
-            }
-
-        }
-
-        #endregion
-
         #region (static) TryParse(Request, JSON, out CancelReservationResponse, out ErrorResponse, CustomCancelReservationResponseParser = null)
 
         /// <summary>
@@ -243,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 CancelReservationResponse = null;
 
-                #region Status    [mandatory]
+                #region Status        [mandatory]
 
                 if (!JSON.MapMandatory("status",
                                        "cancel reservation status",
@@ -256,9 +233,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
+                #region StatusInfo    [optional]
+
+                if (JSON.ParseOptionalJSON("statusInfo",
+                                           "detailed status info",
+                                           OCPPv2_0.StatusInfo.TryParse,
+                                           out StatusInfo? StatusInfo,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 CancelReservationResponse = new CancelReservationResponse(Request,
-                                                                          Status);
+                                                                          Status,
+                                                                          StatusInfo,
+                                                                          CustomData);
 
                 if (CustomCancelReservationResponseParser is not null)
                     CancelReservationResponse = CustomCancelReservationResponseParser(JSON,
@@ -278,30 +285,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new (OCPPNS.OCPPv1_6_CP + "cancelReservationResponse",
-                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
-               );
-
-        #endregion
-
-        #region ToJSON(CustomCancelReservationResponseSerializer = null)
+        #region ToJSON(CustomCancelReservationResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomCancelReservationResponseSerializer">A delegate to serialize custom cancel reservation responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationResponse>? CustomCancelReservationResponseSerializer = null)
+        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom StatusInfo object.</param>
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationResponse>?  CustomCancelReservationResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                 CustomStatusInfoResponseSerializer          = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataResponseSerializer          = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("status",  Status.AsText())
+
+                                 new JProperty("status",      Status.    AsText()),
+
+                           StatusInfo is not null
+                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoResponseSerializer,
+                                                                                CustomCustomDataResponseSerializer))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               : null
+
                        );
 
             return CustomCancelReservationResponseSerializer is not null
@@ -396,7 +405,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public override Boolean Equals(CancelReservationResponse? CancelReservationResponse)
 
             => CancelReservationResponse is not null &&
-                   Status.Equals(CancelReservationResponse.Status);
+
+               Status.Equals(CancelReservationResponse.Status) &&
+
+             ((StatusInfo is     null && CancelReservationResponse.StatusInfo is     null) ||
+               StatusInfo is not null && CancelReservationResponse.StatusInfo is not null && StatusInfo.Equals(CancelReservationResponse.StatusInfo));
 
         #endregion
 
@@ -409,8 +422,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => Status.GetHashCode();
+                return Status.     GetHashCode() * 3 ^
+                       StatusInfo?.GetHashCode() ?? 0;
+
+            }
+        }
 
         #endregion
 
