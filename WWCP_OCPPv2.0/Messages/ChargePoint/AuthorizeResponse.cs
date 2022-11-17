@@ -531,8 +531,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="AuthorizeResponse1">A authorize response.</param>
         /// <param name="AuthorizeResponse2">Another authorize response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (AuthorizeResponse AuthorizeResponse1,
-                                           AuthorizeResponse AuthorizeResponse2)
+        public static Boolean operator == (AuthorizeResponse? AuthorizeResponse1,
+                                           AuthorizeResponse? AuthorizeResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -557,8 +557,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="AuthorizeResponse1">A authorize response.</param>
         /// <param name="AuthorizeResponse2">Another authorize response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (AuthorizeResponse AuthorizeResponse1,
-                                           AuthorizeResponse AuthorizeResponse2)
+        public static Boolean operator != (AuthorizeResponse? AuthorizeResponse1,
+                                           AuthorizeResponse? AuthorizeResponse2)
 
             => !(AuthorizeResponse1 == AuthorizeResponse2);
 

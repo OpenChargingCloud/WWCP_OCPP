@@ -340,8 +340,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ReserveNowResponse1">A reserve now response.</param>
         /// <param name="ReserveNowResponse2">Another reserve now response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ReserveNowResponse ReserveNowResponse1,
-                                           ReserveNowResponse ReserveNowResponse2)
+        public static Boolean operator == (ReserveNowResponse? ReserveNowResponse1,
+                                           ReserveNowResponse? ReserveNowResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -366,8 +366,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ReserveNowResponse1">A reserve now response.</param>
         /// <param name="ReserveNowResponse2">Another reserve now response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ReserveNowResponse ReserveNowResponse1,
-                                           ReserveNowResponse ReserveNowResponse2)
+        public static Boolean operator != (ReserveNowResponse? ReserveNowResponse1,
+                                           ReserveNowResponse? ReserveNowResponse2)
 
             => !(ReserveNowResponse1 == ReserveNowResponse2);
 

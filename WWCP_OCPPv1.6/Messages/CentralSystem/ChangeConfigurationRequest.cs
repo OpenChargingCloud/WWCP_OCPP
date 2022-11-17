@@ -405,8 +405,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ChangeConfigurationRequest1">A ChangeConfiguration request.</param>
         /// <param name="ChangeConfigurationRequest2">Another ChangeConfiguration request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ChangeConfigurationRequest ChangeConfigurationRequest1,
-                                           ChangeConfigurationRequest ChangeConfigurationRequest2)
+        public static Boolean operator == (ChangeConfigurationRequest? ChangeConfigurationRequest1,
+                                           ChangeConfigurationRequest? ChangeConfigurationRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -431,8 +431,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ChangeConfigurationRequest1">A ChangeConfiguration request.</param>
         /// <param name="ChangeConfigurationRequest2">Another ChangeConfiguration request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ChangeConfigurationRequest ChangeConfigurationRequest1,
-                                           ChangeConfigurationRequest ChangeConfigurationRequest2)
+        public static Boolean operator != (ChangeConfigurationRequest? ChangeConfigurationRequest1,
+                                           ChangeConfigurationRequest? ChangeConfigurationRequest2)
 
             => !(ChangeConfigurationRequest1 == ChangeConfigurationRequest2);
 

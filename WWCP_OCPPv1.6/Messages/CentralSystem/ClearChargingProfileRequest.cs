@@ -510,8 +510,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ClearChargingProfileRequest1">A ClearChargingProfile request.</param>
         /// <param name="ClearChargingProfileRequest2">Another ClearChargingProfile request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ClearChargingProfileRequest ClearChargingProfileRequest1,
-                                           ClearChargingProfileRequest ClearChargingProfileRequest2)
+        public static Boolean operator == (ClearChargingProfileRequest? ClearChargingProfileRequest1,
+                                           ClearChargingProfileRequest? ClearChargingProfileRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -536,8 +536,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ClearChargingProfileRequest1">A ClearChargingProfile request.</param>
         /// <param name="ClearChargingProfileRequest2">Another ClearChargingProfile request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ClearChargingProfileRequest ClearChargingProfileRequest1,
-                                           ClearChargingProfileRequest ClearChargingProfileRequest2)
+        public static Boolean operator != (ClearChargingProfileRequest? ClearChargingProfileRequest1,
+                                           ClearChargingProfileRequest? ClearChargingProfileRequest2)
 
             => !(ClearChargingProfileRequest1 == ClearChargingProfileRequest2);
 

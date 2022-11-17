@@ -264,8 +264,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="SignCertificateRequest1">A sign certificate request.</param>
         /// <param name="SignCertificateRequest2">Another sign certificate request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (SignCertificateRequest SignCertificateRequest1,
-                                           SignCertificateRequest SignCertificateRequest2)
+        public static Boolean operator == (SignCertificateRequest? SignCertificateRequest1,
+                                           SignCertificateRequest? SignCertificateRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -290,8 +290,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="SignCertificateRequest1">A sign certificate request.</param>
         /// <param name="SignCertificateRequest2">Another sign certificate request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (SignCertificateRequest SignCertificateRequest1,
-                                           SignCertificateRequest SignCertificateRequest2)
+        public static Boolean operator != (SignCertificateRequest? SignCertificateRequest1,
+                                           SignCertificateRequest? SignCertificateRequest2)
 
             => !(SignCertificateRequest1 == SignCertificateRequest2);
 

@@ -378,8 +378,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="DataTransferResponse1">A data transfer response.</param>
         /// <param name="DataTransferResponse2">Another data transfer response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (DataTransferResponse DataTransferResponse1,
-                                           DataTransferResponse DataTransferResponse2)
+        public static Boolean operator == (DataTransferResponse? DataTransferResponse1,
+                                           DataTransferResponse? DataTransferResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -404,8 +404,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="DataTransferResponse1">A data transfer response.</param>
         /// <param name="DataTransferResponse2">Another data transfer response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (DataTransferResponse DataTransferResponse1,
-                                           DataTransferResponse DataTransferResponse2)
+        public static Boolean operator != (DataTransferResponse? DataTransferResponse1,
+                                           DataTransferResponse? DataTransferResponse2)
 
             => !(DataTransferResponse1 == DataTransferResponse2);
 

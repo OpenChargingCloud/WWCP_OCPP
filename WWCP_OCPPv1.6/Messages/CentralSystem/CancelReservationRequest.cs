@@ -374,8 +374,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CancelReservationRequest1">A CancelReservation request.</param>
         /// <param name="CancelReservationRequest2">Another CancelReservation request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (CancelReservationRequest CancelReservationRequest1,
-                                           CancelReservationRequest CancelReservationRequest2)
+        public static Boolean operator == (CancelReservationRequest? CancelReservationRequest1,
+                                           CancelReservationRequest? CancelReservationRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -400,8 +400,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CancelReservationRequest1">A CancelReservation request.</param>
         /// <param name="CancelReservationRequest2">Another CancelReservation request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (CancelReservationRequest CancelReservationRequest1,
-                                           CancelReservationRequest CancelReservationRequest2)
+        public static Boolean operator != (CancelReservationRequest? CancelReservationRequest1,
+                                           CancelReservationRequest? CancelReservationRequest2)
 
             => !(CancelReservationRequest1 == CancelReservationRequest2);
 

@@ -697,8 +697,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargingProfile1">An id tag info.</param>
         /// <param name="ChargingProfile2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingProfile ChargingProfile1,
-                                           ChargingProfile ChargingProfile2)
+        public static Boolean operator == (ChargingProfile? ChargingProfile1,
+                                           ChargingProfile? ChargingProfile2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -723,8 +723,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargingProfile1">An id tag info.</param>
         /// <param name="ChargingProfile2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingProfile ChargingProfile1,
-                                           ChargingProfile ChargingProfile2)
+        public static Boolean operator != (ChargingProfile? ChargingProfile1,
+                                           ChargingProfile? ChargingProfile2)
 
             => !(ChargingProfile1 == ChargingProfile2);
 

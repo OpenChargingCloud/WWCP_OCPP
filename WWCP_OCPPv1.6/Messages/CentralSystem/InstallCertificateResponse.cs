@@ -247,8 +247,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="InstallCertificateResponse1">An install certificate response.</param>
         /// <param name="InstallCertificateResponse2">Another install certificate response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (InstallCertificateResponse InstallCertificateResponse1,
-                                           InstallCertificateResponse InstallCertificateResponse2)
+        public static Boolean operator == (InstallCertificateResponse? InstallCertificateResponse1,
+                                           InstallCertificateResponse? InstallCertificateResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -273,8 +273,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="InstallCertificateResponse1">An install certificate response.</param>
         /// <param name="InstallCertificateResponse2">Another install certificate response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (InstallCertificateResponse InstallCertificateResponse1,
-                                           InstallCertificateResponse InstallCertificateResponse2)
+        public static Boolean operator != (InstallCertificateResponse? InstallCertificateResponse1,
+                                           InstallCertificateResponse? InstallCertificateResponse2)
 
             => !(InstallCertificateResponse1 == InstallCertificateResponse2);
 

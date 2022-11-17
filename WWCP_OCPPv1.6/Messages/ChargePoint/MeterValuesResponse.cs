@@ -279,8 +279,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="MeterValuesResponse1">A meter values response.</param>
         /// <param name="MeterValuesResponse2">Another meter values response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (MeterValuesResponse MeterValuesResponse1,
-                                           MeterValuesResponse MeterValuesResponse2)
+        public static Boolean operator == (MeterValuesResponse? MeterValuesResponse1,
+                                           MeterValuesResponse? MeterValuesResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -305,8 +305,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="MeterValuesResponse1">A meter values response.</param>
         /// <param name="MeterValuesResponse2">Another meter values response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (MeterValuesResponse MeterValuesResponse1,
-                                           MeterValuesResponse MeterValuesResponse2)
+        public static Boolean operator != (MeterValuesResponse? MeterValuesResponse1,
+                                           MeterValuesResponse? MeterValuesResponse2)
 
             => !(MeterValuesResponse1 == MeterValuesResponse2);
 

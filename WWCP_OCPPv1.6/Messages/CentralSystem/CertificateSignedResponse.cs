@@ -246,8 +246,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CertificateSignedResponse1">A certificate signed response.</param>
         /// <param name="CertificateSignedResponse2">Another certificate signed response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (CertificateSignedResponse CertificateSignedResponse1,
-                                           CertificateSignedResponse CertificateSignedResponse2)
+        public static Boolean operator == (CertificateSignedResponse? CertificateSignedResponse1,
+                                           CertificateSignedResponse? CertificateSignedResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -272,8 +272,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CertificateSignedResponse1">A certificate signed response.</param>
         /// <param name="CertificateSignedResponse2">Another certificate signed response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (CertificateSignedResponse CertificateSignedResponse1,
-                                           CertificateSignedResponse CertificateSignedResponse2)
+        public static Boolean operator != (CertificateSignedResponse? CertificateSignedResponse1,
+                                           CertificateSignedResponse? CertificateSignedResponse2)
 
             => !(CertificateSignedResponse1 == CertificateSignedResponse2);
 

@@ -340,8 +340,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="TriggerMessageResponse1">A trigger message response.</param>
         /// <param name="TriggerMessageResponse2">Another trigger message response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (TriggerMessageResponse TriggerMessageResponse1,
-                                           TriggerMessageResponse TriggerMessageResponse2)
+        public static Boolean operator == (TriggerMessageResponse? TriggerMessageResponse1,
+                                           TriggerMessageResponse? TriggerMessageResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -366,8 +366,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="TriggerMessageResponse1">A trigger message response.</param>
         /// <param name="TriggerMessageResponse2">Another trigger message response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (TriggerMessageResponse TriggerMessageResponse1,
-                                           TriggerMessageResponse TriggerMessageResponse2)
+        public static Boolean operator != (TriggerMessageResponse? TriggerMessageResponse1,
+                                           TriggerMessageResponse? TriggerMessageResponse2)
 
             => !(TriggerMessageResponse1 == TriggerMessageResponse2);
 

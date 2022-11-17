@@ -337,8 +337,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RemoteStopTransactionResponse1">A remote stop transaction response.</param>
         /// <param name="RemoteStopTransactionResponse2">Another remote stop transaction response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (RemoteStopTransactionResponse RemoteStopTransactionResponse1,
-                                           RemoteStopTransactionResponse RemoteStopTransactionResponse2)
+        public static Boolean operator == (RemoteStopTransactionResponse? RemoteStopTransactionResponse1,
+                                           RemoteStopTransactionResponse? RemoteStopTransactionResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -363,8 +363,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RemoteStopTransactionResponse1">A remote stop transaction response.</param>
         /// <param name="RemoteStopTransactionResponse2">Another remote stop transaction response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (RemoteStopTransactionResponse RemoteStopTransactionResponse1,
-                                           RemoteStopTransactionResponse RemoteStopTransactionResponse2)
+        public static Boolean operator != (RemoteStopTransactionResponse? RemoteStopTransactionResponse1,
+                                           RemoteStopTransactionResponse? RemoteStopTransactionResponse2)
 
             => !(RemoteStopTransactionResponse1 == RemoteStopTransactionResponse2);
 

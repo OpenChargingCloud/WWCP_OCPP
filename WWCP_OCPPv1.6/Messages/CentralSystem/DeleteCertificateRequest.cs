@@ -304,8 +304,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="DeleteCertificateRequest1">A delete certificate request.</param>
         /// <param name="DeleteCertificateRequest2">Another delete certificate request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (DeleteCertificateRequest DeleteCertificateRequest1,
-                                           DeleteCertificateRequest DeleteCertificateRequest2)
+        public static Boolean operator == (DeleteCertificateRequest? DeleteCertificateRequest1,
+                                           DeleteCertificateRequest? DeleteCertificateRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -330,8 +330,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="DeleteCertificateRequest1">A delete certificate request.</param>
         /// <param name="DeleteCertificateRequest2">Another delete certificate request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (DeleteCertificateRequest DeleteCertificateRequest1,
-                                           DeleteCertificateRequest DeleteCertificateRequest2)
+        public static Boolean operator != (DeleteCertificateRequest? DeleteCertificateRequest1,
+                                           DeleteCertificateRequest? DeleteCertificateRequest2)
 
             => !(DeleteCertificateRequest1 == DeleteCertificateRequest2);
 

@@ -815,7 +815,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="Autostart">Start the server immediately.</param>
-        public CentralSystemWSServer CreateWebSocketService(String       HTTPServerName               = CentralSystemWSServer.DefaultHTTPServerName,
+        public CentralSystemWSServer CreateWebSocketService(String       HTTPServerName               = CentralSystemWSServer.DefaultHTTPServiceName,
                                                             IIPAddress?  IPAddress                    = null,
                                                             IPPort?      TCPPort                      = null,
 

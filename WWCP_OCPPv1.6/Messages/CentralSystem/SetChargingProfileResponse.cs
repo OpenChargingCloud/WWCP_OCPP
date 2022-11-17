@@ -324,8 +324,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">The set charging profile request leading to this response.</param>
         public static SetChargingProfileResponse Failed(CS.SetChargingProfileRequest Request)
 
-            => new SetChargingProfileResponse(Request,
-                                              Result.Server());
+            => new (Request,
+                    Result.Server());
 
         #endregion
 
@@ -340,7 +340,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="SetChargingProfileResponse1">A set charging profile response.</param>
         /// <param name="SetChargingProfileResponse2">Another set charging profile response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (SetChargingProfileResponse SetChargingProfileResponse1, SetChargingProfileResponse SetChargingProfileResponse2)
+        public static Boolean operator == (SetChargingProfileResponse? SetChargingProfileResponse1,
+                                           SetChargingProfileResponse? SetChargingProfileResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -365,7 +366,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="SetChargingProfileResponse1">A set charging profile response.</param>
         /// <param name="SetChargingProfileResponse2">Another set charging profile response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (SetChargingProfileResponse SetChargingProfileResponse1, SetChargingProfileResponse SetChargingProfileResponse2)
+        public static Boolean operator != (SetChargingProfileResponse? SetChargingProfileResponse1,
+                                           SetChargingProfileResponse? SetChargingProfileResponse2)
 
             => !(SetChargingProfileResponse1 == SetChargingProfileResponse2);
 
@@ -378,22 +380,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two set charging profile responses for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A set charging profile response to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is SetChargingProfileResponse SetChargingProfileResponse))
-                return false;
-
-            return Equals(SetChargingProfileResponse);
-
-        }
+            => Object is SetChargingProfileResponse setChargingProfileResponse &&
+                   Equals(setChargingProfileResponse);
 
         #endregion
 
@@ -403,16 +396,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Compares two set charging profile responses for equality.
         /// </summary>
         /// <param name="SetChargingProfileResponse">A set charging profile response to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(SetChargingProfileResponse SetChargingProfileResponse)
-        {
+        public override Boolean Equals(SetChargingProfileResponse? SetChargingProfileResponse)
 
-            if (SetChargingProfileResponse is null)
-                return false;
-
-            return Status.Equals(SetChargingProfileResponse.Status);
-
-        }
+            => SetChargingProfileResponse is not null &&
+                   Status.Equals(SetChargingProfileResponse.Status);
 
         #endregion
 

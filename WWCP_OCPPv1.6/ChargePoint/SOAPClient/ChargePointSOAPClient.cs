@@ -96,22 +96,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a boot notification Request will be send to the central system.
         /// </summary>
-        public event OnBootNotificationRequestDelegate   OnBootNotificationRequest;
+        public event OnBootNotificationRequestDelegate?    OnBootNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a boot notification SOAP Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler             OnBootNotificationSOAPRequest;
+        public event ClientRequestLogHandler?              OnBootNotificationSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a boot notification SOAP Request was received.
         /// </summary>
-        public event ClientResponseLogHandler            OnBootNotificationSOAPResponse;
+        public event ClientResponseLogHandler?             OnBootNotificationSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a boot notification Request was received.
         /// </summary>
-        public event OnBootNotificationResponseDelegate  OnBootNotificationResponse;
+        public event OnBootNotificationResponseDelegate?   OnBootNotificationResponse;
 
         #endregion
 
@@ -120,22 +120,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a heartbeat Request will be send to the central system.
         /// </summary>
-        public event OnHeartbeatRequestDelegate   OnHeartbeatRequest;
+        public event OnHeartbeatRequestDelegate?    OnHeartbeatRequest;
 
         /// <summary>
         /// An event fired whenever a heartbeat SOAP Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler      OnHeartbeatSOAPRequest;
+        public event ClientRequestLogHandler?       OnHeartbeatSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a heartbeat SOAP Request was received.
         /// </summary>
-        public event ClientResponseLogHandler     OnHeartbeatSOAPResponse;
+        public event ClientResponseLogHandler?      OnHeartbeatSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a heartbeat Request was received.
         /// </summary>
-        public event OnHeartbeatResponseDelegate  OnHeartbeatResponse;
+        public event OnHeartbeatResponseDelegate?   OnHeartbeatResponse;
 
         #endregion
 
@@ -145,22 +145,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever an authorize Request will be send to the central system.
         /// </summary>
-        public event OnAuthorizeRequestDelegate   OnAuthorizeRequest;
+        public event OnAuthorizeRequestDelegate?    OnAuthorizeRequest;
 
         /// <summary>
         /// An event fired whenever an authorize SOAP Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler      OnAuthorizeSOAPRequest;
+        public event ClientRequestLogHandler?       OnAuthorizeSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to an authorize SOAP Request was received.
         /// </summary>
-        public event ClientResponseLogHandler     OnAuthorizeSOAPResponse;
+        public event ClientResponseLogHandler?      OnAuthorizeSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to an authorize Request was received.
         /// </summary>
-        public event OnAuthorizeResponseDelegate  OnAuthorizeResponse;
+        public event OnAuthorizeResponseDelegate?   OnAuthorizeResponse;
 
         #endregion
 
@@ -169,22 +169,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a start transaction Request will be send to the central system.
         /// </summary>
-        public event OnStartTransactionRequestDelegate   OnStartTransactionRequest;
+        public event OnStartTransactionRequestDelegate?    OnStartTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a start transaction SOAP Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler             OnStartTransactionSOAPRequest;
+        public event ClientRequestLogHandler?              OnStartTransactionSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a start transaction SOAP Request was received.
         /// </summary>
-        public event ClientResponseLogHandler            OnStartTransactionSOAPResponse;
+        public event ClientResponseLogHandler?             OnStartTransactionSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a start transaction Request was received.
         /// </summary>
-        public event OnStartTransactionResponseDelegate  OnStartTransactionResponse;
+        public event OnStartTransactionResponseDelegate?   OnStartTransactionResponse;
 
         #endregion
 
@@ -193,22 +193,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a status notification Request will be send to the central system.
         /// </summary>
-        public event OnStatusNotificationRequestDelegate   OnStatusNotificationRequest;
+        public event OnStatusNotificationRequestDelegate?    OnStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a status notification SOAP Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler               OnStatusNotificationSOAPRequest;
+        public event ClientRequestLogHandler?                OnStatusNotificationSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a status notification SOAP Request was received.
         /// </summary>
-        public event ClientResponseLogHandler              OnStatusNotificationSOAPResponse;
+        public event ClientResponseLogHandler?               OnStatusNotificationSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a status notification Request was received.
         /// </summary>
-        public event OnStatusNotificationResponseDelegate  OnStatusNotificationResponse;
+        public event OnStatusNotificationResponseDelegate?   OnStatusNotificationResponse;
 
         #endregion
 
@@ -217,22 +217,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a meter values Request will be send to the central system.
         /// </summary>
-        public event OnMeterValuesRequestDelegate   OnMeterValuesRequest;
+        public event OnMeterValuesRequestDelegate?    OnMeterValuesRequest;
 
         /// <summary>
         /// An event fired whenever a meter values SOAP Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler        OnMeterValuesSOAPRequest;
+        public event ClientRequestLogHandler?         OnMeterValuesSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a meter values SOAP Request was received.
         /// </summary>
-        public event ClientResponseLogHandler       OnMeterValuesSOAPResponse;
+        public event ClientResponseLogHandler?        OnMeterValuesSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a meter values Request was received.
         /// </summary>
-        public event OnMeterValuesResponseDelegate  OnMeterValuesResponse;
+        public event OnMeterValuesResponseDelegate?   OnMeterValuesResponse;
 
         #endregion
 
@@ -241,22 +241,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a stop transaction Request will be send to the central system.
         /// </summary>
-        public event OnStopTransactionRequestDelegate   OnStopTransactionRequest;
+        public event OnStopTransactionRequestDelegate?    OnStopTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a stop transaction SOAP Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler            OnStopTransactionSOAPRequest;
+        public event ClientRequestLogHandler?             OnStopTransactionSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a stop transaction SOAP Request was received.
         /// </summary>
-        public event ClientResponseLogHandler           OnStopTransactionSOAPResponse;
+        public event ClientResponseLogHandler?            OnStopTransactionSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a stop transaction Request was received.
         /// </summary>
-        public event OnStopTransactionResponseDelegate  OnStopTransactionResponse;
+        public event OnStopTransactionResponseDelegate?   OnStopTransactionResponse;
 
         #endregion
 
@@ -266,22 +266,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a data transfer Request will be send to the central system.
         /// </summary>
-        public event OnDataTransferRequestDelegate   OnDataTransferRequest;
+        public event OnDataTransferRequestDelegate?    OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a data transfer SOAP Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler         OnDataTransferSOAPRequest;
+        public event ClientRequestLogHandler?          OnDataTransferSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer SOAP Request was received.
         /// </summary>
-        public event ClientResponseLogHandler        OnDataTransferSOAPResponse;
+        public event ClientResponseLogHandler?         OnDataTransferSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer Request was received.
         /// </summary>
-        public event OnDataTransferResponseDelegate  OnDataTransferResponse;
+        public event OnDataTransferResponseDelegate?   OnDataTransferResponse;
 
         #endregion
 
@@ -290,22 +290,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a diagnostics status notification Request will be send to the central system.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationRequestDelegate   OnDiagnosticsStatusNotificationRequest;
+        public event OnDiagnosticsStatusNotificationRequestDelegate?    OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a diagnostics status notification SOAP Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler                          OnDiagnosticsStatusNotificationSOAPRequest;
+        public event ClientRequestLogHandler?                           OnDiagnosticsStatusNotificationSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a diagnostics status notification SOAP Request was received.
         /// </summary>
-        public event ClientResponseLogHandler                         OnDiagnosticsStatusNotificationSOAPResponse;
+        public event ClientResponseLogHandler?                          OnDiagnosticsStatusNotificationSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a diagnostics status notification Request was received.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationResponseDelegate  OnDiagnosticsStatusNotificationResponse;
+        public event OnDiagnosticsStatusNotificationResponseDelegate?   OnDiagnosticsStatusNotificationResponse;
 
         #endregion
 
@@ -314,22 +314,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a firmware status notification Request will be send to the central system.
         /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
+        public event OnFirmwareStatusNotificationRequestDelegate?    OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a firmware status notification SOAP Request will be send to the central system.
         /// </summary>
-        public event ClientRequestLogHandler                       OnFirmwareStatusNotificationSOAPRequest;
+        public event ClientRequestLogHandler?                        OnFirmwareStatusNotificationSOAPRequest;
 
         /// <summary>
         /// An event fired whenever a response to a firmware status notification SOAP Request was received.
         /// </summary>
-        public event ClientResponseLogHandler                      OnFirmwareStatusNotificationSOAPResponse;
+        public event ClientResponseLogHandler?                       OnFirmwareStatusNotificationSOAPResponse;
 
         /// <summary>
         /// An event fired whenever a response to a firmware status notification Request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
+        public event OnFirmwareStatusNotificationResponseDelegate?   OnFirmwareStatusNotificationResponse;
 
         #endregion
 
@@ -365,32 +365,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public ChargePointSOAPClient(ChargeBox_Id                         ChargeBoxIdentity,
-                                     String                               From,
-                                     String                               To,
+        public ChargePointSOAPClient(ChargeBox_Id                          ChargeBoxIdentity,
+                                     String                                From,
+                                     String                                To,
 
-                                     URL                                  RemoteURL,
-                                     HTTPHostname?                        VirtualHostname              = null,
-                                     String                               Description                  = null,
-                                     RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-                                     LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-                                     X509Certificate                      ClientCert                   = null,
-                                     SslProtocols?                        TLSProtocol                  = null,
-                                     Boolean?                             PreferIPv4                   = null,
-                                     String                               HTTPUserAgent                = DefaultHTTPUserAgent,
-                                     HTTPPath?                            URLPathPrefix                = null,
-                                     Tuple<String, String>                WSSLoginPassword             = null,
-                                     HTTPContentType                      HTTPContentType              = null,
-                                     TimeSpan?                            RequestTimeout               = null,
-                                     TransmissionRetryDelayDelegate       TransmissionRetryDelay       = null,
-                                     UInt16?                              MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
-                                     Boolean                              UseHTTPPipelining            = false,
+                                     URL                                   RemoteURL,
+                                     HTTPHostname?                         VirtualHostname              = null,
+                                     String?                               Description                  = null,
+                                     RemoteCertificateValidationCallback?  RemoteCertificateValidator   = null,
+                                     LocalCertificateSelectionCallback?    ClientCertificateSelector    = null,
+                                     X509Certificate?                      ClientCert                   = null,
+                                     SslProtocols?                         TLSProtocol                  = null,
+                                     Boolean?                              PreferIPv4                   = null,
+                                     String                                HTTPUserAgent                = DefaultHTTPUserAgent,
+                                     HTTPPath?                             URLPathPrefix                = null,
+                                     Tuple<String, String>?                WSSLoginPassword             = null,
+                                     HTTPContentType?                      HTTPContentType              = null,
+                                     TimeSpan?                             RequestTimeout               = null,
+                                     TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
+                                     UInt16?                               MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
+                                     Boolean                               UseHTTPPipelining            = false,
 
-                                     String                               LoggingPath                  = null,
-                                     String                               LoggingContext               = CPClientLogger.DefaultContext,
-                                     LogfileCreatorDelegate               LogfileCreator               = null,
-                                     HTTPClientLogger                     HTTPLogger                   = null,
-                                     DNSClient                            DNSClient                    = null)
+                                     String?                               LoggingPath                  = null,
+                                     String                                LoggingContext               = CPClientLogger.DefaultContext,
+                                     LogfileCreatorDelegate?               LogfileCreator               = null,
+                                     HTTPClientLogger?                     HTTPLogger                   = null,
+                                     DNSClient?                            DNSClient                    = null)
 
             : base(RemoteURL,
                    VirtualHostname,

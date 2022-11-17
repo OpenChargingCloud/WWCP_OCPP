@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public const            String                                                          DefaultHTTPServerName       = "GraphDefined OCPP " + Version.Number + " HTTP/WebSocket/JSON Central System API";
+        public const            String                                                          DefaultHTTPServiceName      = "GraphDefined OCPP " + Version.Number + " HTTP/WebSocket/JSON Central System API";
 
         /// <summary>
         /// The default HTTP server TCP port.
@@ -164,7 +164,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The sender identification.
         /// </summary>
-        String IEventSender.Id { get; }
+        String IEventSender.Id
+            => HTTPServiceName;
 
         public IEnumerable<ChargeBox_Id> ChargeBoxIds
             => connectedChargingBoxes.Keys;
@@ -172,12 +173,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Require a HTTP Basic Authentication of all charging boxes.
         /// </summary>
-        public Boolean                                                            RequireAuthentication                               { get; }
+        public Boolean                            RequireAuthentication    { get; }
 
         /// <summary>
         /// Logins and passwords for HTTP Basic Authentication.
         /// </summary>
-        public Dictionary<ChargeBox_Id, String?>                                  ChargingBoxLogins                                   { get; }
+        public Dictionary<ChargeBox_Id, String?>  ChargingBoxLogins        { get; }
 
         public ChargeBox_Id ChargeBoxIdentity
             => throw new NotImplementedException();
@@ -1126,13 +1127,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// Initialize a new HTTP server for the central system HTTP/WebSocket/JSON API.
         /// </summary>
-        /// <param name="HTTPServerName">An optional identification string for the HTTP server.</param>
+        /// <param name="HTTPServiceName">An optional identification string for the HTTP service.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CentralSystemWSServer(String       HTTPServerName               = DefaultHTTPServerName,
+        public CentralSystemWSServer(String       HTTPServiceName              = DefaultHTTPServiceName,
                                      IIPAddress?  IPAddress                    = null,
                                      IPPort?      TCPPort                      = null,
 
@@ -1146,7 +1147,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             : base(IPAddress,
                    TCPPort ?? IPPort.Parse(8000),
-                   HTTPServerName,
+                   HTTPServiceName,
                    null,
                    null,
                    null,
@@ -1180,14 +1181,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (protected) ValidateTCPConnection        (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
-        private async Task<Boolean?> ValidateTCPConnection(DateTime                      LogTimestamp,
-                                                           WebSocketServer               Server,
-                                                           System.Net.Sockets.TcpClient  Connection,
-                                                           EventTracking_Id              EventTrackingId,
-                                                           CancellationToken             CancellationToken)
+        private Task<Boolean?> ValidateTCPConnection(DateTime                      LogTimestamp,
+                                                     WebSocketServer               Server,
+                                                     System.Net.Sockets.TcpClient  Connection,
+                                                     EventTracking_Id              EventTrackingId,
+                                                     CancellationToken             CancellationToken)
         {
 
-            return true;
+            return Task.FromResult<Boolean?>(true);
 
         }
 
@@ -1195,33 +1196,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (protected) ValidateWebSocketConnection  (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
-        private async Task<HTTPResponse?> ValidateWebSocketConnection(DateTime             LogTimestamp,
-                                                                      WebSocketServer      Server,
-                                                                      WebSocketConnection  Connection,
-                                                                      EventTracking_Id     EventTrackingId,
-                                                                      CancellationToken    CancellationToken)
+        private Task<HTTPResponse?> ValidateWebSocketConnection(DateTime             LogTimestamp,
+                                                                WebSocketServer      Server,
+                                                                WebSocketConnection  Connection,
+                                                                EventTracking_Id     EventTrackingId,
+                                                                CancellationToken    CancellationToken)
         {
 
             #region Verify 'Sec-WebSocket-Protocol'...
 
-            var secWebSocketProtocols = Connection.Request.SecWebSocketProtocol?.Split(',')?.Select(protocol => protocol?.Trim()).ToArray();
+            var secWebSocketProtocols = Connection.Request?.SecWebSocketProtocol?.Split(',')?.Select(protocol => protocol?.Trim()).ToArray();
 
             if (secWebSocketProtocols is null)
             {
 
                 DebugX.Log("Missing 'Sec-WebSocket-Protocol' HTTP header!");
 
-                return new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {
-                           Server       = HTTPServiceName,
-                           Date         = Timestamp.Now,
-                           ContentType  = HTTPContentType.JSON_UTF8,
-                           Content      = JSONObject.Create(
-                                              new JProperty("description",
-                                              JSONObject.Create(
-                                                  new JProperty("en", "Missing 'Sec-WebSocket-Protocol' HTTP header!")
-                                              ))).ToUTF8Bytes(),
-                           Connection   = "close"
-                       }.AsImmutable;
+                return Task.FromResult<HTTPResponse?>(
+                           new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {
+                               Server       = HTTPServiceName,
+                               Date         = Timestamp.Now,
+                               ContentType  = HTTPContentType.JSON_UTF8,
+                               Content      = JSONObject.Create(
+                                                  new JProperty("description",
+                                                  JSONObject.Create(
+                                                      new JProperty("en", "Missing 'Sec-WebSocket-Protocol' HTTP header!")
+                                                  ))).ToUTF8Bytes(),
+                               Connection   = "close"
+                           }.AsImmutable);
 
             }
             else if (!secWebSocketProtocols.Contains("ocpp1.6"))
@@ -1229,7 +1231,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 DebugX.Log("This web socket service only supports 'ocpp1.6'!");
 
-                return new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {
+                return Task.FromResult<HTTPResponse?>(
+                           new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {
                            Server       = HTTPServiceName,
                            Date         = Timestamp.Now,
                            ContentType  = HTTPContentType.JSON_UTF8,
@@ -1239,7 +1242,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                       new JProperty("en", "This web socket service only supports 'ocpp1.6'!")
                                               ))).ToUTF8Bytes(),
                            Connection   = "close"
-                       }.AsImmutable;
+                       }.AsImmutable);
 
             }
 
@@ -1250,14 +1253,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (RequireAuthentication)
             {
 
-                if (Connection.Request.Authorization is HTTPBasicAuthentication basicAuthentication)
+                if (Connection.Request?.Authorization is HTTPBasicAuthentication basicAuthentication)
                 {
 
                     if (ChargingBoxLogins.TryGetValue(ChargeBox_Id.Parse(basicAuthentication.Username), out var password) &&
                         basicAuthentication.Password == password)
                     {
                         DebugX.Log(nameof(CentralSystemWSServer), " connection from " + Connection.RemoteSocket + " using authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
-                        return null;
+                        return Task.FromResult<HTTPResponse?>(null);
                     }
                     else
                         DebugX.Log(nameof(CentralSystemWSServer), " connection from " + Connection.RemoteSocket + " invalid authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
@@ -1266,17 +1269,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 else
                     DebugX.Log(nameof(CentralSystemWSServer), " connection from " + Connection.RemoteSocket + " missing authorization!");
 
-                return new HTTPResponse.Builder(HTTPStatusCode.Unauthorized) {
-                           Server      = HTTPServiceName,
-                           Date        = Timestamp.Now,
-                           Connection  = "close"
-                       }.AsImmutable;
+                return Task.FromResult<HTTPResponse?>(
+                           new HTTPResponse.Builder(HTTPStatusCode.Unauthorized) {
+                               Server      = HTTPServiceName,
+                               Date        = Timestamp.Now,
+                               Connection  = "close"
+                           }.AsImmutable);
 
             }
 
             #endregion
 
-            return null;
+            return Task.FromResult<HTTPResponse?>(null);
 
         }
 
@@ -1354,8 +1358,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, Message, EventTrackingId)
 
-        protected async Task ProcessCloseMessage(DateTime LogTimestamp, WebSocketServer Server, WebSocketConnection Connection, WebSocketFrame Message, EventTracking_Id EventTrackingId)
+        protected Task ProcessCloseMessage(DateTime             LogTimestamp,
+                                           WebSocketServer      Server,
+                                           WebSocketConnection  Connection,
+                                           WebSocketFrame       Message,
+                                           EventTracking_Id     EventTrackingId)
         {
+
             lock (connectedChargingBoxes)
             {
                 if (Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId", out var chargeBoxId))
@@ -1364,6 +1373,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     connectedChargingBoxes.Remove(chargeBoxId);
                 }
             }
+
+            return Task.CompletedTask;
+
         }
 
         #endregion
@@ -1546,16 +1558,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             var responseTasks = OnBootNotification?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                this,
+                                                                                                                                                request,
+                                                                                                                                                CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
                                             {
-                                                await Task.WhenAll(responseTasks);
+                                                await Task.WhenAll(responseTasks!);
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
@@ -1695,16 +1706,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             var responseTasks = OnHeartbeat?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                         this,
+                                                                                                                                         request,
+                                                                                                                                         CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
                                             {
-                                                await Task.WhenAll(responseTasks);
+                                                await Task.WhenAll(responseTasks!);
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
@@ -1845,16 +1855,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             var responseTasks = OnAuthorize?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                         this,
+                                                                                                                                         request,
+                                                                                                                                         CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
                                             {
-                                                await Task.WhenAll(responseTasks);
+                                                await Task.WhenAll(responseTasks!);
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
@@ -1994,16 +2003,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             var responseTasks = OnStartTransaction?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnStartTransactionDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnStartTransactionDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                this,
+                                                                                                                                                request,
+                                                                                                                                                CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
                                             {
-                                                await Task.WhenAll(responseTasks);
+                                                await Task.WhenAll(responseTasks!);
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
@@ -2142,16 +2150,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             var responseTasks = OnStatusNotification?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                  this,
+                                                                                                                                                  request,
+                                                                                                                                                  CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
                                             {
-                                                await Task.WhenAll(responseTasks);
+                                                await Task.WhenAll(responseTasks!);
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
@@ -2291,16 +2298,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             var responseTasks = OnMeterValues?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                           this,
+                                                                                                                                           request,
+                                                                                                                                           CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
                                             {
-                                                await Task.WhenAll(responseTasks);
+                                                await Task.WhenAll(responseTasks!);
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
@@ -2440,16 +2446,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             var responseTasks = OnStopTransaction?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnStopTransactionDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnStopTransactionDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                               this,
+                                                                                                                                               request,
+                                                                                                                                               CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
                                             {
-                                                await Task.WhenAll(responseTasks);
+                                                await Task.WhenAll(responseTasks!);
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
@@ -2590,16 +2595,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             var responseTasks = OnIncomingDataTransfer?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                    this,
+                                                                                                                                                    request,
+                                                                                                                                                    CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
                                             {
-                                                await Task.WhenAll(responseTasks);
+                                                await Task.WhenAll(responseTasks!);
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
@@ -2739,16 +2743,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             var responseTasks = OnDiagnosticsStatusNotification?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                             this,
+                                                                                                                                                             request,
+                                                                                                                                                             CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
                                             {
-                                                await Task.WhenAll(responseTasks);
+                                                await Task.WhenAll(responseTasks!);
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
@@ -2888,16 +2891,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             var responseTasks = OnFirmwareStatusNotification?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                          this,
+                                                                                                                                                          request,
+                                                                                                                                                          CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
                                             {
-                                                await Task.WhenAll(responseTasks);
+                                                await Task.WhenAll(responseTasks!);
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
@@ -3040,16 +3042,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             var responseTasks = OnLogStatusNotification?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnLogStatusNotificationDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnLogStatusNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                     this,
+                                                                                                                                                     request,
+                                                                                                                                                     CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
                                             {
-                                                await Task.WhenAll(responseTasks);
+                                                await Task.WhenAll(responseTasks!);
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
@@ -3189,16 +3190,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             var responseTasks = OnSecurityEventNotification?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnSecurityEventNotificationDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnSecurityEventNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                         this,
+                                                                                                                                                         request,
+                                                                                                                                                         CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
                                             {
-                                                await Task.WhenAll(responseTasks);
+                                                await Task.WhenAll(responseTasks!);
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
@@ -3338,16 +3338,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             var responseTasks = OnSignCertificate?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnSignCertificateDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnSignCertificateDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                               this,
+                                                                                                                                               request,
+                                                                                                                                               CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
                                             {
-                                                await Task.WhenAll(responseTasks);
+                                                await Task.WhenAll(responseTasks!);
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
@@ -3487,16 +3486,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                             var responseTasks = OnSignedFirmwareStatusNotification?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnSignedFirmwareStatusNotificationDelegate)
-                                                                        (Timestamp.Now,
-                                                                         this,
-                                                                         request,
-                                                                         CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnSignedFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                                this,
+                                                                                                                                                                request,
+                                                                                                                                                                CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
                                             {
-                                                await Task.WhenAll(responseTasks);
+                                                await Task.WhenAll(responseTasks!);
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
@@ -3898,11 +3896,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Action">An OCPP action.</param>
         /// <param name="JSON">The JSON payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
-        public async Task<SendJSONResults> SendJSON(Request_Id    RequestId,
-                                                    ChargeBox_Id  ChargeBoxId,
-                                                    String        Action,
-                                                    JObject       JSON,
-                                                    DateTime      RequestTimeout)
+        public Task<SendJSONResults> SendJSON(Request_Id    RequestId,
+                                              ChargeBox_Id  ChargeBoxId,
+                                              String        Action,
+                                              JObject       JSON,
+                                              DateTime      RequestTimeout)
         {
 
             var wsRequestMessage = new OCPP_WebSocket_RequestMessage(
@@ -3951,16 +3949,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     }
 
-                    return SendJSONResults.Success;
+                    return Task.FromResult(SendJSONResults.Success);
 
                 }
                 else
-                    return SendJSONResults.UnknownClient;
+                    return Task.FromResult(SendJSONResults.UnknownClient);
 
             }
             catch (Exception)
             {
-                return SendJSONResults.TransmissionFailed;
+                return Task.FromResult(SendJSONResults.TransmissionFailed);
             }
 
         }

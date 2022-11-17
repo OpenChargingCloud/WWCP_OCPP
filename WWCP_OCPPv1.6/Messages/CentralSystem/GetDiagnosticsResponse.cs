@@ -337,8 +337,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="GetDiagnosticsResponse1">A get diagnostics response.</param>
         /// <param name="GetDiagnosticsResponse2">Another get diagnostics response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetDiagnosticsResponse GetDiagnosticsResponse1,
-                                           GetDiagnosticsResponse GetDiagnosticsResponse2)
+        public static Boolean operator == (GetDiagnosticsResponse? GetDiagnosticsResponse1,
+                                           GetDiagnosticsResponse? GetDiagnosticsResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -363,8 +363,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="GetDiagnosticsResponse1">A get diagnostics response.</param>
         /// <param name="GetDiagnosticsResponse2">Another get diagnostics response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetDiagnosticsResponse GetDiagnosticsResponse1,
-                                           GetDiagnosticsResponse GetDiagnosticsResponse2)
+        public static Boolean operator != (GetDiagnosticsResponse? GetDiagnosticsResponse1,
+                                           GetDiagnosticsResponse? GetDiagnosticsResponse2)
 
             => !(GetDiagnosticsResponse1 == GetDiagnosticsResponse2);
 

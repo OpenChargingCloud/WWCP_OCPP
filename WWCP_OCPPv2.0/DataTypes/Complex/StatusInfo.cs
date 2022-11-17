@@ -274,8 +274,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="StatusInfo1">An id tag info.</param>
         /// <param name="StatusInfo2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (StatusInfo StatusInfo1,
-                                           StatusInfo StatusInfo2)
+        public static Boolean operator == (StatusInfo? StatusInfo1,
+                                           StatusInfo? StatusInfo2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -300,8 +300,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="StatusInfo1">An id tag info.</param>
         /// <param name="StatusInfo2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (StatusInfo StatusInfo1,
-                                           StatusInfo StatusInfo2)
+        public static Boolean operator != (StatusInfo? StatusInfo1,
+                                           StatusInfo? StatusInfo2)
 
             => !(StatusInfo1 == StatusInfo2);
 

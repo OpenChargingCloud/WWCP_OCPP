@@ -288,7 +288,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="FirmwareImage1">A firmware image.</param>
         /// <param name="FirmwareImage2">Another firmware image.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (FirmwareImage FirmwareImage1, FirmwareImage FirmwareImage2)
+        public static Boolean operator == (FirmwareImage? FirmwareImage1,
+                                           FirmwareImage? FirmwareImage2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -313,7 +314,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="FirmwareImage1">A firmware image.</param>
         /// <param name="FirmwareImage2">Another firmware image.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (FirmwareImage FirmwareImage1, FirmwareImage FirmwareImage2)
+        public static Boolean operator != (FirmwareImage? FirmwareImage1,
+                                           FirmwareImage? FirmwareImage2)
 
             => !(FirmwareImage1 == FirmwareImage2);
 
@@ -397,7 +399,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                  : "");
 
         #endregion
-
 
     }
 

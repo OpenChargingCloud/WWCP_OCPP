@@ -272,8 +272,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="UnitsOfMeasure1">An id tag info.</param>
         /// <param name="UnitsOfMeasure2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (UnitsOfMeasure UnitsOfMeasure1,
-                                           UnitsOfMeasure UnitsOfMeasure2)
+        public static Boolean operator == (UnitsOfMeasure? UnitsOfMeasure1,
+                                           UnitsOfMeasure? UnitsOfMeasure2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -298,8 +298,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="UnitsOfMeasure1">An id tag info.</param>
         /// <param name="UnitsOfMeasure2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (UnitsOfMeasure UnitsOfMeasure1,
-                                           UnitsOfMeasure UnitsOfMeasure2)
+        public static Boolean operator != (UnitsOfMeasure? UnitsOfMeasure1,
+                                           UnitsOfMeasure? UnitsOfMeasure2)
 
             => !(UnitsOfMeasure1 == UnitsOfMeasure2);
 

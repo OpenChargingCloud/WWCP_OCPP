@@ -63,6 +63,52 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
+
+        #region IEquatable<AResponse> Members
+
+        #region Equals(Object)
+
+        /// <summary>
+        /// Compares two abstract generic responses for equality.
+        /// </summary>
+        /// <param name="Object">An abstract generic response to compare with.</param>
+        public override Boolean Equals(Object? Object)
+
+            => Object is AResponse<TRequest, TResponse> aResponse &&
+                   Equals(aResponse);
+
+        #endregion
+
+        #region Equals(AResponse)
+
+        /// <summary>
+        /// Compares two abstract generic responses for equality.
+        /// </summary>
+        /// <param name="AResponse">An abstract generic response to compare with.</param>
+        public Boolean Equals(AResponse<TRequest, TResponse>? AResponse)
+
+            => AResponse is not null &&
+
+               Request.Equals(AResponse.Request) &&
+               Runtime.Equals(AResponse.Runtime) &&
+
+               base.   Equals(AResponse);
+
+        #endregion
+
+        #region IEquatable<AResponse> Members
+
+        ///// <summary>
+        ///// Compares two abstract generic responses for equality.
+        ///// </summary>
+        ///// <param name="AResponse">An abstract generic response to compare with.</param>
+        //public abstract Boolean Equals(TResponse? AResponse);
+
+        #endregion
+
+        #endregion
+
+
     }
 
 
@@ -117,8 +163,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="AResponse1">A response.</param>
         /// <param name="AResponse2">Another response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (AResponse<TResponse> AResponse1,
-                                           AResponse<TResponse> AResponse2)
+        public static Boolean operator == (AResponse<TResponse>? AResponse1,
+                                           AResponse<TResponse>? AResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -143,8 +189,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="AResponse1">A response.</param>
         /// <param name="AResponse2">Another response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (AResponse<TResponse> AResponse1,
-                                           AResponse<TResponse> AResponse2)
+        public static Boolean operator != (AResponse<TResponse>? AResponse1,
+                                           AResponse<TResponse>? AResponse2)
 
             => !(AResponse1 == AResponse2);
 
@@ -173,10 +219,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two abstract generic responses for equality.
         /// </summary>
         /// <param name="AResponse">An abstract generic response to compare with.</param>
-        public Boolean Equals(AResponse<TResponse> AResponse)
+        public virtual Boolean Equals(AResponse<TResponse>? AResponse)
 
             => AResponse is not null &&
-               Result.Equals(AResponse.Result);
+
+               Result.           Equals(AResponse.Result) &&
+               ResponseTimestamp.Equals(AResponse.ResponseTimestamp);
 
         #endregion
 

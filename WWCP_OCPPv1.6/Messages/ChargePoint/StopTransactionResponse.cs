@@ -383,8 +383,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="StopTransactionResponse1">A stop transaction response.</param>
         /// <param name="StopTransactionResponse2">Another stop transaction response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (StopTransactionResponse StopTransactionResponse1,
-                                           StopTransactionResponse StopTransactionResponse2)
+        public static Boolean operator == (StopTransactionResponse? StopTransactionResponse1,
+                                           StopTransactionResponse? StopTransactionResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -409,8 +409,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="StopTransactionResponse1">A stop transaction response.</param>
         /// <param name="StopTransactionResponse2">Another stop transaction response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (StopTransactionResponse StopTransactionResponse1,
-                                           StopTransactionResponse StopTransactionResponse2)
+        public static Boolean operator != (StopTransactionResponse? StopTransactionResponse1,
+                                           StopTransactionResponse? StopTransactionResponse2)
 
             => !(StopTransactionResponse1 == StopTransactionResponse2);
 

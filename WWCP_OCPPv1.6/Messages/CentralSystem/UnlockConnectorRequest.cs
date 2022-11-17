@@ -374,8 +374,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="UnlockConnectorRequest1">A unlock connector request.</param>
         /// <param name="UnlockConnectorRequest2">Another unlock connector request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (UnlockConnectorRequest UnlockConnectorRequest1,
-                                           UnlockConnectorRequest UnlockConnectorRequest2)
+        public static Boolean operator == (UnlockConnectorRequest? UnlockConnectorRequest1,
+                                           UnlockConnectorRequest? UnlockConnectorRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -400,8 +400,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="UnlockConnectorRequest1">A unlock connector request.</param>
         /// <param name="UnlockConnectorRequest2">Another unlock connector request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (UnlockConnectorRequest UnlockConnectorRequest1,
-                                           UnlockConnectorRequest UnlockConnectorRequest2)
+        public static Boolean operator != (UnlockConnectorRequest? UnlockConnectorRequest1,
+                                           UnlockConnectorRequest? UnlockConnectorRequest2)
 
             => !(UnlockConnectorRequest1 == UnlockConnectorRequest2);
 

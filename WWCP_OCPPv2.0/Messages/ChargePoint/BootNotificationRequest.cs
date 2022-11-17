@@ -377,8 +377,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="BootNotificationRequest1">A boot notification request.</param>
         /// <param name="BootNotificationRequest2">Another boot notification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (BootNotificationRequest BootNotificationRequest1,
-                                           BootNotificationRequest BootNotificationRequest2)
+        public static Boolean operator == (BootNotificationRequest? BootNotificationRequest1,
+                                           BootNotificationRequest? BootNotificationRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -403,8 +403,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="BootNotificationRequest1">A boot notification request.</param>
         /// <param name="BootNotificationRequest2">Another boot notification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (BootNotificationRequest BootNotificationRequest1,
-                                           BootNotificationRequest BootNotificationRequest2)
+        public static Boolean operator != (BootNotificationRequest? BootNotificationRequest1,
+                                           BootNotificationRequest? BootNotificationRequest2)
 
             => !(BootNotificationRequest1 == BootNotificationRequest2);
 

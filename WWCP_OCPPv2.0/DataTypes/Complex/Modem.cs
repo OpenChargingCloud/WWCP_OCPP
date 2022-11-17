@@ -267,8 +267,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Modem1">An id tag info.</param>
         /// <param name="Modem2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Modem Modem1,
-                                           Modem Modem2)
+        public static Boolean operator == (Modem? Modem1,
+                                           Modem? Modem2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -293,8 +293,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Modem1">An id tag info.</param>
         /// <param name="Modem2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Modem Modem1,
-                                           Modem Modem2)
+        public static Boolean operator != (Modem? Modem1,
+                                           Modem? Modem2)
 
             => !(Modem1 == Modem2);
 

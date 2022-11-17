@@ -448,8 +448,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="DataTransferRequest1">A DataTransfer request.</param>
         /// <param name="DataTransferRequest2">Another DataTransfer request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (DataTransferRequest DataTransferRequest1,
-                                           DataTransferRequest DataTransferRequest2)
+        public static Boolean operator == (DataTransferRequest? DataTransferRequest1,
+                                           DataTransferRequest? DataTransferRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -474,8 +474,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="DataTransferRequest1">A DataTransfer request.</param>
         /// <param name="DataTransferRequest2">Another DataTransfer request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (DataTransferRequest DataTransferRequest1,
-                                           DataTransferRequest DataTransferRequest2)
+        public static Boolean operator != (DataTransferRequest? DataTransferRequest1,
+                                           DataTransferRequest? DataTransferRequest2)
 
             => !(DataTransferRequest1 == DataTransferRequest2);
 

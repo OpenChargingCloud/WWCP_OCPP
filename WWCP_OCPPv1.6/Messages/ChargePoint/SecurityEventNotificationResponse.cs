@@ -195,8 +195,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="SecurityEventNotificationResponse1">A security event notification response.</param>
         /// <param name="SecurityEventNotificationResponse2">Another security event notification response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (SecurityEventNotificationResponse SecurityEventNotificationResponse1,
-                                           SecurityEventNotificationResponse SecurityEventNotificationResponse2)
+        public static Boolean operator == (SecurityEventNotificationResponse? SecurityEventNotificationResponse1,
+                                           SecurityEventNotificationResponse? SecurityEventNotificationResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -221,8 +221,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="SecurityEventNotificationResponse1">A security event notification response.</param>
         /// <param name="SecurityEventNotificationResponse2">Another security event notification response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (SecurityEventNotificationResponse SecurityEventNotificationResponse1,
-                                           SecurityEventNotificationResponse SecurityEventNotificationResponse2)
+        public static Boolean operator != (SecurityEventNotificationResponse? SecurityEventNotificationResponse1,
+                                           SecurityEventNotificationResponse? SecurityEventNotificationResponse2)
 
             => !(SecurityEventNotificationResponse1 == SecurityEventNotificationResponse2);
 

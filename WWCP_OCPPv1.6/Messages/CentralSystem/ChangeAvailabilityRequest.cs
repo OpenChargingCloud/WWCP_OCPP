@@ -416,8 +416,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ChangeAvailabilityRequest1">A ChangeAvailability request.</param>
         /// <param name="ChangeAvailabilityRequest2">Another ChangeAvailability request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ChangeAvailabilityRequest ChangeAvailabilityRequest1,
-                                           ChangeAvailabilityRequest ChangeAvailabilityRequest2)
+        public static Boolean operator == (ChangeAvailabilityRequest? ChangeAvailabilityRequest1,
+                                           ChangeAvailabilityRequest? ChangeAvailabilityRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -442,8 +442,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ChangeAvailabilityRequest1">A ChangeAvailability request.</param>
         /// <param name="ChangeAvailabilityRequest2">Another ChangeAvailability request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ChangeAvailabilityRequest ChangeAvailabilityRequest1,
-                                           ChangeAvailabilityRequest ChangeAvailabilityRequest2)
+        public static Boolean operator != (ChangeAvailabilityRequest? ChangeAvailabilityRequest1,
+                                           ChangeAvailabilityRequest? ChangeAvailabilityRequest2)
 
             => !(ChangeAvailabilityRequest1 == ChangeAvailabilityRequest2);
 

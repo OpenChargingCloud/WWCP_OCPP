@@ -464,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.ParseOptional("info",
                                         "info",
-                                        out String Info,
+                                        out String? Info,
                                         out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.ParseOptional("vendorId",
                                         "vendor identification",
-                                        out String VendorId,
+                                        out String? VendorId,
                                         out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -490,7 +490,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.ParseOptional("vendorErrorCode",
                                         "vendor error code",
-                                        out String VendorErrorCode,
+                                        out String? VendorErrorCode,
                                         out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -631,8 +631,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="StatusNotificationRequest1">A StatusNotification request.</param>
         /// <param name="StatusNotificationRequest2">Another StatusNotification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (StatusNotificationRequest StatusNotificationRequest1,
-                                           StatusNotificationRequest StatusNotificationRequest2)
+        public static Boolean operator == (StatusNotificationRequest? StatusNotificationRequest1,
+                                           StatusNotificationRequest? StatusNotificationRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -657,8 +657,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="StatusNotificationRequest1">A StatusNotification request.</param>
         /// <param name="StatusNotificationRequest2">Another StatusNotification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (StatusNotificationRequest StatusNotificationRequest1,
-                                           StatusNotificationRequest StatusNotificationRequest2)
+        public static Boolean operator != (StatusNotificationRequest? StatusNotificationRequest1,
+                                           StatusNotificationRequest? StatusNotificationRequest2)
 
             => !(StatusNotificationRequest1 == StatusNotificationRequest2);
 

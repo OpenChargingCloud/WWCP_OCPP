@@ -387,8 +387,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="GetConfigurationRequest1">A get configuration request.</param>
         /// <param name="GetConfigurationRequest2">Another get configuration request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetConfigurationRequest GetConfigurationRequest1,
-                                           GetConfigurationRequest GetConfigurationRequest2)
+        public static Boolean operator == (GetConfigurationRequest? GetConfigurationRequest1,
+                                           GetConfigurationRequest? GetConfigurationRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -413,8 +413,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="GetConfigurationRequest1">A get configuration request.</param>
         /// <param name="GetConfigurationRequest2">Another get configuration request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetConfigurationRequest GetConfigurationRequest1,
-                                           GetConfigurationRequest GetConfigurationRequest2)
+        public static Boolean operator != (GetConfigurationRequest? GetConfigurationRequest1,
+                                           GetConfigurationRequest? GetConfigurationRequest2)
 
             => !(GetConfigurationRequest1 == GetConfigurationRequest2);
 

@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (JSON.ParseOptional("value",
                                        "value",
-                                       out String Value,
+                                       out String? Value,
                                        out ErrorResponse))
                 {
 

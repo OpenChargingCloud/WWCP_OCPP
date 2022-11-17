@@ -17,11 +17,11 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
+
 using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 #endregion
@@ -41,9 +41,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SOAPHeader">A SOAP header.</param>
         /// <param name="SOAPBody">The internal XML for the SOAP body.</param>
         /// <param name="XMLNamespaces">An optional delegate to process the XML namespaces.</param>
-        public static XElement Encapsulation(SOAPHeader             SOAPHeader,
-                                             XElement               SOAPBody,
-                                             XMLNamespacesDelegate  XMLNamespaces = null)
+        public static XElement Encapsulation(SOAPHeader              SOAPHeader,
+                                             XElement                SOAPBody,
+                                             XMLNamespacesDelegate?  XMLNamespaces = null)
 
             => Encapsulation(SOAPHeader.ChargeBoxIdentity,
                              SOAPHeader.Action,
@@ -65,13 +65,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="To">The destination URI of the SOAP message.</param>
         /// <param name="SOAPBody">The internal XML for the SOAP body.</param>
         /// <param name="XMLNamespaces">An optional delegate to process the XML namespaces.</param>
-        public static XElement Encapsulation(ChargeBox_Id           ChargeBoxIdentity,
-                                             String                 Action,
-                                             String                 MessageId,
-                                             String                 From,
-                                             String                 To,
-                                             XElement               SOAPBody,
-                                             XMLNamespacesDelegate  XMLNamespaces = null)
+        public static XElement Encapsulation(ChargeBox_Id            ChargeBoxIdentity,
+                                             String                  Action,
+                                             String                  MessageId,
+                                             String                  From,
+                                             String                  To,
+                                             XElement                SOAPBody,
+                                             XMLNamespacesDelegate?  XMLNamespaces = null)
 
             => Encapsulation(ChargeBoxIdentity,
                              Action,
@@ -94,38 +94,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="To">The destination URI of the SOAP message.</param>
         /// <param name="SOAPBody">The internal XML for the SOAP body.</param>
         /// <param name="XMLNamespaces">An optional delegate to process the XML namespaces.</param>
-        public static XElement Encapsulation(ChargeBox_Id           ChargeBoxIdentity,
-                                             String                 Action,
-                                             String                 MessageId,
-                                             String                 RelatesTo,
-                                             String                 From,
-                                             String                 To,
-                                             XElement               SOAPBody,
-                                             XMLNamespacesDelegate  XMLNamespaces = null)
+        public static XElement Encapsulation(ChargeBox_Id            ChargeBoxIdentity,
+                                             String                  Action,
+                                             String                  MessageId,
+                                             String?                 RelatesTo,
+                                             String                  From,
+                                             String                  To,
+                                             XElement                SOAPBody,
+                                             XMLNamespacesDelegate?  XMLNamespaces = null)
         {
 
             #region Initial checks
 
-            if (ChargeBoxIdentity == null)
-                throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identity must not be null!");
-
-            if (Action == null)
+            if (Action is null)
                 throw new ArgumentNullException(nameof(Action),             "The given SOAP action must not be null!");
 
-            if (MessageId == null)
+            if (MessageId is null)
                 throw new ArgumentNullException(nameof(MessageId),          "The given SOAP message identification must not be null!");
 
-            if (From == null)
+            if (From is null)
                 throw new ArgumentNullException(nameof(From),               "The given SOAP message source must not be null!");
 
-            if (To == null)
+            if (To is null)
                 throw new ArgumentNullException(nameof(To),                 "The given SOAP message destination must not be null!");
 
-            if (SOAPBody == null)
+            if (SOAPBody is null)
                 throw new ArgumentNullException(nameof(SOAPBody),           "The given XML must not be null!");
 
-            if (XMLNamespaces == null)
-                XMLNamespaces = xml => xml;
+            XMLNamespaces ??= xml => xml;
 
             #endregion
 

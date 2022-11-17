@@ -312,8 +312,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="LogStatusNotificationRequest1">A log status notification request.</param>
         /// <param name="LogStatusNotificationRequest2">Another log status notification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (LogStatusNotificationRequest LogStatusNotificationRequest1,
-                                           LogStatusNotificationRequest LogStatusNotificationRequest2)
+        public static Boolean operator == (LogStatusNotificationRequest? LogStatusNotificationRequest1,
+                                           LogStatusNotificationRequest? LogStatusNotificationRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -338,8 +338,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="LogStatusNotificationRequest1">A log status notification request.</param>
         /// <param name="LogStatusNotificationRequest2">Another log status notification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (LogStatusNotificationRequest LogStatusNotificationRequest1,
-                                           LogStatusNotificationRequest LogStatusNotificationRequest2)
+        public static Boolean operator != (LogStatusNotificationRequest? LogStatusNotificationRequest1,
+                                           LogStatusNotificationRequest? LogStatusNotificationRequest2)
 
             => !(LogStatusNotificationRequest1 == LogStatusNotificationRequest2);
 

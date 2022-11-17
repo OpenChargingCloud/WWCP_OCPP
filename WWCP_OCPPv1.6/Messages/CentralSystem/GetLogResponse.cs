@@ -273,8 +273,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="GetLogResponse1">A get log response.</param>
         /// <param name="GetLogResponse2">Another get log response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetLogResponse GetLogResponse1,
-                                           GetLogResponse GetLogResponse2)
+        public static Boolean operator == (GetLogResponse? GetLogResponse1,
+                                           GetLogResponse? GetLogResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -299,8 +299,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="GetLogResponse1">A get log response.</param>
         /// <param name="GetLogResponse2">Another get log response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetLogResponse GetLogResponse1,
-                                           GetLogResponse GetLogResponse2)
+        public static Boolean operator != (GetLogResponse? GetLogResponse1,
+                                           GetLogResponse? GetLogResponse2)
 
             => !(GetLogResponse1 == GetLogResponse2);
 

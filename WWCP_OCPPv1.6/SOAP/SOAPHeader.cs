@@ -17,10 +17,10 @@
 
 #region Usings
 
-using System;
 using System.Xml.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+
 using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 #endregion
@@ -111,31 +111,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public SOAPHeader(ChargeBox_Id  ChargeBoxIdentity,
                           String        Action,
                           String        MessageId,
-                          String        RelatesTo,
+                          String?       RelatesTo,
                           String        From,
                           String        To)
         {
 
             #region Initial checks
 
-            if (ChargeBoxIdentity == null)
-                throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identification must not be null!");
-
             if (Action.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Action),             "The given SOAP action must not be null or empty!");
+                throw new ArgumentNullException(nameof(Action), "The given SOAP action must not be null or empty!");
 
             if (From.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(From),               "The given SOAP message source must not be null or empty!");
+                throw new ArgumentNullException(nameof(From),   "The given SOAP message source must not be null or empty!");
 
             if (To.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(To),                 "The given SOAP message destination must not be null or empty!");
+                throw new ArgumentNullException(nameof(To),     "The given SOAP message destination must not be null or empty!");
 
             #endregion
 
             this.ChargeBoxIdentity  = ChargeBoxIdentity;
             this.Action             = Action;
             this.MessageId          = MessageId;
-            this.RelatesTo          = RelatesTo;
+            this.RelatesTo          = RelatesTo ?? "";
             this.From               = From;
             this.To                 = To;
 
@@ -179,18 +176,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="SOAPHeaderXML">The XML to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SOAPHeader Parse(XElement             SOAPHeaderXML,
-                                       OnExceptionDelegate  OnException = null)
+        public static SOAPHeader Parse(XElement              SOAPHeaderXML,
+                                       OnExceptionDelegate?  OnException = null)
         {
 
             if (TryParse(SOAPHeaderXML,
-                         out SOAPHeader SOAPHeader,
+                         out var SOAPHeader,
                          OnException))
             {
-                return SOAPHeader;
+                return SOAPHeader!;
             }
 
-            return null;
+            throw new ArgumentException("The given SOAP header is invalid!",
+                                        nameof(SOAPHeaderXML));
 
         }
 
@@ -203,18 +201,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="SOAPHeaderText">The text to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static SOAPHeader Parse(String               SOAPHeaderText,
-                                       OnExceptionDelegate  OnException = null)
+        public static SOAPHeader Parse(String                SOAPHeaderText,
+                                       OnExceptionDelegate?  OnException = null)
         {
 
             if (TryParse(SOAPHeaderText,
-                         out SOAPHeader SOAPHeader,
+                         out var SOAPHeader,
                          OnException))
             {
-                return SOAPHeader;
+                return SOAPHeader!;
             }
 
-            return null;
+            throw new ArgumentException("The given SOAP header is invalid!",
+                                        nameof(SOAPHeaderText));
 
         }
 
@@ -228,9 +227,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SOAPHeaderXML">The XML to be parsed.</param>
         /// <param name="SOAPHeader">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement             SOAPHeaderXML,
-                                       out SOAPHeader       SOAPHeader,
-                                       OnExceptionDelegate  OnException  = null)
+        public static Boolean TryParse(XElement              SOAPHeaderXML,
+                                       out SOAPHeader?       SOAPHeader,
+                                       OnExceptionDelegate?  OnException  = null)
         {
 
             try
@@ -255,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             catch (Exception e)
             {
 
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, SOAPHeaderXML, e);
+                OnException?.Invoke(Timestamp.Now, SOAPHeaderXML, e);
 
                 SOAPHeader = null;
                 return false;
@@ -274,24 +273,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SOAPHeaderText">The text to be parsed.</param>
         /// <param name="SOAPHeader">The parsed connector type.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(String               SOAPHeaderText,
-                                       out SOAPHeader       SOAPHeader,
-                                       OnExceptionDelegate  OnException  = null)
+        public static Boolean TryParse(String                SOAPHeaderText,
+                                       out SOAPHeader?       SOAPHeader,
+                                       OnExceptionDelegate?  OnException  = null)
         {
 
             try
             {
 
-                if (TryParse(XDocument.Parse(SOAPHeaderText).Root,
+                var xmlElement = XDocument.Parse(SOAPHeaderText).Root;
+
+                if (xmlElement is not null &&
+                    TryParse(xmlElement,
                              out SOAPHeader,
                              OnException))
-
+                {
                     return true;
+                }
 
             }
             catch (Exception e)
             {
-                OnException?.Invoke(org.GraphDefined.Vanaheimr.Illias.Timestamp.Now, SOAPHeaderText, e);
+                OnException?.Invoke(Timestamp.Now, SOAPHeaderText, e);
             }
 
             SOAPHeader = null;
@@ -398,20 +401,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            // Check if the given object is a id tag info.
-            var SOAPHeader = Object as SOAPHeader;
-            if ((Object) SOAPHeader == null)
-                return false;
-
-            return this.Equals(SOAPHeader);
-
-        }
+            => Object is SOAPHeader soapHeader &&
+                   Equals(soapHeader);
 
         #endregion
 
@@ -423,22 +416,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SOAPHeader">An id tag info to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(SOAPHeader SOAPHeader)
-        {
 
-            if ((Object) SOAPHeader == null)
-                return false;
+            => SOAPHeader is not null &&
 
-            return ChargeBoxIdentity.Equals(SOAPHeader.ChargeBoxIdentity) &&
-                   Action.           Equals(SOAPHeader.Action)            &&
-                   MessageId.        Equals(SOAPHeader.MessageId)         &&
+               ChargeBoxIdentity.Equals(SOAPHeader.ChargeBoxIdentity) &&
+               Action.           Equals(SOAPHeader.Action)            &&
+               MessageId.        Equals(SOAPHeader.MessageId)         &&
 
-                   ((RelatesTo == null && SOAPHeader.RelatesTo == null) ||
-                    (RelatesTo != null && SOAPHeader.RelatesTo != null && RelatesTo.Equals(SOAPHeader.RelatesTo))) &&
+               ((RelatesTo is     null && SOAPHeader.RelatesTo is     null) ||
+                (RelatesTo is not null && SOAPHeader.RelatesTo is not null && RelatesTo.Equals(SOAPHeader.RelatesTo))) &&
 
-                   From.             Equals(SOAPHeader.From)              &&
-                   To.               Equals(SOAPHeader.To);
-
-        }
+               From.             Equals(SOAPHeader.From)              &&
+               To.               Equals(SOAPHeader.To);
 
         #endregion
 
@@ -455,15 +444,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             unchecked
             {
 
-                return ChargeBoxIdentity.GetHashCode() * 19 ^
-                       Action.           GetHashCode() * 17 ^
-                       MessageId.        GetHashCode() * 11 ^
+                return ChargeBoxIdentity.GetHashCode() * 13 ^
+                       Action.           GetHashCode() * 11 ^
+                       MessageId.        GetHashCode() *  7 ^
 
                        (RelatesTo != null
-                            ? RelatesTo. GetHashCode() *  7
+                            ? RelatesTo. GetHashCode() *  5
                             : 0) ^
 
-                       From.             GetHashCode() *  5 ^
+                       From.             GetHashCode() *  3 ^
                        To.               GetHashCode();
 
             }

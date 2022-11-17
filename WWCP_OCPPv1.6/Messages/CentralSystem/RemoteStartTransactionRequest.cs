@@ -336,10 +336,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CustomRemoteStartTransactionRequestParser">A delegate to parse custom remote start transaction requests.</param>
-        public static RemoteStartTransactionRequest Parse(JObject                                                     JSON,
-                                                          Request_Id                                                  RequestId,
-                                                          ChargeBox_Id                                                ChargeBoxId,
-                                                          CustomJObjectParserDelegate<RemoteStartTransactionRequest>  CustomRemoteStartTransactionRequestParser   = null)
+        public static RemoteStartTransactionRequest Parse(JObject                                                      JSON,
+                                                          Request_Id                                                   RequestId,
+                                                          ChargeBox_Id                                                 ChargeBoxId,
+                                                          CustomJObjectParserDelegate<RemoteStartTransactionRequest>?  CustomRemoteStartTransactionRequestParser   = null)
         {
 
             if (TryParse(JSON,
@@ -615,8 +615,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RemoteStartTransactionRequest1">A remote start transaction request.</param>
         /// <param name="RemoteStartTransactionRequest2">Another remote start transaction request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (RemoteStartTransactionRequest RemoteStartTransactionRequest1,
-                                           RemoteStartTransactionRequest RemoteStartTransactionRequest2)
+        public static Boolean operator == (RemoteStartTransactionRequest? RemoteStartTransactionRequest1,
+                                           RemoteStartTransactionRequest? RemoteStartTransactionRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -641,8 +641,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RemoteStartTransactionRequest1">A remote start transaction request.</param>
         /// <param name="RemoteStartTransactionRequest2">Another remote start transaction request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (RemoteStartTransactionRequest RemoteStartTransactionRequest1,
-                                           RemoteStartTransactionRequest RemoteStartTransactionRequest2)
+        public static Boolean operator != (RemoteStartTransactionRequest? RemoteStartTransactionRequest1,
+                                           RemoteStartTransactionRequest? RemoteStartTransactionRequest2)
 
             => !(RemoteStartTransactionRequest1 == RemoteStartTransactionRequest2);
 

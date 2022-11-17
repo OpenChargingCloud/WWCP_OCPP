@@ -338,8 +338,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="UnlockConnectorResponse1">A unlock connector response.</param>
         /// <param name="UnlockConnectorResponse2">Another unlock connector response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (UnlockConnectorResponse UnlockConnectorResponse1,
-                                           UnlockConnectorResponse UnlockConnectorResponse2)
+        public static Boolean operator == (UnlockConnectorResponse? UnlockConnectorResponse1,
+                                           UnlockConnectorResponse? UnlockConnectorResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -364,8 +364,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="UnlockConnectorResponse1">A unlock connector response.</param>
         /// <param name="UnlockConnectorResponse2">Another unlock connector response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (UnlockConnectorResponse UnlockConnectorResponse1,
-                                           UnlockConnectorResponse UnlockConnectorResponse2)
+        public static Boolean operator != (UnlockConnectorResponse? UnlockConnectorResponse1,
+                                           UnlockConnectorResponse? UnlockConnectorResponse2)
 
             => !(UnlockConnectorResponse1 == UnlockConnectorResponse2);
 

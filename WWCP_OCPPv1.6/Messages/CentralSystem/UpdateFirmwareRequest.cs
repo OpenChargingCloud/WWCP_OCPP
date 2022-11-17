@@ -500,8 +500,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="UpdateFirmwareRequest1">A update firmware request.</param>
         /// <param name="UpdateFirmwareRequest2">Another update firmware request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (UpdateFirmwareRequest UpdateFirmwareRequest1,
-                                           UpdateFirmwareRequest UpdateFirmwareRequest2)
+        public static Boolean operator == (UpdateFirmwareRequest? UpdateFirmwareRequest1,
+                                           UpdateFirmwareRequest? UpdateFirmwareRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -526,8 +526,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="UpdateFirmwareRequest1">A update firmware request.</param>
         /// <param name="UpdateFirmwareRequest2">Another update firmware request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (UpdateFirmwareRequest UpdateFirmwareRequest1,
-                                           UpdateFirmwareRequest UpdateFirmwareRequest2)
+        public static Boolean operator != (UpdateFirmwareRequest? UpdateFirmwareRequest1,
+                                           UpdateFirmwareRequest? UpdateFirmwareRequest2)
 
             => !(UpdateFirmwareRequest1 == UpdateFirmwareRequest2);
 

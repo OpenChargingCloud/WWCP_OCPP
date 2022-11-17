@@ -454,8 +454,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="GetCompositeScheduleRequest1">A get composite schedule request.</param>
         /// <param name="GetCompositeScheduleRequest2">Another get composite schedule request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetCompositeScheduleRequest GetCompositeScheduleRequest1,
-                                           GetCompositeScheduleRequest GetCompositeScheduleRequest2)
+        public static Boolean operator == (GetCompositeScheduleRequest? GetCompositeScheduleRequest1,
+                                           GetCompositeScheduleRequest? GetCompositeScheduleRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -480,8 +480,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="GetCompositeScheduleRequest1">A get composite schedule request.</param>
         /// <param name="GetCompositeScheduleRequest2">Another get composite schedule request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetCompositeScheduleRequest GetCompositeScheduleRequest1,
-                                           GetCompositeScheduleRequest GetCompositeScheduleRequest2)
+        public static Boolean operator != (GetCompositeScheduleRequest? GetCompositeScheduleRequest1,
+                                           GetCompositeScheduleRequest? GetCompositeScheduleRequest2)
 
             => !(GetCompositeScheduleRequest1 == GetCompositeScheduleRequest2);
 

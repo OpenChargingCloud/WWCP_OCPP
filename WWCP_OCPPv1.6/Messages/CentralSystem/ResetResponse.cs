@@ -339,8 +339,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ResetResponse1">A reset response.</param>
         /// <param name="ResetResponse2">Another reset response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ResetResponse ResetResponse1,
-                                           ResetResponse ResetResponse2)
+        public static Boolean operator == (ResetResponse? ResetResponse1,
+                                           ResetResponse? ResetResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -365,8 +365,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ResetResponse1">A reset response.</param>
         /// <param name="ResetResponse2">Another reset response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ResetResponse ResetResponse1,
-                                           ResetResponse ResetResponse2)
+        public static Boolean operator != (ResetResponse? ResetResponse1,
+                                           ResetResponse? ResetResponse2)
 
             => !(ResetResponse1 == ResetResponse2);
 

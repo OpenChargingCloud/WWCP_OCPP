@@ -383,8 +383,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ResetRequest1">A reset request.</param>
         /// <param name="ResetRequest2">Another reset request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ResetRequest ResetRequest1,
-                                           ResetRequest ResetRequest2)
+        public static Boolean operator == (ResetRequest? ResetRequest1,
+                                           ResetRequest? ResetRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -409,8 +409,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ResetRequest1">A reset request.</param>
         /// <param name="ResetRequest2">Another reset request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ResetRequest ResetRequest1,
-                                           ResetRequest ResetRequest2)
+        public static Boolean operator != (ResetRequest? ResetRequest1,
+                                           ResetRequest? ResetRequest2)
 
             => !(ResetRequest1 == ResetRequest2);
 

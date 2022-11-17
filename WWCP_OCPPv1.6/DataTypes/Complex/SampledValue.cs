@@ -609,7 +609,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SampledValue1">An id tag info.</param>
         /// <param name="SampledValue2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (SampledValue SampledValue1, SampledValue SampledValue2)
+        public static Boolean operator == (SampledValue? SampledValue1,
+                                           SampledValue? SampledValue2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -634,7 +635,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SampledValue1">An id tag info.</param>
         /// <param name="SampledValue2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (SampledValue SampledValue1, SampledValue SampledValue2)
+        public static Boolean operator != (SampledValue? SampledValue1,
+                                           SampledValue? SampledValue2)
 
             => !(SampledValue1 == SampledValue2);
 

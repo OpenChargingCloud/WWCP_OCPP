@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -40,8 +38,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
 
         public WSErrorMessage(Request_Id    RequestId,
                               WSErrorCodes  ErrorCode,
-                              String        ErrorDescription   = null,
-                              JObject       ErrorDetails       = null)
+                              String?       ErrorDescription   = null,
+                              JObject?      ErrorDetails       = null)
 
         {
 
@@ -78,14 +76,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
             // TypeConstraintViolation       Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12)
             // GenericError                  Any other error not covered by the previous ones
 
-            => new JArray(4,
-                          RequestId.ToString(),
-                          ErrorCode.ToString(),
-                          ErrorDescription,
-                          ErrorDetails);
+            => new (4,
+                    RequestId.ToString(),
+                    ErrorCode.ToString(),
+                    ErrorDescription,
+                    ErrorDetails);
 
 
-        public static Boolean TryParse(String Text, out WSErrorMessage RequestFrame)
+        public static Boolean TryParse(String Text, out WSErrorMessage? RequestFrame)
         {
 
             RequestFrame = null;
@@ -113,24 +111,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
 
             try
             {
-
                 var JSON = JArray.Parse(Text);
 
                 if (JSON.Count != 5)
                     return false;
 
-                if (!Byte.TryParse(JSON[0].Value<String>(), out Byte messageType))
+                if (!Byte.TryParse(JSON[0]?.Value<String>() ?? "", out var messageType))
                     return false;
 
-                var requestId    = Request_Id.Parse(JSON[1].Value<String>());
-                var error        = Enum.TryParse(JSON[2].Value<String>(), out WSErrorCodes wsErrorCodes);
-                var description  = JSON[3].Value<String>();
-                var details      = JSON[4] as JObject;
+                var requestId    = Request_Id.TryParse(JSON[1]?.Value<String>() ?? "");
+                var error        = Enum.TryParse(JSON[2]?.Value<String>() ?? "", out WSErrorCodes wsErrorCodes);
+                var description  = JSON[3]?.Value<String>();
 
-                if (details is null)
+                if (!requestId.HasValue || JSON[4] is not JObject details)
                     return false;
 
-                RequestFrame = new WSErrorMessage(requestId,
+                RequestFrame = new WSErrorMessage(requestId.Value,
                                                   error ? WSErrorCodes.GenericError : wsErrorCodes,
                                                   description,
                                                   details);

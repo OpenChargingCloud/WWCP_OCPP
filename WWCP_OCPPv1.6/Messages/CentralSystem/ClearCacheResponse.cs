@@ -316,8 +316,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ClearCacheResponse1">A clear cache response.</param>
         /// <param name="ClearCacheResponse2">Another clear cache response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ClearCacheResponse ClearCacheResponse1,
-                                           ClearCacheResponse ClearCacheResponse2)
+        public static Boolean operator == (ClearCacheResponse? ClearCacheResponse1,
+                                           ClearCacheResponse? ClearCacheResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -342,8 +342,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ClearCacheResponse1">A clear cache response.</param>
         /// <param name="ClearCacheResponse2">Another clear cache response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ClearCacheResponse ClearCacheResponse1,
-                                           ClearCacheResponse ClearCacheResponse2)
+        public static Boolean operator != (ClearCacheResponse? ClearCacheResponse1,
+                                           ClearCacheResponse? ClearCacheResponse2)
 
             => !(ClearCacheResponse1 == ClearCacheResponse2);
 

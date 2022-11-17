@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public  new const  String  DefaultHTTPUserAgent  = "GraphDefined OCPP " + Version.Number + " CP WebSocket Client";
 
-        private new const  String  LogfileName           = "ChargePointWSClient.log";
+        private     const  String  LogfileName           = "ChargePointWSClient.log";
 
         #endregion
 
@@ -1264,17 +1264,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnReset?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnResetDelegate)
-                                                          (Timestamp.Now,
-                                                          this,
-                                                          request,
-                                                          cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnResetDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                       this,
+                                                                                                                       request,
+                                                                                                                       cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -1397,17 +1396,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnChangeAvailability?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnChangeAvailabilityDelegate)
-                                                          (Timestamp.Now,
-                                                          this,
-                                                          request,
-                                                          cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnChangeAvailabilityDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                    this,
+                                                                                                                                    request,
+                                                                                                                                    cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -1530,17 +1528,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnGetConfiguration?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnGetConfigurationDelegate)
-                                                          (Timestamp.Now,
-                                                          this,
-                                                          request,
-                                                          cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnGetConfigurationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                  this,
+                                                                                                                                  request,
+                                                                                                                                  cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -1663,17 +1660,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnChangeConfiguration?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnChangeConfigurationDelegate)
-                                                          (Timestamp.Now,
-                                                          this,
-                                                          request,
-                                                          cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnChangeConfigurationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                     this,
+                                                                                                                                     request,
+                                                                                                                                     cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -1796,17 +1792,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnIncomingDataTransfer?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)
-                                                          (Timestamp.Now,
-                                                          this,
-                                                          request,
-                                                          cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                      this,
+                                                                                                                                      request,
+                                                                                                                                      cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -1929,17 +1924,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnGetDiagnostics?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnGetDiagnosticsDelegate)
-                                                          (Timestamp.Now,
-                                                          this,
-                                                          request,
-                                                          cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnGetDiagnosticsDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                this,
+                                                                                                                                request,
+                                                                                                                                cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -2062,17 +2056,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnTriggerMessage?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnTriggerMessageDelegate)
-                                                          (Timestamp.Now,
-                                                          this,
-                                                          request,
-                                                          cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnTriggerMessageDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                this,
+                                                                                                                                request,
+                                                                                                                                cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -2195,17 +2188,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnUpdateFirmware?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnUpdateFirmwareDelegate)
-                                                          (Timestamp.Now,
-                                                          this,
-                                                          request,
-                                                          cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnUpdateFirmwareDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                this,
+                                                                                                                                request,
+                                                                                                                                cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -2329,17 +2321,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnReserveNow?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)
-                                                          (Timestamp.Now,
-                                                          this,
-                                                          request,
-                                                          cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                            this,
+                                                                                                                            request,
+                                                                                                                            cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -2462,17 +2453,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnCancelReservation?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)
-                                                          (Timestamp.Now,
-                                                          this,
-                                                          request,
-                                                          cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                   this,
+                                                                                                                                   request,
+                                                                                                                                   cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -2595,17 +2585,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnRemoteStartTransaction?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnRemoteStartTransactionDelegate)
-                                                          (Timestamp.Now,
-                                                              this,
-                                                              request,
-                                                              cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnRemoteStartTransactionDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                        this,
+                                                                                                                                        request,
+                                                                                                                                        cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -2728,17 +2717,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnRemoteStopTransaction?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnRemoteStopTransactionDelegate)
-                                                          (Timestamp.Now,
-                                                              this,
-                                                              request,
-                                                              cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnRemoteStopTransactionDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                       this,
+                                                                                                                                       request,
+                                                                                                                                       cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -2861,17 +2849,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnSetChargingProfile?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnSetChargingProfileDelegate)
-                                                          (Timestamp.Now,
-                                                              this,
-                                                              request,
-                                                              cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnSetChargingProfileDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                    this,
+                                                                                                                                    request,
+                                                                                                                                    cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -2994,17 +2981,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnClearChargingProfile?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnClearChargingProfileDelegate)
-                                                          (Timestamp.Now,
-                                                              this,
-                                                              request,
-                                                              cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnClearChargingProfileDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                      this,
+                                                                                                                                      request,
+                                                                                                                                      cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -3127,17 +3113,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnGetCompositeSchedule?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnGetCompositeScheduleDelegate)
-                                                          (Timestamp.Now,
-                                                              this,
-                                                              request,
-                                                              cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnGetCompositeScheduleDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                      this,
+                                                                                                                                      request,
+                                                                                                                                      cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -3260,17 +3245,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnUnlockConnector?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnUnlockConnectorDelegate)
-                                                          (Timestamp.Now,
-                                                              this,
-                                                              request,
-                                                              cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnUnlockConnectorDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                 this,
+                                                                                                                                 request,
+                                                                                                                                 cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -3394,17 +3378,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnGetLocalListVersion?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnGetLocalListVersionDelegate)
-                                                          (Timestamp.Now,
-                                                              this,
-                                                              request,
-                                                              cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnGetLocalListVersionDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                     this,
+                                                                                                                                     request,
+                                                                                                                                     cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -3527,17 +3510,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnSendLocalList?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnSendLocalListDelegate)
-                                                          (Timestamp.Now,
-                                                              this,
-                                                              request,
-                                                              cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnSendLocalListDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                               this,
+                                                                                                                               request,
+                                                                                                                               cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 
@@ -3660,17 +3642,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     var results = OnClearCache?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnClearCacheDelegate)
-                                                          (Timestamp.Now,
-                                                              this,
-                                                              request,
-                                                              cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OnClearCacheDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                            this,
+                                                                                                                            request,
+                                                                                                                            cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
                                     {
 
-                                        await Task.WhenAll(results);
+                                        await Task.WhenAll(results!);
 
                                         response = results.FirstOrDefault()?.Result;
 

@@ -474,7 +474,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="MeterValue1">A meter value.</param>
         /// <param name="MeterValue2">Another meter value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (MeterValue MeterValue1, MeterValue MeterValue2)
+        public static Boolean operator == (MeterValue? MeterValue1,
+                                           MeterValue? MeterValue2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -499,7 +500,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="MeterValue1">A meter value.</param>
         /// <param name="MeterValue2">Another meter value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (MeterValue MeterValue1, MeterValue MeterValue2)
+        public static Boolean operator != (MeterValue? MeterValue1,
+                                           MeterValue? MeterValue2)
 
             => !(MeterValue1 == MeterValue2);
 
@@ -573,7 +575,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                              " sampled values");
 
         #endregion
-
 
     }
 

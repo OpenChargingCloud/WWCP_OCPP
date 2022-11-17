@@ -255,8 +255,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ExtendedTriggerMessageResponse1">A extended trigger message response.</param>
         /// <param name="ExtendedTriggerMessageResponse2">Another extended trigger message response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ExtendedTriggerMessageResponse ExtendedTriggerMessageResponse1,
-                                           ExtendedTriggerMessageResponse ExtendedTriggerMessageResponse2)
+        public static Boolean operator == (ExtendedTriggerMessageResponse? ExtendedTriggerMessageResponse1,
+                                           ExtendedTriggerMessageResponse? ExtendedTriggerMessageResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -281,8 +281,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ExtendedTriggerMessageResponse1">A extended trigger message response.</param>
         /// <param name="ExtendedTriggerMessageResponse2">Another extended trigger message response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ExtendedTriggerMessageResponse ExtendedTriggerMessageResponse1,
-                                           ExtendedTriggerMessageResponse ExtendedTriggerMessageResponse2)
+        public static Boolean operator != (ExtendedTriggerMessageResponse?ExtendedTriggerMessageResponse1,
+                                           ExtendedTriggerMessageResponse?ExtendedTriggerMessageResponse2)
 
             => !(ExtendedTriggerMessageResponse1 == ExtendedTriggerMessageResponse2);
 

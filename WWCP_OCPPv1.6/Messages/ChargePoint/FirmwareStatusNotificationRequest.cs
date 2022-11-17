@@ -378,8 +378,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="FirmwareStatusNotificationRequest1">A firmware status notification request.</param>
         /// <param name="FirmwareStatusNotificationRequest2">Another firmware status notification request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest1,
-                                           FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest2)
+        public static Boolean operator == (FirmwareStatusNotificationRequest? FirmwareStatusNotificationRequest1,
+                                           FirmwareStatusNotificationRequest? FirmwareStatusNotificationRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -404,8 +404,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="FirmwareStatusNotificationRequest1">A firmware status notification request.</param>
         /// <param name="FirmwareStatusNotificationRequest2">Another firmware status notification request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest1,
-                                           FirmwareStatusNotificationRequest FirmwareStatusNotificationRequest2)
+        public static Boolean operator != (FirmwareStatusNotificationRequest? FirmwareStatusNotificationRequest1,
+                                           FirmwareStatusNotificationRequest? FirmwareStatusNotificationRequest2)
 
             => !(FirmwareStatusNotificationRequest1 == FirmwareStatusNotificationRequest2);
 

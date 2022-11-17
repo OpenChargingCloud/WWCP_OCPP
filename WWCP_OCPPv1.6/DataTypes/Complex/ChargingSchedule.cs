@@ -501,8 +501,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargingSchedule1">A charging schedule.</param>
         /// <param name="ChargingSchedule2">Another charging schedule.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingSchedule ChargingSchedule1,
-                                           ChargingSchedule ChargingSchedule2)
+        public static Boolean operator == (ChargingSchedule? ChargingSchedule1,
+                                           ChargingSchedule? ChargingSchedule2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -527,8 +527,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargingSchedule1">A charging schedule.</param>
         /// <param name="ChargingSchedule2">Another charging schedule.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingSchedule ChargingSchedule1,
-                                           ChargingSchedule ChargingSchedule2)
+        public static Boolean operator != (ChargingSchedule? ChargingSchedule1,
+                                           ChargingSchedule? ChargingSchedule2)
 
             => !(ChargingSchedule1 == ChargingSchedule2);
 

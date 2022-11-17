@@ -328,8 +328,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="SignedMeterValue1">An id tag info.</param>
         /// <param name="SignedMeterValue2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (SignedMeterValue SignedMeterValue1,
-                                           SignedMeterValue SignedMeterValue2)
+        public static Boolean operator == (SignedMeterValue? SignedMeterValue1,
+                                           SignedMeterValue? SignedMeterValue2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -354,8 +354,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="SignedMeterValue1">An id tag info.</param>
         /// <param name="SignedMeterValue2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (SignedMeterValue SignedMeterValue1,
-                                           SignedMeterValue SignedMeterValue2)
+        public static Boolean operator != (SignedMeterValue? SignedMeterValue1,
+                                           SignedMeterValue? SignedMeterValue2)
 
             => !(SignedMeterValue1 == SignedMeterValue2);
 

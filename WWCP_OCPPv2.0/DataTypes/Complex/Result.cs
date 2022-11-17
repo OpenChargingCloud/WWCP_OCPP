@@ -147,8 +147,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Result1">A result.</param>
         /// <param name="Result2">Another result.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (Result Result1,
-                                           Result Result2)
+        public static Boolean operator == (Result? Result1,
+                                           Result? Result2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -173,8 +173,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Result1">A result.</param>
         /// <param name="Result2">Another result.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (Result Result1,
-                                           Result Result2)
+        public static Boolean operator != (Result? Result1,
+                                           Result? Result2)
 
             => !(Result1 == Result2);
 

@@ -250,7 +250,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="SignCertificateResponse1">A sign certificate response.</param>
         /// <param name="SignCertificateResponse2">Another sign certificate response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (SignCertificateResponse SignCertificateResponse1, SignCertificateResponse SignCertificateResponse2)
+        public static Boolean operator == (SignCertificateResponse? SignCertificateResponse1,
+                                           SignCertificateResponse? SignCertificateResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -258,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) SignCertificateResponse1 == null) || ((Object) SignCertificateResponse2 == null))
+            if (SignCertificateResponse1 is null || SignCertificateResponse2 is null)
                 return false;
 
             return SignCertificateResponse1.Equals(SignCertificateResponse2);
@@ -275,7 +276,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="SignCertificateResponse1">A sign certificate response.</param>
         /// <param name="SignCertificateResponse2">Another sign certificate response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (SignCertificateResponse SignCertificateResponse1, SignCertificateResponse SignCertificateResponse2)
+        public static Boolean operator != (SignCertificateResponse? SignCertificateResponse1,
+                                           SignCertificateResponse? SignCertificateResponse2)
 
             => !(SignCertificateResponse1 == SignCertificateResponse2);
 

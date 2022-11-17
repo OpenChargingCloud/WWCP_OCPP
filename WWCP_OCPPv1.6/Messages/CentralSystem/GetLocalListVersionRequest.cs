@@ -321,8 +321,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="GetLocalListVersionRequest1">A GetLocalListVersion request.</param>
         /// <param name="GetLocalListVersionRequest2">Another GetLocalListVersion request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetLocalListVersionRequest GetLocalListVersionRequest1,
-                                           GetLocalListVersionRequest GetLocalListVersionRequest2)
+        public static Boolean operator == (GetLocalListVersionRequest? GetLocalListVersionRequest1,
+                                           GetLocalListVersionRequest? GetLocalListVersionRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -347,8 +347,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="GetLocalListVersionRequest1">A GetLocalListVersion request.</param>
         /// <param name="GetLocalListVersionRequest2">Another GetLocalListVersion request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetLocalListVersionRequest GetLocalListVersionRequest1,
-                                           GetLocalListVersionRequest GetLocalListVersionRequest2)
+        public static Boolean operator != (GetLocalListVersionRequest? GetLocalListVersionRequest1,
+                                           GetLocalListVersionRequest? GetLocalListVersionRequest2)
 
             => !(GetLocalListVersionRequest1 == GetLocalListVersionRequest2);
 

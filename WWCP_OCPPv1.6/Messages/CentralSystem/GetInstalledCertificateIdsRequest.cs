@@ -273,8 +273,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="GetInstalledCertificateIdsRequest1">A get installed certificate ids request.</param>
         /// <param name="GetInstalledCertificateIdsRequest2">Another get installed certificate ids request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetInstalledCertificateIdsRequest GetInstalledCertificateIdsRequest1,
-                                           GetInstalledCertificateIdsRequest GetInstalledCertificateIdsRequest2)
+        public static Boolean operator == (GetInstalledCertificateIdsRequest? GetInstalledCertificateIdsRequest1,
+                                           GetInstalledCertificateIdsRequest? GetInstalledCertificateIdsRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -299,8 +299,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="GetInstalledCertificateIdsRequest1">A get installed certificate ids request.</param>
         /// <param name="GetInstalledCertificateIdsRequest2">Another get installed certificate ids request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetInstalledCertificateIdsRequest GetInstalledCertificateIdsRequest1,
-                                           GetInstalledCertificateIdsRequest GetInstalledCertificateIdsRequest2)
+        public static Boolean operator != (GetInstalledCertificateIdsRequest? GetInstalledCertificateIdsRequest1,
+                                           GetInstalledCertificateIdsRequest? GetInstalledCertificateIdsRequest2)
 
             => !(GetInstalledCertificateIdsRequest1 == GetInstalledCertificateIdsRequest2);
 

@@ -134,8 +134,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="AResponse1">A response.</param>
         /// <param name="AResponse2">Another response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (AResponse<TResponse> AResponse1,
-                                           AResponse<TResponse> AResponse2)
+        public static Boolean operator == (AResponse<TResponse>? AResponse1,
+                                           AResponse<TResponse>? AResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -160,8 +160,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="AResponse1">A response.</param>
         /// <param name="AResponse2">Another response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (AResponse<TResponse> AResponse1,
-                                           AResponse<TResponse> AResponse2)
+        public static Boolean operator != (AResponse<TResponse>? AResponse1,
+                                           AResponse<TResponse>? AResponse2)
 
             => !(AResponse1 == AResponse2);
 

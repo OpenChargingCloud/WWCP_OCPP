@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
                ToUTF8Bytes();
 
 
-        public static Boolean TryParse(String Text, out WSResponseMessage ResponseFrame)
+        public static Boolean TryParse(String Text, out WSResponseMessage? ResponseFrame)
         {
 
             ResponseFrame = null;
@@ -102,13 +102,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
                 if (!Byte.TryParse(JSON[0].Value<String>(), out Byte messageType))
                     return false;
 
-                var responseId  = Request_Id.Parse(JSON[1].Value<String>());
-                var message     = JSON[2] as JObject;
+                var responseId  = Request_Id.TryParse(JSON[1]?.Value<String>() ?? "");
 
-                if (message is null)
+                if (!responseId.HasValue || JSON[2] is not JObject message)
                     return false;
 
-                ResponseFrame   = new WSResponseMessage(responseId,
+                ResponseFrame   = new WSResponseMessage(responseId.Value,
                                                         message,
                                                         messageType);
 

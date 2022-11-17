@@ -244,8 +244,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="HeartbeatRequest1">A heartbeat request.</param>
         /// <param name="HeartbeatRequest2">Another heartbeat request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (HeartbeatRequest HeartbeatRequest1,
-                                           HeartbeatRequest HeartbeatRequest2)
+        public static Boolean operator == (HeartbeatRequest? HeartbeatRequest1,
+                                           HeartbeatRequest? HeartbeatRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -270,7 +270,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="HeartbeatRequest1">A heartbeat request.</param>
         /// <param name="HeartbeatRequest2">Another heartbeat request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (HeartbeatRequest HeartbeatRequest1, HeartbeatRequest HeartbeatRequest2)
+        public static Boolean operator != (HeartbeatRequest? HeartbeatRequest1,
+                                           HeartbeatRequest? HeartbeatRequest2)
 
             => !(HeartbeatRequest1 == HeartbeatRequest2);
 

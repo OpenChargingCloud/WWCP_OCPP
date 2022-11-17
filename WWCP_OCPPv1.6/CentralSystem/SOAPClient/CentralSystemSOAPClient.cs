@@ -574,32 +574,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public CentralSystemSOAPClient(ChargeBox_Id ChargeBoxIdentity,
-                                       String From,
-                                       String To,
+        public CentralSystemSOAPClient(ChargeBox_Id                          ChargeBoxIdentity,
+                                       String                                From,
+                                       String                                To,
 
-                                       URL RemoteURL,
-                                       HTTPHostname? VirtualHostname = null,
-                                       String? Description = null,
-                                       RemoteCertificateValidationCallback? RemoteCertificateValidator = null,
-                                       LocalCertificateSelectionCallback? ClientCertificateSelector = null,
-                                       X509Certificate? ClientCert = null,
-                                       SslProtocols? TLSProtocol = null,
-                                       Boolean? PreferIPv4 = null,
-                                       String HTTPUserAgent = DefaultHTTPUserAgent,
-                                       HTTPPath? URLPathPrefix = null,
-                                       Tuple<String, String>? WSSLoginPassword = null,
-                                       HTTPContentType? HTTPContentType = null,
-                                       TimeSpan? RequestTimeout = null,
-                                       TransmissionRetryDelayDelegate? TransmissionRetryDelay = null,
-                                       UInt16? MaxNumberOfRetries = DefaultMaxNumberOfRetries,
-                                       Boolean UseHTTPPipelining = false,
+                                       URL                                   RemoteURL,
+                                       HTTPHostname?                         VirtualHostname              = null,
+                                       String?                               Description                  = null,
+                                       RemoteCertificateValidationCallback?  RemoteCertificateValidator   = null,
+                                       LocalCertificateSelectionCallback?    ClientCertificateSelector    = null,
+                                       X509Certificate?                      ClientCert                   = null,
+                                       SslProtocols?                         TLSProtocol                  = null,
+                                       Boolean?                              PreferIPv4                   = null,
+                                       String                                HTTPUserAgent                = DefaultHTTPUserAgent,
+                                       HTTPPath?                             URLPathPrefix                = null,
+                                       Tuple<String, String>?                WSSLoginPassword             = null,
+                                       HTTPContentType?                      HTTPContentType              = null,
+                                       TimeSpan?                             RequestTimeout               = null,
+                                       TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
+                                       UInt16?                               MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
+                                       Boolean                               UseHTTPPipelining            = false,
 
-                                       String? LoggingPath = null,
-                                       String LoggingContext = CSClientLogger.DefaultContext,
-                                       LogfileCreatorDelegate? LogfileCreator = null,
-                                       HTTPClientLogger? HTTPLogger = null,
-                                       DNSClient? DNSClient = null)
+                                       String?                               LoggingPath                  =  null,
+                                       String                                LoggingContext               = CSClientLogger.DefaultContext,
+                                       LogfileCreatorDelegate?               LogfileCreator               = null,
+                                       HTTPClientLogger?                     HTTPLogger                   = null,
+                                       DNSClient?                            DNSClient                    = null)
 
             : base(RemoteURL,
                    VirtualHostname,
@@ -624,22 +624,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region Initial checks
 
-            if (ChargeBoxIdentity.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ChargeBoxIdentity), "The given charge box identification must not be null or empty!");
-
             if (From.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(From), "The given SOAP message source must not be null or empty!");
 
             if (To.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(To), "The given SOAP message destination must not be null or empty!");
+                throw new ArgumentNullException(nameof(To),   "The given SOAP message destination must not be null or empty!");
 
             #endregion
 
-            this.ChargeBoxIdentity = ChargeBoxIdentity;
-            this.From = From;
-            this.To = To;
+            this.ChargeBoxIdentity  = ChargeBoxIdentity;
+            this.From               = From;
+            this.To                 = To;
 
-            this.Logger = new CSClientLogger(this,
+            this.Logger             = new CSClientLogger(this,
                                                          LoggingPath,
                                                          LoggingContext,
                                                          LogfileCreator);
@@ -878,7 +875,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(Reset));
             }
 
             result ??= HTTPResponse<ResetResponse>.OK(new ResetResponse(Request,
@@ -1055,7 +1052,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(ChangeAvailability));
             }
 
             result ??= HTTPResponse<ChangeAvailabilityResponse>.OK(new ChangeAvailabilityResponse(Request,
@@ -1232,7 +1229,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(GetConfiguration));
             }
 
             result ??= HTTPResponse<GetConfigurationResponse>.OK(new GetConfigurationResponse(Request,
@@ -1409,7 +1406,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(ChangeConfiguration));
             }
 
             result ??= HTTPResponse<ChangeConfigurationResponse>.OK(new ChangeConfigurationResponse(Request,
@@ -1586,7 +1583,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(DataTransfer));
             }
 
             result ??= HTTPResponse<CP.DataTransferResponse>.OK(new CP.DataTransferResponse(Request,
@@ -1763,7 +1760,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(GetDiagnostics));
             }
 
             result ??= HTTPResponse<GetDiagnosticsResponse>.OK(new GetDiagnosticsResponse(Request,
@@ -1940,7 +1937,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(TriggerMessage));
             }
 
             result ??= HTTPResponse<TriggerMessageResponse>.OK(new TriggerMessageResponse(Request,
@@ -2117,7 +2114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(UpdateFirmware));
             }
 
             result ??= HTTPResponse<UpdateFirmwareResponse>.OK(new UpdateFirmwareResponse(Request,
@@ -2295,7 +2292,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(ReserveNow));
             }
 
             result ??= HTTPResponse<ReserveNowResponse>.OK(new ReserveNowResponse(Request,
@@ -2472,7 +2469,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(CancelReservation));
             }
 
             result ??= HTTPResponse<CancelReservationResponse>.OK(new CancelReservationResponse(Request,
@@ -2649,7 +2646,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(RemoteStartTransaction));
             }
 
             result ??= HTTPResponse<RemoteStartTransactionResponse>.OK(new RemoteStartTransactionResponse(Request,
@@ -2826,7 +2823,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(RemoteStopTransaction));
             }
 
             result ??= HTTPResponse<RemoteStopTransactionResponse>.OK(new RemoteStopTransactionResponse(Request,
@@ -3003,7 +3000,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(SetChargingProfile));
             }
 
             result ??= HTTPResponse<SetChargingProfileResponse>.OK(new SetChargingProfileResponse(Request,
@@ -3180,7 +3177,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(ClearChargingProfile));
             }
 
             result ??= HTTPResponse<ClearChargingProfileResponse>.OK(new ClearChargingProfileResponse(Request,
@@ -3357,7 +3354,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(GetCompositeSchedule));
             }
 
             result ??= HTTPResponse<GetCompositeScheduleResponse>.OK(new GetCompositeScheduleResponse(Request,
@@ -3534,7 +3531,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(UnlockConnector));
             }
 
             result ??= HTTPResponse<UnlockConnectorResponse>.OK(new UnlockConnectorResponse(Request,
@@ -3712,7 +3709,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(GetLocalListVersion));
             }
 
             result ??= HTTPResponse<GetLocalListVersionResponse>.OK(new GetLocalListVersionResponse(Request,
@@ -3889,7 +3886,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(SendLocalList));
             }
 
             result ??= HTTPResponse<SendLocalListResponse>.OK(new SendLocalListResponse(Request,
@@ -4066,7 +4063,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-
+                DebugX.LogException(e, nameof(CentralSystemSOAPClient) + "." + nameof(ClearCache));
             }
 
             result ??= HTTPResponse<ClearCacheResponse>.OK(new ClearCacheResponse(Request,
@@ -4101,7 +4098,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region Security extensions... not implemented!
+        #region Security extensions are not defined for SOAP!
 
         public Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request)
         {

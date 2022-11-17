@@ -17,8 +17,8 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
+
 using static cloud.charging.open.protocols.OCPPv1_6.CS.CentralSystemWSServer;
 
 #endregion

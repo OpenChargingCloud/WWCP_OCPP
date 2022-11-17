@@ -315,8 +315,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="InstallCertificateRequest1">An install certificate request.</param>
         /// <param name="InstallCertificateRequest2">Another install certificate request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (InstallCertificateRequest InstallCertificateRequest1,
-                                           InstallCertificateRequest InstallCertificateRequest2)
+        public static Boolean operator == (InstallCertificateRequest? InstallCertificateRequest1,
+                                           InstallCertificateRequest? InstallCertificateRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -341,8 +341,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="InstallCertificateRequest1">An install certificate request.</param>
         /// <param name="InstallCertificateRequest2">Another install certificate request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (InstallCertificateRequest InstallCertificateRequest1,
-                                           InstallCertificateRequest InstallCertificateRequest2)
+        public static Boolean operator != (InstallCertificateRequest? InstallCertificateRequest1,
+                                           InstallCertificateRequest? InstallCertificateRequest2)
 
             => !(InstallCertificateRequest1 == InstallCertificateRequest2);
 

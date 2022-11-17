@@ -522,8 +522,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="SendLocalListRequest1">A send local list request.</param>
         /// <param name="SendLocalListRequest2">Another send local list request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (SendLocalListRequest SendLocalListRequest1,
-                                           SendLocalListRequest SendLocalListRequest2)
+        public static Boolean operator == (SendLocalListRequest? SendLocalListRequest1,
+                                           SendLocalListRequest? SendLocalListRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -548,8 +548,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="SendLocalListRequest1">A send local list request.</param>
         /// <param name="SendLocalListRequest2">Another send local list request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (SendLocalListRequest SendLocalListRequest1,
-                                           SendLocalListRequest SendLocalListRequest2)
+        public static Boolean operator != (SendLocalListRequest? SendLocalListRequest1,
+                                           SendLocalListRequest? SendLocalListRequest2)
 
             => !(SendLocalListRequest1 == SendLocalListRequest2);
 

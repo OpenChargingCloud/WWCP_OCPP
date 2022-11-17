@@ -248,7 +248,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="LogParameters1">Log parameters.</param>
         /// <param name="LogParameters2">Other log parameters.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (LogParameters LogParameters1, LogParameters LogParameters2)
+        public static Boolean operator == (LogParameters? LogParameters1,
+                                           LogParameters? LogParameters2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -273,7 +274,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="LogParameters1">Log parameters.</param>
         /// <param name="LogParameters2">Other log parameters.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (LogParameters LogParameters1, LogParameters LogParameters2)
+        public static Boolean operator != (LogParameters? LogParameters1,
+                                           LogParameters? LogParameters2)
 
             => !(LogParameters1 == LogParameters2);
 
@@ -351,7 +353,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                              LatestTimestamp.HasValue ? ", < " + LatestTimestamp.Value.ToIso8601() : "");
 
         #endregion
-
 
     }
 

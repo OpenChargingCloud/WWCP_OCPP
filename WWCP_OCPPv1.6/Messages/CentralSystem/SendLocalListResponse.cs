@@ -341,8 +341,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="SendLocalListResponse1">A send local list response.</param>
         /// <param name="SendLocalListResponse2">Another send local list response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (SendLocalListResponse SendLocalListResponse1,
-                                           SendLocalListResponse SendLocalListResponse2)
+        public static Boolean operator == (SendLocalListResponse? SendLocalListResponse1,
+                                           SendLocalListResponse? SendLocalListResponse2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -367,8 +367,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="SendLocalListResponse1">A send local list response.</param>
         /// <param name="SendLocalListResponse2">Another send local list response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (SendLocalListResponse SendLocalListResponse1,
-                                           SendLocalListResponse SendLocalListResponse2)
+        public static Boolean operator != (SendLocalListResponse? SendLocalListResponse1,
+                                           SendLocalListResponse? SendLocalListResponse2)
 
             => !(SendLocalListResponse1 == SendLocalListResponse2);
 

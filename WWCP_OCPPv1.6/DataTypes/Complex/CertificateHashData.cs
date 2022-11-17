@@ -260,7 +260,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="CertificateHashData1">Certificate hash data.</param>
         /// <param name="CertificateHashData2">Other certificate hash data.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (CertificateHashData CertificateHashData1, CertificateHashData CertificateHashData2)
+        public static Boolean operator == (CertificateHashData? CertificateHashData1,
+                                           CertificateHashData? CertificateHashData2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -285,7 +286,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="CertificateHashData1">Certificate hash data.</param>
         /// <param name="CertificateHashData2">Other certificate hash data.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (CertificateHashData CertificateHashData1, CertificateHashData CertificateHashData2)
+        public static Boolean operator != (CertificateHashData? CertificateHashData1,
+                                           CertificateHashData? CertificateHashData2)
 
             => !(CertificateHashData1 == CertificateHashData2);
 
@@ -360,7 +362,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                              SerialNumber);
 
         #endregion
-
 
     }
 
