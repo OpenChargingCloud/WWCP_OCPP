@@ -360,7 +360,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => CurrentTime.GetHashCode();
+            => CurrentTime.GetHashCode() *3 ^
+               base.       GetHashCode();
 
         #endregion
 

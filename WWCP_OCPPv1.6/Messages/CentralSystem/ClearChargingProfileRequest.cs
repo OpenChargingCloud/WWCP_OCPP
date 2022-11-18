@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new ClearChargingProfile request.
+        /// Create a new clear charging profile request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ChargingProfileId">The optional identification of the charging profile to clear.</param>
@@ -505,10 +505,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator == (ClearChargingProfileRequest1, ClearChargingProfileRequest2)
 
         /// <summary>
-        /// Compares two ClearChargingProfile requests for equality.
+        /// Compares two clear charging profile requests for equality.
         /// </summary>
-        /// <param name="ClearChargingProfileRequest1">A ClearChargingProfile request.</param>
-        /// <param name="ClearChargingProfileRequest2">Another ClearChargingProfile request.</param>
+        /// <param name="ClearChargingProfileRequest1">A clear charging profile request.</param>
+        /// <param name="ClearChargingProfileRequest2">Another clear charging profile request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (ClearChargingProfileRequest? ClearChargingProfileRequest1,
                                            ClearChargingProfileRequest? ClearChargingProfileRequest2)
@@ -531,10 +531,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Operator != (ClearChargingProfileRequest1, ClearChargingProfileRequest2)
 
         /// <summary>
-        /// Compares two ClearChargingProfile requests for inequality.
+        /// Compares two clear charging profile requests for inequality.
         /// </summary>
-        /// <param name="ClearChargingProfileRequest1">A ClearChargingProfile request.</param>
-        /// <param name="ClearChargingProfileRequest2">Another ClearChargingProfile request.</param>
+        /// <param name="ClearChargingProfileRequest1">A clear charging profile request.</param>
+        /// <param name="ClearChargingProfileRequest2">Another clear charging profile request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (ClearChargingProfileRequest? ClearChargingProfileRequest1,
                                            ClearChargingProfileRequest? ClearChargingProfileRequest2)

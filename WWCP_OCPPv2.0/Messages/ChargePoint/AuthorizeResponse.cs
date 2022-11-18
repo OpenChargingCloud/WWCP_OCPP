@@ -615,7 +615,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                       (CertificateStatus?.GetHashCode() ?? 0) * 3 ^
 
-                       CustomData?.       GetHashCode() ?? 0;
+                       base.              GetHashCode();
 
             }
         }

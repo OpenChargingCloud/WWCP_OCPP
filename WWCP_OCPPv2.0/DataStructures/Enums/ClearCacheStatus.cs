@@ -15,33 +15,35 @@
  * limitations under the License.
  */
 
-namespace cloud.charging.open.protocols.OCPPv1_6
+namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the clear charging profile status.
+    /// Extentions methods for the clear cache status.
     /// </summary>
-    public static class ClearChargingProfileStatusExtentions
+    public static class ClearCacheStatusExtentions
     {
 
         #region Parse(Text)
 
-        public static ClearChargingProfileStatus Parse(String Text)
+        public static ClearCacheStatus Parse(String Text)
 
             => Text.Trim() switch {
-                   "Accepted"  => ClearChargingProfileStatus.Accepted,
-                   _           => ClearChargingProfileStatus.Unknown
-               };
+                "Accepted"  => ClearCacheStatus.Accepted,
+                "Rejected"  => ClearCacheStatus.Rejected,
+                _           => ClearCacheStatus.Unknown
+            };
 
         #endregion
 
-        #region AsText(this ClearChargingProfileStatus)
+        #region AsText(this ClearCacheStatus)
 
-        public static String AsText(this ClearChargingProfileStatus ClearChargingProfileStatus)
+        public static String AsText(this ClearCacheStatus ClearCacheStatus)
 
-            => ClearChargingProfileStatus switch {
-                   ClearChargingProfileStatus.Accepted  => "Accepted",
-                   _                                    => "Unknown"
+            => ClearCacheStatus switch {
+                   ClearCacheStatus.Accepted  => "Accepted",
+                   ClearCacheStatus.Rejected  => "Rejected",
+                   _                          => "unknown"
                };
 
         #endregion
@@ -50,20 +52,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
     /// <summary>
-    /// Defines the clear-charging-profile-status-values.
+    /// Defines the clear-cache-status-values.
     /// </summary>
-    public enum ClearChargingProfileStatus
+    public enum ClearCacheStatus
     {
 
         /// <summary>
-        /// No charging profile(s) were found matching the request.
+        /// Unknown clear-cache status.
         /// </summary>
         Unknown,
 
         /// <summary>
-        /// Request has been accepted and will be executed.
+        /// Command has been executed.
         /// </summary>
-        Accepted
+        Accepted,
+
+        /// <summary>
+        /// Command has not been executed.
+        /// </summary>
+        Rejected
 
     }
 

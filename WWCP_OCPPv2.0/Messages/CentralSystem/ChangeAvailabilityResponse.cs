@@ -56,17 +56,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <param name="Request">The change availability request leading to this response.</param>
         /// <param name="Status">The success or failure of the change availability command.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public ChangeAvailabilityResponse(CS.ChangeAvailabilityRequest  Request,
                                           ChangeAvailabilityStatus      Status,
                                           StatusInfo?                   StatusInfo   = null,
                                           CustomData?                   CustomData   = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   CustomData)
 
         {
 
-            this.Status = Status;
+            this.Status      = Status;
+            this.StatusInfo  = StatusInfo;
 
         }
 
@@ -426,8 +429,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             unchecked
             {
 
-                return Status.     GetHashCode() * 3 ^
-                       StatusInfo?.GetHashCode() ?? 0;
+                return Status.     GetHashCode()       * 5 ^
+
+                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
+
+                       base.       GetHashCode();
 
             }
         }

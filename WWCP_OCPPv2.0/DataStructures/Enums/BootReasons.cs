@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// ...
+    /// Boot reasons.
     /// </summary>
     public enum BootReasons
     {

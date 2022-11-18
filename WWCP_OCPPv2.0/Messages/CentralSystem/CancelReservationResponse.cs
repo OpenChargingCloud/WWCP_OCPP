@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The success or failure of the reservation cancellation.
         /// </summary>
-        public CancelReservationStatus  Status    { get; }
+        public CancelReservationStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
@@ -67,7 +67,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         {
 
-            this.Status = Status;
+            this.Status      = Status;
+            this.StatusInfo  = StatusInfo;
 
         }
 
@@ -426,8 +427,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             unchecked
             {
 
-                return Status.     GetHashCode() * 3 ^
-                       StatusInfo?.GetHashCode() ?? 0;
+                return Status.     GetHashCode()       * 5 ^
+
+                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
+
+                       base.       GetHashCode();
 
             }
         }

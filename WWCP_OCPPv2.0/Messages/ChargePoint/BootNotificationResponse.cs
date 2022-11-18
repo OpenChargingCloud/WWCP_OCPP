@@ -510,12 +510,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             unchecked
             {
 
-                return Status.      GetHashCode()       * 11 ^
-                       CurrentTime. GetHashCode()       *  7 ^
-                       Interval.    GetHashCode()       *  5 ^
+                return Status.     GetHashCode()       * 11 ^
+                       CurrentTime.GetHashCode()       *  7 ^
+                       Interval.   GetHashCode()       *  5 ^
 
-                       (StatusInfo?.GetHashCode() ?? 0) *  3 ^
-                       (CustomData?.GetHashCode() ?? 0);
+                      (StatusInfo?.GetHashCode() ?? 0) *  3 ^
+
+                       base.       GetHashCode();
 
             }
         }

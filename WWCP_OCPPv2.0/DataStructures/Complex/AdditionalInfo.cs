@@ -270,8 +270,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="AdditionalInfo1">An id tag info.</param>
-        /// <param name="AdditionalInfo2">Another id tag info.</param>
+        /// <param name="AdditionalInfo1">An additional info.</param>
+        /// <param name="AdditionalInfo2">Another additional info.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (AdditionalInfo? AdditionalInfo1,
                                            AdditionalInfo? AdditionalInfo2)
@@ -296,8 +296,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="AdditionalInfo1">An id tag info.</param>
-        /// <param name="AdditionalInfo2">Another id tag info.</param>
+        /// <param name="AdditionalInfo1">An additional info.</param>
+        /// <param name="AdditionalInfo2">Another additional info.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (AdditionalInfo? AdditionalInfo1,
                                            AdditionalInfo? AdditionalInfo2)
@@ -313,10 +313,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two additional infos for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">An additional info to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is AdditionalInfo additionalInfo &&
@@ -327,9 +326,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(AdditionalInfo)
 
         /// <summary>
-        /// Compares two id tag infos for equality.
+        /// Compares two additional infos for equality.
         /// </summary>
-        /// <param name="AdditionalInfo">An id tag info to compare with.</param>
+        /// <param name="AdditionalInfo">An additional info to compare with.</param>
         public Boolean Equals(AdditionalInfo AdditionalInfo)
 
             => AdditionalInfo is not null &&

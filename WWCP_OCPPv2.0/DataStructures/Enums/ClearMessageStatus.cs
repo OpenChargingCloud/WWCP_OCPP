@@ -15,33 +15,33 @@
  * limitations under the License.
  */
 
-namespace cloud.charging.open.protocols.OCPPv1_6
+namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the clear charging profile status.
+    /// Extentions methods for the clear message status.
     /// </summary>
-    public static class ClearChargingProfileStatusExtentions
+    public static class ClearMessageStatusExtentions
     {
 
         #region Parse(Text)
 
-        public static ClearChargingProfileStatus Parse(String Text)
+        public static ClearMessageStatus Parse(String Text)
 
             => Text.Trim() switch {
-                   "Accepted"  => ClearChargingProfileStatus.Accepted,
-                   _           => ClearChargingProfileStatus.Unknown
+                   "Accepted"  => ClearMessageStatus.Accepted,
+                   _           => ClearMessageStatus.Unknown
                };
 
         #endregion
 
-        #region AsText(this ClearChargingProfileStatus)
+        #region AsText(this ClearMessageStatus)
 
-        public static String AsText(this ClearChargingProfileStatus ClearChargingProfileStatus)
+        public static String AsText(this ClearMessageStatus ClearMessageStatus)
 
-            => ClearChargingProfileStatus switch {
-                   ClearChargingProfileStatus.Accepted  => "Accepted",
-                   _                                    => "Unknown"
+            => ClearMessageStatus switch {
+                   ClearMessageStatus.Accepted  => "Accepted",
+                   _                            => "Unknown"
                };
 
         #endregion
@@ -50,13 +50,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
     /// <summary>
-    /// Defines the clear-charging-profile-status-values.
+    /// Defines the clear message status values.
     /// </summary>
-    public enum ClearChargingProfileStatus
+    public enum ClearMessageStatus
     {
 
         /// <summary>
-        /// No charging profile(s) were found matching the request.
+        /// No message status(s) were found matching the request.
         /// </summary>
         Unknown,
 

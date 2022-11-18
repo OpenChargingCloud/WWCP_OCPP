@@ -40,10 +40,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// Create a new status notification response.
         /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="Request">The status notification request leading to this response.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public StatusNotificationResponse(CP.StatusNotificationRequest  Request,
-                                          CustomData?                   CustomData  = null)
+                                          CustomData?                   CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// Create a new status notification response.
         /// </summary>
-        /// <param name="Request">The authorize request leading to this response.</param>
+        /// <param name="Request">The status notification request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public StatusNotificationResponse(CP.StatusNotificationRequest  Request,
                                           Result                        Result)
@@ -322,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             unchecked
             {
 
-                return CustomData?.GetHashCode() ?? 0;
+                return base.GetHashCode();
 
             }
         }

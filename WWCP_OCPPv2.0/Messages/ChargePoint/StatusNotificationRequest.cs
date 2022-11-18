@@ -354,13 +354,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("timestamp",         Timestamp.      ToIso8601()),
-                           new JProperty("connectorStatus",   ConnectorStatus.AsText()),
-                           new JProperty("evseId",            EVSEId.         ToString()),
-                           new JProperty("connectorId",       ConnectorId.    ToString()),
+                                 new JProperty("timestamp",        Timestamp.      ToIso8601()),
+                                 new JProperty("connectorStatus",  ConnectorStatus.AsText()),
+                                 new JProperty("evseId",           EVSEId.         ToString()),
+                                 new JProperty("connectorId",      ConnectorId.    ToString()),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.     ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",       CustomData.     ToJSON(CustomCustomDataResponseSerializer))
                                : null);
 
             return CustomStatusNotificationRequestSerializer is not null
