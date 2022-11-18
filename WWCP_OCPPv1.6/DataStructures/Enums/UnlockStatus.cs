@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    UnlockStatus.Unlocked      => "Unlocked",
                    UnlockStatus.UnlockFailed  => "UnlockFailed",
                    UnlockStatus.NotSupported  => "NotSupported",
-                   _                          => "unknown"
+                   _                          => "Unknown"
                };
 
         #endregion

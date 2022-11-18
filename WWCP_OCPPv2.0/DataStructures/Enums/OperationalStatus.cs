@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             => OperationalStatus switch {
                    OperationalStatus.Inoperative  => "Inoperative",
                    OperationalStatus.Operative    => "Operative",
-                   _                              => "unknown"
+                   _                              => "Unknown"
                };
 
         #endregion

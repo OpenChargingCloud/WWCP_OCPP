@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    Reasons.StoppedByEV         => "StoppedByEV",
                    Reasons.TimeLimitReached    => "TimeLimitReached",
                    Reasons.Timeout             => "Timeout",
-                   _                           => "unknown"
+                   _                           => "Unknown"
                };
 
         #endregion

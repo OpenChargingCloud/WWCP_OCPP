@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    ChargePointErrorCodes.ResetFailure          => "ResetFailure",
                    ChargePointErrorCodes.UnderVoltage          => "UnderVoltage",
                    ChargePointErrorCodes.WeakSignal            => "WeakSignal",
-                   _                                           => "unknown"
+                   _                                           => "Unknown"
                };
 
         #endregion

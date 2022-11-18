@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    IdTokenTypes.Local            => "Local",
                    IdTokenTypes.MacAddress       => "MacAddress",
                    IdTokenTypes.NoAuthorization  => "NoAuthorization",
-                   _                             => "unknown"
+                   _                             => "Unknown"
                };
 
         #endregion

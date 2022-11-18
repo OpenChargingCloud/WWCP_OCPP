@@ -89,9 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new reservation identification.
+        /// Create a new reservation identification based on the given number.
         /// </summary>
-        /// <param name="Number">A number.</param>
+        /// <param name="Number">A numeric representation of a reservation identification.</param>
         private Reservation_Id(UInt64 Number)
         {
             this.Value = Number;

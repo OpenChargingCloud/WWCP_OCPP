@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    UpdateFirmwareStatus.AcceptedCanceled    => "AcceptedCanceled",
                    UpdateFirmwareStatus.InvalidCertificate  => "InvalidCertificate",
                    UpdateFirmwareStatus.RevokedCertificate  => "RevokedCertificate",
-                   _                                        => "unknown"
+                   _                                        => "Unknown"
                };
 
         #endregion

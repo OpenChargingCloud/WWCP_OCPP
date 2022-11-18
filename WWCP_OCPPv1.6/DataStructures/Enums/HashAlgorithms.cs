@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    HashAlgorithms.SHA256  => "SHA256",
                    HashAlgorithms.SHA384  => "SHA384",
                    HashAlgorithms.SHA512  => "SHA512",
-                   _                      => "unknown"
+                   _                      => "Unknown"
                };
 
         #endregion

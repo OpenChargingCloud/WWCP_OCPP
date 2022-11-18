@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    RegistrationStatus.Accepted  => "Accepted",
                    RegistrationStatus.Pending   => "Pending",
                    RegistrationStatus.Rejected  => "Rejected",
-                   _                            => "unknown"
+                   _                            => "Unknown"
                };
 
         #endregion

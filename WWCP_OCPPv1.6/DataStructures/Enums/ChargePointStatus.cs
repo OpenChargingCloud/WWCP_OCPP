@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    ChargePointStatus.Reserved       => "Reserved",
                    ChargePointStatus.Faulted        => "Faulted",
                    ChargePointStatus.Unavailable    => "Unavailable",
-                   _                                => "unknown"
+                   _                                => "Unknown"
                };
 
         #endregion

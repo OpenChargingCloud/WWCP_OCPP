@@ -32,11 +32,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Text">A string representation of a diagnostics status.</param>
         public static DiagnosticsStatus Parse(String Text)
 
-            => Text.ToLower() switch {
-                   "idle"          => DiagnosticsStatus.Idle,
-                   "uploaded"      => DiagnosticsStatus.Uploaded,
-                   "uploadfailed"  => DiagnosticsStatus.UploadFailed,
-                   "uploading"     => DiagnosticsStatus.Uploading,
+            => Text.Trim() switch {
+                   "Idle"          => DiagnosticsStatus.Idle,
+                   "Uploaded"      => DiagnosticsStatus.Uploaded,
+                   "Uploadfailed"  => DiagnosticsStatus.UploadFailed,
+                   "Uploading"     => DiagnosticsStatus.Uploading,
                    _               => DiagnosticsStatus.Unknown
                };
 
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    DiagnosticsStatus.Uploaded      => "Uploaded",
                    DiagnosticsStatus.UploadFailed  => "UploadFailed",
                    DiagnosticsStatus.Uploading     => "Uploading",
-                   _                               => "unknown"
+                   _                               => "Unknown"
                };
 
         #endregion

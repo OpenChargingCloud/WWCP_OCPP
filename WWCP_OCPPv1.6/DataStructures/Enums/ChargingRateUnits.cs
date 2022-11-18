@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => ChargingRateUnitType switch {
                    ChargingRateUnits.Amperes  => "A",
                    ChargingRateUnits.Watts    => "W",
-                   _                          => "unknown"
+                   _                          => "Unknown"
                };
 
         #endregion

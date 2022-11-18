@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => ResetStatus switch {
                    ResetStatus.Accepted  => "Accepted",
                    ResetStatus.Rejected  => "Rejected",
-                   _                     => "unknown"
+                   _                     => "Unknown"
                };
 
         #endregion

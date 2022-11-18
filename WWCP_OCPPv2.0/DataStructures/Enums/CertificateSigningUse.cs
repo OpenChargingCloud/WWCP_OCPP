@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             => CertificateSigningUse switch {
                    CertificateSigningUse.ChargingStationCertificate  => "ChargingStationCertificate",
                    CertificateSigningUse.V2GCertificate              => "V2GCertificate",
-                   _                                                 => "unknown"
+                   _                                                 => "Unknown"
                };
 
         #endregion

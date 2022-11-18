@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    UpdateStatus.Failed           => "Failed",
                    UpdateStatus.NotSupported     => "NotSupported",
                    UpdateStatus.VersionMismatch  => "VersionMismatch",
-                   _                             => "unknown"
+                   _                             => "Unknown"
                };
 
         #endregion

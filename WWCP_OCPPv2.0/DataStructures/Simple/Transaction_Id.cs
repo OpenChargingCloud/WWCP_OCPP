@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             => Value != 0;
 
         /// <summary>
-        /// The length of the tag identification.
+        /// The length of the transaction identification.
         /// </summary>
         public UInt64 Length
             => (UInt64) Value.ToString().Length;
@@ -89,9 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new transaction identification.
+        /// Create a new transaction identification based on the given number.
         /// </summary>
-        /// <param name="Number">A number.</param>
+        /// <param name="Number">A numeric representation of a transaction identification.</param>
         private Transaction_Id(UInt64 Number)
         {
             this.Value = Number;

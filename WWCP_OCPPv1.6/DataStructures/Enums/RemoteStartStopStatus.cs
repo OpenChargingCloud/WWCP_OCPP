@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => RemoteStartStopStatus switch {
                    RemoteStartStopStatus.Accepted  => "Accepted",
                    RemoteStartStopStatus.Rejected  => "Rejected",
-                   _                               => "unknown"
+                   _                               => "Unknown"
                };
 
         #endregion

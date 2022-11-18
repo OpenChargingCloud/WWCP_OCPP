@@ -55,10 +55,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    DataTransferStatus.Rejected          => "Rejected",
                    DataTransferStatus.UnknownMessageId  => "UnknownMessageId",
                    DataTransferStatus.UnknownVendorId   => "UnknownVendorId",
-                   _                                    => "unknown"
+                   _                                    => "Unknown"
                };
 
-        #endregion
+        #endregion  
 
     }
 

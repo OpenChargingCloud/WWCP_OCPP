@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -27,11 +25,34 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
+    /// Extention methods for a human language identifier.
+    /// </summary>
+    public static class LanguageIdExtentions
+    {
+
+        /// <summary>
+        /// Indicates whether this human language identifier is null or empty.
+        /// </summary>
+        /// <param name="LanguageId">A human language identifier.</param>
+        public static Boolean IsNullOrEmpty(this Language_Id? LanguageId)
+            => !LanguageId.HasValue || LanguageId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this human language identifier is null or empty.
+        /// </summary>
+        /// <param name="LanguageId">A human language identifier.</param>
+        public static Boolean IsNotNullOrEmpty(this Language_Id? LanguageId)
+            => LanguageId.HasValue && LanguageId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// A human language identifier, as defined in rfc5646.
     /// </summary>
     public readonly struct Language_Id : IId,
-                                      IEquatable<Language_Id>,
-                                      IComparable<Language_Id>
+                                         IEquatable<Language_Id>,
+                                         IComparable<Language_Id>
     {
 
         #region Data
@@ -49,19 +70,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// The length of the tag identification.
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
+
+        /// <summary>
+        /// The length of the language identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId?.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new human language identifier.
+        /// Create a new human language identifier based on the given text.
         /// </summary>
-        /// <param name="Text">A string.</param>
+        /// <param name="Text">A text representation of a human language identifier.</param>
         private Language_Id(String  Text)
         {
             this.InternalId = Text;
@@ -79,20 +106,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static Language_Id Parse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out var languageId))
+                return languageId;
 
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a human language must not be null or empty!");
-
-            #endregion
-
-            if (TryParse(Text, out Language_Id vendorId))
-                return vendorId;
-
-            throw new ArgumentNullException(nameof(Text), "The given text representation of a human language is invalid!");
+            throw new ArgumentException("The given text representation of a human language is invalid!",
+                                        nameof(Text));
 
         }
 
@@ -107,8 +125,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static Language_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Language_Id vendorId))
-                return vendorId;
+            if (TryParse(Text, out var languageId))
+                return languageId;
 
             return null;
 
@@ -116,23 +134,23 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) TryParse(Text, out VendorId)
+        #region (static) TryParse(Text, out LanguageId)
 
         /// <summary>
         /// Try to parse the given string as a human language.
         /// </summary>
         /// <param name="Text">A text representation of a human language.</param>
-        /// <param name="VendorId">The parsed human language.</param>
-        public static Boolean TryParse(String Text, out Language_Id VendorId)
+        /// <param name="LanguageId">The parsed human language.</param>
+        public static Boolean TryParse(String Text, out Language_Id LanguageId)
         {
 
             #region Initial checks
 
-            Text = Text?.Trim();
+            Text = Text.Trim();
 
             if (Text.IsNullOrEmpty())
             {
-                VendorId = default;
+                LanguageId = default;
                 return false;
             }
 
@@ -140,13 +158,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             try
             {
-                VendorId = new Language_Id(Text);
+                LanguageId = new Language_Id(Text);
                 return true;
             }
             catch (Exception)
             { }
 
-            VendorId = default;
+            LanguageId = default;
             return false;
 
         }
@@ -159,207 +177,167 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Clone this charge box identification.
         /// </summary>
         public Language_Id Clone
-            => new Language_Id(new String(InternalId.ToCharArray()));
+
+            => new (
+                   new String(InternalId.ToCharArray())
+               );
 
         #endregion
 
 
         #region Operator overloading
 
-        #region Operator == (VendorId1, VendorId2)
+        #region Operator == (LanguageId1, LanguageId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VendorId1">An charge box identification.</param>
-        /// <param name="VendorId2">Another charge box identification.</param>
+        /// <param name="LanguageId1">A language identification.</param>
+        /// <param name="LanguageId2">Another language identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Language_Id VendorId1, Language_Id VendorId2)
-        {
+        public static Boolean operator == (Language_Id LanguageId1,
+                                           Language_Id LanguageId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(VendorId1, VendorId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) VendorId1 == null) || ((Object) VendorId2 == null))
-                return false;
-
-            if ((Object) VendorId1 == null)
-                throw new ArgumentNullException(nameof(VendorId1),  "The given charge box identification must not be null!");
-
-            return VendorId1.Equals(VendorId2);
-
-        }
+            => LanguageId1.Equals(LanguageId2);
 
         #endregion
 
-        #region Operator != (VendorId1, VendorId2)
+        #region Operator != (LanguageId1, LanguageId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VendorId1">An charge box identification.</param>
-        /// <param name="VendorId2">Another charge box identification.</param>
+        /// <param name="LanguageId1">A language identification.</param>
+        /// <param name="LanguageId2">Another language identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Language_Id VendorId1, Language_Id VendorId2)
-            => !(VendorId1 == VendorId2);
+        public static Boolean operator != (Language_Id LanguageId1,
+                                           Language_Id LanguageId2)
+
+            => !LanguageId1.Equals(LanguageId2);
 
         #endregion
 
-        #region Operator <  (VendorId1, VendorId2)
+        #region Operator <  (LanguageId1, LanguageId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VendorId1">An charge box identification.</param>
-        /// <param name="VendorId2">Another charge box identification.</param>
+        /// <param name="LanguageId1">A language identification.</param>
+        /// <param name="LanguageId2">Another language identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Language_Id VendorId1, Language_Id VendorId2)
-        {
+        public static Boolean operator < (Language_Id LanguageId1,
+                                          Language_Id LanguageId2)
 
-            if ((Object) VendorId1 == null)
-                throw new ArgumentNullException(nameof(VendorId1),  "The given charge box identification must not be null!");
-
-            return VendorId1.CompareTo(VendorId2) < 0;
-
-        }
+            => LanguageId1.CompareTo(LanguageId2) < 0;
 
         #endregion
 
-        #region Operator <= (VendorId1, VendorId2)
+        #region Operator <= (LanguageId1, LanguageId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VendorId1">An charge box identification.</param>
-        /// <param name="VendorId2">Another charge box identification.</param>
+        /// <param name="LanguageId1">A language identification.</param>
+        /// <param name="LanguageId2">Another language identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Language_Id VendorId1, Language_Id VendorId2)
-            => !(VendorId1 > VendorId2);
+        public static Boolean operator <= (Language_Id LanguageId1,
+                                           Language_Id LanguageId2)
+
+            => LanguageId1.CompareTo(LanguageId2) <= 0;
 
         #endregion
 
-        #region Operator >  (VendorId1, VendorId2)
+        #region Operator >  (LanguageId1, LanguageId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VendorId1">An charge box identification.</param>
-        /// <param name="VendorId2">Another charge box identification.</param>
+        /// <param name="LanguageId1">A language identification.</param>
+        /// <param name="LanguageId2">Another language identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Language_Id VendorId1, Language_Id VendorId2)
-        {
+        public static Boolean operator > (Language_Id LanguageId1,
+                                          Language_Id LanguageId2)
 
-            if ((Object) VendorId1 == null)
-                throw new ArgumentNullException(nameof(VendorId1),  "The given charge box identification must not be null!");
-
-            return VendorId1.CompareTo(VendorId2) > 0;
-
-        }
+            => LanguageId1.CompareTo(LanguageId2) > 0;
 
         #endregion
 
-        #region Operator >= (VendorId1, VendorId2)
+        #region Operator >= (LanguageId1, LanguageId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VendorId1">An charge box identification.</param>
-        /// <param name="VendorId2">Another charge box identification.</param>
+        /// <param name="LanguageId1">A language identification.</param>
+        /// <param name="LanguageId2">Another language identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Language_Id VendorId1, Language_Id VendorId2)
-            => !(VendorId1 < VendorId2);
+        public static Boolean operator >= (Language_Id LanguageId1,
+                                           Language_Id LanguageId2)
+
+            => LanguageId1.CompareTo(LanguageId2) >= 0;
 
         #endregion
 
         #endregion
 
-        #region IComparable<VendorId> Members
+        #region IComparable<LanguageId> Members
 
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two language identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">A language identification to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
-            if (Object is null)
-                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
-
-            // Check if the given object is a charge box identification.
-            if (!(Object is Language_Id))
-                throw new ArgumentException("The given object is not a charge box identification!", nameof(Object));
-
-            return CompareTo((Language_Id) Object);
-
-        }
+            => Object is Language_Id languageId
+                   ? CompareTo(languageId)
+                   : throw new ArgumentException("The given object is not a language identification!",
+                                                 nameof(Object));
 
         #endregion
 
-        #region CompareTo(VendorId)
+        #region CompareTo(LanguageId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two language identifications.
         /// </summary>
-        /// <param name="VendorId">An object to compare with.</param>
-        public Int32 CompareTo(Language_Id VendorId)
-        {
+        /// <param name="LanguageId">A language identification to compare with.</param>
+        public Int32 CompareTo(Language_Id LanguageId)
 
-            if ((Object) VendorId == null)
-                throw new ArgumentNullException(nameof(VendorId),  "The given charge box identification must not be null!");
-
-            return String.Compare(InternalId, VendorId.InternalId, StringComparison.Ordinal);
-
-        }
+            => String.Compare(InternalId,
+                              LanguageId.InternalId,
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
         #endregion
 
-        #region IEquatable<VendorId> Members
+        #region IEquatable<LanguageId> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two language identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A language identification to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            // Check if the given object is a charge box identification.
-            if (!(Object is Language_Id))
-                return false;
-
-            return this.Equals((Language_Id) Object);
-
-        }
+            => Object is Language_Id languageId &&
+                   Equals(languageId);
 
         #endregion
 
-        #region Equals(VendorId)
+        #region Equals(LanguageId)
 
         /// <summary>
-        /// Compares two charge box identifications for equality.
+        /// Compares two language identifications for equality.
         /// </summary>
-        /// <param name="VendorId">An charge box identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Language_Id VendorId)
-        {
+        /// <param name="LanguageId">A language identification to compare with.</param>
+        public Boolean Equals(Language_Id LanguageId)
 
-            if ((Object) VendorId == null)
-                return false;
-
-            return InternalId.Equals(VendorId.InternalId);
-
-        }
+            => String.Equals(InternalId,
+                             LanguageId.InternalId,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -372,7 +350,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => InternalId.GetHashCode();
+
+            => InternalId?.GetHashCode() ?? 0;
 
         #endregion
 
@@ -382,10 +361,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => InternalId;
 
         #endregion
-
 
     }
 

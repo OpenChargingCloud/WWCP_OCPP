@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    ChargingProfileKinds.Absolute   => "Absolute",
                    ChargingProfileKinds.Recurring  => "Recurring",
                    ChargingProfileKinds.Relative   => "Relative",
-                   _                               => "unknown"
+                   _                               => "Unknown"
                };
 
         #endregion

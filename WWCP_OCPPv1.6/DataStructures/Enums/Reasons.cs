@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    Reasons.SoftReset       => "SoftReset",
                    Reasons.UnlockCommand   => "UnlockCommand",
                    Reasons.DeAuthorized    => "DeAuthorized",
-                   _                       => "unknown"
+                   _                       => "Unknown"
                };
 
         #endregion

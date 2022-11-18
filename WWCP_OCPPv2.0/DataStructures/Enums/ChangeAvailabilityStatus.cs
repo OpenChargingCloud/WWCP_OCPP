@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    ChangeAvailabilityStatus.Accepted   => "Accepted",
                    ChangeAvailabilityStatus.Rejected   => "Rejected",
                    ChangeAvailabilityStatus.Scheduled  => "Scheduled",
-                   _                                   => "unknown"
+                   _                                   => "Unknown"
                };
 
         #endregion

@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    ReservationStatus.Occupied     => "Occupied",
                    ReservationStatus.Rejected     => "Rejected",
                    ReservationStatus.Unavailable  => "Unavailable",
-                   _                              => "unknown"
+                   _                              => "Unknown"
                };
 
         #endregion

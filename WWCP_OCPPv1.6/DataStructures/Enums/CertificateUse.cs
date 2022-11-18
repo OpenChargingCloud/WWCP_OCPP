@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => CertificateUse switch {
                    CertificateUse.CentralSystemRootCertificate  => "CentralSystemRootCertificate",
                    CertificateUse.ManufacturerRootCertificate   => "ManufacturerRootCertificate",
-                   _                                            => "unknown"
+                   _                                            => "Unknown"
                };
 
         #endregion

@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => UpdateType switch {
                    UpdateTypes.Differential  => "Differential",
                    UpdateTypes.Full          => "Full",
-                   _                         => "unknown"
+                   _                         => "Unknown"
                };
 
         #endregion

@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    Phases.L1_L2  => "L1-L2",
                    Phases.L2_L3  => "L2-L3",
                    Phases.L3_L1  => "L3-L1",
-                   _             => "unknown"
+                   _             => "Unknown"
                };
 
         #endregion

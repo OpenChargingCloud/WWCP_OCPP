@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    LogStatus.Accepted          => "Accepted",
                    LogStatus.Rejected          => "Rejected",
                    LogStatus.AcceptedCanceled  => "AcceptedCanceled",
-                      _                        => "unknown"
+                      _                        => "Unknown"
                };
 
         #endregion

@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    AuthorizationStatus.Expired       => "Expired",
                    AuthorizationStatus.Invalid       => "Invalid",
                    AuthorizationStatus.ConcurrentTx  => "ConcurrentTx",
-                   _                                 => "unknown"
+                   _                                 => "Unknown"
                };
 
         #endregion

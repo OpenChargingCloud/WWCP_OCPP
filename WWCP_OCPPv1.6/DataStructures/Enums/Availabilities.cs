@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => AvailabilityType switch {
                    Availabilities.Inoperative  => "Inoperative",
                    Availabilities.Operative    => "Operative",
-                   _                           => "unknown"
+                   _                           => "Unknown"
                };
 
         #endregion

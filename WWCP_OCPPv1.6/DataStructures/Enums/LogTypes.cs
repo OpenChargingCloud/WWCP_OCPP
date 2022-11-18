@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => LogType switch {
                    LogTypes.DiagnosticsLog  => "DiagnosticsLog",
                    LogTypes.SecurityLog     => "SecurityLog",
-                   _                        => "unknown"
+                   _                        => "Unknown"
                };
 
         #endregion

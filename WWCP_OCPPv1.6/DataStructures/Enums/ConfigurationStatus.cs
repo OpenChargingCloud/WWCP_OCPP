@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    ConfigurationStatus.Rejected        => "Rejected",
                    ConfigurationStatus.RebootRequired  => "RebootRequired",
                    ConfigurationStatus.NotSupported    => "NotSupported",
-                   _                                   => "unknown"
+                   _                                   => "Unknown"
                };
 
         #endregion

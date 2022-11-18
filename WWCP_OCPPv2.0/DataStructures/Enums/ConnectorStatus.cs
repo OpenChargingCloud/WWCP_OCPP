@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    ConnectorStatus.Reserved     => "Reserved",
                    ConnectorStatus.Unavailable  => "Unavailable",
                    ConnectorStatus.Faulted      => "Faulted",
-                   _                            => "unknown"
+                   _                            => "Unknown"
                };
 
         #endregion

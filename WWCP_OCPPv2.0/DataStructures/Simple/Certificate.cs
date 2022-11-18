@@ -71,9 +71,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new PEM encoded X.509 certificate based on the given string.
+        /// Create a new PEM encoded X.509 certificate based on the given text.
         /// </summary>
-        /// <param name="Text">The string representation of the PEM encoded X.509 certificate.</param>
+        /// <param name="Text">The text representation of the PEM encoded X.509 certificate.</param>
         /// <param name="ParsedCertificate">The parsed X.509 certificate.</param>
         private Certificate(String            Text,
                             X509Certificate?  ParsedCertificate   = null)

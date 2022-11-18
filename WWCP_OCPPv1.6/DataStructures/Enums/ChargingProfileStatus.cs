@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    ChargingProfileStatus.Accepted      => "Accepted",
                    ChargingProfileStatus.Rejected      => "Rejected",
                    ChargingProfileStatus.NotSupported  => "NotSupported",
-                   _                                   => "unknown"
+                   _                                   => "Unknown"
                };
 
         #endregion

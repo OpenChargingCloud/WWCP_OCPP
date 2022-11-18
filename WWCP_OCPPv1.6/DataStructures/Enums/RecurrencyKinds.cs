@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => RecurrencyKindType switch {
                    RecurrencyKinds.Daily   => "Daily",
                    RecurrencyKinds.Weekly  => "Weekly",
-                   _                       => "unknown"
+                   _                       => "Unknown"
                };
 
         #endregion

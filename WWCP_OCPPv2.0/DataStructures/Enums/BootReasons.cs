@@ -55,9 +55,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    BootReasons.RemoteReset       => "RemoteReset",
                    BootReasons.ScheduledReset    => "ScheduledReset",
                    BootReasons.Triggered         => "Triggered",
-                   BootReasons.Unknown           => "Unknown",
                    BootReasons.Watchdog          => "Watchdog",
-                   _                             => "unknown"
+                   _                             => "Unknown"
                };
 
         #endregion

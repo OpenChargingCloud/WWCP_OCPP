@@ -41,9 +41,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static String AsText(this GetCompositeScheduleStatus GetCompositeScheduleStatus)
 
             => GetCompositeScheduleStatus switch {
-                   GetCompositeScheduleStatus.Accepted => "Accepted",
-                   GetCompositeScheduleStatus.Rejected => "Rejected",
-                   _ => "unknown",
+                   GetCompositeScheduleStatus.Accepted  => "Accepted",
+                   GetCompositeScheduleStatus.Rejected  => "Rejected",
+                   _                                    => "Unknown",
                };
 
         #endregion

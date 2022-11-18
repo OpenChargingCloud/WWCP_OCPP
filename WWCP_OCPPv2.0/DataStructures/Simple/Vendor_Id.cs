@@ -17,14 +17,35 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
+
+    /// <summary>
+    /// Extention methods for a vendor identification.
+    /// </summary>
+    public static class VendorIdExtentions
+    {
+
+        /// <summary>
+        /// Indicates whether this vendor identification is null or empty.
+        /// </summary>
+        /// <param name="VendorId">A vendor identification.</param>
+        public static Boolean IsNullOrEmpty(this Vendor_Id? VendorId)
+            => !VendorId.HasValue || VendorId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this vendor identification is null or empty.
+        /// </summary>
+        /// <param name="VendorId">A vendor identification.</param>
+        public static Boolean IsNotNullOrEmpty(this Vendor_Id? VendorId)
+            => VendorId.HasValue && VendorId.Value.IsNotNullOrEmpty;
+
+    }
+
 
     /// <summary>
     /// A vendor identification.
@@ -49,22 +70,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// The length of the tag identification.
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
+
+        /// <summary>
+        /// The length of the vendor identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId?.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new vendor identification.
+        /// Create a new vendor identification based on the given text.
         /// </summary>
-        /// <param name="Token">A string.</param>
-        private Vendor_Id(String  Token)
+        /// <param name="Text">A text representation of a vendor identification.</param>
+        private Vendor_Id(String Text)
         {
-            this.InternalId = Token;
+            this.InternalId = Text;
         }
 
         #endregion
@@ -79,20 +106,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static Vendor_Id Parse(String Text)
         {
 
-            #region Initial checks
-
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a vendor identification must not be null or empty!");
-
-            #endregion
-
-            if (TryParse(Text, out Vendor_Id vendorId))
+            if (TryParse(Text, out var vendorId))
                 return vendorId;
 
-            throw new ArgumentNullException(nameof(Text), "The given text representation of a vendor identification is invalid!");
+            throw new ArgumentException("The given text representation of a vendor identification is invalid!",
+                                        nameof(Text));
 
         }
 
@@ -107,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static Vendor_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Vendor_Id vendorId))
+            if (TryParse(Text, out var vendorId))
                 return vendorId;
 
             return null;
@@ -159,7 +177,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Clone this charge box identification.
         /// </summary>
         public Vendor_Id Clone
-            => new Vendor_Id(new String(InternalId.ToCharArray()));
+
+            => new (
+                   new String(InternalId.ToCharArray())
+               );
 
         #endregion
 
@@ -171,26 +192,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VendorId1">An charge box identification.</param>
-        /// <param name="VendorId2">Another charge box identification.</param>
+        /// <param name="VendorId1">A vendor identification.</param>
+        /// <param name="VendorId2">Another vendor identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Vendor_Id VendorId1, Vendor_Id VendorId2)
-        {
+        public static Boolean operator == (Vendor_Id VendorId1,
+                                           Vendor_Id VendorId2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(VendorId1, VendorId2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) VendorId1 == null) || ((Object) VendorId2 == null))
-                return false;
-
-            if ((Object) VendorId1 == null)
-                throw new ArgumentNullException(nameof(VendorId1),  "The given charge box identification must not be null!");
-
-            return VendorId1.Equals(VendorId2);
-
-        }
+            => VendorId1.Equals(VendorId2);
 
         #endregion
 
@@ -199,11 +207,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VendorId1">An charge box identification.</param>
-        /// <param name="VendorId2">Another charge box identification.</param>
+        /// <param name="VendorId1">A vendor identification.</param>
+        /// <param name="VendorId2">Another vendor identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Vendor_Id VendorId1, Vendor_Id VendorId2)
-            => !(VendorId1 == VendorId2);
+        public static Boolean operator != (Vendor_Id VendorId1,
+                                           Vendor_Id VendorId2)
+
+            => !VendorId1.Equals(VendorId2);
 
         #endregion
 
@@ -212,18 +222,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VendorId1">An charge box identification.</param>
-        /// <param name="VendorId2">Another charge box identification.</param>
+        /// <param name="VendorId1">A vendor identification.</param>
+        /// <param name="VendorId2">Another vendor identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Vendor_Id VendorId1, Vendor_Id VendorId2)
-        {
+        public static Boolean operator < (Vendor_Id VendorId1,
+                                          Vendor_Id VendorId2)
 
-            if ((Object) VendorId1 == null)
-                throw new ArgumentNullException(nameof(VendorId1),  "The given charge box identification must not be null!");
-
-            return VendorId1.CompareTo(VendorId2) < 0;
-
-        }
+            => VendorId1.CompareTo(VendorId2) < 0;
 
         #endregion
 
@@ -232,11 +237,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VendorId1">An charge box identification.</param>
-        /// <param name="VendorId2">Another charge box identification.</param>
+        /// <param name="VendorId1">A vendor identification.</param>
+        /// <param name="VendorId2">Another vendor identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Vendor_Id VendorId1, Vendor_Id VendorId2)
-            => !(VendorId1 > VendorId2);
+        public static Boolean operator <= (Vendor_Id VendorId1,
+                                           Vendor_Id VendorId2)
+
+            => VendorId1.CompareTo(VendorId2) <= 0;
 
         #endregion
 
@@ -245,18 +252,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VendorId1">An charge box identification.</param>
-        /// <param name="VendorId2">Another charge box identification.</param>
+        /// <param name="VendorId1">A vendor identification.</param>
+        /// <param name="VendorId2">Another vendor identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Vendor_Id VendorId1, Vendor_Id VendorId2)
-        {
+        public static Boolean operator > (Vendor_Id VendorId1,
+                                          Vendor_Id VendorId2)
 
-            if ((Object) VendorId1 == null)
-                throw new ArgumentNullException(nameof(VendorId1),  "The given charge box identification must not be null!");
-
-            return VendorId1.CompareTo(VendorId2) > 0;
-
-        }
+            => VendorId1.CompareTo(VendorId2) > 0;
 
         #endregion
 
@@ -265,11 +267,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VendorId1">An charge box identification.</param>
-        /// <param name="VendorId2">Another charge box identification.</param>
+        /// <param name="VendorId1">A vendor identification.</param>
+        /// <param name="VendorId2">Another vendor identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Vendor_Id VendorId1, Vendor_Id VendorId2)
-            => !(VendorId1 < VendorId2);
+        public static Boolean operator >= (Vendor_Id VendorId1,
+                                           Vendor_Id VendorId2)
+
+            => VendorId1.CompareTo(VendorId2) >= 0;
 
         #endregion
 
@@ -280,40 +284,29 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two vendor identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">A vendor identification to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
-            if (Object is null)
-                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
-
-            // Check if the given object is a charge box identification.
-            if (!(Object is Vendor_Id))
-                throw new ArgumentException("The given object is not a charge box identification!", nameof(Object));
-
-            return CompareTo((Vendor_Id) Object);
-
-        }
+            => Object is Vendor_Id vendorId
+                   ? CompareTo(vendorId)
+                   : throw new ArgumentException("The given object is not a vendor identification!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(VendorId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two vendor identifications.
         /// </summary>
-        /// <param name="VendorId">An object to compare with.</param>
+        /// <param name="VendorId">A vendor identification to compare with.</param>
         public Int32 CompareTo(Vendor_Id VendorId)
-        {
 
-            if ((Object) VendorId == null)
-                throw new ArgumentNullException(nameof(VendorId),  "The given charge box identification must not be null!");
-
-            return String.Compare(InternalId, VendorId.InternalId, StringComparison.Ordinal);
-
-        }
+            => String.Compare(InternalId,
+                              VendorId.InternalId,
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -324,42 +317,27 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two vendor identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A vendor identification to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            // Check if the given object is a charge box identification.
-            if (!(Object is Vendor_Id))
-                return false;
-
-            return this.Equals((Vendor_Id) Object);
-
-        }
+            => Object is Vendor_Id vendorId &&
+                   Equals(vendorId);
 
         #endregion
 
         #region Equals(VendorId)
 
         /// <summary>
-        /// Compares two charge box identifications for equality.
+        /// Compares two vendor identifications for equality.
         /// </summary>
-        /// <param name="VendorId">An charge box identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="VendorId">A vendor identification to compare with.</param>
         public Boolean Equals(Vendor_Id VendorId)
-        {
 
-            if ((Object) VendorId == null)
-                return false;
-
-            return InternalId.Equals(VendorId.InternalId);
-
-        }
+            => String.Equals(InternalId,
+                             VendorId.InternalId,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -372,7 +350,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => InternalId.GetHashCode();
+
+            => InternalId?.GetHashCode() ?? 0;
 
         #endregion
 
@@ -382,10 +361,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => InternalId;
 
         #endregion
-
 
     }
 

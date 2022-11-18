@@ -89,9 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charging profile identification.
+        /// Create a new charging profile identification based on the given number.
         /// </summary>
-        /// <param name="Number">A number.</param>
+        /// <param name="Number">A numeric representation of a charging profile identification.</param>
         private ChargingProfile_Id(UInt64 Number)
         {
             this.Value = Number;

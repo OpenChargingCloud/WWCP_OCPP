@@ -32,10 +32,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Text">A string representation of a registration status.</param>
         public static RegistrationStatus Parse(String Text)
 
-            => Text.ToLower() switch {
-                   "accepted"  => RegistrationStatus.Accepted,
-                   "pending"   => RegistrationStatus.Pending,
-                   "rejected"  => RegistrationStatus.Rejected,
+            => Text.Trim() switch {
+                   "Accepted"  => RegistrationStatus.Accepted,
+                   "Pending"   => RegistrationStatus.Pending,
+                   "Rejected"  => RegistrationStatus.Rejected,
                    _           => RegistrationStatus.Unknown
                };
 
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    RegistrationStatus.Accepted  => "Accepted",
                    RegistrationStatus.Pending   => "Pending",
                    RegistrationStatus.Rejected  => "Rejected",
-                   _                            => "unknown"
+                   _                            => "Unknown"
                };
 
         #endregion

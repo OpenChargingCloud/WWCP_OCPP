@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             => CertificateSignedStatus switch {
                    CertificateSignedStatus.Accepted  => "Accepted",
                    CertificateSignedStatus.Rejected  => "Rejected",
-                   _                                 => "unknown"
+                   _                                 => "Unknown"
                };
 
         #endregion

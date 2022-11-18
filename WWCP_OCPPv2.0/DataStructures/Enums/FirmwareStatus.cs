@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Text">A string representation of a firmware status.</param>
         public static FirmwareStatus Parse(String Text)
 
-            => Text switch {
+            => Text.Trim() switch {
                    "Downloaded"                 => FirmwareStatus.Downloaded,
                    "DownloadFailed"             => FirmwareStatus.DownloadFailed,
                    "Downloading"                => FirmwareStatus.Downloading,
@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    FirmwareStatus.InstallVerificationFailed  => "InstallVerificationFailed",
                    FirmwareStatus.InvalidSignature           => "InvalidSignature",
                    FirmwareStatus.SignatureVerified          => "SignatureVerified",
-                   _                                         => "unknown"
+                   _                                         => "Unknown"
                };
 
         #endregion

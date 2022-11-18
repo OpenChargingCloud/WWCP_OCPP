@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => ResetType switch {
                    ResetTypes.Hard  => "Hard",
                    ResetTypes.Soft  => "Soft",
-                   _                => "unknown"
+                   _                => "Unknown"
                };
 
         #endregion

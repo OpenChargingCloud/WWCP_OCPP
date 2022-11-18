@@ -29,10 +29,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static ClearCacheStatus Parse(String Text)
 
             => Text.Trim() switch {
-                "Accepted"  => ClearCacheStatus.Accepted,
-                "Rejected"  => ClearCacheStatus.Rejected,
-                _           => ClearCacheStatus.Unknown
-            };
+                   "Accepted"  => ClearCacheStatus.Accepted,
+                   "Rejected"  => ClearCacheStatus.Rejected,
+                   _           => ClearCacheStatus.Unknown
+               };
 
         #endregion
 
@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => ClearCacheStatus switch {
                    ClearCacheStatus.Accepted  => "Accepted",
                    ClearCacheStatus.Rejected  => "Rejected",
-                   _                          => "unknown"
+                   _                          => "Unknown"
                };
 
         #endregion

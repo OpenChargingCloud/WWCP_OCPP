@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static CancelReservationStatus Parse(String Text)
 
             => Text.ToLower() switch {
-                   "accepted"  => CancelReservationStatus.Accepted,
-                   "rejected"  => CancelReservationStatus.Rejected,
+                   "Accepted"  => CancelReservationStatus.Accepted,
+                   "Rejected"  => CancelReservationStatus.Rejected,
                    _           => CancelReservationStatus.Unknown
                };
 
@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => CancelReservationStatus switch {
                    CancelReservationStatus.Accepted  => "Accepted",
                    CancelReservationStatus.Rejected  => "Rejected",
-                   _                                 => "unknown"
+                   _                                 => "Unknown"
                };
 
         #endregion

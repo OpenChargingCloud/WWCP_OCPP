@@ -25,6 +25,29 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
+    /// Extention methods for EVSE identifications.
+    /// </summary>
+    public static class EVSEIdExtentions
+    {
+
+        /// <summary>
+        /// Indicates whether this EVSE identification is null or empty.
+        /// </summary>
+        /// <param name="EVSEId">An EVSE identification.</param>
+        public static Boolean IsNullOrEmpty(this EVSE_Id? EVSEId)
+            => !EVSEId.HasValue || EVSEId.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this EVSE identification is null or empty.
+        /// </summary>
+        /// <param name="EVSEId">An EVSE identification.</param>
+        public static Boolean IsNotNullOrEmpty(this EVSE_Id? EVSEId)
+            => EVSEId.HasValue && EVSEId.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// An EVSE identification (but in OCPP this is just an integer!).
     /// </summary>
     public readonly struct EVSE_Id : IId,
@@ -47,7 +70,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             => false;
 
         /// <summary>
-        /// The length of the tag identification.
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => true;
+
+        /// <summary>
+        /// The length of the EVSE identification.
         /// </summary>
         public UInt64 Length
             => (UInt64) _Value.ToString().Length;
@@ -57,12 +86,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new EVSE identification.
+        /// Create a new EVSE identification based on the given number.
         /// </summary>
-        /// <param name="Token">An integer.</param>
-        private EVSE_Id(UInt64 Token)
+        /// <param name="Number">A numeric representation of a display message identification.</param>
+        private EVSE_Id(UInt64 Number)
         {
-            this._Value = Token;
+            this._Value = Number;
         }
 
         #endregion

@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    DeleteCertificateStatus.Accepted  => "Accepted",
                    DeleteCertificateStatus.Failed    => "Failed",
                    DeleteCertificateStatus.NotFound  => "NotFound",
-                   _                                 => "unknown"
+                   _                                 => "Unknown"
                };
 
         #endregion

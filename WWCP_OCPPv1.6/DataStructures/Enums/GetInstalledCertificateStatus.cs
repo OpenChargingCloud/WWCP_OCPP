@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => GetInstalledCertificateStatus switch {
                    GetInstalledCertificateStatus.Accepted  => "Accepted",
                    GetInstalledCertificateStatus.NotFound  => "NotFound",
-                   _                       => "unknown"
+                   _                                       => "Unknown"
                };
 
         #endregion

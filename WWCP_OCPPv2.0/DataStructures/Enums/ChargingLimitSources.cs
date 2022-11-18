@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    ChargingLimitSources.Other  => "Other",
                    ChargingLimitSources.SO     => "SO",
                    ChargingLimitSources.CSO    => "CSO",
-                   _                           => "unknown"
+                   _                           => "Unknown"
                };
 
         #endregion

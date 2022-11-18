@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => GenericStatus switch {
                    GenericStatus.Accepted  => "Accepted",
                    GenericStatus.Rejected  => "Rejected",
-                   _                       => "unknown"
+                   _                       => "Unknown"
                };
 
         #endregion

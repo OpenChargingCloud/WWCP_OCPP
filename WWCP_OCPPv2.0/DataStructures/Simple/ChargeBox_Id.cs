@@ -89,12 +89,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charge box identification based on the given string.
+        /// Create a new charge box identification based on the given text.
         /// </summary>
-        /// <param name="String">The string representation of the charge box identification.</param>
-        private ChargeBox_Id(String String)
+        /// <param name="Text">A text representation of a charge box identification.</param>
+        private ChargeBox_Id(String Text)
         {
-            this.InternalId  = String;
+            this.InternalId  = Text;
         }
 
         #endregion

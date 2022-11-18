@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    UploadLogStatus.Uploaded               => "Uploaded",
                    UploadLogStatus.UploadFailure          => "UploadFailure",
                    UploadLogStatus.Uploading              => "Uploading",
-                   _                                      => "unknown"
+                   _                                      => "Unknown"
                };
 
         #endregion

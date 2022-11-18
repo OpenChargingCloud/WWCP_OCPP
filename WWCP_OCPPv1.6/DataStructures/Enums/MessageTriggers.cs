@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    MessageTriggers.MeterValues                    => "MeterValues",
                    MessageTriggers.SignChargePointCertificate     => "SignChargePointCertificate",
                    MessageTriggers.StatusNotification             => "StatusNotification",
-                   _                                              => "unknown"
+                   _                                              => "Unknown"
                };
 
         #endregion

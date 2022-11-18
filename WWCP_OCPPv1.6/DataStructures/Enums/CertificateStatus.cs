@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                    CertificateStatus.Accepted  => "Accepted",
                    CertificateStatus.Failed    => "Failed",
                    CertificateStatus.Rejected  => "Rejected",
-                   _                           => "unknown"
+                   _                           => "Unknown"
                };
 
         #endregion

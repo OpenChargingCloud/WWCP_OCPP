@@ -89,12 +89,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new customer identifier based on the given string.
+        /// Create a new customer identifier based on the given text.
         /// </summary>
-        /// <param name="String">The string representation of the customer identifier.</param>
-        private CustomerIdentifier(String String)
+        /// <param name="Text">A text representation of a customer identifier.</param>
+        private CustomerIdentifier(String Text)
         {
-            this.InternalId  = String;
+            this.InternalId  = Text;
         }
 
         #endregion

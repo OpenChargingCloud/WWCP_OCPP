@@ -89,9 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new variable monitoring identification.
+        /// Create a new variable monitoring identification based on the given number.
         /// </summary>
-        /// <param name="Number">A number.</param>
+        /// <param name="Number">A numeric representation of a transaction identification.</param>
         private VariableMonitoring_Id(UInt64 Number)
         {
             this.Value = Number;
