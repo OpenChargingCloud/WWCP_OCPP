@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-using System.Security.Policy;
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -80,22 +78,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     {
 
         /// <summary>
-        /// Unknown generic status.
+        /// Unknown hash algorithm.
         /// </summary>
         Unknown,
 
         /// <summary>
-        /// SHA-256 hash algorithm.
+        /// The SHA-256 hash algorithm.
         /// </summary>
         SHA256,
 
         /// <summary>
-        /// SHA-384 hash algorithm.
+        /// The SHA-384 hash algorithm.
         /// </summary>
         SHA384,
 
         /// <summary>
-        /// SHA-512 hash algorithm.
+        /// The SHA-512 hash algorithm.
         /// </summary>
         SHA512
 

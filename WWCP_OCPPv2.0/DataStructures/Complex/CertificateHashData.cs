@@ -24,13 +24,14 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6
+namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
     /// Certificate hash data.
     /// </summary>
-    public class CertificateHashData : IEquatable<CertificateHashData>
+    public class CertificateHashData : ACustomData,
+                                       IEquatable<CertificateHashData>
     {
 
         #region Properties
@@ -70,10 +71,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="IssuerNameHash">The hashed value of the IssuerName [max 128]</param>
         /// <param name="IssuerPublicKeyHash">The hashed value of the issuers public key [max 128]</param>
         /// <param name="SerialNumber">The serial number of the certificate [max 40].</param>
+        /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public CertificateHashData(HashAlgorithms  HashAlgorithm,
                                    String          IssuerNameHash,
                                    String          IssuerPublicKeyHash,
-                                   String          SerialNumber)
+                                   String          SerialNumber,
+                                   CustomData?     CustomData   = null)
+
+            : base(CustomData)
+
         {
 
             this.HashAlgorithm        = HashAlgorithm;
@@ -89,22 +95,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Documentation
 
         // "CertificateHashDataType": {
+        //   "javaType": "CertificateHashData",
         //   "type": "object",
         //   "additionalProperties": false,
         //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     },
         //     "hashAlgorithm": {
         //       "$ref": "#/definitions/HashAlgorithmEnumType"
         //     },
         //     "issuerNameHash": {
-        // "type": "string",
+        //       "description": "Hashed value of the Issuer DN (Distinguished Name).\r\n\r\n",
+        //       "type": "string",
         //       "maxLength": 128
         //     },
         //     "issuerKeyHash": {
-        // "type": "string",
+        //       "description": "Hashed value of the issuers public key\r\n",
+        //       "type": "string",
         //       "maxLength": 128
         //     },
         //     "serialNumber": {
-        // "type": "string",
+        //       "description": "The serial number of the certificate.\r\n",
+        //       "type": "string",
         //       "maxLength": 40
         //     }
         //   },
@@ -231,11 +244,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #endregion
 
+                #region CustomData             [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 CertificateHashData = new CertificateHashData(HashAlgorithm,
                                                               IssuerNameHash,
                                                               IssuerPublicKeyHash,
-                                                              SerialNumber);
+                                                              SerialNumber,
+                                                              CustomData);
 
                 if (CustomCertificateHashDataParser is not null)
                     CertificateHashData = CustomCertificateHashDataParser(JSON,
@@ -255,20 +283,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ToJSON(CustomCertificateHashDataSerializer = null)
+        #region ToJSON(CustomCertificateHashDataSerializer = null, CustomCustomDataResponseSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash datas.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<CertificateHashData>? CustomCertificateHashDataSerializer = null)
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<CertificateHashData>?  CustomCertificateHashDataSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataResponseSerializer    = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("hashAlgorithm",   HashAlgorithm),
-                           new JProperty("issuerNameHash",  IssuerNameHash),
-                           new JProperty("issuerKeyHash",   IssuerPublicKeyHash),
-                           new JProperty("serialNumber",    SerialNumber)
+
+                                 new JProperty("hashAlgorithm",   HashAlgorithm),
+                                 new JProperty("issuerNameHash",  IssuerNameHash),
+                                 new JProperty("issuerKeyHash",   IssuerPublicKeyHash),
+                                 new JProperty("serialNumber",    SerialNumber),
+
+                           CustomData is not null
+                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               : null
+
                        );
 
             return CustomCertificateHashDataSerializer is not null
@@ -353,7 +389,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                HashAlgorithm.      Equals(CertificateHashData.HashAlgorithm)       &&
                IssuerNameHash.     Equals(CertificateHashData.IssuerNameHash)      &&
                IssuerPublicKeyHash.Equals(CertificateHashData.IssuerPublicKeyHash) &&
-               SerialNumber.       Equals(CertificateHashData.SerialNumber);
+               SerialNumber.       Equals(CertificateHashData.SerialNumber)        &&
+
+               base.               Equals(CertificateHashData);
 
         #endregion
 
@@ -370,10 +408,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             unchecked
             {
 
-                return HashAlgorithm.      GetHashCode() * 7 ^
-                       IssuerNameHash.     GetHashCode() * 5 ^
-                       IssuerPublicKeyHash.GetHashCode() * 3 ^
-                       SerialNumber.       GetHashCode();
+                return HashAlgorithm.      GetHashCode() * 11 ^
+                       IssuerNameHash.     GetHashCode() *  7 ^
+                       IssuerPublicKeyHash.GetHashCode() *  5 ^
+                       SerialNumber.       GetHashCode() *  3 ^
+
+                       base.               GetHashCode();
 
             }
         }

@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
@@ -49,11 +49,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CertificateHashData">Indicates the certificate which should be deleted.</param>
         /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         public DeleteCertificateRequest(ChargeBox_Id         ChargeBoxId,
                                         CertificateHashData  CertificateHashData,
 
+                                        CustomData?          CustomData          = null,
                                         Request_Id?          RequestId           = null,
                                         DateTime?            RequestTimestamp    = null,
                                         TimeSpan?            RequestTimeout      = null,
@@ -62,6 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             : base(ChargeBoxId,
                    "DeleteCertificate",
+                   CustomData,
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -81,9 +84,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:1.6:2020:3:DeleteCertificate.req",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:DeleteCertificateRequest",
+        //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
+        //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
+        //     },
         //     "HashAlgorithmEnumType": {
+        //       "description": "Used algorithms for the hashes provided.\r\n",
+        //       "javaType": "HashAlgorithmEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
@@ -93,21 +113,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         //       ]
         //     },
         //     "CertificateHashDataType": {
+        //       "javaType": "CertificateHashData",
         //       "type": "object",
         //       "additionalProperties": false,
         //       "properties": {
+        //         "customData": {
+        //           "$ref": "#/definitions/CustomDataType"
+        //         },
         //         "hashAlgorithm": {
         //           "$ref": "#/definitions/HashAlgorithmEnumType"
         //         },
         //         "issuerNameHash": {
+        //           "description": "Hashed value of the Issuer DN (Distinguished Name).\r\n\r\n",
         //           "type": "string",
         //           "maxLength": 128
         //         },
         //         "issuerKeyHash": {
+        //           "description": "Hashed value of the issuers public key\r\n",
         //           "type": "string",
         //           "maxLength": 128
         //         },
         //         "serialNumber": {
+        //           "description": "The serial number of the certificate.\r\n",
         //           "type": "string",
         //           "maxLength": 40
         //         }
@@ -123,10 +150,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         //   "type": "object",
         //   "additionalProperties": false,
         //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     },
         //     "certificateHashData": {
-        //         "$ref": "#/definitions/CertificateHashDataType"
+        //       "$ref": "#/definitions/CertificateHashDataType"
         //     }
-        // },
+        //   },
         //   "required": [
         //     "certificateHashData"
         //   ]
@@ -218,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.ParseMandatoryJSON("certificateHashData",
                                              "certificate hash data",
-                                             OCPPv1_6.CertificateHashData.TryParse,
+                                             OCPPv2_0.CertificateHashData.TryParse,
                                              out CertificateHashData? CertificateHashData,
                                              out ErrorResponse))
                 {
@@ -227,6 +257,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (CertificateHashData is null)
                     return false;
+
+                #endregion
+
+                #region CustomData             [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
                 #endregion
 
@@ -252,6 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 DeleteCertificateRequest = new DeleteCertificateRequest(ChargeBoxId,
                                                                         CertificateHashData,
+                                                                        CustomData,
                                                                         RequestId);
 
                 if (CustomDeleteCertificateRequestParser is not null)
@@ -272,18 +317,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToJSON(CustomDeleteCertificateRequestSerializer = null)
+        #region ToJSON(CustomDeleteCertificateRequestSerializer = null, CustomCertificateHashDataSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomDeleteCertificateRequestSerializer">A delegate to serialize custom delete certificate requests.</param>
+        /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash datas.</param>
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DeleteCertificateRequest>?  CustomDeleteCertificateRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<CertificateHashData>?       CustomCertificateHashDataSerializer        = null)
+                              CustomJObjectSerializerDelegate<CertificateHashData>?       CustomCertificateHashDataSerializer        = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataResponseSerializer         = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("certificateHashData",  CertificateHashData.ToJSON(CustomCertificateHashDataSerializer))
+
+                                 new JProperty("certificateHashData",  CertificateHashData.ToJSON(CustomCertificateHashDataSerializer,
+                                                                                                  CustomCustomDataResponseSerializer)),
+
+                           CustomData is not null
+                               ? new JProperty("customData",           CustomData.         ToJSON(CustomCustomDataResponseSerializer))
+                               : null
+
                        );
 
             return CustomDeleteCertificateRequestSerializer is not null

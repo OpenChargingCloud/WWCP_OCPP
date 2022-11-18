@@ -17,15 +17,13 @@
 
 #region Usings
 
-using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
@@ -37,16 +35,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region FirmwareStatusNotificationResponse(Request)
+        #region FirmwareStatusNotificationResponse(Request, ...)
 
         /// <summary>
         /// Create a new firmware status notification response.
         /// </summary>
         /// <param name="Request">The firmware status notification request leading to this response.</param>
-        public FirmwareStatusNotificationResponse(CP.FirmwareStatusNotificationRequest Request)
+        public FirmwareStatusNotificationResponse(CP.FirmwareStatusNotificationRequest  Request,
+                                                  CustomData?                           CustomData   = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   CustomData)
 
         { }
 
@@ -74,48 +74,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Documentation
 
-        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:ns   = "urn://Ocpp/Cs/2015/10/">
-        //    <soap:Header/>
-        //    <soap:Body>
-        //       <ns:firmwareStatusNotificationResponse />
-        //    </soap:Body>
-        // </soap:Envelope>
-
         // {
-        //     "$schema": "http://json-schema.org/draft-04/schema#",
-        //     "id":      "urn:OCPP:1.6:2019:12:FirmwareStatusNotificationResponse",
-        //     "title":   "FirmwareStatusNotificationResponse",
-        //     "type":    "object",
-        //     "properties": {},
-        //     "additionalProperties": false
+        //   "$schema": "http://json-schema.org/draft-06/schema#",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:FirmwareStatusNotificationResponse",
+        //   "comment": "OCPP 2.0.1 FINAL",
+        //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
+        //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
+        //     }
+        //   },
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     }
+        //   }
         // }
-
-        #endregion
-
-        #region (static) Parse   (Request, XML)
-
-        /// <summary>
-        /// Parse the given XML representation of a firmware status notification response.
-        /// </summary>
-        /// <param name="Request">The firmware status notification request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        public static FirmwareStatusNotificationResponse Parse(CP.FirmwareStatusNotificationRequest  Request,
-                                                               XElement                              XML)
-        {
-
-            if (TryParse(Request,
-                         XML,
-                         out var firmwareStatusNotificationResponse,
-                         out var errorResponse))
-            {
-                return firmwareStatusNotificationResponse!;
-            }
-
-            throw new ArgumentException("The given XML representation of a firmware status response is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
 
         #endregion
 
@@ -148,41 +134,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out FirmwareStatusNotificationResponse, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a firmware status notification response.
-        /// </summary>
-        /// <param name="Request">The firmware status notification request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="FirmwareStatusNotificationResponse">The parsed firmware status notification response.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CP.FirmwareStatusNotificationRequest     Request,
-                                       XElement                                 XML,
-                                       out FirmwareStatusNotificationResponse?  FirmwareStatusNotificationResponse,
-                                       out String?                              ErrorResponse)
-        {
-
-            try
-            {
-
-                FirmwareStatusNotificationResponse = new FirmwareStatusNotificationResponse(Request);
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                FirmwareStatusNotificationResponse  = null;
-                ErrorResponse                       = "The given XML representation of a firmware status notification response is invalid: " + e.Message;
-                return false;
-            }
-
-        }
-
-        #endregion
-
         #region (static) TryParse(Request, JSON, out FirmwareStatusNotificationResponse, out ErrorResponse)
 
         /// <summary>
@@ -205,7 +156,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                FirmwareStatusNotificationResponse = new FirmwareStatusNotificationResponse(Request);
+                FirmwareStatusNotificationResponse = null;
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                FirmwareStatusNotificationResponse = new FirmwareStatusNotificationResponse(Request,
+                                                                                            CustomData);
 
                 if (CustomFirmwareStatusNotificationResponseResponseParser is not null)
                     FirmwareStatusNotificationResponse = CustomFirmwareStatusNotificationResponseResponseParser(JSON,
@@ -225,27 +193,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new (OCPPNS.OCPPv1_6_CS + "firmwareStatusNotificationResponse");
-
-        #endregion
-
-        #region ToJSON(CustomFirmwareStatusNotificationResponseSerializer = null)
+        #region ToJSON(CustomFirmwareStatusNotificationResponseSerializer = null, CustomCustomDataResponseSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomFirmwareStatusNotificationResponseSerializer">A delegate to serialize custom firmware status notification responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<FirmwareStatusNotificationResponse>? CustomFirmwareStatusNotificationResponseSerializer = null)
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                          CustomCustomDataResponseSerializer                   = null)
         {
 
-            var json = JSONObject.Create();
+            var json = JSONObject.Create(
+
+                           CustomData is not null
+                               ? new JProperty("customData", CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               : null
+
+                       );
 
             return CustomFirmwareStatusNotificationResponseSerializer is not null
                        ? CustomFirmwareStatusNotificationResponseSerializer(this, json)

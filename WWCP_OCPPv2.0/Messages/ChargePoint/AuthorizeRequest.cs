@@ -61,6 +61,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="ISO15118CertificateHashData">Optional information to verify the electric vehicle/user contract certificate via OCSP.</param>
         /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
         public AuthorizeRequest(ChargeBox_Id                   ChargeBoxId,
                                 IdToken                        IdToken,
                                 Certificate?                   Certificate                   = null,

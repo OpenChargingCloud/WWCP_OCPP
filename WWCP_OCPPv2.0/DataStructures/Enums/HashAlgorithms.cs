@@ -64,8 +64,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         Unknown,
 
+        /// <summary>
+        /// The SHA-256 hash algorithm.
+        /// </summary>
         SHA256,
+
+        /// <summary>
+        /// The SHA-384 hash algorithm.
+        /// </summary>
         SHA384,
+
+        /// <summary>
+        /// The SHA-512 hash algorithm.
+        /// </summary>
         SHA512
 
     }

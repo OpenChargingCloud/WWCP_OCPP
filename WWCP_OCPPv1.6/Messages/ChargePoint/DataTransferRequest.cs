@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The DataTransfer request.
+    /// The data transfer request.
     /// </summary>
     public class DataTransferRequest : ARequest<DataTransferRequest>
     {
@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new DataTransfer request.
+        /// Create a new data transfer request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// 
@@ -71,14 +71,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         public DataTransferRequest(ChargeBox_Id        ChargeBoxId,
                                    String              VendorId,
-                                   String?             MessageId                 = null,
-                                   String?             Data                      = null,
+                                   String?             MessageId           = null,
+                                   String?             Data                = null,
 
-                                   Request_Id?         RequestId                 = null,
-                                   DateTime?           RequestTimestamp          = null,
-                                   TimeSpan?           RequestTimeout            = null,
-                                   EventTracking_Id?   EventTrackingId           = null,
-                                   CancellationToken?  CancellationToken         = null)
+                                   Request_Id?         RequestId           = null,
+                                   DateTime?           RequestTimestamp    = null,
+                                   TimeSpan?           RequestTimeout      = null,
+                                   EventTracking_Id?   EventTrackingId     = null,
+                                   CancellationToken?  CancellationToken   = null)
 
             : base(ChargeBoxId,
                    "DataTransfer",

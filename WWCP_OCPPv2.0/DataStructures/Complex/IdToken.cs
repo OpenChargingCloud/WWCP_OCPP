@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomIdTokenResponseSerializer">A delegate to serialize custom IdTokens.</param>
-        /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom AdditionalInfo objects.</param>
+        /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<IdToken>?         CustomIdTokenResponseSerializer          = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?  CustomAdditionalInfoResponseSerializer   = null,
@@ -277,9 +277,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                            new JProperty("idToken",               Value),
                            new JProperty("type",                  Type),
 
-                           AdditionalInfos.SafeAny()
-                               ? new JProperty("additionalInfo",  new JArray(AdditionalInfos.SafeSelect(additionalInfo => additionalInfo.ToJSON(CustomAdditionalInfoResponseSerializer,
-                                                                                                                                                CustomCustomDataResponseSerializer))))
+                           AdditionalInfos.Any()
+                               ? new JProperty("additionalInfo",  new JArray(AdditionalInfos.Select(additionalInfo => additionalInfo.ToJSON(CustomAdditionalInfoResponseSerializer,
+                                                                                                                                            CustomCustomDataResponseSerializer))))
                                : null,
 
                            CustomData is not null

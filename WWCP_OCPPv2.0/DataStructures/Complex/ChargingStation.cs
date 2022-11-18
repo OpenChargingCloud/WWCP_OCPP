@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 ChargingStation = default;
 
-                #region Model           [mandatory]
+                #region Model              [mandatory]
 
                 if (!JSON.ParseMandatoryText("model",
                                              "charging station model",
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region VendorName      [mandatory]
+                #region VendorName         [mandatory]
 
                 if (!JSON.ParseMandatoryText("vendorName",
                                              "vendor name/identification",
@@ -228,13 +228,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region SerialNumber    [optional]
+                #region SerialNumber       [optional]
 
                 var SerialNumber = JSON.GetOptional("serialNumber");
 
                 #endregion
 
-                #region Modem           [optional]
+                #region Modem              [optional]
 
                 if (JSON.ParseOptionalJSON("Modem",
                                            "wireless communication module",
@@ -248,13 +248,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region FirmwareVersion
+                #region FirmwareVersion    [optional]
 
                 var FirmwareVersion = JSON.GetOptional("firmwareVersion");
 
                 #endregion
 
-                #region CustomData      [optional]
+                #region CustomData         [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",

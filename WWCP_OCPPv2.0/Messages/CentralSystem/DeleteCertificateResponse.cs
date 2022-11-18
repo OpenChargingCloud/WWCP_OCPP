@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CP
+namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
@@ -39,13 +39,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// The success or failure of the delete certificate request.
         /// </summary>
         [Mandatory]
-        public DeleteCertificateStatus  Status    { get; }
+        public DeleteCertificateStatus  Status        { get; }
+
+        /// <summary>
+        /// Optional detailed status information.
+        /// </summary>
+        [Optional]
+        public StatusInfo?              StatusInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region DeleteCertificateResponse(Request, Status)
+        #region DeleteCertificateResponse(Request, Status, StatusInfo   = null, ...)
 
         /// <summary>
         /// Create a new delete certificate response.
@@ -53,14 +59,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">The delete certificate request leading to this response.</param>
         /// <param name="Status">The success or failure of the delete certificate request.</param>
         public DeleteCertificateResponse(CS.DeleteCertificateRequest  Request,
-                                         DeleteCertificateStatus      Status)
+                                         DeleteCertificateStatus      Status,
+                                         StatusInfo?                  StatusInfo   = null,
+                                         CustomData?                  CustomData   = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   CustomData)
 
         {
 
-            this.Status = Status;
+            this.Status      = Status;
+            this.StatusInfo  = StatusInfo;
 
         }
 
@@ -90,9 +100,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:1.6:2020:3:DeleteCertificate.conf",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:DeleteCertificateResponse",
+        //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
+        //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
+        //     },
         //     "DeleteCertificateStatusEnumType": {
+        //       "description": "Charging Station indicates if it can process the request.\r\n",
+        //       "javaType": "DeleteCertificateStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
@@ -100,13 +127,43 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         //         "Failed",
         //         "NotFound"
         //       ]
+        //     },
+        //     "StatusInfoType": {
+        //       "description": "Element providing more information about the status.\r\n",
+        //       "javaType": "StatusInfo",
+        //       "type": "object",
+        //       "additionalProperties": false,
+        //       "properties": {
+        //         "customData": {
+        //           "$ref": "#/definitions/CustomDataType"
+        //         },
+        //         "reasonCode": {
+        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //           "type": "string",
+        //           "maxLength": 20
+        //         },
+        //         "additionalInfo": {
+        //           "description": "Additional text to provide detailed information.\r\n",
+        //           "type": "string",
+        //           "maxLength": 512
+        //         }
+        //       },
+        //       "required": [
+        //         "reasonCode"
+        //       ]
         //     }
         //   },
         //   "type": "object",
         //   "additionalProperties": false,
         //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     },
         //     "status": {
         //       "$ref": "#/definitions/DeleteCertificateStatusEnumType"
+        //     },
+        //     "statusInfo": {
+        //       "$ref": "#/definitions/StatusInfoType"
         //     }
         //   },
         //   "required": [
@@ -167,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 DeleteCertificateResponse = null;
 
-                #region Status    [mandatory]
+                #region Status        [mandatory]
 
                 if (!JSON.MapMandatory("status",
                                        "delete certificate status",
@@ -180,9 +237,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
+                #region StatusInfo    [optional]
+
+                if (JSON.ParseOptionalJSON("statusInfo",
+                                           "detailed status info",
+                                           OCPPv2_0.StatusInfo.TryParse,
+                                           out StatusInfo? StatusInfo,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 DeleteCertificateResponse = new DeleteCertificateResponse(Request,
-                                                                          Status);
+                                                                          Status,
+                                                                          StatusInfo,
+                                                                          CustomData);
 
                 if (CustomDeleteCertificateResponseParser is not null)
                     DeleteCertificateResponse = CustomDeleteCertificateResponseParser(JSON,
@@ -202,17 +289,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToJSON(CustomDeleteCertificateResponseSerializer = null)
+        #region ToJSON(CustomDeleteCertificateResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomDeleteCertificateResponseSerializer">A delegate to serialize custom delete certificate responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<DeleteCertificateResponse>? CustomDeleteCertificateResponseSerializer = null)
+        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom StatusInfo object.</param>
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                 CustomStatusInfoResponseSerializer          = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataResponseSerializer          = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("status",  Status.AsText())
+
+                                 new JProperty("status",      Status.    AsText()),
+
+                           StatusInfo is not null
+                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoResponseSerializer,
+                                                                                CustomCustomDataResponseSerializer))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               : null
+
+
                        );
 
             return CustomDeleteCertificateResponseSerializer is not null
@@ -307,7 +410,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public override Boolean Equals(DeleteCertificateResponse? DeleteCertificateResponse)
 
             => DeleteCertificateResponse is not null &&
-                   Status.Equals(DeleteCertificateResponse.Status);
+
+               Status.Equals(DeleteCertificateResponse.Status) &&
+
+             ((StatusInfo is     null && DeleteCertificateResponse.StatusInfo is     null) ||
+               StatusInfo is not null && DeleteCertificateResponse.StatusInfo is not null && StatusInfo.Equals(DeleteCertificateResponse.StatusInfo));
 
         #endregion
 
@@ -320,8 +427,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => Status.GetHashCode();
+                return Status.     GetHashCode()       * 5 ^
+
+                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
+
+                       base.       GetHashCode();
+
+            }
+        }
 
         #endregion
 
