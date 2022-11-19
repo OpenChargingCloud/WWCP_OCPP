@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// An element providing more information about the status.
     /// </summary>
-    public class StatusInfo : ACustomData
+    public class StatusInfo : ACustomData,
+                              IEquatable<StatusInfo>
     {
 
         #region Properties
@@ -235,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom StatusInfo object.</param>
+        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<StatusInfo>?  CustomStatusInfoResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataResponseSerializer   = null)
@@ -330,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two status information for equality.
         /// </summary>
         /// <param name="StatusInfo">Status information to compare with.</param>
-        public Boolean Equals(StatusInfo StatusInfo)
+        public Boolean Equals(StatusInfo? StatusInfo)
 
             => StatusInfo is not null &&
 

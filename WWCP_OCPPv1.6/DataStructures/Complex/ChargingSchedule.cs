@@ -559,11 +559,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ChargingSchedule">A charging schedule to compare with.</param>
         public Boolean Equals(ChargingSchedule? ChargingSchedule)
 
-            => ChargingSchedule is not null                                                             &&
+            => ChargingSchedule is not null &&
 
-               ChargingRateUnit.               Equals(ChargingSchedule.ChargingRateUnit)                &&
+               ChargingRateUnit.Equals(ChargingSchedule.ChargingRateUnit) &&
 
                ChargingSchedulePeriods.Count().Equals(ChargingSchedule.ChargingSchedulePeriods.Count()) &&
+               ChargingSchedulePeriods.All(chargingSchedulePeriod => ChargingSchedule.ChargingSchedulePeriods.Contains(chargingSchedulePeriod)) &&
 
                ((!Duration.       HasValue && !ChargingSchedule.Duration.       HasValue) ||
                  (Duration.       HasValue &&  ChargingSchedule.Duration.       HasValue && Duration.       Value.Equals(ChargingSchedule.Duration.       Value))) &&

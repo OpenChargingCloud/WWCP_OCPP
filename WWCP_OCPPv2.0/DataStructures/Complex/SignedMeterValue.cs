@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A signed meter value.
     /// </summary>
-    public class SignedMeterValue : ACustomData
+    public class SignedMeterValue : ACustomData,
+                                    IEquatable<SignedMeterValue>
     {
 
         #region Properties
@@ -384,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two signed meter values for equality.
         /// </summary>
         /// <param name="SignedMeterValue">A signed meter value to compare with.</param>
-        public Boolean Equals(SignedMeterValue SignedMeterValue)
+        public Boolean Equals(SignedMeterValue? SignedMeterValue)
 
             => SignedMeterValue is not null &&
 
@@ -415,8 +416,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 return SignedMeterData.GetHashCode()       * 11 ^
                        SigningMethod.  GetHashCode()       *  7 ^
                        EncodingMethod. GetHashCode()       *  5 ^
-
                        (PublicKey?.    GetHashCode() ?? 0) *  3 ^
+
                        base.           GetHashCode();
 
             }

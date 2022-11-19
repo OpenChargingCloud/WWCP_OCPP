@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A wireless communication module.
     /// </summary>
-    public class Modem : ACustomData
+    public class Modem : ACustomData,
+                         IEquatable<Modem>
     {
 
         #region Properties
@@ -323,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two modems for equality.
         /// </summary>
         /// <param name="Modem">A modem to compare with.</param>
-        public Boolean Equals(Modem Modem)
+        public Boolean Equals(Modem? Modem)
 
             => Modem is not null &&
 

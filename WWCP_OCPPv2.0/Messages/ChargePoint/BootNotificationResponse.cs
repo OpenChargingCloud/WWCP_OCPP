@@ -369,7 +369,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomBootNotificationResponseSerializer">A delegate to serialize custom boot notification responses.</param>
-        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom StatusInfo object.</param>
+        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<BootNotificationResponse>?  CustomBootNotificationResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                CustomStatusInfoResponseSerializer         = null,

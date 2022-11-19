@@ -17,15 +17,13 @@
 
 #region Usings
 
-using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
@@ -37,16 +35,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Properties
 
         /// <summary>
-        /// The connector identification for which the schedule is requested.
-        /// Connector identification 0 will calculate the expected consumption
-        /// for the grid connection.
-        /// </summary>
-        public Connector_Id        ConnectorId         { get; }
-
-        /// <summary>
         /// The length of requested schedule.
         /// </summary>
         public TimeSpan            Duration            { get; }
+
+        /// <summary>
+        /// The EVSE identification for which the schedule is requested.
+        /// EVSE identification is 0, the charging station will calculate the expected
+        /// consumption for the grid connection.
+        /// </summary>
+        public EVSE_Id             EVSEId              { get; }
 
         /// <summary>
         /// Can optionally be used to force a power or current profile.
@@ -61,17 +59,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a new get composite schedule request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ConnectorId">The connector identification for which the schedule is requested. Connector identification 0 will calculate the expected consumption for the grid connection.</param>
         /// <param name="Duration">The length of requested schedule.</param>
+        /// <param name="EVSEId">The EVSE identification for which the schedule is requested. EVSE identification is 0, the charging station will calculate the expected consumption for the grid connection.</param>
         /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
         /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         public GetCompositeScheduleRequest(ChargeBox_Id        ChargeBoxId,
-                                           Connector_Id        ConnectorId,
                                            TimeSpan            Duration,
+                                           EVSE_Id             EVSEId,
                                            ChargingRateUnits?  ChargingRateUnit    = null,
 
+                                           CustomData?         CustomData          = null,
                                            Request_Id?         RequestId           = null,
                                            DateTime?           RequestTimestamp    = null,
                                            TimeSpan?           RequestTimeout      = null,
@@ -80,6 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             : base(ChargeBoxId,
                    "GetCompositeSchedule",
+                   CustomData,
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -88,8 +89,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         {
 
-            this.ConnectorId       = ConnectorId;
             this.Duration          = Duration;
+            this.EVSEId            = EVSEId;
             this.ChargingRateUnit  = ChargingRateUnit;
 
         }
@@ -99,84 +100,59 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Documentation
 
-        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-        //                xmlns:ns   = "urn://Ocpp/Cp/2015/10/">
-        //
-        //    <soap:Header>
-        //       ...
-        //    </soap:Header>
-        //
-        //    <soap:Body>
-        //       <ns:getCompositeScheduleRequest>
-        //
-        //          <ns:connectorId>?</ns:connectorId>
-        //          <ns:duration>?</ns:duration>
-        //
-        //          <!--Optional:-->
-        //          <ns:chargingRateUnit>?</ns:chargingRateUnit>
-        //
-        //       </ns:getCompositeScheduleRequest>
-        //    </soap:Body>
-        //
-        // </soap:Envelope>
-
         // {
-        //     "$schema": "http://json-schema.org/draft-04/schema#",
-        //     "id":      "urn:OCPP:1.6:2019:12:GetCompositeScheduleRequest",
-        //     "title":   "GetCompositeScheduleRequest",
-        //     "type":    "object",
-        //     "properties": {
-        //         "connectorId": {
-        //             "type": "integer"
-        //         },
+        //   "$schema": "http://json-schema.org/draft-06/schema#",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:GetCompositeScheduleRequest",
+        //   "comment": "OCPP 2.0.1 FINAL",
+        //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
+        //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
+        //     },
+        //     "ChargingRateUnitEnumType": {
+        //       "description": "Can be used to force a power or current profile.\r\n\r\n",
+        //       "javaType": "ChargingRateUnitEnum",
+        //       "type": "string",
+        //       "additionalProperties": false,
+        //       "enum": [
+        //         "W",
+        //         "A"
+        //       ]
+        //     }
+        //   },
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     },
         //     "duration": {
-        //         "type": "integer"
+        //       "description": "Length of the requested schedule in seconds.\r\n\r\n",
+        //       "type": "integer"
         //     },
         //     "chargingRateUnit": {
-        //         "type": "string",
-        //         "additionalProperties": false,
-        //         "enum": [
-        //             "A",
-        //             "W"
-        //             ]
-        //         }
+        //       "$ref": "#/definitions/ChargingRateUnitEnumType"
         //     },
-        //     "additionalProperties": false,
-        //     "required": [
-        //         "connectorId",
-        //         "duration"
-        //     ]
+        //     "evseId": {
+        //       "description": "The ID of the EVSE for which the schedule is requested. When evseid=0, the Charging Station will calculate the expected consumption for the grid connection.\r\n",
+        //       "type": "integer"
+        //     }
+        //   },
+        //   "required": [
+        //     "duration",
+        //     "evseId"
+        //   ]
         // }
-
-        #endregion
-
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
-
-        /// <summary>
-        /// Parse the given XML representation of a get composite schedule request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        public static GetCompositeScheduleRequest Parse(XElement      XML,
-                                                        Request_Id    RequestId,
-                                                        ChargeBox_Id  ChargeBoxId)
-        {
-
-            if (TryParse(XML,
-                         RequestId,
-                         ChargeBoxId,
-                         out var getCompositeScheduleRequest,
-                         out var errorResponse))
-            {
-                return getCompositeScheduleRequest!;
-            }
-
-            throw new ArgumentException("The given XML representation of a get composite schedule request is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
 
         #endregion
 
@@ -207,58 +183,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             throw new ArgumentException("The given JSON representation of a get composite schedule request is invalid: " + errorResponse,
                                         nameof(JSON));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out GetCompositeScheduleRequest, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a get composite schedule request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="GetCompositeScheduleRequest">The parsed get composite schedule request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                          XML,
-                                       Request_Id                        RequestId,
-                                       ChargeBox_Id                      ChargeBoxId,
-                                       out GetCompositeScheduleRequest?  GetCompositeScheduleRequest,
-                                       out String?                       ErrorResponse)
-        {
-
-            try
-            {
-
-                GetCompositeScheduleRequest = new GetCompositeScheduleRequest(
-
-                                                  ChargeBoxId,
-
-                                                  XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "connectorId",
-                                                                         Connector_Id.Parse),
-
-                                                  XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "duration",
-                                                                         s => TimeSpan.FromSeconds(UInt32.Parse(s))),
-
-                                                  XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "chargingRateUnit",
-                                                                         ChargingRateUnitsExtentions.Parse),
-
-                                                  RequestId
-
-                                              );
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                GetCompositeScheduleRequest  = null;
-                ErrorResponse                = "The given XML representation of a get composite schedule request is invalid: " + e.Message;
-                return false;
-            }
 
         }
 
@@ -312,12 +236,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 GetCompositeScheduleRequest = null;
 
-                #region ConnectorId         [mandatory]
+                #region Duration            [mandatory]
 
-                if (!JSON.ParseMandatory("connectorId",
-                                         "connector identification",
-                                         Connector_Id.TryParse,
-                                         out Connector_Id ConnectorId,
+                if (!JSON.ParseMandatory("duration",
+                                         "duration",
+                                         out UInt32 DurationUInt32,
                                          out ErrorResponse))
                 {
                     return false;
@@ -325,11 +248,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region Duration            [mandatory]
+                #region EVSEId              [mandatory]
 
-                if (!JSON.ParseMandatory("duration",
-                                         "duration",
-                                         out UInt32 DurationUInt32,
+                if (!JSON.ParseMandatory("evseId",
+                                         "EVSE identification",
+                                         EVSE_Id.TryParse,
+                                         out EVSE_Id EVSEId,
                                          out ErrorResponse))
                 {
                     return false;
@@ -344,6 +268,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        ChargingRateUnitsExtentions.Parse,
                                        out ChargingRateUnits? ChargingRateUnit,
                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData                     [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -372,9 +310,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
                 GetCompositeScheduleRequest = new GetCompositeScheduleRequest(ChargeBoxId,
-                                                                              ConnectorId,
                                                                               TimeSpan.FromSeconds(DurationUInt32),
+                                                                              EVSEId,
                                                                               ChargingRateUnit,
+                                                                              CustomData,
                                                                               RequestId);
 
                 if (CustomGetCompositeScheduleRequestParser is not null)
@@ -395,26 +334,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new (OCPPNS.OCPPv1_6_CP + "getCompositeScheduleRequest",
-
-                   new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",             ConnectorId.ToString()),
-                   new XElement(OCPPNS.OCPPv1_6_CP + "duration",                (UInt64) Duration.TotalSeconds),
-
-                   ChargingRateUnit.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "chargingRateUnit",  ChargingRateUnit.Value)
-                       : null
-
-               );
-
-        #endregion
-
         #region ToJSON(CustomGetCompositeScheduleRequestSerializer = null)
 
         /// <summary>
@@ -426,8 +345,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var json = JSONObject.Create(
 
-                           new JProperty("connectorId",             ConnectorId.      Value),
                            new JProperty("duration",                (UInt64) Duration.TotalSeconds),
+                           new JProperty("evseId",                  EVSEId.           Value),
 
                            ChargingRateUnit.HasValue
                                ? new JProperty("chargingRateUnit",  ChargingRateUnit. Value.AsText())
@@ -514,8 +433,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => GetCompositeScheduleRequest is not null &&
 
-               ConnectorId.Equals(GetCompositeScheduleRequest.ConnectorId) &&
-               Duration.   Equals(GetCompositeScheduleRequest.Duration)    &&
+               Duration.   Equals(GetCompositeScheduleRequest.Duration) &&
+               EVSEId.     Equals(GetCompositeScheduleRequest.EVSEId)   &&
 
             ((!ChargingRateUnit.HasValue && !GetCompositeScheduleRequest.ChargingRateUnit.HasValue) ||
               (ChargingRateUnit.HasValue &&  GetCompositeScheduleRequest.ChargingRateUnit.HasValue && ChargingRateUnit.Value.Equals(GetCompositeScheduleRequest.ChargingRateUnit.Value))) &&
@@ -537,9 +456,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return ConnectorId.      GetHashCode()       * 7 ^
-                       Duration.         GetHashCode()       * 5 ^
-
+                return Duration.         GetHashCode()       * 7 ^
+                       EVSEId.           GetHashCode()       * 5 ^
                       (ChargingRateUnit?.GetHashCode() ?? 0) * 3 ^
 
                        base.             GetHashCode();
@@ -556,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(ConnectorId,
+            => String.Concat(EVSEId,
                              " / ",
                              Duration.TotalSeconds + " sec(s)",
 

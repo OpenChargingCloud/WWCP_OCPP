@@ -24,24 +24,99 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class BootReasonsExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
-        public static BootReasons Parse(this String Text)
+        /// <summary>
+        /// Parse the given text as a boot reason.
+        /// </summary>
+        /// <param name="Text">A text representation of a boot reason.</param>
+        public static BootReasons Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "ApplicationReset"  => BootReasons.ApplicationReset,
-                   "FirmwareUpdate"    => BootReasons.FirmwareUpdate,
-                   "LocalReset"        => BootReasons.LocalReset,
-                   "PowerUp"           => BootReasons.PowerUp,
-                   "RemoteReset"       => BootReasons.RemoteReset,
-                   "ScheduledReset"    => BootReasons.ScheduledReset,
-                   "Triggered"         => BootReasons.Triggered,
-                   "Unknown"           => BootReasons.Unknown,
-                   "Watchdog"          => BootReasons.Watchdog,
-                   _                   => BootReasons.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return BootReasons.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a boot reason.
+        /// </summary>
+        /// <param name="Text">A text representation of a boot reason.</param>
+        public static BootReasons? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out Status)
+
+        /// <summary>
+        /// Try to parse the given text as a boot reason.
+        /// </summary>
+        /// <param name="Text">A text representation of a boot reason.</param>
+        /// <param name="Status">The parsed boot reason.</param>
+        public static Boolean TryParse(String Text, out BootReasons Status)
+        {
+            switch (Text.Trim())
+            {
+
+                case "ApplicationReset":
+                    Status = BootReasons.ApplicationReset;
+                    return true;
+
+                case "FirmwareUpdate":
+                    Status = BootReasons.FirmwareUpdate;
+                    return true;
+
+                case "LocalReset":
+                    Status = BootReasons.LocalReset;
+                    return true;
+
+                case "PowerUp":
+                    Status = BootReasons.PowerUp;
+                    return true;
+
+                case "RemoteReset":
+                    Status = BootReasons.RemoteReset;
+                    return true;
+
+                case "ScheduledReset":
+                    Status = BootReasons.ScheduledReset;
+                    return true;
+
+                case "Triggered":
+                    Status = BootReasons.Triggered;
+                    return true;
+
+                case "Unknown":
+                    Status = BootReasons.Unknown;
+                    return true;
+
+                case "Watchdog":
+                    Status = BootReasons.Watchdog;
+                    return true;
+
+                default:
+                    Status = BootReasons.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this Phase)
 

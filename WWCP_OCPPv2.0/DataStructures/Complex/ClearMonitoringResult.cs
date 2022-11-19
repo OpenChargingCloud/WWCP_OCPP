@@ -30,7 +30,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A clear monitoring result.
     /// </summary>
-    public class ClearMonitoringResult
+    public class ClearMonitoringResult : ACustomData,
+                                         IEquatable<ClearMonitoringResult>
     {
 
         #region Properties
@@ -63,11 +64,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Status">The result of the clear request.</param>
         /// <param name="Id">The unique identification of the variable monitor of which a clear was requested.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public ClearMonitoringResult(ClearMonitoringStatus  Status,
                                      VariableMonitoring_Id  Id,
-                                     StatusInfo?            StatusInfo   = null)
+                                     StatusInfo?            StatusInfo   = null,
+                                     CustomData?            CustomData   = null)
 
-            : base()
+            : base(CustomData)
 
         {
 
@@ -213,10 +216,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 ClearMonitoringResult = new ClearMonitoringResult(Status,
                                                                   Id,
-                                                                  StatusInfo);
+                                                                  StatusInfo,
+                                                                  CustomData);
 
                 if (CustomClearMonitoringResultParser is not null)
                     ClearMonitoringResult = CustomClearMonitoringResultParser(JSON,
@@ -242,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomClearMonitoringResultResponseSerializer">A delegate to serialize custom ClearMonitoringResult objects.</param>
-        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom StatusInfo object.</param>
+        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ClearMonitoringResult>?  CustomClearMonitoringResultResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?             CustomStatusInfoResponseSerializer              = null,
@@ -257,6 +275,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                            StatusInfo is not null
                                ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoResponseSerializer,
                                                                                 CustomCustomDataResponseSerializer))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
@@ -336,7 +358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two clear monitoring results for equality.
         /// </summary>
         /// <param name="ClearMonitoringResult">A clear monitoring result to compare with.</param>
-        public Boolean Equals(ClearMonitoringResult ClearMonitoringResult)
+        public Boolean Equals(ClearMonitoringResult? ClearMonitoringResult)
 
             => ClearMonitoringResult is not null &&
 
@@ -344,7 +366,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                Id.    Equals(ClearMonitoringResult.Id)     &&
 
              ((StatusInfo is     null && ClearMonitoringResult.StatusInfo is     null) ||
-               StatusInfo is not null && ClearMonitoringResult.StatusInfo is not null && StatusInfo.Equals(ClearMonitoringResult.StatusInfo));
+               StatusInfo is not null && ClearMonitoringResult.StatusInfo is not null && StatusInfo.Equals(ClearMonitoringResult.StatusInfo)) &&
+
+               base.  Equals(ClearMonitoringResult);
 
         #endregion
 
@@ -361,9 +385,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Status.     GetHashCode() * 5 ^
-                       Id.         GetHashCode() * 3 ^
-                      (StatusInfo?.GetHashCode() ?? 0);
+                return Status.     GetHashCode()       * 7 ^
+                       Id.         GetHashCode()       * 5 ^
+                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
+
+                       base.       GetHashCode();
 
             }
         }

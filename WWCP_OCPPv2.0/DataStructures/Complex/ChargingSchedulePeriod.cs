@@ -17,21 +17,20 @@
 
 #region Usings
 
-using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6
+namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
     /// A charging schedule period.
     /// </summary>
-    public readonly struct ChargingSchedulePeriod : IEquatable<ChargingSchedulePeriod>
+    public class ChargingSchedulePeriod : ACustomData,
+                                          IEquatable<ChargingSchedulePeriod>
     {
 
         #region Properties
@@ -41,19 +40,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// This value also defines the stop time of the previous period.
         /// </summary>
         [Mandatory]
-        public TimeSpan  StartPeriod     { get; }
+        public TimeSpan      StartPeriod     { get; }
 
         /// <summary>
         /// Power limit during the schedule period in Amperes.
         /// </summary>
         [Mandatory]
-        public Decimal   Limit           { get; }
+        public Decimal       Limit           { get; }
 
         /// <summary>
         /// The number of phases that can be used for charging.
         /// </summary>
         [Optional]
-        public Byte?     NumberPhases    { get; }
+        public Byte?         NumberPhases    { get; }
+
+        /// <summary>
+        /// Optional electrical phase to use for charging.
+        /// Only allowed when numberPhases is 1 and when the EVSE is capable of switching the phase connected to the EV,
+        /// i.e. ACPhaseSwitchingSupported is defined and true.
+        /// It’s not allowed unless both conditions above are true. If both conditions are true, and phaseToUse is omitted,
+        /// the charging station / EVSE will make the selection on its own.
+        /// </summary>
+        [Optional]
+        public PhasesToUse?  PhaseToUse      { get; }
 
         #endregion
 
@@ -65,14 +74,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="StartPeriod">The start of the period relative to the start of the charging schedule. This value also defines the stop time of the previous period.</param>
         /// <param name="Limit">Power limit during the schedule period in Amperes.</param>
         /// <param name="NumberPhases">The number of phases that can be used for charging.</param>
-        public ChargingSchedulePeriod(TimeSpan  StartPeriod,
-                                      Decimal   Limit,
-                                      Byte?     NumberPhases   = null)
+        /// <param name="PhaseToUse">Optional electrical phase to use for charging.</param>
+        public ChargingSchedulePeriod(TimeSpan      StartPeriod,
+                                      Decimal       Limit,
+                                      Byte?         NumberPhases   = null,
+                                      PhasesToUse?  PhaseToUse     = null,
+                                      CustomData?   CustomData     = null)
+
+            : base(CustomData)
+
         {
 
             this.StartPeriod   = StartPeriod;
             this.Limit         = Limit;
             this.NumberPhases  = NumberPhases;
+            this.PhaseToUse    = PhaseToUse;
 
         }
 
@@ -81,67 +97,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Documentation
 
-        // <ns:chargingSchedulePeriod>
-        //
-        //    <ns:startPeriod>?</ns:startPeriod>
-        //    <ns:limit>?</ns:limit>
-        //
-        //    <!--Optional:-->
-        //    <ns:numberPhases>?</ns:numberPhases>
-        //
-        // </ns:chargingSchedulePeriod>
-
-        // {
-        //     "$schema": "http://json-schema.org/draft-04/schema#",
-        //     "id":      "urn:OCPP:1.6:2019:12:RemoteStartTransactionRequest",
-        //     "title":   "chargingSchedulePeriod",
-        //     "type": "array",
-        //     "items": {
-        //         "type": "object",
-        //         "properties": {
-        //             "startPeriod": {
-        //                 "type": "integer"
-        //             },
-        //             "limit": {
-        //                 "type": "number",
-        //                 "multipleOf" : 0.1
-        //             },
-        //             "numberPhases": {
-        //                 "type": "integer"
-        //             }
-        //         },
-        //         "additionalProperties": false,
-        //         "required": [
-        //             "startPeriod",
-        //             "limit"
-        //         ]
+        // "ChargingSchedulePeriodType": {
+        //   "description": "Charging_ Schedule_ Period\r\nurn:x-oca:ocpp:uid:2:233257\r\nCharging schedule period structure defines a time period in a charging schedule.\r\n",
+        //   "javaType": "ChargingSchedulePeriod",
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     },
+        //     "startPeriod": {
+        //       "description": "Charging_ Schedule_ Period. Start_ Period. Elapsed_ Time\r\nurn:x-oca:ocpp:uid:1:569240\r\nStart of the period, in seconds from the start of schedule. The value of StartPeriod also defines the stop time of the previous period.\r\n",
+        //       "type": "integer"
+        //     },
+        //     "limit": {
+        //       "description": "Charging_ Schedule_ Period. Limit. Measure\r\nurn:x-oca:ocpp:uid:1:569241\r\nCharging rate limit during the schedule period, in the applicable chargingRateUnit, for example in Amperes (A) or Watts (W). Accepts at most one digit fraction (e.g. 8.1).\r\n",
+        //       "type": "number"
+        //     },
+        //     "numberPhases": {
+        //       "description": "Charging_ Schedule_ Period. Number_ Phases. Counter\r\nurn:x-oca:ocpp:uid:1:569242\r\nThe number of phases that can be used for charging. If a number of phases is needed, numberPhases=3 will be assumed unless another number is given.\r\n",
+        //       "type": "integer"
+        //     },
+        //     "phaseToUse": {
+        //       "description": "Values: 1..3, Used if numberPhases=1 and if the EVSE is capable of switching the phase connected to the EV, i.e. ACPhaseSwitchingSupported is defined and true. It’s not allowed unless both conditions above are true. If both conditions are true, and phaseToUse is omitted, the Charging Station / EVSE will make the selection on its own.\r\n\r\n",
+        //       "type": "integer"
         //     }
+        //   },
+        //   "required": [
+        //     "startPeriod",
+        //     "limit"
+        //   ]
         // }
-
-        #endregion
-
-        #region (static) Parse   (XML,  OnException = null)
-
-        /// <summary>
-        /// Parse the given XML representation of a charging schedule period.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ChargingSchedulePeriod Parse(XElement              XML,
-                                                   OnExceptionDelegate?  OnException   = null)
-        {
-
-            if (TryParse(XML,
-                         out var chargingSchedulePeriod,
-                         OnException))
-            {
-                return chargingSchedulePeriod;
-            }
-
-            throw new ArgumentException("The given XML representation of a charging schedule period is invalid: ", // + errorResponse,
-                                        nameof(XML));
-
-        }
 
         #endregion
 
@@ -171,52 +157,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region (static) TryParse(XML,  out ChargingSchedulePeriod, OnException = null)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a charging schedule period.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="ChargingSchedulePeriod">The parsed connector type.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                    XML,
-                                       out ChargingSchedulePeriod  ChargingSchedulePeriod,
-                                       OnExceptionDelegate?        OnException   = null)
-        {
-
-            try
-            {
-
-                ChargingSchedulePeriod = new ChargingSchedulePeriod(
-
-                                             TimeSpan.FromSeconds(XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "startPeriod",
-                                                                                         UInt32.Parse)),
-
-                                             XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "limit",
-                                                                    Decimal.Parse),
-
-                                             XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "numberPhases",
-                                                                    Byte.Parse)
-
-                                         );
-
-                return true;
-
-            }
-            catch (Exception e)
-            {
-
-                OnException?.Invoke(Timestamp.Now, XML, e);
-
-                ChargingSchedulePeriod = default;
-                return false;
-
-            }
-
-        }
-
-        #endregion
-
         #region (static) TryParse(JSON, out ChargingSchedulePeriod, out ErrorResponse, CustomChargingSchedulePeriodParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
@@ -227,9 +167,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingSchedulePeriod">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                     JSON,
-                                       out ChargingSchedulePeriod  ChargingSchedulePeriod,
-                                       out String?                 ErrorResponse)
+        public static Boolean TryParse(JObject                      JSON,
+                                       out ChargingSchedulePeriod?  ChargingSchedulePeriod,
+                                       out String?                  ErrorResponse)
 
             => TryParse(JSON,
                         out ChargingSchedulePeriod,
@@ -246,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChargingSchedulePeriodParser">A delegate to parse custom CustomChargingSchedulePeriod JSON objects.</param>
         public static Boolean TryParse(JObject                                               JSON,
-                                       out ChargingSchedulePeriod                            ChargingSchedulePeriod,
+                                       out ChargingSchedulePeriod?                           ChargingSchedulePeriod,
                                        out String?                                           ErrorResponse,
                                        CustomJObjectParserDelegate<ChargingSchedulePeriod>?  CustomChargingSchedulePeriodParser)
         {
@@ -295,11 +235,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #endregion
 
+                #region PhaseToUse      [optional]
+
+                if (JSON.ParseOptional("phaseToUse",
+                                       "electrical phase to use",
+                                       PhasesToUseExtentions.TryParse,
+                                       out PhasesToUse? PhaseToUse,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData      [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 ChargingSchedulePeriod = new ChargingSchedulePeriod(StartPeriod,
                                                                     Limit,
-                                                                    NumberPhases);
-
+                                                                    NumberPhases,
+                                                                    PhaseToUse,
+                                                                    CustomData);
 
                 if (CustomChargingSchedulePeriodParser is not null)
                     ChargingSchedulePeriod = CustomChargingSchedulePeriodParser(JSON,
@@ -320,31 +289,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ToXML (XName = null)
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        /// <param name="XName">An alternative XML element name [default: "OCPPv1_6_CP:chargingSchedulePeriod"]</param>
-        public XElement ToXML(XName? XName = null)
-
-            => new (XName ?? OCPPNS.OCPPv1_6_CP + "chargingSchedulePeriod",
-
-                   new XElement(OCPPNS.OCPPv1_6_CP + "startPeriod",   (UInt32) Math.Round(StartPeriod.TotalSeconds, 0)),
-                   new XElement(OCPPNS.OCPPv1_6_CP + "limit",         Limit.ToString("0.#")),
-                   new XElement(OCPPNS.OCPPv1_6_CP + "numberPhases",  NumberPhases)
-
-               );
-
-        #endregion
-
-        #region ToJSON(CustomChargingSchedulePeriodSerializer = null)
+        #region ToJSON(CustomChargingSchedulePeriodSerializer = null, CustomCustomDataResponseSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingSchedulePeriod>? CustomChargingSchedulePeriodSerializer = null)
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?  CustomChargingSchedulePeriodSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataResponseSerializer       = null)
         {
 
             var json = JSONObject.Create(
@@ -354,6 +307,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                            NumberPhases.HasValue
                                ? new JProperty("numberPhases",  NumberPhases)
+                               : null,
+
+                           PhaseToUse.HasValue
+                               ? new JProperty("phaseToUse",    PhaseToUse.Value.AsNumber())
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",    CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
@@ -379,8 +340,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <returns>true|false</returns>
         public static Boolean operator == (ChargingSchedulePeriod ChargingSchedulePeriod1,
                                            ChargingSchedulePeriod ChargingSchedulePeriod2)
+        {
 
-            => ChargingSchedulePeriod1.Equals(ChargingSchedulePeriod2);
+            // If both are null, or both are same instance, return true.
+            if (ReferenceEquals(ChargingSchedulePeriod1, ChargingSchedulePeriod2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (ChargingSchedulePeriod1 is null || ChargingSchedulePeriod2 is null)
+                return false;
+
+            return ChargingSchedulePeriod1.Equals(ChargingSchedulePeriod2);
+
+        }
 
         #endregion
 
@@ -395,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Boolean operator != (ChargingSchedulePeriod ChargingSchedulePeriod1,
                                            ChargingSchedulePeriod ChargingSchedulePeriod2)
 
-            => !ChargingSchedulePeriod1.Equals(ChargingSchedulePeriod2);
+            => !(ChargingSchedulePeriod1 == ChargingSchedulePeriod2);
 
         #endregion
 
@@ -422,13 +394,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two charging schedule periods for equality.
         /// </summary>
         /// <param name="ChargingSchedulePeriod">A charging schedule period to compare with.</param>
-        public Boolean Equals(ChargingSchedulePeriod ChargingSchedulePeriod)
+        public Boolean Equals(ChargingSchedulePeriod? ChargingSchedulePeriod)
 
-            => StartPeriod. Equals(ChargingSchedulePeriod.StartPeriod) &&
-               Limit.       Equals(ChargingSchedulePeriod.Limit)       &&
+            => ChargingSchedulePeriod is not null &&
+
+               StartPeriod.Equals(ChargingSchedulePeriod.StartPeriod) &&
+               Limit.      Equals(ChargingSchedulePeriod.Limit)       &&
 
             ((!NumberPhases.HasValue && !ChargingSchedulePeriod.NumberPhases.HasValue) ||
-              (NumberPhases.HasValue &&  ChargingSchedulePeriod.NumberPhases.HasValue && NumberPhases.Value.Equals(ChargingSchedulePeriod.NumberPhases.Value)));
+              (NumberPhases.HasValue &&  ChargingSchedulePeriod.NumberPhases.HasValue && NumberPhases.Value.Equals(ChargingSchedulePeriod.NumberPhases.Value))) &&
+
+            ((!PhaseToUse.  HasValue && !ChargingSchedulePeriod.PhaseToUse.  HasValue) ||
+              (PhaseToUse.  HasValue &&  ChargingSchedulePeriod.PhaseToUse.  HasValue && PhaseToUse.  Value.Equals(ChargingSchedulePeriod.PhaseToUse.  Value)));
 
         #endregion
 
@@ -445,10 +422,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             unchecked
             {
 
-                return StartPeriod.  GetHashCode() * 5 ^
-                       Limit.        GetHashCode() * 3 ^
+                return StartPeriod.  GetHashCode()       * 11 ^
+                       Limit.        GetHashCode()       *  7 ^
+                      (NumberPhases?.GetHashCode() ?? 0) *  5 ^
+                      (PhaseToUse?.  GetHashCode() ?? 0) *  3 ^
 
-                      (NumberPhases?.GetHashCode() ?? 0);
+                       base.         GetHashCode();
 
             }
         }
@@ -468,6 +447,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                              NumberPhases.HasValue
                                  ? ", " + NumberPhases + " phases"
+                                 : "",
+
+                             PhaseToUse.HasValue
+                                 ? ", using phase: " + PhaseToUse.Value.AsText()
                                  : "");
 
         #endregion

@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A case insensitive authorization identifier.
     /// </summary>
-    public class IdToken : ACustomData
+    public class IdToken : ACustomData,
+                           IEquatable<IdToken>
     {
 
         #region Properties
@@ -259,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomIdTokenResponseSerializer = null, CustomAdditionalInfoResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomIdTokenResponseSerializer = null, CustomAdditionalInfoResponseSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -363,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two id tokens for equality.
         /// </summary>
         /// <param name="IdToken">An id token to compare with.</param>
-        public Boolean Equals(IdToken IdToken)
+        public Boolean Equals(IdToken? IdToken)
 
             => IdToken is not null &&
 

@@ -24,22 +24,91 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class AuthorizeCertificateStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as an authorize certificate status.
+        /// </summary>
+        /// <param name="Text">A text representation of an authorize certificate status.</param>
         public static AuthorizeCertificateStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Accepted"                => AuthorizeCertificateStatus.Accepted,
-                   "SignatureError"          => AuthorizeCertificateStatus.SignatureError,
-                   "CertificateExpired"      => AuthorizeCertificateStatus.CertificateExpired,
-                   "CertificateRevoked"      => AuthorizeCertificateStatus.CertificateRevoked,
-                   "NoCertificateAvailable"  => AuthorizeCertificateStatus.NoCertificateAvailable,
-                   "CertChainError"          => AuthorizeCertificateStatus.CertChainError,
-                   "ContractCancelled"       => AuthorizeCertificateStatus.ContractCancelled,
-                   _                         => AuthorizeCertificateStatus.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return AuthorizeCertificateStatus.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as an authorize certificate status.
+        /// </summary>
+        /// <param name="Text">A text representation of an authorize certificate status.</param>
+        public static AuthorizeCertificateStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out Status)
+
+        /// <summary>
+        /// Try to parse the given text as an authorize certificate status.
+        /// </summary>
+        /// <param name="Text">A text representation of an authorize certificate status.</param>
+        /// <param name="Status">The parsed authorize certificate status.</param>
+        public static Boolean TryParse(String Text, out AuthorizeCertificateStatus Status)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Accepted":
+                    Status = AuthorizeCertificateStatus.Accepted;
+                    return true;
+
+                case "SignatureError":
+                    Status = AuthorizeCertificateStatus.SignatureError;
+                    return true;
+
+                case "CertificateExpired":
+                    Status = AuthorizeCertificateStatus.CertificateExpired;
+                    return true;
+
+                case "CertificateRevoked":
+                    Status = AuthorizeCertificateStatus.CertificateRevoked;
+                    return true;
+
+                case "NoCertificateAvailable":
+                    Status = AuthorizeCertificateStatus.NoCertificateAvailable;
+                    return true;
+
+                case "AcceCertChainErrorpted":
+                    Status = AuthorizeCertificateStatus.CertChainError;
+                    return true;
+
+                case "ContractCancelled":
+                    Status = AuthorizeCertificateStatus.ContractCancelled;
+                    return true;
+
+                default:
+                    Status = AuthorizeCertificateStatus.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this AuthorizeCertificateStatus)
 

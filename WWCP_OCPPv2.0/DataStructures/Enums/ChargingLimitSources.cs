@@ -19,24 +19,84 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extention methods for charging limit sourcess.
+    /// Extention methods for charging limit sources.
     /// </summary>
     public static class ChargingLimitSourcesExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
-        public static ChargingLimitSources Parse(this String Text)
+        /// <summary>
+        /// Parse the given text as a charging limit source.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging limit source.</param>
+        public static ChargingLimitSources Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "EMS"    => ChargingLimitSources.EMS,
-                   "Other"  => ChargingLimitSources.Other,
-                   "SO"     => ChargingLimitSources.SO,
-                   "CSO"    => ChargingLimitSources.CSO,
-                   _        => ChargingLimitSources.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return ChargingLimitSources.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a charging limit source.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging limit source.</param>
+        public static ChargingLimitSources? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out Status)
+
+        /// <summary>
+        /// Try to parse the given text as a charging limit source.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging limit source.</param>
+        /// <param name="Status">The parsed charging limit source.</param>
+        public static Boolean TryParse(String Text, out ChargingLimitSources Status)
+        {
+            switch (Text.Trim())
+            {
+
+                case "EMS":
+                    Status = ChargingLimitSources.EMS;
+                    return true;
+
+                case "Other":
+                    Status = ChargingLimitSources.Other;
+                    return true;
+
+                case "SO":
+                    Status = ChargingLimitSources.SO;
+                    return true;
+
+                case "CSO":
+                    Status = ChargingLimitSources.CSO;
+                    return true;
+
+                default:
+                    Status = ChargingLimitSources.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this Phase)
 

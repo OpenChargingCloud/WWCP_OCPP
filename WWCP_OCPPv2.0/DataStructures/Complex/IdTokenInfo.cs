@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Status information about an identifier.
     /// </summary>
-    public class IdTokenInfo : ACustomData
+    public class IdTokenInfo : ACustomData,
+                               IEquatable<IdTokenInfo>
     {
 
         #region Properties
@@ -426,9 +427,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            GroupIdToken is not null
-                               ? new JProperty("groupIdToken",         GroupIdToken.ToJSON(CustomIdTokenResponseSerializer,
-                                                                                           CustomAdditionalInfoResponseSerializer,
-                                                                                           CustomCustomDataResponseSerializer))
+                               ? new JProperty("groupIdToken",         GroupIdToken.   ToJSON(CustomIdTokenResponseSerializer,
+                                                                                              CustomAdditionalInfoResponseSerializer,
+                                                                                              CustomCustomDataResponseSerializer))
                                : null,
 
                            Language1.HasValue
@@ -445,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",           CustomData.     ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
@@ -525,7 +526,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two id token information for equality.
         /// </summary>
         /// <param name="IdTokenInfo">Id token information to compare with.</param>
-        public Boolean Equals(IdTokenInfo IdTokenInfo)
+        public Boolean Equals(IdTokenInfo? IdTokenInfo)
 
             => IdTokenInfo is not null &&
 

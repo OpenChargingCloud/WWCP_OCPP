@@ -27,10 +27,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
-    /// A get base report response.
+    /// A get charging profiles response.
     /// </summary>
-    public class GetBaseReportResponse : AResponse<CS.GetBaseReportRequest,
-                                                      GetBaseReportResponse>
+    public class GetChargingProfilesResponse : AResponse<CS.GetChargingProfilesRequest,
+                                                            GetChargingProfilesResponse>
     {
 
         #region Properties
@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// Whether the charging station is able to accept this request.
         /// </summary>
-        public GenericDeviceModelStatus  Status        { get; }
+        public GetChargingProfileStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
@@ -49,18 +49,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region GetBaseReportResponse(Request, Status)
+        #region GetChargingProfilesResponse(Request, Status)
 
         /// <summary>
-        /// Create a new get base report response.
+        /// Create a new get charging profiles response.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
+        /// <param name="Request">The get charging profiles request leading to this response.</param>
         /// <param name="Status">Whether the charging station is able to accept this request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
-        public GetBaseReportResponse(CS.GetBaseReportRequest   Request,
-                                     GenericDeviceModelStatus  Status,
-                                     StatusInfo?               StatusInfo   = null,
-                                     CustomData?               CustomData   = null)
+        public GetChargingProfilesResponse(CS.GetChargingProfilesRequest   Request,
+                                           GetChargingProfileStatus        Status,
+                                           StatusInfo?                     StatusInfo   = null,
+                                           CustomData?                     CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -75,15 +75,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region GetBaseReportResponse(Request, Result)
+        #region GetChargingProfilesResponse(Request, Result)
 
         /// <summary>
-        /// Create a new get base report response.
+        /// Create a new get charging profiles response.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
+        /// <param name="Request">The get charging profiles request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public GetBaseReportResponse(CS.GetBaseReportRequest  Request,
-                                     Result                   Result)
+        public GetChargingProfilesResponse(CS.GetChargingProfilesRequest  Request,
+                                           Result                         Result)
 
             : base(Request,
                    Result)
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:GetBaseReportResponse",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:GetChargingProfilesResponse",
         //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
         //     "CustomDataType": {
@@ -116,16 +116,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //         "vendorId"
         //       ]
         //     },
-        //     "GenericDeviceModelStatusEnumType": {
-        //       "description": "This indicates whether the Charging Station is able to accept this request.\r\n",
-        //       "javaType": "GenericDeviceModelStatusEnum",
+        //     "GetChargingProfileStatusEnumType": {
+        //       "description": "This indicates whether the Charging Station is able to process this request and will send &lt;&lt;reportchargingprofilesrequest, ReportChargingProfilesRequest&gt;&gt; messages.\r\n",
+        //       "javaType": "GetChargingProfileStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
         //         "Accepted",
-        //         "Rejected",
-        //         "NotSupported",
-        //         "EmptyResultSet"
+        //         "NoProfiles"
         //       ]
         //     },
         //     "StatusInfoType": {
@@ -160,7 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "status": {
-        //       "$ref": "#/definitions/GenericDeviceModelStatusEnumType"
+        //       "$ref": "#/definitions/GetChargingProfileStatusEnumType"
         //     },
         //     "statusInfo": {
         //       "$ref": "#/definitions/StatusInfoType"
@@ -173,63 +171,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomGetBaseReportResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomGetChargingProfilesResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get base report response.
+        /// Parse the given JSON representation of a get charging profiles response.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
+        /// <param name="Request">The get charging profiles request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetBaseReportResponse Parse(CS.GetBaseReportRequest                              Request,
-                                                  JObject                                              JSON,
-                                                  CustomJObjectParserDelegate<GetBaseReportResponse>?  CustomGetBaseReportResponseParser   = null)
+        public static GetChargingProfilesResponse Parse(CS.GetChargingProfilesRequest                              Request,
+                                                        JObject                                                    JSON,
+                                                        CustomJObjectParserDelegate<GetChargingProfilesResponse>?  CustomGetChargingProfilesResponseParser   = null)
         {
 
             if (TryParse(Request,
                          JSON,
-                         out var getBaseReportResponse,
+                         out var getChargingProfilesResponse,
                          out var errorResponse,
-                         CustomGetBaseReportResponseParser))
+                         CustomGetChargingProfilesResponseParser))
             {
-                return getBaseReportResponse!;
+                return getChargingProfilesResponse!;
             }
 
-            throw new ArgumentException("The given JSON representation of a get base report response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a get charging profiles response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out GetBaseReportResponse, out ErrorResponse, CustomGetBaseReportResponseParser = null)
+        #region (static) TryParse(Request, JSON, out GetChargingProfilesResponse, out ErrorResponse, CustomGetChargingProfilesResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get base report response.
+        /// Try to parse the given JSON representation of a get charging profiles response.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
+        /// <param name="Request">The get charging profiles request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetBaseReportResponse">The parsed get base report response.</param>
+        /// <param name="GetChargingProfilesResponse">The parsed get charging profiles response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetBaseReportResponseParser">A delegate to parse custom get base report responses.</param>
-        public static Boolean TryParse(CS.GetBaseReportRequest                              Request,
-                                       JObject                                              JSON,
-                                       out GetBaseReportResponse?                           GetBaseReportResponse,
-                                       out String?                                          ErrorResponse,
-                                       CustomJObjectParserDelegate<GetBaseReportResponse>?  CustomGetBaseReportResponseParser   = null)
+        /// <param name="CustomGetChargingProfilesResponseParser">A delegate to parse custom get charging profiles responses.</param>
+        public static Boolean TryParse(CS.GetChargingProfilesRequest                              Request,
+                                       JObject                                                    JSON,
+                                       out GetChargingProfilesResponse?                           GetChargingProfilesResponse,
+                                       out String?                                                ErrorResponse,
+                                       CustomJObjectParserDelegate<GetChargingProfilesResponse>?  CustomGetChargingProfilesResponseParser   = null)
         {
 
             try
             {
 
-                GetBaseReportResponse = null;
+                GetChargingProfilesResponse = null;
 
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
                                          "generic device model status",
-                                         GenericDeviceModelStatusExtentions.TryParse,
-                                         out GenericDeviceModelStatus GetBaseReportStatus,
+                                         GetChargingProfileStatusExtentions.TryParse,
+                                         out GetChargingProfileStatus GetChargingProfilesStatus,
                                          out ErrorResponse))
                 {
                     return false;
@@ -266,22 +264,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #endregion
 
 
-                GetBaseReportResponse = new GetBaseReportResponse(Request,
-                                                                  GetBaseReportStatus,
-                                                                  StatusInfo,
-                                                                  CustomData);
+                GetChargingProfilesResponse = new GetChargingProfilesResponse(Request,
+                                                                              GetChargingProfilesStatus,
+                                                                              StatusInfo,
+                                                                              CustomData);
 
-                if (CustomGetBaseReportResponseParser is not null)
-                    GetBaseReportResponse = CustomGetBaseReportResponseParser(JSON,
-                                                                              GetBaseReportResponse);
+                if (CustomGetChargingProfilesResponseParser is not null)
+                    GetChargingProfilesResponse = CustomGetChargingProfilesResponseParser(JSON,
+                                                                                          GetChargingProfilesResponse);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                GetBaseReportResponse  = null;
-                ErrorResponse          = "The given JSON representation of a get base report response is invalid: " + e.Message;
+                GetChargingProfilesResponse  = null;
+                ErrorResponse                = "The given JSON representation of a get charging profiles response is invalid: " + e.Message;
                 return false;
             }
 
@@ -289,17 +287,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomGetBaseReportResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
+        #region ToJSON(CustomGetChargingProfilesResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetBaseReportResponseSerializer">A delegate to serialize custom get base report responses.</param>
+        /// <param name="CustomGetChargingProfilesResponseSerializer">A delegate to serialize custom get charging profiles responses.</param>
         /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetBaseReportResponse>?  CustomGetBaseReportResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?             CustomStatusInfoResponseSerializer      = null,
-                              CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataResponseSerializer      = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetChargingProfilesResponse>?  CustomGetChargingProfilesResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                   CustomStatusInfoResponseSerializer            = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataResponseSerializer            = null)
         {
 
             var json = JSONObject.Create(
@@ -317,8 +315,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                        );
 
-            return CustomGetBaseReportResponseSerializer is not null
-                       ? CustomGetBaseReportResponseSerializer(this, json)
+            return CustomGetChargingProfilesResponseSerializer is not null
+                       ? CustomGetChargingProfilesResponseSerializer(this, json)
                        : json;
 
         }
@@ -329,10 +327,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Static methods
 
         /// <summary>
-        /// The get base report command failed.
+        /// The get charging profiles command failed.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
-        public static GetBaseReportResponse Failed(CS.GetBaseReportRequest Request)
+        /// <param name="Request">The get charging profiles request leading to this response.</param>
+        public static GetChargingProfilesResponse Failed(CS.GetChargingProfilesRequest Request)
 
             => new (Request,
                     Result.Server());
@@ -342,78 +340,78 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Operator overloading
 
-        #region Operator == (GetBaseReportResponse1, GetBaseReportResponse2)
+        #region Operator == (GetChargingProfilesResponse1, GetChargingProfilesResponse2)
 
         /// <summary>
-        /// Compares two get base report responses for equality.
+        /// Compares two get charging profiles responses for equality.
         /// </summary>
-        /// <param name="GetBaseReportResponse1">A get base report response.</param>
-        /// <param name="GetBaseReportResponse2">Another get base report response.</param>
+        /// <param name="GetChargingProfilesResponse1">A get charging profiles response.</param>
+        /// <param name="GetChargingProfilesResponse2">Another get charging profiles response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetBaseReportResponse? GetBaseReportResponse1,
-                                           GetBaseReportResponse? GetBaseReportResponse2)
+        public static Boolean operator == (GetChargingProfilesResponse? GetChargingProfilesResponse1,
+                                           GetChargingProfilesResponse? GetChargingProfilesResponse2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(GetBaseReportResponse1, GetBaseReportResponse2))
+            if (ReferenceEquals(GetChargingProfilesResponse1, GetChargingProfilesResponse2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (GetBaseReportResponse1 is null || GetBaseReportResponse2 is null)
+            if (GetChargingProfilesResponse1 is null || GetChargingProfilesResponse2 is null)
                 return false;
 
-            return GetBaseReportResponse1.Equals(GetBaseReportResponse2);
+            return GetChargingProfilesResponse1.Equals(GetChargingProfilesResponse2);
 
         }
 
         #endregion
 
-        #region Operator != (GetBaseReportResponse1, GetBaseReportResponse2)
+        #region Operator != (GetChargingProfilesResponse1, GetChargingProfilesResponse2)
 
         /// <summary>
-        /// Compares two get base report responses for inequality.
+        /// Compares two get charging profiles responses for inequality.
         /// </summary>
-        /// <param name="GetBaseReportResponse1">A get base report response.</param>
-        /// <param name="GetBaseReportResponse2">Another get base report response.</param>
+        /// <param name="GetChargingProfilesResponse1">A get charging profiles response.</param>
+        /// <param name="GetChargingProfilesResponse2">Another get charging profiles response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetBaseReportResponse? GetBaseReportResponse1,
-                                           GetBaseReportResponse? GetBaseReportResponse2)
+        public static Boolean operator != (GetChargingProfilesResponse? GetChargingProfilesResponse1,
+                                           GetChargingProfilesResponse? GetChargingProfilesResponse2)
 
-            => !(GetBaseReportResponse1 == GetBaseReportResponse2);
-
-        #endregion
+            => !(GetChargingProfilesResponse1 == GetChargingProfilesResponse2);
 
         #endregion
 
-        #region IEquatable<GetBaseReportResponse> Members
+        #endregion
+
+        #region IEquatable<GetChargingProfilesResponse> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get base report responses for equality.
+        /// Compares two get charging profiles responses for equality.
         /// </summary>
-        /// <param name="Object">A get base report response to compare with.</param>
+        /// <param name="Object">A get charging profiles response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is GetBaseReportResponse getBaseReportResponse &&
-                   Equals(getBaseReportResponse);
+            => Object is GetChargingProfilesResponse getChargingProfilesResponse &&
+                   Equals(getChargingProfilesResponse);
 
         #endregion
 
-        #region Equals(GetBaseReportResponse)
+        #region Equals(GetChargingProfilesResponse)
 
         /// <summary>
-        /// Compares two get base report responses for equality.
+        /// Compares two get charging profiles responses for equality.
         /// </summary>
-        /// <param name="GetBaseReportResponse">A get base report response to compare with.</param>
-        public override Boolean Equals(GetBaseReportResponse? GetBaseReportResponse)
+        /// <param name="GetChargingProfilesResponse">A get charging profiles response to compare with.</param>
+        public override Boolean Equals(GetChargingProfilesResponse? GetChargingProfilesResponse)
 
-            => GetBaseReportResponse is not null &&
+            => GetChargingProfilesResponse is not null &&
 
-               Status.Equals(GetBaseReportResponse.Status) &&
+               Status.Equals(GetChargingProfilesResponse.Status) &&
 
-             ((StatusInfo is     null && GetBaseReportResponse.StatusInfo is     null) ||
-               StatusInfo is not null && GetBaseReportResponse.StatusInfo is not null && StatusInfo.Equals(GetBaseReportResponse.StatusInfo));
+             ((StatusInfo is     null && GetChargingProfilesResponse.StatusInfo is     null) ||
+               StatusInfo is not null && GetChargingProfilesResponse.StatusInfo is not null && StatusInfo.Equals(GetChargingProfilesResponse.StatusInfo));
 
         #endregion
 

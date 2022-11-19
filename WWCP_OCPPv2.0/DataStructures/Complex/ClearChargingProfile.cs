@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A clear charging profile object.
     /// </summary>
-    public class ClearChargingProfile
+    public class ClearChargingProfile : ACustomData,
+                                        IEquatable<ClearChargingProfile>
     {
 
         #region Properties
@@ -65,11 +66,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="EVSEId">The optional EVSE identification for which to clear the charging profiles. An EVSE identification of 0 specifies the charging profile for the overall charging station. Absence of this parameter means the clearing applies to all charging profiles that match the other criteria in the request.</param>
         /// <param name="ChargingProfilePurpose">The optional purpose of the charging profiles that will be cleared, if they meet the other criteria in the request.</param>
         /// <param name="StackLevel">The optional stack level for which charging profiles will be cleared, if they meet the other criteria in the request.</param>
+        /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public ClearChargingProfile(EVSE_Id?                  EVSEId                   = null,
                                     ChargingProfilePurposes?  ChargingProfilePurpose   = null,
-                                    UInt32?                   StackLevel               = null)
+                                    UInt32?                   StackLevel               = null,
+                                    CustomData?               CustomData               = null)
 
-            : base()
+            : base(CustomData)
 
         {
 
@@ -213,10 +216,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
+                #region CustomData                [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 ClearChargingProfile = new ClearChargingProfile(EVSEId,
                                                                 ChargingProfilePurpose,
-                                                                StackLevel);
+                                                                StackLevel,
+                                                                CustomData);
 
                 if (CustomClearChargingProfileParser is not null)
                     ClearChargingProfile = CustomClearChargingProfileParser(JSON,
@@ -243,13 +261,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomClearChargingProfileResponseSerializer = null)
+        #region ToJSON(CustomClearChargingProfileResponseSerializer = null, CustomCustomDataResponseSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomClearChargingProfileResponseSerializer">A delegate to serialize custom ClearChargingProfile objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfile>? CustomClearChargingProfileResponseSerializer = null)
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfile>? CustomClearChargingProfileResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataResponseSerializer             = null)
         {
 
             var JSON = JSONObject.Create(
@@ -264,6 +284,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                            StackLevel.HasValue
                                ? new JProperty("stackLevel",              StackLevel.            Value.ToString())
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",              CustomData.                  ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
@@ -343,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two clear charging profiles for equality.
         /// </summary>
         /// <param name="ClearChargingProfile">A clear charging profile object to compare with.</param>
-        public Boolean Equals(ClearChargingProfile ClearChargingProfile)
+        public Boolean Equals(ClearChargingProfile? ClearChargingProfile)
 
             => ClearChargingProfile is not null &&
 
@@ -354,7 +378,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
               (ChargingProfilePurpose.HasValue &&  ClearChargingProfile.ChargingProfilePurpose.HasValue && ChargingProfilePurpose.Value.Equals(ClearChargingProfile.ChargingProfilePurpose.Value))) &&
 
             ((!StackLevel.            HasValue && !ClearChargingProfile.StackLevel.            HasValue) ||
-              (StackLevel.            HasValue &&  ClearChargingProfile.StackLevel.            HasValue && StackLevel.            Value.Equals(ClearChargingProfile.StackLevel.            Value)));
+              (StackLevel.            HasValue &&  ClearChargingProfile.StackLevel.            HasValue && StackLevel.            Value.Equals(ClearChargingProfile.StackLevel.            Value))) &&
+
+               base.Equals(ClearChargingProfile);
 
         #endregion
 
@@ -373,7 +399,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 return (EVSEId?.                GetHashCode() ?? 0) * 5 ^
                        (ChargingProfilePurpose?.GetHashCode() ?? 0) * 3 ^
-                       (StackLevel?.            GetHashCode() ?? 0);
+                       (StackLevel?.            GetHashCode() ?? 0) ^
+
+                        base.                   GetHashCode();
 
             }
         }

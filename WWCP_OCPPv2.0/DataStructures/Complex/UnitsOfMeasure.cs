@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A unit of measure and a multiplier.
     /// </summary>
-    public class UnitsOfMeasure : ACustomData
+    public class UnitsOfMeasure : ACustomData,
+                                  IEquatable<UnitsOfMeasure>
     {
 
         #region Properties
@@ -37,11 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The unit of the measured value. 20
         /// </summary>
+        [Mandatory]
         public String  Unit          { get; }
 
         /// <summary>
         /// Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.
         /// </summary>
+        [Mandatory]
         public Int32   Multiplier    { get; }
 
         #endregion
@@ -167,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 UnitsOfMeasure = default;
 
-                #region Unit
+                #region Unit          [mandatory]
 
                 if (!JSON.ParseMandatoryText("unit",
                                              "unit measure",
@@ -179,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region Multiplier
+                #region Multiplier    [mandatory]
 
                 if (!JSON.ParseMandatory("multiplier",
                                          "multiplier",
@@ -191,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region CustomData
+                #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -241,14 +244,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("unit",               Unit),
-
-                           Multiplier != 0
-                               ? new JProperty("multiplier",   Multiplier)
-                               : null,
+                           new JProperty("unit",              Unit),
+                           new JProperty("multiplier",        Multiplier),
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
@@ -328,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two units of measure for equality.
         /// </summary>
         /// <param name="UnitsOfMeasure">A unit of measure to compare with.</param>
-        public Boolean Equals(UnitsOfMeasure UnitsOfMeasure)
+        public Boolean Equals(UnitsOfMeasure? UnitsOfMeasure)
 
             => UnitsOfMeasure is not null &&
 

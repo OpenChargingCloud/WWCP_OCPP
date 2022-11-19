@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A meter value.
     /// </summary>
-    public class MeterValue : ACustomData
+    public class MeterValue : ACustomData,
+                              IEquatable<MeterValue>
     {
 
         #region Properties
@@ -343,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two meter values for equality.
         /// </summary>
         /// <param name="MeterValue">A meter value to compare with.</param>
-        public Boolean Equals(MeterValue MeterValue)
+        public Boolean Equals(MeterValue? MeterValue)
 
             => MeterValue is not null &&
 

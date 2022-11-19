@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A charging station is a physical system where an electrical vehicle can be charged.
     /// </summary>
-    public class ChargingStation : ACustomData
+    public class ChargingStation : ACustomData,
+                                   IEquatable<ChargingStation>
     {
 
         #region Properties
@@ -317,8 +318,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            Modem           is not null
-                               ? new JProperty("serialNumber",     Modem.ToJSON(CustomModemResponseSerializer,
-                                                                                CustomCustomDataResponseSerializer))
+                               ? new JProperty("serialNumber",     Modem.     ToJSON(CustomModemResponseSerializer,
+                                                                                     CustomCustomDataResponseSerializer))
                                : null,
 
                            FirmwareVersion is not null
@@ -406,7 +407,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two charging stations for equality.
         /// </summary>
         /// <param name="ChargingStation">A charging station to compare with.</param>
-        public Boolean Equals(ChargingStation ChargingStation)
+        public Boolean Equals(ChargingStation? ChargingStation)
 
             => ChargingStation is not null &&
 
@@ -425,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
              ((FirmwareVersion is     null && ChargingStation.FirmwareVersion is     null) ||
               (FirmwareVersion is not null && ChargingStation.FirmwareVersion is not null && FirmwareVersion.Equals(ChargingStation.FirmwareVersion))) &&
 
-               base.Equals(ChargingStation);
+               base.      Equals(ChargingStation);
 
         #endregion
 

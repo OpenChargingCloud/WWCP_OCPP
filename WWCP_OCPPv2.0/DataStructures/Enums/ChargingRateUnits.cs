@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace cloud.charging.open.protocols.OCPPv1_6
+namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
@@ -24,17 +24,71 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     public static class ChargingRateUnitsExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a charging rate unit.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging rate unit.</param>
         public static ChargingRateUnits Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "A"  => ChargingRateUnits.Amperes,
-                   "W"  => ChargingRateUnits.Watts,
-                   _    => ChargingRateUnits.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return ChargingRateUnits.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a charging rate unit.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging rate unit.</param>
+        public static ChargingRateUnits? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out Status)
+
+        /// <summary>
+        /// Try to parse the given text as a charging rate unit.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging rate unit.</param>
+        /// <param name="Status">The parsed charging rate unit.</param>
+        public static Boolean TryParse(String Text, out ChargingRateUnits Status)
+        {
+            switch (Text.Trim())
+            {
+
+                case "A":
+                    Status = ChargingRateUnits.Amperes;
+                    return true;
+
+                case "W":
+                    Status = ChargingRateUnits.Watts;
+                    return true;
+
+                default:
+                    Status = ChargingRateUnits.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this ChargingRateUnitType)
 

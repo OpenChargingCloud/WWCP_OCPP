@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A message to be displayed at a charging station.
     /// </summary>
-    public class MessageContent : ACustomData
+    public class MessageContent : ACustomData,
+                                  IEquatable<MessageContent>
     {
 
         #region Properties
@@ -352,13 +353,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two message contents for equality.
         /// </summary>
         /// <param name="MessageContent">Message content to compare with.</param>
-        public Boolean Equals(MessageContent MessageContent)
+        public Boolean Equals(MessageContent? MessageContent)
 
             => MessageContent is not null &&
 
-               String.Equals(Content,
-                             MessageContent.Content,
-                             StringComparison.OrdinalIgnoreCase) &&
+               String.  Equals(Content,
+                               MessageContent.Content,
+                               StringComparison.OrdinalIgnoreCase) &&
 
                Language.Equals(MessageContent.Language) &&
                Format.  Equals(MessageContent.Format)   &&

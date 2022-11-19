@@ -24,24 +24,99 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class AuthorizationStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as an authorization status.
+        /// </summary>
+        /// <param name="Text">A text representation of an authorization status.</param>
         public static AuthorizationStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Accepted"            => AuthorizationStatus.Accepted,
-                   "Blocked"             => AuthorizationStatus.Blocked,
-                   "ConcurrentTx"        => AuthorizationStatus.ConcurrentTx,
-                   "Expired"             => AuthorizationStatus.Expired,
-                   "Invalid"             => AuthorizationStatus.Invalid,
-                   "NoCredit"            => AuthorizationStatus.NoCredit,
-                   "NotAllowedTypeEVSE"  => AuthorizationStatus.NotAllowedTypeEVSE,
-                   "NotAtThisLocation"   => AuthorizationStatus.NotAtThisLocation,
-                   "NotAtThisTime"       => AuthorizationStatus.NotAtThisTime,
-                   _                     => AuthorizationStatus.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return AuthorizationStatus.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as an authorization status.
+        /// </summary>
+        /// <param name="Text">A text representation of an authorization status.</param>
+        public static AuthorizationStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out Status)
+
+        /// <summary>
+        /// Try to parse the given text as an authorization status.
+        /// </summary>
+        /// <param name="Text">A text representation of an authorization status.</param>
+        /// <param name="Status">The parsed authorization status.</param>
+        public static Boolean TryParse(String Text, out AuthorizationStatus Status)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Accepted":
+                    Status = AuthorizationStatus.Accepted;
+                    return true;
+
+                case "Blocked":
+                    Status = AuthorizationStatus.Blocked;
+                    return true;
+
+                case "ConcurrentTx":
+                    Status = AuthorizationStatus.ConcurrentTx;
+                    return true;
+
+                case "Expired":
+                    Status = AuthorizationStatus.Expired;
+                    return true;
+
+                case "Invalid":
+                    Status = AuthorizationStatus.Invalid;
+                    return true;
+
+                case "NoCredit":
+                    Status = AuthorizationStatus.NoCredit;
+                    return true;
+
+                case "NotAllowedTypeEVSE":
+                    Status = AuthorizationStatus.NotAllowedTypeEVSE;
+                    return true;
+
+                case "NotAtThisLocation":
+                    Status = AuthorizationStatus.NotAtThisLocation;
+                    return true;
+
+                case "NotAtThisTime":
+                    Status = AuthorizationStatus.NotAtThisTime;
+                    return true;
+
+                default:
+                    Status = AuthorizationStatus.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this AuthorizationStatus)
 

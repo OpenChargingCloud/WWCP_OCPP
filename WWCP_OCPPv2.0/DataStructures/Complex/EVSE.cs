@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A electric vehicle supply equipment (EVSE).
     /// </summary>
-    public class EVSE : ACustomData
+    public class EVSE : ACustomData,
+                        IEquatable<EVSE>
     {
 
         #region Properties
@@ -325,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two EVSEs for equality.
         /// </summary>
         /// <param name="EVSE">An EVSE to compare with.</param>
-        public Boolean Equals(EVSE EVSE)
+        public Boolean Equals(EVSE? EVSE)
 
             => EVSE is not null &&
 

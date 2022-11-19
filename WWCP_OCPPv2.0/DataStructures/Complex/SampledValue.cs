@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A sampled (energy) meter value.
     /// </summary>
-    public class SampledValue : ACustomData
+    public class SampledValue : ACustomData,
+                                IEquatable<SampledValue>
     {
 
         #region Properties
@@ -37,36 +38,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The measured value.
         /// </summary>
+        [Mandatory]
         public Decimal                Value               { get; }
 
         /// <summary>
         /// 
         /// </summary>
+        [Optional]
         public ReadingContexts?       Context             { get; }
 
         /// <summary>
         /// 
         /// </summary>
+        [Optional]
         public Measurands?            Measurand           { get; }
 
         /// <summary>
         /// 
         /// </summary>
+        [Optional]
         public Phases?                Phase               { get; }
 
         /// <summary>
         /// 
         /// </summary>
+        [Optional]
         public MeasurementLocations?  Location            { get; }
 
         /// <summary>
         /// 
         /// </summary>
+        [Optional]
         public SignedMeterValue?      SignedMeterValue    { get; }
 
         /// <summary>
         /// 
         /// </summary>
+        [Optional]
         public UnitsOfMeasure?        UnitOfMeasure       { get; }
 
         #endregion
@@ -482,7 +490,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two sampled values for equality.
         /// </summary>
         /// <param name="SampledValue">A sampled value to compare with.</param>
-        public Boolean Equals(SampledValue SampledValue)
+        public Boolean Equals(SampledValue? SampledValue)
 
             => SampledValue is not null &&
 

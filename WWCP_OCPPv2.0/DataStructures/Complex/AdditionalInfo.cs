@@ -30,7 +30,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// An additional case insensitive identifier to use for the authorization
     /// and the type of authorization to support multiple forms of identifiers.
     /// </summary>
-    public class AdditionalInfo : ACustomData
+    public class AdditionalInfo : ACustomData,
+                                  IEquatable<AdditionalInfo>
     {
 
         #region Properties
@@ -195,7 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region Parse Custom Data    [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",

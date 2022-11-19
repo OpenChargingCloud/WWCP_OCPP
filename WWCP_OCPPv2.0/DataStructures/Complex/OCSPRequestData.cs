@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Information to verify the electric vehicle/user contract certificate via OCSP.
     /// </summary>
-    public class OCSPRequestData : ACustomData
+    public class OCSPRequestData : ACustomData,
+                                   IEquatable<OCSPRequestData>
     {
 
         #region Properties
@@ -421,7 +422,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two OCSP request data for equality.
         /// </summary>
         /// <param name="OCSPRequestData">OCSP request data to compare with.</param>
-        public Boolean Equals(OCSPRequestData OCSPRequestData)
+        public Boolean Equals(OCSPRequestData? OCSPRequestData)
 
             => OCSPRequestData is not null &&
 
