@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if ((ClearedChargingLimitResponse1 is null) || (ClearedChargingLimitResponse2 is null))
+            if (ClearedChargingLimitResponse1 is null || ClearedChargingLimitResponse2 is null)
                 return false;
 
             return ClearedChargingLimitResponse1.Equals(ClearedChargingLimitResponse2);

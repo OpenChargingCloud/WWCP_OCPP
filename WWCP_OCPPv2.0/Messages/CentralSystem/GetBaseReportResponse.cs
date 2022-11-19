@@ -27,40 +27,40 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
-    /// A clear cache response.
+    /// A get base report response.
     /// </summary>
-    public class ClearCacheResponse : AResponse<CS.ClearCacheRequest,
-                                                   ClearCacheResponse>
+    public class GetBaseReportResponse : AResponse<CS.GetBaseReportRequest,
+                                                      GetBaseReportResponse>
     {
 
         #region Properties
 
         /// <summary>
-        /// The success or failure of the clear cache command.
+        /// Whether the charging station is able to accept this request.
         /// </summary>
-        public ClearCacheStatus  Status        { get; }
+        public GenericDeviceModelStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
-        public StatusInfo?       StatusInfo    { get; }
+        public StatusInfo?               StatusInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region ClearCacheResponse(Request, Status)
+        #region GetBaseReportResponse(Request, Status)
 
         /// <summary>
-        /// Create a new clear cache response.
+        /// Create a new get base report response.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
-        /// <param name="Status">The success or failure of the clear cache command.</param>
+        /// <param name="Request">The get base report request leading to this response.</param>
+        /// <param name="Status">Whether the charging station is able to accept this request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
-        public ClearCacheResponse(CS.ClearCacheRequest  Request,
-                                  ClearCacheStatus      Status,
-                                  StatusInfo?           StatusInfo   = null,
-                                  CustomData?           CustomData   = null)
+        public GetBaseReportResponse(CS.GetBaseReportRequest   Request,
+                                     GenericDeviceModelStatus  Status,
+                                     StatusInfo?               StatusInfo   = null,
+                                     CustomData?               CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -75,15 +75,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ClearCacheResponse(Request, Result)
+        #region GetBaseReportResponse(Request, Result)
 
         /// <summary>
-        /// Create a new clear cache response.
+        /// Create a new get base report response.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
+        /// <param name="Request">The get base report request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public ClearCacheResponse(CS.ClearCacheRequest  Request,
-                                  Result                Result)
+        public GetBaseReportResponse(CS.GetBaseReportRequest  Request,
+                                     Result                   Result)
 
             : base(Request,
                    Result)
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:ClearCacheResponse",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:GetBaseReportResponse",
         //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
         //     "CustomDataType": {
@@ -116,14 +116,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //         "vendorId"
         //       ]
         //     },
-        //     "ClearCacheStatusEnumType": {
-        //       "description": "Accepted if the Charging Station has executed the request, otherwise rejected.\r\n",
-        //       "javaType": "ClearCacheStatusEnum",
+        //     "GenericDeviceModelStatusEnumType": {
+        //       "description": "This indicates whether the Charging Station is able to accept this request.\r\n",
+        //       "javaType": "GenericDeviceModelStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
         //         "Accepted",
-        //         "Rejected"
+        //         "Rejected",
+        //         "NotSupported",
+        //         "EmptyResultSet"
         //       ]
         //     },
         //     "StatusInfoType": {
@@ -158,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "status": {
-        //       "$ref": "#/definitions/ClearCacheStatusEnumType"
+        //       "$ref": "#/definitions/GenericDeviceModelStatusEnumType"
         //     },
         //     "statusInfo": {
         //       "$ref": "#/definitions/StatusInfoType"
@@ -171,63 +173,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomClearCacheResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomGetBaseReportResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a clear cache response.
+        /// Parse the given JSON representation of a get base report response.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
+        /// <param name="Request">The get base report request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearCacheResponse Parse(CS.ClearCacheRequest                              Request,
-                                               JObject                                           JSON,
-                                               CustomJObjectParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null)
+        public static GetBaseReportResponse Parse(CS.GetBaseReportRequest                              Request,
+                                                  JObject                                              JSON,
+                                                  CustomJObjectParserDelegate<GetBaseReportResponse>?  CustomGetBaseReportResponseParser   = null)
         {
 
             if (TryParse(Request,
                          JSON,
-                         out var clearCacheResponse,
+                         out var getBaseReportResponse,
                          out var errorResponse,
-                         CustomClearCacheResponseParser))
+                         CustomGetBaseReportResponseParser))
             {
-                return clearCacheResponse!;
+                return getBaseReportResponse!;
             }
 
-            throw new ArgumentException("The given JSON representation of a clear cache response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a get base report response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out ClearCacheResponse, out ErrorResponse, CustomClearCacheResponseParser = null)
+        #region (static) TryParse(Request, JSON, out GetBaseReportResponse, out ErrorResponse, CustomGetBaseReportResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a clear cache response.
+        /// Try to parse the given JSON representation of a get base report response.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
+        /// <param name="Request">The get base report request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
+        /// <param name="GetBaseReportResponse">The parsed get base report response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearCacheResponseParser">A delegate to parse custom clear cache responses.</param>
-        public static Boolean TryParse(CS.ClearCacheRequest                              Request,
-                                       JObject                                           JSON,
-                                       out ClearCacheResponse?                           ClearCacheResponse,
-                                       out String?                                       ErrorResponse,
-                                       CustomJObjectParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null)
+        /// <param name="CustomGetBaseReportResponseParser">A delegate to parse custom get base report responses.</param>
+        public static Boolean TryParse(CS.GetBaseReportRequest                              Request,
+                                       JObject                                              JSON,
+                                       out GetBaseReportResponse?                           GetBaseReportResponse,
+                                       out String?                                          ErrorResponse,
+                                       CustomJObjectParserDelegate<GetBaseReportResponse>?  CustomGetBaseReportResponseParser   = null)
         {
 
             try
             {
 
-                ClearCacheResponse = null;
+                GetBaseReportResponse = null;
 
-                #region ClearCacheStatus    [mandatory]
+                #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "clear cache status",
-                                         ClearCacheStatusExtentions.TryParse,
-                                         out ClearCacheStatus ClearCacheStatus,
+                                         "generic device model status",
+                                         GenericDeviceModelStatusExtentions.TryParse,
+                                         out GenericDeviceModelStatus GetBaseReportStatus,
                                          out ErrorResponse))
                 {
                     return false;
@@ -235,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #endregion
 
-                #region StatusInfo          [optional]
+                #region StatusInfo    [optional]
 
                 if (JSON.ParseOptionalJSON("statusInfo",
                                            "detailed status info",
@@ -249,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #endregion
 
-                #region CustomData          [optional]
+                #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -264,22 +266,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #endregion
 
 
-                ClearCacheResponse = new ClearCacheResponse(Request,
-                                                            ClearCacheStatus,
-                                                            StatusInfo,
-                                                            CustomData);
+                GetBaseReportResponse = new GetBaseReportResponse(Request,
+                                                                  GetBaseReportStatus,
+                                                                  StatusInfo,
+                                                                  CustomData);
 
-                if (CustomClearCacheResponseParser is not null)
-                    ClearCacheResponse = CustomClearCacheResponseParser(JSON,
-                                                                        ClearCacheResponse);
+                if (CustomGetBaseReportResponseParser is not null)
+                    GetBaseReportResponse = CustomGetBaseReportResponseParser(JSON,
+                                                                              GetBaseReportResponse);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                ClearCacheResponse  = null;
-                ErrorResponse       = "The given JSON representation of a clear cache response is invalid: " + e.Message;
+                GetBaseReportResponse  = null;
+                ErrorResponse          = "The given JSON representation of a get base report response is invalid: " + e.Message;
                 return false;
             }
 
@@ -287,17 +289,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomClearCacheResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
+        #region ToJSON(CustomGetBaseReportResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomClearCacheResponseSerializer">A delegate to serialize custom clear cache responses.</param>
+        /// <param name="CustomGetBaseReportResponseSerializer">A delegate to serialize custom get base report responses.</param>
         /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom StatusInfo object.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearCacheResponse>?  CustomClearCacheResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?          CustomStatusInfoResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataResponseSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetBaseReportResponse>?  CustomGetBaseReportResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?             CustomStatusInfoResponseSerializer      = null,
+                              CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataResponseSerializer      = null)
         {
 
             var json = JSONObject.Create(
@@ -315,8 +317,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                        );
 
-            return CustomClearCacheResponseSerializer is not null
-                       ? CustomClearCacheResponseSerializer(this, json)
+            return CustomGetBaseReportResponseSerializer is not null
+                       ? CustomGetBaseReportResponseSerializer(this, json)
                        : json;
 
         }
@@ -327,10 +329,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Static methods
 
         /// <summary>
-        /// The clear cache command failed.
+        /// The get base report command failed.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
-        public static ClearCacheResponse Failed(CS.ClearCacheRequest Request)
+        /// <param name="Request">The get base report request leading to this response.</param>
+        public static GetBaseReportResponse Failed(CS.GetBaseReportRequest Request)
 
             => new (Request,
                     Result.Server());
@@ -340,78 +342,78 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Operator overloading
 
-        #region Operator == (ClearCacheResponse1, ClearCacheResponse2)
+        #region Operator == (GetBaseReportResponse1, GetBaseReportResponse2)
 
         /// <summary>
-        /// Compares two clear cache responses for equality.
+        /// Compares two get base report responses for equality.
         /// </summary>
-        /// <param name="ClearCacheResponse1">A clear cache response.</param>
-        /// <param name="ClearCacheResponse2">Another clear cache response.</param>
+        /// <param name="GetBaseReportResponse1">A get base report response.</param>
+        /// <param name="GetBaseReportResponse2">Another get base report response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ClearCacheResponse? ClearCacheResponse1,
-                                           ClearCacheResponse? ClearCacheResponse2)
+        public static Boolean operator == (GetBaseReportResponse? GetBaseReportResponse1,
+                                           GetBaseReportResponse? GetBaseReportResponse2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ClearCacheResponse1, ClearCacheResponse2))
+            if (ReferenceEquals(GetBaseReportResponse1, GetBaseReportResponse2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (ClearCacheResponse1 is null || ClearCacheResponse2 is null)
+            if (GetBaseReportResponse1 is null || GetBaseReportResponse2 is null)
                 return false;
 
-            return ClearCacheResponse1.Equals(ClearCacheResponse2);
+            return GetBaseReportResponse1.Equals(GetBaseReportResponse2);
 
         }
 
         #endregion
 
-        #region Operator != (ClearCacheResponse1, ClearCacheResponse2)
+        #region Operator != (GetBaseReportResponse1, GetBaseReportResponse2)
 
         /// <summary>
-        /// Compares two clear cache responses for inequality.
+        /// Compares two get base report responses for inequality.
         /// </summary>
-        /// <param name="ClearCacheResponse1">A clear cache response.</param>
-        /// <param name="ClearCacheResponse2">Another clear cache response.</param>
+        /// <param name="GetBaseReportResponse1">A get base report response.</param>
+        /// <param name="GetBaseReportResponse2">Another get base report response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ClearCacheResponse? ClearCacheResponse1,
-                                           ClearCacheResponse? ClearCacheResponse2)
+        public static Boolean operator != (GetBaseReportResponse? GetBaseReportResponse1,
+                                           GetBaseReportResponse? GetBaseReportResponse2)
 
-            => !(ClearCacheResponse1 == ClearCacheResponse2);
-
-        #endregion
+            => !(GetBaseReportResponse1 == GetBaseReportResponse2);
 
         #endregion
 
-        #region IEquatable<ClearCacheResponse> Members
+        #endregion
+
+        #region IEquatable<GetBaseReportResponse> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two clear cache responses for equality.
+        /// Compares two get base report responses for equality.
         /// </summary>
-        /// <param name="Object">A clear cache response to compare with.</param>
+        /// <param name="Object">A get base report response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is ClearCacheResponse clearCacheResponse &&
-                   Equals(clearCacheResponse);
+            => Object is GetBaseReportResponse getBaseReportResponse &&
+                   Equals(getBaseReportResponse);
 
         #endregion
 
-        #region Equals(ClearCacheResponse)
+        #region Equals(GetBaseReportResponse)
 
         /// <summary>
-        /// Compares two clear cache responses for equality.
+        /// Compares two get base report responses for equality.
         /// </summary>
-        /// <param name="ClearCacheResponse">A clear cache response to compare with.</param>
-        public override Boolean Equals(ClearCacheResponse? ClearCacheResponse)
+        /// <param name="GetBaseReportResponse">A get base report response to compare with.</param>
+        public override Boolean Equals(GetBaseReportResponse? GetBaseReportResponse)
 
-            => ClearCacheResponse is not null &&
+            => GetBaseReportResponse is not null &&
 
-               Status.Equals(ClearCacheResponse.Status) &&
+               Status.Equals(GetBaseReportResponse.Status) &&
 
-             ((StatusInfo is     null && ClearCacheResponse.StatusInfo is     null) ||
-               StatusInfo is not null && ClearCacheResponse.StatusInfo is not null && StatusInfo.Equals(ClearCacheResponse.StatusInfo));
+             ((StatusInfo is     null && GetBaseReportResponse.StatusInfo is     null) ||
+               StatusInfo is not null && GetBaseReportResponse.StatusInfo is not null && StatusInfo.Equals(GetBaseReportResponse.StatusInfo));
 
         #endregion
 

@@ -24,21 +24,71 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class CancelReservationStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as a cancel reservation status.
+        /// Parse the given text as a cancel reservation status.
         /// </summary>
-        /// <param name="Text">A string representation of a cancel reservation status.</param>
+        /// <param name="Text">A text representation of a cancel reservation status.</param>
         public static CancelReservationStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Accepted"  => CancelReservationStatus.Accepted,
-                   "Rejected"  => CancelReservationStatus.Rejected,
-                   _           => CancelReservationStatus.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return CancelReservationStatus.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a cancel reservation status.
+        /// </summary>
+        /// <param name="Text">A text representation of a cancel reservation status.</param>
+        public static CancelReservationStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out Status)
+
+        /// <summary>
+        /// Try to parse the given text as a cancel reservation status.
+        /// </summary>
+        /// <param name="Text">A text representation of a cancel reservation status.</param>
+        /// <param name="Status">The parsed cancel reservation status.</param>
+        public static Boolean TryParse(String Text, out CancelReservationStatus Status)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Accepted":
+                    Status = CancelReservationStatus.Accepted;
+                    return true;
+
+                case "Rejected":
+                    Status = CancelReservationStatus.Rejected;
+                    return true;
+
+                default:
+                    Status = CancelReservationStatus.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this CancelReservationStatus)
 

@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as ISO 15118 schema version.
+        /// Try to parse the given text as ISO 15118 schema version.
         /// </summary>
         /// <param name="Text">A text representation of an ISO 15118 schema version.</param>
         public static ISO15118SchemaVersion? TryParse(String Text)
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text, out ISO15118SchemaVersion)
 
         /// <summary>
-        /// Try to parse the given string as ISO 15118 schema version.
+        /// Try to parse the given text as ISO 15118 schema version.
         /// </summary>
         /// <param name="Text">A text representation of an ISO 15118 schema version.</param>
         /// <param name="ISO15118SchemaVersion">The parsed ISO 15118 schema version.</param>
@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Clone
 
         /// <summary>
-        /// Clone this charge box identification.
+        /// Clone this ISO 15118 schema version.
         /// </summary>
         public ISO15118SchemaVersion Clone
 

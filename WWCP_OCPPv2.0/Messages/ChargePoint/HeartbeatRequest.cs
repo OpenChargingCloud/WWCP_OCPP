@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((HeartbeatRequest1 is null) || (HeartbeatRequest2 is null))
+            if (HeartbeatRequest1 is null || HeartbeatRequest2 is null)
                 return false;
 
             return HeartbeatRequest1.Equals(HeartbeatRequest2);

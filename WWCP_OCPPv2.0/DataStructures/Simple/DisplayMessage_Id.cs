@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as a display message identification.
+        /// Try to parse the given text as a display message identification.
         /// </summary>
         /// <param name="Text">A text representation of a display message identification.</param>
         public static DisplayMessage_Id? TryParse(String Text)
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text,   out DisplayMessageId)
 
         /// <summary>
-        /// Try to parse the given string as a display message identification.
+        /// Try to parse the given text as a display message identification.
         /// </summary>
         /// <param name="Text">A text representation of a display message identification.</param>
         /// <param name="DisplayMessageId">The parsed display message identification.</param>

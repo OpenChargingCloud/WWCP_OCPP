@@ -37,26 +37,31 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The used hash algorithm.
         /// </summary>
+        [Mandatory]
         public HashAlgorithms  HashAlgorithm     { get; }
 
         /// <summary>
         /// The hashed value of the issuer distinguished name (DN). [max 128]
         /// </summary>
+        [Mandatory]
         public String          IssuerNameHash    { get; }
 
         /// <summary>
         /// The hashed value of the issuers public key. [max 128]
         /// </summary>
+        [Mandatory]
         public String          IssuerKeyHash     { get; }
 
         /// <summary>
         /// The serial number of the certificate to verify. [max 40]
         /// </summary>
+        [Mandatory]
         public String          SerialNumber      { get; }
 
         /// <summary>
         /// The case-insensitive responder URL. [max 512]
         /// </summary>
+        [Mandatory]
         public String          ResponderURL      { get; }
 
         #endregion
@@ -321,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomOCSPRequestDataResponseSerializer">A delegate to serialize custom OCSPRequestDatas.</param>
+        /// <param name="CustomOCSPRequestDataResponseSerializer">A delegate to serialize custom OCSP request data.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<OCSPRequestData>?  CustomOCSPRequestDataResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataResponseSerializer        = null)

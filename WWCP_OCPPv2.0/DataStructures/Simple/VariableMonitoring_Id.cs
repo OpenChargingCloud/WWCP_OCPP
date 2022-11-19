@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as a variable monitoring identification.
+        /// Try to parse the given text as a variable monitoring identification.
         /// </summary>
         /// <param name="Text">A text representation of a variable monitoring identification.</param>
         public static VariableMonitoring_Id? TryParse(String Text)
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text,   out VariableMonitoringId)
 
         /// <summary>
-        /// Try to parse the given string as a variable monitoring identification.
+        /// Try to parse the given text as a variable monitoring identification.
         /// </summary>
         /// <param name="Text">A text representation of a variable monitoring identification.</param>
         /// <param name="VariableMonitoringId">The parsed variable monitoring identification.</param>

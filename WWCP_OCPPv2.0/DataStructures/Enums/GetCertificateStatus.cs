@@ -19,24 +19,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the clear cache status.
+    /// Extentions methods for get certificate status.
     /// </summary>
-    public static class ClearCacheStatusExtentions
+    public static class GetCertificateStatusExtentions
     {
 
         #region Parse   (Text)
 
         /// <summary>
-        /// Parse the given text as a clear cache status.
+        /// Parse the given text as a get certificate status.
         /// </summary>
-        /// <param name="Text">A text representation of a clear cache status.</param>
-        public static ClearCacheStatus Parse(String Text)
+        /// <param name="Text">A text representation of a get certificate status.</param>
+        public static GetCertificateStatus Parse(String Text)
         {
 
             if (TryParse(Text, out var status))
                 return status;
 
-            return ClearCacheStatus.Unknown;
+            return GetCertificateStatus.Unknown;
 
         }
 
@@ -45,10 +45,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given text as a clear cache status.
+        /// Try to parse the given text as a get certificate status.
         /// </summary>
-        /// <param name="Text">A text representation of a clear cache status.</param>
-        public static ClearCacheStatus? TryParse(String Text)
+        /// <param name="Text">A text representation of a get certificate status.</param>
+        public static GetCertificateStatus? TryParse(String Text)
         {
 
             if (TryParse(Text, out var status))
@@ -63,25 +63,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region TryParse(Text, out Status)
 
         /// <summary>
-        /// Try to parse the given text as a clear cache status.
+        /// Try to parse the given text as a get certificate status.
         /// </summary>
-        /// <param name="Text">A text representation of a clear cache status.</param>
-        /// <param name="Status">The parsed clear cache status.</param>
-        public static Boolean TryParse(String Text, out ClearCacheStatus Status)
+        /// <param name="Text">A text representation of a get certificate status.</param>
+        /// <param name="Status">The parsed get certificate status.</param>
+        public static Boolean TryParse(String Text, out GetCertificateStatus Status)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = ClearCacheStatus.Accepted;
+                    Status = GetCertificateStatus.Accepted;
                     return true;
 
-                case "Rejected":
-                    Status = ClearCacheStatus.Rejected;
+                case "Failed":
+                    Status = GetCertificateStatus.Failed;
                     return true;
 
                 default:
-                    Status = ClearCacheStatus.Unknown;
+                    Status = GetCertificateStatus.Unknown;
                     return false;
 
             }
@@ -90,41 +90,40 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this ClearCacheStatus)
+        #region AsText(this GetCertificateStatus)
 
-        public static String AsText(this ClearCacheStatus ClearCacheStatus)
+        public static String AsText(this GetCertificateStatus GetCertificateStatus)
 
-            => ClearCacheStatus switch {
-                   ClearCacheStatus.Accepted  => "Accepted",
-                   ClearCacheStatus.Rejected  => "Rejected",
-                   _                          => "Unknown"
+            => GetCertificateStatus switch {
+                   GetCertificateStatus.Accepted  => "Accepted",
+                   GetCertificateStatus.Failed    => "Failed",
+                   _                              => "Unknown"
                };
 
         #endregion
 
     }
 
-
     /// <summary>
-    /// Defines the clear-cache-status-values.
+    /// A get certificate status.
     /// </summary>
-    public enum ClearCacheStatus
+    public enum GetCertificateStatus
     {
 
         /// <summary>
-        /// Unknown clear-cache status.
+        /// Unknown get certificate status.
         /// </summary>
         Unknown,
 
         /// <summary>
-        /// Command has been executed.
+        /// Successfully retrieved the OCSP certificate status.
         /// </summary>
         Accepted,
 
         /// <summary>
-        /// Command has not been executed.
+        /// Failed to retrieve the OCSP certificate status.
         /// </summary>
-        Rejected
+        Failed
 
     }
 

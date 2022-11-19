@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as EXI data.
+        /// Try to parse the given text as EXI data.
         /// </summary>
         /// <param name="Text">A text representation of EXI data.</param>
         public static EXIData? TryParse(String Text)
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text, out EXIData)
 
         /// <summary>
-        /// Try to parse the given string as EXI data.
+        /// Try to parse the given text as EXI data.
         /// </summary>
         /// <param name="Text">A text representation of EXI data.</param>
         /// <param name="EXIData">The parsed EXI data.</param>
@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Clone
 
         /// <summary>
-        /// Clone this charge box identification.
+        /// Clone this EXI data.
         /// </summary>
         public EXIData Clone
 

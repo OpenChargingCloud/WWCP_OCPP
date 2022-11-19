@@ -349,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((SetChargingProfileResponse1 is null) || (SetChargingProfileResponse2 is null))
+            if (SetChargingProfileResponse1 is null || SetChargingProfileResponse2 is null)
                 return false;
 
             return SetChargingProfileResponse1.Equals(SetChargingProfileResponse2);

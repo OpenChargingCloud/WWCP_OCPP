@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as a vendor identification.
+        /// Try to parse the given text as a vendor identification.
         /// </summary>
         /// <param name="Text">A text representation of a vendor identification.</param>
         public static Vendor_Id? TryParse(String Text)
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text, out VendorId)
 
         /// <summary>
-        /// Try to parse the given string as a vendor identification.
+        /// Try to parse the given text as a vendor identification.
         /// </summary>
         /// <param name="Text">A text representation of a vendor identification.</param>
         /// <param name="VendorId">The parsed vendor identification.</param>
@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Clone
 
         /// <summary>
-        /// Clone this charge box identification.
+        /// Clone this vendor identification.
         /// </summary>
         public Vendor_Id Clone
 

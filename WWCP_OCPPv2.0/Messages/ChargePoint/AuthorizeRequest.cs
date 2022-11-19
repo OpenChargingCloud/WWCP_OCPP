@@ -440,7 +440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="CustomAuthorizeRequestSerializer">A delegate to serialize custom authorize requests.</param>
         /// <param name="CustomIdTokenResponseSerializer">A delegate to serialize custom IdTokens.</param>
         /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom AdditionalInfo objects.</param>
-        /// <param name="CustomOCSPRequestDataResponseSerializer">A delegate to serialize custom OCSPRequestDatas.</param>
+        /// <param name="CustomOCSPRequestDataResponseSerializer">A delegate to serialize custom OCSPRequestData.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeRequest>?  CustomAuthorizeRequestSerializer          = null,
                               CustomJObjectSerializerDelegate<IdToken>?           CustomIdTokenResponseSerializer           = null,
@@ -498,7 +498,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((AuthorizeRequest1 is null) || (AuthorizeRequest2 is null))
+            if (AuthorizeRequest1 is null || AuthorizeRequest2 is null)
                 return false;
 
             return AuthorizeRequest1.Equals(AuthorizeRequest2);

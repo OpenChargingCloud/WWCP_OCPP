@@ -357,7 +357,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SOAPHeader1">An id tag info.</param>
         /// <param name="SOAPHeader2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (SOAPHeader SOAPHeader1, SOAPHeader SOAPHeader2)
+        public static Boolean operator == (SOAPHeader SOAPHeader1,
+                                           SOAPHeader SOAPHeader2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -365,11 +366,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) SOAPHeader1 == null) || ((Object) SOAPHeader2 == null))
+            if (SOAPHeader1 is null || SOAPHeader2 is null)
                 return false;
-
-            if ((Object) SOAPHeader1 == null)
-                throw new ArgumentNullException(nameof(SOAPHeader1),  "The given id tag info must not be null!");
 
             return SOAPHeader1.Equals(SOAPHeader2);
 
@@ -385,7 +383,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SOAPHeader1">An id tag info.</param>
         /// <param name="SOAPHeader2">Another id tag info.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (SOAPHeader SOAPHeader1, SOAPHeader SOAPHeader2)
+        public static Boolean operator != (SOAPHeader SOAPHeader1,
+                                           SOAPHeader SOAPHeader2)
+
             => !(SOAPHeader1 == SOAPHeader2);
 
         #endregion

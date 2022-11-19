@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as a reservation identification.
+        /// Try to parse the given text as a reservation identification.
         /// </summary>
         /// <param name="Text">A text representation of a reservation identification.</param>
         public static Reservation_Id? TryParse(String Text)
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text,   out ReservationId)
 
         /// <summary>
-        /// Try to parse the given string as a reservation identification.
+        /// Try to parse the given text as a reservation identification.
         /// </summary>
         /// <param name="Text">A text representation of a reservation identification.</param>
         /// <param name="ReservationId">The parsed reservation identification.</param>

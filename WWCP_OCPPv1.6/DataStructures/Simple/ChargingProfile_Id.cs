@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as a charging profile identification.
+        /// Try to parse the given text as a charging profile identification.
         /// </summary>
         /// <param name="Text">A text representation of a charging profile identification.</param>
         public static ChargingProfile_Id? TryParse(String Text)
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region (static) TryParse(Text,   out ChargingProfileId)
 
         /// <summary>
-        /// Try to parse the given string as a charging profile identification.
+        /// Try to parse the given text as a charging profile identification.
         /// </summary>
         /// <param name="Text">A text representation of a charging profile identification.</param>
         /// <param name="ChargingProfileId">The parsed charging profile identification.</param>

@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as an identification token.
+        /// Try to parse the given text as an identification token.
         /// </summary>
         /// <param name="Text">A text representation of an identification token.</param>
         public static IdToken? TryParse(String Text)
@@ -152,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region (static) TryParse(Text, out IdToken)
 
         /// <summary>
-        /// Try to parse the given string as an identification token.
+        /// Try to parse the given text as an identification token.
         /// </summary>
         /// <param name="Text">A text representation of an identification token.</param>
         /// <param name="IdToken">The parsed identification token.</param>

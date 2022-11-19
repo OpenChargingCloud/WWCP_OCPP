@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if ((StatusNotificationResponse1 is null) || (StatusNotificationResponse2 is null))
+            if (StatusNotificationResponse1 is null || StatusNotificationResponse2 is null)
                 return false;
 
             return StatusNotificationResponse1.Equals(StatusNotificationResponse2);

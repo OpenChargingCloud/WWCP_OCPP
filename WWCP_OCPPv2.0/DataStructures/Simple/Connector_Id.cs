@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as a connector identification.
+        /// Try to parse the given text as a connector identification.
         /// </summary>
         /// <param name="Text">A text representation of a connector identification.</param>
         public static Connector_Id? TryParse(String Text)
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text,   out ConnectorId)
 
         /// <summary>
-        /// Try to parse the given string as a connector identification.
+        /// Try to parse the given text as a connector identification.
         /// </summary>
         /// <param name="Text">A text representation of a connector identification.</param>
         /// <param name="ConnectorId">The parsed connector identification.</param>

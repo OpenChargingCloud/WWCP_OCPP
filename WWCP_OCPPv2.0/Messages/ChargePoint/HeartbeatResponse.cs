@@ -296,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                 return true;
 
             // If one is null, but not both, return false.
-            if ((HeartbeatResponse1 is null) || (HeartbeatResponse2 is null))
+            if (HeartbeatResponse1 is null || HeartbeatResponse2 is null)
                 return false;
 
             return HeartbeatResponse1.Equals(HeartbeatResponse2);
@@ -359,9 +359,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => CurrentTime.GetHashCode() *3 ^
-               base.       GetHashCode();
+                return CurrentTime.GetHashCode() * 3 ^
+                       base.       GetHashCode();
+
+            }
+        }
 
         #endregion
 

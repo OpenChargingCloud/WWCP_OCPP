@@ -386,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 return true;
 
             // If one is null, but not both, return false.
-            if ((BootNotificationRequest1 is null) || (BootNotificationRequest2 is null))
+            if (BootNotificationRequest1 is null || BootNotificationRequest2 is null)
                 return false;
 
             return BootNotificationRequest1.Equals(BootNotificationRequest2);

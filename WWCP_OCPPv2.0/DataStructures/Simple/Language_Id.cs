@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as a human language.
+        /// Try to parse the given text as a human language.
         /// </summary>
         /// <param name="Text">A text representation of a human language.</param>
         public static Language_Id? TryParse(String Text)
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text, out LanguageId)
 
         /// <summary>
-        /// Try to parse the given string as a human language.
+        /// Try to parse the given text as a human language.
         /// </summary>
         /// <param name="Text">A text representation of a human language.</param>
         /// <param name="LanguageId">The parsed human language.</param>
@@ -174,7 +174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Clone
 
         /// <summary>
-        /// Clone this charge box identification.
+        /// Clone this human language identifier
         /// </summary>
         public Language_Id Clone
 

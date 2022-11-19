@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as a transaction identification.
+        /// Try to parse the given text as a transaction identification.
         /// </summary>
         /// <param name="Text">A text representation of a transaction identification.</param>
         public static Transaction_Id? TryParse(String Text)
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text,   out TransactionId)
 
         /// <summary>
-        /// Try to parse the given string as a transaction identification.
+        /// Try to parse the given text as a transaction identification.
         /// </summary>
         /// <param name="Text">A text representation of a transaction identification.</param>
         /// <param name="TransactionId">The parsed transaction identification.</param>
