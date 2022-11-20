@@ -446,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             ((!ChargingLimitSource.   HasValue && !ChargingProfileCriterion.ChargingLimitSource.   HasValue) ||
               (ChargingLimitSource.   HasValue &&  ChargingProfileCriterion.ChargingLimitSource.   HasValue && ChargingLimitSource.   Value.Equals(ChargingProfileCriterion.ChargingLimitSource.   Value))) &&
 
-               ChargingProfileIds.Count()  == ChargingProfileCriterion.ChargingProfileIds.Count()         &&
+               ChargingProfileIds.Count().Equals(ChargingProfileCriterion.ChargingProfileIds.Count())     &&
                ChargingProfileIds.All(data => ChargingProfileCriterion.ChargingProfileIds.Contains(data)) &&
 
                base.Equals(ChargingProfileCriterion);

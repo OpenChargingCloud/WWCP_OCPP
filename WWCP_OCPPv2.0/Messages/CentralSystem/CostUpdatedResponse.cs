@@ -303,7 +303,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="CostUpdatedResponse">A cost updated response to compare with.</param>
         public override Boolean Equals(CostUpdatedResponse? CostUpdatedResponse)
 
-            => CostUpdatedResponse is not null;
+            => CostUpdatedResponse is not null &&
+
+               base.GenericEquals(CostUpdatedResponse);
 
         #endregion
 

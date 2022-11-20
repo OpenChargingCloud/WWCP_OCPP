@@ -442,11 +442,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             => GetCertificateStatusResponse is not null &&
 
-               Status.    Equals(GetCertificateStatusResponse.Status)     &&
-               OCSPResult.Equals(GetCertificateStatusResponse.OCSPResult) &&
+               Status.     Equals(GetCertificateStatusResponse.Status)     &&
+               OCSPResult. Equals(GetCertificateStatusResponse.OCSPResult) &&
 
              ((StatusInfo is     null && GetCertificateStatusResponse.StatusInfo is     null) ||
-               StatusInfo is not null && GetCertificateStatusResponse.StatusInfo is not null && StatusInfo.Equals(GetCertificateStatusResponse.StatusInfo));
+               StatusInfo is not null && GetCertificateStatusResponse.StatusInfo is not null && StatusInfo.Equals(GetCertificateStatusResponse.StatusInfo)) &&
+
+               base.GenericEquals(GetCertificateStatusResponse);
 
         #endregion
 
@@ -465,10 +467,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 return Status.     GetHashCode()       * 7 ^
                        OCSPResult. GetHashCode()       * 5 ^
-
                       (StatusInfo?.GetHashCode() ?? 0) * 3 ^
 
-                       base.GetHashCode();
+                       base.       GetHashCode();
 
             }
         }

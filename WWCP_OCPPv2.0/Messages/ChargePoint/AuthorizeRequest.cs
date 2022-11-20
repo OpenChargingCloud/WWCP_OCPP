@@ -554,7 +554,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
              ((Certificate is     null && AuthorizeRequest.Certificate is     null) ||
               (Certificate is not null && AuthorizeRequest.Certificate is not null && Certificate.Equals(AuthorizeRequest.Certificate))) &&
 
-               ISO15118CertificateHashData.Count() ==  AuthorizeRequest.ISO15118CertificateHashData.Count()         &&
+               ISO15118CertificateHashData.Count().Equals(AuthorizeRequest.ISO15118CertificateHashData.Count())     &&
                ISO15118CertificateHashData.All(data => AuthorizeRequest.ISO15118CertificateHashData.Contains(data)) &&
 
                base.GenericEquals(AuthorizeRequest);

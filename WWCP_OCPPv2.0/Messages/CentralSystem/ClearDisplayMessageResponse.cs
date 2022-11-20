@@ -56,6 +56,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <param name="Request">The clear display message request leading to this response.</param>
         /// <param name="Status">The success or failure of the reset command.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public ClearDisplayMessageResponse(CS.ClearDisplayMessageRequest  Request,
                                            ClearMessageStatus             Status,
                                            StatusInfo?                    StatusInfo   = null,
@@ -407,10 +409,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             => ClearDisplayMessageResponse is not null &&
 
-               Status.Equals(ClearDisplayMessageResponse.Status) &&
+               Status.     Equals(ClearDisplayMessageResponse.Status) &&
 
              ((StatusInfo is     null && ClearDisplayMessageResponse.StatusInfo is     null) ||
-               StatusInfo is not null && ClearDisplayMessageResponse.StatusInfo is not null && StatusInfo.Equals(ClearDisplayMessageResponse.StatusInfo));
+               StatusInfo is not null && ClearDisplayMessageResponse.StatusInfo is not null && StatusInfo.Equals(ClearDisplayMessageResponse.StatusInfo)) &&
+
+               base.GenericEquals(ClearDisplayMessageResponse);
 
         #endregion
 
@@ -428,7 +432,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             {
 
                 return Status.     GetHashCode()       * 5 ^
-
                       (StatusInfo?.GetHashCode() ?? 0) * 3 ^
 
                        base.       GetHashCode();

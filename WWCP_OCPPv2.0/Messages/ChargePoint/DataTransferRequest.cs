@@ -65,6 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
         /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         public DataTransferRequest(ChargeBox_Id        ChargeBoxId,
@@ -319,25 +320,31 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomDataTransferSerializer = null)
+        #region ToJSON(CustomDataTransferSerializer = null, CustomCustomDataResponseSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomDataTransferSerializer">A delegate to serialize custom DataTransfer requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest>? CustomDataTransferSerializer = null)
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferSerializer         = null,
+                              CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataResponseSerializer   = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("vendorId",         VendorId),
+                                 new JProperty("vendorId",    VendorId),
 
                            MessageId.IsNotNullOrEmpty()
-                               ? new JProperty("messageId",  MessageId)
+                               ? new JProperty("messageId",   MessageId)
                                : null,
 
                            Data.IsNotNullOrEmpty()
-                               ? new JProperty("data",       Data)
+                               ? new JProperty("data",        Data)
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
@@ -447,7 +454,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             {
 
                 return VendorId.  GetHashCode()       * 7 ^
-
                       (MessageId?.GetHashCode() ?? 0) * 5 ^
                       (Data?.     GetHashCode() ?? 0) * 3 ^
 

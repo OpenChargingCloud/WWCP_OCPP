@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Compares two additional infos for equality.
         /// </summary>
         /// <param name="AdditionalInfo">An additional info to compare with.</param>
-        public Boolean Equals(AdditionalInfo AdditionalInfo)
+        public Boolean Equals(AdditionalInfo? AdditionalInfo)
 
             => AdditionalInfo is not null &&
 

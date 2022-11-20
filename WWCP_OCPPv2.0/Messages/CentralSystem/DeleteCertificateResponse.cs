@@ -51,13 +51,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region DeleteCertificateResponse(Request, Status, StatusInfo   = null, ...)
+        #region DeleteCertificateResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new delete certificate response.
         /// </summary>
         /// <param name="Request">The delete certificate request leading to this response.</param>
         /// <param name="Status">The success or failure of the delete certificate request.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public DeleteCertificateResponse(CS.DeleteCertificateRequest  Request,
                                          DeleteCertificateStatus      Status,
                                          StatusInfo?                  StatusInfo   = null,
@@ -315,7 +317,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
-
                        );
 
             return CustomDeleteCertificateResponseSerializer is not null
@@ -411,10 +412,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             => DeleteCertificateResponse is not null &&
 
-               Status.Equals(DeleteCertificateResponse.Status) &&
+               Status.     Equals(DeleteCertificateResponse.Status) &&
 
              ((StatusInfo is     null && DeleteCertificateResponse.StatusInfo is     null) ||
-               StatusInfo is not null && DeleteCertificateResponse.StatusInfo is not null && StatusInfo.Equals(DeleteCertificateResponse.StatusInfo));
+               StatusInfo is not null && DeleteCertificateResponse.StatusInfo is not null && StatusInfo.Equals(DeleteCertificateResponse.StatusInfo)) &&
+
+               base.GenericEquals(DeleteCertificateResponse);
 
         #endregion
 
@@ -432,7 +435,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             {
 
                 return Status.     GetHashCode()       * 5 ^
-
                       (StatusInfo?.GetHashCode() ?? 0) * 3 ^
 
                        base.       GetHashCode();

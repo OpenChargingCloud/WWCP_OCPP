@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-namespace cloud.charging.open.protocols.OCPPv1_6
+namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the the get installed certificate status.
+    /// Extentions methods for the get installed certificate status.
     /// </summary>
     public static class GetInstalledCertificateStatusExtentions
     {

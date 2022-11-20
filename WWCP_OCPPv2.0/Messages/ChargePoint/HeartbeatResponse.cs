@@ -346,7 +346,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         public override Boolean Equals(HeartbeatResponse? HeartbeatResponse)
 
             => HeartbeatResponse is not null &&
-                   CurrentTime.Equals(HeartbeatResponse.CurrentTime);
+
+               CurrentTime.Equals(HeartbeatResponse.CurrentTime) &&
+
+               base.GenericEquals(HeartbeatResponse);
 
         #endregion
 

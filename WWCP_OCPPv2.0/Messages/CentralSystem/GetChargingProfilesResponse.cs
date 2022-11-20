@@ -38,18 +38,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// Whether the charging station is able to accept this request.
         /// </summary>
+        [Mandatory]
         public GetChargingProfileStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
+        [Optional]
         public StatusInfo?               StatusInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region GetChargingProfilesResponse(Request, Status)
+        #region GetChargingProfilesResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new get charging profiles response.
@@ -57,6 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="Request">The get charging profiles request leading to this response.</param>
         /// <param name="Status">Whether the charging station is able to accept this request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public GetChargingProfilesResponse(CS.GetChargingProfilesRequest   Request,
                                            GetChargingProfileStatus        Status,
                                            StatusInfo?                     StatusInfo   = null,
@@ -408,10 +411,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             => GetChargingProfilesResponse is not null &&
 
-               Status.Equals(GetChargingProfilesResponse.Status) &&
+               Status.     Equals(GetChargingProfilesResponse.Status) &&
 
              ((StatusInfo is     null && GetChargingProfilesResponse.StatusInfo is     null) ||
-               StatusInfo is not null && GetChargingProfilesResponse.StatusInfo is not null && StatusInfo.Equals(GetChargingProfilesResponse.StatusInfo));
+               StatusInfo is not null && GetChargingProfilesResponse.StatusInfo is not null && StatusInfo.Equals(GetChargingProfilesResponse.StatusInfo)) &&
+
+               base.GenericEquals(GetChargingProfilesResponse);
 
         #endregion
 
@@ -429,7 +434,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             {
 
                 return Status.     GetHashCode()       * 5 ^
-
                       (StatusInfo?.GetHashCode() ?? 0) * 3 ^
 
                        base.       GetHashCode();

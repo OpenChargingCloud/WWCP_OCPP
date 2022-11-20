@@ -240,11 +240,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (!JSON.ParseMandatory("duration",
                                          "duration",
-                                         out UInt32 DurationUInt32,
+                                         out UInt32 duration,
                                          out ErrorResponse))
                 {
                     return false;
                 }
+
+                var Duration = TimeSpan.FromSeconds(duration);
 
                 #endregion
 
@@ -275,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #endregion
 
-                #region CustomData                     [optional]
+                #region CustomData          [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -310,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
 
                 GetCompositeScheduleRequest = new GetCompositeScheduleRequest(ChargeBoxId,
-                                                                              TimeSpan.FromSeconds(DurationUInt32),
+                                                                              Duration,
                                                                               EVSEId,
                                                                               ChargingRateUnit,
                                                                               CustomData,
@@ -334,13 +336,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ToJSON(CustomGetCompositeScheduleRequestSerializer = null)
+        #region ToJSON(CustomGetCompositeScheduleRequestSerializer = null, CustomCustomDataResponseSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetCompositeScheduleRequestSerializer">A delegate to serialize custom start transaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>? CustomGetCompositeScheduleRequestSerializer = null)
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?  CustomGetCompositeScheduleRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataResponseSerializer            = null)
         {
 
             var json = JSONObject.Create(
@@ -350,6 +354,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                            ChargingRateUnit.HasValue
                                ? new JProperty("chargingRateUnit",  ChargingRateUnit. Value.AsText())
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",        CustomData.             ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );

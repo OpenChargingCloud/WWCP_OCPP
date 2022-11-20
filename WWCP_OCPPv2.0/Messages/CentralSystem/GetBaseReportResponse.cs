@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region GetBaseReportResponse(Request, Status)
+        #region GetBaseReportResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new get base report response.
@@ -57,6 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="Request">The get base report request leading to this response.</param>
         /// <param name="Status">Whether the charging station is able to accept this request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public GetBaseReportResponse(CS.GetBaseReportRequest   Request,
                                      GenericDeviceModelStatus  Status,
                                      StatusInfo?               StatusInfo   = null,
@@ -410,10 +411,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             => GetBaseReportResponse is not null &&
 
-               Status.Equals(GetBaseReportResponse.Status) &&
+               Status.     Equals(GetBaseReportResponse.Status) &&
 
              ((StatusInfo is     null && GetBaseReportResponse.StatusInfo is     null) ||
-               StatusInfo is not null && GetBaseReportResponse.StatusInfo is not null && StatusInfo.Equals(GetBaseReportResponse.StatusInfo));
+               StatusInfo is not null && GetBaseReportResponse.StatusInfo is not null && StatusInfo.Equals(GetBaseReportResponse.StatusInfo)) &&
+
+               base.GenericEquals(GetBaseReportResponse);
 
         #endregion
 
@@ -431,7 +434,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             {
 
                 return Status.     GetHashCode()       * 5 ^
-
                       (StatusInfo?.GetHashCode() ?? 0) * 3 ^
 
                        base.       GetHashCode();

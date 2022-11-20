@@ -56,6 +56,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <param name="Request">The cancel reservation request leading to this response.</param>
         /// <param name="Status">The success or failure of the reservation.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public CancelReservationResponse(CS.CancelReservationRequest  Request,
                                          CancelReservationStatus      Status,
                                          StatusInfo?                  StatusInfo   = null,
@@ -407,10 +409,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             => CancelReservationResponse is not null &&
 
-               Status.Equals(CancelReservationResponse.Status) &&
+               Status.     Equals(CancelReservationResponse.Status) &&
 
              ((StatusInfo is     null && CancelReservationResponse.StatusInfo is     null) ||
-               StatusInfo is not null && CancelReservationResponse.StatusInfo is not null && StatusInfo.Equals(CancelReservationResponse.StatusInfo));
+               StatusInfo is not null && CancelReservationResponse.StatusInfo is not null && StatusInfo.Equals(CancelReservationResponse.StatusInfo)) &&
+
+               base.GenericEquals(CancelReservationResponse);
 
         #endregion
 
@@ -428,7 +432,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             {
 
                 return Status.     GetHashCode()       * 5 ^
-
                       (StatusInfo?.GetHashCode() ?? 0) * 3 ^
 
                        base.       GetHashCode();

@@ -27,39 +27,42 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
-    /// A change availability response.
+    /// A get display messages response.
     /// </summary>
-    public class ChangeAvailabilityResponse : AResponse<CS.ChangeAvailabilityRequest,
-                                                           ChangeAvailabilityResponse>
+    public class GetDisplayMessagesResponse : AResponse<CS.GetDisplayMessagesRequest,
+                                                           GetDisplayMessagesResponse>
     {
 
         #region Properties
 
         /// <summary>
-        /// The success or failure of the change availability command.
+        /// The charging station will indicate whether it has display messages
+        /// that match the request criteria.
         /// </summary>
-        public ChangeAvailabilityStatus  Status        { get; }
+        [Mandatory]
+        public GetDisplayMessagesStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
+        [Optional]
         public StatusInfo?               StatusInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region ChangeAvailabilityResponse(Request, Status, StatusInfo = null, ...)
+        #region GetDisplayMessagesResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new change availability response.
+        /// Create a new get display messages response.
         /// </summary>
-        /// <param name="Request">The change availability request leading to this response.</param>
-        /// <param name="Status">The success or failure of the change availability command.</param>
+        /// <param name="Request">The get display messages request leading to this response.</param>
+        /// <param name="Status">The charging station will indicate whether it has display messages that match the request criteria.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public ChangeAvailabilityResponse(CS.ChangeAvailabilityRequest  Request,
-                                          ChangeAvailabilityStatus      Status,
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public GetDisplayMessagesResponse(CS.GetDisplayMessagesRequest  Request,
+                                          GetDisplayMessagesStatus      Status,
                                           StatusInfo?                   StatusInfo   = null,
                                           CustomData?                   CustomData   = null)
 
@@ -76,15 +79,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ChangeAvailabilityResponse(Request, Result)
+        #region GetDisplayMessagesResponse(Request, Result)
 
         /// <summary>
-        /// Create a new change availability response.
+        /// Create a new get display messages response.
         /// </summary>
-        /// <param name="Request">The change availability request leading to this response.</param>
+        /// <param name="Request">The get display messages request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public ChangeAvailabilityResponse(CS.ChangeAvailabilityRequest  Request,
-                                          Result                        Result)
+        public GetDisplayMessagesResponse(CS.GetDisplayMessagesRequest  Request,
+                                            Result                          Result)
 
             : base(Request,
                    Result)
@@ -100,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:ChangeAvailabilityResponse",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:GetDisplayMessagesResponse",
         //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
         //     "CustomDataType": {
@@ -117,15 +120,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //         "vendorId"
         //       ]
         //     },
-        //     "ChangeAvailabilityStatusEnumType": {
-        //       "description": "This indicates whether the Charging Station is able to perform the availability change.\r\n",
-        //       "javaType": "ChangeAvailabilityStatusEnum",
+        //     "GetDisplayMessagesStatusEnumType": {
+        //       "description": "Indicates if the Charging Station has Display Messages that match the request criteria in the &lt;&lt;getdisplaymessagesrequest,GetDisplayMessagesRequest&gt;&gt;\r\n",
+        //       "javaType": "GetDisplayMessagesStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
         //         "Accepted",
-        //         "Rejected",
-        //         "Scheduled"
+        //         "Unknown"
         //       ]
         //     },
         //     "StatusInfoType": {
@@ -160,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "status": {
-        //       "$ref": "#/definitions/ChangeAvailabilityStatusEnumType"
+        //       "$ref": "#/definitions/GetDisplayMessagesStatusEnumType"
         //     },
         //     "statusInfo": {
         //       "$ref": "#/definitions/StatusInfoType"
@@ -173,64 +175,64 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomChangeAvailabilityResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomGetDisplayMessagesResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a change availability response.
+        /// Parse the given JSON representation of a get display messages response.
         /// </summary>
-        /// <param name="Request">The change availability request leading to this response.</param>
+        /// <param name="Request">The get display messages request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomChangeAvailabilityResponseParser">A delegate to parse custom change availability responses.</param>
-        public static ChangeAvailabilityResponse Parse(CS.ChangeAvailabilityRequest                              Request,
+        /// <param name="CustomGetDisplayMessagesResponseParser">A delegate to parse custom get display messages responses.</param>
+        public static GetDisplayMessagesResponse Parse(CS.GetDisplayMessagesRequest                              Request,
                                                        JObject                                                   JSON,
-                                                       CustomJObjectParserDelegate<ChangeAvailabilityResponse>?  CustomChangeAvailabilityResponseParser   = null)
+                                                       CustomJObjectParserDelegate<GetDisplayMessagesResponse>?  CustomGetDisplayMessagesResponseParser   = null)
         {
 
             if (TryParse(Request,
                          JSON,
-                         out var changeAvailabilityResponse,
+                         out var getDisplayMessagesResponse,
                          out var errorResponse,
-                         CustomChangeAvailabilityResponseParser))
+                         CustomGetDisplayMessagesResponseParser))
             {
-                return changeAvailabilityResponse!;
+                return getDisplayMessagesResponse!;
             }
 
-            throw new ArgumentException("The given JSON representation of a change availability response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a get display messages response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out ChangeAvailabilityResponse, out ErrorResponse, CustomChangeAvailabilityResponseParser = null)
+        #region (static) TryParse(Request, JSON, out GetDisplayMessagesResponse, out ErrorResponse, CustomGetDisplayMessagesResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a change availability response.
+        /// Try to parse the given JSON representation of a get display messages response.
         /// </summary>
-        /// <param name="Request">The change availability request leading to this response.</param>
+        /// <param name="Request">The get display messages request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ChangeAvailabilityResponse">The parsed change availability response.</param>
+        /// <param name="GetDisplayMessagesResponse">The parsed get display messages response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomChangeAvailabilityResponseParser">A delegate to parse custom change availability responses.</param>
-        public static Boolean TryParse(CS.ChangeAvailabilityRequest                              Request,
+        /// <param name="CustomGetDisplayMessagesResponseParser">A delegate to parse custom get display messages responses.</param>
+        public static Boolean TryParse(CS.GetDisplayMessagesRequest                              Request,
                                        JObject                                                   JSON,
-                                       out ChangeAvailabilityResponse?                           ChangeAvailabilityResponse,
+                                       out GetDisplayMessagesResponse?                           GetDisplayMessagesResponse,
                                        out String?                                               ErrorResponse,
-                                       CustomJObjectParserDelegate<ChangeAvailabilityResponse>?  CustomChangeAvailabilityResponseParser   = null)
+                                       CustomJObjectParserDelegate<GetDisplayMessagesResponse>?  CustomGetDisplayMessagesResponseParser   = null)
         {
 
             try
             {
 
-                ChangeAvailabilityResponse = null;
+                GetDisplayMessagesResponse = null;
 
                 #region Status        [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "availability status",
-                                       ChangeAvailabilityStatusExtentions.Parse,
-                                       out ChangeAvailabilityStatus Status,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "get display messages status",
+                                         GetDisplayMessagesStatusExtentions.TryParse,
+                                         out GetDisplayMessagesStatus Status,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -266,22 +268,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #endregion
 
 
-                ChangeAvailabilityResponse = new ChangeAvailabilityResponse(Request,
+                GetDisplayMessagesResponse = new GetDisplayMessagesResponse(Request,
                                                                             Status,
                                                                             StatusInfo,
                                                                             CustomData);
 
-                if (CustomChangeAvailabilityResponseParser is not null)
-                    ChangeAvailabilityResponse = CustomChangeAvailabilityResponseParser(JSON,
-                                                                                        ChangeAvailabilityResponse);
+                if (CustomGetDisplayMessagesResponseParser is not null)
+                    GetDisplayMessagesResponse = CustomGetDisplayMessagesResponseParser(JSON,
+                                                                                        GetDisplayMessagesResponse);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                ChangeAvailabilityResponse  = null;
-                ErrorResponse               = "The given JSON representation of a change availability response is invalid: " + e.Message;
+                GetDisplayMessagesResponse  = null;
+                ErrorResponse               = "The given JSON representation of a get display messages response is invalid: " + e.Message;
                 return false;
             }
 
@@ -289,15 +291,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomChangeAvailabilityResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
+        #region ToJSON(CustomGetDisplayMessagesResponseSerializer = null, CustomCompositeScheduleSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomChangeAvailabilityResponseSerializer">A delegate to serialize custom change availability responses.</param>
+        /// <param name="CustomGetDisplayMessagesResponseSerializer">A delegate to serialize custom get display messages responses.</param>
+        /// <param name="CustomCompositeScheduleSerializer">A delegate to serialize custom display messages requests.</param>
+        /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
         /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChangeAvailabilityResponse>?  CustomChangeAvailabilityResponseSerializer   = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetDisplayMessagesResponse>?  CustomGetDisplayMessagesResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CompositeSchedule>?           CustomCompositeScheduleSerializer            = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?      CustomChargingSchedulePeriodSerializer       = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                  CustomStatusInfoResponseSerializer           = null,
                               CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataResponseSerializer           = null)
         {
@@ -317,8 +323,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                        );
 
-            return CustomChangeAvailabilityResponseSerializer is not null
-                       ? CustomChangeAvailabilityResponseSerializer(this, json)
+            return CustomGetDisplayMessagesResponseSerializer is not null
+                       ? CustomGetDisplayMessagesResponseSerializer(this, json)
                        : json;
 
         }
@@ -329,10 +335,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Static methods
 
         /// <summary>
-        /// The change availability command failed.
+        /// The get display messages request failed.
         /// </summary>
-        /// <param name="Request">The change availability request leading to this response.</param>
-        public static ChangeAvailabilityResponse Failed(CS.ChangeAvailabilityRequest Request)
+        /// <param name="Request">The get display messages request leading to this response.</param>
+        public static GetDisplayMessagesResponse Failed(CS.GetDisplayMessagesRequest Request)
 
             => new (Request,
                     Result.Server());
@@ -342,80 +348,80 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Operator overloading
 
-        #region Operator == (ChangeAvailabilityResponse1, ChangeAvailabilityResponse2)
+        #region Operator == (GetDisplayMessagesResponse1, GetDisplayMessagesResponse2)
 
         /// <summary>
-        /// Compares two change availability responses for equality.
+        /// Compares two get display messages responses for equality.
         /// </summary>
-        /// <param name="ChangeAvailabilityResponse1">A change availability response.</param>
-        /// <param name="ChangeAvailabilityResponse2">Another change availability response.</param>
+        /// <param name="GetDisplayMessagesResponse1">A get display messages response.</param>
+        /// <param name="GetDisplayMessagesResponse2">Another get display messages response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ChangeAvailabilityResponse? ChangeAvailabilityResponse1,
-                                           ChangeAvailabilityResponse? ChangeAvailabilityResponse2)
+        public static Boolean operator == (GetDisplayMessagesResponse? GetDisplayMessagesResponse1,
+                                           GetDisplayMessagesResponse? GetDisplayMessagesResponse2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ChangeAvailabilityResponse1, ChangeAvailabilityResponse2))
+            if (ReferenceEquals(GetDisplayMessagesResponse1, GetDisplayMessagesResponse2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (ChangeAvailabilityResponse1 is null || ChangeAvailabilityResponse2 is null)
+            if (GetDisplayMessagesResponse1 is null || GetDisplayMessagesResponse2 is null)
                 return false;
 
-            return ChangeAvailabilityResponse1.Equals(ChangeAvailabilityResponse2);
+            return GetDisplayMessagesResponse1.Equals(GetDisplayMessagesResponse2);
 
         }
 
         #endregion
 
-        #region Operator != (ChangeAvailabilityResponse1, ChangeAvailabilityResponse2)
+        #region Operator != (GetDisplayMessagesResponse1, GetDisplayMessagesResponse2)
 
         /// <summary>
-        /// Compares two change availability responses for inequality.
+        /// Compares two get display messages responses for inequality.
         /// </summary>
-        /// <param name="ChangeAvailabilityResponse1">A change availability response.</param>
-        /// <param name="ChangeAvailabilityResponse2">Another change availability response.</param>
+        /// <param name="GetDisplayMessagesResponse1">A get display messages response.</param>
+        /// <param name="GetDisplayMessagesResponse2">Another get display messages response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ChangeAvailabilityResponse? ChangeAvailabilityResponse1,
-                                           ChangeAvailabilityResponse? ChangeAvailabilityResponse2)
+        public static Boolean operator != (GetDisplayMessagesResponse? GetDisplayMessagesResponse1,
+                                           GetDisplayMessagesResponse? GetDisplayMessagesResponse2)
 
-            => !(ChangeAvailabilityResponse1 == ChangeAvailabilityResponse2);
-
-        #endregion
+            => !(GetDisplayMessagesResponse1 == GetDisplayMessagesResponse2);
 
         #endregion
 
-        #region IEquatable<ChangeAvailabilityResponse> Members
+        #endregion
+
+        #region IEquatable<GetDisplayMessagesResponse> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two change availability responses for equality.
+        /// Compares two get display messages responses for equality.
         /// </summary>
-        /// <param name="Object">A change availability response to compare with.</param>
+        /// <param name="Object">A get display messages response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is ChangeAvailabilityResponse changeAvailabilityResponse &&
-                   Equals(changeAvailabilityResponse);
+            => Object is GetDisplayMessagesResponse getDisplayMessagesResponse &&
+                   Equals(getDisplayMessagesResponse);
 
         #endregion
 
-        #region Equals(ChangeAvailabilityResponse)
+        #region Equals(GetDisplayMessagesResponse)
 
         /// <summary>
-        /// Compares two change availability responses for equality.
+        /// Compares two get display messages responses for equality.
         /// </summary>
-        /// <param name="ChangeAvailabilityResponse">A change availability response to compare with.</param>
-        public override Boolean Equals(ChangeAvailabilityResponse? ChangeAvailabilityResponse)
+        /// <param name="GetDisplayMessagesResponse">A get display messages response to compare with.</param>
+        public override Boolean Equals(GetDisplayMessagesResponse? GetDisplayMessagesResponse)
 
-            => ChangeAvailabilityResponse is not null &&
+            => GetDisplayMessagesResponse is not null &&
 
-               Status.     Equals(ChangeAvailabilityResponse.Status) &&
+               Status.     Equals(GetDisplayMessagesResponse.Status) &&
 
-             ((StatusInfo is     null && ChangeAvailabilityResponse.StatusInfo is     null) ||
-               StatusInfo is not null && ChangeAvailabilityResponse.StatusInfo is not null && StatusInfo.Equals(ChangeAvailabilityResponse.StatusInfo)) &&
+             ((StatusInfo is     null && GetDisplayMessagesResponse.StatusInfo is     null) ||
+               StatusInfo is not null && GetDisplayMessagesResponse.StatusInfo is not null && StatusInfo.Equals(GetDisplayMessagesResponse.StatusInfo)) &&
 
-               base.GenericEquals(ChangeAvailabilityResponse);
+               base.GenericEquals(GetDisplayMessagesResponse);
 
         #endregion
 
@@ -449,7 +455,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         public override String ToString()
 
-            => Status.ToString();
+            => Status.AsText();
 
         #endregion
 

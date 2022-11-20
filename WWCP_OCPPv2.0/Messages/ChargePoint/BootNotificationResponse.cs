@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (RegistrationStatus == RegistrationStatus.Unknown)
                 {
-                    ErrorResponse = "Unknown registration status '" + JSON["status"].Value<String>() + "' received!";
+                    ErrorResponse = "Unknown registration status '" + (JSON["status"]?.Value<String>() ?? "") + "' received!";
                     return false;
                 }
 
@@ -492,8 +492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
              ((StatusInfo is     null && BootNotificationResponse.StatusInfo is     null) ||
               (StatusInfo is not null && BootNotificationResponse.StatusInfo is not null && StatusInfo.Equals(BootNotificationResponse.StatusInfo))) &&
 
-             ((CustomData is     null && BootNotificationResponse.CustomData is     null) ||
-              (CustomData is not null && BootNotificationResponse.CustomData is not null && CustomData.Equals(BootNotificationResponse.CustomData)));
+               base.GenericEquals(BootNotificationResponse);
 
         #endregion
 
@@ -513,7 +512,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                 return Status.     GetHashCode()       * 11 ^
                        CurrentTime.GetHashCode()       *  7 ^
                        Interval.   GetHashCode()       *  5 ^
-
                       (StatusInfo?.GetHashCode() ?? 0) *  3 ^
 
                        base.       GetHashCode();
@@ -535,7 +533,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                    Interval.TotalSeconds, " sec(s))");
 
         #endregion
-
 
     }
 

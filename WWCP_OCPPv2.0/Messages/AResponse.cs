@@ -72,6 +72,48 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+
+        #region GenericEquals(AResponse)
+
+        /// <summary>
+        /// Compares two abstract generic responses for equality.
+        /// </summary>
+        /// <param name="AResponse">An abstract generic response to compare with.</param>
+        public Boolean GenericEquals(AResponse<TRequest, TResponse> AResponse)
+
+            => AResponse is not null &&
+
+             ((Request is     null && AResponse.Request is     null) ||
+              (Request is not null && AResponse.Request is not null && Request.Equals(AResponse.Request))) &&
+
+               Runtime.        Equals(AResponse.Runtime) &&
+
+               base.BaseGenericEquals(AResponse);
+
+        #endregion
+
+
+        #region GetHashCode()
+
+        /// <summary>
+        /// Return the HashCode of this object.
+        /// </summary>
+        /// <returns>The HashCode of this object.</returns>
+        public override Int32 GetHashCode()
+        {
+            unchecked
+            {
+
+                return (Request?.GetHashCode() ?? 0) * 5 ^
+                        Runtime. GetHashCode()       * 3 ^
+
+                        base.    GetHashCode();
+
+            }
+        }
+
+        #endregion
+
     }
 
 
@@ -184,16 +226,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region Equals(AResponse)
+        #region BaseGenericEquals(AResponse)
 
         /// <summary>
         /// Compares two abstract generic responses for equality.
         /// </summary>
         /// <param name="AResponse">An abstract generic response to compare with.</param>
-        public Boolean Equals(AResponse<TResponse> AResponse)
+        public Boolean BaseGenericEquals(AResponse<TResponse> AResponse)
 
             => AResponse is not null &&
-               Result.Equals(AResponse.Result);
+
+               Result.           Equals(AResponse.Result)            &&
+               ResponseTimestamp.Equals(AResponse.ResponseTimestamp) &&
+
+             ((CustomData is     null && AResponse.CustomData is     null) ||
+              (CustomData is not null && AResponse.CustomData is not null && CustomData.Equals(AResponse.CustomData)));
 
         #endregion
 
@@ -219,7 +266,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         {
             unchecked
             {
-                return Result.GetHashCode();
+
+                return Result.           GetHashCode() * 5 ^
+                       ResponseTimestamp.GetHashCode() * 3 ^
+                      (CustomData?.      GetHashCode() ?? 0);
+
             }
         }
 

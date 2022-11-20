@@ -44,14 +44,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region ClearVariableMonitoringResponse(Request, Status)
+        #region ClearVariableMonitoringResponse(Request, Status, ...)
 
         /// <summary>
         /// Create a new clear variable monitoring response.
         /// </summary>
         /// <param name="Request">The clear variable monitoring request leading to this response.</param>
         /// <param name="ClearMonitoringResults">An enumeration of clear variable monitoring results.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public ClearVariableMonitoringResponse(CS.ClearVariableMonitoringRequest   Request,
                                                IEnumerable<ClearMonitoringResult>  ClearMonitoringResults,
                                                CustomData?                         CustomData   = null)
@@ -415,8 +415,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             => ClearVariableMonitoringResponse is not null &&
 
-               ClearMonitoringResults.Count() ==  ClearVariableMonitoringResponse.ClearMonitoringResults.Count() &&
-               ClearMonitoringResults.All(data => ClearVariableMonitoringResponse.ClearMonitoringResults.Contains(data));
+               ClearMonitoringResults.Count().Equals(ClearVariableMonitoringResponse.ClearMonitoringResults.Count())     &&
+               ClearMonitoringResults.All(data => ClearVariableMonitoringResponse.ClearMonitoringResults.Contains(data)) &&
+
+               base.GenericEquals(ClearVariableMonitoringResponse);
 
         #endregion
 

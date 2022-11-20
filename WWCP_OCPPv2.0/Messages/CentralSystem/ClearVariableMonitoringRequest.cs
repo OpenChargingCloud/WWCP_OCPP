@@ -374,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             => ClearVariableMonitoringRequest is not null &&
 
-               VariableMonitoringIds.Count() ==  ClearVariableMonitoringRequest.VariableMonitoringIds.Count()         &&
+               VariableMonitoringIds.Count().Equals(ClearVariableMonitoringRequest.VariableMonitoringIds.Count())     &&
                VariableMonitoringIds.All(data => ClearVariableMonitoringRequest.VariableMonitoringIds.Contains(data)) &&
 
                base.GenericEquals(ClearVariableMonitoringRequest);

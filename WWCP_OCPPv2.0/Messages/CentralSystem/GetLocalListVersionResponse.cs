@@ -17,15 +17,13 @@
 
 #region Usings
 
-using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CP
+namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
@@ -38,32 +36,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Properties
 
         /// <summary>
-        /// The current version number of the local authorization
-        /// list in the charge point.
+        /// The current version number of the local authorization list within the charging station.
         /// </summary>
         [Mandatory]
-        public UInt64  ListVersion    { get; }
+        public UInt64  VersionNumber    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region GetLocalListVersionResponse(Request, ListVersion)
+        #region GetLocalListVersionResponse(Request, ListVersion, ...)
 
         /// <summary>
         /// Create a new get local list version response.
         /// </summary>
         /// <param name="Request">The get local list version request leading to this response.</param>
-        /// <param name="ListVersion">The current version number of the local authorization list in the charge point.</param>
+        /// <param name="VersionNumber">The current version number of the local authorization list within the charging station.</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetLocalListVersionResponse(CS.GetLocalListVersionRequest  Request,
-                                           UInt64                         ListVersion)
+                                           UInt64                         VersionNumber,
+                                           CustomData?                    CustomData   = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   CustomData)
 
         {
 
-            this.ListVersion = ListVersion;
+            this.VersionNumber = VersionNumber;
 
         }
 
@@ -91,59 +91,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Documentation
 
-        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:ns   = "urn://Ocpp/Cp/2015/10/">
-        //    <soap:Header/>
-        //    <soap:Body>
-        //       <ns:getLocalListVersionResponse>
-        //
-        //          <ns:listVersion>?</ns:listVersion>
-        //
-        //       </ns:getLocalListVersionResponse>
-        //    </soap:Body>
-        // </soap:Envelope>
-
         // {
-        //     "$schema": "http://json-schema.org/draft-04/schema#",
-        //     "id":      "urn:OCPP:1.6:2019:12:GetLocalListVersionResponse",
-        //     "title":   "GetLocalListVersionResponse",
-        //     "type":    "object",
-        //     "properties": {
-        //         "listVersion": {
-        //             "type": "integer"
+        //   "$schema": "http://json-schema.org/draft-06/schema#",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:GetLocalListVersionResponse",
+        //   "comment": "OCPP 2.0.1 FINAL",
+        //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
         //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
+        //     }
+        //   },
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "additionalProperties": false,
-        //     "required": [
-        //         "listVersion"
-        //     ]
+        //     "versionNumber": {
+        //       "description": "This contains the current version number of the local authorization list in the Charging Station.\r\n",
+        //       "type": "integer"
+        //     }
+        //   },
+        //   "required": [
+        //     "versionNumber"
+        //   ]
         // }
-
-        #endregion
-
-        #region (static) Parse   (Request, XML)
-
-        /// <summary>
-        /// Parse the given XML representation of a get local list version response.
-        /// </summary>
-        /// <param name="Request">The get local list version request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        public static GetLocalListVersionResponse Parse(CS.GetLocalListVersionRequest  Request,
-                                                        XElement                       XML)
-        {
-
-            if (TryParse(Request,
-                         XML,
-                         out var getLocalListVersionResponse,
-                         out var errorResponse))
-            {
-                return getLocalListVersionResponse!;
-            }
-
-            throw new ArgumentException("The given XML representation of a get local list version response is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
 
         #endregion
 
@@ -176,48 +158,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(XML,  out GetLocalListVersionResponse, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a get local list version response.
-        /// </summary>
-        /// <param name="Request">The get local list version request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="GetLocalListVersionResponse">The parsed get local list version response.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CS.GetLocalListVersionRequest     Request,
-                                       XElement                          XML,
-                                       out GetLocalListVersionResponse?  GetLocalListVersionResponse,
-                                       out String?                       ErrorResponse)
-        {
-
-            try
-            {
-
-                GetLocalListVersionResponse = new GetLocalListVersionResponse(
-
-                                                  Request,
-
-                                                  XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "listVersion",
-                                                                     UInt64.Parse)
-
-                                              );
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                GetLocalListVersionResponse  = null;
-                ErrorResponse                = "The given XML representation of a get local list version response is invalid: " + e.Message;
-                return false;
-            }
-
-        }
-
-        #endregion
-
         #region (static) TryParse(JSON, out GetLocalListVersionResponse, out ErrorResponse, CustomGetLocalListVersionResponseParser = null)
 
         /// <summary>
@@ -240,11 +180,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 GetLocalListVersionResponse = null;
 
-                #region ListVersion    [mandatory]
+                #region VersionNumber    [mandatory]
 
-                if (!JSON.ParseMandatory("listVersion",
+                if (!JSON.ParseMandatory("versionNumber",
                                          "availability status",
-                                         out UInt64 ListVersion,
+                                         out UInt64 VersionNumber,
                                          out ErrorResponse))
                 {
                     return false;
@@ -252,9 +192,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
+                #region CustomData       [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 GetLocalListVersionResponse = new GetLocalListVersionResponse(Request,
-                                                                              ListVersion);
+                                                                              VersionNumber,
+                                                                              CustomData);
 
                 if (CustomGetLocalListVersionResponseParser is not null)
                     GetLocalListVersionResponse = CustomGetLocalListVersionResponseParser(JSON,
@@ -274,30 +229,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new (OCPPNS.OCPPv1_6_CP + "getLocalListVersionResponse",
-                   new XElement(OCPPNS.OCPPv1_6_CP + "listVersion",  ListVersion)
-               );
-
-        #endregion
-
-        #region ToJSON(CustomGetLocalListVersionResponseSerializer = null)
+        #region ToJSON(CustomGetLocalListVersionResponseSerializer = null, CustomCustomDataResponseSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetLocalListVersionResponseSerializer">A delegate to serialize custom get local list version responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseSerializer   = null)
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataResponseSerializer            = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("listVersion",  ListVersion)
+
+                                 new JProperty("versionNumber",  VersionNumber),
+
+                           CustomData is not null
+                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               : null
+
                        );
 
             return CustomGetLocalListVersionResponseSerializer is not null
@@ -392,7 +342,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public override Boolean Equals(GetLocalListVersionResponse? GetLocalListVersionResponse)
 
             => GetLocalListVersionResponse is not null &&
-                   ListVersion.Equals(GetLocalListVersionResponse.ListVersion);
+
+               VersionNumber.Equals(GetLocalListVersionResponse.VersionNumber) &&
+
+               base.  GenericEquals(GetLocalListVersionResponse);
 
         #endregion
 
@@ -405,8 +358,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => ListVersion.GetHashCode();
+                return VersionNumber.GetHashCode() * 3 ^
+                       base.         GetHashCode();
+
+            }
+        }
 
         #endregion
 
@@ -417,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public override String ToString()
 
-            => "List version " + ListVersion.ToString();
+            => "Version number: " + VersionNumber.ToString();
 
         #endregion
 

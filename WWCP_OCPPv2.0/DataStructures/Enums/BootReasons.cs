@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static BootReasons Parse(String Text)
         {
 
-            if (TryParse(Text, out var status))
-                return status;
+            if (TryParse(Text, out var reason))
+                return reason;
 
             return BootReasons.Unknown;
 
@@ -51,8 +51,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static BootReasons? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var status))
-                return status;
+            if (TryParse(Text, out var reason))
+                return reason;
 
             return null;
 
@@ -60,56 +60,56 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out Reason)
 
         /// <summary>
         /// Try to parse the given text as a boot reason.
         /// </summary>
         /// <param name="Text">A text representation of a boot reason.</param>
-        /// <param name="Status">The parsed boot reason.</param>
-        public static Boolean TryParse(String Text, out BootReasons Status)
+        /// <param name="Reason">The parsed boot reason.</param>
+        public static Boolean TryParse(String Text, out BootReasons Reason)
         {
             switch (Text.Trim())
             {
 
                 case "ApplicationReset":
-                    Status = BootReasons.ApplicationReset;
+                    Reason = BootReasons.ApplicationReset;
                     return true;
 
                 case "FirmwareUpdate":
-                    Status = BootReasons.FirmwareUpdate;
+                    Reason = BootReasons.FirmwareUpdate;
                     return true;
 
                 case "LocalReset":
-                    Status = BootReasons.LocalReset;
+                    Reason = BootReasons.LocalReset;
                     return true;
 
                 case "PowerUp":
-                    Status = BootReasons.PowerUp;
+                    Reason = BootReasons.PowerUp;
                     return true;
 
                 case "RemoteReset":
-                    Status = BootReasons.RemoteReset;
+                    Reason = BootReasons.RemoteReset;
                     return true;
 
                 case "ScheduledReset":
-                    Status = BootReasons.ScheduledReset;
+                    Reason = BootReasons.ScheduledReset;
                     return true;
 
                 case "Triggered":
-                    Status = BootReasons.Triggered;
+                    Reason = BootReasons.Triggered;
                     return true;
 
                 case "Unknown":
-                    Status = BootReasons.Unknown;
+                    Reason = BootReasons.Unknown;
                     return true;
 
                 case "Watchdog":
-                    Status = BootReasons.Watchdog;
+                    Reason = BootReasons.Watchdog;
                     return true;
 
                 default:
-                    Status = BootReasons.Unknown;
+                    Reason = BootReasons.Unknown;
                     return false;
 
             }

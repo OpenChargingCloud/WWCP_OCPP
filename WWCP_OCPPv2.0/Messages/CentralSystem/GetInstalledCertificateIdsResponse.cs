@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CP
+namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
@@ -38,36 +38,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The Charge Point indicates if it can process the request.
         /// </summary>
-        public GetInstalledCertificateStatus     Status                 { get; }
+        [Mandatory]
+        public GetInstalledCertificateStatus     Status                      { get; }
 
         /// <summary>
         /// The optional enumeration of information about available certificates.
         /// </summary>
-        public IEnumerable<CertificateHashData>  CertificateHashData    { get; }
+        [Optional]
+        public IEnumerable<CertificateHashData>  CertificateHashDataChain    { get; }
+
+        /// <summary>
+        /// Optional detailed status information.
+        /// </summary>
+        [Optional]
+        public StatusInfo?                       StatusInfo                  { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region GetInstalledCertificateIdsResponse(Request, Status, CertificateHashData)
+        #region GetInstalledCertificateIdsResponse(Request, Status, CertificateHashDataChain = null, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new get installed certificate ids response.
         /// </summary>
         /// <param name="Request">The get installed certificate ids request leading to this response.</param>
-        /// <param name="Status">An optional enumeration of information about available certificates.</param>
-        /// <param name="CertificateHashData">The Charge Point includes the Certificate information for each available certificate.</param>
+        /// <param name="Status">The Charge Point indicates if it can process the request.</param>
+        /// <param name="CertificateHashDataChain">An optional enumeration of information about available certificates.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public GetInstalledCertificateIdsResponse(CS.GetInstalledCertificateIdsRequest  Request,
                                                   GetInstalledCertificateStatus         Status,
-                                                  IEnumerable<CertificateHashData>      CertificateHashData)
+                                                  IEnumerable<CertificateHashData>?     CertificateHashDataChain   = null,
+                                                  StatusInfo?                           StatusInfo                 = null,
+                                                  CustomData?                           CustomData                 = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   CustomData)
 
         {
 
-            this.Status               = Status;
-            this.CertificateHashData  = CertificateHashData ?? Array.Empty<CertificateHashData>();
+            this.Status                    = Status;
+            this.CertificateHashDataChain  = CertificateHashDataChain ?? Array.Empty<CertificateHashData>();
+            this.StatusInfo                = StatusInfo;
 
         }
 
@@ -88,8 +102,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         {
 
-            this.Status               = GetInstalledCertificateStatus.Unknown;
-            this.CertificateHashData  = Array.Empty<CertificateHashData>();
+            this.Status                    = GetInstalledCertificateStatus.Unknown;
+            this.CertificateHashDataChain  = Array.Empty<CertificateHashData>();
 
         }
 
@@ -102,9 +116,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:1.6:2020:3:GetInstalledCertificateIds.conf",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:GetInstalledCertificateIdsResponse",
+        //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
+        //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
+        //     },
+        //     "GetCertificateIdUseEnumType": {
+        //       "description": "Indicates the type of the requested certificate(s).\r\n",
+        //       "javaType": "GetCertificateIdUseEnum",
+        //       "type": "string",
+        //       "additionalProperties": false,
+        //       "enum": [
+        //         "V2GRootCertificate",
+        //         "MORootCertificate",
+        //         "CSMSRootCertificate",
+        //         "V2GCertificateChain",
+        //         "ManufacturerRootCertificate"
+        //       ]
+        //     },
         //     "GetInstalledCertificateStatusEnumType": {
+        //       "description": "Charging Station indicates if it can process the request.\r\n",
+        //       "javaType": "GetInstalledCertificateStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
@@ -113,6 +157,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         //       ]
         //     },
         //     "HashAlgorithmEnumType": {
+        //       "description": "Used algorithms for the hashes provided.\r\n",
+        //       "javaType": "HashAlgorithmEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
@@ -120,51 +166,116 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         //         "SHA384",
         //         "SHA512"
         //       ]
-        // },
-        //     "CertificateHashDataType": {
-        //     "javaType": "CertificateHashData",
+        //     },
+        //     "CertificateHashDataChainType": {
+        //       "javaType": "CertificateHashDataChain",
         //       "type": "object",
         //       "additionalProperties": false,
         //       "properties": {
+        //         "customData": {
+        //           "$ref": "#/definitions/CustomDataType"
+        //         },
+        //         "certificateHashData": {
+        //           "$ref": "#/definitions/CertificateHashDataType"
+        //         },
+        //         "certificateType": {
+        //           "$ref": "#/definitions/GetCertificateIdUseEnumType"
+        //         },
+        //         "childCertificateHashData": {
+        //           "type": "array",
+        //           "additionalItems": false,
+        //           "items": {
+        //             "$ref": "#/definitions/CertificateHashDataType"
+        //           },
+        //           "minItems": 1,
+        //           "maxItems": 4
+        //         }
+        //       },
+        //       "required": [
+        //         "certificateType",
+        //         "certificateHashData"
+        //       ]
+        //     },
+        //     "CertificateHashDataType": {
+        //       "javaType": "CertificateHashData",
+        //       "type": "object",
+        //       "additionalProperties": false,
+        //       "properties": {
+        //         "customData": {
+        //           "$ref": "#/definitions/CustomDataType"
+        //         },
         //         "hashAlgorithm": {
-        //             "$ref": "#/definitions/HashAlgorithmEnumType"
+        //           "$ref": "#/definitions/HashAlgorithmEnumType"
         //         },
         //         "issuerNameHash": {
-        //             "type": "string",
+        //           "description": "Hashed value of the Issuer DN (Distinguished Name).\r\n\r\n",
+        //           "type": "string",
         //           "maxLength": 128
         //         },
         //         "issuerKeyHash": {
-        //             "type": "string",
+        //           "description": "Hashed value of the issuers public key\r\n",
+        //           "type": "string",
         //           "maxLength": 128
         //         },
         //         "serialNumber": {
-        //             "type": "string",
+        //           "description": "The serial number of the certificate.\r\n",
+        //           "type": "string",
         //           "maxLength": 40
         //         }
-        //     },
+        //       },
         //       "required": [
         //         "hashAlgorithm",
         //         "issuerNameHash",
         //         "issuerKeyHash",
         //         "serialNumber"
         //       ]
+        //     },
+        //     "StatusInfoType": {
+        //       "description": "Element providing more information about the status.\r\n",
+        //       "javaType": "StatusInfo",
+        //       "type": "object",
+        //       "additionalProperties": false,
+        //       "properties": {
+        //         "customData": {
+        //           "$ref": "#/definitions/CustomDataType"
+        //         },
+        //         "reasonCode": {
+        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //           "type": "string",
+        //           "maxLength": 20
+        //         },
+        //         "additionalInfo": {
+        //           "description": "Additional text to provide detailed information.\r\n",
+        //           "type": "string",
+        //           "maxLength": 512
+        //         }
+        //       },
+        //       "required": [
+        //         "reasonCode"
+        //       ]
         //     }
         //   },
         //   "type": "object",
         //   "additionalProperties": false,
         //   "properties": {
-        //     "certificateHashData": {
-        //         "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //             "$ref": "#/definitions/CertificateHashDataType"
-        //       },
-        //       "minItems": 1
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "status": {
-        //         "$ref": "#/definitions/GetInstalledCertificateStatusEnumType"
+        //       "$ref": "#/definitions/GetInstalledCertificateStatusEnumType"
+        //     },
+        //     "statusInfo": {
+        //       "$ref": "#/definitions/StatusInfoType"
+        //     },
+        //     "certificateHashDataChain": {
+        //       "type": "array",
+        //       "additionalItems": false,
+        //       "items": {
+        //         "$ref": "#/definitions/CertificateHashDataChainType"
+        //       },
+        //       "minItems": 1
         //     }
-        // },
+        //   },
         //   "required": [
         //     "status"
         //   ]
@@ -223,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 GetInstalledCertificateIdsResponse = null;
 
-                #region Status                 [mandatory]
+                #region Status                      [mandatory]
 
                 if (JSON.MapMandatory("status",
                                       "status",
@@ -237,12 +348,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                #region CertificateHashData    [optional]
+                #region CertificateHashDataChain    [optional]
 
-                if (JSON.ParseOptionalJSON("certificateHashData",
-                                           "certificate hash data",
-                                           OCPPv1_6.CertificateHashData.TryParse,
-                                           out IEnumerable<CertificateHashData> CertificateHashData,
+                if (JSON.ParseOptionalJSON("certificateHashDataChain",
+                                           "certificate hash data chain",
+                                           CertificateHashData.TryParse,
+                                           out IEnumerable<CertificateHashData> CertificateHashDataChain,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region StatusInfo                  [optional]
+
+                if (JSON.ParseOptionalJSON("statusInfo",
+                                           "detailed status info",
+                                           OCPPv2_0.StatusInfo.TryParse,
+                                           out StatusInfo? StatusInfo,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData                  [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -254,7 +393,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 GetInstalledCertificateIdsResponse = new GetInstalledCertificateIdsResponse(Request,
                                                                                             Status,
-                                                                                            CertificateHashData);
+                                                                                            CertificateHashDataChain,
+                                                                                            StatusInfo,
+                                                                                            CustomData);
 
                 if (CustomGetInstalledCertificateIdsResponseParser is not null)
                     GetInstalledCertificateIdsResponse = CustomGetInstalledCertificateIdsResponseParser(JSON,
@@ -274,23 +415,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToJSON(CustomGetInstalledCertificateIdsResponseSerializer = null, CustomConfigurationKeySerializer = null)
+        #region ToJSON(CustomGetInstalledCertificateIdsResponseSerializer = null, CustomCertificateHashDataSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetInstalledCertificateIdsResponseSerializer">A delegate to serialize custom get installed certificate ids responses.</param>
         /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash data.</param>
+        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetInstalledCertificateIdsResponse>?  CustomGetInstalledCertificateIdsResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CertificateHashData>?                 CustomCertificateHashDataSerializer                  = null)
+                              CustomJObjectSerializerDelegate<CertificateHashData>?                 CustomCertificateHashDataSerializer                  = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                          CustomStatusInfoResponseSerializer                   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                          CustomCustomDataResponseSerializer                   = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("status",  Status.AsText()),
+                                 new JProperty("status",                    Status.    AsText()),
 
-                           CertificateHashData.Any()
-                               ? new JProperty("certificateHashData",  new JArray(CertificateHashData.Select(certificateHashData => certificateHashData.ToJSON(CustomCertificateHashDataSerializer))))
+                           CertificateHashDataChain.Any()
+                               ? new JProperty("certificateHashDataChain",  new JArray(CertificateHashDataChain.Select(certificateHashData => certificateHashData.ToJSON(CustomCertificateHashDataSerializer))))
+                               : null,
+
+                           StatusInfo is not null
+                               ? new JProperty("statusInfo",                StatusInfo.ToJSON(CustomStatusInfoResponseSerializer,
+                                                                                              CustomCustomDataResponseSerializer))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",                CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
@@ -388,10 +542,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             => GetInstalledCertificateIdsResponse is not null &&
 
-               Status.Equals(GetInstalledCertificateIdsResponse.Status) &&
+               Status.     Equals(GetInstalledCertificateIdsResponse.Status) &&
 
-               CertificateHashData.Count().Equals(GetInstalledCertificateIdsResponse.CertificateHashData.Count()) &&
-               CertificateHashData.All(certificateHashData => GetInstalledCertificateIdsResponse.CertificateHashData.Contains(certificateHashData));
+               CertificateHashDataChain.Count().Equals(GetInstalledCertificateIdsResponse.CertificateHashDataChain.Count()) &&
+               CertificateHashDataChain.All(certificateHashData => GetInstalledCertificateIdsResponse.CertificateHashDataChain.Contains(certificateHashData)) &&
+
+             ((StatusInfo is     null && GetInstalledCertificateIdsResponse.StatusInfo is     null) ||
+               StatusInfo is not null && GetInstalledCertificateIdsResponse.StatusInfo is not null && StatusInfo.Equals(GetInstalledCertificateIdsResponse.StatusInfo)) &&
+
+               base.GenericEquals(GetInstalledCertificateIdsResponse);
 
         #endregion
 
@@ -408,8 +567,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return Status.             GetHashCode() * 3 ^
-                       CertificateHashData.GetHashCode();
+                return Status.                  GetHashCode()       * 7 ^
+                       CertificateHashDataChain.GetHashCode()       * 5 ^
+                      (StatusInfo?.             GetHashCode() ?? 0) * 3 ^
+
+                       base.                    GetHashCode();
 
             }
         }

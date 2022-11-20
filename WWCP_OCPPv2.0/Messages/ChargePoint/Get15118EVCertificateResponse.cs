@@ -447,7 +447,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                EXIResponse.Equals(Get15118EVCertificateResponse.EXIResponse) &&
 
              ((StatusInfo is     null && Get15118EVCertificateResponse.StatusInfo is     null) ||
-               StatusInfo is not null && Get15118EVCertificateResponse.StatusInfo is not null && StatusInfo.Equals(Get15118EVCertificateResponse.StatusInfo));
+               StatusInfo is not null && Get15118EVCertificateResponse.StatusInfo is not null && StatusInfo.Equals(Get15118EVCertificateResponse.StatusInfo)) &&
+
+               base.GenericEquals(Get15118EVCertificateResponse);
 
         #endregion
 
@@ -466,10 +468,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 return Status.     GetHashCode()       * 7 ^
                        EXIResponse.GetHashCode()       * 5 ^
-
                       (StatusInfo?.GetHashCode() ?? 0) * 3 ^
 
-                       base.GetHashCode();
+                       base.       GetHashCode();
 
             }
         }

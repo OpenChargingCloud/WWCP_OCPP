@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                          out var errorResponse,
                          CustomChargingSchedulePeriodParser))
             {
-                return chargingSchedulePeriod;
+                return chargingSchedulePeriod!;
             }
 
             throw new ArgumentException("The given JSON representation of a charging schedule period is invalid: " + errorResponse,

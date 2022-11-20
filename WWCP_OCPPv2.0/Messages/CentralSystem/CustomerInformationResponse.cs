@@ -49,13 +49,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region CustomerInformationResponse(Request, Status, StatusInfo   = null, ...)
+        #region CustomerInformationResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new customer information response.
         /// </summary>
         /// <param name="Request">The customer information request leading to this response.</param>
         /// <param name="Status">The success or failure of the reset command.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public CustomerInformationResponse(CS.CustomerInformationRequest  Request,
                                            CustomerInformationStatus      Status,
                                            StatusInfo?                    StatusInfo   = null,
@@ -408,10 +410,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             => CustomerInformationResponse is not null &&
 
-               Status.Equals(CustomerInformationResponse.Status) &&
+               Status.     Equals(CustomerInformationResponse.Status) &&
 
              ((StatusInfo is     null && CustomerInformationResponse.StatusInfo is     null) ||
-               StatusInfo is not null && CustomerInformationResponse.StatusInfo is not null && StatusInfo.Equals(CustomerInformationResponse.StatusInfo));
+               StatusInfo is not null && CustomerInformationResponse.StatusInfo is not null && StatusInfo.Equals(CustomerInformationResponse.StatusInfo)) &&
+
+               base.GenericEquals(CustomerInformationResponse);
 
         #endregion
 
@@ -429,7 +433,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             {
 
                 return Status.     GetHashCode()       * 5 ^
-
                       (StatusInfo?.GetHashCode() ?? 0) * 3 ^
 
                        base.       GetHashCode();

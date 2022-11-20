@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
@@ -75,11 +75,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Retries">This specifies how many times the Charge Point must try to upload the log before giving up. If this field is not present, it is left to Charge Point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to Charge Point to decide how long to wait between attempts.</param>
         /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout"></param>
-        /// <param name="EventTrackingId"></param>
-        /// <param name="CancellationToken"></param>
         public GetLogRequest(ChargeBox_Id        ChargeBoxId,
                              LogTypes            LogType,
                              Int32               LogRequestId,
@@ -87,6 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                              Byte?               Retries             = null,
                              TimeSpan?           RetryInterval       = null,
 
+                             CustomData?         CustomData          = null,
                              Request_Id?         RequestId           = null,
                              DateTime?           RequestTimestamp    = null,
                              TimeSpan?           RequestTimeout      = null,
@@ -95,6 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             : base(ChargeBoxId,
                    "GetLog",
+                   CustomData,
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -118,9 +118,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:1.6:2020:3:GetLog.req",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:GetLogRequest",
+        //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
+        //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
+        //     },
         //     "LogEnumType": {
+        //       "description": "This contains the type of log file that the Charging Station\r\nshould send.\r\n",
+        //       "javaType": "LogEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
@@ -129,19 +146,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         //       ]
         //     },
         //     "LogParametersType": {
+        //       "description": "Log\r\nurn:x-enexis:ecdm:uid:2:233373\r\nGeneric class for the configuration of logging entries.\r\n",
+        //       "javaType": "LogParameters",
         //       "type": "object",
         //       "additionalProperties": false,
         //       "properties": {
+        //         "customData": {
+        //           "$ref": "#/definitions/CustomDataType"
+        //         },
         //         "remoteLocation": {
+        //           "description": "Log. Remote_ Location. URI\r\nurn:x-enexis:ecdm:uid:1:569484\r\nThe URL of the location at the remote system where the log should be stored.\r\n",
         //           "type": "string",
         //           "maxLength": 512
         //         },
         //         "oldestTimestamp": {
-        //     "type": "string",
+        //           "description": "Log. Oldest_ Timestamp. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569477\r\nThis contains the date and time of the oldest logging information to include in the diagnostics.\r\n",
+        //           "type": "string",
         //           "format": "date-time"
         //         },
         //         "latestTimestamp": {
-        //     "type": "string",
+        //           "description": "Log. Latest_ Timestamp. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569482\r\nThis contains the date and time of the latest logging information to include in the diagnostics.\r\n",
+        //           "type": "string",
         //           "format": "date-time"
         //         }
         //       },
@@ -153,22 +178,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         //   "type": "object",
         //   "additionalProperties": false,
         //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     },
         //     "log": {
-        //         "$ref": "#/definitions/LogParametersType"
+        //       "$ref": "#/definitions/LogParametersType"
         //     },
         //     "logType": {
-        //         "$ref": "#/definitions/LogEnumType"
+        //       "$ref": "#/definitions/LogEnumType"
         //     },
         //     "requestId": {
-        //         "type": "integer"
+        //       "description": "The Id of this request\r\n",
+        //       "type": "integer"
         //     },
         //     "retries": {
-        //         "type": "integer"
+        //       "description": "This specifies how many times the Charging Station must try to upload the log before giving up. If this field is not present, it is left to Charging Station to decide how many times it wants to retry.\r\n",
+        //       "type": "integer"
         //     },
         //     "retryInterval": {
-        //         "type": "integer"
+        //       "description": "The interval in seconds after which a retry may be attempted. If this field is not present, it is left to Charging Station to decide how long to wait between attempts.\r\n",
+        //       "type": "integer"
         //     }
-        // },
+        //   },
         //   "required": [
         //     "logType",
         //     "requestId",
@@ -327,6 +358,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
+                #region CustomData      [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region ChargeBoxId     [optional, OCPP_CSE]
 
                 if (JSON.ParseOptional("chargeBoxId",
@@ -353,6 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                   Log,
                                                   Retries,
                                                   RetryInterval,
+                                                  CustomData,
                                                   RequestId);
 
                 if (CustomGetLogRequestParser is not null)
@@ -373,21 +419,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToJSON(CustomGetLogRequestSerializer = null, CustomLogParametersSerializer = null)
+        #region ToJSON(CustomGetLogRequestSerializer = null, CustomLogParametersSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetLogRequestSerializer">A delegate to serialize custom start transaction requests.</param>
         /// <param name="CustomLogParametersSerializer">A delegate to serialize custom log parameters.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetLogRequest>?  CustomGetLogRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<LogParameters>?  CustomLogParametersSerializer   = null)
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetLogRequest>?  CustomGetLogRequestSerializer        = null,
+                              CustomJObjectSerializerDelegate<LogParameters>?  CustomLogParametersSerializer        = null,
+                              CustomJObjectSerializerDelegate<CustomData>?     CustomCustomDataResponseSerializer   = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("logType",              LogType.AsText()),
+                           new JProperty("logType",              LogType.   AsText()),
                            new JProperty("requestId",            LogRequestId),
-                           new JProperty("log",                  Log.ToJSON(CustomLogParametersSerializer)),
+                           new JProperty("log",                  Log.       ToJSON(CustomLogParametersSerializer)),
 
                            Retries.HasValue
                                ? new JProperty("retries",        Retries.Value)
@@ -395,6 +443,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                            RetryInterval.HasValue
                                ? new JProperty("retryInterval",  (Int32) Math.Round(RetryInterval.Value.TotalSeconds, 0))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );

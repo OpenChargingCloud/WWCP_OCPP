@@ -458,11 +458,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return Status.GetHashCode() * 11 ^
-
-                       (Data != null
-                           ? Data.GetHashCode()
-                           : 0);
+                return Status.GetHashCode() * 3 ^
+                      (Data?. GetHashCode() ?? 0);
 
             }
         }

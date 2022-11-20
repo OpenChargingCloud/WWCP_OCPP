@@ -411,11 +411,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
         /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseSerializer  = null,
-                              CustomJObjectSerializerDelegate<CompositeSchedule>?             CustomCompositeScheduleSerializer             = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?        CustomChargingSchedulePeriodSerializer        = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?                    CustomStatusInfoResponseSerializer            = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataResponseSerializer            = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CompositeSchedule>?             CustomCompositeScheduleSerializer              = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?        CustomChargingSchedulePeriodSerializer         = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                    CustomStatusInfoResponseSerializer             = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataResponseSerializer             = null)
         {
 
             var json = JSONObject.Create(
@@ -532,13 +532,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             => GetCompositeScheduleResponse is not null &&
 
-               Status.Equals(GetCompositeScheduleResponse.Status) &&
+               Status.     Equals(GetCompositeScheduleResponse.Status) &&
 
              ((Schedule   is     null && GetCompositeScheduleResponse.Schedule   is     null) ||
               (Schedule   is not null && GetCompositeScheduleResponse.Schedule   is not null && Schedule.  Equals(GetCompositeScheduleResponse.Schedule))) &&
 
              ((StatusInfo is     null && GetCompositeScheduleResponse.StatusInfo is     null) ||
-               StatusInfo is not null && GetCompositeScheduleResponse.StatusInfo is not null && StatusInfo.Equals(GetCompositeScheduleResponse.StatusInfo));
+               StatusInfo is not null && GetCompositeScheduleResponse.StatusInfo is not null && StatusInfo.Equals(GetCompositeScheduleResponse.StatusInfo)) &&
+
+               base.GenericEquals(GetCompositeScheduleResponse);
 
         #endregion
 
@@ -561,7 +563,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                        base.       GetHashCode();
 
-
             }
         }
 
@@ -574,7 +575,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Status,
+            => String.Concat(Status.AsText(),
                              Schedule is not null
                                  ? ": " + Schedule
                                  : "");

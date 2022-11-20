@@ -56,6 +56,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <param name="Request">The certificate signed request leading to this response.</param>
         /// <param name="Status">The success or failure of the certificate sign request.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public CertificateSignedResponse(CS.CertificateSignedRequest  Request,
                                          CertificateSignedStatus      Status,
                                          StatusInfo?                  StatusInfo   = null,
@@ -407,10 +409,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             => CertificateSignedResponse is not null &&
 
-               Status.Equals(CertificateSignedResponse.Status) &&
+               Status.     Equals(CertificateSignedResponse.Status) &&
 
              ((StatusInfo is     null && CertificateSignedResponse.StatusInfo is     null) ||
-               StatusInfo is not null && CertificateSignedResponse.StatusInfo is not null && StatusInfo.Equals(CertificateSignedResponse.StatusInfo));
+               StatusInfo is not null && CertificateSignedResponse.StatusInfo is not null && StatusInfo.Equals(CertificateSignedResponse.StatusInfo)) &&
+
+               base.GenericEquals(CertificateSignedResponse);
 
         #endregion
 
@@ -428,7 +432,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             {
 
                 return Status.     GetHashCode()       * 5 ^
-
                       (StatusInfo?.GetHashCode() ?? 0) * 3 ^
 
                        base.       GetHashCode();

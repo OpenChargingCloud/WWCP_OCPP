@@ -56,6 +56,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <param name="Request">The clear charging profile request leading to this response.</param>
         /// <param name="Status">The success or failure of the reset command.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public ClearChargingProfileResponse(CS.ClearChargingProfileRequest  Request,
                                             ClearChargingProfileStatus      Status,
                                             StatusInfo?                     StatusInfo   = null,
@@ -407,10 +409,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             => ClearChargingProfileResponse is not null &&
 
-               Status.Equals(ClearChargingProfileResponse.Status) &&
+               Status.     Equals(ClearChargingProfileResponse.Status) &&
 
              ((StatusInfo is     null && ClearChargingProfileResponse.StatusInfo is     null) ||
-               StatusInfo is not null && ClearChargingProfileResponse.StatusInfo is not null && StatusInfo.Equals(ClearChargingProfileResponse.StatusInfo));
+               StatusInfo is not null && ClearChargingProfileResponse.StatusInfo is not null && StatusInfo.Equals(ClearChargingProfileResponse.StatusInfo)) &&
+
+               base.GenericEquals(ClearChargingProfileResponse);
 
         #endregion
 
@@ -428,7 +432,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             {
 
                 return Status.     GetHashCode()       * 5 ^
-
                       (StatusInfo?.GetHashCode() ?? 0) * 3 ^
 
                        base.       GetHashCode();

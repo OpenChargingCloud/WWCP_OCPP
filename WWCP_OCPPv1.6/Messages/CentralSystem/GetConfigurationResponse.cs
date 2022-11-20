@@ -457,8 +457,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Object">A get configuration response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is BootNotificationRequest bootNotificationRequest &&
-                   Equals(bootNotificationRequest);
+            => Object is GetConfigurationResponse getConfigurationResponse &&
+                   Equals(getConfigurationResponse);
 
         #endregion
 

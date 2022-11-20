@@ -303,7 +303,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="FirmwareStatusNotificationResponse">A firmware status notification response to compare with.</param>
         public override Boolean Equals(FirmwareStatusNotificationResponse? FirmwareStatusNotificationResponse)
 
-            => FirmwareStatusNotificationResponse is not null;
+            => FirmwareStatusNotificationResponse is not null &&
+                   base.GenericEquals(FirmwareStatusNotificationResponse);
 
         #endregion
 

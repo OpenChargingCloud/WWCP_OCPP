@@ -303,9 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         public override Boolean Equals(ClearedChargingLimitResponse? ClearedChargingLimitResponse)
 
             => ClearedChargingLimitResponse is not null &&
-
-             ((CustomData is     null && ClearedChargingLimitResponse.CustomData is     null) ||
-              (CustomData is not null && ClearedChargingLimitResponse.CustomData is not null && CustomData.Equals(ClearedChargingLimitResponse.CustomData)));
+                   base.GenericEquals(ClearedChargingLimitResponse);
 
         #endregion
 

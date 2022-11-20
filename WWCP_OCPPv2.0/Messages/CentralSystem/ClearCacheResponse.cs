@@ -57,6 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="Request">The clear cache request leading to this response.</param>
         /// <param name="Status">The success or failure of the clear cache command.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public ClearCacheResponse(CS.ClearCacheRequest  Request,
                                   ClearCacheStatus      Status,
                                   StatusInfo?           StatusInfo   = null,
@@ -408,10 +409,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             => ClearCacheResponse is not null &&
 
-               Status.Equals(ClearCacheResponse.Status) &&
+               Status.     Equals(ClearCacheResponse.Status) &&
 
              ((StatusInfo is     null && ClearCacheResponse.StatusInfo is     null) ||
-               StatusInfo is not null && ClearCacheResponse.StatusInfo is not null && StatusInfo.Equals(ClearCacheResponse.StatusInfo));
+               StatusInfo is not null && ClearCacheResponse.StatusInfo is not null && StatusInfo.Equals(ClearCacheResponse.StatusInfo)) &&
+
+               base.GenericEquals(ClearCacheResponse);
 
         #endregion
 
@@ -429,7 +432,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             {
 
                 return Status.     GetHashCode()       * 5 ^
-
                       (StatusInfo?.GetHashCode() ?? 0) * 3 ^
 
                        base.       GetHashCode();

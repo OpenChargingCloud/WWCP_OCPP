@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #region Initial checks
 
-            Text = Text?.Trim();
+            Text = Text.Trim();
 
             if (Text.IsNullOrEmpty())
             {

@@ -38,29 +38,39 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// The success or failure status of the data transfer.
         /// </summary>
-        public DataTransferStatus  Status    { get; }
+        [Mandatory]
+        public DataTransferStatus  Status        { get; }
 
         /// <summary>
         /// Optional response data.
         /// </summary>
-        public String?             Data      { get; }
+        [Optional]
+        public String?             Data          { get; }
+
+        /// <summary>
+        /// Optional detailed status information.
+        /// </summary>
+        [Optional]
+        public StatusInfo?         StatusInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region DataTransferResponse(Request, IdTagInfo, CustomData = null)
+        #region DataTransferResponse(Request, Status, Data = null, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new data transfer response.
         /// </summary>
-        /// <param name="Request">The incoming data transfer request leading to this response.</param>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="Status">The success or failure status of the data transfer.</param>
         /// <param name="Data">Optional response data.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public DataTransferResponse(CP.DataTransferRequest  Request,
                                     DataTransferStatus      Status,
                                     String?                 Data         = null,
+                                    StatusInfo?             StatusInfo   = null,
                                     CustomData?             CustomData   = null)
 
             : base(Request,
@@ -69,8 +79,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         {
 
-            this.Status  = Status;
-            this.Data    = Data;
+            this.Status      = Status;
+            this.Data        = Data;
+            this.StatusInfo  = StatusInfo;
 
         }
 
@@ -81,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// Create a new data transfer response.
         /// </summary>
-        /// <param name="Request">The incoming data transfer request leading to this response.</param>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public DataTransferResponse(CP.DataTransferRequest  Request,
                                     Result                  Result)
@@ -181,17 +192,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region (static) Parse   (Request, DataTransferResponseJSON, CustomDataTransferResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomDataTransferResponseSerializer = null)
 
         /// <summary>
         /// Parse the given JSON representation of a data transfer response.
         /// </summary>
-        /// <param name="Request">The incoming data transfer request leading to this response.</param>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
         public static DataTransferResponse Parse(CP.DataTransferRequest                              Request,
                                                  JObject                                             JSON,
-                                                 CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser   = null)
+                                                 CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser  = null)
         {
 
             if (TryParse(Request,
@@ -210,12 +221,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out DataTransferResponse, out ErrorResponse)
+        #region (static) TryParse(Request, JSON, out DataTransferResponse, out ErrorResponse, CustomDataTransferResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a data transfer response.
-        /// </summary
-        /// <param name="Request">The incoming data transfer request leading to this response.</param>
+        /// </summary>
+        /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -232,29 +243,59 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 DataTransferResponse = null;
 
-                #region Status
+                #region DataTransferStatus    [mandatory]
 
                 if (!JSON.MapMandatory("status",
-                                                           "data transfer status",
-                                                           DataTransferStatusExtentions.Parse,
-                                                           out DataTransferStatus  DataTransferStatus,
-                                                           out                     ErrorResponse))
+                                       "data transfer status",
+                                       DataTransferStatusExtentions.Parse,
+                                       out DataTransferStatus DataTransferStatus,
+                                       out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region Data
+                #region Data                  [optional]
 
-                var Data = JSON.GetString("data");
+                var Data = JSON.GetString("data")?.Trim();
+
+                #endregion
+
+                #region StatusInfo            [optional]
+
+                if (JSON.ParseOptionalJSON("statusInfo",
+                                           "detailed status info",
+                                           OCPPv2_0.StatusInfo.TryParse,
+                                           out StatusInfo? StatusInfo,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData            [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
                 #endregion
 
 
                 DataTransferResponse = new DataTransferResponse(Request,
                                                                 DataTransferStatus,
-                                                                Data);
+                                                                Data,
+                                                                StatusInfo,
+                                                                CustomData);
 
                 if (CustomDataTransferResponseParser is not null)
                     DataTransferResponse = CustomDataTransferResponseParser(JSON,
@@ -274,21 +315,34 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ToJSON(CustomDataTransferResponseSerializer = null)
+        #region ToJSON(CustomDataTransferResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomDataTransferResponseSerializer">A delegate to serialize custom data transfer responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferResponse>? CustomDataTransferResponseSerializer = null)
+        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferResponse>?  CustomDataTransferResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?            CustomStatusInfoResponseSerializer     = null,
+                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataResponseSerializer     = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("status",      DataTransferStatusExtentions.AsText(Status)),
+                                 new JProperty("status",      Status.    AsText()),
 
                            Data.IsNotNullOrEmpty()
-                               ? new JProperty("data",  Data)
+                               ? new JProperty("data",        Data)
+                               : null,
+
+                           StatusInfo is not null
+                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoResponseSerializer,
+                                                                                CustomCustomDataResponseSerializer))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
@@ -307,8 +361,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// The data transfer failed.
         /// </summary>
-        /// <param name="Request">The incoming data transfer request leading to this response.</param>
-        public static DataTransferResponse Failed(CP.DataTransferRequest Request)
+        /// <param name="Request">The data transfer request leading to this response.</param>
+        public static DataTransferResponse Failed(CP.DataTransferRequest  Request)
 
             => new (Request,
                     Result.Server());
@@ -386,10 +440,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             => DataTransferResponse is not null &&
 
-               Status.Equals(DataTransferResponse.Status) &&
+               Status.     Equals(DataTransferResponse.Status) &&
 
-             ((Data is     null && DataTransferResponse.Data is     null) ||
-              (Data is not null && DataTransferResponse.Data is not null && Data.Equals(DataTransferResponse.Data)));
+             ((Data       is     null && DataTransferResponse.Data       is     null) ||
+              (Data       is not null && DataTransferResponse.Data       is not null && Data.      Equals(DataTransferResponse.Data)))      &&
+
+             ((StatusInfo is     null && DataTransferResponse.StatusInfo is     null) ||
+               StatusInfo is not null && DataTransferResponse.StatusInfo is not null && StatusInfo.Equals(DataTransferResponse.StatusInfo)) &&
+
+               base.GenericEquals(DataTransferResponse);
 
         #endregion
 
@@ -406,9 +465,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             unchecked
             {
 
-                return Status.GetHashCode() * 3 ^
+                return Status.     GetHashCode()       * 7 ^
+                      (Data?.      GetHashCode() ?? 0) * 5 ^
+                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
 
-                       Data?. GetHashCode() ?? 0;
+                       base.       GetHashCode();
 
             }
         }
@@ -422,8 +483,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Status, " / ",
-                             Data?.SubstringMax(20) ?? "-");
+            => String.Concat(Status,
+                             Data is not null
+                                 ? ", " + Data.SubstringMax(20)
+                                 : "");
 
         #endregion
 

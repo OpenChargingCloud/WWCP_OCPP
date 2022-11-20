@@ -594,7 +594,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                IdTokenInfo.Equals(AuthorizeResponse.IdTokenInfo) &&
 
              ((!CertificateStatus.HasValue && !AuthorizeResponse.CertificateStatus.HasValue) ||
-                CertificateStatus.HasValue &&  AuthorizeResponse.CertificateStatus.HasValue && CertificateStatus.Value.Equals(AuthorizeResponse.CertificateStatus.Value));
+                CertificateStatus.HasValue &&  AuthorizeResponse.CertificateStatus.HasValue && CertificateStatus.Value.Equals(AuthorizeResponse.CertificateStatus.Value)) &&
+
+               base.GenericEquals(AuthorizeResponse);
 
         #endregion
 
