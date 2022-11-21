@@ -63,6 +63,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         {
 
+            if (!Results.Any())
+                throw new ArgumentException("The given enumeration of get variables results must not be empty!",
+                                            nameof(Results));
+
             this.Results = Results.Distinct();
 
         }

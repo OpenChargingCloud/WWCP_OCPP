@@ -79,6 +79,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         {
 
+            if (!VariableMonitoringIds.Any())
+                throw new ArgumentException("The given enumeration of variable monitoring identifications must not be empty!",
+                                            nameof(VariableMonitoringIds));
+
             this.VariableMonitoringIds  = VariableMonitoringIds.Distinct();
 
         }

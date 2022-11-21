@@ -36,24 +36,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Properties
 
         /// <summary>
-        /// The signed meter value (base64 encoded). 2500
+        /// The signed meter value (base64 encoded).
+        /// [max 2500]
         /// </summary>
+        [Mandatory]
         public String   SignedMeterData    { get; }
 
         /// <summary>
-        /// Method used to create the digital signature. 50
+        /// Method used to create the digital signature.
+        /// [max 50]
         /// </summary>
+        [Mandatory]
         public String   SigningMethod      { get; }
 
         /// <summary>
-        /// Method used to encode the meter values before applying the digital signature algorithm. 50
+        /// Method used to encode the meter values before applying the digital signature algorithm.
+        /// [max 50]
         /// </summary>
+        [Mandatory]
         public String   EncodingMethod     { get; }
 
         /// <summary>
-        /// The optional public key (base64 encoded). 2500
+        /// The public key (base64 encoded).
+        /// [max 2500]
         /// </summary>
-        public String?  PublicKey          { get; }
+        [Mandatory]
+        public String   PublicKey          { get; }
 
         #endregion
 
@@ -65,12 +73,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="SignedMeterData">The signed meter value (base64 encoded).</param>
         /// <param name="SigningMethod">Method used to create the digital signature.</param>
         /// <param name="EncodingMethod">Method used to encode the meter values before applying the digital signature algorithm.</param>
-        /// <param name="PublicKey">The optional public key (base64 encoded).</param>
+        /// <param name="PublicKey">The public key (base64 encoded).</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public SignedMeterValue(String       SignedMeterData,
                                 String       SigningMethod,
                                 String       EncodingMethod,
-                                String?      PublicKey    = null,
+                                String       PublicKey,
                                 CustomData?  CustomData   = null)
 
             : base(CustomData)
@@ -196,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 SignedMeterValue = default;
 
-                #region SignedMeterData
+                #region SignedMeterData    [mandatory]
 
                 if (!JSON.ParseMandatoryText("signedMeterData",
                                              "signed meter data",
@@ -208,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region SigningMethod
+                #region SigningMethod      [mandatory]
 
                 if (!JSON.ParseMandatoryText("SigningMethod",
                                              "signing method",
@@ -220,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region EncodingMethod
+                #region EncodingMethod     [mandatory]
 
                 if (!JSON.ParseMandatoryText("encodingMethod",
                                              "encoding method",
@@ -232,7 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region PublicKey
+                #region PublicKey          [mandatory]
 
                 if (!JSON.ParseMandatoryText("publicKey",
                                              "public key",
@@ -244,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region CustomData
+                #region CustomData         [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -299,10 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                            new JProperty("signedMeterData",   SignedMeterData),
                            new JProperty("signingMethod",     SigningMethod),
                            new JProperty("encodingMethod",    EncodingMethod),
-
-                           PublicKey  is not null
-                               ? new JProperty("publicKey",   PublicKey)
-                               : null,
+                           new JProperty("publicKey",         PublicKey),
 
                            CustomData is not null
                                ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
@@ -389,12 +394,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => SignedMeterValue is not null &&
 
-               String.Equals(SignedMeterData, SignedMeterValue.SignedMeterData, StringComparison.OrdinalIgnoreCase) &&
-               String.Equals(SigningMethod,   SignedMeterValue.SigningMethod,   StringComparison.OrdinalIgnoreCase) &&
-               String.Equals(EncodingMethod,  SignedMeterValue.EncodingMethod,  StringComparison.OrdinalIgnoreCase) &&
-
-             ((PublicKey is     null  && SignedMeterValue.PublicKey  is     null) ||
-              (PublicKey is not null  && SignedMeterValue.PublicKey  is not null && PublicKey. Equals(SignedMeterValue.PublicKey))) &&
+               String.Equals(SignedMeterData, SignedMeterValue.SignedMeterData, StringComparison.Ordinal) &&
+               String.Equals(SigningMethod,   SignedMeterValue.SigningMethod,   StringComparison.Ordinal) &&
+               String.Equals(EncodingMethod,  SignedMeterValue.EncodingMethod,  StringComparison.Ordinal) &&
+               String.Equals(PublicKey,       SignedMeterValue.EncodingMethod,  StringComparison.Ordinal) &&
 
                base.  Equals(SignedMeterValue);
 
@@ -413,10 +416,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return SignedMeterData.GetHashCode()       * 11 ^
-                       SigningMethod.  GetHashCode()       *  7 ^
-                       EncodingMethod. GetHashCode()       *  5 ^
-                       (PublicKey?.    GetHashCode() ?? 0) *  3 ^
+                return SignedMeterData.GetHashCode() * 11 ^
+                       SigningMethod.  GetHashCode() *  7 ^
+                       EncodingMethod. GetHashCode() *  5 ^
+                       PublicKey.      GetHashCode() *  3 ^
 
                        base.           GetHashCode();
 

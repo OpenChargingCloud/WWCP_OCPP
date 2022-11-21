@@ -95,9 +95,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         {
 
+            if (!MonitoringCriteria.Any())
+                throw new ArgumentException("The given enumeration of criteria for components for which a monitoring report is requested must not be empty!",
+                                            nameof(MonitoringCriteria));
+
+            if (!ComponentVariables.Any())
+                throw new ArgumentException("The given enumeration of components and variables for which a monitoring report is requested must not be empty!",
+                                            nameof(ComponentVariables));
+
             this.GetMonitoringReportRequestId  = GetMonitoringReportRequestId;
             this.MonitoringCriteria            = MonitoringCriteria.Distinct();
-            this.ComponentVariables            = ComponentVariables. Distinct();
+            this.ComponentVariables            = ComponentVariables.Distinct();
 
         }
 

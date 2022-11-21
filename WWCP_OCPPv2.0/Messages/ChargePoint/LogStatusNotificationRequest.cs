@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CP
+namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
@@ -58,13 +58,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Status">The status of the log upload.</param>
         /// <param name="LogRquestId">The request id that was provided in the GetLog.req that started this log upload.</param>
         /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public LogStatusNotificationRequest(ChargeBox_Id        ChargeBoxId,
 
                                             UploadLogStatus     Status,
                                             Int32?              LogRquestId               = null,
 
+                                            CustomData?         CustomData                = null,
                                             Request_Id?         RequestId                 = null,
                                             DateTime?           RequestTimestamp          = null,
                                             TimeSpan?           RequestTimeout            = null,
@@ -73,6 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             : base(ChargeBoxId,
                    "LogStatusNotification",
+                   CustomData,
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -93,9 +99,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:1.6:2020:3:LogStatusNotification.req",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:LogStatusNotificationRequest",
+        //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
+        //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
+        //     },
         //     "UploadLogStatusEnumType": {
+        //       "description": "This contains the status of the log upload.\r\n",
+        //       "javaType": "UploadLogStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
@@ -105,17 +128,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         //         "PermissionDenied",
         //         "Uploaded",
         //         "UploadFailure",
-        //         "Uploading"
+        //         "Uploading",
+        //         "AcceptedCanceled"
         //       ]
         //     }
         //   },
         //   "type": "object",
         //   "additionalProperties": false,
         //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     },
         //     "status": {
         //       "$ref": "#/definitions/UploadLogStatusEnumType"
         //     },
         //     "requestId": {
+        //       "description": "The request id that was provided in GetLogRequest that started this log upload. This field is mandatory,\r\nunless the message was triggered by a TriggerMessageRequest AND there is no log upload ongoing.\r\n",
         //       "type": "integer"
         //     }
         //   },
@@ -231,6 +259,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
+                #region CustomData      [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region ChargeBoxId     [optional, OCPP_CSE]
 
                 if (JSON.ParseOptional("chargeBoxId",
@@ -254,11 +296,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 LogStatusNotificationRequest = new LogStatusNotificationRequest(ChargeBoxId,
                                                                                 Status,
                                                                                 LogRequestId,
+                                                                                CustomData,
                                                                                 RequestId);
 
                 if (CustomLogStatusNotificationRequestParser is not null)
                     LogStatusNotificationRequest = CustomLogStatusNotificationRequestParser(JSON,
-                                                                          LogStatusNotificationRequest);
+                                                                                            LogStatusNotificationRequest);
 
                 return true;
 
@@ -274,21 +317,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToJSON(CustomLogStatusNotificationSerializer = null)
+        #region ToJSON(CustomLogStatusNotificationSerializer = null, CustomCustomDataResponseSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomLogStatusNotificationSerializer">A delegate to serialize custom log status notification requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<LogStatusNotificationRequest>? CustomLogStatusNotificationSerializer = null)
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<LogStatusNotificationRequest>?  CustomLogStatusNotificationSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataResponseSerializer      = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("status",           Status.AsText()),
+                           new JProperty("status",           Status.     AsText()),
 
                            LogRequestId.HasValue
                                ? new JProperty("requestId",  LogRequestId.Value)
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
@@ -395,7 +444,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 return Status.       GetHashCode()       * 5 ^
-
                       (LogRequestId?.GetHashCode() ?? 0) * 3 ^
 
                        base.         GetHashCode();
@@ -412,10 +460,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Status,
-                             LogRequestId.HasValue
-                                 ? " (" + LogRequestId + ")"
-                                 :  ""
+            => String.Concat(
+
+                   Status,
+
+                   LogRequestId.HasValue
+                       ? " (" + LogRequestId + ")"
+                       :  ""
+
                );
 
         #endregion

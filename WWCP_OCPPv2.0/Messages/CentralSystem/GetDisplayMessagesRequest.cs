@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// An optional filter on display message identifications.
         /// This field SHALL NOT contain more ids than set in NumberOfDisplayMessages.maxLimit.
         /// </summary>
-        [Mandatory]
+        [Optional]
         public IEnumerable<DisplayMessage_Id>  Ids                            { get; }
 
         /// <summary>
@@ -79,19 +79,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetDisplayMessagesRequest(ChargeBox_Id                    ChargeBoxId,
+        public GetDisplayMessagesRequest(ChargeBox_Id                     ChargeBoxId,
 
-                                         Int32                           GetDisplayMessagesRequestId,
-                                         IEnumerable<DisplayMessage_Id>  Ids,
-                                         MessagePriorities?              Priority            = null,
-                                         MessageStates?                  State               = null,
+                                         Int32                            GetDisplayMessagesRequestId,
+                                         IEnumerable<DisplayMessage_Id>?  Ids                 = null,
+                                         MessagePriorities?               Priority            = null,
+                                         MessageStates?                   State               = null,
 
-                                         CustomData?                     CustomData          = null,
-                                         Request_Id?                     RequestId           = null,
-                                         DateTime?                       RequestTimestamp    = null,
-                                         TimeSpan?                       RequestTimeout      = null,
-                                         EventTracking_Id?               EventTrackingId     = null,
-                                         CancellationToken?              CancellationToken   = null)
+                                         CustomData?                      CustomData          = null,
+                                         Request_Id?                      RequestId           = null,
+                                         DateTime?                        RequestTimestamp    = null,
+                                         TimeSpan?                        RequestTimeout      = null,
+                                         EventTracking_Id?                EventTrackingId     = null,
+                                         CancellationToken?               CancellationToken   = null)
 
             : base(ChargeBoxId,
                    "GetDisplayMessages",
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         {
 
             this.GetDisplayMessagesRequestId  = GetDisplayMessagesRequestId;
-            this.Ids                          = Ids.Distinct();
+            this.Ids                          = Ids?.Distinct() ?? Array.Empty<DisplayMessage_Id>();
             this.Priority                     = Priority;
             this.State                        = State;
 

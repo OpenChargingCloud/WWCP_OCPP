@@ -97,9 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             this.IdToken                      = IdToken;
             this.Certificate                  = Certificate;
-            this.ISO15118CertificateHashData  = ISO15118CertificateHashData is not null
-                                                    ? ISO15118CertificateHashData.Distinct()
-                                                    : Array.Empty<OCSPRequestData>();
+            this.ISO15118CertificateHashData  = ISO15118CertificateHashData?.Distinct() ?? Array.Empty<OCSPRequestData>();
 
         }
 

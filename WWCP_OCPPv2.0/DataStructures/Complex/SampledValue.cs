@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Numerics;
 
 #endregion
 
@@ -42,37 +43,41 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public Decimal                Value               { get; }
 
         /// <summary>
-        /// 
+        /// The optional type of the value.
         /// </summary>
         [Optional]
         public ReadingContexts?       Context             { get; }
 
         /// <summary>
-        /// 
+        /// The optional type of the measurement.
+        /// Default: "Energy.Active.Import.Register".
         /// </summary>
         [Optional]
         public Measurands?            Measurand           { get; }
 
         /// <summary>
-        /// 
+        /// The optional indication how to interpret the measured value.
+        /// Please note that not all values of phase are applicable to all Measurands.
+        /// When phase is absent, the measured value is interpreted as an overall value.
         /// </summary>
         [Optional]
         public Phases?                Phase               { get; }
 
         /// <summary>
-        /// 
+        /// The optional indication where the measured value has been sampled.
+        /// Default: "Outlet".
         /// </summary>
         [Optional]
         public MeasurementLocations?  Location            { get; }
 
         /// <summary>
-        /// 
+        /// The optional meter value with signature and encoding information.
         /// </summary>
         [Optional]
         public SignedMeterValue?      SignedMeterValue    { get; }
 
         /// <summary>
-        /// 
+        /// The optional unit of measure including a multiplier.
         /// </summary>
         [Optional]
         public UnitsOfMeasure?        UnitOfMeasure       { get; }
@@ -84,13 +89,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Create a new sampled (energy) meter value.
         /// </summary>
-        /// <param name="Value">The measured value.</param>
-        /// <param name="Context"></param>
-        /// <param name="Measurand"></param>
-        /// <param name="Phase"></param>
-        /// <param name="Location"></param>
-        /// <param name="SignedMeterValue"></param>
-        /// <param name="UnitOfMeasure"></param>
+        /// <param name="Value">A measured value.</param>
+        /// <param name="Context">An optional type of the value.</param>
+        /// <param name="Measurand">An optional type of the measurement. Default: "Energy.Active.Import.Register".</param>
+        /// <param name="Phase">An optional indication how to interpret the measured value.</param>
+        /// <param name="Location">An optional indication where the measured value has been sampled. Default: "Outlet".</param>
+        /// <param name="SignedMeterValue">An optional meter value with signature and encoding information.</param>
+        /// <param name="UnitOfMeasure">An optional unit of measure including a multiplier.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public SampledValue(Decimal                Value,
                             ReadingContexts?       Context            = null,
@@ -120,10 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Documentation
 
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:SampledValueType",
-        //   "comment": "OCPP 2.0.1 FINAL",
+        // "SampledValueType": {
         //   "description": "Sampled_ Value\r\nurn:x-oca:ocpp:uid:2:233266\r\nSingle sampled value in MeterValues. Each value can be accompanied by optional fields.\r\n\r\nTo save on mobile data usage, default values of all of the optional fields are such that. The value without any additional fields will be interpreted, as a register reading of active import energy in Wh (Watt-hour) units.\r\n",
         //   "javaType": "SampledValue",
         //   "type": "object",

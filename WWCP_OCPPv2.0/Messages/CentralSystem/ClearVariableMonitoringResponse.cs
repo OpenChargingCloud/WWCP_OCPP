@@ -63,6 +63,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         {
 
+            if (!ClearMonitoringResults.Any())
+                throw new ArgumentException("The given enumeration of clear variable monitoring results must not be empty!",
+                                            nameof(ClearMonitoringResults));
+
             this.ClearMonitoringResults = ClearMonitoringResults.Distinct();
 
         }

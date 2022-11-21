@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
-    /// The MeterValues request.
+    /// The meter values request.
     /// </summary>
     public class MeterValuesRequest : ARequest<MeterValuesRequest>
     {
@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public Transaction_Id?          TransactionId    { get; }
 
         /// <summary>
-        /// The sampled MeterValues with timestamps.
+        /// The sampled meter values with timestamps.
         /// </summary>
         public IEnumerable<MeterValue>  MeterValues      { get; }
 
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new MeterValues request.
+        /// Create a new meter values request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The connector identification at the charge point.</param>
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="MeterValuesRequest">The parsed MeterValues request.</param>
+        /// <param name="MeterValuesRequest">The parsed meter values request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(XElement                 XML,
                                        Request_Id               RequestId,
@@ -429,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="MeterValuesRequest">The parsed MeterValues request.</param>
+        /// <param name="MeterValuesRequest">The parsed meter values request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                  JSON,
                                        Request_Id               RequestId,
@@ -576,13 +576,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToJSON(CustomMeterValuesRequestSerializer = null, CustomMeterValueSerializer = null, CustomSampledValueSerializer = null)
+        #region ToJSON(CustomMeterValuesRequestSerializer = null, CustomMeterValueSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomMeterValuesRequestSerializer">A delegate to serialize custom MeterValues requests.</param>
-        /// <param name="CustomMeterValueSerializer">A delegate to serialize custom MeterValues.</param>
+        /// <param name="CustomMeterValuesRequestSerializer">A delegate to serialize custom meter values requests.</param>
+        /// <param name="CustomMeterValueSerializer">A delegate to serialize custom meter values.</param>
         /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesRequest>?  CustomMeterValuesRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<MeterValue>?          CustomMeterValueSerializer           = null,
@@ -620,8 +620,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Compares two MeterValues requests for equality.
         /// </summary>
-        /// <param name="MeterValuesRequest1">A MeterValues request.</param>
-        /// <param name="MeterValuesRequest2">Another MeterValues request.</param>
+        /// <param name="MeterValuesRequest1">A meter values request.</param>
+        /// <param name="MeterValuesRequest2">Another meter values request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (MeterValuesRequest? MeterValuesRequest1,
                                            MeterValuesRequest? MeterValuesRequest2)
@@ -646,8 +646,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Compares two MeterValues requests for inequality.
         /// </summary>
-        /// <param name="MeterValuesRequest1">A MeterValues request.</param>
-        /// <param name="MeterValuesRequest2">Another MeterValues request.</param>
+        /// <param name="MeterValuesRequest1">A meter values request.</param>
+        /// <param name="MeterValuesRequest2">Another meter values request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (MeterValuesRequest? MeterValuesRequest1,
                                            MeterValuesRequest? MeterValuesRequest2)

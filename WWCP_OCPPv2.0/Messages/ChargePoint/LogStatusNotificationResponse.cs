@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
@@ -35,16 +35,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region LogStatusNotificationResponse(Request)
+        #region LogStatusNotificationResponse(Request, ...)
 
         /// <summary>
         /// Create a new log status notification response.
         /// </summary>
         /// <param name="Request">The log status notification request leading to this response.</param>
-        public LogStatusNotificationResponse(CP.LogStatusNotificationRequest Request)
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        public LogStatusNotificationResponse(CP.LogStatusNotificationRequest  Request,
+                                             CustomData?                      CustomData   = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   CustomData)
 
         { }
 
@@ -74,9 +77,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:1.6:2020:3:LogStatusNotification.conf",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:LogStatusNotificationResponse",
+        //   "comment": "OCPP 2.0.1 FINAL",
+        //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
+        //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
+        //     }
+        //   },
         //   "type": "object",
-        //   "additionalProperties": false
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     }
+        //   }
         // }
 
         #endregion
@@ -130,8 +155,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                LogStatusNotificationResponse  = new LogStatusNotificationResponse(Request);
-                ErrorResponse                  = null;
+                LogStatusNotificationResponse  = null;
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                LogStatusNotificationResponse  = new LogStatusNotificationResponse(Request,
+                                                                                   CustomData);
 
                 if (CustomLogStatusNotificationResponseParser is not null)
                     LogStatusNotificationResponse = CustomLogStatusNotificationResponseParser(JSON,
@@ -151,16 +193,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToJSON(CustomLogStatusNotificationResponseSerializer = null)
+        #region ToJSON(CustomLogStatusNotificationResponseSerializer = null, CustomCustomDataResponseSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomLogStatusNotificationResponseSerializer">A delegate to serialize custom log status notification responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<LogStatusNotificationResponse>? CustomLogStatusNotificationResponseSerializer = null)
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<LogStatusNotificationResponse>?  CustomLogStatusNotificationResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                     CustomCustomDataResponseSerializer              = null)
         {
 
-            var json = JSONObject.Create();
+            var json = JSONObject.Create(
+
+                           CustomData is not null
+                               ? new JProperty("customData", CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               : null
+
+                       );
 
             return CustomLogStatusNotificationResponseSerializer is not null
                        ? CustomLogStatusNotificationResponseSerializer(this, json)
@@ -253,7 +303,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="LogStatusNotificationResponse">A log status notification response to compare with.</param>
         public override Boolean Equals(LogStatusNotificationResponse? LogStatusNotificationResponse)
 
-            => LogStatusNotificationResponse is not null;
+            => LogStatusNotificationResponse is not null &&
+                   base.GenericEquals(LogStatusNotificationResponse);
 
         #endregion
 

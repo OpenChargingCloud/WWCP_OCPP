@@ -95,6 +95,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         {
 
+            if (!ComponentCriteria.Any())
+                throw new ArgumentException("The given enumeration of criteria for components for which a report is requested must not be empty!",
+                                            nameof(ComponentCriteria));
+
+            if (!ComponentVariables.Any())
+                throw new ArgumentException("The given enumeration of components and variables for which a report is requested must not be empty!",
+                                            nameof(ComponentVariables));
+
             this.GetReportRequestId  = GetReportRequestId;
             this.ComponentCriteria   = ComponentCriteria. Distinct();
             this.ComponentVariables  = ComponentVariables.Distinct();

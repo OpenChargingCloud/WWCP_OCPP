@@ -17,15 +17,13 @@
 
 #region Usings
 
-using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
@@ -37,16 +35,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region MeterValuesResponse(Request)
+        #region MeterValuesResponse(Request, ...)
 
         /// <summary>
         /// Create a new meter values response.
         /// </summary>
         /// <param name="Request">The meter values request leading to this response.</param>
-        public MeterValuesResponse(CP.MeterValuesRequest  Request)
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        public MeterValuesResponse(CP.MeterValuesRequest  Request,
+                                   CustomData?            CustomData   = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   CustomData)
 
         { }
 
@@ -74,48 +75,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Documentation
 
-        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:ns   = "urn://Ocpp/Cs/2015/10/">
-        //    <soap:Header/>
-        //    <soap:Body>
-        //       <ns:meterValuesResponse />
-        //    </soap:Body>
-        // </soap:Envelope>
-
         // {
-        //     "$schema": "http://json-schema.org/draft-04/schema#",
-        //     "id":      "urn:OCPP:1.6:2019:12:MeterValuesResponse",
-        //     "title":   "MeterValuesResponse",
-        //     "type":    "object",
-        //     "properties": {},
-        //     "additionalProperties": false
+        //   "$schema": "http://json-schema.org/draft-06/schema#",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:MeterValuesResponse",
+        //   "comment": "OCPP 2.0.1 FINAL",
+        //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
+        //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
+        //     }
+        //   },
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     }
+        //   }
         // }
-
-        #endregion
-
-        #region (static) Parse   (Request, XML)
-
-        /// <summary>
-        /// Parse the given XML representation of a meter values response.
-        /// </summary>
-        /// <param name="Request">The meter values request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        public static MeterValuesResponse Parse(CP.MeterValuesRequest  Request,
-                                                XElement               XML)
-        {
-
-            if (TryParse(Request,
-                         XML,
-                         out var meterValuesResponse,
-                         out var errorResponse))
-            {
-                return meterValuesResponse!;
-            }
-
-            throw new ArgumentException("The given XML representation of a boot notification response is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
 
         #endregion
 
@@ -148,41 +135,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out MeterValuesResponse, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a meter values response.
-        /// </summary>
-        /// <param name="Request">The meter values request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="MeterValuesResponse">The parsed meter values response.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CP.MeterValuesRequest     Request,
-                                       XElement                  XML,
-                                       out MeterValuesResponse?  MeterValuesResponse,
-                                       out String?               ErrorResponse)
-        {
-
-            try
-            {
-
-                MeterValuesResponse = new MeterValuesResponse(Request);
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                MeterValuesResponse  = null;
-                ErrorResponse        = "The given XML representation of a meter values response is invalid: " + e.Message;
-                return false;
-            }
-
-        }
-
-        #endregion
-
         #region (static) TryParse(Request, JSON, out MeterValuesResponse, out ErrorResponse, CustomMeterValuesResponseParser = null)
 
         /// <summary>
@@ -205,7 +157,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                MeterValuesResponse = new MeterValuesResponse(Request);
+                MeterValuesResponse = null;
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                MeterValuesResponse = new MeterValuesResponse(Request,
+                                                              CustomData);
 
                 if (CustomMeterValuesResponseParser is not null)
                     MeterValuesResponse = CustomMeterValuesResponseParser(JSON,
@@ -225,27 +195,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new (OCPPNS.OCPPv1_6_CS + "meterValuesResponse");
-
-        #endregion
-
-        #region ToJSON(CustomMeterValuesResponseSerializer = null)
+        #region ToJSON(CustomMeterValuesResponseSerializer = null, CustomCustomDataResponseSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomMeterValuesResponseSerializer">A delegate to serialize custom meter values responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesResponse>? CustomMeterValuesResponseSerializer = null)
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesResponse>?  CustomMeterValuesResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataResponseSerializer    = null)
         {
 
-            var json = JSONObject.Create();
+            var json = JSONObject.Create(
+
+                           CustomData is not null
+                               ? new JProperty("customData", CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               : null
+
+                       );
 
             return CustomMeterValuesResponseSerializer is not null
                        ? CustomMeterValuesResponseSerializer(this, json)
@@ -337,7 +304,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="MeterValuesResponse">A meter values response to compare with.</param>
         public override Boolean Equals(MeterValuesResponse? MeterValuesResponse)
 
-            => MeterValuesResponse is not null;
+            => MeterValuesResponse is not null &&
+                   base.GenericEquals(MeterValuesResponse);
 
         #endregion
 

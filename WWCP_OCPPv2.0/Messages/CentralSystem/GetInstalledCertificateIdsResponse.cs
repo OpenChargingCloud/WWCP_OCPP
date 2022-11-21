@@ -79,6 +79,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         {
 
+            if (!CertificateHashDataChain.Any())
+                throw new ArgumentException("The given enumeration of information about available certificates must not be empty!",
+                                            nameof(CertificateHashDataChain));
+
             this.Status                    = Status;
             this.CertificateHashDataChain  = CertificateHashDataChain.Distinct();
             this.StatusInfo                = StatusInfo;

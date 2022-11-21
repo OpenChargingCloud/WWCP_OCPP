@@ -79,6 +79,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         {
 
+            if (!VariableData.Any())
+                throw new ArgumentException("The given enumeration of variable data must not be empty!",
+                                            nameof(VariableData));
+
             this.VariableData = VariableData.Distinct();
 
         }
