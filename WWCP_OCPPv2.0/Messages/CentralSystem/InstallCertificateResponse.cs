@@ -27,43 +27,42 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
-    /// A cancel reservation response.
+    /// An install certificate response.
     /// </summary>
-    public class CancelReservationResponse : AResponse<CS.CancelReservationRequest,
-                                                          CancelReservationResponse>
+    public class InstallCertificateResponse : AResponse<CS.InstallCertificateRequest,
+                                                           InstallCertificateResponse>
     {
 
         #region Properties
 
         /// <summary>
-        /// The success or failure of the reservation cancellation.
+        /// The success or failure of the install certificate request.
         /// </summary>
-        [Mandatory]
-        public CancelReservationStatus  Status        { get; }
+        public CertificateStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?              StatusInfo    { get; }
+        public StatusInfo?        StatusInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region CancelReservationResponse(Request, Status, StatusInfo = null, ...)
+        #region InstallCertificateResponse(Request, Status)
 
         /// <summary>
-        /// Create a new cancel reservation response.
+        /// Create a new install certificate response.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
-        /// <param name="Status">The success or failure of the reservation.</param>
+        /// <param name="Request">The install certificate request leading to this response.</param>
+        /// <param name="Status">The success or failure of the install certificate request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public CancelReservationResponse(CS.CancelReservationRequest  Request,
-                                         CancelReservationStatus      Status,
-                                         StatusInfo?                  StatusInfo   = null,
-                                         CustomData?                  CustomData   = null)
+        public InstallCertificateResponse(CS.InstallCertificateRequest  Request,
+                                          CertificateStatus             Status,
+                                          StatusInfo?                   StatusInfo   = null,
+                                          CustomData?                   CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -78,15 +77,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region CancelReservationResponse(Request, Result)
+        #region InstallCertificateResponse(Request, Result)
 
         /// <summary>
-        /// Create a new cancel reservation response.
+        /// Create a new install certificate response.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
+        /// <param name="Request">The install certificate request leading to this response.</param>
         /// <param name="Result">A result.</param>
-        public CancelReservationResponse(CS.CancelReservationRequest  Request,
-                                         Result                       Result)
+        public InstallCertificateResponse(CS.InstallCertificateRequest  Request,
+                                          Result                        Result)
 
             : base(Request,
                    Result)
@@ -102,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:CancelReservationResponse",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:InstallCertificateResponse",
         //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
         //     "CustomDataType": {
@@ -119,14 +118,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //         "vendorId"
         //       ]
         //     },
-        //     "CancelReservationStatusEnumType": {
-        //       "description": "This indicates the success or failure of the canceling of a reservation by CSMS.\r\n",
-        //       "javaType": "CancelReservationStatusEnum",
+        //     "InstallCertificateStatusEnumType": {
+        //       "description": "Charging Station indicates if installation was successful.\r\n",
+        //       "javaType": "InstallCertificateStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
         //         "Accepted",
-        //         "Rejected"
+        //         "Rejected",
+        //         "Failed"
         //       ]
         //     },
         //     "StatusInfoType": {
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "status": {
-        //       "$ref": "#/definitions/CancelReservationStatusEnumType"
+        //       "$ref": "#/definitions/InstallCertificateStatusEnumType"
         //     },
         //     "statusInfo": {
         //       "$ref": "#/definitions/StatusInfoType"
@@ -174,64 +174,64 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomCancelReservationResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomInstallCertificateResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a cancel reservation response.
+        /// Parse the given JSON representation of an install certificate response.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
+        /// <param name="Request">The install certificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomCancelReservationResponseParser">A delegate to parse custom cancel reservation responses.</param>
-        public static CancelReservationResponse Parse(CS.CancelReservationRequest                              Request,
-                                                      JObject                                                  JSON,
-                                                      CustomJObjectParserDelegate<CancelReservationResponse>?  CustomCancelReservationResponseParser   = null)
+        /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
+        public static InstallCertificateResponse Parse(CS.InstallCertificateRequest                              Request,
+                                                       JObject                                                   JSON,
+                                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
         {
 
             if (TryParse(Request,
                          JSON,
-                         out var cancelReservationResponse,
+                         out var installCertificateResponse,
                          out var errorResponse,
-                         CustomCancelReservationResponseParser))
+                         CustomInstallCertificateResponseParser))
             {
-                return cancelReservationResponse!;
+                return installCertificateResponse!;
             }
 
-            throw new ArgumentException("The given JSON representation of a cancel reservation response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an install certificate response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out CancelReservationResponse, out ErrorResponse, CustomCancelReservationResponseParser = null)
+        #region (static) TryParse(Request, JSON, out InstallCertificateResponse, out ErrorResponse, CustomInstallCertificateResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a cancel reservation response.
+        /// Try to parse the given JSON representation of an install certificate response.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
+        /// <param name="Request">The install certificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CancelReservationResponse">The parsed cancel reservation response.</param>
+        /// <param name="InstallCertificateResponse">The parsed install certificate response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomCancelReservationResponseParser">A delegate to parse custom cancel reservation responses.</param>
-        public static Boolean TryParse(CS.CancelReservationRequest                              Request,
-                                       JObject                                                  JSON,
-                                       out CancelReservationResponse?                           CancelReservationResponse,
-                                       out String?                                              ErrorResponse,
-                                       CustomJObjectParserDelegate<CancelReservationResponse>?  CustomCancelReservationResponseParser   = null)
+        /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
+        public static Boolean TryParse(CS.InstallCertificateRequest                              Request,
+                                       JObject                                                   JSON,
+                                       out InstallCertificateResponse?                           InstallCertificateResponse,
+                                       out String?                                               ErrorResponse,
+                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
         {
 
             try
             {
 
-                CancelReservationResponse = null;
+                InstallCertificateResponse = null;
 
                 #region Status        [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "cancel reservation status",
-                                       CancelReservationStatusExtentions.Parse,
-                                       out CancelReservationStatus Status,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "install certificate status",
+                                         CertificateStatusExtentions.TryParse,
+                                         out CertificateStatus Status,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -267,22 +267,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #endregion
 
 
-                CancelReservationResponse = new CancelReservationResponse(Request,
-                                                                          Status,
-                                                                          StatusInfo,
-                                                                          CustomData);
+                InstallCertificateResponse = new InstallCertificateResponse(Request,
+                                                                            Status,
+                                                                            StatusInfo,
+                                                                            CustomData);
 
-                if (CustomCancelReservationResponseParser is not null)
-                    CancelReservationResponse = CustomCancelReservationResponseParser(JSON,
-                                                                                      CancelReservationResponse);
+                if (CustomInstallCertificateResponseParser is not null)
+                    InstallCertificateResponse = CustomInstallCertificateResponseParser(JSON,
+                                                                                        InstallCertificateResponse);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                CancelReservationResponse  = null;
-                ErrorResponse              = "The given JSON representation of a cancel reservation response is invalid: " + e.Message;
+                InstallCertificateResponse  = null;
+                ErrorResponse               = "The given JSON representation of an install certificate response is invalid: " + e.Message;
                 return false;
             }
 
@@ -290,17 +290,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomCancelReservationResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
+        #region ToJSON(CustomInstallCertificateResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCancelReservationResponseSerializer">A delegate to serialize custom cancel reservation responses.</param>
+        /// <param name="CustomInstallCertificateResponseSerializer">A delegate to serialize custom install certificate responses.</param>
         /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<CancelReservationResponse>?  CustomCancelReservationResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?                 CustomStatusInfoResponseSerializer          = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataResponseSerializer          = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                  CustomStatusInfoResponseSerializer           = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataResponseSerializer           = null)
         {
 
             var json = JSONObject.Create(
@@ -318,8 +318,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                        );
 
-            return CustomCancelReservationResponseSerializer is not null
-                       ? CustomCancelReservationResponseSerializer(this, json)
+            return CustomInstallCertificateResponseSerializer is not null
+                       ? CustomInstallCertificateResponseSerializer(this, json)
                        : json;
 
         }
@@ -330,10 +330,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Static methods
 
         /// <summary>
-        /// The cancel reservation failed.
+        /// The install certificate failed.
         /// </summary>
-        /// <param name="Request">The cancel reservation request leading to this response.</param>
-        public static CancelReservationResponse Failed(CS.CancelReservationRequest Request)
+        /// <param name="Request">The install certificate request leading to this response.</param>
+        public static InstallCertificateResponse Failed(CS.InstallCertificateRequest Request)
 
             => new (Request,
                     Result.Server());
@@ -343,80 +343,80 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Operator overloading
 
-        #region Operator == (CancelReservationResponse1, CancelReservationResponse2)
+        #region Operator == (InstallCertificateResponse1, InstallCertificateResponse2)
 
         /// <summary>
-        /// Compares two cancel reservation responses for equality.
+        /// Compares two install certificate responses for equality.
         /// </summary>
-        /// <param name="CancelReservationResponse1">A cancel reservation response.</param>
-        /// <param name="CancelReservationResponse2">Another cancel reservation response.</param>
+        /// <param name="InstallCertificateResponse1">An install certificate response.</param>
+        /// <param name="InstallCertificateResponse2">Another install certificate response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (CancelReservationResponse? CancelReservationResponse1,
-                                           CancelReservationResponse? CancelReservationResponse2)
+        public static Boolean operator == (InstallCertificateResponse? InstallCertificateResponse1,
+                                           InstallCertificateResponse? InstallCertificateResponse2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(CancelReservationResponse1, CancelReservationResponse2))
+            if (ReferenceEquals(InstallCertificateResponse1, InstallCertificateResponse2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (CancelReservationResponse1 is null || CancelReservationResponse2 is null)
+            if (InstallCertificateResponse1 is null || InstallCertificateResponse2 is null)
                 return false;
 
-            return CancelReservationResponse1.Equals(CancelReservationResponse2);
+            return InstallCertificateResponse1.Equals(InstallCertificateResponse2);
 
         }
 
         #endregion
 
-        #region Operator != (CancelReservationResponse1, CancelReservationResponse2)
+        #region Operator != (InstallCertificateResponse1, InstallCertificateResponse2)
 
         /// <summary>
-        /// Compares two cancel reservation responses for inequality.
+        /// Compares two install certificate responses for inequality.
         /// </summary>
-        /// <param name="CancelReservationResponse1">A cancel reservation response.</param>
-        /// <param name="CancelReservationResponse2">Another cancel reservation response.</param>
+        /// <param name="InstallCertificateResponse1">An install certificate response.</param>
+        /// <param name="InstallCertificateResponse2">Another install certificate response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (CancelReservationResponse? CancelReservationResponse1,
-                                           CancelReservationResponse? CancelReservationResponse2)
+        public static Boolean operator != (InstallCertificateResponse? InstallCertificateResponse1,
+                                           InstallCertificateResponse? InstallCertificateResponse2)
 
-            => !(CancelReservationResponse1 == CancelReservationResponse2);
-
-        #endregion
+            => !(InstallCertificateResponse1 == InstallCertificateResponse2);
 
         #endregion
 
-        #region IEquatable<CancelReservationResponse> Members
+        #endregion
+
+        #region IEquatable<InstallCertificateResponse> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two cancel reservation responses for equality.
+        /// Compares two install certificate responses for equality.
         /// </summary>
-        /// <param name="Object">A cancel reservation response to compare with.</param>
+        /// <param name="Object">An install certificate response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is CancelReservationResponse cancelReservationResponse &&
-                   Equals(cancelReservationResponse);
+            => Object is InstallCertificateResponse installCertificateResponse &&
+                   Equals(installCertificateResponse);
 
         #endregion
 
-        #region Equals(CancelReservationResponse)
+        #region Equals(InstallCertificateResponse)
 
         /// <summary>
-        /// Compares two cancel reservation responses for equality.
+        /// Compares two install certificate responses for equality.
         /// </summary>
-        /// <param name="CancelReservationResponse">A cancel reservation response to compare with.</param>
-        public override Boolean Equals(CancelReservationResponse? CancelReservationResponse)
+        /// <param name="InstallCertificateResponse">An install certificate response to compare with.</param>
+        public override Boolean Equals(InstallCertificateResponse? InstallCertificateResponse)
 
-            => CancelReservationResponse is not null &&
+            => InstallCertificateResponse is not null &&
 
-               Status.     Equals(CancelReservationResponse.Status) &&
+               Status.Equals(InstallCertificateResponse.Status) &&
 
-             ((StatusInfo is     null && CancelReservationResponse.StatusInfo is     null) ||
-               StatusInfo is not null && CancelReservationResponse.StatusInfo is not null && StatusInfo.Equals(CancelReservationResponse.StatusInfo)) &&
+             ((StatusInfo is     null && InstallCertificateResponse.StatusInfo is     null) ||
+               StatusInfo is not null && InstallCertificateResponse.StatusInfo is not null && StatusInfo.Equals(InstallCertificateResponse.StatusInfo)) &&
 
-               base.GenericEquals(CancelReservationResponse);
+               base.GenericEquals(InstallCertificateResponse);
 
         #endregion
 

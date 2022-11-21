@@ -38,11 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// The current total cost, based on the information known by the CSMS, of the transaction including taxes.
         /// In the currency configured with the configuration Variable: [Currency]
         /// </summary>
+        [Mandatory]
         public Decimal         TotalCost        { get; }
 
         /// <summary>
         /// The unique transaction identification the costs are asked for.
         /// </summary>
+        [Mandatory]
         public Transaction_Id  TransactionId    { get; }
 
         #endregion
@@ -53,12 +55,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a new cost updated request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// 
         /// <param name="TotalCost">The current total cost, based on the information known by the CSMS, of the transaction including taxes. In the currency configured with the configuration Variable: [Currency]</param>
         /// <param name="TransactionId">The unique transaction identification the costs are asked for.</param>
         /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public CostUpdatedRequest(ChargeBox_Id        ChargeBoxId,
+
                                   Decimal             TotalCost,
                                   Transaction_Id      TransactionId,
 

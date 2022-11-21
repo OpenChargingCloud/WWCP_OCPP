@@ -37,11 +37,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// The optional identification of the charging profile to clear.
         /// </summary>
+        [Optional]
         public ChargingProfile_Id?    ChargingProfileId          { get; }
 
         /// <summary>
         /// The optional specification of the charging profile to clear.
         /// </summary>
+        [Optional]
         public ClearChargingProfile?  ChargingProfileCriteria    { get; }
 
         #endregion
@@ -52,11 +54,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a new clear charging profile request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ChargingProfileId">The optional identification of the charging profile to clear.</param>
         /// 
+        /// <param name="ChargingProfileId">An optional identification of the charging profile to clear.</param>
+        /// <param name="ChargingProfileCriteria">An optional specification of the charging profile to clear.</param>
+        /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ClearChargingProfileRequest(ChargeBox_Id           ChargeBoxId,
+
                                            ChargingProfile_Id?    ChargingProfileId         = null,
                                            ClearChargingProfile?  ChargingProfileCriteria   = null,
 

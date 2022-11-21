@@ -38,17 +38,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The success or failure of the get log command.
         /// </summary>
+        [Mandatory]
         public LogStatus    Status        { get; }
 
         /// <summary>
         /// The name of the log file that will be uploaded.
         /// This field is not present when no logging information is available.
         /// </summary>
+        [Optional]
         public String?      Filename      { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
+        [Optional]
         public StatusInfo?  StatusInfo    { get; }
 
         #endregion
@@ -387,7 +390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             => GetLogResponse is not null &&
 
-               Status.Equals(GetLogResponse.Status) &&
+               Status.     Equals(GetLogResponse.Status) &&
 
              ((Filename   is     null && GetLogResponse.Filename   is     null) ||
               (Filename   is not null && GetLogResponse.Filename   is not null && Filename.  Equals(GetLogResponse.Filename)))  &&

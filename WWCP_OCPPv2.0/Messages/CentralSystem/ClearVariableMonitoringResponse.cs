@@ -38,6 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The enumeration of clear variable monitoring results.
         /// </summary>
+        [Mandatory]
         public IEnumerable<ClearMonitoringResult>  ClearMonitoringResults    { get; }
 
         #endregion
@@ -317,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                                                                                                                           CustomCustomDataResponseSerializer)))),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",             CustomData.ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );
@@ -415,8 +416,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             => ClearVariableMonitoringResponse is not null &&
 
-               ClearMonitoringResults.Count().Equals(ClearVariableMonitoringResponse.ClearMonitoringResults.Count())     &&
-               ClearMonitoringResults.All(data => ClearVariableMonitoringResponse.ClearMonitoringResults.Contains(data)) &&
+               ClearMonitoringResults.Count().Equals(ClearVariableMonitoringResponse.ClearMonitoringResults.Count())         &&
+               ClearMonitoringResults.All(result => ClearVariableMonitoringResponse.ClearMonitoringResults.Contains(result)) &&
 
                base.GenericEquals(ClearVariableMonitoringResponse);
 

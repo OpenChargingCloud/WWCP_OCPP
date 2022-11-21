@@ -38,11 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The success or failure of the clear display message command.
         /// </summary>
+        [Mandatory]
         public ClearMessageStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
+        [Optional]
         public StatusInfo?         StatusInfo    { get; }
 
         #endregion

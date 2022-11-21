@@ -57,10 +57,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// Create a new boot notification request.
         /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// 
         /// <param name="ChargingStation">A physical system where an electrical vehicle (EV) can be charged.</param>
         /// <param name="Reason">The the reason for sending this boot notification to the CSMS.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public BootNotificationRequest(ChargeBox_Id        ChargeBoxId,
+
                                        ChargingStation     ChargingStation,
                                        BootReasons         Reason,
 

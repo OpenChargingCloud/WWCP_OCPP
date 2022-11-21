@@ -38,11 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The success or failure of the certificate sign request.
         /// </summary>
+        [Mandatory]
         public CertificateSignedStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
+        [Optional]
         public StatusInfo?              StatusInfo    { get; }
 
         #endregion

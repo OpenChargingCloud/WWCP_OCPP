@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The optional enumeration of information about available certificates.
         /// </summary>
-        [Optional]
+        [Mandatory]
         public IEnumerable<CertificateHashData>  CertificateHashDataChain    { get; }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region GetInstalledCertificateIdsResponse(Request, Status, CertificateHashDataChain = null, StatusInfo = null, ...)
+        #region GetInstalledCertificateIdsResponse(Request, Status, CertificateHashDataChain, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new get installed certificate ids response.
@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public GetInstalledCertificateIdsResponse(CS.GetInstalledCertificateIdsRequest  Request,
                                                   GetInstalledCertificateStatus         Status,
-                                                  IEnumerable<CertificateHashData>?     CertificateHashDataChain   = null,
+                                                  IEnumerable<CertificateHashData>      CertificateHashDataChain,
                                                   StatusInfo?                           StatusInfo                 = null,
                                                   CustomData?                           CustomData                 = null)
 
@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         {
 
             this.Status                    = Status;
-            this.CertificateHashDataChain  = CertificateHashDataChain ?? Array.Empty<CertificateHashData>();
+            this.CertificateHashDataChain  = CertificateHashDataChain.Distinct();
             this.StatusInfo                = StatusInfo;
 
         }
@@ -348,17 +348,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #endregion
 
-                #region CertificateHashDataChain    [optional]
+                #region CertificateHashDataChain    [mandatory]
 
-                if (JSON.ParseOptionalJSON("certificateHashDataChain",
-                                           "certificate hash data chain",
-                                           CertificateHashData.TryParse,
-                                           out IEnumerable<CertificateHashData> CertificateHashDataChain,
-                                           out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("certificateHashDataChain",
+                                             "certificate hash data chain",
+                                             CertificateHashData.TryParse,
+                                             out IEnumerable<CertificateHashData> CertificateHashDataChain,
+                                             out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
+
+                if (CertificateHashDataChain is null)
+                    return false;
 
                 #endregion
 
@@ -433,10 +435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             var json = JSONObject.Create(
 
                                  new JProperty("status",                    Status.    AsText()),
-
-                           CertificateHashDataChain.Any()
-                               ? new JProperty("certificateHashDataChain",  new JArray(CertificateHashDataChain.Select(certificateHashData => certificateHashData.ToJSON(CustomCertificateHashDataSerializer))))
-                               : null,
+                                 new JProperty("certificateHashDataChain",  new JArray(CertificateHashDataChain.Select(certificateHashData => certificateHashData.ToJSON(CustomCertificateHashDataSerializer)))),
 
                            StatusInfo is not null
                                ? new JProperty("statusInfo",                StatusInfo.ToJSON(CustomStatusInfoResponseSerializer,

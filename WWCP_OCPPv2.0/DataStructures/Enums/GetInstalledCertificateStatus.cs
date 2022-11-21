@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     {
 
         /// <summary>
-        /// Unknown generic status.
+        /// Unknown get installed certificate status.
         /// </summary>
         Unknown,
 

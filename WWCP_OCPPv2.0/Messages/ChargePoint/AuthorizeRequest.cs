@@ -37,16 +37,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The identifier that needs to be authorized.
         /// </summary>
+        [Mandatory]
         public IdToken                       IdToken                        { get; }
 
         /// <summary>
         /// The optional X.509 certificated presented by the electric vehicle/user (PEM format) 5500
         /// </summary>
+        [Optional]
         public Certificate?                  Certificate                    { get; }
 
         /// <summary>
         /// Optional information to verify the electric vehicle/user contract certificate via OCSP. [0...4]
         /// </summary>
+        [Optional]
         public IEnumerable<OCSPRequestData>  ISO15118CertificateHashData    { get; }
 
         #endregion
@@ -56,6 +59,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// Create a new authorize request.
         /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// 
         /// <param name="IdToken">The identifier that needs to be authorized.</param>
         /// <param name="Certificate">An optional X.509 certificated presented by the electric vehicle/user (PEM format).</param>
         /// <param name="ISO15118CertificateHashData">Optional information to verify the electric vehicle/user contract certificate via OCSP.</param>
@@ -63,7 +68,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public AuthorizeRequest(ChargeBox_Id                   ChargeBoxId,
+
                                 IdToken                        IdToken,
                                 Certificate?                   Certificate                   = null,
                                 IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData   = null,

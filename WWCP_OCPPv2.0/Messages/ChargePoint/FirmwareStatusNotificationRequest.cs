@@ -37,13 +37,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The status of the firmware installation.
         /// </summary>
+        [Mandatory]
         public FirmwareStatus  Status                     { get; }
-
 
         /// <summary>
         /// The (optional) request id that was provided in the UpdateFirmwareRequest that started this firmware update.
         /// This field is _mandatory_, unless the message was triggered by a TriggerMessageRequest AND there is no firmware update ongoing.
         /// </summary>
+        [Optional]
         public Int64?          UpdateFirmwareRequestId    { get; }
 
         #endregion
@@ -54,11 +55,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// Create a new firmware status notification request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="Status">The status of the firmware installation.</param>
         /// 
+        /// <param name="Status">The status of the firmware installation.</param>
+        /// <param name="UpdateFirmwareRequestId">The (optional) request id that was provided in the UpdateFirmwareRequest that started this firmware update.</param>
+        /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public FirmwareStatusNotificationRequest(ChargeBox_Id        ChargeBoxId,
+
                                                  FirmwareStatus      Status,
                                                  Int64?              UpdateFirmwareRequestId   = null,
 

@@ -37,22 +37,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// The unique identification of this get display messages request.
         /// </summary>
+        [Mandatory]
         public Int32                           GetDisplayMessagesRequestId    { get; }
 
         /// <summary>
         /// An optional filter on display message identifications.
         /// This field SHALL NOT contain more ids than set in NumberOfDisplayMessages.maxLimit.
         /// </summary>
+        [Mandatory]
         public IEnumerable<DisplayMessage_Id>  Ids                            { get; }
 
         /// <summary>
         /// The optional filter on message priorities.
         /// </summary>
+        [Optional]
         public MessagePriorities?              Priority                       { get; }
 
         /// <summary>
         /// The optional filter on message states.
         /// </summary>
+        [Optional]
         public MessageStates?                  State                          { get; }
 
         #endregion
@@ -63,6 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a new get display messages request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// 
         /// <param name="GetDisplayMessagesRequestId">The unique identification of this get display messages request.</param>
         /// <param name="Ids">An optional filter on display message identifications. This field SHALL NOT contain more ids than set in NumberOfDisplayMessages.maxLimit.</param>
         /// <param name="Priority">The optional filter on message priorities.</param>
@@ -71,18 +76,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public GetDisplayMessagesRequest(ChargeBox_Id                     ChargeBoxId,
-                                         Int32                            GetDisplayMessagesRequestId,
-                                         IEnumerable<DisplayMessage_Id>?  Ids                 = null,
-                                         MessagePriorities?               Priority            = null,
-                                         MessageStates?                   State               = null,
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public GetDisplayMessagesRequest(ChargeBox_Id                    ChargeBoxId,
 
-                                         CustomData?                      CustomData          = null,
-                                         Request_Id?                      RequestId           = null,
-                                         DateTime?                        RequestTimestamp    = null,
-                                         TimeSpan?                        RequestTimeout      = null,
-                                         EventTracking_Id?                EventTrackingId     = null,
-                                         CancellationToken?               CancellationToken   = null)
+                                         Int32                           GetDisplayMessagesRequestId,
+                                         IEnumerable<DisplayMessage_Id>  Ids,
+                                         MessagePriorities?              Priority            = null,
+                                         MessageStates?                  State               = null,
+
+                                         CustomData?                     CustomData          = null,
+                                         Request_Id?                     RequestId           = null,
+                                         DateTime?                       RequestTimestamp    = null,
+                                         TimeSpan?                       RequestTimeout      = null,
+                                         EventTracking_Id?               EventTrackingId     = null,
+                                         CancellationToken?              CancellationToken   = null)
 
             : base(ChargeBoxId,
                    "GetDisplayMessages",
@@ -96,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         {
 
             this.GetDisplayMessagesRequestId  = GetDisplayMessagesRequestId;
-            this.Ids                          = Ids ?? Array.Empty<DisplayMessage_Id>();
+            this.Ids                          = Ids.Distinct();
             this.Priority                     = Priority;
             this.State                        = State;
 
@@ -275,16 +284,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #endregion
 
-                #region Ids                            [optional]
+                #region Ids                            [mandatory]
 
-                if (JSON.ParseOptionalHashSet("id",
-                                              "display message identifications",
-                                              DisplayMessage_Id.TryParse,
-                                              out HashSet<DisplayMessage_Id> Ids,
-                                              out ErrorResponse))
+                if (!JSON.ParseMandatoryHashSet("id",
+                                                "display message identifications",
+                                                DisplayMessage_Id.TryParse,
+                                                out HashSet<DisplayMessage_Id> Ids,
+                                                out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion
@@ -389,10 +397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             var json = JSONObject.Create(
 
                                  new JProperty("requestId",  GetDisplayMessagesRequestId),
-
-                           Ids.Any()
-                               ? new JProperty("id",         new JArray(Ids.Select(id => id.Value)))
-                               : null,
+                                 new JProperty("id",         new JArray(Ids.Select(id => id.Value))),
 
                            Priority.HasValue
                                ? new JProperty("priority",   Priority.Value.AsText())
@@ -485,8 +490,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                GetDisplayMessagesRequestId.Equals(GetDisplayMessagesRequest.GetDisplayMessagesRequestId) &&
 
-               Ids.Count().Equals(GetDisplayMessagesRequest.Ids.Count())     &&
-               Ids.All(data => GetDisplayMessagesRequest.Ids.Contains(data)) &&
+               Ids.Count().Equals(GetDisplayMessagesRequest.Ids.Count()) &&
+               Ids.All(id => GetDisplayMessagesRequest.Ids.Contains(id)) &&
 
             ((!Priority.HasValue && !GetDisplayMessagesRequest.Priority.HasValue) ||
               (Priority.HasValue &&  GetDisplayMessagesRequest.Priority.HasValue && Priority.Value.Equals(GetDisplayMessagesRequest.Priority.Value))) &&

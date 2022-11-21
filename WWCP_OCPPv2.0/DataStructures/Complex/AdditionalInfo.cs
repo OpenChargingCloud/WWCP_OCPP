@@ -145,9 +145,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="AdditionalInfo">The parsed additional info.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject             JSON,
-                                       out AdditionalInfo  AdditionalInfo,
-                                       out String          ErrorResponse)
+        public static Boolean TryParse(JObject              JSON,
+                                       out AdditionalInfo?  AdditionalInfo,
+                                       out String?          ErrorResponse)
 
             => TryParse(JSON,
                         out AdditionalInfo,

@@ -90,6 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a customer information request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// 
         /// <param name="CustomerInformationRequestId">An unique identification of the customer information request.</param>
         /// <param name="Report">Whether the charging station should return NotifyCustomerInformationRequest messages containing information about the customer referred to.</param>
         /// <param name="Clear">Whether the charging station should clear all information about the customer referred to.</param>
@@ -97,13 +98,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="IdToken">An optional IdToken of the customer this request refers to.</param>
         /// <param name="CustomerCertificate">An optional certificate of the customer this request refers to.</param>
         /// 
-        /// <param name="CustomData"></param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout"></param>
-        /// <param name="EventTrackingId"></param>
-        /// <param name="CancellationToken"></param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public CustomerInformationRequest(ChargeBox_Id          ChargeBoxId,
+
                                           Int64                 CustomerInformationRequestId,
                                           Boolean               Report,
                                           Boolean               Clear,

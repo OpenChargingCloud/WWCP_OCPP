@@ -38,12 +38,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// The identification token info.
         /// </summary>
+        [Mandatory]
         public IdTokenInfo                  IdTokenInfo          { get; }
 
         /// <summary>
         /// The optional certificate status information.
         /// When all certificates are valid: return 'Accepted', but when one of the certificates was revoked, return 'CertificateRevoked'.
         /// </summary>
+        [Optional]
         public AuthorizeCertificateStatus?  CertificateStatus    { get; }
 
         #endregion

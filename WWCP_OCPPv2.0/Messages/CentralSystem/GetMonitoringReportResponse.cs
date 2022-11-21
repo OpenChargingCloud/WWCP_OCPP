@@ -27,16 +27,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
-    /// A get base report response.
+    /// A get monitoring report response.
     /// </summary>
-    public class GetBaseReportResponse : AResponse<CS.GetBaseReportRequest,
-                                                      GetBaseReportResponse>
+    public class GetMonitoringReportResponse : AResponse<CS.GetMonitoringReportRequest,
+                                                            GetMonitoringReportResponse>
     {
 
         #region Properties
 
         /// <summary>
-        /// Whether the charging station is able to accept this request.
+        /// The success or failure of the get monitoring report command.
         /// </summary>
         [Mandatory]
         public GenericDeviceModelStatus  Status        { get; }
@@ -51,19 +51,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region GetBaseReportResponse(Request, Status, StatusInfo = null, ...)
+        #region GetMonitoringReportResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
-        /// Create a new get base report response.
+        /// Create a new get monitoring report response.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
-        /// <param name="Status">Whether the charging station is able to accept this request.</param>
+        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="Status">The success or failure of the get monitoring report command.</param>
+        /// <param name="Filename">The name of the log file that will be uploaded. This field is not present when no logging information is available.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
-        public GetBaseReportResponse(CS.GetBaseReportRequest   Request,
-                                     GenericDeviceModelStatus  Status,
-                                     StatusInfo?               StatusInfo   = null,
-                                     CustomData?               CustomData   = null)
+        public GetMonitoringReportResponse(CS.GetMonitoringReportRequest  Request,
+                                           GenericDeviceModelStatus       Status,
+                                           StatusInfo?                    StatusInfo   = null,
+                                           CustomData?                    CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -78,15 +79,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region GetBaseReportResponse(Request, Result)
+        #region GetMonitoringReportResponse(Request, Result)
 
         /// <summary>
-        /// Create a new get base report response.
+        /// Create a new get monitoring report response.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
+        /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public GetBaseReportResponse(CS.GetBaseReportRequest  Request,
-                                     Result                   Result)
+        public GetMonitoringReportResponse(CS.GetMonitoringReportRequest  Request,
+                                           Result                         Result)
 
             : base(Request,
                    Result)
@@ -102,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:GetBaseReportResponse",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:GetMonitoringReportResponse",
         //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
         //     "CustomDataType": {
@@ -120,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //       ]
         //     },
         //     "GenericDeviceModelStatusEnumType": {
-        //       "description": "This indicates whether the Charging Station is able to accept this request.\r\n",
+        //       "description": "This field indicates whether the Charging Station was able to accept the request.\r\n",
         //       "javaType": "GenericDeviceModelStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
@@ -176,63 +177,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomGetBaseReportResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomGetMonitoringReportResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get base report response.
+        /// Parse the given JSON representation of a get monitoring report response.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
+        /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetBaseReportResponse Parse(CS.GetBaseReportRequest                              Request,
-                                                  JObject                                              JSON,
-                                                  CustomJObjectParserDelegate<GetBaseReportResponse>?  CustomGetBaseReportResponseParser   = null)
+        /// <param name="CustomGetMonitoringReportResponseParser">A delegate to parse custom get monitoring report responses.</param>
+        public static GetMonitoringReportResponse Parse(CS.GetMonitoringReportRequest                              Request,
+                                                        JObject                                                    JSON,
+                                                        CustomJObjectParserDelegate<GetMonitoringReportResponse>?  CustomGetMonitoringReportResponseParser   = null)
         {
 
             if (TryParse(Request,
                          JSON,
-                         out var getBaseReportResponse,
+                         out var getMonitoringReportResponse,
                          out var errorResponse,
-                         CustomGetBaseReportResponseParser))
+                         CustomGetMonitoringReportResponseParser))
             {
-                return getBaseReportResponse!;
+                return getMonitoringReportResponse!;
             }
 
-            throw new ArgumentException("The given JSON representation of a get base report response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a get monitoring report response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out GetBaseReportResponse, out ErrorResponse, CustomGetBaseReportResponseParser = null)
+        #region (static) TryParse(Request, JSON, out GetMonitoringReportResponse, out ErrorResponse, CustomGetMonitoringReportResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get base report response.
+        /// Try to parse the given JSON representation of a get monitoring report response.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
+        /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetBaseReportResponse">The parsed get base report response.</param>
+        /// <param name="GetMonitoringReportResponse">The parsed get monitoring report response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetBaseReportResponseParser">A delegate to parse custom get base report responses.</param>
-        public static Boolean TryParse(CS.GetBaseReportRequest                              Request,
-                                       JObject                                              JSON,
-                                       out GetBaseReportResponse?                           GetBaseReportResponse,
-                                       out String?                                          ErrorResponse,
-                                       CustomJObjectParserDelegate<GetBaseReportResponse>?  CustomGetBaseReportResponseParser   = null)
+        /// <param name="CustomGetMonitoringReportResponseParser">A delegate to parse custom get monitoring report responses.</param>
+        public static Boolean TryParse(CS.GetMonitoringReportRequest                              Request,
+                                       JObject                                                    JSON,
+                                       out GetMonitoringReportResponse?                           GetMonitoringReportResponse,
+                                       out String?                                                ErrorResponse,
+                                       CustomJObjectParserDelegate<GetMonitoringReportResponse>?  CustomGetMonitoringReportResponseParser   = null)
         {
 
             try
             {
 
-                GetBaseReportResponse = null;
+                GetMonitoringReportResponse = null;
 
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "generic device model status",
+                                         "get monitoring report status",
                                          GenericDeviceModelStatusExtentions.TryParse,
-                                         out GenericDeviceModelStatus GetBaseReportStatus,
+                                         out GenericDeviceModelStatus Status,
                                          out ErrorResponse))
                 {
                     return false;
@@ -269,22 +270,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #endregion
 
 
-                GetBaseReportResponse = new GetBaseReportResponse(Request,
-                                                                  GetBaseReportStatus,
-                                                                  StatusInfo,
-                                                                  CustomData);
+                GetMonitoringReportResponse = new GetMonitoringReportResponse(Request,
+                                                                              Status,
+                                                                              StatusInfo,
+                                                                              CustomData);
 
-                if (CustomGetBaseReportResponseParser is not null)
-                    GetBaseReportResponse = CustomGetBaseReportResponseParser(JSON,
-                                                                              GetBaseReportResponse);
+                if (CustomGetMonitoringReportResponseParser is not null)
+                    GetMonitoringReportResponse = CustomGetMonitoringReportResponseParser(JSON,
+                                                                                          GetMonitoringReportResponse);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                GetBaseReportResponse  = null;
-                ErrorResponse          = "The given JSON representation of a get base report response is invalid: " + e.Message;
+                GetMonitoringReportResponse  = null;
+                ErrorResponse                = "The given JSON representation of a get monitoring report response is invalid: " + e.Message;
                 return false;
             }
 
@@ -292,17 +293,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomGetBaseReportResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
+        #region ToJSON(CustomGetMonitoringReportResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetBaseReportResponseSerializer">A delegate to serialize custom get base report responses.</param>
+        /// <param name="CustomGetMonitoringReportResponseSerializer">A delegate to serialize custom get monitoring report responses.</param>
         /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetBaseReportResponse>?  CustomGetBaseReportResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?             CustomStatusInfoResponseSerializer      = null,
-                              CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataResponseSerializer      = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetMonitoringReportResponse>?  CustomGetMonitoringReportResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                   CustomStatusInfoResponseSerializer            = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataResponseSerializer            = null)
         {
 
             var json = JSONObject.Create(
@@ -320,8 +321,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                        );
 
-            return CustomGetBaseReportResponseSerializer is not null
-                       ? CustomGetBaseReportResponseSerializer(this, json)
+            return CustomGetMonitoringReportResponseSerializer is not null
+                       ? CustomGetMonitoringReportResponseSerializer(this, json)
                        : json;
 
         }
@@ -332,10 +333,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Static methods
 
         /// <summary>
-        /// The get base report command failed.
+        /// The get monitoring report command failed.
         /// </summary>
-        /// <param name="Request">The get base report request leading to this response.</param>
-        public static GetBaseReportResponse Failed(CS.GetBaseReportRequest Request)
+        /// <param name="Request">The get monitoring report request leading to this response.</param>
+        public static GetMonitoringReportResponse Failed(CS.GetMonitoringReportRequest Request)
 
             => new (Request,
                     Result.Server());
@@ -345,80 +346,80 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Operator overloading
 
-        #region Operator == (GetBaseReportResponse1, GetBaseReportResponse2)
+        #region Operator == (GetMonitoringReportResponse1, GetMonitoringReportResponse2)
 
         /// <summary>
-        /// Compares two get base report responses for equality.
+        /// Compares two get monitoring report responses for equality.
         /// </summary>
-        /// <param name="GetBaseReportResponse1">A get base report response.</param>
-        /// <param name="GetBaseReportResponse2">Another get base report response.</param>
+        /// <param name="GetMonitoringReportResponse1">A get monitoring report response.</param>
+        /// <param name="GetMonitoringReportResponse2">Another get monitoring report response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetBaseReportResponse? GetBaseReportResponse1,
-                                           GetBaseReportResponse? GetBaseReportResponse2)
+        public static Boolean operator == (GetMonitoringReportResponse? GetMonitoringReportResponse1,
+                                           GetMonitoringReportResponse? GetMonitoringReportResponse2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(GetBaseReportResponse1, GetBaseReportResponse2))
+            if (ReferenceEquals(GetMonitoringReportResponse1, GetMonitoringReportResponse2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (GetBaseReportResponse1 is null || GetBaseReportResponse2 is null)
+            if (GetMonitoringReportResponse1 is null || GetMonitoringReportResponse2 is null)
                 return false;
 
-            return GetBaseReportResponse1.Equals(GetBaseReportResponse2);
+            return GetMonitoringReportResponse1.Equals(GetMonitoringReportResponse2);
 
         }
 
         #endregion
 
-        #region Operator != (GetBaseReportResponse1, GetBaseReportResponse2)
+        #region Operator != (GetMonitoringReportResponse1, GetMonitoringReportResponse2)
 
         /// <summary>
-        /// Compares two get base report responses for inequality.
+        /// Compares two get monitoring report responses for inequality.
         /// </summary>
-        /// <param name="GetBaseReportResponse1">A get base report response.</param>
-        /// <param name="GetBaseReportResponse2">Another get base report response.</param>
+        /// <param name="GetMonitoringReportResponse1">A get monitoring report response.</param>
+        /// <param name="GetMonitoringReportResponse2">Another get monitoring report response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetBaseReportResponse? GetBaseReportResponse1,
-                                           GetBaseReportResponse? GetBaseReportResponse2)
+        public static Boolean operator != (GetMonitoringReportResponse? GetMonitoringReportResponse1,
+                                           GetMonitoringReportResponse? GetMonitoringReportResponse2)
 
-            => !(GetBaseReportResponse1 == GetBaseReportResponse2);
-
-        #endregion
+            => !(GetMonitoringReportResponse1 == GetMonitoringReportResponse2);
 
         #endregion
 
-        #region IEquatable<GetBaseReportResponse> Members
+        #endregion
+
+        #region IEquatable<GetMonitoringReportResponse> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get base report responses for equality.
+        /// Compares two get monitoring report responses for equality.
         /// </summary>
-        /// <param name="Object">A get base report response to compare with.</param>
+        /// <param name="Object">A get monitoring report response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is GetBaseReportResponse getBaseReportResponse &&
-                   Equals(getBaseReportResponse);
+            => Object is GetMonitoringReportResponse getMonitoringReportResponse &&
+                   Equals(getMonitoringReportResponse);
 
         #endregion
 
-        #region Equals(GetBaseReportResponse)
+        #region Equals(GetMonitoringReportResponse)
 
         /// <summary>
-        /// Compares two get base report responses for equality.
+        /// Compares two get monitoring report responses for equality.
         /// </summary>
-        /// <param name="GetBaseReportResponse">A get base report response to compare with.</param>
-        public override Boolean Equals(GetBaseReportResponse? GetBaseReportResponse)
+        /// <param name="GetMonitoringReportResponse">A get monitoring report response to compare with.</param>
+        public override Boolean Equals(GetMonitoringReportResponse? GetMonitoringReportResponse)
 
-            => GetBaseReportResponse is not null &&
+            => GetMonitoringReportResponse is not null &&
 
-               Status.     Equals(GetBaseReportResponse.Status) &&
+               Status.     Equals(GetMonitoringReportResponse.Status) &&
 
-             ((StatusInfo is     null && GetBaseReportResponse.StatusInfo is     null) ||
-               StatusInfo is not null && GetBaseReportResponse.StatusInfo is not null && StatusInfo.Equals(GetBaseReportResponse.StatusInfo)) &&
+             ((StatusInfo is     null && GetMonitoringReportResponse.StatusInfo is     null) ||
+               StatusInfo is not null && GetMonitoringReportResponse.StatusInfo is not null && StatusInfo.Equals(GetMonitoringReportResponse.StatusInfo)) &&
 
-               base.GenericEquals(GetBaseReportResponse);
+               base.GenericEquals(GetMonitoringReportResponse);
 
         #endregion
 

@@ -37,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// The length of requested schedule.
         /// </summary>
+        [Mandatory]
         public TimeSpan            Duration            { get; }
 
         /// <summary>
@@ -44,11 +45,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// EVSE identification is 0, the charging station will calculate the expected
         /// consumption for the grid connection.
         /// </summary>
+        [Mandatory]
         public EVSE_Id             EVSEId              { get; }
 
         /// <summary>
         /// Can optionally be used to force a power or current profile.
         /// </summary>
+        [Optional]
         public ChargingRateUnits?  ChargingRateUnit    { get; }
 
         #endregion
@@ -59,6 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a new get composite schedule request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// 
         /// <param name="Duration">The length of requested schedule.</param>
         /// <param name="EVSEId">The EVSE identification for which the schedule is requested. EVSE identification is 0, the charging station will calculate the expected consumption for the grid connection.</param>
         /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
@@ -66,7 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public GetCompositeScheduleRequest(ChargeBox_Id        ChargeBoxId,
+
                                            TimeSpan            Duration,
                                            EVSE_Id             EVSEId,
                                            ChargingRateUnits?  ChargingRateUnit    = null,

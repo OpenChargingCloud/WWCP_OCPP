@@ -38,11 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The success or failure of the customer information command.
         /// </summary>
+        [Mandatory]
         public CustomerInformationStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
+        [Optional]
         public StatusInfo?                StatusInfo    { get; }
 
         #endregion
