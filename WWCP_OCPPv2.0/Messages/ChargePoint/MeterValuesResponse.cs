@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                 return meterValuesResponse!;
             }
 
-            throw new ArgumentException("The given JSON representation of a boot notification response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a meter values response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }

@@ -38,11 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The ICCID of the modem’s SIM card. 20
         /// </summary>
+        [Optional]
         public String?  ICCID    { get; }
 
         /// <summary>
         /// The IMSI of the modem’s SIM card. 20
         /// </summary>
+        [Optional]
         public String?  IMSI     { get; }
 
         #endregion
@@ -55,8 +57,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="ICCID">An optional integrated circuit card identifier of the modem’s SIM card.</param>
         /// <param name="IMSI">An optional IMSI of the modem’s SIM card.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public Modem(String?      ICCID,
-                     String?      IMSI,
+        public Modem(String?      ICCID        = null,
+                     String?      IMSI         = null,
                      CustomData?  CustomData   = null)
 
             : base(CustomData)
@@ -131,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Try to parse the given JSON representation of a communication module.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Modem">The parsed connector type.</param>
+        /// <param name="Modem">The parsed communication module.</param>
         public static Boolean TryParse(JObject      JSON,
                                        out Modem?   Modem,
                                        out String?  ErrorResponse)
@@ -146,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Try to parse the given JSON representation of a communication module.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="Modem">The parsed connector type.</param>
+        /// <param name="Modem">The parsed communication module.</param>
         /// <param name="CustomModemParser">A delegate to parse custom modem values.</param>
         public static Boolean TryParse(JObject                              JSON,
                                        out Modem?                           Modem,
@@ -208,6 +210,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                     Modem = CustomModemParser(JSON,
                                               Modem);
 
+                if (ICCID is null &&
+                    IMSI  is null)
+                {
+                    Modem = null;
+                }
+
                 return true;
 
             }
@@ -265,8 +273,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Modem1">An id tag info.</param>
-        /// <param name="Modem2">Another id tag info.</param>
+        /// <param name="Modem1">A modem.</param>
+        /// <param name="Modem2">Another modem.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (Modem? Modem1,
                                            Modem? Modem2)
@@ -291,8 +299,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Modem1">An id tag info.</param>
-        /// <param name="Modem2">Another id tag info.</param>
+        /// <param name="Modem1">A modem.</param>
+        /// <param name="Modem2">Another modem.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (Modem? Modem1,
                                            Modem? Modem2)

@@ -582,9 +582,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             {
 
                 return IdToken.     GetHashCode()       * 7 ^
-
                       (Certificate?.GetHashCode() ?? 0) * 5 ^
-
                        //ToDo: Add ISO15118CertificateHashData!
 
                        base.        GetHashCode();

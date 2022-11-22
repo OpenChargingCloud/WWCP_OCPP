@@ -224,8 +224,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CustomData1">An id tag info.</param>
-        /// <param name="CustomData2">Another id tag info.</param>
+        /// <param name="CustomData1">A custom data object.</param>
+        /// <param name="CustomData2">Another custom data object.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (CustomData? CustomData1,
                                            CustomData? CustomData2)
@@ -250,8 +250,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CustomData1">An id tag info.</param>
-        /// <param name="CustomData2">Another id tag info.</param>
+        /// <param name="CustomData1">A custom data object.</param>
+        /// <param name="CustomData2">Another custom data object.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (CustomData? CustomData1,
                                            CustomData? CustomData2)

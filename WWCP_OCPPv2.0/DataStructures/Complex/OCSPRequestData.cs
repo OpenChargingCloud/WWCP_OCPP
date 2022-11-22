@@ -363,8 +363,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="OCSPRequestData1">An id tag info.</param>
-        /// <param name="OCSPRequestData2">Another id tag info.</param>
+        /// <param name="OCSPRequestData1">OCSP request data.</param>
+        /// <param name="OCSPRequestData2">Other OCSP request data.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (OCSPRequestData? OCSPRequestData1,
                                            OCSPRequestData? OCSPRequestData2)
@@ -389,8 +389,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="OCSPRequestData1">An id tag info.</param>
-        /// <param name="OCSPRequestData2">Another id tag info.</param>
+        /// <param name="OCSPRequestData1">OCSP request data.</param>
+        /// <param name="OCSPRequestData2">Other OCSP request data.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (OCSPRequestData? OCSPRequestData1,
                                            OCSPRequestData? OCSPRequestData2)

@@ -294,8 +294,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="MessageContent1">An id tag info.</param>
-        /// <param name="MessageContent2">Another id tag info.</param>
+        /// <param name="MessageContent1">A message content.</param>
+        /// <param name="MessageContent2">Another message content.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (MessageContent? MessageContent1,
                                            MessageContent? MessageContent2)
@@ -320,8 +320,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="MessageContent1">An id tag info.</param>
-        /// <param name="MessageContent2">Another id tag info.</param>
+        /// <param name="MessageContent1">A message content.</param>
+        /// <param name="MessageContent2">Another message content.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (MessageContent? MessageContent1,
                                            MessageContent? MessageContent2)

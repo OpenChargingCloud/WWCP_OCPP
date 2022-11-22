@@ -267,8 +267,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSE1">An id tag info.</param>
-        /// <param name="EVSE2">Another id tag info.</param>
+        /// <param name="EVSE1">An EVSE.</param>
+        /// <param name="EVSE2">Another EVSE.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EVSE? EVSE1,
                                            EVSE? EVSE2)
@@ -293,8 +293,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSE1">An id tag info.</param>
-        /// <param name="EVSE2">Another id tag info.</param>
+        /// <param name="EVSE1">An EVSE.</param>
+        /// <param name="EVSE2">Another EVSE.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVSE? EVSE1,
                                            EVSE? EVSE2)

@@ -433,8 +433,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="SampledValue1">An id tag info.</param>
-        /// <param name="SampledValue2">Another id tag info.</param>
+        /// <param name="SampledValue1">A sampled (energy) meter value.</param>
+        /// <param name="SampledValue2">Another sampled (energy) meter value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (SampledValue? SampledValue1,
                                            SampledValue? SampledValue2)
@@ -459,8 +459,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="SampledValue1">An id tag info.</param>
-        /// <param name="SampledValue2">Another id tag info.</param>
+        /// <param name="SampledValue1">A sampled (energy) meter value.</param>
+        /// <param name="SampledValue2">Another sampled (energy) meter value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (SampledValue? SampledValue1,
                                            SampledValue? SampledValue2)

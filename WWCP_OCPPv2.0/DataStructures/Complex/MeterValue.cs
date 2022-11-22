@@ -63,11 +63,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         {
 
-            this.SampledValues  = SampledValues;
+            this.SampledValues  = SampledValues.Distinct();
             this.Timestamp      = Timestamp;
 
-            if (!this.SampledValues.SafeAny())
-                throw new ArgumentNullException(nameof(SampledValues), "The given enumeration of sampled meter values must not be null or empty!");
+            if (!this.SampledValues.Any())
+                throw new ArgumentException("The given enumeration of sampled meter values must not be empty!",
+                                            nameof(SampledValues));
 
         }
 

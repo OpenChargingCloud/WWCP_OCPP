@@ -305,8 +305,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An id tag info.</param>
-        /// <param name="IdToken2">Another id tag info.</param>
+        /// <param name="IdToken1">An id token.</param>
+        /// <param name="IdToken2">Another id token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (IdToken? IdToken1,
                                            IdToken? IdToken2)
@@ -331,8 +331,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An id tag info.</param>
-        /// <param name="IdToken2">Another id tag info.</param>
+        /// <param name="IdToken1">An id token.</param>
+        /// <param name="IdToken2">Another id token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (IdToken? IdToken1,
                                            IdToken? IdToken2)

@@ -616,7 +616,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             {
 
                 return IdTokenInfo.       GetHashCode()       * 5 ^
-
                       (CertificateStatus?.GetHashCode() ?? 0) * 3 ^
 
                        base.              GetHashCode();

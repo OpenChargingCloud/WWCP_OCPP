@@ -335,8 +335,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingSchedulePeriod1">An id tag info.</param>
-        /// <param name="ChargingSchedulePeriod2">Another id tag info.</param>
+        /// <param name="ChargingSchedulePeriod1">A charging schedule period.</param>
+        /// <param name="ChargingSchedulePeriod2">Another charging schedule period.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (ChargingSchedulePeriod ChargingSchedulePeriod1,
                                            ChargingSchedulePeriod ChargingSchedulePeriod2)
@@ -361,8 +361,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingSchedulePeriod1">An id tag info.</param>
-        /// <param name="ChargingSchedulePeriod2">Another id tag info.</param>
+        /// <param name="ChargingSchedulePeriod1">A charging schedule period.</param>
+        /// <param name="ChargingSchedulePeriod2">Another charging schedule period.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (ChargingSchedulePeriod ChargingSchedulePeriod1,
                                            ChargingSchedulePeriod ChargingSchedulePeriod2)
@@ -405,7 +405,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
               (NumberPhases.HasValue &&  ChargingSchedulePeriod.NumberPhases.HasValue && NumberPhases.Value.Equals(ChargingSchedulePeriod.NumberPhases.Value))) &&
 
             ((!PhaseToUse.  HasValue && !ChargingSchedulePeriod.PhaseToUse.  HasValue) ||
-              (PhaseToUse.  HasValue &&  ChargingSchedulePeriod.PhaseToUse.  HasValue && PhaseToUse.  Value.Equals(ChargingSchedulePeriod.PhaseToUse.  Value)));
+              (PhaseToUse.  HasValue &&  ChargingSchedulePeriod.PhaseToUse.  HasValue && PhaseToUse.  Value.Equals(ChargingSchedulePeriod.PhaseToUse.  Value))) &&
+
+               base.       Equals(ChargingSchedulePeriod);
 
         #endregion
 

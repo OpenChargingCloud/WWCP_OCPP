@@ -348,8 +348,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStation1">An id tag info.</param>
-        /// <param name="ChargingStation2">Another id tag info.</param>
+        /// <param name="ChargingStation1">A charging station.</param>
+        /// <param name="ChargingStation2">Another charging station.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (ChargingStation? ChargingStation1,
                                            ChargingStation? ChargingStation2)
@@ -374,8 +374,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStation1">An id tag info.</param>
-        /// <param name="ChargingStation2">Another id tag info.</param>
+        /// <param name="ChargingStation1">A charging station.</param>
+        /// <param name="ChargingStation2">Another charging station.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (ChargingStation? ChargingStation1,
                                            ChargingStation? ChargingStation2)
