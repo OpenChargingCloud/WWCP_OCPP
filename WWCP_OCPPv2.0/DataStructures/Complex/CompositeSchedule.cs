@@ -87,12 +87,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         {
 
-            #region Initial checks
-
-            if (ChargingSchedulePeriods.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(ChargingSchedulePeriods),  "The given enumeration of composite schedule periods must not be null or empty!");
-
-            #endregion
+            if (!ChargingSchedulePeriods.Any())
+                throw new ArgumentException("The given enumeration of charging schedules must not be empty!",
+                                            nameof(ChargingSchedulePeriods));
 
             this.EVSEId                   = EVSEId;
             this.Duration                 = Duration;
@@ -336,14 +333,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var json = JSONObject.Create(
 
-                           new JProperty("evseId",                  EVSEId.Value),
-                           new JProperty("duration",                (UInt32) Math.Round(Duration.TotalSeconds, 0)),
-                           new JProperty("scheduleStart",           ScheduleStart.   ToIso8601()),
-                           new JProperty("chargingRateUnit",        ChargingRateUnit.AsText()),
-                           new JProperty("chargingSchedulePeriod",  new JArray(ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer)))),
+                           new JProperty("evseId",                   EVSEId.Value),
+                           new JProperty("duration",                 (UInt32) Math.Round(Duration.TotalSeconds, 0)),
+                           new JProperty("scheduleStart",            ScheduleStart.   ToIso8601()),
+                           new JProperty("chargingRateUnit",         ChargingRateUnit.AsText()),
+                           new JProperty("compositeSchedulePeriod",  new JArray(ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer)))),
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.      ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",         CustomData.      ToJSON(CustomCustomDataResponseSerializer))
                                : null
 
                        );

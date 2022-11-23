@@ -85,14 +85,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         {
 
+            if (!SalesTariffEntries.Any())
+                throw new ArgumentException("The given enumeration of sales tariff entries must not be empty!",
+                                            nameof(SalesTariffEntries));
+
             this.Id                  = Id;
             this.SalesTariffEntries  = SalesTariffEntries.Distinct();
             this.Description         = Description;
             this.NumEPriceLevels     = NumEPriceLevels;
-
-            if (!this.SalesTariffEntries.Any())
-                throw new ArgumentException("The given enumeration of sales tariff entries must not be empty!",
-                                            nameof(SalesTariffEntries));
 
         }
 

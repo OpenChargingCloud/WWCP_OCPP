@@ -67,8 +67,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         {
 
+
+            if (!Costs.Any())
+                throw new ArgumentException("The given enumeration of costs must not be empty!",
+                                            nameof(Costs));
+
             this.StartValue  = StartValue;
-            this.Costs       = Costs;
+            this.Costs       = Costs.Distinct();
 
         }
 

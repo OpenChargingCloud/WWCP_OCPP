@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             this.ChargingProfilePurpose  = ChargingProfilePurpose;
             this.StackLevel              = StackLevel;
-            this.ChargingProfileIds      = ChargingProfileIds ?? Array.Empty<ChargingProfile_Id>();
+            this.ChargingProfileIds      = ChargingProfileIds?.Distinct() ?? Array.Empty<ChargingProfile_Id>();
             this.ChargingLimitSource     = ChargingLimitSource;
 
         }

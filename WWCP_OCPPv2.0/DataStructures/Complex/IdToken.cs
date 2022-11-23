@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// A case insensitive authorization identifier.
+    /// A case insensitive identification token.
     /// </summary>
     public class IdToken : ACustomData,
                            IEquatable<IdToken>
@@ -41,12 +41,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public String                       Value              { get; }
 
         /// <summary>
-        /// The type of the authorization identification.
+        /// The type of the identification token.
         /// </summary>
         public IdTokenTypes                 Type               { get; }
 
         /// <summary>
-        /// Optional information which can be validated by the CSMS in addition to the regular authorization with authorization identification.
+        /// Optional information which can be validated by the CSMS in addition to the regular authorization with identification token.
         /// </summary>
         public IEnumerable<AdditionalInfo>  AdditionalInfos    { get; }
 
@@ -55,24 +55,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new case insensitive authorization identifier.
+        /// Create a new case insensitive identification token.
         /// </summary>
         /// <param name="Value">The hidden case insensitive identification of an RFID tag, or an UUID.</param>
-        /// <param name="Type">The type of the authorization identification.</param>
-        /// <param name="AdditionalInfos">Optional information which can be validated by the CSMS in addition to the regular authorization with authorization identification.</param>
+        /// <param name="Type">The type of the identification token.</param>
+        /// <param name="AdditionalInfos">Optional information which can be validated by the CSMS in addition to the regular authorization with identification token.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public IdToken(String                       Value,
-                       IdTokenTypes                 Type,
-                       IEnumerable<AdditionalInfo>  AdditionalInfos,
-                       CustomData?                  CustomData   = null)
+        public IdToken(String                        Value,
+                       IdTokenTypes                  Type,
+                       IEnumerable<AdditionalInfo>?  AdditionalInfos   = null,
+                       CustomData?                   CustomData        = null)
 
             : base(CustomData)
 
         {
 
-            this.Value            = Value?.Trim()   ?? throw new ArgumentNullException(nameof(Value), "The given identifier must not be null or empty!");
+            this.Value            = Value.Trim();
             this.Type             = Type;
-            this.AdditionalInfos  = AdditionalInfos ?? Array.Empty<AdditionalInfo>();
+            this.AdditionalInfos  = AdditionalInfos?.Distinct() ?? Array.Empty<AdditionalInfo>();
 
         }
 
@@ -118,10 +118,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) Parse   (JSON, CustomIdTokenParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an authorization identification.
+        /// Parse the given JSON representation of an identification token.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomIdTokenParser">A delegate to parse custom authorization identifications.</param>
+        /// <param name="CustomIdTokenParser">A delegate to parse custom identification tokens.</param>
         public static IdToken Parse(JObject                                JSON,
                                     CustomJObjectParserDelegate<IdToken>?  CustomIdTokenParser   = null)
         {
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 return idToken!;
             }
 
-            throw new ArgumentException("The given JSON representation of an authorization identification is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of an identification token is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -146,10 +146,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of an authorization identification.
+        /// Try to parse the given JSON representation of an identification token.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="IdToken">The parsed authorization identification.</param>
+        /// <param name="IdToken">The parsed identification token.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject       JSON,
                                        out IdToken?  IdToken,
@@ -162,12 +162,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of an authorization identification.
+        /// Try to parse the given JSON representation of an identification token.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="IdToken">The parsed authorization identification.</param>
+        /// <param name="IdToken">The parsed identification token.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomIdTokenParser">A delegate to parse custom authorization identifications.</param>
+        /// <param name="CustomIdTokenParser">A delegate to parse custom identification tokens.</param>
         public static Boolean TryParse(JObject                                JSON,
                                        out IdToken?                           IdToken,
                                        out String?                            ErrorResponse,
@@ -181,10 +181,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 IdToken = default;
 
-                #region Value/idToken      [mandatory]
+                #region Value              [mandatory]
 
                 if (!JSON.ParseMandatoryText("idToken",
-                                             "authorization identification",
+                                             "identification token",
                                              out String Value,
                                              out ErrorResponse))
                 {
@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             catch (Exception e)
             {
                 IdToken        = default;
-                ErrorResponse  = "The given JSON representation of an authorization identification is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of an identification token is invalid: " + e.Message;
                 return false;
             }
 
@@ -305,8 +305,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An id token.</param>
-        /// <param name="IdToken2">Another id token.</param>
+        /// <param name="IdToken1">An identification token.</param>
+        /// <param name="IdToken2">Another identification token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (IdToken? IdToken1,
                                            IdToken? IdToken2)
@@ -331,8 +331,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="IdToken1">An id token.</param>
-        /// <param name="IdToken2">Another id token.</param>
+        /// <param name="IdToken1">An identification token.</param>
+        /// <param name="IdToken2">Another identification token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (IdToken? IdToken1,
                                            IdToken? IdToken2)
@@ -348,9 +348,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two id tokens for equality.
+        /// Compares two identification tokens for equality.
         /// </summary>
-        /// <param name="Object">An id token to compare with.</param>
+        /// <param name="Object">An identification token to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is IdToken idToken &&
@@ -361,9 +361,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(IdToken)
 
         /// <summary>
-        /// Compares two id tokens for equality.
+        /// Compares two identification tokens for equality.
         /// </summary>
-        /// <param name="IdToken">An id token to compare with.</param>
+        /// <param name="IdToken">An identification token to compare with.</param>
         public Boolean Equals(IdToken? IdToken)
 
             => IdToken is not null &&
@@ -371,7 +371,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                String.Equals(Value, IdToken.Value, StringComparison.OrdinalIgnoreCase) &&
                Type.  Equals(IdToken.Type)                                             &&
 
-               //ToDo: Compare enumeration of AdditionalInfos!
+               AdditionalInfos.Count().Equals(IdToken.AdditionalInfos.Count())         &&
+               AdditionalInfos.All(data => IdToken.AdditionalInfos.Contains(data))     &&
 
                base.Equals(IdToken);
 
@@ -390,10 +391,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Value.GetHashCode() * 5 ^
-                       Type. GetHashCode() * 3 ^
-
-                       //ToDo: Add enumeration of AdditionalInfos!
+                return Value.GetHashCode() * 7 ^
+                       Type. GetHashCode() * 5 ^
+                       //ToDo: Add AdditionalInfos!
 
                        base. GetHashCode();
 

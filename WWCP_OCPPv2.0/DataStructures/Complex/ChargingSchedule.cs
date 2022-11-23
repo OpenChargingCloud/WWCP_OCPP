@@ -111,6 +111,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         {
 
+            if (!ChargingSchedulePeriods.Any())
+                throw new ArgumentException("The given enumeration of charging schedules must not be empty!",
+                                            nameof(ChargingSchedulePeriods));
+
             this.Id                       = Id;
             this.ChargingRateUnit         = ChargingRateUnit;
             this.ChargingSchedulePeriods  = ChargingSchedulePeriods.Distinct();
@@ -118,10 +122,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             this.Duration                 = Duration;
             this.MinChargingRate          = MinChargingRate;
             this.SalesTariff              = SalesTariff;
-
-            if (!this.ChargingSchedulePeriods.Any())
-                throw new ArgumentException("The given enumeration of charging schedules must not be empty!",
-                                            nameof(ChargingSchedulePeriods));
 
         }
 

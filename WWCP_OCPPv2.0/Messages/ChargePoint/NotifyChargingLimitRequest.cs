@@ -41,9 +41,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         public ChargingLimit                  ChargingLimit        { get; }
 
         /// <summary>
-        /// Optional limits for the available power or current over time, as set by the external source.
+        /// Limits for the available power or current over time, as set by the external source.
         /// </summary>
-        [Optional]
+        [Mandatory]
         public IEnumerable<ChargingSchedule>  ChargingSchedules    { get; }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// 
         /// <param name="ChargingLimit">The charging limit, its source and whether it is grid critical.</param>
-        /// <param name="ChargingSchedules">Optional limits for the available power or current over time, as set by the external source.</param>
+        /// <param name="ChargingSchedules">Limits for the available power or current over time, as set by the external source.</param>
         /// <param name="EVSEId">An optional EVSE identification, when the charging schedule contained in this notification applies to an EVSE.</param>
         /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -71,18 +71,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyChargingLimitRequest(ChargeBox_Id                    ChargeBoxId,
+        public NotifyChargingLimitRequest(ChargeBox_Id                   ChargeBoxId,
 
-                                          ChargingLimit                   ChargingLimit,
-                                          IEnumerable<ChargingSchedule>?  ChargingSchedules   = null,
-                                          EVSE_Id?                        EVSEId              = null,
+                                          ChargingLimit                  ChargingLimit,
+                                          IEnumerable<ChargingSchedule>  ChargingSchedules,
+                                          EVSE_Id?                       EVSEId              = null,
 
-                                          CustomData?                     CustomData          = null,
-                                          Request_Id?                     RequestId           = null,
-                                          DateTime?                       RequestTimestamp    = null,
-                                          TimeSpan?                       RequestTimeout      = null,
-                                          EventTracking_Id?               EventTrackingId     = null,
-                                          CancellationToken?              CancellationToken   = null)
+                                          CustomData?                    CustomData          = null,
+                                          Request_Id?                    RequestId           = null,
+                                          DateTime?                      RequestTimestamp    = null,
+                                          TimeSpan?                      RequestTimeout      = null,
+                                          EventTracking_Id?              EventTrackingId     = null,
+                                          CancellationToken?             CancellationToken   = null)
 
             : base(ChargeBoxId,
                    "NotifyChargingLimit",
@@ -95,8 +95,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         {
 
+            if (!ChargingSchedules.Any())
+                throw new ArgumentException("The given enumeration of meter values must not be empty!",
+                                            nameof(ChargingSchedules));
+
             this.ChargingLimit      = ChargingLimit;
-            this.ChargingSchedules  = ChargingSchedules?.Distinct() ?? Array.Empty<ChargingSchedule>();
+            this.ChargingSchedules  = ChargingSchedules.Distinct();
             this.EVSEId             = EVSEId;
 
         }

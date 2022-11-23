@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             this.Status               = Status;
             this.ChargingPriority     = ChargingPriority ?? 0;
             this.CacheExpiryDateTime  = CacheExpiryDateTime;
-            this.ValidEVSEIds         = ValidEVSEIds is not null ? ValidEVSEIds.Distinct() : Array.Empty<EVSE_Id>();
+            this.ValidEVSEIds         = ValidEVSEIds?.Distinct() ?? Array.Empty<EVSE_Id>();
             this.GroupIdToken         = GroupIdToken;
             this.Language1            = Language1;
             this.Language2            = Language2;

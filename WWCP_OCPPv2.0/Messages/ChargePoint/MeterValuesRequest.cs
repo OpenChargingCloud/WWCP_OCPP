@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                             nameof(MeterValues));
 
             this.EVSEId       = EVSEId;
-            this.MeterValues  = MeterValues;
+            this.MeterValues  = MeterValues.Distinct();
 
         }
 

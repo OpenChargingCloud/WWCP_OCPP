@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         /// <summary>
         /// The optional "to be continued" indicator whether another part of the monitoring
-        /// data follows in an upcoming notifyMonitoringReportRequest message.
+        /// data follows in an upcoming NotifyCustomerInformationRequest message.
         /// Default value when omitted is false.
         /// </summary>
         [Optional]
@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="Data">The requested data or a part of the requested data. No format specified in which the data is returned.</param>
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
         /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
-        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming notifyMonitoringReportRequest message. Default value when omitted is false.</param>
+        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
         /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
@@ -291,9 +291,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #endregion
 
-                #region ToBeContinued                         [mandatory]
+                #region ToBeContinued                         [optional]
 
-                if (JSON.ParseOptional("seqNo",
+                if (JSON.ParseOptional("tbc",
                                        "to be continued",
                                        out Boolean? ToBeContinued,
                                        out ErrorResponse))
