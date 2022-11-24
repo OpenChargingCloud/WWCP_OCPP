@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Parse the given JSON representation of a charging limit.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomChargingLimitParser">A delegate to parse custom CustomChargingLimit JSON objects.</param>
+        /// <param name="CustomChargingLimitParser">A delegate to parse custom charging limit JSON objects.</param>
         public static ChargingLimit Parse(JObject                                      JSON,
                                           CustomJObjectParserDelegate<ChargingLimit>?  CustomChargingLimitParser   = null)
         {
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="ChargingLimit">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomChargingLimitParser">A delegate to parse custom CustomChargingLimit JSON objects.</param>
+        /// <param name="CustomChargingLimitParser">A delegate to parse custom charging limit JSON objects.</param>
         public static Boolean TryParse(JObject                                      JSON,
                                        out ChargingLimit?                           ChargingLimit,
                                        out String?                                  ErrorResponse,

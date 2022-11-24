@@ -403,7 +403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #endregion
 
-                #region ToBeContinued                     [mandatory]
+                #region ToBeContinued                     [optional]
 
                 if (JSON.ParseOptional("tbc",
                                        "to be continued",

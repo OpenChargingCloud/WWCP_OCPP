@@ -145,14 +145,49 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public enum BootReasons
     {
 
+        /// <summary>
+        /// Application reset.
+        /// </summary>
         ApplicationReset,
+
+        /// <summary>
+        /// Firmware update
+        /// </summary>
         FirmwareUpdate,
+
+        /// <summary>
+        /// Local reset.
+        /// </summary>
         LocalReset,
+
+        /// <summary>
+        /// Power up.
+        /// </summary>
         PowerUp,
+
+        /// <summary>
+        /// Remote reset.
+        /// </summary>
         RemoteReset,
+
+        /// <summary>
+        /// Scheduled reset.
+        /// </summary>
         ScheduledReset,
+
+        /// <summary>
+        /// Triggered.
+        /// </summary>
         Triggered,
+
+        /// <summary>
+        /// Unknown boot reason.
+        /// </summary>
         Unknown,
+
+        /// <summary>
+        /// Watchdog.
+        /// </summary>
         Watchdog
 
     }

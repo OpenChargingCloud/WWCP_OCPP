@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Defines the cancel-reservation-status-values.
+    /// The cancel reservation status.
     /// </summary>
     public enum CancelReservationStatus
     {
