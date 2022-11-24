@@ -39,12 +39,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// This field specifies the additional IdToken. [max 36]
         /// </summary>
+        [Mandatory]
         public String  AdditionalIdToken    { get; }
 
         /// <summary>
         /// This defines the type of the additionalIdToken.
         /// This is a custom type, so the implementation needs to be agreed upon by all involved parties. [max 50]
         /// </summary>
+        [Mandatory]
         public String  Type                 { get; }
 
         #endregion

@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static EnergyTransferModes Parse(String Text)
         {
 
-            if (TryParse(Text, out var reason))
-                return reason;
+            if (TryParse(Text, out var energyTransferMode))
+                return energyTransferMode;
 
             return EnergyTransferModes.Unknown;
 
@@ -51,8 +51,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static EnergyTransferModes? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var reason))
-                return reason;
+            if (TryParse(Text, out var energyTransferMode))
+                return energyTransferMode;
 
             return null;
 
@@ -60,36 +60,36 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Reason)
+        #region TryParse(Text, out EnergyTransferMode)
 
         /// <summary>
         /// Try to parse the given text as an energy transfer mode.
         /// </summary>
         /// <param name="Text">A text representation of an energy transfer mode.</param>
-        /// <param name="Reason">The parsed energy transfer mode.</param>
-        public static Boolean TryParse(String Text, out EnergyTransferModes Reason)
+        /// <param name="EnergyTransferMode">The parsed energy transfer mode.</param>
+        public static Boolean TryParse(String Text, out EnergyTransferModes EnergyTransferMode)
         {
             switch (Text.Trim())
             {
 
                 case "DC":
-                    Reason = EnergyTransferModes.DC;
+                    EnergyTransferMode = EnergyTransferModes.DC;
                     return true;
 
                 case "AC_single_phase":
-                    Reason = EnergyTransferModes.AC_single_phase;
+                    EnergyTransferMode = EnergyTransferModes.AC_SinglePhase;
                     return true;
 
                 case "AC_two_phase":
-                    Reason = EnergyTransferModes.AC_two_phase;
+                    EnergyTransferMode = EnergyTransferModes.AC_TwoPhases;
                     return true;
 
                 case "AC_three_phase":
-                    Reason = EnergyTransferModes.AC_three_phase;
+                    EnergyTransferMode = EnergyTransferModes.AC_ThreePhases;
                     return true;
 
                 default:
-                    Reason = EnergyTransferModes.Unknown;
+                    EnergyTransferMode = EnergyTransferModes.Unknown;
                     return false;
 
             }
@@ -104,9 +104,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => BootReason switch {
                    EnergyTransferModes.DC               => "ApplicationReset",
-                   EnergyTransferModes.AC_single_phase  => "AC_single_phase",
-                   EnergyTransferModes.AC_two_phase     => "AC_two_phase",
-                   EnergyTransferModes.AC_three_phase   => "AC_three_phase",
+                   EnergyTransferModes.AC_SinglePhase  => "AC_single_phase",
+                   EnergyTransferModes.AC_TwoPhases     => "AC_two_phase",
+                   EnergyTransferModes.AC_ThreePhases   => "AC_three_phase",
                    _                                    => "Unknown"
                };
 
@@ -134,17 +134,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// AC single phase charging according to IEC 62196.
         /// </summary>
-        AC_single_phase,
+        AC_SinglePhase,
 
         /// <summary>
         /// AC two phase charging according to IEC 62196.
         /// </summary>
-        AC_two_phase,
+        AC_TwoPhases,
 
         /// <summary>
         /// AC three phase charging according to IEC 62196.
         /// </summary>
-        AC_three_phase
+        AC_ThreePhases
 
     }
 

@@ -60,56 +60,56 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Reason)
+        #region TryParse(Text, out BootReason)
 
         /// <summary>
         /// Try to parse the given text as a boot reason.
         /// </summary>
         /// <param name="Text">A text representation of a boot reason.</param>
-        /// <param name="Reason">The parsed boot reason.</param>
-        public static Boolean TryParse(String Text, out BootReasons Reason)
+        /// <param name="BootReason">The parsed boot reason.</param>
+        public static Boolean TryParse(String Text, out BootReasons BootReason)
         {
             switch (Text.Trim())
             {
 
                 case "ApplicationReset":
-                    Reason = BootReasons.ApplicationReset;
+                    BootReason = BootReasons.ApplicationReset;
                     return true;
 
                 case "FirmwareUpdate":
-                    Reason = BootReasons.FirmwareUpdate;
+                    BootReason = BootReasons.FirmwareUpdate;
                     return true;
 
                 case "LocalReset":
-                    Reason = BootReasons.LocalReset;
+                    BootReason = BootReasons.LocalReset;
                     return true;
 
                 case "PowerUp":
-                    Reason = BootReasons.PowerUp;
+                    BootReason = BootReasons.PowerUp;
                     return true;
 
                 case "RemoteReset":
-                    Reason = BootReasons.RemoteReset;
+                    BootReason = BootReasons.RemoteReset;
                     return true;
 
                 case "ScheduledReset":
-                    Reason = BootReasons.ScheduledReset;
+                    BootReason = BootReasons.ScheduledReset;
                     return true;
 
                 case "Triggered":
-                    Reason = BootReasons.Triggered;
+                    BootReason = BootReasons.Triggered;
                     return true;
 
                 case "Unknown":
-                    Reason = BootReasons.Unknown;
+                    BootReason = BootReasons.Unknown;
                     return true;
 
                 case "Watchdog":
-                    Reason = BootReasons.Watchdog;
+                    BootReason = BootReasons.Watchdog;
                     return true;
 
                 default:
-                    Reason = BootReasons.Unknown;
+                    BootReason = BootReasons.Unknown;
                     return false;
 
             }

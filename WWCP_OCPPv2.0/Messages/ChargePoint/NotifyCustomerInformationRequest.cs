@@ -48,7 +48,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         public String    Data                                  { get; }
 
         /// <summary>
-        /// The sequence number of this message. First message starts at 0.
+        /// The sequence number of this message.
+        /// First message starts at 0.
         /// </summary>
         [Mandatory]
         public UInt32    SequenceNumber                        { get; }
