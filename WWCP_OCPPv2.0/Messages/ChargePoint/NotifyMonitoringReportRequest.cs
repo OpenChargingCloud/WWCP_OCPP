@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Properties
 
         /// <summary>
-        /// The unique identification of the notify display messages request.
+        /// The unique identification of the notify monitoring report request.
         /// </summary>
         [Mandatory]
         public Int32                        NotifyMonitoringReportRequestId    { get; }
@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// 
-        /// <param name="NotifyMonitoringReportRequestId">The unique identification of the notify display messages request.</param>
+        /// <param name="NotifyMonitoringReportRequestId">The unique identification of the notify monitoring report request.</param>
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
         /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
         /// <param name="MonitoringData">The enumeration of event data. A single event data element contains only the component, variable and variable monitoring data that caused the event.</param>

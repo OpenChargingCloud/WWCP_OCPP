@@ -24,33 +24,119 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class FirmwareStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as a firmware status.
+        /// Parse the given text as a firmware status.
         /// </summary>
-        /// <param name="Text">A string representation of a firmware status.</param>
+        /// <param name="Text">A text representation of a firmware status.</param>
         public static FirmwareStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Downloaded"                 => FirmwareStatus.Downloaded,
-                   "DownloadFailed"             => FirmwareStatus.DownloadFailed,
-                   "Downloading"                => FirmwareStatus.Downloading,
-                   "DownloadScheduled"          => FirmwareStatus.DownloadScheduled,
-                   "DownloadPaused"             => FirmwareStatus.DownloadPaused,
-                   "Idle"                       => FirmwareStatus.Idle,
-                   "InstallationFailed"         => FirmwareStatus.InstallationFailed,
-                   "Installing"                 => FirmwareStatus.Installing,
-                   "Installed"                  => FirmwareStatus.Installed,
-                   "InstallRebooting"           => FirmwareStatus.InstallRebooting,
-                   "InstallScheduled"           => FirmwareStatus.InstallScheduled,
-                   "InstallVerificationFailed"  => FirmwareStatus.InstallVerificationFailed,
-                   "InvalidSignature"           => FirmwareStatus.InvalidSignature,
-                   "SignatureVerified"          => FirmwareStatus.SignatureVerified,
-                   _                            => FirmwareStatus.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return FirmwareStatus.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a firmware status.
+        /// </summary>
+        /// <param name="Text">A text representation of a firmware status.</param>
+        public static FirmwareStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out FirmwareStatus)
+
+        /// <summary>
+        /// Try to parse the given text as a firmware status.
+        /// </summary>
+        /// <param name="Text">A text representation of a firmware status.</param>
+        /// <param name="FirmwareStatus">The parsed firmware status.</param>
+        public static Boolean TryParse(String Text, out FirmwareStatus FirmwareStatus)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Downloaded":
+                    FirmwareStatus = FirmwareStatus.Downloaded;
+                    return true;
+
+                case "DownloadFailed":
+                    FirmwareStatus = FirmwareStatus.DownloadFailed;
+                    return true;
+
+                case "Downloading":
+                    FirmwareStatus = FirmwareStatus.Downloading;
+                    return true;
+
+                case "DownloadScheduled":
+                    FirmwareStatus = FirmwareStatus.DownloadScheduled;
+                    return true;
+
+                case "DownloadPaused":
+                    FirmwareStatus = FirmwareStatus.DownloadPaused;
+                    return true;
+
+                case "Idle":
+                    FirmwareStatus = FirmwareStatus.Idle;
+                    return true;
+
+                case "InstallationFailed":
+                    FirmwareStatus = FirmwareStatus.InstallationFailed;
+                    return true;
+
+                case "Installing":
+                    FirmwareStatus = FirmwareStatus.Installing;
+                    return true;
+
+                case "Installed":
+                    FirmwareStatus = FirmwareStatus.Installed;
+                    return true;
+
+                case "InstallRebooting":
+                    FirmwareStatus = FirmwareStatus.InstallRebooting;
+                    return true;
+
+                case "InstallScheduled":
+                    FirmwareStatus = FirmwareStatus.InstallScheduled;
+                    return true;
+
+                case "InstallVerificationFailed":
+                    FirmwareStatus = FirmwareStatus.InstallVerificationFailed;
+                    return true;
+
+                case "InvalidSignature":
+                    FirmwareStatus = FirmwareStatus.InvalidSignature;
+                    return true;
+
+                case "SignatureVerified":
+                    FirmwareStatus = FirmwareStatus.SignatureVerified;
+                    return true;
+
+                default:
+                    FirmwareStatus = FirmwareStatus.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this FirmwareStatus)
 
@@ -96,17 +182,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         Unknown,
 
         /// <summary>
-        /// New firmware has been downloaded by the charge point (Intermediate state).
+        /// New firmware has been downloaded by the charging station (Intermediate state).
         /// </summary>
         Downloaded,
 
         /// <summary>
-        /// Charge point failed to download the firmware (Failure end state).
+        /// The charging station failed to download the firmware (Failure end state).
         /// </summary>
         DownloadFailed,
 
         /// <summary>
-        /// Firmware is being downloaded (Intermediate state).
+        /// The firmware is being downloaded (Intermediate state).
         /// </summary>
         Downloading,
 
@@ -116,12 +202,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         DownloadScheduled,
 
         /// <summary>
-        /// Intermediate state. Downloading has been paused (Intermediate state).
+        /// Downloading of the firmware has been paused (Intermediate state).
         /// </summary>
         DownloadPaused,
 
         /// <summary>
-        /// Charge point is not performing firmware update related tasks.
+        /// The charging station is not performing firmware update related tasks.
         /// Status Idle SHALL only be used as in a FirmwareStatusNotification
         /// request that was triggered by a TriggerMessage request.
         /// </summary>
@@ -138,12 +224,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         Installing,
 
         /// <summary>
-        /// New firmware has successfully been installed in charge point (Successful end state).
+        /// New firmware has successfully been installed in charging station (Successful end state).
         /// </summary>
         Installed,
 
         /// <summary>
-        /// Charge Point is about to reboot to activate new firmware. This status MAY be omitted
+        /// The charging station is about to reboot to activate new firmware. This status MAY be omitted
         /// if a reboot is an integral part of the installation and cannot be reported separately
         /// (Intermediate state).
         /// </summary>

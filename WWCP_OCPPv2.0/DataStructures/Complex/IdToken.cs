@@ -38,16 +38,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The hidden case insensitive identification of an RFID tag, or an UUID.
         /// </summary>
+        [Mandatory]
         public String                       Value              { get; }
 
         /// <summary>
         /// The type of the identification token.
         /// </summary>
+        [Mandatory]
         public IdTokenTypes                 Type               { get; }
 
         /// <summary>
         /// Optional information which can be validated by the CSMS in addition to the regular authorization with identification token.
         /// </summary>
+        [Optional]
         public IEnumerable<AdditionalInfo>  AdditionalInfos    { get; }
 
         #endregion
@@ -266,25 +269,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomIdTokenResponseSerializer">A delegate to serialize custom IdTokens.</param>
-        /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom additional information objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<IdToken>?         CustomIdTokenResponseSerializer          = null,
-                              CustomJObjectSerializerDelegate<AdditionalInfo>?  CustomAdditionalInfoResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataResponseSerializer       = null)
+        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<IdToken>?         CustomIdTokenResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?  CustomAdditionalInfoSerializer    = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer        = null)
         {
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("idToken",               Value),
-                           new JProperty("type",                  Type),
+                                 new JProperty("idToken",         Value),
+                                 new JProperty("type",            Type.      AsText()),
 
                            AdditionalInfos.Any()
-                               ? new JProperty("additionalInfo",  new JArray(AdditionalInfos.Select(additionalInfo => additionalInfo.ToJSON(CustomAdditionalInfoResponseSerializer,
-                                                                                                                                            CustomCustomDataResponseSerializer))))
+                               ? new JProperty("additionalInfo",  new JArray(AdditionalInfos.Select(additionalInfo => additionalInfo.ToJSON(CustomAdditionalInfoSerializer,
+                                                                                                                                            CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
