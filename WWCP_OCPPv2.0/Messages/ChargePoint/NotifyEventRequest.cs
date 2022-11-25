@@ -108,6 +108,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         {
 
+            if (!EventData.Any())
+                throw new ArgumentException("The given enumeration of event data must not be empty!",
+                                            nameof(EventData));
+
             this.GeneratedAt     = GeneratedAt;
             this.SequenceNumber  = SequenceNumber;
             this.EventData       = EventData.Distinct();
@@ -657,9 +661,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             unchecked
             {
 
-                return GeneratedAt.   GetHashCode()       * 11 ^
-                       SequenceNumber.GetHashCode()       *  7 ^
+                return GeneratedAt.   GetHashCode()       * 13 ^
+                       SequenceNumber.GetHashCode()       * 11 ^
                       //ToDo: Add EventData
+                      (ToBeContinued?.GetHashCode() ?? 0) *  5 ^
                       (CustomData?.   GetHashCode() ?? 0) *  3 ^
 
                        base.          GetHashCode();

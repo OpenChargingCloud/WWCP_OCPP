@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     {
 
         /// <summary>
-        /// Unknown cost kinds.
+        /// Unknown cost kind.
         /// </summary>
         Unknown,
 

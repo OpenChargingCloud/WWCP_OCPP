@@ -100,10 +100,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                     BootReason = BootReasons.Triggered;
                     return true;
 
-                case "Unknown":
-                    BootReason = BootReasons.Unknown;
-                    return true;
-
                 case "Watchdog":
                     BootReason = BootReasons.Watchdog;
                     return true;
