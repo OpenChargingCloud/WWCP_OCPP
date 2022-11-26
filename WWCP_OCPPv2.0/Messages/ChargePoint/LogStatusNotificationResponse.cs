@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// </summary>
         public override String ToString()
 
-            => "log status notification response";
+            => "LogStatusNotificationResponse";
 
         #endregion
 

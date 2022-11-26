@@ -38,6 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The success or failure of the reservation.
         /// </summary>
+        [Mandatory]
         public ReservationStatus  Status        { get; }
 
         /// <summary>
@@ -452,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         public override String ToString()
 
-            => Status.ToString();
+            => Status.AsText();
 
         #endregion
 

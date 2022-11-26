@@ -39,11 +39,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// full list. In case of a differential update it is the
         /// version number of the list after the update has been applied.
         /// </summary>
+        [Mandatory]
         public UInt64                          VersionNumber             { get; }
 
         /// <summary>
         /// The type of update (full or differential).
         /// </summary>
+        [Mandatory]
         public UpdateTypes                     UpdateType                { get; }
 
         /// <summary>
@@ -54,6 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Maximum number of AuthorizationData elements is available in
         /// the configuration key: SendLocalListMaxLength.
         /// </summary>
+        [Optional]
         public IEnumerable<AuthorizationData>  LocalAuthorizationList    { get; }
 
         #endregion

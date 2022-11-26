@@ -38,6 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The success or failure of the set charging profile command.
         /// </summary>
+        [Mandatory]
         public ChargingProfileStatus  Status        { get; }
 
         /// <summary>
@@ -449,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         public override String ToString()
 
-            => Status.ToString();
+            => Status.AsText();
 
         #endregion
 

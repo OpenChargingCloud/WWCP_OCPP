@@ -38,6 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// The identification of the transaction which the charing
         /// station is requested to stop.
         /// </summary>
+        [Mandatory]
         public Transaction_Id  TransactionId    { get; }
 
         #endregion

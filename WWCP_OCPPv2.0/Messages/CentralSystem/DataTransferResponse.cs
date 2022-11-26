@@ -483,10 +483,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Status,
-                             Data is not null
-                                 ? ", " + Data.SubstringMax(20)
-                                 : "");
+            => String.Concat(
+
+                   Status.AsText(),
+
+                   Data is not null
+                       ? ", " + Data.SubstringMax(20)
+                       : ""
+
+               );
 
         #endregion
 

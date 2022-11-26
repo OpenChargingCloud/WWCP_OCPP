@@ -38,6 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The success or failure of the publish firmware request.
         /// </summary>
+        [Mandatory]
         public GenericStatus  Status        { get; }
 
         /// <summary>
@@ -449,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         public override String ToString()
 
-            => Status.ToString();
+            => Status.AsText();
 
         #endregion
 

@@ -27,43 +27,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
-    /// An install certificate response.
+    /// A set display message response.
     /// </summary>
-    public class InstallCertificateResponse : AResponse<CS.InstallCertificateRequest,
-                                                           InstallCertificateResponse>
+    public class SetDisplayMessageResponse : AResponse<CS.SetDisplayMessageRequest,
+                                                          SetDisplayMessageResponse>
     {
 
         #region Properties
 
         /// <summary>
-        /// The success or failure of the install certificate request.
+        /// Whether the charging station is able to display the message.
         /// </summary>
         [Mandatory]
-        public CertificateStatus  Status        { get; }
+        public DisplayMessageStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?        StatusInfo    { get; }
+        public StatusInfo?           StatusInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region InstallCertificateResponse(Request, Status)
+        #region SetDisplayMessageResponse(Request, Status, StatusInfo = null)
 
         /// <summary>
-        /// Create a new install certificate response.
+        /// Create a new set display message response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
-        /// <param name="Status">The success or failure of the install certificate request.</param>
+        /// <param name="Request">The set display message request leading to this response.</param>
+        /// <param name="Status">Whether the charging station is able to display the message.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public InstallCertificateResponse(CS.InstallCertificateRequest  Request,
-                                          CertificateStatus             Status,
-                                          StatusInfo?                   StatusInfo   = null,
-                                          CustomData?                   CustomData   = null)
+        public SetDisplayMessageResponse(CS.SetDisplayMessageRequest  Request,
+                                         DisplayMessageStatus         Status,
+                                         StatusInfo?                  StatusInfo   = null,
+                                         CustomData?                  CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -78,15 +78,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region InstallCertificateResponse(Request, Result)
+        #region SetDisplayMessageResponse(Request, Result)
 
         /// <summary>
-        /// Create a new install certificate response.
+        /// Create a new set display message response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
-        /// <param name="Result">A result.</param>
-        public InstallCertificateResponse(CS.InstallCertificateRequest  Request,
-                                          Result                        Result)
+        /// <param name="Request">The set display message request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public SetDisplayMessageResponse(CS.SetDisplayMessageRequest  Request,
+                                         Result                       Result)
 
             : base(Request,
                    Result)
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:InstallCertificateResponse",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:SetDisplayMessageResponse",
         //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
         //     "CustomDataType": {
@@ -119,15 +119,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //         "vendorId"
         //       ]
         //     },
-        //     "InstallCertificateStatusEnumType": {
-        //       "description": "Charging Station indicates if installation was successful.\r\n",
-        //       "javaType": "InstallCertificateStatusEnum",
+        //     "DisplayMessageStatusEnumType": {
+        //       "description": "This indicates whether the Charging Station is able to display the message.\r\n",
+        //       "javaType": "DisplayMessageStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
         //         "Accepted",
+        //         "NotSupportedMessageFormat",
         //         "Rejected",
-        //         "Failed"
+        //         "NotSupportedPriority",
+        //         "NotSupportedState",
+        //         "UnknownTransaction"
         //       ]
         //     },
         //     "StatusInfoType": {
@@ -162,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "status": {
-        //       "$ref": "#/definitions/InstallCertificateStatusEnumType"
+        //       "$ref": "#/definitions/DisplayMessageStatusEnumType"
         //     },
         //     "statusInfo": {
         //       "$ref": "#/definitions/StatusInfoType"
@@ -175,63 +178,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomInstallCertificateResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomSetDisplayMessageResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an install certificate response.
+        /// Parse the given JSON representation of a set display message response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
+        /// <param name="Request">The set display message request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
-        public static InstallCertificateResponse Parse(CS.InstallCertificateRequest                              Request,
-                                                       JObject                                                   JSON,
-                                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
+        /// <param name="CustomSetDisplayMessageResponseParser">A delegate to parse custom set display message responses.</param>
+        public static SetDisplayMessageResponse Parse(CS.SetDisplayMessageRequest                              Request,
+                                                      JObject                                                  JSON,
+                                                      CustomJObjectParserDelegate<SetDisplayMessageResponse>?  CustomSetDisplayMessageResponseParser   = null)
         {
 
             if (TryParse(Request,
                          JSON,
-                         out var installCertificateResponse,
+                         out var setDisplayMessageResponse,
                          out var errorResponse,
-                         CustomInstallCertificateResponseParser))
+                         CustomSetDisplayMessageResponseParser))
             {
-                return installCertificateResponse!;
+                return setDisplayMessageResponse!;
             }
 
-            throw new ArgumentException("The given JSON representation of an install certificate response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a set display message response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out InstallCertificateResponse, out ErrorResponse, CustomInstallCertificateResponseParser = null)
+        #region (static) TryParse(Request, JSON, out SetDisplayMessageResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an install certificate response.
+        /// Try to parse the given JSON representation of a set display message response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
+        /// <param name="Request">The set display message request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="InstallCertificateResponse">The parsed install certificate response.</param>
+        /// <param name="SetDisplayMessageResponse">The parsed set display message response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
-        public static Boolean TryParse(CS.InstallCertificateRequest                              Request,
-                                       JObject                                                   JSON,
-                                       out InstallCertificateResponse?                           InstallCertificateResponse,
-                                       out String?                                               ErrorResponse,
-                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
+        /// <param name="CustomSetDisplayMessageResponseParser">A delegate to parse custom set display message responses.</param>
+        public static Boolean TryParse(CS.SetDisplayMessageRequest                              Request,
+                                       JObject                                                  JSON,
+                                       out SetDisplayMessageResponse?                           SetDisplayMessageResponse,
+                                       out String?                                              ErrorResponse,
+                                       CustomJObjectParserDelegate<SetDisplayMessageResponse>?  CustomSetDisplayMessageResponseParser   = null)
         {
 
             try
             {
 
-                InstallCertificateResponse = null;
+                SetDisplayMessageResponse = null;
 
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "install certificate status",
-                                         CertificateStatusExtentions.TryParse,
-                                         out CertificateStatus Status,
+                                         "display message status",
+                                         DisplayMessageStatusExtentions.TryParse,
+                                         out DisplayMessageStatus Status,
                                          out ErrorResponse))
                 {
                     return false;
@@ -268,22 +271,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #endregion
 
 
-                InstallCertificateResponse = new InstallCertificateResponse(Request,
-                                                                            Status,
-                                                                            StatusInfo,
-                                                                            CustomData);
+                SetDisplayMessageResponse = new SetDisplayMessageResponse(Request,
+                                                                          Status,
+                                                                          StatusInfo,
+                                                                          CustomData);
 
-                if (CustomInstallCertificateResponseParser is not null)
-                    InstallCertificateResponse = CustomInstallCertificateResponseParser(JSON,
-                                                                                        InstallCertificateResponse);
+                if (CustomSetDisplayMessageResponseParser is not null)
+                    SetDisplayMessageResponse = CustomSetDisplayMessageResponseParser(JSON,
+                                                                                      SetDisplayMessageResponse);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                InstallCertificateResponse  = null;
-                ErrorResponse               = "The given JSON representation of an install certificate response is invalid: " + e.Message;
+                SetDisplayMessageResponse  = null;
+                ErrorResponse              = "The given JSON representation of a set display message response is invalid: " + e.Message;
                 return false;
             }
 
@@ -291,17 +294,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomInstallCertificateResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
+        #region ToJSON(CustomSetDisplayMessageResponseSerializer = null, CustomStatusInfoSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomInstallCertificateResponseSerializer">A delegate to serialize custom install certificate responses.</param>
+        /// <param name="CustomSetDisplayMessageResponseSerializer">A delegate to serialize custom charging profile responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status info objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?                  CustomStatusInfoSerializer                   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SetDisplayMessageResponse>?  CustomSetDisplayMessageResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                 CustomStatusInfoSerializer                  = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
             var json = JSONObject.Create(
@@ -319,8 +322,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                        );
 
-            return CustomInstallCertificateResponseSerializer is not null
-                       ? CustomInstallCertificateResponseSerializer(this, json)
+            return CustomSetDisplayMessageResponseSerializer is not null
+                       ? CustomSetDisplayMessageResponseSerializer(this, json)
                        : json;
 
         }
@@ -331,10 +334,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Static methods
 
         /// <summary>
-        /// The install certificate failed.
+        /// The set display message command failed.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
-        public static InstallCertificateResponse Failed(CS.InstallCertificateRequest Request)
+        /// <param name="Request">The set display message request leading to this response.</param>
+        public static SetDisplayMessageResponse Failed(CS.SetDisplayMessageRequest Request)
 
             => new (Request,
                     Result.Server());
@@ -344,80 +347,80 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Operator overloading
 
-        #region Operator == (InstallCertificateResponse1, InstallCertificateResponse2)
+        #region Operator == (SetDisplayMessageResponse1, SetDisplayMessageResponse2)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two set display message responses for equality.
         /// </summary>
-        /// <param name="InstallCertificateResponse1">An install certificate response.</param>
-        /// <param name="InstallCertificateResponse2">Another install certificate response.</param>
+        /// <param name="SetDisplayMessageResponse1">A set display message response.</param>
+        /// <param name="SetDisplayMessageResponse2">Another set display message response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (InstallCertificateResponse? InstallCertificateResponse1,
-                                           InstallCertificateResponse? InstallCertificateResponse2)
+        public static Boolean operator == (SetDisplayMessageResponse? SetDisplayMessageResponse1,
+                                           SetDisplayMessageResponse? SetDisplayMessageResponse2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(InstallCertificateResponse1, InstallCertificateResponse2))
+            if (ReferenceEquals(SetDisplayMessageResponse1, SetDisplayMessageResponse2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (InstallCertificateResponse1 is null || InstallCertificateResponse2 is null)
+            if (SetDisplayMessageResponse1 is null || SetDisplayMessageResponse2 is null)
                 return false;
 
-            return InstallCertificateResponse1.Equals(InstallCertificateResponse2);
+            return SetDisplayMessageResponse1.Equals(SetDisplayMessageResponse2);
 
         }
 
         #endregion
 
-        #region Operator != (InstallCertificateResponse1, InstallCertificateResponse2)
+        #region Operator != (SetDisplayMessageResponse1, SetDisplayMessageResponse2)
 
         /// <summary>
-        /// Compares two install certificate responses for inequality.
+        /// Compares two set display message responses for inequality.
         /// </summary>
-        /// <param name="InstallCertificateResponse1">An install certificate response.</param>
-        /// <param name="InstallCertificateResponse2">Another install certificate response.</param>
+        /// <param name="SetDisplayMessageResponse1">A set display message response.</param>
+        /// <param name="SetDisplayMessageResponse2">Another set display message response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (InstallCertificateResponse? InstallCertificateResponse1,
-                                           InstallCertificateResponse? InstallCertificateResponse2)
+        public static Boolean operator != (SetDisplayMessageResponse? SetDisplayMessageResponse1,
+                                           SetDisplayMessageResponse? SetDisplayMessageResponse2)
 
-            => !(InstallCertificateResponse1 == InstallCertificateResponse2);
-
-        #endregion
+            => !(SetDisplayMessageResponse1 == SetDisplayMessageResponse2);
 
         #endregion
 
-        #region IEquatable<InstallCertificateResponse> Members
+        #endregion
+
+        #region IEquatable<SetDisplayMessageResponse> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two set display message responses for equality.
         /// </summary>
-        /// <param name="Object">An install certificate response to compare with.</param>
+        /// <param name="Object">A set display message response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is InstallCertificateResponse installCertificateResponse &&
-                   Equals(installCertificateResponse);
+            => Object is SetDisplayMessageResponse setDisplayMessageResponse &&
+                   Equals(setDisplayMessageResponse);
 
         #endregion
 
-        #region Equals(InstallCertificateResponse)
+        #region Equals(SetDisplayMessageResponse)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two set display message responses for equality.
         /// </summary>
-        /// <param name="InstallCertificateResponse">An install certificate response to compare with.</param>
-        public override Boolean Equals(InstallCertificateResponse? InstallCertificateResponse)
+        /// <param name="SetDisplayMessageResponse">A set display message response to compare with.</param>
+        public override Boolean Equals(SetDisplayMessageResponse? SetDisplayMessageResponse)
 
-            => InstallCertificateResponse is not null &&
+            => SetDisplayMessageResponse is not null &&
 
-               Status.Equals(InstallCertificateResponse.Status) &&
+               Status.     Equals(SetDisplayMessageResponse.Status) &&
 
-             ((StatusInfo is     null && InstallCertificateResponse.StatusInfo is     null) ||
-               StatusInfo is not null && InstallCertificateResponse.StatusInfo is not null && StatusInfo.Equals(InstallCertificateResponse.StatusInfo)) &&
+             ((StatusInfo is     null && SetDisplayMessageResponse.StatusInfo is     null) ||
+               StatusInfo is not null && SetDisplayMessageResponse.StatusInfo is not null && StatusInfo.Equals(SetDisplayMessageResponse.StatusInfo)) &&
 
-               base.GenericEquals(InstallCertificateResponse);
+               base.GenericEquals(SetDisplayMessageResponse);
 
         #endregion
 
@@ -430,7 +433,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
+{
             unchecked
             {
 

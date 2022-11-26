@@ -38,6 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <summary>
         /// The status indicating whether the charging station accepts the request to stop the charging transaction.
         /// </summary>
+        [Mandatory]
         public RequestStartStopStatus  Status        { get; }
 
         /// <summary>
@@ -449,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         public override String ToString()
 
-            => Status.ToString();
+            => Status.AsText();
 
         #endregion
 

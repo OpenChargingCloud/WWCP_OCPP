@@ -39,11 +39,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// For TxDefaultProfile an evseId=0 applies the profile to each individual evse.
         /// For ChargingStationMaxProfile and ChargingStationExternalConstraints an evseId = 0 contains an overal limit for the whole charging station.
         /// </summary>
+        [Mandatory]
         public EVSE_Id          EVSEId             { get; }
 
         /// <summary>
         /// The charging profile to be set.
         /// </summary>
+        [Mandatory]
         public ChargingProfile  ChargingProfile    { get; }
 
         #endregion

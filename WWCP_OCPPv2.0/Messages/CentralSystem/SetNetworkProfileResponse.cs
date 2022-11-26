@@ -27,43 +27,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
-    /// An install certificate response.
+    /// A set network profile response.
     /// </summary>
-    public class InstallCertificateResponse : AResponse<CS.InstallCertificateRequest,
-                                                           InstallCertificateResponse>
+    public class SetNetworkProfileResponse : AResponse<CS.SetNetworkProfileRequest,
+                                                          SetNetworkProfileResponse>
     {
 
         #region Properties
 
         /// <summary>
-        /// The success or failure of the install certificate request.
+        /// Whether the charging station was able to accept the request.
         /// </summary>
         [Mandatory]
-        public CertificateStatus  Status        { get; }
+        public SetNetworkProfileStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?        StatusInfo    { get; }
+        public StatusInfo?              StatusInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region InstallCertificateResponse(Request, Status)
+        #region SetNetworkProfileResponse(Request, Status, StatusInfo = null)
 
         /// <summary>
-        /// Create a new install certificate response.
+        /// Create a new set network profile response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
-        /// <param name="Status">The success or failure of the install certificate request.</param>
+        /// <param name="Request">The set network profile request leading to this response.</param>
+        /// <param name="Status">Whether the charging station was able to accept the request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public InstallCertificateResponse(CS.InstallCertificateRequest  Request,
-                                          CertificateStatus             Status,
-                                          StatusInfo?                   StatusInfo   = null,
-                                          CustomData?                   CustomData   = null)
+        public SetNetworkProfileResponse(CS.SetNetworkProfileRequest  Request,
+                                         SetNetworkProfileStatus      Status,
+                                         StatusInfo?                  StatusInfo   = null,
+                                         CustomData?                  CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -78,15 +78,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region InstallCertificateResponse(Request, Result)
+        #region SetNetworkProfileResponse(Request, Result)
 
         /// <summary>
-        /// Create a new install certificate response.
+        /// Create a new set network profile response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
-        /// <param name="Result">A result.</param>
-        public InstallCertificateResponse(CS.InstallCertificateRequest  Request,
-                                          Result                        Result)
+        /// <param name="Request">The set network profile request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public SetNetworkProfileResponse(CS.SetNetworkProfileRequest  Request,
+                                         Result                       Result)
 
             : base(Request,
                    Result)
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:InstallCertificateResponse",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:SetNetworkProfileResponse",
         //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
         //     "CustomDataType": {
@@ -119,9 +119,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //         "vendorId"
         //       ]
         //     },
-        //     "InstallCertificateStatusEnumType": {
-        //       "description": "Charging Station indicates if installation was successful.\r\n",
-        //       "javaType": "InstallCertificateStatusEnum",
+        //     "SetNetworkProfileStatusEnumType": {
+        //       "description": "Result of operation.\r\n",
+        //       "javaType": "SetNetworkProfileStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "status": {
-        //       "$ref": "#/definitions/InstallCertificateStatusEnumType"
+        //       "$ref": "#/definitions/SetNetworkProfileStatusEnumType"
         //     },
         //     "statusInfo": {
         //       "$ref": "#/definitions/StatusInfoType"
@@ -175,63 +175,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomInstallCertificateResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomSetNetworkProfileResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an install certificate response.
+        /// Parse the given JSON representation of a set network profile response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
+        /// <param name="Request">The set network profile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
-        public static InstallCertificateResponse Parse(CS.InstallCertificateRequest                              Request,
-                                                       JObject                                                   JSON,
-                                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
+        /// <param name="CustomSetNetworkProfileResponseParser">A delegate to parse custom set network profile responses.</param>
+        public static SetNetworkProfileResponse Parse(CS.SetNetworkProfileRequest                              Request,
+                                                      JObject                                                  JSON,
+                                                      CustomJObjectParserDelegate<SetNetworkProfileResponse>?  CustomSetNetworkProfileResponseParser   = null)
         {
 
             if (TryParse(Request,
                          JSON,
-                         out var installCertificateResponse,
+                         out var setNetworkProfileResponse,
                          out var errorResponse,
-                         CustomInstallCertificateResponseParser))
+                         CustomSetNetworkProfileResponseParser))
             {
-                return installCertificateResponse!;
+                return setNetworkProfileResponse!;
             }
 
-            throw new ArgumentException("The given JSON representation of an install certificate response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a set network profile response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out InstallCertificateResponse, out ErrorResponse, CustomInstallCertificateResponseParser = null)
+        #region (static) TryParse(Request, JSON, out SetNetworkProfileResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an install certificate response.
+        /// Try to parse the given JSON representation of a set network profile response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
+        /// <param name="Request">The set network profile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="InstallCertificateResponse">The parsed install certificate response.</param>
+        /// <param name="SetNetworkProfileResponse">The parsed set network profile response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
-        public static Boolean TryParse(CS.InstallCertificateRequest                              Request,
-                                       JObject                                                   JSON,
-                                       out InstallCertificateResponse?                           InstallCertificateResponse,
-                                       out String?                                               ErrorResponse,
-                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
+        /// <param name="CustomSetNetworkProfileResponseParser">A delegate to parse custom set network profile responses.</param>
+        public static Boolean TryParse(CS.SetNetworkProfileRequest                              Request,
+                                       JObject                                                  JSON,
+                                       out SetNetworkProfileResponse?                           SetNetworkProfileResponse,
+                                       out String?                                              ErrorResponse,
+                                       CustomJObjectParserDelegate<SetNetworkProfileResponse>?  CustomSetNetworkProfileResponseParser   = null)
         {
 
             try
             {
 
-                InstallCertificateResponse = null;
+                SetNetworkProfileResponse = null;
 
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "install certificate status",
-                                         CertificateStatusExtentions.TryParse,
-                                         out CertificateStatus Status,
+                                         "set network profile status",
+                                         SetNetworkProfileStatusExtentions.TryParse,
+                                         out SetNetworkProfileStatus Status,
                                          out ErrorResponse))
                 {
                     return false;
@@ -268,22 +268,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #endregion
 
 
-                InstallCertificateResponse = new InstallCertificateResponse(Request,
-                                                                            Status,
-                                                                            StatusInfo,
-                                                                            CustomData);
+                SetNetworkProfileResponse = new SetNetworkProfileResponse(Request,
+                                                                          Status,
+                                                                          StatusInfo,
+                                                                          CustomData);
 
-                if (CustomInstallCertificateResponseParser is not null)
-                    InstallCertificateResponse = CustomInstallCertificateResponseParser(JSON,
-                                                                                        InstallCertificateResponse);
+                if (CustomSetNetworkProfileResponseParser is not null)
+                    SetNetworkProfileResponse = CustomSetNetworkProfileResponseParser(JSON,
+                                                                                      SetNetworkProfileResponse);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                InstallCertificateResponse  = null;
-                ErrorResponse               = "The given JSON representation of an install certificate response is invalid: " + e.Message;
+                SetNetworkProfileResponse  = null;
+                ErrorResponse              = "The given JSON representation of a set network profile response is invalid: " + e.Message;
                 return false;
             }
 
@@ -291,17 +291,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomInstallCertificateResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
+        #region ToJSON(CustomSetNetworkProfileResponseSerializer = null, CustomStatusInfoSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomInstallCertificateResponseSerializer">A delegate to serialize custom install certificate responses.</param>
+        /// <param name="CustomSetNetworkProfileResponseSerializer">A delegate to serialize custom charging profile responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status info objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?                  CustomStatusInfoSerializer                   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SetNetworkProfileResponse>?  CustomSetNetworkProfileResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                 CustomStatusInfoSerializer                  = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
             var json = JSONObject.Create(
@@ -319,8 +319,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                        );
 
-            return CustomInstallCertificateResponseSerializer is not null
-                       ? CustomInstallCertificateResponseSerializer(this, json)
+            return CustomSetNetworkProfileResponseSerializer is not null
+                       ? CustomSetNetworkProfileResponseSerializer(this, json)
                        : json;
 
         }
@@ -331,10 +331,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Static methods
 
         /// <summary>
-        /// The install certificate failed.
+        /// The set network profile command failed.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
-        public static InstallCertificateResponse Failed(CS.InstallCertificateRequest Request)
+        /// <param name="Request">The set network profile request leading to this response.</param>
+        public static SetNetworkProfileResponse Failed(CS.SetNetworkProfileRequest Request)
 
             => new (Request,
                     Result.Server());
@@ -344,80 +344,80 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Operator overloading
 
-        #region Operator == (InstallCertificateResponse1, InstallCertificateResponse2)
+        #region Operator == (SetNetworkProfileResponse1, SetNetworkProfileResponse2)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two set network profile responses for equality.
         /// </summary>
-        /// <param name="InstallCertificateResponse1">An install certificate response.</param>
-        /// <param name="InstallCertificateResponse2">Another install certificate response.</param>
+        /// <param name="SetNetworkProfileResponse1">A set network profile response.</param>
+        /// <param name="SetNetworkProfileResponse2">Another set network profile response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (InstallCertificateResponse? InstallCertificateResponse1,
-                                           InstallCertificateResponse? InstallCertificateResponse2)
+        public static Boolean operator == (SetNetworkProfileResponse? SetNetworkProfileResponse1,
+                                           SetNetworkProfileResponse? SetNetworkProfileResponse2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(InstallCertificateResponse1, InstallCertificateResponse2))
+            if (ReferenceEquals(SetNetworkProfileResponse1, SetNetworkProfileResponse2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (InstallCertificateResponse1 is null || InstallCertificateResponse2 is null)
+            if (SetNetworkProfileResponse1 is null || SetNetworkProfileResponse2 is null)
                 return false;
 
-            return InstallCertificateResponse1.Equals(InstallCertificateResponse2);
+            return SetNetworkProfileResponse1.Equals(SetNetworkProfileResponse2);
 
         }
 
         #endregion
 
-        #region Operator != (InstallCertificateResponse1, InstallCertificateResponse2)
+        #region Operator != (SetNetworkProfileResponse1, SetNetworkProfileResponse2)
 
         /// <summary>
-        /// Compares two install certificate responses for inequality.
+        /// Compares two set network profile responses for inequality.
         /// </summary>
-        /// <param name="InstallCertificateResponse1">An install certificate response.</param>
-        /// <param name="InstallCertificateResponse2">Another install certificate response.</param>
+        /// <param name="SetNetworkProfileResponse1">A set network profile response.</param>
+        /// <param name="SetNetworkProfileResponse2">Another set network profile response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (InstallCertificateResponse? InstallCertificateResponse1,
-                                           InstallCertificateResponse? InstallCertificateResponse2)
+        public static Boolean operator != (SetNetworkProfileResponse? SetNetworkProfileResponse1,
+                                           SetNetworkProfileResponse? SetNetworkProfileResponse2)
 
-            => !(InstallCertificateResponse1 == InstallCertificateResponse2);
-
-        #endregion
+            => !(SetNetworkProfileResponse1 == SetNetworkProfileResponse2);
 
         #endregion
 
-        #region IEquatable<InstallCertificateResponse> Members
+        #endregion
+
+        #region IEquatable<SetNetworkProfileResponse> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two set network profile responses for equality.
         /// </summary>
-        /// <param name="Object">An install certificate response to compare with.</param>
+        /// <param name="Object">A set network profile response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is InstallCertificateResponse installCertificateResponse &&
-                   Equals(installCertificateResponse);
+            => Object is SetNetworkProfileResponse setNetworkProfileResponse &&
+                   Equals(setNetworkProfileResponse);
 
         #endregion
 
-        #region Equals(InstallCertificateResponse)
+        #region Equals(SetNetworkProfileResponse)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two set network profile responses for equality.
         /// </summary>
-        /// <param name="InstallCertificateResponse">An install certificate response to compare with.</param>
-        public override Boolean Equals(InstallCertificateResponse? InstallCertificateResponse)
+        /// <param name="SetNetworkProfileResponse">A set network profile response to compare with.</param>
+        public override Boolean Equals(SetNetworkProfileResponse? SetNetworkProfileResponse)
 
-            => InstallCertificateResponse is not null &&
+            => SetNetworkProfileResponse is not null &&
 
-               Status.Equals(InstallCertificateResponse.Status) &&
+               Status.     Equals(SetNetworkProfileResponse.Status) &&
 
-             ((StatusInfo is     null && InstallCertificateResponse.StatusInfo is     null) ||
-               StatusInfo is not null && InstallCertificateResponse.StatusInfo is not null && StatusInfo.Equals(InstallCertificateResponse.StatusInfo)) &&
+             ((StatusInfo is     null && SetNetworkProfileResponse.StatusInfo is     null) ||
+               StatusInfo is not null && SetNetworkProfileResponse.StatusInfo is not null && StatusInfo.Equals(SetNetworkProfileResponse.StatusInfo)) &&
 
-               base.GenericEquals(InstallCertificateResponse);
+               base.GenericEquals(SetNetworkProfileResponse);
 
         #endregion
 
@@ -430,7 +430,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
+{
             unchecked
             {
 

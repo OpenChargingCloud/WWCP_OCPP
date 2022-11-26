@@ -24,18 +24,75 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class HashAlgorithmsExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a hash algorithm.
+        /// </summary>
+        /// <param name="Text">A text representation of a hash algorithm.</param>
         public static HashAlgorithms Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "SHA256"  => HashAlgorithms.SHA256,
-                   "SHA384"  => HashAlgorithms.SHA384,
-                   "SHA512"  => HashAlgorithms.SHA512,
-                   _         => HashAlgorithms.Unknown
-               };
+            if (TryParse(Text, out var algorithm))
+                return algorithm;
+
+            return HashAlgorithms.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a hash algorithm.
+        /// </summary>
+        /// <param name="Text">A text representation of a hash algorithm.</param>
+        public static HashAlgorithms? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var algorithm))
+                return algorithm;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out HashAlgorithm)
+
+        /// <summary>
+        /// Try to parse the given text as a hash algorithm.
+        /// </summary>
+        /// <param name="Text">A text representation of a hash algorithm.</param>
+        /// <param name="HashAlgorithm">The parsed hash algorithm.</param>
+        public static Boolean TryParse(String Text, out HashAlgorithms HashAlgorithm)
+        {
+            switch (Text.Trim())
+            {
+
+                case "SHA256":
+                    HashAlgorithm = HashAlgorithms.SHA256;
+                    return true;
+
+                case "SHA384":
+                    HashAlgorithm = HashAlgorithms.SHA384;
+                    return true;
+
+                case "SHA512":
+                    HashAlgorithm = HashAlgorithms.SHA512;
+                    return true;
+
+                default:
+                    HashAlgorithm = HashAlgorithms.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this HashAlgorithm)
 

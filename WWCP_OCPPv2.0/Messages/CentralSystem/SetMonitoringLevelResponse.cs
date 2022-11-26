@@ -27,43 +27,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
-    /// An install certificate response.
+    /// A set monitoring level response.
     /// </summary>
-    public class InstallCertificateResponse : AResponse<CS.InstallCertificateRequest,
-                                                           InstallCertificateResponse>
+    public class SetMonitoringLevelResponse : AResponse<CS.SetMonitoringLevelRequest,
+                                                           SetMonitoringLevelResponse>
     {
 
         #region Properties
 
         /// <summary>
-        /// The success or failure of the install certificate request.
+        /// Whether the charging station was able to accept the request.
         /// </summary>
         [Mandatory]
-        public CertificateStatus  Status        { get; }
+        public GenericStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?        StatusInfo    { get; }
+        public StatusInfo?    StatusInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region InstallCertificateResponse(Request, Status)
+        #region SetMonitoringLevelResponse(Request, Status, StatusInfo = null)
 
         /// <summary>
-        /// Create a new install certificate response.
+        /// Create a new set monitoring level response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
-        /// <param name="Status">The success or failure of the install certificate request.</param>
+        /// <param name="Request">The set monitoring level request leading to this response.</param>
+        /// <param name="Status">Whether the charging station was able to accept the request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public InstallCertificateResponse(CS.InstallCertificateRequest  Request,
-                                          CertificateStatus             Status,
-                                          StatusInfo?                   StatusInfo   = null,
-                                          CustomData?                   CustomData   = null)
+        public SetMonitoringLevelResponse(CS.SetMonitoringLevelRequest  Request,
+                                         GenericStatus                  Status,
+                                         StatusInfo?                    StatusInfo   = null,
+                                         CustomData?                    CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -78,14 +78,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region InstallCertificateResponse(Request, Result)
+        #region SetMonitoringLevelResponse(Request, Result)
 
         /// <summary>
-        /// Create a new install certificate response.
+        /// Create a new set monitoring level response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
-        /// <param name="Result">A result.</param>
-        public InstallCertificateResponse(CS.InstallCertificateRequest  Request,
+        /// <param name="Request">The set monitoring level request leading to this response.</param>
+        /// <param name="Result">The result.</param>
+        public SetMonitoringLevelResponse(CS.SetMonitoringLevelRequest  Request,
                                           Result                        Result)
 
             : base(Request,
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:InstallCertificateResponse",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:SetMonitoringLevelResponse",
         //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
         //     "CustomDataType": {
@@ -119,15 +119,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //         "vendorId"
         //       ]
         //     },
-        //     "InstallCertificateStatusEnumType": {
-        //       "description": "Charging Station indicates if installation was successful.\r\n",
-        //       "javaType": "InstallCertificateStatusEnum",
+        //     "GenericStatusEnumType": {
+        //       "description": "Indicates whether the Charging Station was able to accept the request.\r\n",
+        //       "javaType": "GenericStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
         //         "Accepted",
-        //         "Rejected",
-        //         "Failed"
+        //         "Rejected"
         //       ]
         //     },
         //     "StatusInfoType": {
@@ -162,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "status": {
-        //       "$ref": "#/definitions/InstallCertificateStatusEnumType"
+        //       "$ref": "#/definitions/GenericStatusEnumType"
         //     },
         //     "statusInfo": {
         //       "$ref": "#/definitions/StatusInfoType"
@@ -175,63 +174,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomInstallCertificateResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomSetMonitoringLevelResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an install certificate response.
+        /// Parse the given JSON representation of a set monitoring level response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
+        /// <param name="Request">The set monitoring level request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
-        public static InstallCertificateResponse Parse(CS.InstallCertificateRequest                              Request,
+        /// <param name="CustomSetMonitoringLevelResponseParser">A delegate to parse custom set monitoring level responses.</param>
+        public static SetMonitoringLevelResponse Parse(CS.SetMonitoringLevelRequest                              Request,
                                                        JObject                                                   JSON,
-                                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
+                                                       CustomJObjectParserDelegate<SetMonitoringLevelResponse>?  CustomSetMonitoringLevelResponseParser   = null)
         {
 
             if (TryParse(Request,
                          JSON,
-                         out var installCertificateResponse,
+                         out var setMonitoringLevelResponse,
                          out var errorResponse,
-                         CustomInstallCertificateResponseParser))
+                         CustomSetMonitoringLevelResponseParser))
             {
-                return installCertificateResponse!;
+                return setMonitoringLevelResponse!;
             }
 
-            throw new ArgumentException("The given JSON representation of an install certificate response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a set monitoring level response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out InstallCertificateResponse, out ErrorResponse, CustomInstallCertificateResponseParser = null)
+        #region (static) TryParse(Request, JSON, out SetMonitoringLevelResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of an install certificate response.
+        /// Try to parse the given JSON representation of a set monitoring level response.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
+        /// <param name="Request">The set monitoring level request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="InstallCertificateResponse">The parsed install certificate response.</param>
+        /// <param name="SetMonitoringLevelResponse">The parsed set monitoring level response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
-        public static Boolean TryParse(CS.InstallCertificateRequest                              Request,
+        /// <param name="CustomSetMonitoringLevelResponseParser">A delegate to parse custom set monitoring level responses.</param>
+        public static Boolean TryParse(CS.SetMonitoringLevelRequest                              Request,
                                        JObject                                                   JSON,
-                                       out InstallCertificateResponse?                           InstallCertificateResponse,
+                                       out SetMonitoringLevelResponse?                           SetMonitoringLevelResponse,
                                        out String?                                               ErrorResponse,
-                                       CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
+                                       CustomJObjectParserDelegate<SetMonitoringLevelResponse>?  CustomSetMonitoringLevelResponseParser   = null)
         {
 
             try
             {
 
-                InstallCertificateResponse = null;
+                SetMonitoringLevelResponse = null;
 
                 #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "install certificate status",
-                                         CertificateStatusExtentions.TryParse,
-                                         out CertificateStatus Status,
+                                         "monitoring level status",
+                                         GenericStatusExtentions.TryParse,
+                                         out GenericStatus Status,
                                          out ErrorResponse))
                 {
                     return false;
@@ -268,22 +267,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #endregion
 
 
-                InstallCertificateResponse = new InstallCertificateResponse(Request,
+                SetMonitoringLevelResponse = new SetMonitoringLevelResponse(Request,
                                                                             Status,
                                                                             StatusInfo,
                                                                             CustomData);
 
-                if (CustomInstallCertificateResponseParser is not null)
-                    InstallCertificateResponse = CustomInstallCertificateResponseParser(JSON,
-                                                                                        InstallCertificateResponse);
+                if (CustomSetMonitoringLevelResponseParser is not null)
+                    SetMonitoringLevelResponse = CustomSetMonitoringLevelResponseParser(JSON,
+                                                                                        SetMonitoringLevelResponse);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                InstallCertificateResponse  = null;
-                ErrorResponse               = "The given JSON representation of an install certificate response is invalid: " + e.Message;
+                SetMonitoringLevelResponse  = null;
+                ErrorResponse               = "The given JSON representation of a set monitoring level response is invalid: " + e.Message;
                 return false;
             }
 
@@ -291,17 +290,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomInstallCertificateResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
+        #region ToJSON(CustomSetMonitoringLevelResponseSerializer = null, CustomStatusInfoSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomInstallCertificateResponseSerializer">A delegate to serialize custom install certificate responses.</param>
+        /// <param name="CustomSetMonitoringLevelResponseSerializer">A delegate to serialize custom charging profile responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status info objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?                  CustomStatusInfoSerializer                   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SetMonitoringLevelResponse>?  CustomSetMonitoringLevelResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                 CustomStatusInfoSerializer                  = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
             var json = JSONObject.Create(
@@ -319,8 +318,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                        );
 
-            return CustomInstallCertificateResponseSerializer is not null
-                       ? CustomInstallCertificateResponseSerializer(this, json)
+            return CustomSetMonitoringLevelResponseSerializer is not null
+                       ? CustomSetMonitoringLevelResponseSerializer(this, json)
                        : json;
 
         }
@@ -331,10 +330,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Static methods
 
         /// <summary>
-        /// The install certificate failed.
+        /// The set monitoring level command failed.
         /// </summary>
-        /// <param name="Request">The install certificate request leading to this response.</param>
-        public static InstallCertificateResponse Failed(CS.InstallCertificateRequest Request)
+        /// <param name="Request">The set monitoring level request leading to this response.</param>
+        public static SetMonitoringLevelResponse Failed(CS.SetMonitoringLevelRequest Request)
 
             => new (Request,
                     Result.Server());
@@ -344,80 +343,80 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Operator overloading
 
-        #region Operator == (InstallCertificateResponse1, InstallCertificateResponse2)
+        #region Operator == (SetMonitoringLevelResponse1, SetMonitoringLevelResponse2)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two set monitoring level responses for equality.
         /// </summary>
-        /// <param name="InstallCertificateResponse1">An install certificate response.</param>
-        /// <param name="InstallCertificateResponse2">Another install certificate response.</param>
+        /// <param name="SetMonitoringLevelResponse1">A set monitoring level response.</param>
+        /// <param name="SetMonitoringLevelResponse2">Another set monitoring level response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (InstallCertificateResponse? InstallCertificateResponse1,
-                                           InstallCertificateResponse? InstallCertificateResponse2)
+        public static Boolean operator == (SetMonitoringLevelResponse? SetMonitoringLevelResponse1,
+                                           SetMonitoringLevelResponse? SetMonitoringLevelResponse2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(InstallCertificateResponse1, InstallCertificateResponse2))
+            if (ReferenceEquals(SetMonitoringLevelResponse1, SetMonitoringLevelResponse2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (InstallCertificateResponse1 is null || InstallCertificateResponse2 is null)
+            if (SetMonitoringLevelResponse1 is null || SetMonitoringLevelResponse2 is null)
                 return false;
 
-            return InstallCertificateResponse1.Equals(InstallCertificateResponse2);
+            return SetMonitoringLevelResponse1.Equals(SetMonitoringLevelResponse2);
 
         }
 
         #endregion
 
-        #region Operator != (InstallCertificateResponse1, InstallCertificateResponse2)
+        #region Operator != (SetMonitoringLevelResponse1, SetMonitoringLevelResponse2)
 
         /// <summary>
-        /// Compares two install certificate responses for inequality.
+        /// Compares two set monitoring level responses for inequality.
         /// </summary>
-        /// <param name="InstallCertificateResponse1">An install certificate response.</param>
-        /// <param name="InstallCertificateResponse2">Another install certificate response.</param>
+        /// <param name="SetMonitoringLevelResponse1">A set monitoring level response.</param>
+        /// <param name="SetMonitoringLevelResponse2">Another set monitoring level response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (InstallCertificateResponse? InstallCertificateResponse1,
-                                           InstallCertificateResponse? InstallCertificateResponse2)
+        public static Boolean operator != (SetMonitoringLevelResponse? SetMonitoringLevelResponse1,
+                                           SetMonitoringLevelResponse? SetMonitoringLevelResponse2)
 
-            => !(InstallCertificateResponse1 == InstallCertificateResponse2);
-
-        #endregion
+            => !(SetMonitoringLevelResponse1 == SetMonitoringLevelResponse2);
 
         #endregion
 
-        #region IEquatable<InstallCertificateResponse> Members
+        #endregion
+
+        #region IEquatable<SetMonitoringLevelResponse> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two set monitoring level responses for equality.
         /// </summary>
-        /// <param name="Object">An install certificate response to compare with.</param>
+        /// <param name="Object">A set monitoring level response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is InstallCertificateResponse installCertificateResponse &&
-                   Equals(installCertificateResponse);
+            => Object is SetMonitoringLevelResponse setMonitoringLevelResponse &&
+                   Equals(setMonitoringLevelResponse);
 
         #endregion
 
-        #region Equals(InstallCertificateResponse)
+        #region Equals(SetMonitoringLevelResponse)
 
         /// <summary>
-        /// Compares two install certificate responses for equality.
+        /// Compares two set monitoring level responses for equality.
         /// </summary>
-        /// <param name="InstallCertificateResponse">An install certificate response to compare with.</param>
-        public override Boolean Equals(InstallCertificateResponse? InstallCertificateResponse)
+        /// <param name="SetMonitoringLevelResponse">A set monitoring level response to compare with.</param>
+        public override Boolean Equals(SetMonitoringLevelResponse? SetMonitoringLevelResponse)
 
-            => InstallCertificateResponse is not null &&
+            => SetMonitoringLevelResponse is not null &&
 
-               Status.Equals(InstallCertificateResponse.Status) &&
+               Status.     Equals(SetMonitoringLevelResponse.Status) &&
 
-             ((StatusInfo is     null && InstallCertificateResponse.StatusInfo is     null) ||
-               StatusInfo is not null && InstallCertificateResponse.StatusInfo is not null && StatusInfo.Equals(InstallCertificateResponse.StatusInfo)) &&
+             ((StatusInfo is     null && SetMonitoringLevelResponse.StatusInfo is     null) ||
+               StatusInfo is not null && SetMonitoringLevelResponse.StatusInfo is not null && StatusInfo.Equals(SetMonitoringLevelResponse.StatusInfo)) &&
 
-               base.GenericEquals(InstallCertificateResponse);
+               base.GenericEquals(SetMonitoringLevelResponse);
 
         #endregion
 
@@ -430,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
+{
             unchecked
             {
 

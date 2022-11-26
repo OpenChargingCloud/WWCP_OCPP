@@ -37,6 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// The type of reset that the charging station should perform.
         /// </summary>
+        [Mandatory]
         public ResetTypes  ResetType    { get; }
 
         #endregion

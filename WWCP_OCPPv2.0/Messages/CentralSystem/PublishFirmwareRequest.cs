@@ -38,6 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// The unique identification of this publish firmware request
         /// </summary>
+        [Mandatory]
         public Int32      PublishFirmwareRequestId    { get; }
 
         /// <summary>
@@ -49,6 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.
         /// </summary>
+        [Mandatory]
         public String     MD5Checksum                 { get; }
 
         /// <summary>
@@ -57,6 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// present, it is left to the local controller to decide how many times
         /// it wants to retry.
         /// </summary>
+        [Optional]
         public Byte?      Retries                     { get; }
 
         /// <summary>
@@ -64,6 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// is not present, it is left to local controller to decide how long to
         /// wait between attempts.
         /// </summary>
+        [Optional]
         public TimeSpan?  RetryInterval               { get; }
 
         #endregion
