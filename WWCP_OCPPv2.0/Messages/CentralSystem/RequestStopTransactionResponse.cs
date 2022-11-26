@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 RequestStopTransactionResponse = null;
 
-                #region RequestStartStopStatus
+                #region RequestStartStopStatus    [mandatory]
 
                 if (!JSON.MapMandatory("status",
                                        "request start stop status",
@@ -237,9 +237,39 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #endregion
 
+                #region StatusInfo                [optional]
+
+                if (JSON.ParseOptionalJSON("statusInfo",
+                                           "detailed status info",
+                                           OCPPv2_0.StatusInfo.TryParse,
+                                           out StatusInfo? StatusInfo,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData                [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 RequestStopTransactionResponse = new RequestStopTransactionResponse(Request,
-                                                                                    RequestStartStopStatus);
+                                                                                    RequestStartStopStatus,
+                                                                                    StatusInfo,
+                                                                                    CustomData);
 
                 if (CustomRequestStopTransactionResponseParser is not null)
                     RequestStopTransactionResponse = CustomRequestStopTransactionResponseParser(JSON,
@@ -259,17 +289,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomRequestStopTransactionResponseSerializer = null)
+        #region ToJSON(CustomRequestStopTransactionResponseSerializer = null, CustomStatusInfoSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomRequestStopTransactionResponseSerializer">A delegate to serialize custom request stop transaction responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<RequestStopTransactionResponse>? CustomRequestStopTransactionResponseSerializer = null)
+        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status info objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<RequestStopTransactionResponse>?  CustomRequestStopTransactionResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                      CustomStatusInfoSerializer                       = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                      CustomCustomDataSerializer                       = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("status",  Status.AsText())
+
+                                 new JProperty("status",      Status.    AsText()),
+
+                           StatusInfo is not null
+                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                CustomCustomDataSerializer))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               : null
+
                        );
 
             return CustomRequestStopTransactionResponseSerializer is not null

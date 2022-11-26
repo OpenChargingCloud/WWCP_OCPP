@@ -345,15 +345,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomGet15118EVCertificateSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomGet15118EVCertificateSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGet15118EVCertificateSerializer">A delegate to serialize custom Get15118EVCertificate requests.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataResponseSerializer      = null)
+                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer              = null)
         {
 
             var json = JSONObject.Create(
@@ -363,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                  new JProperty("exiRequest",             EXIRequest.           ToString()),
 
                            CustomData is not null
-                               ? new JProperty("customData",             CustomData.           ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",             CustomData.           ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

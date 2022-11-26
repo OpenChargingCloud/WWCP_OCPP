@@ -195,21 +195,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ToJSON(CustomPublishFirmwareStatusNotificationResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomPublishFirmwareStatusNotificationResponseSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomPublishFirmwareStatusNotificationResponseSerializer">A delegate to serialize custom publish firmware status notification responses.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<PublishFirmwareStatusNotificationResponse>?  CustomPublishFirmwareStatusNotificationResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                                 CustomCustomDataResponseSerializer                          = null)
+                              CustomJObjectSerializerDelegate<CustomData>?                                 CustomCustomDataSerializer                                  = null)
         {
 
             var json = JSONObject.Create(
 
                            CustomData is not null
-                               ? new JProperty("customData", CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData", CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

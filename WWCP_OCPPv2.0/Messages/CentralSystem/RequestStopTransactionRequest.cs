@@ -275,17 +275,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ToJSON(CustomRequestStopTransactionRequestSerializer = null)
+        #region ToJSON(CustomRequestStopTransactionRequestSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomRequestStopTransactionRequestSerializer">A delegate to serialize custom request stop transaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<RequestStopTransactionRequest>? CustomRequestStopTransactionRequestSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<RequestStopTransactionRequest>?  CustomRequestStopTransactionRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                     CustomCustomDataSerializer                      = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("transactionId",  TransactionId.Value)
+
+                                 new JProperty("transactionId",  TransactionId.Value),
+
+                           CustomData is not null
+                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))
+                               : null
+
                        );
 
             return CustomRequestStopTransactionRequestSerializer is not null

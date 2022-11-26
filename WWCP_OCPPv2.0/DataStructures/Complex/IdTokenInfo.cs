@@ -393,21 +393,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomIdTokenInfoResponseSerializer = null, ..., CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomIdTokenInfoSerializer = null, CustomIdTokenSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomIdTokenInfoResponseSerializer">A delegate to serialize custom IdTokenInfo objects.</param>
-        /// <param name="CustomIdTokenResponseSerializer">A delegate to serialize custom IdTokens.</param>
-        /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom AdditionalInfo objects.</param>
-        /// <param name="CustomMessageContentResponseSerializer">A delegate to serialize custom MessageContent objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<IdTokenInfo>?     CustomIdTokenInfoResponseSerializer      = null,
-                              CustomJObjectSerializerDelegate<IdToken>?         CustomIdTokenResponseSerializer          = null,
-                              CustomJObjectSerializerDelegate<AdditionalInfo>?  CustomAdditionalInfoResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<MessageContent>?  CustomMessageContentResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataResponseSerializer       = null)
+        /// <param name="CustomIdTokenInfoSerializer">A delegate to serialize custom identification tokens info objects.</param>
+        /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
+        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional info objects.</param>
+        /// <param name="CustomMessageContentSerializer">A delegate to serialize custom message content objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<IdTokenInfo>?     CustomIdTokenInfoSerializer      = null,
+                              CustomJObjectSerializerDelegate<IdToken>?         CustomIdTokenSerializer          = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?  CustomAdditionalInfoSerializer   = null,
+                              CustomJObjectSerializerDelegate<MessageContent>?  CustomMessageContentSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
         {
 
             var JSON = JSONObject.Create(
@@ -427,9 +427,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            GroupIdToken is not null
-                               ? new JProperty("groupIdToken",         GroupIdToken.   ToJSON(CustomIdTokenResponseSerializer,
-                                                                                              CustomAdditionalInfoResponseSerializer,
-                                                                                              CustomCustomDataResponseSerializer))
+                               ? new JProperty("groupIdToken",         GroupIdToken.   ToJSON(CustomIdTokenSerializer,
+                                                                                              CustomAdditionalInfoSerializer,
+                                                                                              CustomCustomDataSerializer))
                                : null,
 
                            Language1.HasValue
@@ -441,18 +441,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            PersonalMessage is not null
-                               ? new JProperty("personalMessage",      PersonalMessage.ToJSON(CustomMessageContentResponseSerializer,
-                                                                                              CustomCustomDataResponseSerializer))
+                               ? new JProperty("personalMessage",      PersonalMessage.ToJSON(CustomMessageContentSerializer,
+                                                                                              CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.     ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",           CustomData.     ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomIdTokenInfoResponseSerializer is not null
-                       ? CustomIdTokenInfoResponseSerializer(this, JSON)
+            return CustomIdTokenInfoSerializer is not null
+                       ? CustomIdTokenInfoSerializer(this, JSON)
                        : JSON;
 
         }

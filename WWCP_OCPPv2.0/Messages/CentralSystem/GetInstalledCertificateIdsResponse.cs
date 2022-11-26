@@ -428,12 +428,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <param name="CustomGetInstalledCertificateIdsResponseSerializer">A delegate to serialize custom get installed certificate ids responses.</param>
         /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash data.</param>
-        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status info objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetInstalledCertificateIdsResponse>?  CustomGetInstalledCertificateIdsResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<CertificateHashData>?                 CustomCertificateHashDataSerializer                  = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?                          CustomStatusInfoResponseSerializer                   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                          CustomCustomDataResponseSerializer                   = null)
+                              CustomJObjectSerializerDelegate<StatusInfo>?                          CustomStatusInfoSerializer                           = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                          CustomCustomDataSerializer                           = null)
         {
 
             var json = JSONObject.Create(
@@ -442,12 +442,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                  new JProperty("certificateHashDataChain",  new JArray(CertificateHashDataChain.Select(certificateHashData => certificateHashData.ToJSON(CustomCertificateHashDataSerializer)))),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",                StatusInfo.ToJSON(CustomStatusInfoResponseSerializer,
-                                                                                              CustomCustomDataResponseSerializer))
+                               ? new JProperty("statusInfo",                StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                              CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",                CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",                CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -237,33 +237,33 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomConsumptionCostResponseSerializer = null, CustomCostResponseSerializer = null, ...)
+        #region ToJSON(CustomConsumptionCostSerializer = null, CustomCostSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomConsumptionCostResponseSerializer">A delegate to serialize custom consumptionCosts.</param>
-        /// <param name="CustomCostResponseSerializer">A delegate to serialize custom costs.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ConsumptionCost>?  CustomConsumptionCostResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Cost>?             CustomCostResponseSerializer              = null,
-                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataResponseSerializer        = null)
+        /// <param name="CustomConsumptionCostSerializer">A delegate to serialize custom consumptionCosts.</param>
+        /// <param name="CustomCostSerializer">A delegate to serialize custom costs.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ConsumptionCost>?  CustomConsumptionCostSerializer   = null,
+                              CustomJObjectSerializerDelegate<Cost>?             CustomCostSerializer              = null,
+                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer        = null)
         {
 
             var JSON = JSONObject.Create(
 
                                  new JProperty("startValue",  StartValue),
-                                 new JProperty("cost",        new JArray(Costs.Select(cost => cost.ToJSON(CustomCostResponseSerializer,
-                                                                                                          CustomCustomDataResponseSerializer)))),
+                                 new JProperty("cost",        new JArray(Costs.Select(cost => cost.ToJSON(CustomCostSerializer,
+                                                                                                          CustomCustomDataSerializer)))),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomConsumptionCostResponseSerializer is not null
-                       ? CustomConsumptionCostResponseSerializer(this, JSON)
+            return CustomConsumptionCostSerializer is not null
+                       ? CustomConsumptionCostSerializer(this, JSON)
                        : JSON;
 
         }

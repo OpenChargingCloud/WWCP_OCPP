@@ -323,15 +323,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomChargingProfileCriterionResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomChargingProfileCriterionSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomChargingProfileCriterionResponseSerializer">A delegate to serialize custom ChargingProfileCriterion objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingProfileCriterion>?  CustomChargingProfileCriterionResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataResponseSerializer                 = null)
+        /// <param name="CustomChargingProfileCriterionSerializer">A delegate to serialize custom charging profile criterion objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingProfileCriterion>?  CustomChargingProfileCriterionSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
 
             var JSON = JSONObject.Create(
@@ -353,13 +353,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",              CustomData.                  ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",              CustomData.                  ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomChargingProfileCriterionResponseSerializer is not null
-                       ? CustomChargingProfileCriterionResponseSerializer(this, JSON)
+            return CustomChargingProfileCriterionSerializer is not null
+                       ? CustomChargingProfileCriterionSerializer(this, JSON)
                        : JSON;
 
         }

@@ -231,15 +231,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomUnitsOfMeasureResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomUnitsOfMeasureSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomUnitsOfMeasureResponseSerializer">A delegate to serialize custom units of measure.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<UnitsOfMeasure>?  CustomUnitsOfMeasureResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataResponseSerializer       = null)
+        /// <param name="CustomUnitsOfMeasureSerializer">A delegate to serialize custom units of measure.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<UnitsOfMeasure>?  CustomUnitsOfMeasureSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
         {
 
             var JSON = JSONObject.Create(
@@ -248,13 +248,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                            new JProperty("multiplier",        Multiplier),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomUnitsOfMeasureResponseSerializer is not null
-                       ? CustomUnitsOfMeasureResponseSerializer(this, JSON)
+            return CustomUnitsOfMeasureSerializer is not null
+                       ? CustomUnitsOfMeasureSerializer(this, JSON)
                        : JSON;
 
         }

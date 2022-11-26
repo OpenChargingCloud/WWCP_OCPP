@@ -335,17 +335,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ToJSON(CustomClearChargingProfileRequestSerializer = null, CustomClearChargingProfileResponseSerializer = null, ...)
+        #region ToJSON(CustomClearChargingProfileRequestSerializer = null, CustomClearChargingProfileSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomClearChargingProfileRequestSerializer">A delegate to serialize custom clear charging profile requests.</param>
-        /// <param name="CustomClearChargingProfileResponseSerializer">A delegate to serialize custom ClearChargingProfile objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?  CustomClearChargingProfileRequestSerializer    = null,
-                              CustomJObjectSerializerDelegate<ClearChargingProfile>?         CustomClearChargingProfileResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataResponseSerializer             = null)
+        /// <param name="CustomClearChargingProfileSerializer">A delegate to serialize custom ClearChargingProfile objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?  CustomClearChargingProfileRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<ClearChargingProfile>?         CustomClearChargingProfileSerializer          = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataSerializer                    = null)
         {
 
             var json = JSONObject.Create(
@@ -355,11 +355,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null,
 
                            ChargingProfileCriteria is not null
-                               ? new JProperty("chargingProfileCriteria",  ChargingProfileCriteria.ToJSON(CustomClearChargingProfileResponseSerializer))
+                               ? new JProperty("chargingProfileCriteria",  ChargingProfileCriteria.ToJSON(CustomClearChargingProfileSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",               CustomData.             ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",               CustomData.             ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

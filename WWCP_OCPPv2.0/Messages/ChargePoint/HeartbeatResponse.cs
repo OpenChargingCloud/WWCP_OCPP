@@ -239,15 +239,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomHeartbeatResponseSerializer">A delegate to serialize custom heartbeat responses.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatResponse>?  CustomHeartbeatResponseSerializer    = null,
-                              CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataResponseSerializer   = null)
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatResponse>?  CustomHeartbeatResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
             var JSON = JSONObject.Create(
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
                                : null,
 
                            new JProperty("currentTime",       CurrentTime.ToIso8601())

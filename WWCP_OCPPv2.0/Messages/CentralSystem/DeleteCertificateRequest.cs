@@ -330,19 +330,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// </summary>
         /// <param name="CustomDeleteCertificateRequestSerializer">A delegate to serialize custom delete certificate requests.</param>
         /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash datas.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DeleteCertificateRequest>?  CustomDeleteCertificateRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<CertificateHashData>?       CustomCertificateHashDataSerializer        = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataResponseSerializer         = null)
+                              CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
 
             var json = JSONObject.Create(
 
                                  new JProperty("certificateHashData",  CertificateHashData.ToJSON(CustomCertificateHashDataSerializer,
-                                                                                                  CustomCustomDataResponseSerializer)),
+                                                                                                  CustomCustomDataSerializer)),
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.         ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",           CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

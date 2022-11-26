@@ -254,17 +254,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomClearMonitoringResultResponseSerializer = null)
+        #region ToJSON(CustomClearMonitoringResultSerializer = null, CustomStatusInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomClearMonitoringResultResponseSerializer">A delegate to serialize custom ClearMonitoringResult objects.</param>
-        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearMonitoringResult>?  CustomClearMonitoringResultResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?             CustomStatusInfoResponseSerializer              = null,
-                              CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataResponseSerializer              = null)
+        /// <param name="CustomClearMonitoringResultSerializer">A delegate to serialize custom ClearMonitoringResult objects.</param>
+        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status info objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearMonitoringResult>?  CustomClearMonitoringResultSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?             CustomStatusInfoSerializer              = null,
+                              CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataSerializer              = null)
         {
 
             var JSON = JSONObject.Create(
@@ -273,18 +273,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  new JProperty("id",          Id.        ToString()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoResponseSerializer,
-                                                                                CustomCustomDataResponseSerializer))
+                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomClearMonitoringResultResponseSerializer is not null
-                       ? CustomClearMonitoringResultResponseSerializer(this, JSON)
+            return CustomClearMonitoringResultSerializer is not null
+                       ? CustomClearMonitoringResultSerializer(this, JSON)
                        : JSON;
 
         }

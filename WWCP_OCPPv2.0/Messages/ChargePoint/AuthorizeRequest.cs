@@ -439,40 +439,40 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomAuthorizeRequestSerializer = null, CustomIdTokenResponseSerializer = null, ...)
+        #region ToJSON(CustomAuthorizeRequestSerializer = null, CustomIdTokenSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomAuthorizeRequestSerializer">A delegate to serialize custom authorize requests.</param>
-        /// <param name="CustomIdTokenResponseSerializer">A delegate to serialize custom identification tokens.</param>
-        /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom additional info objects.</param>
-        /// <param name="CustomOCSPRequestDataResponseSerializer">A delegate to serialize custom OCSP request data.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeRequest>?  CustomAuthorizeRequestSerializer          = null,
-                              CustomJObjectSerializerDelegate<IdToken>?           CustomIdTokenResponseSerializer           = null,
-                              CustomJObjectSerializerDelegate<AdditionalInfo>?    CustomAdditionalInfoResponseSerializer    = null,
-                              CustomJObjectSerializerDelegate<OCSPRequestData>?   CustomOCSPRequestDataResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataResponseSerializer        = null)
+        /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
+        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional info objects.</param>
+        /// <param name="CustomOCSPRequestDataSerializer">A delegate to serialize custom OCSP request data.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeRequest>?  CustomAuthorizeRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<IdToken>?           CustomIdTokenSerializer            = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?    CustomAdditionalInfoSerializer     = null,
+                              CustomJObjectSerializerDelegate<OCSPRequestData>?   CustomOCSPRequestDataSerializer    = null,
+                              CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataSerializer         = null)
         {
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("idToken",                            IdToken.    ToJSON(CustomIdTokenResponseSerializer,
-                                                                                                  CustomAdditionalInfoResponseSerializer,
-                                                                                                  CustomCustomDataResponseSerializer)),
+                           new JProperty("idToken",                            IdToken.    ToJSON(CustomIdTokenSerializer,
+                                                                                                  CustomAdditionalInfoSerializer,
+                                                                                                  CustomCustomDataSerializer)),
 
                            Certificate is not null
                                ? new JProperty("certificate",                  Certificate.ToString())
                                : null,
 
                            ISO15118CertificateHashData is not null && ISO15118CertificateHashData.Any()
-                               ? new JProperty("iso15118CertificateHashData",  new JArray(ISO15118CertificateHashData.SafeSelect(hashData => hashData.ToJSON(CustomOCSPRequestDataResponseSerializer,
-                                                                                                                                                             CustomCustomDataResponseSerializer))))
+                               ? new JProperty("iso15118CertificateHashData",  new JArray(ISO15118CertificateHashData.SafeSelect(hashData => hashData.ToJSON(CustomOCSPRequestDataSerializer,
+                                                                                                                                                             CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",                   CustomData. ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",                   CustomData. ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

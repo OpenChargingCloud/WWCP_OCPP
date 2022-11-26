@@ -518,15 +518,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ToJSON(CustomReserveNowRequestSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomReserveNowRequestSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomReserveNowRequestSerializer">A delegate to serialize custom reserve now requests.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowRequest>?  CustomReserveNowRequestSerializer    = null,
-                              CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataResponseSerializer   = null)
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowRequest>?  CustomReserveNowRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
             var json = JSONObject.Create(
@@ -548,7 +548,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.         ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",     CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

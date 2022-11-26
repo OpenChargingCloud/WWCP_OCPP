@@ -525,11 +525,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="CustomMeterValuesRequestSerializer">A delegate to serialize custom meter values requests.</param>
         /// <param name="CustomMeterValueSerializer">A delegate to serialize custom meter values.</param>
         /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesRequest>?  CustomMeterValuesRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<MeterValue>?          CustomMeterValueSerializer           = null,
                               CustomJObjectSerializerDelegate<SampledValue>?        CustomSampledValueSerializer         = null,
-                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataResponseSerializer   = null)
+                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
         {
 
             var json = JSONObject.Create(
@@ -542,7 +542,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.  ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.  ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

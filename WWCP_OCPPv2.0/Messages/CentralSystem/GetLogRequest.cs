@@ -436,10 +436,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// </summary>
         /// <param name="CustomGetLogRequestSerializer">A delegate to serialize custom start transaction requests.</param>
         /// <param name="CustomLogParametersSerializer">A delegate to serialize custom log parameters.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetLogRequest>?  CustomGetLogRequestSerializer        = null,
-                              CustomJObjectSerializerDelegate<LogParameters>?  CustomLogParametersSerializer        = null,
-                              CustomJObjectSerializerDelegate<CustomData>?     CustomCustomDataResponseSerializer   = null)
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetLogRequest>?  CustomGetLogRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<LogParameters>?  CustomLogParametersSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?     CustomCustomDataSerializer      = null)
         {
 
             var json = JSONObject.Create(
@@ -456,7 +456,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

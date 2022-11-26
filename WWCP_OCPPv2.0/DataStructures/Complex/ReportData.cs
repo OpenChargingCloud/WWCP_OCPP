@@ -296,52 +296,52 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomReportDataResponseSerializer = null, CustomComponentResponseSerializer = null, ...)
+        #region ToJSON(CustomReportDataSerializer = null, CustomComponentSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomReportDataResponseSerializer">A delegate to serialize custom report data objects.</param>
-        /// <param name="CustomComponentResponseSerializer">A delegate to serialize custom component objects.</param>
-        /// <param name="CustomEVSEResponseSerializer">A delegate to serialize custom EVSE objects.</param>
-        /// <param name="CustomVariableResponseSerializer">A delegate to serialize custom variable objects.</param>
-        /// <param name="CustomVariableAttributeResponseSerializer">A delegate to serialize custom variable attribute objects.</param>
-        /// <param name="CustomVariableCharacteristicsResponseSerializer">A delegate to serialize custom variable characteristics objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ReportData>?               CustomReportDataResponseSerializer                = null,
-                              CustomJObjectSerializerDelegate<Component>?                CustomComponentResponseSerializer                 = null,
-                              CustomJObjectSerializerDelegate<EVSE>?                     CustomEVSEResponseSerializer                      = null,
-                              CustomJObjectSerializerDelegate<Variable>?                 CustomVariableResponseSerializer                  = null,
-                              CustomJObjectSerializerDelegate<VariableAttribute>?        CustomVariableAttributeResponseSerializer         = null,
-                              CustomJObjectSerializerDelegate<VariableCharacteristics>?  CustomVariableCharacteristicsResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataResponseSerializer                = null)
+        /// <param name="CustomReportDataSerializer">A delegate to serialize custom report data objects.</param>
+        /// <param name="CustomComponentSerializer">A delegate to serialize custom component objects.</param>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSE objects.</param>
+        /// <param name="CustomVariableSerializer">A delegate to serialize custom variable objects.</param>
+        /// <param name="CustomVariableAttributeSerializer">A delegate to serialize custom variable attribute objects.</param>
+        /// <param name="CustomVariableCharacteristicsSerializer">A delegate to serialize custom variable characteristics objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ReportData>?               CustomReportDataSerializer                = null,
+                              CustomJObjectSerializerDelegate<Component>?                CustomComponentSerializer                 = null,
+                              CustomJObjectSerializerDelegate<EVSE>?                     CustomEVSESerializer                      = null,
+                              CustomJObjectSerializerDelegate<Variable>?                 CustomVariableSerializer                  = null,
+                              CustomJObjectSerializerDelegate<VariableAttribute>?        CustomVariableAttributeSerializer         = null,
+                              CustomJObjectSerializerDelegate<VariableCharacteristics>?  CustomVariableCharacteristicsSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
         {
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("component",                Component.              ToJSON(CustomComponentResponseSerializer,
-                                                                                                          CustomEVSEResponseSerializer,
-                                                                                                          CustomCustomDataResponseSerializer)),
+                                 new JProperty("component",                Component.              ToJSON(CustomComponentSerializer,
+                                                                                                          CustomEVSESerializer,
+                                                                                                          CustomCustomDataSerializer)),
 
-                                 new JProperty("variable",                 Variable.               ToJSON(CustomVariableResponseSerializer,
-                                                                                                          CustomCustomDataResponseSerializer)),
+                                 new JProperty("variable",                 Variable.               ToJSON(CustomVariableSerializer,
+                                                                                                          CustomCustomDataSerializer)),
 
-                                 new JProperty("variableAttribute",        new JArray(VariableAttributes.Select(variableAttribute => variableAttribute.ToJSON(CustomVariableAttributeResponseSerializer,
-                                                                                                                                                              CustomCustomDataResponseSerializer)))),
+                                 new JProperty("variableAttribute",        new JArray(VariableAttributes.Select(variableAttribute => variableAttribute.ToJSON(CustomVariableAttributeSerializer,
+                                                                                                                                                              CustomCustomDataSerializer)))),
 
                            VariableCharacteristics is not null
-                               ? new JProperty("variableCharacteristics",  VariableCharacteristics.ToJSON(CustomVariableCharacteristicsResponseSerializer,
-                                                                                                          CustomCustomDataResponseSerializer))
+                               ? new JProperty("variableCharacteristics",  VariableCharacteristics.ToJSON(CustomVariableCharacteristicsSerializer,
+                                                                                                          CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",               CustomData.             ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",               CustomData.             ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomReportDataResponseSerializer is not null
-                       ? CustomReportDataResponseSerializer(this, JSON)
+            return CustomReportDataSerializer is not null
+                       ? CustomReportDataSerializer(this, JSON)
                        : JSON;
 
         }

@@ -343,26 +343,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomBootNotificationRequestSerializer = null, CustomChargingStationResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomBootNotificationRequestSerializer = null, CustomChargingStationSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomBootNotificationRequestSerializer">A delegate to serialize custom boot notification requests.</param>
-        /// <param name="CustomChargingStationResponseSerializer">A delegate to serialize custom ChargingStations.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomChargingStationSerializer">A delegate to serialize custom ChargingStations.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<BootNotificationRequest>?  CustomBootNotificationRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataResponseSerializer        = null)
+                              CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationSerializer           = null,
+                              CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
         {
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("chargingStation",   ChargingStation.ToJSON(CustomChargingStationResponseSerializer)),
-                           new JProperty("reason",            Reason.         AsText()),
+                                 new JProperty("chargingStation",  ChargingStation.ToJSON(CustomChargingStationSerializer)),
+                                 new JProperty("reason",           Reason.         AsText()),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",       CustomData.     ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

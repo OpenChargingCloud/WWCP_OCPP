@@ -517,23 +517,23 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomNotifyEventRequestSerializer = null, CustomEventDataResponseSerializer = null, ...)
+        #region ToJSON(CustomNotifyEventRequestSerializer = null, CustomEventDataSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomNotifyEventRequestSerializer">A delegate to serialize custom NotifyEvent requests.</param>
-        /// <param name="CustomEventDataResponseSerializer">A delegate to serialize custom event data objects.</param>
-        /// <param name="CustomComponentResponseSerializer">A delegate to serialize custom Component objects.</param>
-        /// <param name="CustomEVSEResponseSerializer">A delegate to serialize custom EVSE objects.</param>
-        /// <param name="CustomVariableResponseSerializer">A delegate to serialize custom Variable objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomEventDataSerializer">A delegate to serialize custom event data objects.</param>
+        /// <param name="CustomComponentSerializer">A delegate to serialize custom Component objects.</param>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSE objects.</param>
+        /// <param name="CustomVariableSerializer">A delegate to serialize custom Variable objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyEventRequest>?  CustomNotifyEventRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<EventData>?           CustomEventDataResponseSerializer    = null,
-                              CustomJObjectSerializerDelegate<Component>?           CustomComponentResponseSerializer    = null,
-                              CustomJObjectSerializerDelegate<EVSE>?                CustomEVSEResponseSerializer         = null,
-                              CustomJObjectSerializerDelegate<Variable>?            CustomVariableResponseSerializer     = null,
-                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataResponseSerializer   = null)
+                              CustomJObjectSerializerDelegate<EventData>?           CustomEventDataSerializer            = null,
+                              CustomJObjectSerializerDelegate<Component>?           CustomComponentSerializer            = null,
+                              CustomJObjectSerializerDelegate<EVSE>?                CustomEVSESerializer                 = null,
+                              CustomJObjectSerializerDelegate<Variable>?            CustomVariableSerializer             = null,
+                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
         {
 
             var JSON = JSONObject.Create(
@@ -542,18 +542,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                                  new JProperty("seqNo",        SequenceNumber),
 
-                                 new JProperty("eventData",    new JArray(EventData.Select(eventData => eventData.ToJSON(CustomEventDataResponseSerializer,
-                                                                                                                         CustomComponentResponseSerializer,
-                                                                                                                         CustomEVSEResponseSerializer,
-                                                                                                                         CustomVariableResponseSerializer,
-                                                                                                                         CustomCustomDataResponseSerializer)))),
+                                 new JProperty("eventData",    new JArray(EventData.Select(eventData => eventData.ToJSON(CustomEventDataSerializer,
+                                                                                                                         CustomComponentSerializer,
+                                                                                                                         CustomEVSESerializer,
+                                                                                                                         CustomVariableSerializer,
+                                                                                                                         CustomCustomDataSerializer)))),
 
                            ToBeContinued.HasValue
                                ? new JProperty("tbc",          ToBeContinued.Value)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyEventRequestSerializer is not null

@@ -730,12 +730,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
         /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedule requests.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ReportChargingProfilesRequest>?  CustomReportChargingProfilesRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingProfile>?                CustomChargingProfileSerializer                 = null,
                               CustomJObjectSerializerDelegate<ChargingSchedule>?               CustomChargingScheduleSerializer                = null,
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?         CustomChargingSchedulePeriodSerializer          = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                     CustomCustomDataResponseSerializer              = null)
+                              CustomJObjectSerializerDelegate<CustomData>?                     CustomCustomDataSerializer                      = null)
         {
 
             var JSON = JSONObject.Create(
@@ -753,7 +753,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",           CustomData.ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomReportChargingProfilesRequestSerializer is not null

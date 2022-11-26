@@ -394,35 +394,35 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ToJSON(CustomGetVariablesRequestSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomGetVariablesRequestSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetVariablesRequestSerializer">A delegate to serialize custom start transaction requests.</param>
-        /// <param name="CustomGetVariableDataResponseSerializer">A delegate to serialize custom GetVariableData objects.</param>
-        /// <param name="CustomComponentResponseSerializer">A delegate to serialize custom Component objects.</param>
-        /// <param name="CustomEVSEResponseSerializer">A delegate to serialize custom EVSE objects.</param>
-        /// <param name="CustomVariableResponseSerializer">A delegate to serialize custom Variable objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetVariablesRequest>?  CustomGetVariablesRequestSerializer       = null,
-                              CustomJObjectSerializerDelegate<GetVariableData>?      CustomGetVariableDataResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Component>?            CustomComponentResponseSerializer         = null,
-                              CustomJObjectSerializerDelegate<EVSE>?                 CustomEVSEResponseSerializer              = null,
-                              CustomJObjectSerializerDelegate<Variable>?             CustomVariableResponseSerializer          = null,
-                              CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataResponseSerializer        = null)
+        /// <param name="CustomGetVariableDataSerializer">A delegate to serialize custom GetVariableData objects.</param>
+        /// <param name="CustomComponentSerializer">A delegate to serialize custom Component objects.</param>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSE objects.</param>
+        /// <param name="CustomVariableSerializer">A delegate to serialize custom Variable objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetVariablesRequest>?  CustomGetVariablesRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<GetVariableData>?      CustomGetVariableDataSerializer       = null,
+                              CustomJObjectSerializerDelegate<Component>?            CustomComponentSerializer             = null,
+                              CustomJObjectSerializerDelegate<EVSE>?                 CustomEVSESerializer                  = null,
+                              CustomJObjectSerializerDelegate<Variable>?             CustomVariableSerializer              = null,
+                              CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("transactionId",  new JArray(VariableData.Select(data => data.ToJSON(CustomGetVariableDataResponseSerializer,
-                                                                                                              CustomComponentResponseSerializer,
-                                                                                                              CustomEVSEResponseSerializer,
-                                                                                                              CustomVariableResponseSerializer,
-                                                                                                              CustomCustomDataResponseSerializer)))),
+                           new JProperty("transactionId",  new JArray(VariableData.Select(data => data.ToJSON(CustomGetVariableDataSerializer,
+                                                                                                              CustomComponentSerializer,
+                                                                                                              CustomEVSESerializer,
+                                                                                                              CustomVariableSerializer,
+                                                                                                              CustomCustomDataSerializer)))),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

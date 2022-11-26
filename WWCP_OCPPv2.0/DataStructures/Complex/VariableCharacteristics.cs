@@ -341,15 +341,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomVariableCharacteristicsResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomVariableCharacteristicsSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomVariableCharacteristicsResponseSerializer">A delegate to serialize custom variable characteristics objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<VariableCharacteristics>?  CustomVariableCharacteristicsResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataResponseSerializer                = null)
+        /// <param name="CustomVariableCharacteristicsSerializer">A delegate to serialize custom variable characteristics objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<VariableCharacteristics>?  CustomVariableCharacteristicsSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
         {
 
             var JSON = JSONObject.Create(
@@ -374,13 +374,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",          CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",          CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomVariableCharacteristicsResponseSerializer is not null
-                       ? CustomVariableCharacteristicsResponseSerializer(this, JSON)
+            return CustomVariableCharacteristicsSerializer is not null
+                       ? CustomVariableCharacteristicsSerializer(this, JSON)
                        : JSON;
 
         }

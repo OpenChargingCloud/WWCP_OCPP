@@ -391,29 +391,29 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomMessageInfoResponseSerializer = null, CustomMessageContentResponseSerializer = null, ...)
+        #region ToJSON(CustomMessageInfoSerializer = null, CustomMessageContentSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomMessageInfoResponseSerializer">A delegate to serialize custom MessageInfo objects.</param>
-        /// <param name="CustomMessageContentResponseSerializer">A delegate to serialize custom MessageContent objects.</param>
-        /// <param name="CustomComponentResponseSerializer">A delegate to serialize custom Component objects.</param>
-        /// <param name="CustomEVSEResponseSerializer">A delegate to serialize custom EVSE objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<MessageInfo>?     CustomMessageInfoResponseSerializer      = null,
-                              CustomJObjectSerializerDelegate<MessageContent>?  CustomMessageContentResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Component>?       CustomComponentResponseSerializer        = null,
-                              CustomJObjectSerializerDelegate<EVSE>?            CustomEVSEResponseSerializer             = null,
-                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataResponseSerializer       = null)
+        /// <param name="CustomMessageInfoSerializer">A delegate to serialize custom MessageInfo objects.</param>
+        /// <param name="CustomMessageContentSerializer">A delegate to serialize custom MessageContent objects.</param>
+        /// <param name="CustomComponentSerializer">A delegate to serialize custom Component objects.</param>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSE objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<MessageInfo>?     CustomMessageInfoSerializer      = null,
+                              CustomJObjectSerializerDelegate<MessageContent>?  CustomMessageContentSerializer   = null,
+                              CustomJObjectSerializerDelegate<Component>?       CustomComponentSerializer        = null,
+                              CustomJObjectSerializerDelegate<EVSE>?            CustomEVSESerializer             = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
         {
 
             var JSON = JSONObject.Create(
 
                                  new JProperty("id",             Id.                  ToString()),
                                  new JProperty("priority",       Priority.            AsText()),
-                                 new JProperty("message",        Message.             ToJSON(CustomMessageContentResponseSerializer,
-                                                                                             CustomCustomDataResponseSerializer)),
+                                 new JProperty("message",        Message.             ToJSON(CustomMessageContentSerializer,
+                                                                                             CustomCustomDataSerializer)),
 
                            State.HasValue
                                ? new JProperty("state",          State.         Value.ToString())
@@ -432,19 +432,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            Display is not null
-                               ? new JProperty("display",        Display.             ToJSON(CustomComponentResponseSerializer,
-                                                                                             CustomEVSEResponseSerializer,
-                                                                                             CustomCustomDataResponseSerializer))
+                               ? new JProperty("display",        Display.             ToJSON(CustomComponentSerializer,
+                                                                                             CustomEVSESerializer,
+                                                                                             CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.          ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",     CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomMessageInfoResponseSerializer is not null
-                       ? CustomMessageInfoResponseSerializer(this, JSON)
+            return CustomMessageInfoSerializer is not null
+                       ? CustomMessageInfoSerializer(this, JSON)
                        : JSON;
 
         }

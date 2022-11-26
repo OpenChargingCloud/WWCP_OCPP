@@ -324,15 +324,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomDataTransferSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomDataTransferRequestSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDataTransferSerializer">A delegate to serialize custom DataTransfer requests.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferSerializer         = null,
-                              CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataResponseSerializer   = null)
+        /// <param name="CustomDataTransferRequestSerializer">A delegate to serialize custom data transfer requests.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
         {
 
             var json = JSONObject.Create(
@@ -348,13 +348,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomDataTransferSerializer is not null
-                       ? CustomDataTransferSerializer(this, json)
+            return CustomDataTransferRequestSerializer is not null
+                       ? CustomDataTransferRequestSerializer(this, json)
                        : json;
 
         }

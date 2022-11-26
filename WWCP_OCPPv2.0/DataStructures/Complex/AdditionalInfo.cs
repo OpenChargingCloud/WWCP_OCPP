@@ -235,30 +235,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomAdditionalInfoResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomAdditionalInfoSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom AdditionalInfo objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<AdditionalInfo>?  CustomAdditionalInfoResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataResponseSerializer       = null)
+        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom AdditionalInfo objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<AdditionalInfo>?  CustomAdditionalInfoSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
         {
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("additionalIdToken",  AdditionalIdToken),
-                           new JProperty("type",               Type),
+                                 new JProperty("additionalIdToken",  AdditionalIdToken),
+                                 new JProperty("type",               Type),
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",         CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomAdditionalInfoResponseSerializer is not null
-                       ? CustomAdditionalInfoResponseSerializer(this, JSON)
+            return CustomAdditionalInfoSerializer is not null
+                       ? CustomAdditionalInfoSerializer(this, JSON)
                        : JSON;
 
         }

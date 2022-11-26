@@ -230,15 +230,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomRelativeTimeIntervalResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomRelativeTimeIntervalSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomRelativeTimeIntervalResponseSerializer">A delegate to serialize custom relativeTimeIntervals.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<RelativeTimeInterval>?  CustomRelativeTimeIntervalResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataResponseSerializer             = null)
+        /// <param name="CustomRelativeTimeIntervalSerializer">A delegate to serialize custom relativeTimeIntervals.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<RelativeTimeInterval>?  CustomRelativeTimeIntervalSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
         {
 
             var JSON = JSONObject.Create(
@@ -250,13 +250,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomRelativeTimeIntervalResponseSerializer is not null
-                       ? CustomRelativeTimeIntervalResponseSerializer(this, JSON)
+            return CustomRelativeTimeIntervalSerializer is not null
+                       ? CustomRelativeTimeIntervalSerializer(this, JSON)
                        : JSON;
 
         }

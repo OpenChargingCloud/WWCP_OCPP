@@ -366,19 +366,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomSampledValueResponseSerializer = null, ..., CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomSampledValueSerializer = null, ..., CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSampledValueResponseSerializer">A delegate to serialize custom SampledValue objects.</param>
-        /// <param name="CustomSignedMeterValueResponseSerializer">A delegate to serialize custom SignedMeterValue objects.</param>
-        /// <param name="CustomUnitsOfMeasureResponseSerializer">A delegate to serialize custom UnitsOfMeasure objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SampledValue>?     CustomSampledValueResponseSerializer       = null,
-                              CustomJObjectSerializerDelegate<SignedMeterValue>? CustomSignedMeterValueResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<UnitsOfMeasure>?   CustomUnitsOfMeasureResponseSerializer     = null,
-                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataResponseSerializer         = null)
+        /// <param name="CustomSampledValueSerializer">A delegate to serialize custom SampledValue objects.</param>
+        /// <param name="CustomSignedMeterValueSerializer">A delegate to serialize custom SignedMeterValue objects.</param>
+        /// <param name="CustomUnitsOfMeasureSerializer">A delegate to serialize custom UnitsOfMeasure objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SampledValue>?     CustomSampledValueSerializer       = null,
+                              CustomJObjectSerializerDelegate<SignedMeterValue>? CustomSignedMeterValueSerializer   = null,
+                              CustomJObjectSerializerDelegate<UnitsOfMeasure>?   CustomUnitsOfMeasureSerializer     = null,
+                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer         = null)
         {
 
             var JSON = JSONObject.Create(
@@ -402,23 +402,23 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            SignedMeterValue is not null
-                               ? new JProperty("signedMeterValue",  SignedMeterValue.ToJSON(CustomSignedMeterValueResponseSerializer,
-                                                                                            CustomCustomDataResponseSerializer))
+                               ? new JProperty("signedMeterValue",  SignedMeterValue.ToJSON(CustomSignedMeterValueSerializer,
+                                                                                            CustomCustomDataSerializer))
                                : null,
 
                            UnitOfMeasure is not null
-                               ? new JProperty("unitOfMeasure",     UnitOfMeasure.   ToJSON(CustomUnitsOfMeasureResponseSerializer,
-                                                                                            CustomCustomDataResponseSerializer))
+                               ? new JProperty("unitOfMeasure",     UnitOfMeasure.   ToJSON(CustomUnitsOfMeasureSerializer,
+                                                                                            CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.      ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",        CustomData.      ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomSampledValueResponseSerializer is not null
-                       ? CustomSampledValueResponseSerializer(this, JSON)
+            return CustomSampledValueSerializer is not null
+                       ? CustomSampledValueSerializer(this, JSON)
                        : JSON;
 
         }

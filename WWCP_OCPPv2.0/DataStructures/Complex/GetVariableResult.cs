@@ -342,35 +342,35 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomGetVariableResultSerializer = null, CustomCustomDataResponseSerializer = null, ...)
+        #region ToJSON(CustomGetVariableResultSerializer = null, CustomComponentSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetVariableResultSerializer">A delegate to serialize custom get variable results.</param>
-        /// <param name="CustomComponentResponseSerializer">A delegate to serialize custom Component objects.</param>
-        /// <param name="CustomEVSEResponseSerializer">A delegate to serialize custom EVSE objects.</param>
-        /// <param name="CustomVariableResponseSerializer">A delegate to serialize custom Variable objects.</param>
-        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetVariableResult>?  CustomGetVariableResultSerializer    = null,
-                              CustomJObjectSerializerDelegate<Component>?          CustomComponentResponseSerializer    = null,
-                              CustomJObjectSerializerDelegate<EVSE>?               CustomEVSEResponseSerializer         = null,
-                              CustomJObjectSerializerDelegate<Variable>?           CustomVariableResponseSerializer     = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?         CustomStatusInfoResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataResponseSerializer   = null)
+        /// <param name="CustomComponentSerializer">A delegate to serialize custom Component objects.</param>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSE objects.</param>
+        /// <param name="CustomVariableSerializer">A delegate to serialize custom Variable objects.</param>
+        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status info objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetVariableResult>?  CustomGetVariableResultSerializer   = null,
+                              CustomJObjectSerializerDelegate<Component>?          CustomComponentSerializer           = null,
+                              CustomJObjectSerializerDelegate<EVSE>?               CustomEVSESerializer                = null,
+                              CustomJObjectSerializerDelegate<Variable>?           CustomVariableSerializer            = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?         CustomStatusInfoSerializer          = null,
+                              CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
             var json = JSONObject.Create(
 
                                  new JProperty("attributeStatus",      AttributeStatus),
 
-                                 new JProperty("component",            Component.          ToJSON(CustomComponentResponseSerializer,
-                                                                                                  CustomEVSEResponseSerializer,
-                                                                                                  CustomCustomDataResponseSerializer)),
+                                 new JProperty("component",            Component.          ToJSON(CustomComponentSerializer,
+                                                                                                  CustomEVSESerializer,
+                                                                                                  CustomCustomDataSerializer)),
 
-                                 new JProperty("variable",             Variable.           ToJSON(CustomVariableResponseSerializer,
-                                                                                                  CustomCustomDataResponseSerializer)),
+                                 new JProperty("variable",             Variable.           ToJSON(CustomVariableSerializer,
+                                                                                                  CustomCustomDataSerializer)),
 
                            AttributeValue is not null
                                ? new JProperty("attributeValue",       AttributeValue)
@@ -381,12 +381,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                : null,
 
                            AttributeStatusInfo is not null
-                               ? new JProperty("attributeStatusInfo",  AttributeStatusInfo.ToJSON(CustomStatusInfoResponseSerializer,
-                                                                                                  CustomCustomDataResponseSerializer))
+                               ? new JProperty("attributeStatusInfo",  AttributeStatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                                  CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.         ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",           CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

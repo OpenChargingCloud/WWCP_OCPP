@@ -261,15 +261,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomMessageContentResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomMessageContentSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomMessageContentResponseSerializer">A delegate to serialize custom MessageContent objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<MessageContent>?  CustomMessageContentResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataResponseSerializer       = null)
+        /// <param name="CustomMessageContentSerializer">A delegate to serialize custom MessageContent objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<MessageContent>?  CustomMessageContentSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
         {
 
             var JSON = JSONObject.Create(
@@ -282,13 +282,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomMessageContentResponseSerializer is not null
-                       ? CustomMessageContentResponseSerializer(this, JSON)
+            return CustomMessageContentSerializer is not null
+                       ? CustomMessageContentSerializer(this, JSON)
                        : JSON;
 
         }

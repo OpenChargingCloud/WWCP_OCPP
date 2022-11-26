@@ -305,15 +305,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ToJSON(CustomCostUpdatedRequestSerializer = null, CustomCustomDataResponseSerializer = null, ...)
+        #region ToJSON(CustomCostUpdatedRequestSerializer = null, CustomCustomDataSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomCostUpdatedRequestSerializer">A delegate to serialize custom cost updated requests.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<CostUpdatedRequest>?  CustomCostUpdatedRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataResponseSerializer   = null)
+                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
         {
 
             var json = JSONObject.Create(
@@ -322,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                  new JProperty("transactionId",  TransactionId.ToString()),
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

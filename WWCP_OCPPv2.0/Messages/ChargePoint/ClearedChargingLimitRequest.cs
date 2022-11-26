@@ -292,15 +292,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomClearedChargingLimitRequestSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomClearedChargingLimitRequestSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomClearedChargingLimitRequestSerializer">A delegate to serialize custom ClearedChargingLimit requests.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ClearedChargingLimitRequest>?  CustomClearedChargingLimitRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataResponseSerializer            = null)
+                              CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataSerializer                    = null)
         {
 
             var JSON = JSONObject.Create(
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.         ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",           CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomClearedChargingLimitRequestSerializer is not null

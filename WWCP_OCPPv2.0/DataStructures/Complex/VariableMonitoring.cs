@@ -309,15 +309,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomVariableMonitoringResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomVariableMonitoringSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomVariableMonitoringResponseSerializer">A delegate to serialize custom VariableMonitoring objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<VariableMonitoring>?  CustomVariableMonitoringResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataResponseSerializer           = null)
+        /// <param name="CustomVariableMonitoringSerializer">A delegate to serialize custom VariableMonitoring objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<VariableMonitoring>?  CustomVariableMonitoringSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
         {
 
             var JSON = JSONObject.Create(
@@ -329,13 +329,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  new JProperty("severity",     (Byte) Severity),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomVariableMonitoringResponseSerializer is not null
-                       ? CustomVariableMonitoringResponseSerializer(this, JSON)
+            return CustomVariableMonitoringSerializer is not null
+                       ? CustomVariableMonitoringSerializer(this, JSON)
                        : JSON;
 
         }

@@ -385,26 +385,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ToJSON(CustomGetDisplayMessagesRequestSerializer = null)
+        #region ToJSON(CustomGetDisplayMessagesRequestSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetDisplayMessagesRequestSerializer">A delegate to serialize custom start transaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetDisplayMessagesRequest>? CustomGetDisplayMessagesRequestSerializer = null)
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetDisplayMessagesRequest>?  CustomGetDisplayMessagesRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestId",  GetDisplayMessagesRequestId),
-                                 new JProperty("id",         new JArray(Ids.Select(id => id.Value))),
+                                 new JProperty("requestId",   GetDisplayMessagesRequestId),
+                                 new JProperty("id",          new JArray(Ids.Select(id => id.Value))),
 
                            Priority.HasValue
-                               ? new JProperty("priority",   Priority.Value.AsText())
+                               ? new JProperty("priority",    Priority.Value.AsText())
                                : null,
 
                            State.HasValue
-                               ? new JProperty("state",      State.   Value.AsText())
+                               ? new JProperty("state",       State.   Value.AsText())
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",  CustomData.    ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

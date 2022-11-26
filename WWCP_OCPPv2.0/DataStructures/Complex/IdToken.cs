@@ -263,17 +263,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomIdTokenResponseSerializer = null, CustomAdditionalInfoResponseSerializer = null, ...)
+        #region ToJSON(CustomIdTokenSerializer = null, CustomAdditionalInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomIdTokenResponseSerializer">A delegate to serialize custom IdTokens.</param>
+        /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<IdToken>?         CustomIdTokenResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<AdditionalInfo>?  CustomAdditionalInfoSerializer    = null,
-                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer        = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<IdToken>?         CustomIdTokenSerializer          = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?  CustomAdditionalInfoSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
         {
 
             var JSON = JSONObject.Create(
@@ -292,8 +292,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                        );
 
-            return CustomIdTokenResponseSerializer is not null
-                       ? CustomIdTokenResponseSerializer(this, JSON)
+            return CustomIdTokenSerializer is not null
+                       ? CustomIdTokenSerializer(this, JSON)
                        : JSON;
 
         }

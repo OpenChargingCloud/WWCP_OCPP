@@ -186,13 +186,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<CustomData>? CustomCustomDataResponseSerializer = null)
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<CustomData>? CustomCustomDataSerializer = null)
         {
 
             var JSON = JSONObject.Create(
@@ -208,8 +208,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 catch { }
             }
 
-            return CustomCustomDataResponseSerializer is not null
-                       ? CustomCustomDataResponseSerializer(this, this)
+            return CustomCustomDataSerializer is not null
+                       ? CustomCustomDataSerializer(this, this)
                        : this;
 
         }

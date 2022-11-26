@@ -264,17 +264,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomComponentResponseSerializer = null, CustomEVSEResponseSerializer = null, ...)
+        #region ToJSON(CustomComponentSerializer = null, CustomEVSESerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomComponentResponseSerializer">A delegate to serialize custom Component objects.</param>
-        /// <param name="CustomEVSEResponseSerializer">A delegate to serialize custom EVSE objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<Component>?   CustomComponentResponseSerializer    = null,
-                              CustomJObjectSerializerDelegate<EVSE>?        CustomEVSEResponseSerializer         = null,
-                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataResponseSerializer   = null)
+        /// <param name="CustomComponentSerializer">A delegate to serialize custom Component objects.</param>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSE objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<Component>?   CustomComponentSerializer    = null,
+                              CustomJObjectSerializerDelegate<EVSE>?        CustomEVSESerializer         = null,
+                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
 
             var JSON = JSONObject.Create(
@@ -286,18 +286,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            EVSE is not null
-                               ? new JProperty("evse",        EVSE.      ToJSON(CustomEVSEResponseSerializer,
-                                                                                CustomCustomDataResponseSerializer))
+                               ? new JProperty("evse",        EVSE.      ToJSON(CustomEVSESerializer,
+                                                                                CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomComponentResponseSerializer is not null
-                       ? CustomComponentResponseSerializer(this, JSON)
+            return CustomComponentSerializer is not null
+                       ? CustomComponentSerializer(this, JSON)
                        : JSON;
 
         }

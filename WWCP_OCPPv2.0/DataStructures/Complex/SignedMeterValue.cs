@@ -291,15 +291,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomSignedMeterValueResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomSignedMeterValueSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSignedMeterValueResponseSerializer">A delegate to serialize custom signed meter values.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SignedMeterValue>?  CustomSignedMeterValueResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataResponseSerializer         = null)
+        /// <param name="CustomSignedMeterValueSerializer">A delegate to serialize custom signed meter values.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SignedMeterValue>?  CustomSignedMeterValueSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataSerializer         = null)
         {
 
             var JSON = JSONObject.Create(
@@ -310,13 +310,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                            new JProperty("publicKey",         PublicKey),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomSignedMeterValueResponseSerializer is not null
-                       ? CustomSignedMeterValueResponseSerializer(this, JSON)
+            return CustomSignedMeterValueSerializer is not null
+                       ? CustomSignedMeterValueSerializer(this, JSON)
                        : JSON;
 
         }

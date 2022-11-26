@@ -475,40 +475,40 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomNotifyDisplayMessagesRequestSerializer = null, CustomMessageInfoResponseSerializer = null, ...)
+        #region ToJSON(CustomNotifyDisplayMessagesRequestSerializer = null, CustomMessageInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomNotifyDisplayMessagesRequestSerializer">A delegate to serialize custom NotifyDisplayMessages requests.</param>
-        /// <param name="CustomMessageInfoResponseSerializer">A delegate to serialize custom MessageInfo objects.</param>
-        /// <param name="CustomMessageContentResponseSerializer">A delegate to serialize custom MessageContent objects.</param>
-        /// <param name="CustomComponentResponseSerializer">A delegate to serialize custom Component objects.</param>
-        /// <param name="CustomEVSEResponseSerializer">A delegate to serialize custom EVSE objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomMessageInfoSerializer">A delegate to serialize custom MessageInfo objects.</param>
+        /// <param name="CustomMessageContentSerializer">A delegate to serialize custom MessageContent objects.</param>
+        /// <param name="CustomComponentSerializer">A delegate to serialize custom Component objects.</param>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSE objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyDisplayMessagesRequest>?  CustomNotifyDisplayMessagesRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<MessageInfo>?                   CustomMessageInfoResponseSerializer            = null,
-                              CustomJObjectSerializerDelegate<MessageContent>?                CustomMessageContentResponseSerializer         = null,
-                              CustomJObjectSerializerDelegate<Component>?                     CustomComponentResponseSerializer              = null,
-                              CustomJObjectSerializerDelegate<EVSE>?                          CustomEVSEResponseSerializer                   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataResponseSerializer             = null)
+                              CustomJObjectSerializerDelegate<MessageInfo>?                   CustomMessageInfoSerializer                    = null,
+                              CustomJObjectSerializerDelegate<MessageContent>?                CustomMessageContentSerializer                 = null,
+                              CustomJObjectSerializerDelegate<Component>?                     CustomComponentSerializer                      = null,
+                              CustomJObjectSerializerDelegate<EVSE>?                          CustomEVSESerializer                           = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
             var JSON = JSONObject.Create(
 
                                  new JProperty("requestId",    NotifyDisplayMessagesRequestId),
-                                 new JProperty("messageInfo",  new JArray(MessageInfos.Select(messageInfo => messageInfo.ToJSON(CustomMessageInfoResponseSerializer,
-                                                                                                                                CustomMessageContentResponseSerializer,
-                                                                                                                                CustomComponentResponseSerializer,
-                                                                                                                                CustomEVSEResponseSerializer,
-                                                                                                                                CustomCustomDataResponseSerializer)))),
+                                 new JProperty("messageInfo",  new JArray(MessageInfos.Select(messageInfo => messageInfo.ToJSON(CustomMessageInfoSerializer,
+                                                                                                                                CustomMessageContentSerializer,
+                                                                                                                                CustomComponentSerializer,
+                                                                                                                                CustomEVSESerializer,
+                                                                                                                                CustomCustomDataSerializer)))),
 
                            ToBeContinued.HasValue
                                ? new JProperty("tbc",          ToBeContinued)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData. ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",   CustomData. ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyDisplayMessagesRequestSerializer is not null

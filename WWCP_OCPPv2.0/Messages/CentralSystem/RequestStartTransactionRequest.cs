@@ -796,7 +796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ToJSON(CustomRequestStartTransactionRequestSerializer = null, CustomIdTokenResponseSerializer = null, ...)
+        #region ToJSON(CustomRequestStartTransactionRequestSerializer = null, CustomIdTokenSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -807,14 +807,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
         /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedule requests.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<RequestStartTransactionRequest>?  CustomRequestStartTransactionRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<IdToken>?                         CustomIdTokenSerializer                          = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?                  CustomAdditionalInfoSerializer                   = null,
                               CustomJObjectSerializerDelegate<ChargingProfile>?                 CustomChargingProfileSerializer                  = null,
                               CustomJObjectSerializerDelegate<ChargingSchedule>?                CustomChargingScheduleSerializer                 = null,
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?          CustomChargingSchedulePeriodSerializer           = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                      CustomCustomDataResponseSerializer               = null)
+                              CustomJObjectSerializerDelegate<CustomData>?                      CustomCustomDataSerializer                       = null)
         {
 
             var json = JSONObject.Create(
@@ -822,7 +822,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                            new JProperty("remoteStartId",  RequestStartTransactionRequestId.ToString()),
                            new JProperty("idToken",        IdToken.                         ToJSON(CustomIdTokenSerializer,
                                                                                                    CustomAdditionalInfoSerializer,
-                                                                                                   CustomCustomDataResponseSerializer)),
+                                                                                                   CustomCustomDataSerializer)),
 
                            EVSEId.HasValue
                                   ? new JProperty("connectorId",   EVSEId.Value.Value)

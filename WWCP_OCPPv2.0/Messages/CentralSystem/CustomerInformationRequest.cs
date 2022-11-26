@@ -551,21 +551,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ToJSON(CustomCustomerInformationRequestSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomCustomerInformationRequestSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomCustomerInformationRequestSerializer">A delegate to serialize custom customer information requests.</param>
-        /// <param name="CustomIdTokenResponseSerializer">A delegate to serialize custom IdTokens.</param>
-        /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom additional information objects.</param>
+        /// <param name="CustomIdTokenSerializer">A delegate to serialize custom IdTokens.</param>
+        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash datas.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<CustomerInformationRequest>?  CustomCustomerInformationRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<IdToken>?                     CustomIdTokenResponseSerializer              = null,
-                              CustomJObjectSerializerDelegate<AdditionalInfo>?              CustomAdditionalInfoResponseSerializer       = null,
+                              CustomJObjectSerializerDelegate<IdToken>?                     CustomIdTokenSerializer                      = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?              CustomAdditionalInfoSerializer               = null,
                               CustomJObjectSerializerDelegate<CertificateHashData>?         CustomCertificateHashDataSerializer          = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataResponseSerializer           = null)
+                              CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {
 
             var json = JSONObject.Create(
@@ -579,9 +579,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null,
 
                            IdToken is not null
-                               ? new JProperty("idToken",              IdToken.                     ToJSON(CustomIdTokenResponseSerializer,
-                                                                                                           CustomAdditionalInfoResponseSerializer,
-                                                                                                           CustomCustomDataResponseSerializer))
+                               ? new JProperty("idToken",              IdToken.                     ToJSON(CustomIdTokenSerializer,
+                                                                                                           CustomAdditionalInfoSerializer,
+                                                                                                           CustomCustomDataSerializer))
                                : null,
 
                            CustomerCertificate is not null
@@ -589,7 +589,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.                  ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",           CustomData.                  ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -325,10 +325,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="CustomCompositeScheduleSerializer">A delegate to serialize custom composite schedule requests.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<CompositeSchedule>?       CustomCompositeScheduleSerializer        = null,
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?  CustomChargingSchedulePeriodSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataResponseSerializer       = null)
+                              CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataSerializer               = null)
         {
 
             var json = JSONObject.Create(
@@ -340,7 +340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                            new JProperty("compositeSchedulePeriod",  new JArray(ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer)))),
 
                            CustomData is not null
-                               ? new JProperty("customData",         CustomData.      ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",         CustomData.      ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

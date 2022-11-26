@@ -231,15 +231,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomStatusInfoResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomStatusInfoSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<StatusInfo>?  CustomStatusInfoResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataResponseSerializer   = null)
+        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status info objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<StatusInfo>?  CustomStatusInfoSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
 
             var JSON = JSONObject.Create(
@@ -251,13 +251,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomStatusInfoResponseSerializer is not null
-                       ? CustomStatusInfoResponseSerializer(this, JSON)
+            return CustomStatusInfoSerializer is not null
+                       ? CustomStatusInfoSerializer(this, JSON)
                        : JSON;
 
         }

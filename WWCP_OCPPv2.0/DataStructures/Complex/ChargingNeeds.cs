@@ -291,11 +291,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="CustomChargingNeedsSerializer">A delegate to serialize custom charging needss.</param>
         /// <param name="CustomACChargingParametersSerializer">A delegate to serialize custom AC charging parameters.</param>
         /// <param name="CustomDCChargingParametersSerializer">A delegate to serialize custom DC charging parameters.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingNeeds>?         CustomChargingNeedsSerializer          = null,
                               CustomJObjectSerializerDelegate<ACChargingParameters>?  CustomACChargingParametersSerializer   = null,
                               CustomJObjectSerializerDelegate<DCChargingParameters>?  CustomDCChargingParametersSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataResponseSerializer     = null)
+                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
         {
 
             var json = JSONObject.Create(
@@ -308,16 +308,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                            ACChargingParameters is not null
                                ? new JProperty("acChargingParameters",     ACChargingParameters.   ToJSON(CustomACChargingParametersSerializer,
-                                                                                                          CustomCustomDataResponseSerializer))
+                                                                                                          CustomCustomDataSerializer))
                                : null,
 
                            DCChargingParameters is not null
                                ? new JProperty("dcChargingParameters",     DCChargingParameters.   ToJSON(CustomDCChargingParametersSerializer,
-                                                                                                          CustomCustomDataResponseSerializer))
+                                                                                                          CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",               CustomData.             ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",               CustomData.             ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

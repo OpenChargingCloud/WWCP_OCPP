@@ -398,30 +398,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ToJSON(CustomGetChargingProfilesRequestSerializer = null, CustomChargingProfileCriterionResponseSerializer = null, ...)
+        #region ToJSON(CustomGetChargingProfilesRequestSerializer = null, CustomChargingProfileCriterionSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetChargingProfilesRequestSerializer">A delegate to serialize custom get charging profiles requests.</param>
-        /// <param name="CustomChargingProfileCriterionResponseSerializer">A delegate to serialize custom ChargingProfileCriterion objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetChargingProfilesRequest>?  CustomGetChargingProfilesRequestSerializer         = null,
-                              CustomJObjectSerializerDelegate<ChargingProfileCriterion>?    CustomChargingProfileCriterionResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataResponseSerializer                 = null)
+        /// <param name="CustomChargingProfileCriterionSerializer">A delegate to serialize custom ChargingProfileCriterion objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetChargingProfilesRequest>?  CustomGetChargingProfilesRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<ChargingProfileCriterion>?    CustomChargingProfileCriterionSerializer     = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {
 
             var json = JSONObject.Create(
 
                                  new JProperty("requestId",        GetChargingProfilesRequestId.ToString()),
-                                 new JProperty("chargingProfile",  ChargingProfile.             ToJSON(CustomChargingProfileCriterionResponseSerializer)),
+                                 new JProperty("chargingProfile",  ChargingProfile.             ToJSON(CustomChargingProfileCriterionSerializer)),
 
                            EVSEId.HasValue
                                ? new JProperty("evseId",           EVSEId.                      ToString())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.                  ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",       CustomData.                  ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

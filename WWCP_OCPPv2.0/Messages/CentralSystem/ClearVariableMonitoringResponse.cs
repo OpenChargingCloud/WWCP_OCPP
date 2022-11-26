@@ -301,28 +301,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomClearVariableMonitoringResponseSerializer = null, CustomClearMonitoringResultResponseSerializer = null, ...)
+        #region ToJSON(CustomClearVariableMonitoringResponseSerializer = null, CustomClearMonitoringResultSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomClearVariableMonitoringResponseSerializer">A delegate to serialize custom clear variable monitoring responses.</param>
-        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status info objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ClearVariableMonitoringResponse>?  CustomClearVariableMonitoringResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<ClearMonitoringResult>?            CustomClearMonitoringResultResponseSerializer     = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?                       CustomStatusInfoResponseSerializer                = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                       CustomCustomDataResponseSerializer                = null)
+                              CustomJObjectSerializerDelegate<ClearMonitoringResult>?            CustomClearMonitoringResultSerializer             = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                       CustomStatusInfoSerializer                        = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                       CustomCustomDataSerializer                        = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("clearMonitoringResult",  new JArray(ClearMonitoringResults.Select(result => result.ToJSON(CustomClearMonitoringResultResponseSerializer,
-                                                                                                                                          CustomStatusInfoResponseSerializer,
-                                                                                                                                          CustomCustomDataResponseSerializer)))),
+                                 new JProperty("clearMonitoringResult",  new JArray(ClearMonitoringResults.Select(result => result.ToJSON(CustomClearMonitoringResultSerializer,
+                                                                                                                                          CustomStatusInfoSerializer,
+                                                                                                                                          CustomCustomDataSerializer)))),
 
                            CustomData is not null
-                               ? new JProperty("customData",             CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",             CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

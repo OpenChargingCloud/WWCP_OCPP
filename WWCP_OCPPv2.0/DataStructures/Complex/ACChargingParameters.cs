@@ -284,26 +284,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomACChargingParametersSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomACChargingParametersSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomACChargingParametersSerializer">A delegate to serialize custom AC charging parameters.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ACChargingParameters>?  CustomACChargingParametersSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataResponseSerializer     = null)
+                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("energyAmount",  EnergyAmount),
-                           new JProperty("evMinCurrent",  EVMinCurrent),
-                           new JProperty("evMaxCurrent",  EVMaxCurrent),
-                           new JProperty("evMaxVoltage",  EVMaxVoltage),
+                                 new JProperty("energyAmount",  EnergyAmount),
+                                 new JProperty("evMinCurrent",  EVMinCurrent),
+                                 new JProperty("evMaxCurrent",  EVMaxCurrent),
+                                 new JProperty("evMaxVoltage",  EVMaxVoltage),
 
                            CustomData is not null
-                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",    CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

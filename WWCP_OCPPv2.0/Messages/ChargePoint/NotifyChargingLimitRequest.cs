@@ -595,22 +595,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomNotifyChargingLimitRequestSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomNotifyChargingLimitRequestSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomNotifyChargingLimitRequestSerializer">A delegate to serialize custom NotifyChargingLimit requests.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyChargingLimitRequest>?  CustomNotifyChargingLimitRequestSerializer     = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedule>?            CustomChargingScheduleSerializer               = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?      CustomChargingSchedulePeriodSerializer         = null,
-                              CustomJObjectSerializerDelegate<SalesTariff>?                 CustomSalesTariffResponseSerializer            = null,
-                              CustomJObjectSerializerDelegate<SalesTariffEntry>?            CustomSalesTariffEntryResponseSerializer       = null,
-                              CustomJObjectSerializerDelegate<RelativeTimeInterval>?        CustomRelativeTimeIntervalResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<ConsumptionCost>?             CustomConsumptionCostResponseSerializer        = null,
-                              CustomJObjectSerializerDelegate<Cost>?                        CustomCostResponseSerializer                   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataResponseSerializer             = null)
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyChargingLimitRequest>?  CustomNotifyChargingLimitRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedule>?            CustomChargingScheduleSerializer             = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?      CustomChargingSchedulePeriodSerializer       = null,
+                              CustomJObjectSerializerDelegate<SalesTariff>?                 CustomSalesTariffSerializer                  = null,
+                              CustomJObjectSerializerDelegate<SalesTariffEntry>?            CustomSalesTariffEntrySerializer             = null,
+                              CustomJObjectSerializerDelegate<RelativeTimeInterval>?        CustomRelativeTimeIntervalSerializer         = null,
+                              CustomJObjectSerializerDelegate<ConsumptionCost>?             CustomConsumptionCostSerializer              = null,
+                              CustomJObjectSerializerDelegate<Cost>?                        CustomCostSerializer                         = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {
 
             var JSON = JSONObject.Create(
@@ -620,12 +620,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                            ChargingSchedules.Any()
                                ? new JProperty("chargingSchedule",  new JArray(ChargingSchedules.Select(chargingSchedule => chargingSchedule.ToJSON(CustomChargingScheduleSerializer,
                                                                                                                                                     CustomChargingSchedulePeriodSerializer,
-                                                                                                                                                    CustomSalesTariffResponseSerializer,
-                                                                                                                                                    CustomSalesTariffEntryResponseSerializer,
-                                                                                                                                                    CustomRelativeTimeIntervalResponseSerializer,
-                                                                                                                                                    CustomConsumptionCostResponseSerializer,
-                                                                                                                                                    CustomCostResponseSerializer,
-                                                                                                                                                    CustomCustomDataResponseSerializer))))
+                                                                                                                                                    CustomSalesTariffSerializer,
+                                                                                                                                                    CustomSalesTariffEntrySerializer,
+                                                                                                                                                    CustomRelativeTimeIntervalSerializer,
+                                                                                                                                                    CustomConsumptionCostSerializer,
+                                                                                                                                                    CustomCostSerializer,
+                                                                                                                                                    CustomCustomDataSerializer))))
                                : null,
 
                            EVSEId.HasValue
@@ -633,7 +633,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.   ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",        CustomData.   ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyChargingLimitRequestSerializer is not null

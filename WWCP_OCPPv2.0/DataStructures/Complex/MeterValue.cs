@@ -239,39 +239,39 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomMeterValueResponseSerializer = null, ..., CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomMeterValueSerializer = null, CustomSampledValueSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomMeterValueResponseSerializer">A delegate to serialize custom MeterValue objects.</param>
-        /// <param name="CustomSampledValueResponseSerializer">A delegate to serialize custom SampledValue objects.</param>
-        /// <param name="CustomSignedMeterValueResponseSerializer">A delegate to serialize custom SignedMeterValue objects.</param>
-        /// <param name="CustomUnitsOfMeasureResponseSerializer">A delegate to serialize custom UnitsOfMeasure objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValue>?       CustomMeterValueResponseSerializer         = null,
-                              CustomJObjectSerializerDelegate<SampledValue>?     CustomSampledValueResponseSerializer       = null,
-                              CustomJObjectSerializerDelegate<SignedMeterValue>? CustomSignedMeterValueResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<UnitsOfMeasure>?   CustomUnitsOfMeasureResponseSerializer     = null,
-                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataResponseSerializer         = null)
+        /// <param name="CustomMeterValueSerializer">A delegate to serialize custom MeterValue objects.</param>
+        /// <param name="CustomSampledValueSerializer">A delegate to serialize custom SampledValue objects.</param>
+        /// <param name="CustomSignedMeterValueSerializer">A delegate to serialize custom SignedMeterValue objects.</param>
+        /// <param name="CustomUnitsOfMeasureSerializer">A delegate to serialize custom UnitsOfMeasure objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValue>?       CustomMeterValueSerializer         = null,
+                              CustomJObjectSerializerDelegate<SampledValue>?     CustomSampledValueSerializer       = null,
+                              CustomJObjectSerializerDelegate<SignedMeterValue>? CustomSignedMeterValueSerializer   = null,
+                              CustomJObjectSerializerDelegate<UnitsOfMeasure>?   CustomUnitsOfMeasureSerializer     = null,
+                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer         = null)
         {
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("sampledValue",      new JArray(SampledValues.SafeSelect(sampledValue => sampledValue.ToJSON(CustomSampledValueResponseSerializer,
-                                                                                                                                      CustomSignedMeterValueResponseSerializer,
-                                                                                                                                      CustomUnitsOfMeasureResponseSerializer,
-                                                                                                                                      CustomCustomDataResponseSerializer)))),
+                           new JProperty("sampledValue",      new JArray(SampledValues.SafeSelect(sampledValue => sampledValue.ToJSON(CustomSampledValueSerializer,
+                                                                                                                                      CustomSignedMeterValueSerializer,
+                                                                                                                                      CustomUnitsOfMeasureSerializer,
+                                                                                                                                      CustomCustomDataSerializer)))),
                            new JProperty("timestamp",         Timestamp.ToIso8601()),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomMeterValueResponseSerializer is not null
-                       ? CustomMeterValueResponseSerializer(this, JSON)
+            return CustomMeterValueSerializer is not null
+                       ? CustomMeterValueSerializer(this, JSON)
                        : JSON;
 
         }

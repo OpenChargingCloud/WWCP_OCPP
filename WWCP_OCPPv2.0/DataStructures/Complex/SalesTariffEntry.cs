@@ -265,46 +265,46 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomSalesTariffEntryResponseSerializer = null, CustomRelativeTimeIntervalResponseSerializer = null, ...)
+        #region ToJSON(CustomSalesTariffEntrySerializer = null, CustomRelativeTimeIntervalSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSalesTariffEntryResponseSerializer">A delegate to serialize custom salesTariffEntrys.</param>
-        /// <param name="CustomRelativeTimeIntervalResponseSerializer">A delegate to serialize custom relativeTimeIntervals.</param>
-        /// <param name="CustomConsumptionCostResponseSerializer">A delegate to serialize custom consumptionCosts.</param>
-        /// <param name="CustomCostResponseSerializer">A delegate to serialize custom costs.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SalesTariffEntry>?      CustomSalesTariffEntryResponseSerializer       = null,
-                              CustomJObjectSerializerDelegate<RelativeTimeInterval>?  CustomRelativeTimeIntervalResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<ConsumptionCost>?       CustomConsumptionCostResponseSerializer        = null,
-                              CustomJObjectSerializerDelegate<Cost>?                  CustomCostResponseSerializer                   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataResponseSerializer             = null)
+        /// <param name="CustomSalesTariffEntrySerializer">A delegate to serialize custom salesTariffEntrys.</param>
+        /// <param name="CustomRelativeTimeIntervalSerializer">A delegate to serialize custom relativeTimeIntervals.</param>
+        /// <param name="CustomConsumptionCostSerializer">A delegate to serialize custom consumptionCosts.</param>
+        /// <param name="CustomCostSerializer">A delegate to serialize custom costs.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SalesTariffEntry>?      CustomSalesTariffEntrySerializer       = null,
+                              CustomJObjectSerializerDelegate<RelativeTimeInterval>?  CustomRelativeTimeIntervalSerializer   = null,
+                              CustomJObjectSerializerDelegate<ConsumptionCost>?       CustomConsumptionCostSerializer        = null,
+                              CustomJObjectSerializerDelegate<Cost>?                  CustomCostSerializer                   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
         {
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("relativeTimeInterval",  RelativeTimeInterval.ToJSON(CustomRelativeTimeIntervalResponseSerializer,
-                                                                                                    CustomCustomDataResponseSerializer)),
+                                 new JProperty("relativeTimeInterval",  RelativeTimeInterval.ToJSON(CustomRelativeTimeIntervalSerializer,
+                                                                                                    CustomCustomDataSerializer)),
 
                            EPriceLevel is not null
                                ? new JProperty("ePriceLevel",           EPriceLevel.Value)
                                : null,
 
                            ConsumptionCosts.Any()
-                               ? new JProperty("consumptionCost",       new JArray(ConsumptionCosts.Select(consumptionCost => consumptionCost.ToJSON(CustomConsumptionCostResponseSerializer,
-                                                                                                                                                     CustomCostResponseSerializer,
-                                                                                                                                                     CustomCustomDataResponseSerializer))))
+                               ? new JProperty("consumptionCost",       new JArray(ConsumptionCosts.Select(consumptionCost => consumptionCost.ToJSON(CustomConsumptionCostSerializer,
+                                                                                                                                                     CustomCostSerializer,
+                                                                                                                                                     CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",            CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",            CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomSalesTariffEntryResponseSerializer is not null
-                       ? CustomSalesTariffEntryResponseSerializer(this, JSON)
+            return CustomSalesTariffEntrySerializer is not null
+                       ? CustomSalesTariffEntrySerializer(this, JSON)
                        : JSON;
 
         }

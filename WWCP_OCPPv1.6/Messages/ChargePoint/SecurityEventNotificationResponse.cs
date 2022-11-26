@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => "security event notification response";
+            => "SecurityEventNotificationResponse";
 
         #endregion
 

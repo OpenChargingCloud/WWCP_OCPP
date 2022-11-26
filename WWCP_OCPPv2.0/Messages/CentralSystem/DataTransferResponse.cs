@@ -315,17 +315,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomDataTransferResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
+        #region ToJSON(CustomDataTransferResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomDataTransferResponseSerializer">A delegate to serialize custom data transfer responses.</param>
-        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status info objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferResponse>?  CustomDataTransferResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?            CustomStatusInfoResponseSerializer     = null,
-                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataResponseSerializer     = null)
+                              CustomJObjectSerializerDelegate<StatusInfo>?            CustomStatusInfoSerializer             = null,
+                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
         {
 
             var json = JSONObject.Create(
@@ -337,12 +337,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                : null,
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoResponseSerializer,
-                                                                                CustomCustomDataResponseSerializer))
+                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-
 #region Usings
 
 using Newtonsoft.Json.Linq;

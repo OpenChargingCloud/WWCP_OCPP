@@ -429,21 +429,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
         /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedules.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
-        /// <param name="CustomSalesTariffResponseSerializer">A delegate to serialize custom salesTariffs.</param>
-        /// <param name="CustomSalesTariffEntryResponseSerializer">A delegate to serialize custom salesTariffEntrys.</param>
-        /// <param name="CustomRelativeTimeIntervalResponseSerializer">A delegate to serialize custom relativeTimeIntervals.</param>
-        /// <param name="CustomConsumptionCostResponseSerializer">A delegate to serialize custom consumptionCosts.</param>
-        /// <param name="CustomCostResponseSerializer">A delegate to serialize custom costs.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingProfile>?         CustomChargingProfileSerializer                = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedule>?        CustomChargingScheduleSerializer               = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?  CustomChargingSchedulePeriodSerializer         = null,
-                              CustomJObjectSerializerDelegate<SalesTariff>?             CustomSalesTariffResponseSerializer            = null,
-                              CustomJObjectSerializerDelegate<SalesTariffEntry>?        CustomSalesTariffEntryResponseSerializer       = null,
-                              CustomJObjectSerializerDelegate<RelativeTimeInterval>?    CustomRelativeTimeIntervalResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<ConsumptionCost>?         CustomConsumptionCostResponseSerializer        = null,
-                              CustomJObjectSerializerDelegate<Cost>?                    CustomCostResponseSerializer                   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataResponseSerializer             = null)
+        /// <param name="CustomSalesTariffSerializer">A delegate to serialize custom sales tariffs.</param>
+        /// <param name="CustomSalesTariffEntrySerializer">A delegate to serialize custom sales tariff entries.</param>
+        /// <param name="CustomRelativeTimeIntervalSerializer">A delegate to serialize custom relative time intervals.</param>
+        /// <param name="CustomConsumptionCostSerializer">A delegate to serialize custom consumption costs.</param>
+        /// <param name="CustomCostSerializer">A delegate to serialize custom costs.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingProfile>?         CustomChargingProfileSerializer          = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedule>?        CustomChargingScheduleSerializer         = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?  CustomChargingSchedulePeriodSerializer   = null,
+                              CustomJObjectSerializerDelegate<SalesTariff>?             CustomSalesTariffSerializer              = null,
+                              CustomJObjectSerializerDelegate<SalesTariffEntry>?        CustomSalesTariffEntrySerializer         = null,
+                              CustomJObjectSerializerDelegate<RelativeTimeInterval>?    CustomRelativeTimeIntervalSerializer     = null,
+                              CustomJObjectSerializerDelegate<ConsumptionCost>?         CustomConsumptionCostSerializer          = null,
+                              CustomJObjectSerializerDelegate<Cost>?                    CustomCostSerializer                     = null,
+                              CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataSerializer               = null)
         {
 
             var json = JSONObject.Create(
@@ -472,12 +472,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                            new JProperty("chargingSchedule",        new JArray(ChargingSchedules.Select(chargingSchedule => chargingSchedule.ToJSON(CustomChargingScheduleSerializer,
                                                                                                                                                     CustomChargingSchedulePeriodSerializer,
-                                                                                                                                                    CustomSalesTariffResponseSerializer,
-                                                                                                                                                    CustomSalesTariffEntryResponseSerializer,
-                                                                                                                                                    CustomRelativeTimeIntervalResponseSerializer,
-                                                                                                                                                    CustomConsumptionCostResponseSerializer,
-                                                                                                                                                    CustomCostResponseSerializer,
-                                                                                                                                                    CustomCustomDataResponseSerializer))))
+                                                                                                                                                    CustomSalesTariffSerializer,
+                                                                                                                                                    CustomSalesTariffEntrySerializer,
+                                                                                                                                                    CustomRelativeTimeIntervalSerializer,
+                                                                                                                                                    CustomConsumptionCostSerializer,
+                                                                                                                                                    CustomCostSerializer,
+                                                                                                                                                    CustomCustomDataSerializer))))
 
                        );
 

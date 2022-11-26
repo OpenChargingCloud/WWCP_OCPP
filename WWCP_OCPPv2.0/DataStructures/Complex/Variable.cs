@@ -237,15 +237,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomVariableResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomVariableSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomVariableResponseSerializer">A delegate to serialize custom Variable objects.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<Variable>?    CustomVariableResponseSerializer     = null,
-                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataResponseSerializer   = null)
+        /// <param name="CustomVariableSerializer">A delegate to serialize custom Variable objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<Variable>?    CustomVariableSerializer     = null,
+                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
 
             var JSON = JSONObject.Create(
@@ -257,13 +257,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomVariableResponseSerializer is not null
-                       ? CustomVariableResponseSerializer(this, JSON)
+            return CustomVariableSerializer is not null
+                       ? CustomVariableSerializer(this, JSON)
                        : JSON;
 
         }

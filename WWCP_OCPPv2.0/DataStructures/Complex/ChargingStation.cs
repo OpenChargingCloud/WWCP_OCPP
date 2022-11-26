@@ -295,17 +295,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomChargingStationResponseSerializer = null)
+        #region ToJSON(CustomChargingStationSerializer = null, CustomModemSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomChargingStationResponseSerializer">A delegate to serialize custom charging stations.</param>
-        /// <param name="CustomModemResponseSerializer">A delegate to serialize custom modems.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingStation>?  CustomChargingStationResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Modem>?            CustomModemResponseSerializer             = null,
-                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataResponseSerializer        = null)
+        /// <param name="CustomChargingStationSerializer">A delegate to serialize custom charging stations.</param>
+        /// <param name="CustomModemSerializer">A delegate to serialize custom modems.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingStation>?  CustomChargingStationSerializer   = null,
+                              CustomJObjectSerializerDelegate<Modem>?            CustomModemSerializer             = null,
+                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer        = null)
         {
 
             var JSON = JSONObject.Create(
@@ -318,8 +318,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            Modem           is not null
-                               ? new JProperty("serialNumber",     Modem.     ToJSON(CustomModemResponseSerializer,
-                                                                                     CustomCustomDataResponseSerializer))
+                               ? new JProperty("serialNumber",     Modem.     ToJSON(CustomModemSerializer,
+                                                                                     CustomCustomDataSerializer))
                                : null,
 
                            FirmwareVersion is not null
@@ -327,13 +327,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            CustomData      is not null
-                               ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomChargingStationResponseSerializer is not null
-                       ? CustomChargingStationResponseSerializer(this, JSON)
+            return CustomChargingStationSerializer is not null
+                       ? CustomChargingStationSerializer(this, JSON)
                        : JSON;
 
         }

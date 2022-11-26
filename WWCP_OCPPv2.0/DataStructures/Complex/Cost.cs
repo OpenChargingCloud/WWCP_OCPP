@@ -252,15 +252,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ToJSON(CustomCostResponseSerializer = null, CustomCustomDataResponseSerializer = null)
+        #region ToJSON(CustomCostSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomCostResponseSerializer">A delegate to serialize custom costs.</param>
-        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<Cost>?        CustomCostResponseSerializer         = null,
-                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataResponseSerializer   = null)
+        /// <param name="CustomCostSerializer">A delegate to serialize custom costs.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<Cost>?        CustomCostSerializer         = null,
+                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
 
             var JSON = JSONObject.Create(
@@ -273,13 +273,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomCostResponseSerializer is not null
-                       ? CustomCostResponseSerializer(this, JSON)
+            return CustomCostSerializer is not null
+                       ? CustomCostSerializer(this, JSON)
                        : JSON;
 
         }
