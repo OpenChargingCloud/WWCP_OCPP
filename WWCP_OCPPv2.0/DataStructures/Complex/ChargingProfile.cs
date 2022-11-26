@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         /// <summary>
         /// An optional timestamp at which the profile starts to be valid. If absent,
-        /// the profile is valid as soon as it is received by the charge point. Not
+        /// the profile is valid as soon as it is received by the charging station. Not
         /// allowed to be used when ChargingProfilePurpose is TxProfile.
         /// </summary>
         [Optional]
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// 
         /// <param name="TransactionId">When the ChargingProfilePurpose is set to TxProfile, this value MAY be used to match the profile to a specific charging transaction.</param>
         /// <param name="RecurrencyKind">An optional indication of the start point of a recurrence.</param>
-        /// <param name="ValidFrom">An optional timestamp at which the profile starts to be valid. If absent, the profile is valid as soon as it is received by the charge point. Not allowed to be used when ChargingProfilePurpose is TxProfile.</param>
+        /// <param name="ValidFrom">An optional timestamp at which the profile starts to be valid. If absent, the profile is valid as soon as it is received by the charging station. Not allowed to be used when ChargingProfilePurpose is TxProfile.</param>
         /// <param name="ValidTo">An optional timestamp at which the profile stops to be valid. If absent, the profile is valid until it is replaced by another profile. Not allowed to be used when ChargingProfilePurpose is TxProfile.</param>
         public ChargingProfile(ChargingProfile_Id             ChargingProfileId,
                                UInt32                         StackLevel,

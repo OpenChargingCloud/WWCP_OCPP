@@ -68,8 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <param name="Request">The request start transaction request leading to this response.</param>
         /// <param name="Status">The status indicating whether the charging station accepts the request to start a charging transaction.</param>
-        /// <param name="TransactionId"></param>
-        /// <param name="StatusInfo"></param>
+        /// <param name="TransactionId">An optional transaction identification of an already started transaction, when the transaction was already started by the charging station before the RequestStartTransactionRequest was received. For example when the cable was plugged in first.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public RequestStartTransactionResponse(CS.RequestStartTransactionRequest  Request,
                                                RequestStartStopStatus             Status,

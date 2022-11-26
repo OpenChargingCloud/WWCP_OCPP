@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         /// <summary>
         /// Configuration for the maximum power or current available
-        /// for an entire charge point.
+        /// for an entire charging station.
         /// </summary>
         ChargePointMaxProfile,
 
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         TxDefaultProfile,
 
         /// <summary>
-        /// Profile with constraints to be imposed by the charge point
+        /// Profile with constraints to be imposed by the charging station
         /// on the current transaction. A profile with this purpose
         /// SHALL cease to be valid when the transaction terminates.
         /// </summary>

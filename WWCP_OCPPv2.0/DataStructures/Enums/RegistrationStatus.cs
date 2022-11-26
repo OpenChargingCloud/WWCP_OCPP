@@ -80,14 +80,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         /// <summary>
         /// The central system is not yet ready to accept the
-        /// charge point. The central system may send messages
-        /// to retrieve information or prepare the charge point.
+        /// charging station. The central system may send messages
+        /// to retrieve information or prepare the charging station.
         /// </summary>
         Pending,
 
         /// <summary>
         /// Charge point is not accepted by the central system.
-        /// This may happen when the charge point identification
+        /// This may happen when the charging station identification
         /// is not (yet) known by the central system.
         /// </summary>
         Rejected

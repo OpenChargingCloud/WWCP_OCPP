@@ -17,15 +17,13 @@
 
 #region Usings
 
-using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CP
+namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
@@ -40,8 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The success or failure of the reservation.
         /// </summary>
-        [Mandatory]
-        public ReservationStatus  Status    { get; }
+        public ReservationStatus  Status        { get; }
+
+        /// <summary>
+        /// Optional detailed status information.
+        /// </summary>
+        [Optional]
+        public StatusInfo?        StatusInfo    { get; }
 
         #endregion
 
@@ -54,15 +57,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="Request">The reserve now request leading to this response.</param>
         /// <param name="Status">The success or failure of the reservation.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public ReserveNowResponse(CS.ReserveNowRequest  Request,
-                                  ReservationStatus     Status)
+                                  ReservationStatus     Status,
+                                  StatusInfo?           StatusInfo   = null,
+                                  CustomData?           CustomData   = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   CustomData)
 
         {
 
-            this.Status = Status;
+            this.Status      = Status;
+            this.StatusInfo  = StatusInfo;
 
         }
 
@@ -90,67 +99,80 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Documentation
 
-        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:ns   = "urn://Ocpp/Cp/2015/10/">
-        //    <soap:Header/>
-        //    <soap:Body>
-        //       <ns:reserveNowResponse>
-        //
-        //          <ns:status>?</ns:status>
-        //
-        //       </ns:reserveNowResponse>
-        //    </soap:Body>
-        // </soap:Envelope>
-
         // {
-        //     "$schema": "http://json-schema.org/draft-04/schema#",
-        //     "id":      "urn:OCPP:1.6:2019:12:ReserveNowResponse",
-        //     "title":   "ReserveNowResponse",
-        //     "type":    "object",
-        //     "properties": {
-        //         "status": {
-        //             "type": "string",
-        //             "additionalProperties": false,
-        //             "enum": [
-        //                 "Accepted",
-        //                 "Faulted",
-        //                 "Occupied",
-        //                 "Rejected",
-        //                 "Unavailable"
-        //             ]
+        //   "$schema": "http://json-schema.org/draft-06/schema#",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:ReserveNowResponse",
+        //   "comment": "OCPP 2.0.1 FINAL",
+        //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
         //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
         //     },
-        //     "additionalProperties": false,
-        //     "required": [
-        //         "status"
-        //     ]
+        //     "ReserveNowStatusEnumType": {
+        //       "description": "This indicates the success or failure of the reservation.\r\n",
+        //       "javaType": "ReserveNowStatusEnum",
+        //       "type": "string",
+        //       "additionalProperties": false,
+        //       "enum": [
+        //         "Accepted",
+        //         "Faulted",
+        //         "Occupied",
+        //         "Rejected",
+        //         "Unavailable"
+        //       ]
+        //     },
+        //     "StatusInfoType": {
+        //       "description": "Element providing more information about the status.\r\n",
+        //       "javaType": "StatusInfo",
+        //       "type": "object",
+        //       "additionalProperties": false,
+        //       "properties": {
+        //         "customData": {
+        //           "$ref": "#/definitions/CustomDataType"
+        //         },
+        //         "reasonCode": {
+        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //           "type": "string",
+        //           "maxLength": 20
+        //         },
+        //         "additionalInfo": {
+        //           "description": "Additional text to provide detailed information.\r\n",
+        //           "type": "string",
+        //           "maxLength": 512
+        //         }
+        //       },
+        //       "required": [
+        //         "reasonCode"
+        //       ]
+        //     }
+        //   },
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     },
+        //     "status": {
+        //       "$ref": "#/definitions/ReserveNowStatusEnumType"
+        //     },
+        //     "statusInfo": {
+        //       "$ref": "#/definitions/StatusInfoType"
+        //     }
+        //   },
+        //   "required": [
+        //     "status"
+        //   ]
         // }
-
-        #endregion
-
-        #region (static) Parse   (Request, XML)
-
-        /// <summary>
-        /// Parse the given XML representation of a reserve now response.
-        /// </summary>
-        /// <param name="Request">The reserve now request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        public static ReserveNowResponse Parse(CS.ReserveNowRequest  Request,
-                                               XElement              XML)
-        {
-
-            if (TryParse(Request,
-                         XML,
-                         out var reserveNowResponse,
-                         out var errorResponse))
-            {
-                return reserveNowResponse!;
-            }
-
-            throw new ArgumentException("The given XML representation of a reserve now response is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
 
         #endregion
 
@@ -178,48 +200,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             throw new ArgumentException("The given JSON representation of a reserve now response is invalid: " + errorResponse,
                                         nameof(JSON));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Request, XML,  out ReserveNowResponse, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a reserve now response.
-        /// </summary>
-        /// <param name="Request">The reserve now request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CS.ReserveNowRequest     Request,
-                                       XElement                 XML,
-                                       out ReserveNowResponse?  ReserveNowResponse,
-                                       out String?              ErrorResponse)
-        {
-
-            try
-            {
-
-                ReserveNowResponse = new ReserveNowResponse(
-
-                                         Request,
-
-                                         XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                            ReservationStatusExtentions.Parse)
-
-                                     );
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                ReserveNowResponse  = null;
-                ErrorResponse       = "The given XML representation of a reserve now response is invalid: " + e.Message;
-                return false;
-            }
 
         }
 
@@ -260,9 +240,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
+                #region StatusInfo           [optional]
+
+                if (JSON.ParseOptionalJSON("statusInfo",
+                                           "detailed status info",
+                                           OCPPv2_0.StatusInfo.TryParse,
+                                           out StatusInfo? StatusInfo,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData           [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 ReserveNowResponse = new ReserveNowResponse(Request,
-                                                            ReservationStatus);
+                                                            ReservationStatus,
+                                                            StatusInfo,
+                                                            CustomData);
 
                 if (CustomReserveNowResponseParser is not null)
                     ReserveNowResponse = CustomReserveNowResponseParser(JSON,
@@ -282,30 +292,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new (OCPPNS.OCPPv1_6_CP + "reserveNowResponse",
-                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
-               );
-
-        #endregion
-
-        #region ToJSON(CustomReserveNowResponseSerializer = null)
+        #region ToJSON(CustomReserveNowResponseSerializer = null, CustomStatusInfoResponseSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomReserveNowResponseSerializer">A delegate to serialize custom reserve now responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowResponse>?  CustomReserveNowResponseSerializer   = null)
+        /// <param name="CustomStatusInfoResponseSerializer">A delegate to serialize a custom status info objects.</param>
+        /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowResponse>?  CustomReserveNowResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?          CustomStatusInfoResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataResponseSerializer   = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("status",  Status.AsText())
+
+                                 new JProperty("status",      Status.    AsText()),
+
+                           StatusInfo is not null
+                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoResponseSerializer,
+                                                                                CustomCustomDataResponseSerializer))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataResponseSerializer))
+                               : null
+
                        );
 
             return CustomReserveNowResponseSerializer is not null
@@ -400,7 +412,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public override Boolean Equals(ReserveNowResponse? ReserveNowResponse)
 
             => ReserveNowResponse is not null &&
-                   Status.Equals(ReserveNowResponse.Status);
+
+               Status.     Equals(ReserveNowResponse.Status) &&
+
+             ((StatusInfo is     null && ReserveNowResponse.StatusInfo is     null) ||
+               StatusInfo is not null && ReserveNowResponse.StatusInfo is not null && StatusInfo.Equals(ReserveNowResponse.StatusInfo)) &&
+
+               base.GenericEquals(ReserveNowResponse);
 
         #endregion
 
@@ -413,8 +431,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => Status.GetHashCode();
+                return Status.     GetHashCode()       * 5 ^
+                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
+
+                       base.       GetHashCode();
+
+            }
+        }
 
         #endregion
 

@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ReportChargingProfilesRequest(ChargeBox_Id                  ChargeBoxId,
 
-                                             Int32                         ReportChargingProfilesRequestId ,
+                                             Int32                         ReportChargingProfilesRequestId,
                                              ChargingLimitSources          ChargingLimitSource,
                                              EVSE_Id                       EVSEId,
                                              IEnumerable<ChargingProfile>  ChargingProfiles,

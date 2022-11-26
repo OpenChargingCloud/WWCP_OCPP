@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         public EVSE_Id?          EVSEId                              { get; }
 
         /// <summary>
-        /// An optional charging profile to be used by the charge point
+        /// An optional charging profile to be used by the charging station
         /// for the requested charging transaction.
         /// The 'ChargingProfilePurpose' MUST be set to 'TxProfile'.
         /// </summary>
@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="RequestStartTransactionRequestId">Request identification given by the server to this start request. The charging station might return this in the TransactionEventRequest, letting the server know which transaction was started for this request.</param>
         /// <param name="IdToken">The identification token to start the charging transaction.</param>
         /// <param name="EVSEId">An optional EVSE identification on which the charging transaction should be started (SHALL be > 0).</param>
-        /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
+        /// <param name="ChargingProfile">An optional charging profile to be used by the charging station for the requested charging transaction.</param>
         /// <param name="GroupIdToken"></param>
         /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>

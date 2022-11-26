@@ -57,8 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public DateTime        ExpiryDate       { get; }
 
         /// <summary>
-        /// The identifier for which the charge point has to
-        /// reserve a connector.
+        /// The unique token identification for which the reservation is being made.
         /// </summary>
         [Mandatory]
         public IdToken         IdTag            { get; }
@@ -80,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="ConnectorId">The identification of the connector to be reserved. A value of 0 means that the reservation is not for a specific connector.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
-        /// <param name="IdTag">The identifier for which the charge point has to reserve a connector.</param>
+        /// <param name="IdTag">The unique token identification for which the reservation is being made.</param>
         /// <param name="ParentIdTag">An optional ParentIdTag.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>

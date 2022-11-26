@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         Occupied,
 
         /// <summary>
-        /// Reservation has not been made. Charge Point is
+        /// Reservation has not been made. The charge point is
         /// not configured to accept reservations.
         /// </summary>
         Rejected,

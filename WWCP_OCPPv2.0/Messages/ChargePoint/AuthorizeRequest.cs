@@ -439,15 +439,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomAuthorizeRequestSerializer = null, ...)
+        #region ToJSON(CustomAuthorizeRequestSerializer = null, CustomIdTokenResponseSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomAuthorizeRequestSerializer">A delegate to serialize custom authorize requests.</param>
-        /// <param name="CustomIdTokenResponseSerializer">A delegate to serialize custom IdTokens.</param>
-        /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom AdditionalInfo objects.</param>
-        /// <param name="CustomOCSPRequestDataResponseSerializer">A delegate to serialize custom OCSPRequestData.</param>
+        /// <param name="CustomIdTokenResponseSerializer">A delegate to serialize custom identification tokens.</param>
+        /// <param name="CustomAdditionalInfoResponseSerializer">A delegate to serialize custom additional info objects.</param>
+        /// <param name="CustomOCSPRequestDataResponseSerializer">A delegate to serialize custom OCSP request data.</param>
         /// <param name="CustomCustomDataResponseSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeRequest>?  CustomAuthorizeRequestSerializer          = null,
                               CustomJObjectSerializerDelegate<IdToken>?           CustomIdTokenResponseSerializer           = null,

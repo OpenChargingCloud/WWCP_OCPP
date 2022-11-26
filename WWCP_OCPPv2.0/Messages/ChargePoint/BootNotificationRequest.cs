@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
-    // After start-up, every charge point SHALL send a request to the
+    // After start-up, every charging station SHALL send a request to the
     // central system with information about its configuration
     // (e.g.version, vendor, etc.).
 

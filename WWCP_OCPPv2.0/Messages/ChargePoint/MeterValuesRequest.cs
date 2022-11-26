@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// 
-        /// <param name="EVSEId">The connector identification at the charge point.</param>
+        /// <param name="EVSEId">The connector identification at the charging station.</param>
         /// <param name="MeterValues">The EVSE identification at the charging station.</param>
         /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
