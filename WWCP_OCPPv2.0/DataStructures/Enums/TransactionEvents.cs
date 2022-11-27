@@ -24,24 +24,81 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class TransactionEventsExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a transaction event.
+        /// </summary>
+        /// <param name="Text">A text representation of a transaction event.</param>
         public static TransactionEvents Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Started"  => TransactionEvents.Started,
-                   "Updated"  => TransactionEvents.Updated,
-                   "Ended"    => TransactionEvents.Ended,
-                   _          => TransactionEvents.Unknown
-               };
+            if (TryParse(Text, out var reason))
+                return reason;
+
+            return TransactionEvents.Unknown;
+
+        }
 
         #endregion
 
-        #region AsText(this TransactionEvents)
+        #region TryParse(Text)
 
-        public static String AsText(this TransactionEvents TransactionEvents)
+        /// <summary>
+        /// Try to parse the given text as a transaction event.
+        /// </summary>
+        /// <param name="Text">A text representation of a transaction event.</param>
+        public static TransactionEvents? TryParse(String Text)
+        {
 
-            => TransactionEvents switch {
+            if (TryParse(Text, out var reason))
+                return reason;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out TransactionEvent)
+
+        /// <summary>
+        /// Try to parse the given text as a transaction event.
+        /// </summary>
+        /// <param name="Text">A text representation of a transaction event.</param>
+        /// <param name="TransactionEvent">The parsed transaction event.</param>
+        public static Boolean TryParse(String Text, out TransactionEvents TransactionEvent)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Started":
+                    TransactionEvent = TransactionEvents.Started;
+                    return true;
+
+                case "Updated":
+                    TransactionEvent = TransactionEvents.Updated;
+                    return true;
+
+                case "Ended":
+                    TransactionEvent = TransactionEvents.Ended;
+                    return true;
+
+                default:
+                    TransactionEvent = TransactionEvents.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+
+        #region AsText(this TransactionEvent)
+
+        public static String AsText(this TransactionEvents TransactionEvent)
+
+            => TransactionEvent switch {
                    TransactionEvents.Started  => "Started",
                    TransactionEvents.Updated  => "Updated",
                    TransactionEvents.Ended    => "Ended",
@@ -63,8 +120,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         Unknown,
 
+        /// <summary>
+        /// The transaction just started.
+        /// </summary>
         Started,
+
+        /// <summary>
+        /// The transaction was updated.
+        /// </summary>
         Updated,
+
+        /// <summary>
+        /// The transaction ended.
+        /// </summary>
         Ended
 
     }

@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// The charging station might return this in the TransactionEventRequest, letting the server know which transaction was started for this request.
         /// </summary>
         [Mandatory]
-        public Int32             RequestStartTransactionRequestId    { get; }
+        public RemoteStart_Id    RequestStartTransactionRequestId    { get; }
 
         /// <summary>
         /// The identification token to start the charging transaction.
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public RequestStartTransactionRequest(ChargeBox_Id        ChargeBoxId,
-                                              Int32               RequestStartTransactionRequestId,
+                                              RemoteStart_Id      RequestStartTransactionRequestId,
                                               IdToken             IdToken,
                                               EVSE_Id?            EVSEId              = null,
                                               ChargingProfile?    ChargingProfile     = null,
@@ -669,7 +669,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (!JSON.ParseMandatory("remoteStartId",
                                          "remote start identification",
-                                         out Int32 RequestStartTransactionRequestId,
+                                         RemoteStart_Id.TryParse,
+                                         out RemoteStart_Id RequestStartTransactionRequestId,
                                          out ErrorResponse))
                 {
                     return false;
@@ -819,7 +820,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                           new JProperty("remoteStartId",  RequestStartTransactionRequestId.ToString()),
+                           new JProperty("remoteStartId",  RequestStartTransactionRequestId.Value),
                            new JProperty("idToken",        IdToken.                         ToJSON(CustomIdTokenSerializer,
                                                                                                    CustomAdditionalInfoSerializer,
                                                                                                    CustomCustomDataSerializer)),

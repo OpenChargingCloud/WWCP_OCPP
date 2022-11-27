@@ -24,42 +24,155 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class TriggerReasonsExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a trigger reason.
+        /// </summary>
+        /// <param name="Text">A text representation of a trigger reason.</param>
         public static TriggerReasons Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Authorized"            => TriggerReasons.Authorized,
-                   "CablePluggedIn"        => TriggerReasons.CablePluggedIn,
-                   "ChargingRateChanged"   => TriggerReasons.ChargingRateChanged,
-                   "ChargingStateChanged"  => TriggerReasons.ChargingStateChanged,
-                   "Deauthorized"          => TriggerReasons.Deauthorized,
-                   "EnergyLimitReached"    => TriggerReasons.EnergyLimitReached,
-                   "EVCommunicationLost"   => TriggerReasons.EVCommunicationLost,
-                   "EVConnectTimeout"      => TriggerReasons.EVConnectTimeout,
-                   "MeterValueClock"       => TriggerReasons.MeterValueClock,
-                   "MeterValuePeriodic"    => TriggerReasons.MeterValuePeriodic,
-                   "TimeLimitReached"      => TriggerReasons.TimeLimitReached,
-                   "Trigger"               => TriggerReasons.Trigger,
-                   "UnlockCommand"         => TriggerReasons.UnlockCommand,
-                   "StopAuthorized"        => TriggerReasons.StopAuthorized,
-                   "EVDeparted"            => TriggerReasons.EVDeparted,
-                   "EVDetected"            => TriggerReasons.EVDetected,
-                   "RemoteStop"            => TriggerReasons.RemoteStop,
-                   "RemoteStart"           => TriggerReasons.RemoteStart,
-                   "AbnormalCondition"     => TriggerReasons.AbnormalCondition,
-                   "SignedDataReceived"    => TriggerReasons.SignedDataReceived,
-                   "ResetCommand"          => TriggerReasons.ResetCommand,
-                   _                       => TriggerReasons.Unknown
-               };
+            if (TryParse(Text, out var reason))
+                return reason;
+
+            return TriggerReasons.Unknown;
+
+        }
 
         #endregion
 
-        #region AsText(this TriggerReasons)
+        #region TryParse(Text)
 
-        public static String AsText(this TriggerReasons TriggerReasons)
+        /// <summary>
+        /// Try to parse the given text as a trigger reason.
+        /// </summary>
+        /// <param name="Text">A text representation of a trigger reason.</param>
+        public static TriggerReasons? TryParse(String Text)
+        {
 
-            => TriggerReasons switch {
+            if (TryParse(Text, out var reason))
+                return reason;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out TriggerReason)
+
+        /// <summary>
+        /// Try to parse the given text as a trigger reason.
+        /// </summary>
+        /// <param name="Text">A text representation of a trigger reason.</param>
+        /// <param name="TriggerReason">The parsed trigger reason.</param>
+        public static Boolean TryParse(String Text, out TriggerReasons TriggerReason)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Authorized":
+                    TriggerReason = TriggerReasons.Authorized;
+                    return true;
+
+                case "CablePluggedIn":
+                    TriggerReason = TriggerReasons.CablePluggedIn;
+                    return true;
+
+
+                case "ChargingRateChanged":
+                    TriggerReason = TriggerReasons.ChargingRateChanged;
+                    return true;
+
+                case "ChargingStateChanged":
+                    TriggerReason = TriggerReasons.ChargingStateChanged;
+                    return true;
+
+                case "Deauthorized":
+                    TriggerReason = TriggerReasons.Deauthorized;
+                    return true;
+
+                case "EnergyLimitReached":
+                    TriggerReason = TriggerReasons.EnergyLimitReached;
+                    return true;
+
+                case "EVCommunicationLost":
+                    TriggerReason = TriggerReasons.EVCommunicationLost;
+                    return true;
+
+                case "EVConnectTimeout":
+                    TriggerReason = TriggerReasons.EVConnectTimeout;
+                    return true;
+
+                case "MeterValueClock":
+                    TriggerReason = TriggerReasons.MeterValueClock;
+                    return true;
+
+                case "MeterValuePeriodic":
+                    TriggerReason = TriggerReasons.MeterValuePeriodic;
+                    return true;
+
+                case "TimeLimitReached":
+                    TriggerReason = TriggerReasons.TimeLimitReached;
+                    return true;
+
+                case "Trigger":
+                    TriggerReason = TriggerReasons.Trigger;
+                    return true;
+
+                case "UnlockCommand":
+                    TriggerReason = TriggerReasons.UnlockCommand;
+                    return true;
+
+                case "StopAuthorized":
+                    TriggerReason = TriggerReasons.StopAuthorized;
+                    return true;
+
+                case "EVDeparted":
+                    TriggerReason = TriggerReasons.EVDeparted;
+                    return true;
+
+                case "EVDetected":
+                    TriggerReason = TriggerReasons.EVDetected;
+                    return true;
+
+                case "RemoteStop":
+                    TriggerReason = TriggerReasons.RemoteStop;
+                    return true;
+
+                case "RemoteStart":
+                    TriggerReason = TriggerReasons.RemoteStart;
+                    return true;
+
+                case "AbnormalCondition":
+                    TriggerReason = TriggerReasons.AbnormalCondition;
+                    return true;
+
+                case "SignedDataReceived":
+                    TriggerReason = TriggerReasons.SignedDataReceived;
+                    return true;
+
+                case "ResetCommand":
+                    TriggerReason = TriggerReasons.ResetCommand;
+                    return true;
+
+
+                default:
+                    TriggerReason = TriggerReasons.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+
+        #region AsText(this TriggerReason)
+
+        public static String AsText(this TriggerReasons TriggerReason)
+
+            => TriggerReason switch {
                    TriggerReasons.Authorized            => "Authorized",
                    TriggerReasons.CablePluggedIn        => "CablePluggedIn",
                    TriggerReasons.ChargingRateChanged   => "ChargingRateChanged",

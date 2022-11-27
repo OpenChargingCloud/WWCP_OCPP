@@ -371,9 +371,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSampledValueSerializer">A delegate to serialize custom SampledValue objects.</param>
-        /// <param name="CustomSignedMeterValueSerializer">A delegate to serialize custom SignedMeterValue objects.</param>
-        /// <param name="CustomUnitsOfMeasureSerializer">A delegate to serialize custom UnitsOfMeasure objects.</param>
+        /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
+        /// <param name="CustomSignedMeterValueSerializer">A delegate to serialize custom signed meter values.</param>
+        /// <param name="CustomUnitsOfMeasureSerializer">A delegate to serialize custom units of measure.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SampledValue>?     CustomSampledValueSerializer       = null,
                               CustomJObjectSerializerDelegate<SignedMeterValue>? CustomSignedMeterValueSerializer   = null,

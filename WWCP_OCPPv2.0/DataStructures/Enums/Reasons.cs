@@ -24,40 +24,141 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class ReasonsExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
-        public static Reasons AsReasons(String Text)
+        /// <summary>
+        /// Parse the given text as a stop transaction reason.
+        /// </summary>
+        /// <param name="Text">A text representation of a stop transaction reason.</param>
+        public static Reasons Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "DeAuthorized"        => Reasons.DeAuthorized,
-                   "EmergencyStop"       => Reasons.EmergencyStop,
-                   "EnergyLimitReached"  => Reasons.EnergyLimitReached,
-                   "EVDisconnected"      => Reasons.EVDisconnected,
-                   "GroundFault"         => Reasons.GroundFault,
-                   "ImmediateReset"      => Reasons.ImmediateReset,
-                   "Local"               => Reasons.Local,
-                   "LocalOutOfCredit"    => Reasons.LocalOutOfCredit,
-                   "MasterPass"          => Reasons.MasterPass,
-                   "Other"               => Reasons.Other,
-                   "OvercurrentFault"    => Reasons.OvercurrentFault,
-                   "PowerLoss"           => Reasons.PowerLoss,
-                   "PowerQuality"        => Reasons.PowerQuality,
-                   "Reboot"              => Reasons.Reboot,
-                   "Remote"              => Reasons.Remote,
-                   "SOCLimitReached"     => Reasons.SOCLimitReached,
-                   "StoppedByEV"         => Reasons.StoppedByEV,
-                   "TimeLimitReached"    => Reasons.TimeLimitReached,
-                   "Timeout"             => Reasons.Timeout,
-                   _                     => Reasons.Unknown
-               };
+            if (TryParse(Text, out var reason))
+                return reason;
+
+            return Reasons.Unknown;
+
+        }
 
         #endregion
 
-        #region AsText(this Reasons)
+        #region TryParse(Text)
 
-        public static String AsText(this Reasons Reasons)
+        /// <summary>
+        /// Try to parse the given text as a stop transaction reason.
+        /// </summary>
+        /// <param name="Text">A text representation of a stop transaction reason.</param>
+        public static Reasons? TryParse(String Text)
+        {
 
-            => Reasons switch {
+            if (TryParse(Text, out var reason))
+                return reason;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out Status)
+
+        /// <summary>
+        /// Try to parse the given text as a stop transaction reason.
+        /// </summary>
+        /// <param name="Text">A text representation of a stop transaction reason.</param>
+        /// <param name="Reason">The parsed stop transaction reason.</param>
+        public static Boolean TryParse(String Text, out Reasons Reason)
+        {
+            switch (Text.Trim())
+            {
+
+                case "DeAuthorized":
+                    Reason = Reasons.DeAuthorized;
+                    return true;
+
+                case "EmergencyStop":
+                    Reason = Reasons.EmergencyStop;
+                    return true;
+
+                case "EnergyLimitReached":
+                    Reason = Reasons.EnergyLimitReached;
+                    return true;
+
+                case "EVDisconnected":
+                    Reason = Reasons.EVDisconnected;
+                    return true;
+
+                case "GroundFault":
+                    Reason = Reasons.GroundFault;
+                    return true;
+
+                case "ImmediateReset":
+                    Reason = Reasons.ImmediateReset;
+                    return true;
+
+                case "LocalOutOfCredit":
+                    Reason = Reasons.LocalOutOfCredit;
+                    return true;
+
+                case "MasterPass":
+                    Reason = Reasons.MasterPass;
+                    return true;
+
+                case "Other":
+                    Reason = Reasons.Other;
+                    return true;
+
+                case "OvercurrentFault":
+                    Reason = Reasons.OvercurrentFault;
+                    return true;
+
+                case "PowerLoss":
+                    Reason = Reasons.PowerLoss;
+                    return true;
+
+                case "PowerQuality":
+                    Reason = Reasons.PowerQuality;
+                    return true;
+
+                case "Reboot":
+                    Reason = Reasons.Reboot;
+                    return true;
+
+                case "Remote":
+                    Reason = Reasons.Remote;
+                    return true;
+
+                case "SOCLimitReached":
+                    Reason = Reasons.SOCLimitReached;
+                    return true;
+
+                case "StoppedByEV":
+                    Reason = Reasons.StoppedByEV;
+                    return true;
+
+                case "TimeLimitReached":
+                    Reason = Reasons.TimeLimitReached;
+                    return true;
+
+                case "Timeout":
+                    Reason = Reasons.Timeout;
+                    return true;
+
+                default:
+                    Reason = Reasons.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+
+        #region AsText(this Reason)
+
+        public static String AsText(this Reasons Reason)
+
+            => Reason switch {
                    Reasons.DeAuthorized        => "DeAuthorized",
                    Reasons.EmergencyStop       => "EmergencyStop",
                    Reasons.EnergyLimitReached  => "EnergyLimitReached",

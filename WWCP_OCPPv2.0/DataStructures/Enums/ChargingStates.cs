@@ -24,26 +24,89 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class ChargingStatesExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a charging state.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging state.</param>
         public static ChargingStates Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Charging"       => ChargingStates.Charging,
-                   "EVConnected"    => ChargingStates.EVConnected,
-                   "SuspendedEV"    => ChargingStates.SuspendedEV,
-                   "SuspendedEVSE"  => ChargingStates.SuspendedEVSE,
-                   "Idle"           => ChargingStates.Idle,
-                   _                => ChargingStates.Unknown
-               };
+            if (TryParse(Text, out var state))
+                return state;
+
+            return ChargingStates.Unknown;
+
+        }
 
         #endregion
 
-        #region AsText(this ChargingStates)
+        #region TryParse(Text)
 
-        public static String AsText(this ChargingStates ChargingStates)
+        /// <summary>
+        /// Try to parse the given text as a charging state.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging state.</param>
+        public static ChargingStates? TryParse(String Text)
+        {
 
-            => ChargingStates switch {
+            if (TryParse(Text, out var state))
+                return state;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ChargingState)
+
+        /// <summary>
+        /// Try to parse the given text as a charging state.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging state.</param>
+        /// <param name="ChargingState">The parsed charging state.</param>
+        public static Boolean TryParse(String Text, out ChargingStates ChargingState)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Charging":
+                    ChargingState = ChargingStates.Charging;
+                    return true;
+
+                case "EVConnected":
+                    ChargingState = ChargingStates.EVConnected;
+                    return true;
+
+                case "SuspendedEV":
+                    ChargingState = ChargingStates.SuspendedEV;
+                    return true;
+
+                case "SuspendedEVSE":
+                    ChargingState = ChargingStates.SuspendedEVSE;
+                    return true;
+
+                case "Idle":
+                    ChargingState = ChargingStates.Idle;
+                    return true;
+
+                default:
+                    ChargingState = ChargingStates.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+
+        #region AsText(this ChargingState)
+
+        public static String AsText(this ChargingStates ChargingState)
+
+            => ChargingState switch {
                    ChargingStates.Charging       => "Charging",
                    ChargingStates.EVConnected    => "EVConnected",
                    ChargingStates.SuspendedEV    => "SuspendedEV",
@@ -67,10 +130,29 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         Unknown,
 
+        /// <summary>
+        /// Charging
+        /// </summary>
         Charging,
+
+        /// <summary>
+        /// EV connected
+        /// </summary>
         EVConnected,
+
+        /// <summary>
+        /// Suspended EV
+        /// </summary>
         SuspendedEV,
+
+        /// <summary>
+        /// SuspendedEVSE
+        /// </summary>
         SuspendedEVSE,
+
+        /// <summary>
+        /// Idle
+        /// </summary>
         Idle
 
     }

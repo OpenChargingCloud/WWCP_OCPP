@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this BootReason)
 
         public static String AsText(this BootReasons BootReason)
 

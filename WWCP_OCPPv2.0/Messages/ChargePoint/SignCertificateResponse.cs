@@ -38,6 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// The success or failure status of the sign certificate request.
         /// </summary>
+        [Mandatory]
         public GenericStatus  Status        { get; }
 
         /// <summary>
