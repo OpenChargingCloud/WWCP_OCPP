@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the registration status.
+    /// Extentions methods for registration status.
     /// </summary>
     public static class RegistrationStatusExtentions
     {
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out TriggerReason)
+        #region TryParse(Text, out RegistrationStatus)
 
         /// <summary>
         /// Try to parse the given text as a registration status.
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Result of a registration in response to a BootNotification request.
+    /// Registration status.
     /// </summary>
     public enum RegistrationStatus
     {

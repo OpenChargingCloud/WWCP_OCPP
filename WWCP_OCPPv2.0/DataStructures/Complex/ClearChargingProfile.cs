@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("chargingProfilePurpose",
                                        "charging profile purpose",
-                                       ChargingProfilePurposesExtentions.Parse,
+                                       ChargingProfilePurposesExtentions.TryParse,
                                        out ChargingProfilePurposes? ChargingProfilePurpose,
                                        out ErrorResponse))
                 {

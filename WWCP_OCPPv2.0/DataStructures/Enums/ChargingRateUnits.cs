@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static ChargingRateUnits Parse(String Text)
         {
 
-            if (TryParse(Text, out var status))
-                return status;
+            if (TryParse(Text, out var unit))
+                return unit;
 
             return ChargingRateUnits.Unknown;
 
@@ -51,8 +51,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static ChargingRateUnits? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var status))
-                return status;
+            if (TryParse(Text, out var unit))
+                return unit;
 
             return null;
 
@@ -60,28 +60,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out ChargingRateUnit)
 
         /// <summary>
         /// Try to parse the given text as a charging rate unit.
         /// </summary>
         /// <param name="Text">A text representation of a charging rate unit.</param>
-        /// <param name="Status">The parsed charging rate unit.</param>
-        public static Boolean TryParse(String Text, out ChargingRateUnits Status)
+        /// <param name="ChargingRateUnit">The parsed charging rate unit.</param>
+        public static Boolean TryParse(String Text, out ChargingRateUnits ChargingRateUnit)
         {
             switch (Text.Trim())
             {
 
                 case "A":
-                    Status = ChargingRateUnits.Amperes;
+                    ChargingRateUnit = ChargingRateUnits.Amperes;
                     return true;
 
                 case "W":
-                    Status = ChargingRateUnits.Watts;
+                    ChargingRateUnit = ChargingRateUnits.Watts;
                     return true;
 
                 default:
-                    Status = ChargingRateUnits.Unknown;
+                    ChargingRateUnit = ChargingRateUnits.Unknown;
                     return false;
 
             }
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Defines the charging-rate-unit-type-values.
+    /// Charging rate units.
     /// </summary>
     public enum ChargingRateUnits
     {

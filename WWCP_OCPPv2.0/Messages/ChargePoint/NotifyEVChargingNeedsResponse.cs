@@ -229,11 +229,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region Status        [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "notify EV charging needs status",
-                                       NotifyEVChargingNeedsStatusExtentions.Parse,
-                                       out NotifyEVChargingNeedsStatus Status,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "notify EV charging needs status",
+                                         NotifyEVChargingNeedsStatusExtentions.TryParse,
+                                         out NotifyEVChargingNeedsStatus Status,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

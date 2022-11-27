@@ -230,11 +230,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #region ReservationStatus    [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "reservation status",
-                                       ReservationStatusExtentions.Parse,
-                                       out ReservationStatus ReservationStatus,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "reservation status",
+                                         ReservationStatusExtentions.TryParse,
+                                         out ReservationStatus ReservationStatus,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

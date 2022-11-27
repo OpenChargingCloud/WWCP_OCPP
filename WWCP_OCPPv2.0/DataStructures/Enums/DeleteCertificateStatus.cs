@@ -19,23 +19,80 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the delete certificate status.
+    /// Extentions methods for delete certificate status.
     /// </summary>
     public static class DeleteCertificateStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a delete certificate status.
+        /// </summary>
+        /// <param name="Text">A text representation of a delete certificate status.</param>
         public static DeleteCertificateStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Accepted"  => DeleteCertificateStatus.Accepted,
-                   "Failed"    => DeleteCertificateStatus.Failed,
-                   "NotFound"  => DeleteCertificateStatus.NotFound,
-                   _           => DeleteCertificateStatus.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return DeleteCertificateStatus.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a delete certificate status.
+        /// </summary>
+        /// <param name="Text">A text representation of a delete certificate status.</param>
+        public static DeleteCertificateStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out DeleteCertificateStatus)
+
+        /// <summary>
+        /// Try to parse the given text as a delete certificate status.
+        /// </summary>
+        /// <param name="Text">A text representation of a delete certificate status.</param>
+        /// <param name="DeleteCertificateStatus">The parsed delete certificate status.</param>
+        public static Boolean TryParse(String Text, out DeleteCertificateStatus DeleteCertificateStatus)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Accepted":
+                    DeleteCertificateStatus = DeleteCertificateStatus.Accepted;
+                    return true;
+
+                case "Failed":
+                    DeleteCertificateStatus = DeleteCertificateStatus.Failed;
+                    return true;
+
+                case "NotFound":
+                    DeleteCertificateStatus = DeleteCertificateStatus.NotFound;
+                    return true;
+
+                default:
+                    DeleteCertificateStatus = DeleteCertificateStatus.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this DeleteCertificateStatus)
 
@@ -52,8 +109,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
     }
 
+
     /// <summary>
-    /// The status in a response to a delete certificate request.
+    /// Delete certificate status.
     /// </summary>
     public enum DeleteCertificateStatus
     {

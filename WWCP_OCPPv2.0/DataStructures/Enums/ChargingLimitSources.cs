@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static ChargingLimitSources Parse(String Text)
         {
 
-            if (TryParse(Text, out var status))
-                return status;
+            if (TryParse(Text, out var source))
+                return source;
 
             return ChargingLimitSources.Unknown;
 
@@ -51,8 +51,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static ChargingLimitSources? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var status))
-                return status;
+            if (TryParse(Text, out var source))
+                return source;
 
             return null;
 
@@ -60,36 +60,36 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out ChargingLimitSources)
 
         /// <summary>
         /// Try to parse the given text as a charging limit source.
         /// </summary>
         /// <param name="Text">A text representation of a charging limit source.</param>
-        /// <param name="Status">The parsed charging limit source.</param>
-        public static Boolean TryParse(String Text, out ChargingLimitSources Status)
+        /// <param name="ChargingLimitSources">The parsed charging limit source.</param>
+        public static Boolean TryParse(String Text, out ChargingLimitSources ChargingLimitSources)
         {
             switch (Text.Trim())
             {
 
                 case "EMS":
-                    Status = ChargingLimitSources.EMS;
+                    ChargingLimitSources = ChargingLimitSources.EMS;
                     return true;
 
                 case "Other":
-                    Status = ChargingLimitSources.Other;
+                    ChargingLimitSources = ChargingLimitSources.Other;
                     return true;
 
                 case "SO":
-                    Status = ChargingLimitSources.SO;
+                    ChargingLimitSources = ChargingLimitSources.SO;
                     return true;
 
                 case "CSO":
-                    Status = ChargingLimitSources.CSO;
+                    ChargingLimitSources = ChargingLimitSources.CSO;
                     return true;
 
                 default:
-                    Status = ChargingLimitSources.Unknown;
+                    ChargingLimitSources = ChargingLimitSources.Unknown;
                     return false;
 
             }
@@ -98,11 +98,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this ChargingLimitSources)
 
-        public static String AsText(this ChargingLimitSources BootReason)
+        public static String AsText(this ChargingLimitSources ChargingLimitSources)
 
-            => BootReason switch {
+            => ChargingLimitSources switch {
                    ChargingLimitSources.EMS    => "EMS",
                    ChargingLimitSources.Other  => "Other",
                    ChargingLimitSources.SO     => "SO",
@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// ...
+    /// Charging limit sources.
     /// </summary>
     public enum ChargingLimitSources
     {

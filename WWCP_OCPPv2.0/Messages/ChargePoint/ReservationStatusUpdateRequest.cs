@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// The updated reservation status.
         /// </summary>
         [Mandatory]
-        public ReservationUpdateStatusTypes  ReservationUpdateStatus    { get; }
+        public ReservationUpdateStatus  ReservationUpdateStatus    { get; }
 
         #endregion
 
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         public ReservationStatusUpdateRequest(ChargeBox_Id                  ChargeBoxId,
 
                                               Reservation_Id                ReservationId,
-                                              ReservationUpdateStatusTypes  ReservationUpdateStatus,
+                                              ReservationUpdateStatus  ReservationUpdateStatus,
 
                                               CustomData?                   CustomData          = null,
                                               Request_Id?                   RequestId           = null,
@@ -222,8 +222,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("reservationUpdateStatus",
                                          "reservation update status",
-                                         ReservationUpdateStatusTypes.TryParse,
-                                         out ReservationUpdateStatusTypes ReservationUpdateStatus,
+                                         OCPPv2_0.ReservationUpdateStatus.TryParse,
+                                         out ReservationUpdateStatus ReservationUpdateStatus,
                                          out ErrorResponse))
                 {
                     return false;

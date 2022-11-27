@@ -19,21 +19,72 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the clear charging profile status.
+    /// Extentions methods for clear charging profile status.
     /// </summary>
     public static class ClearChargingProfileStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a clear charging profile status.
+        /// </summary>
+        /// <param name="Text">A text representation of a clear charging profile status.</param>
         public static ClearChargingProfileStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Accepted"  => ClearChargingProfileStatus.Accepted,
-                   _           => ClearChargingProfileStatus.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return ClearChargingProfileStatus.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a clear charging profile status.
+        /// </summary>
+        /// <param name="Text">A text representation of a clear charging profile status.</param>
+        public static ClearChargingProfileStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ClearChargingProfileStatus)
+
+        /// <summary>
+        /// Try to parse the given text as a clear charging profile status.
+        /// </summary>
+        /// <param name="Text">A text representation of a clear charging profile status.</param>
+        /// <param name="ClearChargingProfileStatus">The parsed clear charging profile status.</param>
+        public static Boolean TryParse(String Text, out ClearChargingProfileStatus ClearChargingProfileStatus)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Accepted":
+                    ClearChargingProfileStatus = ClearChargingProfileStatus.Accepted;
+                    return true;
+
+                default:
+                    ClearChargingProfileStatus = ClearChargingProfileStatus.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this ClearChargingProfileStatus)
 
@@ -50,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Defines the clear-charging-profile-status-values.
+    /// Clear charging profile status.
     /// </summary>
     public enum ClearChargingProfileStatus
     {

@@ -60,36 +60,36 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Criterium)
+        #region TryParse(Text, out ComponentCriterium)
 
         /// <summary>
         /// Try to parse the given text as a component criterium.
         /// </summary>
         /// <param name="Text">A text representation of a component criterium.</param>
-        /// <param name="Criterium">The parsed component criterium.</param>
-        public static Boolean TryParse(String Text, out ComponentCriteria Criterium)
+        /// <param name="ComponentCriterium">The parsed component criterium.</param>
+        public static Boolean TryParse(String Text, out ComponentCriteria ComponentCriterium)
         {
             switch (Text.Trim())
             {
 
                 case "Active":
-                    Criterium = ComponentCriteria.Active;
+                    ComponentCriterium = ComponentCriteria.Active;
                     return true;
 
                 case "Available":
-                    Criterium = ComponentCriteria.Available;
+                    ComponentCriterium = ComponentCriteria.Available;
                     return true;
 
                 case "Enabled":
-                    Criterium = ComponentCriteria.Enabled;
+                    ComponentCriterium = ComponentCriteria.Enabled;
                     return true;
 
                 case "Problem":
-                    Criterium = ComponentCriteria.Problem;
+                    ComponentCriterium = ComponentCriteria.Problem;
                     return true;
 
                 default:
-                    Criterium = ComponentCriteria.Unknown;
+                    ComponentCriterium = ComponentCriteria.Unknown;
                     return false;
 
             }
@@ -98,11 +98,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this ComponentCriterium)
 
-        public static String AsText(this ComponentCriteria Criterium)
+        public static String AsText(this ComponentCriteria ComponentCriterium)
 
-            => Criterium switch {
+            => ComponentCriterium switch {
                    ComponentCriteria.Active     => "Active",
                    ComponentCriteria.Available  => "Available",
                    ComponentCriteria.Enabled    => "Enabled",

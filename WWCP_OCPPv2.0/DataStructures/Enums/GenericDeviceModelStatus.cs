@@ -60,36 +60,36 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out GenericDeviceModelStatus)
 
         /// <summary>
         /// Try to parse the given text as a generic device model status.
         /// </summary>
         /// <param name="Text">A text representation of a generic device model status.</param>
-        /// <param name="Status">The parsed generic device model status.</param>
-        public static Boolean TryParse(String Text, out GenericDeviceModelStatus Status)
+        /// <param name="GenericDeviceModelStatus">The parsed generic device model status.</param>
+        public static Boolean TryParse(String Text, out GenericDeviceModelStatus GenericDeviceModelStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = GenericDeviceModelStatus.Accepted;
+                    GenericDeviceModelStatus = GenericDeviceModelStatus.Accepted;
                     return true;
 
                 case "Rejected":
-                    Status = GenericDeviceModelStatus.Rejected;
+                    GenericDeviceModelStatus = GenericDeviceModelStatus.Rejected;
                     return true;
 
                 case "NotSupported":
-                    Status = GenericDeviceModelStatus.NotSupported;
+                    GenericDeviceModelStatus = GenericDeviceModelStatus.NotSupported;
                     return true;
 
                 case "EmptyResultSet":
-                    Status = GenericDeviceModelStatus.EmptyResultSet;
+                    GenericDeviceModelStatus = GenericDeviceModelStatus.EmptyResultSet;
                     return true;
 
                 default:
-                    Status = GenericDeviceModelStatus.Unknown;
+                    GenericDeviceModelStatus = GenericDeviceModelStatus.Unknown;
                     return false;
 
             }
@@ -114,8 +114,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
     }
 
+
     /// <summary>
-    /// A generic device model status.
+    /// Generic device model status.
     /// </summary>
     public enum GenericDeviceModelStatus
     {

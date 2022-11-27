@@ -60,40 +60,40 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Monitor)
+        #region TryParse(Text, out MonitorType)
 
         /// <summary>
         /// Try to parse the given text as a monitor type.
         /// </summary>
         /// <param name="Text">A text representation of a monitor type.</param>
-        /// <param name="Monitor">The parsed monitor type.</param>
-        public static Boolean TryParse(String Text, out MonitorTypes Monitor)
+        /// <param name="MonitorType">The parsed monitor type.</param>
+        public static Boolean TryParse(String Text, out MonitorTypes MonitorType)
         {
             switch (Text.Trim())
             {
 
                 case "UpperThreshold":
-                    Monitor = MonitorTypes.UpperThreshold;
+                    MonitorType = MonitorTypes.UpperThreshold;
                     return true;
 
                 case "LowerThreshold":
-                    Monitor = MonitorTypes.LowerThreshold;
+                    MonitorType = MonitorTypes.LowerThreshold;
                     return true;
 
                 case "Delta":
-                    Monitor = MonitorTypes.Delta;
+                    MonitorType = MonitorTypes.Delta;
                     return true;
 
                 case "Periodic":
-                    Monitor = MonitorTypes.Periodic;
+                    MonitorType = MonitorTypes.Periodic;
                     return true;
 
                 case "PeriodicClockAligned":
-                    Monitor = MonitorTypes.PeriodicClockAligned;
+                    MonitorType = MonitorTypes.PeriodicClockAligned;
                     return true;
 
                 default:
-                    Monitor = MonitorTypes.Unknown;
+                    MonitorType = MonitorTypes.Unknown;
                     return false;
 
             }
@@ -102,11 +102,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this MonitorType)
 
-        public static String AsText(this MonitorTypes Monitor)
+        public static String AsText(this MonitorTypes MonitorType)
 
-            => Monitor switch {
+            => MonitorType switch {
                    MonitorTypes.UpperThreshold        => "UpperThreshold",
                    MonitorTypes.LowerThreshold        => "LowerThreshold",
                    MonitorTypes.Delta                 => "Delta",

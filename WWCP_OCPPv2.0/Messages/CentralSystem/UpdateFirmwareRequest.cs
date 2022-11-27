@@ -429,6 +429,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                            RetryInterval.HasValue
                                ? new JProperty("retryInterval",  (UInt64) RetryInterval.Value.TotalSeconds)
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",     CustomData. ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -449,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// Compares two update firmware requests for equality.
         /// </summary>
-        /// <param name="UpdateFirmwareRequest1">A update firmware request.</param>
+        /// <param name="UpdateFirmwareRequest1">An update firmware request.</param>
         /// <param name="UpdateFirmwareRequest2">Another update firmware request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (UpdateFirmwareRequest? UpdateFirmwareRequest1,
@@ -475,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// Compares two update firmware requests for inequality.
         /// </summary>
-        /// <param name="UpdateFirmwareRequest1">A update firmware request.</param>
+        /// <param name="UpdateFirmwareRequest1">An update firmware request.</param>
         /// <param name="UpdateFirmwareRequest2">Another update firmware request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (UpdateFirmwareRequest? UpdateFirmwareRequest1,
@@ -494,7 +498,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// Compares two update firmware requests for equality.
         /// </summary>
-        /// <param name="Object">A update firmware request to compare with.</param>
+        /// <param name="Object">An update firmware request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is UpdateFirmwareRequest updateFirmwareRequest &&
@@ -507,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// Compares two update firmware requests for equality.
         /// </summary>
-        /// <param name="UpdateFirmwareRequest">A update firmware request to compare with.</param>
+        /// <param name="UpdateFirmwareRequest">An update firmware request to compare with.</param>
         public override Boolean Equals(UpdateFirmwareRequest? UpdateFirmwareRequest)
 
             => UpdateFirmwareRequest is not null &&

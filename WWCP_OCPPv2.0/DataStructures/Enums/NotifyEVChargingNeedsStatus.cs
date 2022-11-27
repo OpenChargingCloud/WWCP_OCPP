@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the notify EV charging needs status.
+    /// Extentions methods for notify EV charging needs status.
     /// </summary>
     public static class NotifyEVChargingNeedsStatusExtentions
     {
@@ -60,32 +60,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out NotifyEVChargingNeedsStatus)
 
         /// <summary>
         /// Try to parse the given text as a notify EV charging needs status.
         /// </summary>
         /// <param name="Text">A text representation of a notify EV charging needs status.</param>
-        /// <param name="Status">The parsed notify EV charging needs status.</param>
-        public static Boolean TryParse(String Text, out NotifyEVChargingNeedsStatus Status)
+        /// <param name="NotifyEVChargingNeedsStatus">The parsed notify EV charging needs status.</param>
+        public static Boolean TryParse(String Text, out NotifyEVChargingNeedsStatus NotifyEVChargingNeedsStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = NotifyEVChargingNeedsStatus.Accepted;
+                    NotifyEVChargingNeedsStatus = NotifyEVChargingNeedsStatus.Accepted;
                     return true;
 
                 case "Rejected":
-                    Status = NotifyEVChargingNeedsStatus.Rejected;
+                    NotifyEVChargingNeedsStatus = NotifyEVChargingNeedsStatus.Rejected;
                     return true;
 
                 case "Processing":
-                    Status = NotifyEVChargingNeedsStatus.Processing;
+                    NotifyEVChargingNeedsStatus = NotifyEVChargingNeedsStatus.Processing;
                     return true;
 
                 default:
-                    Status = NotifyEVChargingNeedsStatus.Unknown;
+                    NotifyEVChargingNeedsStatus = NotifyEVChargingNeedsStatus.Unknown;
                     return false;
 
             }
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// The notify EV charging needs status.
+    /// Notify EV charging needs status.
     /// </summary>
     public enum NotifyEVChargingNeedsStatus
     {

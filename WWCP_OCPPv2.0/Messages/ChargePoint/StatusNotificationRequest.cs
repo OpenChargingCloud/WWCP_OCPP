@@ -251,11 +251,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #region ConnectorStatus    [mandatory]
 
-                if (!JSON.MapMandatory("connectorStatus",
-                                       "connector status",
-                                       ConnectorStatusExtentions.Parse,
-                                       out ConnectorStatus ConnectorStatus,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("connectorStatus",
+                                         "connector status",
+                                         ConnectorStatusExtentions.TryParse,
+                                         out ConnectorStatus ConnectorStatus,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

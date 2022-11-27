@@ -60,36 +60,36 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Type)
+        #region TryParse(Text, out AttributeType)
 
         /// <summary>
         /// Try to parse the given text as a attribute type.
         /// </summary>
         /// <param name="Text">A text representation of a attribute type.</param>
-        /// <param name="Type">The parsed attribute type.</param>
-        public static Boolean TryParse(String Text, out AttributeTypes Type)
+        /// <param name="AttributeType">The parsed attribute type.</param>
+        public static Boolean TryParse(String Text, out AttributeTypes AttributeType)
         {
             switch (Text.Trim())
             {
 
                 case "Actual":
-                    Type = AttributeTypes.Actual;
+                    AttributeType = AttributeTypes.Actual;
                     return true;
 
                 case "Target":
-                    Type = AttributeTypes.Target;
+                    AttributeType = AttributeTypes.Target;
                     return true;
 
                 case "MinSet":
-                    Type = AttributeTypes.MinSet;
+                    AttributeType = AttributeTypes.MinSet;
                     return true;
 
                 case "MaxSet":
-                    Type = AttributeTypes.MaxSet;
+                    AttributeType = AttributeTypes.MaxSet;
                     return true;
 
                 default:
-                    Type = AttributeTypes.Unknown;
+                    AttributeType = AttributeTypes.Unknown;
                     return false;
 
             }
@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this AttributeType)
 
         public static String AsText(this AttributeTypes AttributeType)
 

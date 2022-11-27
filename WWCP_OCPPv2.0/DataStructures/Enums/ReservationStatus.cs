@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the reservation status.
+    /// Extentions methods for reservation status.
     /// </summary>
     public static class ReservationStatusExtentions
     {
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Defines the reservation-status-values.
+    /// Reservation status.
     /// </summary>
     public enum ReservationStatus
     {

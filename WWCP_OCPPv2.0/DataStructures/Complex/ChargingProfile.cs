@@ -67,6 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         [Mandatory]
         public IEnumerable<ChargingSchedule>  ChargingSchedules         { get; }
 
+
         /// <summary>
         /// When the ChargingProfilePurpose is set to TxProfile, this value MAY
         /// be used to match the profile to a specific charging transaction.
@@ -274,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 ChargingProfile = null;
 
-                #region ChargingProfileId
+                #region ChargingProfileId         [mandatory]
 
                 if (!JSON.ParseMandatory("chargingProfileId",
                                          "charging profile id",
@@ -287,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region StackLevel
+                #region StackLevel                [mandatory]
 
                 if (!JSON.ParseMandatory("stackLevel",
                                          "stack level",
@@ -299,33 +300,33 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region ChargingProfilePurpose
+                #region ChargingProfilePurpose    [mandatory]
 
-                if (!JSON.MapMandatory("chargingProfilePurpose",
-                                       "charging profile purpose",
-                                       ChargingProfilePurposesExtentions.Parse,
-                                       out ChargingProfilePurposes ChargingProfilePurpose,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("chargingProfilePurpose",
+                                         "charging profile purpose",
+                                         ChargingProfilePurposesExtentions.TryParse,
+                                         out ChargingProfilePurposes ChargingProfilePurpose,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ChargingProfileKind
+                #region ChargingProfileKind       [mandatory]
 
-                if (!JSON.MapMandatory("chargingProfileKind",
-                                       "charging profile kind",
-                                       ChargingProfileKindsExtentions.Parse,
-                                       out ChargingProfileKinds ChargingProfileKind,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("chargingProfileKind",
+                                         "charging profile kind",
+                                         ChargingProfileKindsExtentions.TryParse,
+                                         out ChargingProfileKinds ChargingProfileKind,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region ChargingSchedules
+                #region ChargingSchedules         [mandatory]
 
                 if (!JSON.ParseMandatoryHashSet("chargingSchedule",
                                                 "charging schedules",
@@ -338,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region TransactionId
+                #region TransactionId             [optional]
 
                 if (JSON.ParseOptional("transactionId",
                                        "transaction identifier",
@@ -352,11 +353,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region RecurrencyKind
+                #region RecurrencyKind            [optional]
 
                 if (JSON.ParseOptional("recurrencyKind",
                                        "recurrency kind",
-                                       RecurrencyKindsExtentions.Parse,
+                                       RecurrencyKindsExtentions.TryParse,
                                        out RecurrencyKinds? RecurrencyKind,
                                        out ErrorResponse))
                 {
@@ -366,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region ValidFrom
+                #region ValidFrom                 [optional]
 
                 if (JSON.ParseOptional("validFrom",
                                        "valid from",
@@ -379,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                #region ValidTo
+                #region ValidTo                   [optional]
 
                 if (JSON.ParseOptional("validTo",
                                        "valid to",

@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the clear cache status.
+    /// Extentions methods for clear cache status.
     /// </summary>
     public static class ClearCacheStatusExtentions
     {
@@ -60,28 +60,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out ClearCacheStatus)
 
         /// <summary>
         /// Try to parse the given text as a clear cache status.
         /// </summary>
         /// <param name="Text">A text representation of a clear cache status.</param>
-        /// <param name="Status">The parsed clear cache status.</param>
-        public static Boolean TryParse(String Text, out ClearCacheStatus Status)
+        /// <param name="ClearCacheStatus">The parsed clear cache status.</param>
+        public static Boolean TryParse(String Text, out ClearCacheStatus ClearCacheStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = ClearCacheStatus.Accepted;
+                    ClearCacheStatus = ClearCacheStatus.Accepted;
                     return true;
 
                 case "Rejected":
-                    Status = ClearCacheStatus.Rejected;
+                    ClearCacheStatus = ClearCacheStatus.Rejected;
                     return true;
 
                 default:
-                    Status = ClearCacheStatus.Unknown;
+                    ClearCacheStatus = ClearCacheStatus.Unknown;
                     return false;
 
             }
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Defines the clear-cache-status-values.
+    /// Clear cache status.
     /// </summary>
     public enum ClearCacheStatus
     {

@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the certificate status.
+    /// Extentions methods for certificate status.
     /// </summary>
     public static class CertificateStatusExtentions
     {
@@ -60,32 +60,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out CertificateStatus)
 
         /// <summary>
         /// Try to parse the given text as a certificate status.
         /// </summary>
         /// <param name="Text">A text representation of a certificate status.</param>
-        /// <param name="Status">The parsed certificate status.</param>
-        public static Boolean TryParse(String Text, out CertificateStatus Status)
+        /// <param name="CertificateStatus">The parsed certificate status.</param>
+        public static Boolean TryParse(String Text, out CertificateStatus CertificateStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = CertificateStatus.Accepted;
+                    CertificateStatus = CertificateStatus.Accepted;
                     return true;
 
                 case "Rejected":
-                    Status = CertificateStatus.Rejected;
+                    CertificateStatus = CertificateStatus.Rejected;
                     return true;
 
                 case "Failed":
-                    Status = CertificateStatus.Failed;
+                    CertificateStatus = CertificateStatus.Failed;
                     return true;
 
                 default:
-                    Status = CertificateStatus.Unknown;
+                    CertificateStatus = CertificateStatus.Unknown;
                     return false;
 
             }
@@ -109,8 +109,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
     }
 
+
     /// <summary>
-    /// The status in a response to an install certificate request.
+    /// Certificate status.
     /// </summary>
     public enum CertificateStatus
     {

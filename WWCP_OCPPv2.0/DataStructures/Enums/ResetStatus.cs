@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the reset status.
+    /// Extentions methods for reset status.
     /// </summary>
     public static class ResetStatusExtentions
     {
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Defines the reset-status-values.
+    /// Reset status.
     /// </summary>
     public enum ResetStatus
     {

@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the request start stop status.
+    /// Extentions methods for request start stop status.
     /// </summary>
     public static class RequestStartStopStatusExtentions
     {
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Defines the request-start-stop-status-values.
+    /// Request start stop status.
     /// </summary>
     public enum RequestStartStopStatus
     {

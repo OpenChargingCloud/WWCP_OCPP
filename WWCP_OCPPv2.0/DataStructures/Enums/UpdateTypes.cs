@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the update types.
+    /// Extentions methods for update types.
     /// </summary>
     public static class UpdateTypesExtentions
     {

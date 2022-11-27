@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this OCPPInterface)
+        #region AsText(this NetworkInterface)
 
         public static String AsText(this NetworkInterfaces NetworkInterface)
 

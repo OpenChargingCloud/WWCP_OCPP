@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the reset types.
+    /// Extentions methods for reset types.
     /// </summary>
     public static class ResetTypesExtentions
     {
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Defines the reset-type-values.
+    /// Reset types.
     /// </summary>
     public enum ResetTypes
     {

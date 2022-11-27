@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this MutabilityType)
 
         public static String AsText(this MutabilityTypes MutabilityType)
 

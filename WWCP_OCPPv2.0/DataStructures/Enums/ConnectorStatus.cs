@@ -24,20 +24,83 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class ConnectorStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a connector status.
+        /// </summary>
+        /// <param name="Text">A text representation of a connector status.</param>
         public static ConnectorStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Available"    => ConnectorStatus.Available,
-                   "Occupied"     => ConnectorStatus.Occupied,
-                   "Reserved"     => ConnectorStatus.Reserved,
-                   "Unavailable"  => ConnectorStatus.Unavailable,
-                   "Faulted"      => ConnectorStatus.Faulted,
-                   _              => ConnectorStatus.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return ConnectorStatus.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a connector status.
+        /// </summary>
+        /// <param name="Text">A text representation of a connector status.</param>
+        public static ConnectorStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ConnectorStatus)
+
+        /// <summary>
+        /// Try to parse the given text as a connector status.
+        /// </summary>
+        /// <param name="Text">A text representation of a connector status.</param>
+        /// <param name="ConnectorStatus">The parsed connector status.</param>
+        public static Boolean TryParse(String Text, out ConnectorStatus ConnectorStatus)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Available":
+                    ConnectorStatus = ConnectorStatus.Available;
+                    return true;
+
+                case "Occupied":
+                    ConnectorStatus = ConnectorStatus.Occupied;
+                    return true;
+
+                case "Reserved":
+                    ConnectorStatus = ConnectorStatus.Reserved;
+                    return true;
+
+                case "Unavailable":
+                    ConnectorStatus = ConnectorStatus.Unavailable;
+                    return true;
+
+                case "Faulted":
+                    ConnectorStatus = ConnectorStatus.Faulted;
+                    return true;
+
+                default:
+                    ConnectorStatus = ConnectorStatus.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this ConnectorStatus)
 
@@ -58,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// The status reported in StatusNotification request.
+    /// Connector status.
     /// </summary>
     public enum ConnectorStatus
     {
@@ -67,7 +130,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Unknown connector status.
         /// </summary>
         Unknown,
-
 
         /// <summary>
         /// Available.

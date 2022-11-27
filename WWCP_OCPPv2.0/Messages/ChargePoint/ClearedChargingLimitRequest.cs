@@ -208,12 +208,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #region ChargingLimitSource    [mandatory]
 
-                if (!JSON.MapMandatory("connectorStatus",
-                                       "connector status",
-                                       ChargingLimitSourcesExtentions.Parse,
-                                       out ChargingLimitSources ChargingLimitSource,
-                                       out ErrorResponse))
-                {
+                if (!JSON.ParseMandatory("connectorStatus",
+                                         "connector status",
+                                         ChargingLimitSourcesExtentions.TryParse,
+                                         out ChargingLimitSources ChargingLimitSource,
+                                         out ErrorResponse))
+                {              
                     return false;
                 }
 

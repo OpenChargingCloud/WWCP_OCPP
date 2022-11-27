@@ -60,24 +60,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out GetDisplayMessagesStatus)
 
         /// <summary>
         /// Try to parse the given text as a get display messages status.
         /// </summary>
         /// <param name="Text">A text representation of a get display messages status.</param>
-        /// <param name="Status">The parsed get display messages status.</param>
-        public static Boolean TryParse(String Text, out GetDisplayMessagesStatus Status)
+        /// <param name="GetDisplayMessagesStatus">The parsed get display messages status.</param>
+        public static Boolean TryParse(String Text, out GetDisplayMessagesStatus GetDisplayMessagesStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = GetDisplayMessagesStatus.Accepted;
+                    GetDisplayMessagesStatus = GetDisplayMessagesStatus.Accepted;
                     return true;
 
                 default:
-                    Status = GetDisplayMessagesStatus.Unknown;
+                    GetDisplayMessagesStatus = GetDisplayMessagesStatus.Unknown;
                     return false;
 
             }
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this GetDisplayMessagesStatus)
 
         public static String AsText(this GetDisplayMessagesStatus GetDisplayMessagesStatus)
 

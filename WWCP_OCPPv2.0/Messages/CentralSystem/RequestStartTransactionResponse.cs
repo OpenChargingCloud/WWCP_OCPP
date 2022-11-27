@@ -245,11 +245,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #region Status           [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "request start stop status",
-                                       RequestStartStopStatusExtentions.Parse,
-                                       out RequestStartStopStatus Status,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "request start stop status",
+                                         RequestStartStopStatusExtentions.TryParse,
+                                         out RequestStartStopStatus Status,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

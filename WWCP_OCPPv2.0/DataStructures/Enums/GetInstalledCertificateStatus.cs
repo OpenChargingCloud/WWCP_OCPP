@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the get installed certificate status.
+    /// Extentions methods for get installed certificate status.
     /// </summary>
     public static class GetInstalledCertificateStatusExtentions
     {
@@ -60,28 +60,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out GetInstalledCertificateStatus)
 
         /// <summary>
         /// Try to parse the given text as a get installed certificate status.
         /// </summary>
         /// <param name="Text">A text representation of a get installed certificate status.</param>
-        /// <param name="Status">The parsed get installed certificate status.</param>
-        public static Boolean TryParse(String Text, out GetInstalledCertificateStatus Status)
+        /// <param name="GetInstalledCertificateStatus">The parsed get installed certificate status.</param>
+        public static Boolean TryParse(String Text, out GetInstalledCertificateStatus GetInstalledCertificateStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = GetInstalledCertificateStatus.Accepted;
+                    GetInstalledCertificateStatus = GetInstalledCertificateStatus.Accepted;
                     return true;
 
                 case "NotFound":
-                    Status = GetInstalledCertificateStatus.NotFound;
+                    GetInstalledCertificateStatus = GetInstalledCertificateStatus.NotFound;
                     return true;
 
                 default:
-                    Status = GetInstalledCertificateStatus.Unknown;
+                    GetInstalledCertificateStatus = GetInstalledCertificateStatus.Unknown;
                     return false;
 
             }
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// The get installed certificate status.
+    /// Get installed certificate status.
     /// </summary>
     public enum GetInstalledCertificateStatus
     {

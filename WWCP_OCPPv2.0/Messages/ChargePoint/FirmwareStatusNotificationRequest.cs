@@ -243,11 +243,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #region Status                     [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "firmware status",
-                                       FirmwareStatusExtentions.Parse,
-                                       out FirmwareStatus Status,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "firmware status",
+                                         FirmwareStatusExtentions.TryParse,
+                                         out FirmwareStatus Status,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

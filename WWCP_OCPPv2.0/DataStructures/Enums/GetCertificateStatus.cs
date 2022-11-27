@@ -60,28 +60,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out GetCertificateStatus)
 
         /// <summary>
         /// Try to parse the given text as a get certificate status.
         /// </summary>
         /// <param name="Text">A text representation of a get certificate status.</param>
-        /// <param name="Status">The parsed get certificate status.</param>
-        public static Boolean TryParse(String Text, out GetCertificateStatus Status)
+        /// <param name="GetCertificateStatus">The parsed get certificate status.</param>
+        public static Boolean TryParse(String Text, out GetCertificateStatus GetCertificateStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = GetCertificateStatus.Accepted;
+                    GetCertificateStatus = GetCertificateStatus.Accepted;
                     return true;
 
                 case "Failed":
-                    Status = GetCertificateStatus.Failed;
+                    GetCertificateStatus = GetCertificateStatus.Failed;
                     return true;
 
                 default:
-                    Status = GetCertificateStatus.Unknown;
+                    GetCertificateStatus = GetCertificateStatus.Unknown;
                     return false;
 
             }
@@ -104,8 +104,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
     }
 
+
     /// <summary>
-    /// A get certificate status.
+    /// Get certificate status.
     /// </summary>
     public enum GetCertificateStatus
     {

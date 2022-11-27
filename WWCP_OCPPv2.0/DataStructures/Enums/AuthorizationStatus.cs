@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the authorization status.
+    /// Extentions methods for authorization status.
     /// </summary>
     public static class AuthorizationStatusExtentions
     {
@@ -60,56 +60,56 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out AuthorizationStatus)
 
         /// <summary>
         /// Try to parse the given text as an authorization status.
         /// </summary>
         /// <param name="Text">A text representation of an authorization status.</param>
-        /// <param name="Status">The parsed authorization status.</param>
-        public static Boolean TryParse(String Text, out AuthorizationStatus Status)
+        /// <param name="AuthorizationStatus">The parsed authorization status.</param>
+        public static Boolean TryParse(String Text, out AuthorizationStatus AuthorizationStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = AuthorizationStatus.Accepted;
+                    AuthorizationStatus = AuthorizationStatus.Accepted;
                     return true;
 
                 case "Blocked":
-                    Status = AuthorizationStatus.Blocked;
+                    AuthorizationStatus = AuthorizationStatus.Blocked;
                     return true;
 
                 case "ConcurrentTx":
-                    Status = AuthorizationStatus.ConcurrentTx;
+                    AuthorizationStatus = AuthorizationStatus.ConcurrentTx;
                     return true;
 
                 case "Expired":
-                    Status = AuthorizationStatus.Expired;
+                    AuthorizationStatus = AuthorizationStatus.Expired;
                     return true;
 
                 case "Invalid":
-                    Status = AuthorizationStatus.Invalid;
+                    AuthorizationStatus = AuthorizationStatus.Invalid;
                     return true;
 
                 case "NoCredit":
-                    Status = AuthorizationStatus.NoCredit;
+                    AuthorizationStatus = AuthorizationStatus.NoCredit;
                     return true;
 
                 case "NotAllowedTypeEVSE":
-                    Status = AuthorizationStatus.NotAllowedTypeEVSE;
+                    AuthorizationStatus = AuthorizationStatus.NotAllowedTypeEVSE;
                     return true;
 
                 case "NotAtThisLocation":
-                    Status = AuthorizationStatus.NotAtThisLocation;
+                    AuthorizationStatus = AuthorizationStatus.NotAtThisLocation;
                     return true;
 
                 case "NotAtThisTime":
-                    Status = AuthorizationStatus.NotAtThisTime;
+                    AuthorizationStatus = AuthorizationStatus.NotAtThisTime;
                     return true;
 
                 default:
-                    Status = AuthorizationStatus.Unknown;
+                    AuthorizationStatus = AuthorizationStatus.Unknown;
                     return false;
 
             }
@@ -139,8 +139,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
     }
 
+
     /// <summary>
-    /// The status in a response to an authorize request.
+    /// Authorization status.
     /// </summary>
     public enum AuthorizationStatus
     {

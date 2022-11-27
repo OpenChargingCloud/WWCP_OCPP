@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static ConnectorTypes Parse(String Text)
         {
 
-            if (TryParse(Text, out var reason))
-                return reason;
+            if (TryParse(Text, out var connectorType))
+                return connectorType;
 
             return ConnectorTypes.Unknown;
 
@@ -51,8 +51,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static ConnectorTypes? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var reason))
-                return reason;
+            if (TryParse(Text, out var connectorType))
+                return connectorType;
 
             return null;
 
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this ConnectorType)
 
         public static String AsText(this ConnectorTypes ConnectorType)
 
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Boot reasons.
+    /// Connector types.
     /// </summary>
     public enum ConnectorTypes
     {

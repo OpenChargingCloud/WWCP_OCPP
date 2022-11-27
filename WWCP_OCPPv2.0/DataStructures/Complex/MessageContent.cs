@@ -198,11 +198,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region Format        [mandatory]
 
-                if (!JSON.MapMandatory("format",
-                                       "message format",
-                                       MessageFormatsExtentions.Parse,
-                                       out MessageFormats Format,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("format",
+                                         "message format",
+                                         MessageFormatsExtentions.TryParse,
+                                         out MessageFormats Format,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("language",
                                        "message language",
-                                       Language_Id.Parse,
+                                       Language_Id.TryParse,
                                        out Language_Id? Language,
                                        out ErrorResponse))
                 {

@@ -66,26 +66,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Try to parse the given text as a monitoring base.
         /// </summary>
         /// <param name="Text">A text representation of a monitoring base.</param>
-        /// <param name="MonitoringBases">The parsed monitoring bases.</param>
-        public static Boolean TryParse(String Text, out MonitoringBases MonitoringBases)
+        /// <param name="MonitoringBase">The parsed monitoring bases.</param>
+        public static Boolean TryParse(String Text, out MonitoringBases MonitoringBase)
         {
             switch (Text.Trim())
             {
 
                 case "All":
-                    MonitoringBases = MonitoringBases.All;
+                    MonitoringBase = MonitoringBases.All;
                     return true;
 
                 case "FactoryDefault":
-                    MonitoringBases = MonitoringBases.FactoryDefault;
+                    MonitoringBase = MonitoringBases.FactoryDefault;
                     return true;
 
                 case "HardWiredOnly":
-                    MonitoringBases = MonitoringBases.HardWiredOnly;
+                    MonitoringBase = MonitoringBases.HardWiredOnly;
                     return true;
 
                 default:
-                    MonitoringBases = MonitoringBases.Unknown;
+                    MonitoringBase = MonitoringBases.Unknown;
                     return false;
 
             }
@@ -94,11 +94,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this MonitoringBases)
+        #region AsText(this MonitoringBase)
 
-        public static String AsText(this MonitoringBases MonitoringBases)
+        public static String AsText(this MonitoringBases MonitoringBase)
 
-            => MonitoringBases switch {
+            => MonitoringBase switch {
                    MonitoringBases.All             => "All",
                    MonitoringBases.FactoryDefault  => "FactoryDefault",
                    MonitoringBases.HardWiredOnly   => "HardWiredOnly",

@@ -60,36 +60,36 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out MessageState)
 
         /// <summary>
         /// Try to parse the given text as a display message state.
         /// </summary>
         /// <param name="Text">A text representation of a display message state.</param>
-        /// <param name="State">The parsed display message state.</param>
-        public static Boolean TryParse(String Text, out MessageStates State)
+        /// <param name="MessageState">The parsed display message state.</param>
+        public static Boolean TryParse(String Text, out MessageStates MessageState)
         {
             switch (Text.Trim())
             {
 
                 case "Charging":
-                    State = MessageStates.Charging;
+                    MessageState = MessageStates.Charging;
                     return true;
 
                 case "Faulted":
-                    State = MessageStates.Faulted;
+                    MessageState = MessageStates.Faulted;
                     return true;
 
                 case "Idle":
-                    State = MessageStates.Idle;
+                    MessageState = MessageStates.Idle;
                     return true;
 
                 case "Unavailable":
-                    State = MessageStates.Unavailable;
+                    MessageState = MessageStates.Unavailable;
                     return true;
 
                 default:
-                    State = MessageStates.Unknown;
+                    MessageState = MessageStates.Unknown;
                     return false;
 
             }
@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this MessageState)
 
         public static String AsText(this MessageStates MessageState)
 

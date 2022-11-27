@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the recurrency kinds.
+    /// Extentions methods for recurrency kinds.
     /// </summary>
     public static class RecurrencyKindsExtentions
     {
@@ -90,11 +90,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this RecurrencyKindType)
+        #region AsText(this RecurrencyKind)
 
-        public static String AsText(this RecurrencyKinds RecurrencyKindType)
+        public static String AsText(this RecurrencyKinds RecurrencyKind)
 
-            => RecurrencyKindType switch {
+            => RecurrencyKind switch {
                    RecurrencyKinds.Daily   => "Daily",
                    RecurrencyKinds.Weekly  => "Weekly",
                    _                       => "Unknown"
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Defines the recurrency-kind-type-values.
+    /// Recurrency kinds.
     /// </summary>
     public enum RecurrencyKinds
     {

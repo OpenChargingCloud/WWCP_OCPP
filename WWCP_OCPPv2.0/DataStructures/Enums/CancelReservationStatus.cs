@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the cancel reservation status.
+    /// Extentions methods for cancel reservation status.
     /// </summary>
     public static class CancelReservationStatusExtentions
     {
@@ -60,28 +60,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out CancelReservationStatus)
 
         /// <summary>
         /// Try to parse the given text as a cancel reservation status.
         /// </summary>
         /// <param name="Text">A text representation of a cancel reservation status.</param>
-        /// <param name="Status">The parsed cancel reservation status.</param>
-        public static Boolean TryParse(String Text, out CancelReservationStatus Status)
+        /// <param name="CancelReservationStatus">The parsed cancel reservation status.</param>
+        public static Boolean TryParse(String Text, out CancelReservationStatus CancelReservationStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = CancelReservationStatus.Accepted;
+                    CancelReservationStatus = CancelReservationStatus.Accepted;
                     return true;
 
                 case "Rejected":
-                    Status = CancelReservationStatus.Rejected;
+                    CancelReservationStatus = CancelReservationStatus.Rejected;
                     return true;
 
                 default:
-                    Status = CancelReservationStatus.Unknown;
+                    CancelReservationStatus = CancelReservationStatus.Unknown;
                     return false;
 
             }

@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static CostKinds Parse(String Text)
         {
 
-            if (TryParse(Text, out var cost))
-                return cost;
+            if (TryParse(Text, out var costKinds))
+                return costKinds;
 
             return CostKinds.Unknown;
 
@@ -51,8 +51,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public static CostKinds? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var cost))
-                return cost;
+            if (TryParse(Text, out var costKinds))
+                return costKinds;
 
             return null;
 
@@ -60,32 +60,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Reason)
+        #region TryParse(Text, out CostKind)
 
         /// <summary>
         /// Try to parse the given text as a cost kind.
         /// </summary>
         /// <param name="Text">A text representation of a cost kind.</param>
-        /// <param name="Reason">The parsed cost kind.</param>
-        public static Boolean TryParse(String Text, out CostKinds Reason)
+        /// <param name="CostKind">The parsed cost kind.</param>
+        public static Boolean TryParse(String Text, out CostKinds CostKind)
         {
             switch (Text.Trim())
             {
 
                 case "CarbonDioxideEmission":
-                    Reason = CostKinds.CarbonDioxideEmission;
+                    CostKind = CostKinds.CarbonDioxideEmission;
                     return true;
 
                 case "RelativePricePercentage":
-                    Reason = CostKinds.RelativePricePercentage;
+                    CostKind = CostKinds.RelativePricePercentage;
                     return true;
 
                 case "RenewableGenerationPercentage":
-                    Reason = CostKinds.RenewableGenerationPercentage;
+                    CostKind = CostKinds.RenewableGenerationPercentage;
                     return true;
 
                 default:
-                    Reason = CostKinds.Unknown;
+                    CostKind = CostKinds.Unknown;
                     return false;
 
             }
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this CostKind)
 
         public static String AsText(this CostKinds CostKind)
 

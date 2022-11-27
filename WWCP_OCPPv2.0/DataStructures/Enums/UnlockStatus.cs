@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the unlock status.
+    /// Extentions methods for unlock status.
     /// </summary>
     public static class UnlockStatusExtentions
     {
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// The status in a response to an unlock request.
+    /// Unlock status.
     /// </summary>
     public enum UnlockStatus
     {

@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the get charging profile status.
+    /// Extentions methods for get charging profile status.
     /// </summary>
     public static class GetChargingProfileStatusExtentions
     {
@@ -60,28 +60,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out GetChargingProfileStatus)
 
         /// <summary>
         /// Try to parse the given text as a get charging profile status.
         /// </summary>
         /// <param name="Text">A text representation of a get charging profile status.</param>
-        /// <param name="Status">The parsed get charging profile status.</param>
-        public static Boolean TryParse(String Text, out GetChargingProfileStatus Status)
+        /// <param name="GetChargingProfileStatus">The parsed get charging profile status.</param>
+        public static Boolean TryParse(String Text, out GetChargingProfileStatus GetChargingProfileStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = GetChargingProfileStatus.Accepted;
+                    GetChargingProfileStatus = GetChargingProfileStatus.Accepted;
                     return true;
 
                 case "NoProfiles":
-                    Status = GetChargingProfileStatus.NoProfiles;
+                    GetChargingProfileStatus = GetChargingProfileStatus.NoProfiles;
                     return true;
 
                 default:
-                    Status = GetChargingProfileStatus.Unknown;
+                    GetChargingProfileStatus = GetChargingProfileStatus.Unknown;
                     return false;
 
             }
@@ -104,8 +104,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
     }
 
+
     /// <summary>
-    /// The status in a response to a get charging profiles request.
+    /// Get charging profile status.
     /// </summary>
     public enum GetChargingProfileStatus
     {

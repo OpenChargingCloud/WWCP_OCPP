@@ -80,7 +80,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                     TriggerReason = TriggerReasons.CablePluggedIn;
                     return true;
 
-
                 case "ChargingRateChanged":
                     TriggerReason = TriggerReasons.ChargingRateChanged;
                     return true;
@@ -200,6 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
     }
+
 
     /// <summary>
     /// Trigger reasons.

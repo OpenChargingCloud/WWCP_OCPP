@@ -60,32 +60,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out PhaseToUse)
 
         /// <summary>
         /// Try to parse the given text as an electrical phase.
         /// </summary>
         /// <param name="Text">A text representation of an electrical phase.</param>
-        /// <param name="Phase">The parsed electrical phase.</param>
-        public static Boolean TryParse(String Text, out PhasesToUse Phase)
+        /// <param name="PhaseToUse">The parsed electrical phase.</param>
+        public static Boolean TryParse(String Text, out PhasesToUse PhaseToUse)
         {
             switch (Text.Trim())
             {
 
                 case "One":
-                    Phase = PhasesToUse.One;
+                    PhaseToUse = PhasesToUse.One;
                     return true;
 
                 case "Two":
-                    Phase = PhasesToUse.Two;
+                    PhaseToUse = PhasesToUse.Two;
                     return true;
 
                 case "Three":
-                    Phase = PhasesToUse.Three;
+                    PhaseToUse = PhasesToUse.Three;
                     return true;
 
                 default:
-                    Phase = PhasesToUse.Unknown;
+                    PhaseToUse = PhasesToUse.Unknown;
                     return false;
 
             }
@@ -130,32 +130,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Number, out Status)
+        #region TryParse(Number, out PhaseToUse)
 
         /// <summary>
         /// Try to parse the given number as an electrical phase.
         /// </summary>
         /// <param name="Number">A numeric representation of an electrical phase.</param>
-        /// <param name="Phase">The parsed electrical phase.</param>
-        public static Boolean TryParse(Byte Number, out PhasesToUse Phase)
+        /// <param name="PhaseToUse">The parsed electrical phase.</param>
+        public static Boolean TryParse(Byte Number, out PhasesToUse PhaseToUse)
         {
             switch (Number)
             {
 
                 case 1:
-                    Phase = PhasesToUse.One;
+                    PhaseToUse = PhasesToUse.One;
                     return true;
 
                 case 2:
-                    Phase = PhasesToUse.Two;
+                    PhaseToUse = PhasesToUse.Two;
                     return true;
 
                 case 3:
-                    Phase = PhasesToUse.Three;
+                    PhaseToUse = PhasesToUse.Three;
                     return true;
 
                 default:
-                    Phase = PhasesToUse.Unknown;
+                    PhaseToUse = PhasesToUse.Unknown;
                     return false;
 
             }
@@ -164,11 +164,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText  (this PhasesToUse)
+        #region AsText  (this PhaseToUse)
 
-        public static String AsText(this PhasesToUse PhasesToUse)
+        public static String AsText(this PhasesToUse PhaseToUse)
 
-            => PhasesToUse switch {
+            => PhaseToUse switch {
                    PhasesToUse.One    => "One",
                    PhasesToUse.Two    => "Two",
                    PhasesToUse.Three  => "Three",
@@ -177,11 +177,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region AsNumber(this PhasesToUse)
+        #region AsNumber(this PhaseToUse)
 
-        public static Byte? AsNumber(this PhasesToUse PhasesToUse)
+        public static Byte? AsNumber(this PhasesToUse PhaseToUse)
 
-            => PhasesToUse switch {
+            => PhaseToUse switch {
                    PhasesToUse.One    => 1,
                    PhasesToUse.Two    => 2,
                    PhasesToUse.Three  => 3,
@@ -191,6 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
     }
+
 
     /// <summary>
     /// Electrical phases.

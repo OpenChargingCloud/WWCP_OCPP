@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the firmware status.
+    /// Extentions methods for firmware status.
     /// </summary>
     public static class FirmwareStatusExtentions
     {
@@ -170,8 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Status of a firmware download as reported in a
-    /// FirmwareStatusNotification request.
+    /// Firmware status.
     /// </summary>
     public enum FirmwareStatus
     {

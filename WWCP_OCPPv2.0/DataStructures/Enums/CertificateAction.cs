@@ -19,42 +19,76 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for a certificate action.
+    /// Extentions methods for certificate actions.
     /// </summary>
     public static class CertificateActionExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a certificate action.
+        /// </summary>
+        /// <param name="Text">A text representation of a certificate action.</param>
         public static CertificateAction Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Install"  => CertificateAction.Install,
-                   "Update"   => CertificateAction.Update,
-                   _          => CertificateAction.Unknown
-               };
+            if (TryParse(Text, out var action))
+                return action;
 
-        public static Boolean TryParse(String Text, out CertificateAction Action)
+            return CertificateAction.Unknown;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a certificate action.
+        /// </summary>
+        /// <param name="Text">A text representation of a certificate action.</param>
+        public static CertificateAction? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var action))
+                return action;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out CertificateAction)
+
+        /// <summary>
+        /// Try to parse the given text as a certificate action.
+        /// </summary>
+        /// <param name="Text">A text representation of a certificate action.</param>
+        /// <param name="CertificateAction">The parsed certificate action.</param>
+        public static Boolean TryParse(String Text, out CertificateAction CertificateAction)
         {
             switch (Text.Trim())
             {
 
                 case "Install":
-                    Action = CertificateAction.Install;
+                    CertificateAction = CertificateAction.Install;
                     return true;
 
                 case "Update":
-                    Action = CertificateAction.Update;
+                    CertificateAction = CertificateAction.Update;
                     return true;
 
                 default:
-                    Action = CertificateAction.Unknown;
+                    CertificateAction = CertificateAction.Unknown;
                     return false;
 
             }
         }
 
         #endregion
+
 
         #region AsText(this CertificateAction)
 
@@ -70,8 +104,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
     }
 
+
     /// <summary>
-    /// A certificate action.
+    /// Certificate actions.
     /// </summary>
     public enum CertificateAction
     {

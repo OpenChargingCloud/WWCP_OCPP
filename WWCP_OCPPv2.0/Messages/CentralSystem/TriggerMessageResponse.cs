@@ -226,11 +226,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #region TriggerMessageStatus    [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "trigger message status",
-                                       TriggerMessageStatusExtentions.Parse,
-                                       out TriggerMessageStatus TriggerMessageStatus,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "trigger message status",
+                                         TriggerMessageStatusExtentions.TryParse,
+                                         out TriggerMessageStatus TriggerMessageStatus,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

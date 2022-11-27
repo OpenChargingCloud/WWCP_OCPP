@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Boot statuss.
+    /// Set monitoring status.
     /// </summary>
     public enum SetMonitoringStatus
     {

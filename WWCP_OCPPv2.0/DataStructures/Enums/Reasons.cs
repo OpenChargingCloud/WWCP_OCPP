@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// The reasons for stopping a transaction.
+    /// Stop transaction reasons.
     /// </summary>
     public enum Reasons
     {

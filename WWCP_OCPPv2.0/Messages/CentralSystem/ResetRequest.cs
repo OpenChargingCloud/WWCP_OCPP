@@ -220,11 +220,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region ResetType      [mandatory]
 
-                if (!JSON.MapMandatory("type",
-                                       "reset type",
-                                       ResetTypesExtentions.Parse,
-                                       out ResetTypes ResetType,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("type",
+                                         "reset type",
+                                         ResetTypesExtentions.TryParse,
+                                         out ResetTypes ResetType,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

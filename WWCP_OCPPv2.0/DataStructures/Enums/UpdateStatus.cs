@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the update status.
+    /// Extentions methods for update status.
     /// </summary>
     public static class UpdateStatusExtentions
     {
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out UpdateStatus)
 
         /// <summary>
         /// Try to parse the given text as an update status.
@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Defines the update-status-values.
+    /// Update status.
     /// </summary>
     public enum UpdateStatus
     {

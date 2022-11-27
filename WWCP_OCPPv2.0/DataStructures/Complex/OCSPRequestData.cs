@@ -223,11 +223,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region HashAlgorithm     [mandatory]
 
-                if (!JSON.MapMandatory("hashAlgorithm",
-                                       "hash algorithm",
-                                       HashAlgorithmsExtentions.Parse,
-                                       out HashAlgorithms HashAlgorithm,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("hashAlgorithm",
+                                         "hash algorithm",
+                                         HashAlgorithmsExtentions.TryParse,
+                                         out HashAlgorithms HashAlgorithm,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

@@ -228,11 +228,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #region UnlockStatus    [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "unlock status",
-                                       UnlockStatusExtentions.Parse,
-                                       out UnlockStatus UnlockStatus,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "unlock status",
+                                         UnlockStatusExtentions.TryParse,
+                                         out UnlockStatus UnlockStatus,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

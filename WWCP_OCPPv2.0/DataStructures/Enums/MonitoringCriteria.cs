@@ -60,32 +60,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Criterium)
+        #region TryParse(Text, out MonitoringCriterium)
 
         /// <summary>
         /// Try to parse the given text as a monitoring criterium.
         /// </summary>
         /// <param name="Text">A text representation of a monitoring criterium.</param>
-        /// <param name="Criterium">The parsed monitoring criterium.</param>
-        public static Boolean TryParse(String Text, out MonitoringCriteria Criterium)
+        /// <param name="MonitoringCriterium">The parsed monitoring criterium.</param>
+        public static Boolean TryParse(String Text, out MonitoringCriteria MonitoringCriterium)
         {
             switch (Text.Trim())
             {
 
                 case "ThresholdMonitoring":
-                    Criterium = MonitoringCriteria.ThresholdMonitoring;
+                    MonitoringCriterium = MonitoringCriteria.ThresholdMonitoring;
                     return true;
 
                 case "DeltaMonitoring":
-                    Criterium = MonitoringCriteria.DeltaMonitoring;
+                    MonitoringCriterium = MonitoringCriteria.DeltaMonitoring;
                     return true;
 
                 case "PeriodicMonitoring":
-                    Criterium = MonitoringCriteria.PeriodicMonitoring;
+                    MonitoringCriterium = MonitoringCriteria.PeriodicMonitoring;
                     return true;
 
                 default:
-                    Criterium = MonitoringCriteria.Unknown;
+                    MonitoringCriterium = MonitoringCriteria.Unknown;
                     return false;
 
             }
@@ -94,11 +94,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this MonitoringCriterium)
 
-        public static String AsText(this MonitoringCriteria Criterium)
+        public static String AsText(this MonitoringCriteria MonitoringCriterium)
 
-            => Criterium switch {
+            => MonitoringCriterium switch {
                    MonitoringCriteria.ThresholdMonitoring  => "ThresholdMonitoring",
                    MonitoringCriteria.DeltaMonitoring      => "DeltaMonitoring",
                    MonitoringCriteria.PeriodicMonitoring   => "PeriodicMonitoring",

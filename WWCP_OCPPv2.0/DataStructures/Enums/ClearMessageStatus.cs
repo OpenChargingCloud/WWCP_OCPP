@@ -19,21 +19,72 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the clear message status.
+    /// Extentions methods for clear message status.
     /// </summary>
     public static class ClearMessageStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a clear message status.
+        /// </summary>
+        /// <param name="Text">A text representation of a clear message status.</param>
         public static ClearMessageStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Accepted"  => ClearMessageStatus.Accepted,
-                   _           => ClearMessageStatus.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return ClearMessageStatus.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a clear message status.
+        /// </summary>
+        /// <param name="Text">A text representation of a clear message status.</param>
+        public static ClearMessageStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ClearMessageStatus)
+
+        /// <summary>
+        /// Try to parse the given text as a clear message status.
+        /// </summary>
+        /// <param name="Text">A text representation of a clear message status.</param>
+        /// <param name="ClearMessageStatus">The parsed clear message status.</param>
+        public static Boolean TryParse(String Text, out ClearMessageStatus ClearMessageStatus)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Accepted":
+                    ClearMessageStatus = ClearMessageStatus.Accepted;
+                    return true;
+
+                default:
+                    ClearMessageStatus = ClearMessageStatus.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this ClearMessageStatus)
 
@@ -50,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Defines the clear message status values.
+    /// Clear message status.
     /// </summary>
     public enum ClearMessageStatus
     {

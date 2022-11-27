@@ -19,23 +19,84 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the charging profile purposes.
+    /// Extentions methods for charging profile purposes.
     /// </summary>
     public static class ChargingProfilePurposesExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a charging profile purpose.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging profile purpose.</param>
         public static ChargingProfilePurposes Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "ChargingStationExternalConstraints"  => ChargingProfilePurposes.ChargingStationExternalConstraints,
-                   "ChargePointMaxProfile"               => ChargingProfilePurposes.ChargePointMaxProfile,
-                   "TxProfile"                           => ChargingProfilePurposes.TxProfile,
-                   _                                     => ChargingProfilePurposes.TxDefaultProfile
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return ChargingProfilePurposes.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a charging profile purpose.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging profile purpose.</param>
+        public static ChargingProfilePurposes? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ChargingProfilePurpose)
+
+        /// <summary>
+        /// Try to parse the given text as a charging profile purpose.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging profile purpose.</param>
+        /// <param name="ChargingProfilePurpose">The parsed charging profile purpose.</param>
+        public static Boolean TryParse(String Text, out ChargingProfilePurposes ChargingProfilePurpose)
+        {
+            switch (Text.Trim())
+            {
+
+                case "ChargingStationExternalConstraints":
+                    ChargingProfilePurpose = ChargingProfilePurposes.ChargingStationExternalConstraints;
+                    return true;
+
+                case "ChargePointMaxProfile":
+                    ChargingProfilePurpose = ChargingProfilePurposes.ChargePointMaxProfile;
+                    return true;
+
+                case "TxProfile":
+                    ChargingProfilePurpose = ChargingProfilePurposes.TxProfile;
+                    return true;
+
+                case "TxDefaultProfile":
+                    ChargingProfilePurpose = ChargingProfilePurposes.TxDefaultProfile;
+                    return true;
+
+                default:
+                    ChargingProfilePurpose = ChargingProfilePurposes.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this ChargingProfilePurpose)
 
@@ -54,10 +115,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Defines the charging-profile-purpose-values.
+    /// Charging profile purposes.
     /// </summary>
     public enum ChargingProfilePurposes
     {
+
+        /// <summary>
+        /// Unknown charging profile purpose.
+        /// </summary>
+        Unknown,
 
         /// <summary>
         /// Additional constraints that will be incorporated into a local power schedule. Only valid for a charging station.

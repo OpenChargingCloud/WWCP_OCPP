@@ -19,24 +19,78 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extention methods for clear monitoring results.
+    /// Extention methods for clear monitoring status.
     /// </summary>
     public static class ClearMonitoringStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
-        public static ClearMonitoringStatus Parse(this String Text)
+        /// <summary>
+        /// Parse the given text as a clear monitoring status.
+        /// </summary>
+        /// <param name="Text">A text representation of a clear monitoring status.</param>
+        public static ClearMonitoringStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Accepted"  => ClearMonitoringStatus.Accepted,
-                   "Rejected"  => ClearMonitoringStatus.Rejected,
-                   _           => ClearMonitoringStatus.NotFound
-            };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return ClearMonitoringStatus.NotFound;
+
+        }
 
         #endregion
 
-        #region AsText(this Phase)
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a clear monitoring status.
+        /// </summary>
+        /// <param name="Text">A text representation of a clear monitoring status.</param>
+        public static ClearMonitoringStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ClearMonitoringStatus)
+
+        /// <summary>
+        /// Try to parse the given text as a clear monitoring status.
+        /// </summary>
+        /// <param name="Text">A text representation of a clear monitoring status.</param>
+        /// <param name="ClearMonitoringStatus">The parsed clear monitoring status.</param>
+        public static Boolean TryParse(String Text, out ClearMonitoringStatus ClearMonitoringStatus)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Accepted":
+                    ClearMonitoringStatus = ClearMonitoringStatus.Accepted;
+                    return true;
+
+                case "Rejected":
+                    ClearMonitoringStatus = ClearMonitoringStatus.Rejected;
+                    return true;
+
+                default:
+                    ClearMonitoringStatus = ClearMonitoringStatus.NotFound;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+
+        #region AsText(this ClearMonitoringStatus)
 
         public static String AsText(this ClearMonitoringStatus ClearMonitoringStatus)
 

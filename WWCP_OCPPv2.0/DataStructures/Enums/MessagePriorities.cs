@@ -60,32 +60,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out MessagePriority)
 
         /// <summary>
         /// Try to parse the given text as a display message priority.
         /// </summary>
         /// <param name="Text">A text representation of a display message priority.</param>
-        /// <param name="Priority">The parsed display message priority.</param>
-        public static Boolean TryParse(String Text, out MessagePriorities Priority)
+        /// <param name="MessagePriority">The parsed display message priority.</param>
+        public static Boolean TryParse(String Text, out MessagePriorities MessagePriority)
         {
             switch (Text.Trim())
             {
 
                 case "AlwaysFront":
-                    Priority = MessagePriorities.AlwaysFront;
+                    MessagePriority = MessagePriorities.AlwaysFront;
                     return true;
 
                 case "InFront":
-                    Priority = MessagePriorities.InFront;
+                    MessagePriority = MessagePriorities.InFront;
                     return true;
 
                 case "NormalCycle":
-                    Priority = MessagePriorities.NormalCycle;
+                    MessagePriority = MessagePriorities.NormalCycle;
                     return true;
 
                 default:
-                    Priority = MessagePriorities.Unknown;
+                    MessagePriority = MessagePriorities.Unknown;
                     return false;
 
             }
@@ -94,11 +94,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this MessagePriority)
 
-        public static String AsText(this MessagePriorities BootReason)
+        public static String AsText(this MessagePriorities MessagePriority)
 
-            => BootReason switch {
+            => MessagePriority switch {
                    MessagePriorities.AlwaysFront  => "AlwaysFront",
                    MessagePriorities.InFront      => "InFront",
                    MessagePriorities.NormalCycle  => "NormalCycle",

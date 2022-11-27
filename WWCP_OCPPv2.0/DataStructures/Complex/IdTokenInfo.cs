@@ -242,11 +242,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region AuthorizationStatus    [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "authorization status",
-                                       AuthorizationStatusExtentions.Parse,
-                                       out AuthorizationStatus AuthorizationStatus,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "authorization status",
+                                         AuthorizationStatusExtentions.TryParse,
+                                         out AuthorizationStatus AuthorizationStatus,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

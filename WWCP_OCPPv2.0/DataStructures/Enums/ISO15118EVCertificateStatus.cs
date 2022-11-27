@@ -24,37 +24,71 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class ISO15118EVCertificateStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as an ISO 15118 EV certificate status.
+        /// </summary>
+        /// <param name="Text">A text representation of an ISO 15118 EV certificate status.</param>
         public static ISO15118EVCertificateStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Accepted"  => ISO15118EVCertificateStatus.Accepted,
-                   "Failed"    => ISO15118EVCertificateStatus.Failed,
-                   _           => ISO15118EVCertificateStatus.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
 
-        public static Boolean TryParse(String Text, out ISO15118EVCertificateStatus Status)
+            return ISO15118EVCertificateStatus.Unknown;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as an ISO 15118 EV certificate status.
+        /// </summary>
+        /// <param name="Text">A text representation of an ISO 15118 EV certificate status.</param>
+        public static ISO15118EVCertificateStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ISO15118EVCertificateStatus)
+
+        /// <summary>
+        /// Try to parse the given text as an ISO 15118 EV certificate status.
+        /// </summary>
+        /// <param name="Text">A text representation of an ISO 15118 EV certificate status.</param>
+        /// <param name="ISO15118EVCertificateStatus">The parsed ISO 15118 EV certificate status.</param>
+        public static Boolean TryParse(String Text, out ISO15118EVCertificateStatus ISO15118EVCertificateStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = ISO15118EVCertificateStatus.Accepted;
+                    ISO15118EVCertificateStatus = ISO15118EVCertificateStatus.Accepted;
                     return true;
 
                 case "Failed":
-                    Status = ISO15118EVCertificateStatus.Failed;
+                    ISO15118EVCertificateStatus = ISO15118EVCertificateStatus.Failed;
                     return true;
 
                 default:
-                    Status = ISO15118EVCertificateStatus.Unknown;
+                    ISO15118EVCertificateStatus = ISO15118EVCertificateStatus.Unknown;
                     return false;
 
             }
         }
 
         #endregion
+
 
         #region AsText(this ISO15118EVCertificateStatus)
 

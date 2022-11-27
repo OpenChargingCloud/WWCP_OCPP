@@ -19,28 +19,84 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the data transfer status.
+    /// Extentions methods for data transfer status.
     /// </summary>
     public static class DataTransferStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as a data transfer status.
+        /// Parse the given text as a data transfer status.
         /// </summary>
-        /// <param name="Text">A string representation of a data transfer status.</param>
+        /// <param name="Text">A text representation of a data transfer status.</param>
         public static DataTransferStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Accepted"          => DataTransferStatus.Accepted,
-                   "Rejected"          => DataTransferStatus.Rejected,
-                   "UnknownMessageId"  => DataTransferStatus.UnknownMessageId,
-                   "UnknownVendorId"   => DataTransferStatus.UnknownVendorId,
-                   _                   => DataTransferStatus.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return DataTransferStatus.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a data transfer status.
+        /// </summary>
+        /// <param name="Text">A text representation of a data transfer status.</param>
+        public static DataTransferStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out DataTransferStatus)
+
+        /// <summary>
+        /// Try to parse the given text as a data transfer status.
+        /// </summary>
+        /// <param name="Text">A text representation of a data transfer status.</param>
+        /// <param name="DataTransferStatus">The parsed data transfer status.</param>
+        public static Boolean TryParse(String Text, out DataTransferStatus DataTransferStatus)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Accepted":
+                    DataTransferStatus = DataTransferStatus.Accepted;
+                    return true;
+
+                case "Rejected":
+                    DataTransferStatus = DataTransferStatus.Rejected;
+                    return true;
+
+                case "UnknownMessageId":
+                    DataTransferStatus = DataTransferStatus.UnknownMessageId;
+                    return true;
+
+                case "UnknownVendorId":
+                    DataTransferStatus = DataTransferStatus.UnknownVendorId;
+                    return true;
+
+                default:
+                    DataTransferStatus = DataTransferStatus.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this DataTransferStatus)
 
@@ -64,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Defines the result of a data transfer.
+    /// Data transfer status.
     /// </summary>
     public enum DataTransferStatus
     {

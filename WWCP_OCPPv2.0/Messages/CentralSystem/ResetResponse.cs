@@ -228,11 +228,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #region ResetStatus    [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "reset status",
-                                       ResetStatusExtentions.Parse,
-                                       out ResetStatus ResetStatus,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "reset status",
+                                         ResetStatusExtentions.TryParse,
+                                         out ResetStatus ResetStatus,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

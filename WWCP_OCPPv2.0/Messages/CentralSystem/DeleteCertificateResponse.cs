@@ -228,11 +228,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #region Status        [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "delete certificate status",
-                                       DeleteCertificateStatusExtentions.Parse,
-                                       out DeleteCertificateStatus Status,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "delete certificate status",
+                                         DeleteCertificateStatusExtentions.TryParse,
+                                         out DeleteCertificateStatus Status,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

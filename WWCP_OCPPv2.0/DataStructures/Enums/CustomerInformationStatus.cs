@@ -24,18 +24,75 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class CustomerInformationStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a customer information status.
+        /// </summary>
+        /// <param name="Text">A text representation of a customer information status.</param>
         public static CustomerInformationStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Accepted"  => CustomerInformationStatus.Accepted,
-                   "Rejected"  => CustomerInformationStatus.Rejected,
-                   "Invalid"   => CustomerInformationStatus.Invalid,
-                   _           => CustomerInformationStatus.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return CustomerInformationStatus.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a customer information status.
+        /// </summary>
+        /// <param name="Text">A text representation of a customer information status.</param>
+        public static CustomerInformationStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out CustomerInformationStatus)
+
+        /// <summary>
+        /// Try to parse the given text as a customer information status.
+        /// </summary>
+        /// <param name="Text">A text representation of a customer information status.</param>
+        /// <param name="CustomerInformationStatus">The parsed customer information status.</param>
+        public static Boolean TryParse(String Text, out CustomerInformationStatus CustomerInformationStatus)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Accepted":
+                    CustomerInformationStatus = CustomerInformationStatus.Accepted;
+                    return true;
+
+                case "Rejected":
+                    CustomerInformationStatus = CustomerInformationStatus.Rejected;
+                    return true;
+
+                case "Invalid":
+                    CustomerInformationStatus = CustomerInformationStatus.Rejected;
+                    return true;
+
+                default:
+                    CustomerInformationStatus = CustomerInformationStatus.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this CustomerInformationStatus)
 
@@ -53,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     }
 
     /// <summary>
-    /// The customer information status.
+    /// Customer information status.
     /// </summary>
     public enum CustomerInformationStatus
     {

@@ -119,6 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
     }
 
+
     /// <summary>
     /// The charging states.
     /// </summary>

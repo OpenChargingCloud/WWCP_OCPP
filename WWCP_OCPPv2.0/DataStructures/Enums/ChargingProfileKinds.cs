@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the charging profile kinds.
+    /// Extentions methods for charging profile kinds.
     /// </summary>
     public static class ChargingProfileKindsExtentions
     {
@@ -94,11 +94,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this ChargingProfileKindType)
+        #region AsText(this ChargingProfileKind)
 
-        public static String AsText(this ChargingProfileKinds ChargingProfileKindType)
+        public static String AsText(this ChargingProfileKinds ChargingProfileKind)
 
-            => ChargingProfileKindType switch {
+            => ChargingProfileKind switch {
                    ChargingProfileKinds.Absolute   => "Absolute",
                    ChargingProfileKinds.Recurring  => "Recurring",
                    ChargingProfileKinds.Relative   => "Relative",

@@ -19,34 +19,106 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extention methods for id token types.
+    /// Extention methods for identification token types.
     /// </summary>
     public static class IdTokenTypesExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as an identification token type.
+        /// </summary>
+        /// <param name="Text">A text representation of an identification token type.</param>
         public static IdTokenTypes Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Central"          => IdTokenTypes.Central,
-                   "eMAID"            => IdTokenTypes.eMAID,
-                   "ISO14443"         => IdTokenTypes.ISO14443,
-                   "ISO15693"         => IdTokenTypes.ISO15693,
-                   "KeyCode"          => IdTokenTypes.KeyCode,
-                   "Local"            => IdTokenTypes.Local,
-                   "MacAddress"       => IdTokenTypes.MacAddress,
-                   "NoAuthorization"  => IdTokenTypes.NoAuthorization,
-                   _                  => IdTokenTypes.Unknown
-               };
+            if (TryParse(Text, out var tokenType))
+                return tokenType;
+
+            return IdTokenTypes.Unknown;
+
+        }
 
         #endregion
 
-        #region AsText(this IdTokenTypes)
+        #region TryParse(Text)
 
-        public static String AsText(this IdTokenTypes IdTokenTypes)
+        /// <summary>
+        /// Try to parse the given text as an identification token type.
+        /// </summary>
+        /// <param name="Text">A text representation of an identification token type.</param>
+        public static IdTokenTypes? TryParse(String Text)
+        {
 
-            => IdTokenTypes switch {
+            if (TryParse(Text, out var tokenType))
+                return tokenType;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out IdTokenType)
+
+        /// <summary>
+        /// Try to parse the given text as an identification token type.
+        /// </summary>
+        /// <param name="Text">A text representation of an identification token type.</param>
+        /// <param name="IdTokenType">The parsed identification token type.</param>
+        public static Boolean TryParse(String Text, out IdTokenTypes IdTokenType)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Central":
+                    IdTokenType = IdTokenTypes.Central;
+                    return true;
+
+                case "eMAID":
+                    IdTokenType = IdTokenTypes.eMAID;
+                    return true;
+
+                case "ISO14443":
+                    IdTokenType = IdTokenTypes.ISO14443;
+                    return true;
+
+                case "ISO15693":
+                    IdTokenType = IdTokenTypes.ISO15693;
+                    return true;
+
+                case "KeyCode":
+                    IdTokenType = IdTokenTypes.KeyCode;
+                    return true;
+
+                case "Local":
+                    IdTokenType = IdTokenTypes.Local;
+                    return true;
+
+                case "MacAddress":
+                    IdTokenType = IdTokenTypes.MacAddress;
+                    return true;
+
+                case "NoAuthorization":
+                    IdTokenType = IdTokenTypes.NoAuthorization;
+                    return true;
+
+                default:
+                    IdTokenType = IdTokenTypes.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+
+        #region AsText(this IdTokenType)
+
+        public static String AsText(this IdTokenTypes IdTokenType)
+
+            => IdTokenType switch {
                    IdTokenTypes.Central          => "Central",
                    IdTokenTypes.eMAID            => "eMAID",
                    IdTokenTypes.ISO14443         => "ISO14443",
@@ -64,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Id token types.
+    /// Identification token types.
     /// </summary>
     public enum IdTokenTypes
     {
@@ -74,13 +146,44 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         Unknown,
 
+        /// <summary>
+        /// Central
+        /// </summary>
         Central,
+
+        /// <summary>
+        /// eMAID
+        /// </summary>
         eMAID,
+
+        /// <summary>
+        /// ISO14443
+        /// </summary>
         ISO14443,
+
+        /// <summary>
+        /// ISO15693
+        /// </summary>
         ISO15693,
+
+        /// <summary>
+        /// KeyCode
+        /// </summary>
         KeyCode,
+
+        /// <summary>
+        /// Local
+        /// </summary>
         Local,
+
+        /// <summary>
+        /// MacAddress
+        /// </summary>
         MacAddress,
+
+        /// <summary>
+        /// NoAuthorization
+        /// </summary>
         NoAuthorization
 
     }

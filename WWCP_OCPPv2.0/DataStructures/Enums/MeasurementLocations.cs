@@ -24,26 +24,89 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class MeasurementLocationsExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a measurement location.
+        /// </summary>
+        /// <param name="Text">A text representation of a measurement location.</param>
         public static MeasurementLocations Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Body"    => MeasurementLocations.Body,
-                   "Cable"   => MeasurementLocations.Cable,
-                   "EV"      => MeasurementLocations.EV,
-                   "Inlet"   => MeasurementLocations.Inlet,
-                   "Outlet"  => MeasurementLocations.Outlet,
-                   _         => MeasurementLocations.Unknown
-               };
+            if (TryParse(Text, out var location))
+                return location;
+
+            return MeasurementLocations.Unknown;
+
+        }
 
         #endregion
 
-        #region AsText(this MeasurementLocations)
+        #region TryParse(Text)
 
-        public static String AsText(this MeasurementLocations MeasurementLocations)
+        /// <summary>
+        /// Try to parse the given text as a measurement location.
+        /// </summary>
+        /// <param name="Text">A text representation of a measurement location.</param>
+        public static MeasurementLocations? TryParse(String Text)
+        {
 
-            => MeasurementLocations switch {
+            if (TryParse(Text, out var location))
+                return location;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out MeasurementLocation)
+
+        /// <summary>
+        /// Try to parse the given text as a measurement location.
+        /// </summary>
+        /// <param name="Text">A text representation of a measurement location.</param>
+        /// <param name="MeasurementLocation">The parsed measurement location.</param>
+        public static Boolean TryParse(String Text, out MeasurementLocations MeasurementLocation)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Body":
+                    MeasurementLocation = MeasurementLocations.Body;
+                    return true;
+
+                case "Cable":
+                    MeasurementLocation = MeasurementLocations.Cable;
+                    return true;
+
+                case "EV":
+                    MeasurementLocation = MeasurementLocations.EV;
+                    return true;
+
+                case "Inlet":
+                    MeasurementLocation = MeasurementLocations.Inlet;
+                    return true;
+
+                case "Outlet":
+                    MeasurementLocation = MeasurementLocations.Outlet;
+                    return true;
+
+                default:
+                    MeasurementLocation = MeasurementLocations.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+
+        #region AsText(this MeasurementLocation)
+
+        public static String AsText(this MeasurementLocations MeasurementLocation)
+
+            => MeasurementLocation switch {
                    MeasurementLocations.Body    => "Body",
                    MeasurementLocations.Cable   => "Cable",
                    MeasurementLocations.EV      => "EV",
@@ -56,8 +119,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
     }
 
+
     /// <summary>
-    /// The measurement locations.
+    /// Measurement locations.
     /// </summary>
     public enum MeasurementLocations
     {
@@ -67,10 +131,29 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         Unknown,
 
+        /// <summary>
+        /// Body
+        /// </summary>
         Body,
+
+        /// <summary>
+        /// Cable
+        /// </summary>
         Cable,
+
+        /// <summary>
+        /// EV
+        /// </summary>
         EV,
+
+        /// <summary>
+        /// Inlet
+        /// </summary>
         Inlet,
+
+        /// <summary>
+        /// Outlet
+        /// </summary>
         Outlet
 
     }

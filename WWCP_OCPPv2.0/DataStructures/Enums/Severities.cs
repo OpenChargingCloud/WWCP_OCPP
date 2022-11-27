@@ -60,60 +60,60 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out BootReason)
+        #region TryParse(Text, out Severity)
 
         /// <summary>
         /// Try to parse the given text as a severity.
         /// </summary>
         /// <param name="Text">A text representation of a severity.</param>
-        /// <param name="BootReason">The parsed severity.</param>
-        public static Boolean TryParse(String Text, out Severities BootReason)
+        /// <param name="Severity">The parsed severity.</param>
+        public static Boolean TryParse(String Text, out Severities Severity)
         {
             switch (Text.Trim())
             {
 
                 case "Danger":
-                    BootReason = Severities.Danger;
+                    Severity = Severities.Danger;
                     return true;
 
                 case "Hardware Failure":
-                    BootReason = Severities.HardwareFailure;
+                    Severity = Severities.HardwareFailure;
                     return true;
 
                 case "System Failure":
-                    BootReason = Severities.SystemFailure;
+                    Severity = Severities.SystemFailure;
                     return true;
 
                 case "Critical":
-                    BootReason = Severities.Critical;
+                    Severity = Severities.Critical;
                     return true;
 
                 case "Error":
-                    BootReason = Severities.Error;
+                    Severity = Severities.Error;
                     return true;
 
                 case "Alert":
-                    BootReason = Severities.Alert;
+                    Severity = Severities.Alert;
                     return true;
 
                 case "Warning":
-                    BootReason = Severities.Warning;
+                    Severity = Severities.Warning;
                     return true;
 
                 case "Notice":
-                    BootReason = Severities.Notice;
+                    Severity = Severities.Notice;
                     return true;
 
                 case "Informational":
-                    BootReason = Severities.Informational;
+                    Severity = Severities.Informational;
                     return true;
 
                 case "Debug":
-                    BootReason = Severities.Debug;
+                    Severity = Severities.Debug;
                     return true;
 
                 default:
-                    BootReason = Severities.Unknown;
+                    Severity = Severities.Unknown;
                     return false;
 
             }
@@ -122,11 +122,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this Severity)
 
-        public static String AsText(this Severities BootReason)
+        public static String AsText(this Severities Severity)
 
-            => BootReason switch {
+            => Severity switch {
                    Severities.Danger           => "Danger",
                    Severities.HardwareFailure  => "Hardware Failure",
                    Severities.SystemFailure    => "System Failure",

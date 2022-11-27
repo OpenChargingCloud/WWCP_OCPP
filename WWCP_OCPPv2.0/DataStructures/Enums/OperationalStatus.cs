@@ -19,22 +19,76 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the operational status.
+    /// Extentions methods for operational status.
     /// </summary>
     public static class OperationalStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as an operational status.
+        /// </summary>
+        /// <param name="Text">A text representation of an operational status.</param>
         public static OperationalStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Inoperative"  => OperationalStatus.Inoperative,
-                   "Operative"    => OperationalStatus.Operative,
-                   _              => OperationalStatus.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return OperationalStatus.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as an operational status.
+        /// </summary>
+        /// <param name="Text">A text representation of an operational status.</param>
+        public static OperationalStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out OperationalStatus)
+
+        /// <summary>
+        /// Try to parse the given text as an operational status.
+        /// </summary>
+        /// <param name="Text">A text representation of an operational status.</param>
+        /// <param name="OperationalStatus">The parsed operational status.</param>
+        public static Boolean TryParse(String Text, out OperationalStatus OperationalStatus)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Inoperative":
+                    OperationalStatus = OperationalStatus.Inoperative;
+                    return true;
+
+                case "Operative":
+                    OperationalStatus = OperationalStatus.Operative;
+                    return true;
+
+                default:
+                    OperationalStatus = OperationalStatus.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this OperationalStatus)
 

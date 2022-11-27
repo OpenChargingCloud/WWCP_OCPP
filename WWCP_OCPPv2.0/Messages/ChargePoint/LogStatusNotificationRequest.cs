@@ -236,11 +236,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #region Status          [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "status",
-                                       UploadLogStatusExtentions.Parse,
-                                       out UploadLogStatus Status,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "status",
+                                         UploadLogStatusExtentions.TryParse,
+                                         out UploadLogStatus Status,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

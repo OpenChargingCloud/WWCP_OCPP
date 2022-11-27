@@ -177,11 +177,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region Status        [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "clear variable monitor status",
-                                       ClearMonitoringStatusExtentions.Parse,
-                                       out ClearMonitoringStatus Status,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "clear variable monitor status",
+                                         ClearMonitoringStatusExtentions.TryParse,
+                                         out ClearMonitoringStatus Status,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

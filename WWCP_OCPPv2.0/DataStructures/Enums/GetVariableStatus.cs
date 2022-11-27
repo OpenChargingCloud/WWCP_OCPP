@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the get variable status.
+    /// Extentions methods for get variable status.
     /// </summary>
     public static class GetVariableStatusExtentions
     {
@@ -60,40 +60,40 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out GetVariableStatus)
 
         /// <summary>
         /// Try to parse the given text as a get variable status.
         /// </summary>
         /// <param name="Text">A text representation of a get variable status.</param>
-        /// <param name="Status">The parsed get variable status.</param>
-        public static Boolean TryParse(String Text, out GetVariableStatus Status)
+        /// <param name="GetVariableStatus">The parsed get variable status.</param>
+        public static Boolean TryParse(String Text, out GetVariableStatus GetVariableStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = GetVariableStatus.Accepted;
+                    GetVariableStatus = GetVariableStatus.Accepted;
                     return true;
 
                 case "Rejected":
-                    Status = GetVariableStatus.Rejected;
+                    GetVariableStatus = GetVariableStatus.Rejected;
                     return true;
 
                 case "UnknownComponent":
-                    Status = GetVariableStatus.UnknownComponent;
+                    GetVariableStatus = GetVariableStatus.UnknownComponent;
                     return true;
 
                 case "UnknownVariable":
-                    Status = GetVariableStatus.UnknownVariable;
+                    GetVariableStatus = GetVariableStatus.UnknownVariable;
                     return true;
 
                 case "NotSupportedAttributeType":
-                    Status = GetVariableStatus.NotSupportedAttributeType;
+                    GetVariableStatus = GetVariableStatus.NotSupportedAttributeType;
                     return true;
 
                 default:
-                    Status = GetVariableStatus.Unknown;
+                    GetVariableStatus = GetVariableStatus.Unknown;
                     return false;
 
             }
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// The get variable status.
+    /// Get variable status.
     /// </summary>
     public enum GetVariableStatus
     {

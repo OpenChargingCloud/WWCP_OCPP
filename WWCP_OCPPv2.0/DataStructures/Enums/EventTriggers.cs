@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Boot triggers.
+    /// Event triggers.
     /// </summary>
     public enum EventTriggers
     {

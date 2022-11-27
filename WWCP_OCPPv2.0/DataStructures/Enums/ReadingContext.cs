@@ -24,28 +24,101 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class ReadingContextsExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a reading context.
+        /// </summary>
+        /// <param name="Text">A text representation of a reading context.</param>
         public static ReadingContexts Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Interruption.Begin"  => ReadingContexts.InterruptionBegin,
-                   "Interruption.End"    => ReadingContexts.InterruptionEnd,
-                   "Other"               => ReadingContexts.Other,
-                   "Sample.Clock"        => ReadingContexts.SampleClock,
-                   "Transaction.Begin"   => ReadingContexts.TransactionBegin,
-                   "Transaction.End"     => ReadingContexts.TransactionEnd,
-                   "Trigger"             => ReadingContexts.Trigger,
-                   _                     => ReadingContexts.SamplePeriodic
-               };
+            if (TryParse(Text, out var context))
+                return context;
+
+            return ReadingContexts.Unknown;
+
+        }
 
         #endregion
 
-        #region AsText(this ReadingContexts)
+        #region TryParse(Text)
 
-        public static String AsText(this ReadingContexts ReadingContexts)
+        /// <summary>
+        /// Try to parse the given text as a reading context.
+        /// </summary>
+        /// <param name="Text">A text representation of a reading context.</param>
+        public static ReadingContexts? TryParse(String Text)
+        {
 
-            => ReadingContexts switch {
+            if (TryParse(Text, out var context))
+                return context;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ReadingContext)
+
+        /// <summary>
+        /// Try to parse the given text as a reading context.
+        /// </summary>
+        /// <param name="Text">A text representation of a reading context.</param>
+        /// <param name="ReadingContext">The parsed reading context.</param>
+        public static Boolean TryParse(String Text, out ReadingContexts ReadingContext)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Interruption.Begin":
+                    ReadingContext = ReadingContexts.InterruptionBegin;
+                    return true;
+
+                case "Interruption.End":
+                    ReadingContext = ReadingContexts.InterruptionEnd;
+                    return true;
+
+                case "Other":
+                    ReadingContext = ReadingContexts.Other;
+                    return true;
+
+                case "Sample.Clock":
+                    ReadingContext = ReadingContexts.SampleClock;
+                    return true;
+
+                case "Transaction.Begin":
+                    ReadingContext = ReadingContexts.TransactionBegin;
+                    return true;
+
+                case "Transaction.End":
+                    ReadingContext = ReadingContexts.TransactionEnd;
+                    return true;
+
+                case "Trigger":
+                    ReadingContext = ReadingContexts.Trigger;
+                    return true;
+
+                case "Sample.Periodic":
+                    ReadingContext = ReadingContexts.SamplePeriodic;
+                    return true;
+
+                default:
+                    ReadingContext = ReadingContexts.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+
+        #region AsText(this ReadingContext)
+
+        public static String AsText(this ReadingContexts ReadingContext)
+
+            => ReadingContext switch {
                    ReadingContexts.InterruptionBegin  => "Interruption.Begin",
                    ReadingContexts.InterruptionEnd    => "Interruption.End",
                    ReadingContexts.Other              => "Other",
@@ -53,8 +126,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    ReadingContexts.TransactionBegin   => "Transaction.Begin",
                    ReadingContexts.TransactionEnd     => "Transaction.End",
                    ReadingContexts.Trigger            => "Trigger",
-                   _                                  => "Sample.Periodic"
-               };
+                   ReadingContexts.SamplePeriodic     => "Sample.Periodic",
+                   _                                  => "Unknown"
+            };
 
         #endregion
 
@@ -62,10 +136,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// The values of the context field of a value in SampledValue.
+    /// Reading contexts.
     /// </summary>
     public enum ReadingContexts
     {
+
+        /// <summary>
+        /// Unknown reading context.
+        /// </summary>
+        Unknown,
 
         /// <summary>
         /// Value taken at start of interruption.

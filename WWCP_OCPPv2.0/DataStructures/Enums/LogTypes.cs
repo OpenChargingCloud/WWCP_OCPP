@@ -60,28 +60,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Type)
+        #region TryParse(Text, out LogType)
 
         /// <summary>
         /// Try to parse the given text as a log type.
         /// </summary>
         /// <param name="Text">A text representation of a log type.</param>
-        /// <param name="Type">The parsed log type.</param>
-        public static Boolean TryParse(String Text, out LogTypes Type)
+        /// <param name="LogType">The parsed log type.</param>
+        public static Boolean TryParse(String Text, out LogTypes LogType)
         {
             switch (Text.Trim())
             {
 
                 case "DiagnosticsLog":
-                    Type = LogTypes.DiagnosticsLog;
+                    LogType = LogTypes.DiagnosticsLog;
                     return true;
 
                 case "SecurityLog":
-                    Type = LogTypes.SecurityLog;
+                    LogType = LogTypes.SecurityLog;
                     return true;
 
                 default:
-                    Type = LogTypes.Unknown;
+                    LogType = LogTypes.Unknown;
                     return false;
 
             }

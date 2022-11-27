@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the generic status.
+    /// Extentions methods for generic message response status.
     /// </summary>
     public static class GenericStatusExtentions
     {
@@ -60,28 +60,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out GenericStatus)
 
         /// <summary>
         /// Try to parse the given text as a generic status.
         /// </summary>
         /// <param name="Text">A text representation of a generic status.</param>
-        /// <param name="Status">The parsed generic status.</param>
-        public static Boolean TryParse(String Text, out GenericStatus Status)
+        /// <param name="GenericStatus">The parsed generic status.</param>
+        public static Boolean TryParse(String Text, out GenericStatus GenericStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = GenericStatus.Accepted;
+                    GenericStatus = GenericStatus.Accepted;
                     return true;
 
                 case "Rejected":
-                    Status = GenericStatus.Rejected;
+                    GenericStatus = GenericStatus.Rejected;
                     return true;
 
                 default:
-                    Status = GenericStatus.Unknown;
+                    GenericStatus = GenericStatus.Unknown;
                     return false;
 
             }

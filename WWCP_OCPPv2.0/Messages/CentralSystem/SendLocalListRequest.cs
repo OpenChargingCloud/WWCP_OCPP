@@ -466,11 +466,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region UpdateType                [mandatory]
 
-                if (!JSON.MapMandatory("updateType",
-                                       "update type",
-                                       UpdateTypesExtentions.Parse,
-                                       out UpdateTypes UpdateType,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("updateType",
+                                         "update type",
+                                         UpdateTypesExtentions.TryParse,
+                                         out UpdateTypes UpdateType,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

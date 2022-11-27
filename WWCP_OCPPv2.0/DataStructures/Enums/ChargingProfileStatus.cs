@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the charging profile status.
+    /// Extentions methods for charging profile status.
     /// </summary>
     public static class ChargingProfileStatusExtentions
     {
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Defines the charging-profile-status-values.
+    /// Charging profile status.
     /// </summary>
     public enum ChargingProfileStatus
     {

@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this EventNotificationType)
 
         public static String AsText(this EventNotificationTypes EventNotificationType)
 
@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Boot types.
+    /// Event notification types.
     /// </summary>
     public enum EventNotificationTypes
     {

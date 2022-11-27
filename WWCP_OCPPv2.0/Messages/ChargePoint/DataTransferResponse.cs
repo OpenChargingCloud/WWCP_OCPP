@@ -245,11 +245,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region DataTransferStatus    [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "data transfer status",
-                                       DataTransferStatusExtentions.Parse,
-                                       out DataTransferStatus DataTransferStatus,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "data transfer status",
+                                         DataTransferStatusExtentions.TryParse,
+                                         out DataTransferStatus DataTransferStatus,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

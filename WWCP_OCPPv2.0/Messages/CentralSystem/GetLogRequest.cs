@@ -301,11 +301,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region LogType         [mandatory]
 
-                if (!JSON.MapMandatory("logType",
-                                       "log type",
-                                       LogTypesExtentions.Parse,
-                                       out LogTypes LogType,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("logType",
+                                         "log type",
+                                         LogTypesExtentions.TryParse,
+                                         out LogTypes LogType,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

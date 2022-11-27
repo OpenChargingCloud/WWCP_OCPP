@@ -98,11 +98,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this EnergyTransferMode)
 
-        public static String AsText(this EnergyTransferModes BootReason)
+        public static String AsText(this EnergyTransferModes EnergyTransferMode)
 
-            => BootReason switch {
+            => EnergyTransferMode switch {
                    EnergyTransferModes.DC               => "ApplicationReset",
                    EnergyTransferModes.AC_SinglePhase  => "AC_single_phase",
                    EnergyTransferModes.AC_TwoPhases     => "AC_two_phase",

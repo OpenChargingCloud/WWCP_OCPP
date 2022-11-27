@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the upload log status.
+    /// Extentions methods for upload log status.
     /// </summary>
     public static class UploadLogStatusExtentions
     {
@@ -60,52 +60,52 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out UploadLogStatus)
 
         /// <summary>
         /// Try to parse the given text as an upload log status.
         /// </summary>
         /// <param name="Text">A text representation of an upload log status.</param>
-        /// <param name="Status">The parsed upload log status.</param>
-        public static Boolean TryParse(String Text, out UploadLogStatus Status)
+        /// <param name="UploadLogStatus">The parsed upload log status.</param>
+        public static Boolean TryParse(String Text, out UploadLogStatus UploadLogStatus)
         {
             switch (Text.Trim())
             {
 
                 case "BadMessage":
-                    Status = UploadLogStatus.BadMessage;
+                    UploadLogStatus = UploadLogStatus.BadMessage;
                     return true;
 
                 case "Idle":
-                    Status = UploadLogStatus.Idle;
+                    UploadLogStatus = UploadLogStatus.Idle;
                     return true;
 
                 case "NotSupportedOperation":
-                    Status = UploadLogStatus.NotSupportedOperation;
+                    UploadLogStatus = UploadLogStatus.NotSupportedOperation;
                     return true;
 
                 case "PermissionDenied":
-                    Status = UploadLogStatus.PermissionDenied;
+                    UploadLogStatus = UploadLogStatus.PermissionDenied;
                     return true;
 
                 case "Uploaded":
-                    Status = UploadLogStatus.Uploaded;
+                    UploadLogStatus = UploadLogStatus.Uploaded;
                     return true;
 
                 case "UploadFailure":
-                    Status = UploadLogStatus.UploadFailure;
+                    UploadLogStatus = UploadLogStatus.UploadFailure;
                     return true;
 
                 case "Uploading":
-                    Status = UploadLogStatus.Uploading;
+                    UploadLogStatus = UploadLogStatus.Uploading;
                     return true;
 
                 case "AcceptedCanceled":
-                    Status = UploadLogStatus.AcceptedCanceled;
+                    UploadLogStatus = UploadLogStatus.AcceptedCanceled;
                     return true;
 
                 default:
-                    Status = UploadLogStatus.Unknown;
+                    UploadLogStatus = UploadLogStatus.Unknown;
                     return false;
 
             }
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// The status in a response to a log status notification request.
+    /// Upload log status.
     /// </summary>
     public enum UploadLogStatus
     {

@@ -235,11 +235,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region CertificateType      [mandatory]
 
-                if (!JSON.MapMandatory("certificateType",
-                                       "certificate type",
-                                       CertificateUseExtentions.Parse,
-                                       out CertificateUse CertificateType,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("certificateType",
+                                         "certificate type",
+                                         CertificateUseExtentions.TryParse,
+                                         out CertificateUse CertificateType,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

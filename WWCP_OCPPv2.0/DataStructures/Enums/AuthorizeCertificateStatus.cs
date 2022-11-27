@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the authorize certificate status.
+    /// Extentions methods for authorize certificate status.
     /// </summary>
     public static class AuthorizeCertificateStatusExtentions
     {
@@ -60,48 +60,48 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out AuthorizeCertificateStatus)
 
         /// <summary>
         /// Try to parse the given text as an authorize certificate status.
         /// </summary>
         /// <param name="Text">A text representation of an authorize certificate status.</param>
-        /// <param name="Status">The parsed authorize certificate status.</param>
-        public static Boolean TryParse(String Text, out AuthorizeCertificateStatus Status)
+        /// <param name="AuthorizeCertificateStatus">The parsed authorize certificate status.</param>
+        public static Boolean TryParse(String Text, out AuthorizeCertificateStatus AuthorizeCertificateStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = AuthorizeCertificateStatus.Accepted;
+                    AuthorizeCertificateStatus = AuthorizeCertificateStatus.Accepted;
                     return true;
 
                 case "SignatureError":
-                    Status = AuthorizeCertificateStatus.SignatureError;
+                    AuthorizeCertificateStatus = AuthorizeCertificateStatus.SignatureError;
                     return true;
 
                 case "CertificateExpired":
-                    Status = AuthorizeCertificateStatus.CertificateExpired;
+                    AuthorizeCertificateStatus = AuthorizeCertificateStatus.CertificateExpired;
                     return true;
 
                 case "CertificateRevoked":
-                    Status = AuthorizeCertificateStatus.CertificateRevoked;
+                    AuthorizeCertificateStatus = AuthorizeCertificateStatus.CertificateRevoked;
                     return true;
 
                 case "NoCertificateAvailable":
-                    Status = AuthorizeCertificateStatus.NoCertificateAvailable;
+                    AuthorizeCertificateStatus = AuthorizeCertificateStatus.NoCertificateAvailable;
                     return true;
 
                 case "AcceCertChainErrorpted":
-                    Status = AuthorizeCertificateStatus.CertChainError;
+                    AuthorizeCertificateStatus = AuthorizeCertificateStatus.CertChainError;
                     return true;
 
                 case "ContractCancelled":
-                    Status = AuthorizeCertificateStatus.ContractCancelled;
+                    AuthorizeCertificateStatus = AuthorizeCertificateStatus.ContractCancelled;
                     return true;
 
                 default:
-                    Status = AuthorizeCertificateStatus.Unknown;
+                    AuthorizeCertificateStatus = AuthorizeCertificateStatus.Unknown;
                     return false;
 
             }
@@ -129,8 +129,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
     }
 
+
     /// <summary>
-    /// The status in a response to an authorize certificate request.
+    /// Authorize certificate status.
     /// </summary>
     public enum AuthorizeCertificateStatus
     {

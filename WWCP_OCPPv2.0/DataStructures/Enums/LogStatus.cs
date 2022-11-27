@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the get log status.
+    /// Extentions methods for get log status.
     /// </summary>
     public static class LogStatusExtentions
     {
@@ -60,32 +60,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out LogStatus)
 
         /// <summary>
         /// Try to parse the given text as a log status.
         /// </summary>
         /// <param name="Text">A text representation of a log status.</param>
-        /// <param name="Status">The parsed log status.</param>
-        public static Boolean TryParse(String Text, out LogStatus Status)
+        /// <param name="LogStatus">The parsed log status.</param>
+        public static Boolean TryParse(String Text, out LogStatus LogStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    Status = LogStatus.Accepted;
+                    LogStatus = LogStatus.Accepted;
                     return true;
 
                 case "Rejected":
-                    Status = LogStatus.Rejected;
+                    LogStatus = LogStatus.Rejected;
                     return true;
 
                 case "AcceptedCanceled":
-                    Status = LogStatus.AcceptedCanceled;
+                    LogStatus = LogStatus.AcceptedCanceled;
                     return true;
 
                 default:
-                    Status = LogStatus.Unknown;
+                    LogStatus = LogStatus.Unknown;
                     return false;
 
             }
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// The status in a response to a get log request.
+    /// Get log status.
     /// </summary>
     public enum LogStatus
     {

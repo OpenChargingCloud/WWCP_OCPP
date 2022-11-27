@@ -252,11 +252,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region OperationalStatus    [mandatory]
 
-                if (!JSON.MapMandatory("operationalStatus",
-                                       "operational status",
-                                       OperationalStatusExtentions.Parse,
-                                       out OperationalStatus OperationalStatus,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("operationalStatus",
+                                         "operational status",
+                                         OperationalStatusExtentions.TryParse,
+                                         out OperationalStatus OperationalStatus,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

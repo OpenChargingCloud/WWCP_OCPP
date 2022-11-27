@@ -198,11 +198,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region Type               [mandatory]
 
-                if (!JSON.MapMandatory("type",
-                                       "type",
-                                       IdTokenTypesExtentions.Parse,
-                                       out IdTokenTypes Type,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("type",
+                                         "type",
+                                         IdTokenTypesExtentions.TryParse,
+                                         out IdTokenTypes Type,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

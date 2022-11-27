@@ -19,30 +19,108 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extention methods for the phases.
+    /// Extention methods for electrical phases.
     /// </summary>
     public static class PhasesExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as an electrical phase.
+        /// </summary>
+        /// <param name="Text">A text representation of an electrical phase.</param>
         public static Phases Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "L1"     => Phases.L1,
-                   "L2"     => Phases.L2,
-                   "L3"     => Phases.L3,
-                   "N"      => Phases.N,
-                   "L1-N"   => Phases.L1_N,
-                   "L2-N"   => Phases.L2_N,
-                   "L3-N"   => Phases.L3_N,
-                   "L1-L2"  => Phases.L1_L2,
-                   "L2-L3"  => Phases.L2_L3,
-                   "L3-L1"  => Phases.L3_L1,
-                   _        => Phases.Unknown
-               };
+            if (TryParse(Text, out var phase))
+                return phase;
+
+            return Phases.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as an electrical phase.
+        /// </summary>
+        /// <param name="Text">A text representation of an electrical phase.</param>
+        public static Phases? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var phase))
+                return phase;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out Phase)
+
+        /// <summary>
+        /// Try to parse the given text as an electrical phase.
+        /// </summary>
+        /// <param name="Text">A text representation of an electrical phase.</param>
+        /// <param name="Phase">The parsed electrical phase.</param>
+        public static Boolean TryParse(String Text, out Phases Phase)
+        {
+            switch (Text.Trim())
+            {
+
+                case "L1":
+                    Phase = Phases.L1;
+                    return true;
+
+                case "L2":
+                    Phase = Phases.L2;
+                    return true;
+
+                case "L3":
+                    Phase = Phases.L3;
+                    return true;
+
+                case "N":
+                    Phase = Phases.N;
+                    return true;
+
+                case "L1-N":
+                    Phase = Phases.L1_N;
+                    return true;
+
+                case "L2-N":
+                    Phase = Phases.L2_N;
+                    return true;
+
+                case "L3-N":
+                    Phase = Phases.L3_N;
+                    return true;
+
+                case "L1-L2":
+                    Phase = Phases.L1_L2;
+                    return true;
+
+                case "L2-L3":
+                    Phase = Phases.L2_L3;
+                    return true;
+
+                case "L3-L1":
+                    Phase = Phases.L3_L1;
+                    return true;
+
+                default:
+                    Phase = Phases.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this Phase)
 
@@ -68,9 +146,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Phase as used in SampledValue. Phase specifies how a measured value
-    /// is to be interpreted. Please note that not all values of Phase are
-    /// applicable to all Measurands.
+    /// Electrical phases as used in SampledValue.
+    /// Phase specifies how a measured value is to be interpreted.
+    /// Please note that not all given values are applicable to all measurands.
     /// </summary>
     public enum Phases
     {

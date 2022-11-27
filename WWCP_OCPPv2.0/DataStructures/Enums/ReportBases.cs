@@ -24,36 +24,68 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class ReportBasesExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a report base.
+        /// </summary>
+        /// <param name="Text">A text representation of a report base.</param>
         public static ReportBases Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "ConfigurationInventory"  => ReportBases.ConfigurationInventory,
-                   "FullInventory"           => ReportBases.FullInventory,
-                   "SummaryInventory"        => ReportBases.SummaryInventory,
-                   _                         => ReportBases.Unknown
-               };
+            if (TryParse(Text, out var reportBase))
+                return reportBase;
 
-        public static Boolean TryParse(String Text, out ReportBases Action)
+            return ReportBases.Unknown;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a report base.
+        /// </summary>
+        /// <param name="Text">A text representation of a report base.</param>
+        public static ReportBases? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var reportBase))
+                return reportBase;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ReportBase)
+
+        /// <summary>
+        /// Try to parse the given text as a report base.
+        /// </summary>
+        /// <param name="Text">A text representation of a report base.</param>
+        /// <param name="ReportBase">The parsed report base.</param>
+        public static Boolean TryParse(String Text, out ReportBases ReportBase)
         {
             switch (Text.Trim())
             {
 
                 case "ConfigurationInventory":
-                    Action = ReportBases.ConfigurationInventory;
+                    ReportBase = ReportBases.ConfigurationInventory;
                     return true;
 
                 case "FullInventory":
-                    Action = ReportBases.FullInventory;
+                    ReportBase = ReportBases.FullInventory;
                     return true;
 
                 case "SummaryInventory":
-                    Action = ReportBases.SummaryInventory;
+                    ReportBase = ReportBases.SummaryInventory;
                     return true;
 
                 default:
-                    Action = ReportBases.Unknown;
+                    ReportBase = ReportBases.Unknown;
                     return false;
 
             }
@@ -61,11 +93,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region AsText(this ReportBases)
 
-        public static String AsText(this ReportBases ReportBases)
+        #region AsText(this ReportBase)
 
-            => ReportBases switch {
+        public static String AsText(this ReportBases ReportBase)
+
+            => ReportBase switch {
                    ReportBases.ConfigurationInventory  => "ConfigurationInventory",
                    ReportBases.FullInventory           => "FullInventory",
                    ReportBases.SummaryInventory        => "SummaryInventory",
@@ -76,8 +109,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
     }
 
+
     /// <summary>
-    /// A report base.
+    /// Report bases.
     /// </summary>
     public enum ReportBases
     {

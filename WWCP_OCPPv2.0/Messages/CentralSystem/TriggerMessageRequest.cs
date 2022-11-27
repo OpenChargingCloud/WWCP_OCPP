@@ -259,11 +259,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region MessageTriggers    [mandatory]
 
-                if (!JSON.MapMandatory("requestedMessage",
-                                       "requested message",
-                                       MessageTriggersExtentions.Parse,
-                                       out MessageTriggers MessageTriggers,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("requestedMessage",
+                                         "requested message",
+                                         MessageTriggersExtentions.TryParse,
+                                         out MessageTriggers MessageTriggers,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

@@ -293,11 +293,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #region Reason             [mandatory]
 
-                if (!JSON.MapMandatory("reason",
-                                       "boot reason",
-                                       BootReasonsExtentions.Parse,
-                                       out BootReasons Reason,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("reason",
+                                         "boot reason",
+                                         BootReasonsExtentions.TryParse,
+                                         out BootReasons Reason,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

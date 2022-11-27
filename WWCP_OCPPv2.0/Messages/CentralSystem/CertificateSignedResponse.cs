@@ -227,11 +227,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #region Status        [mandatory]
 
-                if (!JSON.MapMandatory("status",
-                                       "certificate signed status",
-                                       CertificateSignedStatusExtentions.Parse,
-                                       out CertificateSignedStatus Status,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("status",
+                                         "certificate signed status",
+                                         CertificateSignedStatusExtentions.TryParse,
+                                         out CertificateSignedStatus Status,
+                                         out ErrorResponse))
                 {
                     return false;
                 }

@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Boot statuss.
+    /// Set variable status.
     /// </summary>
     public enum SetVariableStatus
     {

@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for the certificate signing use.
+    /// Extentions methods for certificate signing uses.
     /// </summary>
     public static class CertificateSigningUseExtentions
     {
@@ -104,8 +104,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
     }
 
+
     /// <summary>
-    /// The signing use of a certificate.
+    /// Certificate signing uses.
     /// </summary>
     public enum CertificateSigningUse
     {

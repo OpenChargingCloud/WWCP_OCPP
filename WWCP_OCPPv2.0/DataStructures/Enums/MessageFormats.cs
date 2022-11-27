@@ -24,25 +24,85 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class MessageFormatsExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a message format.
+        /// </summary>
+        /// <param name="Text">A text representation of a message format.</param>
         public static MessageFormats Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "ASCII"  => MessageFormats.ASCII,
-                   "HTML"   => MessageFormats.HTML,
-                   "URI"    => MessageFormats.URI,
-                   "UTF8"   => MessageFormats.UTF8,
-                   _        => MessageFormats.Unknown
-               };
+            if (TryParse(Text, out var format))
+                return format;
+
+            return MessageFormats.Unknown;
+
+        }
 
         #endregion
 
-        #region AsText(this MessageFormats)
+        #region TryParse(Text)
 
-        public static String AsText(this MessageFormats MessageFormats)
+        /// <summary>
+        /// Try to parse the given text as a message format.
+        /// </summary>
+        /// <param name="Text">A text representation of a message format.</param>
+        public static MessageFormats? TryParse(String Text)
+        {
 
-            => MessageFormats switch {
+            if (TryParse(Text, out var format))
+                return format;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out MessageFormat)
+
+        /// <summary>
+        /// Try to parse the given text as a message format.
+        /// </summary>
+        /// <param name="Text">A text representation of a message format.</param>
+        /// <param name="MessageFormats">The parsed message format.</param>
+        public static Boolean TryParse(String Text, out MessageFormats MessageFormat)
+        {
+            switch (Text.Trim())
+            {
+
+                case "ASCII":
+                    MessageFormat = MessageFormats.ASCII;
+                    return true;
+
+                case "HTML":
+                    MessageFormat = MessageFormats.HTML;
+                    return true;
+
+                case "URI":
+                    MessageFormat = MessageFormats.URI;
+                    return true;
+
+                case "UTF8":
+                    MessageFormat = MessageFormats.UTF8;
+                    return true;
+
+                default:
+                    MessageFormat = MessageFormats.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+
+        #region AsText(this MessageFormat)
+
+        public static String AsText(this MessageFormats MessageFormat)
+
+            => MessageFormat switch {
                    MessageFormats.ASCII  => "ASCII",
                    MessageFormats.HTML   => "HTML",
                    MessageFormats.URI    => "URI",
@@ -53,6 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
     }
+
 
     /// <summary>
     /// Message formats.
@@ -65,9 +126,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         Unknown,
 
+        /// <summary>
+        /// ASCII
+        /// </summary>
         ASCII,
+
+        /// <summary>
+        /// HTML
+        /// </summary>
         HTML,
+
+        /// <summary>
+        /// URL/URI
+        /// </summary>
         URI,
+
+        /// <summary>
+        /// UTF8
+        /// </summary>
         UTF8
 
     }

@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this Phase)
+        #region AsText(this DataType)
 
         public static String AsText(this DataTypes DataType)
 
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Cost kinds.
+    /// Data types.
     /// </summary>
     public enum DataTypes
     {
