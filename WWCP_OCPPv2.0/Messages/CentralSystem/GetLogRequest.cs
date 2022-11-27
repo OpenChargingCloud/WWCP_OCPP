@@ -434,7 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetLogRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        /// <param name="CustomGetLogRequestSerializer">A delegate to serialize custom get log requests.</param>
         /// <param name="CustomLogParametersSerializer">A delegate to serialize custom log parameters.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetLogRequest>?  CustomGetLogRequestSerializer   = null,

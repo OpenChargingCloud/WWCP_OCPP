@@ -483,8 +483,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="CustomNotifyDisplayMessagesRequestSerializer">A delegate to serialize custom NotifyDisplayMessages requests.</param>
         /// <param name="CustomMessageInfoSerializer">A delegate to serialize custom MessageInfo objects.</param>
         /// <param name="CustomMessageContentSerializer">A delegate to serialize custom MessageContent objects.</param>
-        /// <param name="CustomComponentSerializer">A delegate to serialize custom Component objects.</param>
-        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSE objects.</param>
+        /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyDisplayMessagesRequest>?  CustomNotifyDisplayMessagesRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<MessageInfo>?                   CustomMessageInfoSerializer                    = null,

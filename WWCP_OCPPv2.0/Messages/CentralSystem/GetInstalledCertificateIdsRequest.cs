@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetInstalledCertificateIdsRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        /// <param name="CustomGetInstalledCertificateIdsRequestSerializer">A delegate to serialize custom get installed certificate ids requests.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?  CustomGetInstalledCertificateIdsRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                         CustomCustomDataSerializer                          = null)

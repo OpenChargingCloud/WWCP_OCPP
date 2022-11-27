@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="CustomMonitoringDataSerializer">A delegate to serialize custom monitoring data objects.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom component objects.</param>
-        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSE objects.</param>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomVariableSerializer">A delegate to serialize custom variable objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<MonitoringData>?  CustomMonitoringDataSerializer   = null,

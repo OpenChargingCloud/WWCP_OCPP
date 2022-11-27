@@ -20,48 +20,43 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_0.CP
+namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// A get variable result.
+    /// The result of a set variable request.
     /// </summary>
-    public class GetVariableResult : ACustomData,
-                                     IEquatable<GetVariableResult>
+    public class SetVariableResult : ACustomData,
+                                     IEquatable<SetVariableResult>
     {
 
         #region Properties
 
         /// <summary>
-        /// The result status.
+        /// The status of the set variable request.
         /// </summary>
         [Mandatory]
-        public GetVariableStatus  AttributeStatus        { get; }
+        public SetVariableStatus  Status                  { get; }
 
         /// <summary>
-        /// The component for which the variable was requested.
+        /// The component for which the variable monitor is created or updated.
         /// </summary>
         [Mandatory]
-        public Component          Component              { get; }
+        public Component          Component               { get; }
 
         /// <summary>
-        /// The variable for which the variable was requested.
+        /// The variable for which the variable monitor is created or updated.
         /// </summary>
         [Mandatory]
-        public Variable           Variable               { get; }
+        public Variable           Variable                { get; }
 
         /// <summary>
-        /// The optional response value.
-        /// [max 2500]
-        /// </summary>
-        [Optional]
-        public String?            AttributeValue         { get; }
-
-        /// <summary>
-        /// The optional attribute type.
+        /// The optional type of the attribute: Actual, Target, MinSet, MaxSet.
+        /// [Default: actual]
         /// </summary>
         [Optional]
         public AttributeTypes?    AttributeType          { get; }
@@ -77,19 +72,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get variable result.
+        /// Create a new set variable result.
         /// </summary>
-        /// <param name="AttributeStatus">The result status.</param>
-        /// <param name="Component">The component for which the variable was requested.</param>
-        /// <param name="Variable">The variable for which the variable was requested.</param>
-        /// <param name="AttributeValue">An optional response value [max 2500].</param>
-        /// <param name="AttributeType">An optional attribute type.</param>
-        /// <param name="AttributeStatusInfo">Optional detailed attribute status information.</param>
-        /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
-        public GetVariableResult(GetVariableStatus  AttributeStatus,
+        /// <param name="Status">The result status of the set variable request.</param>
+        /// <param name="Component">The component for which the variable monitor is created or updated.</param>
+        /// <param name="Variable">The variable for which the variable monitor is created or updated.</param>
+        /// <param name="AttributeType">The optional type of the attribute: Actual, Target, MinSet, MaxSet [Default: actual]</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public SetVariableResult(SetVariableStatus  Status,
                                  Component          Component,
                                  Variable           Variable,
-                                 String?            AttributeValue        = null,
                                  AttributeTypes?    AttributeType         = null,
                                  StatusInfo?        AttributeStatusInfo   = null,
                                  CustomData?        CustomData            = null)
@@ -98,10 +90,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         {
 
-            this.AttributeStatus      = AttributeStatus;
+            this.Status               = Status;
             this.Component            = Component;
             this.Variable             = Variable;
-            this.AttributeValue       = AttributeValue;
             this.AttributeType        = AttributeType;
             this.AttributeStatusInfo  = AttributeStatusInfo;
 
@@ -112,38 +103,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Documentation
 
-        // "GetVariableResultType": {
-        //   "description": "Class to hold results of GetVariables request.\r\n",
-        //   "javaType": "GetVariableResult",
+        // "SetVariableResultType": {
+        //   "description": "Class to hold result of SetVariableMonitoring request.\r\n",
+        //   "javaType": "SetVariableResult",
         //   "type": "object",
         //   "additionalProperties": false,
         //   "properties": {
         //     "customData": {
         //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "attributeStatusInfo": {
+        //     "id": {
+        //       "description": "Id given to the VariableMonitor by the Charging Station. The Id is only returned when status is accepted. Installed VariableMonitors should have unique id's but the id's of removed Installed monitors should have unique id's but the id's of removed monitors MAY be reused.\r\n",
+        //       "type": "integer"
+        //     },
+        //     "statusInfo": {
         //       "$ref": "#/definitions/StatusInfoType"
         //     },
-        //     "attributeStatus": {
-        //       "$ref": "#/definitions/GetVariableStatusEnumType"
+        //     "status": {
+        //       "$ref": "#/definitions/SetMonitoringStatusEnumType"
         //     },
-        //     "attributeType": {
-        //       "$ref": "#/definitions/AttributeEnumType"
-        //     },
-        //     "attributeValue": {
-        //       "description": "Value of requested attribute type of component-variable. This field can only be empty when the given status is NOT accepted.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. \r\n\r\n",
-        //       "type": "string",
-        //       "maxLength": 2500
+        //     "type": {
+        //       "$ref": "#/definitions/MonitorEnumType"
         //     },
         //     "component": {
         //       "$ref": "#/definitions/ComponentType"
         //     },
         //     "variable": {
         //       "$ref": "#/definitions/VariableType"
+        //     },
+        //     "severity": {
+        //       "description": "The severity that will be assigned to an event that is triggered by this monitor. The severity range is 0-9, with 0 as the highest and 9 as the lowest severity level.\r\n\r\nThe severity levels have the following meaning: +\r\n*0-Danger* +\r\nIndicates lives are potentially in danger. Urgent attention is needed and action should be taken immediately. +\r\n*1-Hardware Failure* +\r\nIndicates that the Charging Station is unable to continue regular operations due to Hardware issues. Action is required. +\r\n*2-System Failure* +\r\nIndicates that the Charging Station is unable to continue regular operations due to software or minor hardware issues. Action is required. +\r\n*3-Critical* +\r\nIndicates a critical error. Action is required. +\r\n*4-Error* +\r\nIndicates a non-urgent error. Action is required. +\r\n*5-Alert* +\r\nIndicates an alert event. Default severity for any type of event.  +\r\n*6-Warning* +\r\nIndicates a warning event. Action may be required. +\r\n*7-Notice* +\r\nIndicates an unusual event. No immediate action is required. +\r\n*8-Informational* +\r\nIndicates a regular operational event. May be used for reporting, measuring throughput, etc. No action is required. +\r\n*9-Debug* +\r\nIndicates information useful to developers for debugging, not useful during operations.\r\n\r\n",
+        //       "type": "integer"
         //     }
         //   },
         //   "required": [
-        //     "attributeStatus",
+        //     "status",
+        //     "type",
+        //     "severity",
         //     "component",
         //     "variable"
         //   ]
@@ -151,76 +147,75 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) Parse   (JSON, CustomGetVariableResultParser = null)
+        #region (static) Parse   (JSON, CustomSetVariableResultParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get variable result.
+        /// Parse the given JSON representation of a set variable result.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetVariableResultParser">A delegate to parse custom get variable results.</param>
-        public static GetVariableResult Parse(JObject                                          JSON,
-                                              CustomJObjectParserDelegate<GetVariableResult>?  CustomGetVariableResultParser   = null)
+        /// <param name="CustomSetVariableResultParser">A delegate to parse custom set variable result JSON objects.</param>
+        public static SetVariableResult Parse(JObject                                          JSON,
+                                              CustomJObjectParserDelegate<SetVariableResult>?  CustomSetVariableResultParser   = null)
         {
 
             if (TryParse(JSON,
-                         out var getVariableResult,
+                         out var setVariableResult,
                          out var errorResponse,
-                         CustomGetVariableResultParser))
+                         CustomSetVariableResultParser))
             {
-                return getVariableResult!;
+                return setVariableResult!;
             }
 
-            throw new ArgumentException("The given JSON representation of a get variable result is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a set variable result is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, out GetVariableResult, out ErrorResponse, CustomGetVariableResultParser = null)
+        #region (static) TryParse(JSON, out SetVariableResult, CustomSetVariableResultParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get variable result.
+        /// Try to parse the given JSON representation of a set variable result.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetVariableResult">The parsed get variable result.</param>
+        /// <param name="SetVariableResult">The parsed set variable result.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                 JSON,
-                                       out GetVariableResult?  GetVariableResult,
+                                       out SetVariableResult?  SetVariableResult,
                                        out String?             ErrorResponse)
 
             => TryParse(JSON,
-                        out GetVariableResult,
-                        out ErrorResponse,
-                        null);
+                        out SetVariableResult,
+                        out ErrorResponse);
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get variable result.
+        /// Try to parse the given JSON representation of a set variable result.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetVariableResult">The parsed get variable result.</param>
+        /// <param name="SetVariableResult">The parsed set variable result.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetVariableResultParser">A delegate to parse custom get variable results.</param>
+        /// <param name="CustomSetVariableResultParser">A delegate to parse custom set variable result JSON objects.</param>
         public static Boolean TryParse(JObject                                          JSON,
-                                       out GetVariableResult?                           GetVariableResult,
+                                       out SetVariableResult?                           SetVariableResult,
                                        out String?                                      ErrorResponse,
-                                       CustomJObjectParserDelegate<GetVariableResult>?  CustomGetVariableResultParser   = null)
+                                       CustomJObjectParserDelegate<SetVariableResult>?  CustomSetVariableResultParser)
         {
 
             try
             {
 
-                GetVariableResult = null;
+                SetVariableResult = default;
 
-                #region AttributeStatus        [mandatory]
+                #region Status                 [mandatory]
 
                 if (!JSON.ParseMandatory("attributeStatus",
                                          "attribute status",
-                                         GetVariableStatusExtentions.TryParse,
-                                         out GetVariableStatus AttributeStatus,
+                                         SetVariableStatusExtentions.TryParse,
+                                         out SetVariableStatus Status,
                                          out ErrorResponse))
                 {
                     return false;
@@ -231,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #region Component              [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("component",
-                                             "requested component",
+                                             "component",
                                              OCPPv2_0.Component.TryParse,
                                              out Component? Component,
                                              out ErrorResponse))
@@ -247,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #region Variable               [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("variable",
-                                             "requested variable",
+                                             "variable",
                                              OCPPv2_0.Variable.TryParse,
                                              out Variable? Variable,
                                              out ErrorResponse))
@@ -257,19 +252,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (Variable is null)
                     return false;
-
-                #endregion
-
-                #region AttributeValue         [optional]
-
-                if (JSON.ParseOptional("attributeValue",
-                                       "attribute value",
-                                       out String? AttributeValue,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
 
                 #endregion
 
@@ -316,25 +298,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #endregion
 
 
-                GetVariableResult = new GetVariableResult(AttributeStatus,
+                SetVariableResult = new SetVariableResult(Status,
                                                           Component,
                                                           Variable,
-                                                          AttributeValue,
                                                           AttributeType,
                                                           AttributeStatusInfo,
                                                           CustomData);
 
-                if (CustomGetVariableResultParser is not null)
-                    GetVariableResult = CustomGetVariableResultParser(JSON,
-                                                                      GetVariableResult);
+                if (CustomSetVariableResultParser is not null)
+                    SetVariableResult = CustomSetVariableResultParser(JSON,
+                                                                      SetVariableResult);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                GetVariableResult  = null;
-                ErrorResponse      = "The given JSON representation of a get variable result is invalid: " + e.Message;
+                SetVariableResult  = default;
+                ErrorResponse      = "The given JSON representation of a set variable result is invalid: " + e.Message;
                 return false;
             }
 
@@ -342,18 +323,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomGetVariableResultSerializer = null, CustomComponentSerializer = null, ...)
+        #region ToJSON(CustomSetVariableResultSerializer = null, CustomComponentSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetVariableResultSerializer">A delegate to serialize custom get variable results.</param>
+        /// <param name="CustomSetVariableResultSerializer">A delegate to serialize custom set variable results.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomVariableSerializer">A delegate to serialize custom variables.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetVariableResult>?  CustomGetVariableResultSerializer   = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SetVariableResult>?  CustomSetVariableResultSerializer   = null,
                               CustomJObjectSerializerDelegate<Component>?          CustomComponentSerializer           = null,
                               CustomJObjectSerializerDelegate<EVSE>?               CustomEVSESerializer                = null,
                               CustomJObjectSerializerDelegate<Variable>?           CustomVariableSerializer            = null,
@@ -361,9 +342,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                               CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
-            var json = JSONObject.Create(
+            var JSON = JSONObject.Create(
 
-                                 new JProperty("attributeStatus",      AttributeStatus),
+                                 new JProperty("status",               Status.             AsText()),
 
                                  new JProperty("component",            Component.          ToJSON(CustomComponentSerializer,
                                                                                                   CustomEVSESerializer,
@@ -371,10 +352,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                                  new JProperty("variable",             Variable.           ToJSON(CustomVariableSerializer,
                                                                                                   CustomCustomDataSerializer)),
-
-                           AttributeValue is not null
-                               ? new JProperty("attributeValue",       AttributeValue)
-                               : null,
 
                            AttributeType.HasValue
                                ? new JProperty("attributeType",        AttributeType.Value.AsText())
@@ -391,9 +368,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                        );
 
-            return CustomGetVariableResultSerializer is not null
-                       ? CustomGetVariableResultSerializer(this, json)
-                       : json;
+            return CustomSetVariableResultSerializer is not null
+                       ? CustomSetVariableResultSerializer(this, JSON)
+                       : JSON;
 
         }
 
@@ -402,88 +379,85 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Operator overloading
 
-        #region Operator == (GetVariableResult1, GetVariableResult2)
+        #region Operator == (SetVariableResult1, SetVariableResult2)
 
         /// <summary>
-        /// Compares two get variable results for equality.
+        /// Compares two instances of this object.
         /// </summary>
-        /// <param name="GetVariableResult1">A get variable result.</param>
-        /// <param name="GetVariableResult2">Another get variable result.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetVariableResult? GetVariableResult1,
-                                           GetVariableResult? GetVariableResult2)
+        /// <param name="SetVariableResult1">A set variable result.</param>
+        /// <param name="SetVariableResult2">Another set variable result.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (SetVariableResult? SetVariableResult1,
+                                           SetVariableResult? SetVariableResult2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(GetVariableResult1, GetVariableResult2))
+            if (ReferenceEquals(SetVariableResult1, SetVariableResult2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (GetVariableResult1 is null || GetVariableResult2 is null)
+            if (SetVariableResult1 is null || SetVariableResult2 is null)
                 return false;
 
-            return GetVariableResult1.Equals(GetVariableResult2);
+            return SetVariableResult1.Equals(SetVariableResult2);
 
         }
 
         #endregion
 
-        #region Operator != (GetVariableResult1, GetVariableResult2)
+        #region Operator != (SetVariableResult1, SetVariableResult2)
 
         /// <summary>
-        /// Compares two get variable results for inequality.
+        /// Compares two instances of this object.
         /// </summary>
-        /// <param name="GetVariableResult1">A get variable result.</param>
-        /// <param name="GetVariableResult2">Another get variable result.</param>
-        /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator !=(GetVariableResult? GetVariableResult1,
-                                           GetVariableResult? GetVariableResult2)
+        /// <param name="SetVariableResult1">A set variable result.</param>
+        /// <param name="SetVariableResult2">Another set variable result.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (SetVariableResult? SetVariableResult1,
+                                           SetVariableResult? SetVariableResult2)
 
-            => !(GetVariableResult1 == GetVariableResult2);
-
-        #endregion
+            => !(SetVariableResult1 == SetVariableResult2);
 
         #endregion
 
-        #region IEquatable<GetVariableResult> Members
+        #endregion
+
+        #region IEquatable<SetVariableResult> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get variable results for equality.
+        /// Compares two set variable results for equality.
         /// </summary>
-        /// <param name="Object">A get variable result to compare with.</param>
+        /// <param name="Object">A set variable result to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is GetVariableResult getVariableResult &&
-                   Equals(getVariableResult);
+            => Object is SetVariableResult setVariableResult &&
+                   Equals(setVariableResult);
 
         #endregion
 
-        #region Equals(GetVariableResult)
+        #region Equals(SetVariableResult)
 
         /// <summary>
-        /// Compares two get variable results for equality.
+        /// Compares two set variable results for equality.
         /// </summary>
-        /// <param name="GetVariableResult">A get variable result to compare with.</param>
-        public Boolean Equals(GetVariableResult? GetVariableResult)
+        /// <param name="SetVariableResult">A set variable result to compare with.</param>
+        public Boolean Equals(SetVariableResult? SetVariableResult)
 
-            => GetVariableResult is not null &&
+            => SetVariableResult is not null &&
 
-               AttributeStatus.Equals(GetVariableResult.AttributeStatus) &&
-               Component.      Equals(GetVariableResult.Component)       &&
-               Variable.       Equals(GetVariableResult.Variable)        &&
+               Status.     Equals(Equals(SetVariableResult.Status))      &&
+               Component.  Equals(Equals(SetVariableResult.Component))   &&
+               Variable.   Equals(Equals(SetVariableResult.Variable))    &&
 
-             ((AttributeValue      is null     &&  GetVariableResult.AttributeValue      is     null) ||
-               AttributeValue      is not null &&  GetVariableResult.AttributeValue      is not null && AttributeValue.     Equals(GetVariableResult.AttributeValue))      &&
+            ((!AttributeType.      HasValue    && !SetVariableResult.AttributeType.      HasValue)    ||
+               AttributeType.      HasValue    &&  SetVariableResult.AttributeType.      HasValue    && AttributeType.Value.Equals(SetVariableResult.AttributeType.Value)) &&
 
-            ((!AttributeType.      HasValue    && !GetVariableResult.AttributeType.      HasValue)    ||
-               AttributeType.      HasValue    &&  GetVariableResult.AttributeType.      HasValue    && AttributeType.Value.Equals(GetVariableResult.AttributeType.Value)) &&
+             ((AttributeStatusInfo is     null &&  SetVariableResult.AttributeStatusInfo is     null) ||
+               AttributeStatusInfo is not null &&  SetVariableResult.AttributeStatusInfo is not null && AttributeStatusInfo.Equals(SetVariableResult.AttributeStatusInfo)) &&
 
-             ((AttributeStatusInfo is null     &&  GetVariableResult.AttributeStatusInfo is     null) ||
-               AttributeStatusInfo is not null &&  GetVariableResult.AttributeStatusInfo is not null && AttributeStatusInfo.Equals(GetVariableResult.AttributeStatusInfo)) &&
-
-               base.           Equals(GetVariableResult);
+               base.       Equals(SetVariableResult);
 
         #endregion
 
@@ -500,10 +474,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             unchecked
             {
 
-                return AttributeStatus.     GetHashCode()       * 17 ^
-                       Component.           GetHashCode()       * 13 ^
-                       Variable.            GetHashCode()       * 11 ^
-                      (AttributeValue?.     GetHashCode() ?? 0) *  7 ^
+                return Status.              GetHashCode()       * 13 ^
+                       Component.           GetHashCode()       * 11 ^
+                       Variable.            GetHashCode()       *  7 ^
                       (AttributeType?.      GetHashCode() ?? 0) *  5 ^
                       (AttributeStatusInfo?.GetHashCode() ?? 0) *  3 ^
 
@@ -523,10 +496,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             => String.Concat(
 
-                   AttributeStatus,
+                   "Component/variable: '",
+                   Component.ToString(),
+                   "' / '",
+                   Variable. ToString(),
+                   "': ",
+                   Status.   AsText(),
 
-                   AttributeValue is not null
-                       ? " => " + AttributeValue.SubstringMax(30)
+                   AttributeType.HasValue
+                       ? " [" + AttributeType.Value.AsText() + "]"
                        : ""
 
                );

@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region Static methods
 
         /// <summary>
-        /// The start transaction failed.
+        /// The status notification failed.
         /// </summary>
         public static StatusNotificationResponse Failed(CP.StatusNotificationRequest Request)
 

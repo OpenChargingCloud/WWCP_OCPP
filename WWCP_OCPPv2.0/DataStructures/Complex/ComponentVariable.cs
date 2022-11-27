@@ -234,9 +234,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomComponentVariableSerializer">A delegate to serialize custom ComponentVariable objects.</param>
-        /// <param name="CustomComponentSerializer">A delegate to serialize custom Component objects.</param>
-        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSE objects.</param>
-        /// <param name="CustomVariableSerializer">A delegate to serialize custom Variable objects.</param>
+        /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
+        /// <param name="CustomVariableSerializer">A delegate to serialize custom variables.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ComponentVariable>?  CustomComponentVariableSerializer   = null,
                               CustomJObjectSerializerDelegate<Component>?          CustomComponentSerializer           = null,

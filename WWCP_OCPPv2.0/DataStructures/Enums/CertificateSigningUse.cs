@@ -24,17 +24,71 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class CertificateSigningUseExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a certificate signing use.
+        /// </summary>
+        /// <param name="Text">A text representation of a certificate signing use.</param>
         public static CertificateSigningUse Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "ChargingStationCertificate"  => CertificateSigningUse.ChargingStationCertificate,
-                   "V2GCertificate"              => CertificateSigningUse.V2GCertificate,
-                   _                             => CertificateSigningUse.Unknown
-               };
+            if (TryParse(Text, out var certificateSigningUse))
+                return certificateSigningUse;
+
+            return CertificateSigningUse.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a certificate signing use.
+        /// </summary>
+        /// <param name="Text">A text representation of a certificate signing use.</param>
+        public static CertificateSigningUse? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var certificateSigningUse))
+                return certificateSigningUse;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out CertificateSigningUse)
+
+        /// <summary>
+        /// Try to parse the given text as a certificate signing use.
+        /// </summary>
+        /// <param name="Text">A text representation of a certificate signing use.</param>
+        /// <param name="CertificateSigningUse">The parsed certificate signing use.</param>
+        public static Boolean TryParse(String Text, out CertificateSigningUse CertificateSigningUse)
+        {
+            switch (Text.Trim())
+            {
+
+                case "ChargingStationCertificate":
+                    CertificateSigningUse = CertificateSigningUse.ChargingStationCertificate;
+                    return true;
+
+                case "V2GCertificate":
+                    CertificateSigningUse = CertificateSigningUse.V2GCertificate;
+                    return true;
+
+                default:
+                    CertificateSigningUse = CertificateSigningUse.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this CertificateSigningUse)
 

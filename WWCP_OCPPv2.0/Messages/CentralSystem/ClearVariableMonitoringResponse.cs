@@ -307,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomClearVariableMonitoringResponseSerializer">A delegate to serialize custom clear variable monitoring responses.</param>
-        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status info objects.</param>
+        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ClearVariableMonitoringResponse>?  CustomClearVariableMonitoringResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<ClearMonitoringResult>?            CustomClearMonitoringResultSerializer             = null,

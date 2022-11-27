@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region Static methods
 
         /// <summary>
-        /// The start transaction failed.
+        /// The cleared charging limit failed.
         /// </summary>
         public static ClearedChargingLimitResponse Failed(CP.ClearedChargingLimitRequest Request)
 

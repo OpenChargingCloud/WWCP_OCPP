@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetTransactionStatusRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        /// <param name="CustomGetTransactionStatusRequestSerializer">A delegate to serialize custom get transaction status requests.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetTransactionStatusRequest>?  CustomGetTransactionStatusRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataSerializer                    = null)

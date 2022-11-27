@@ -27,34 +27,34 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
-    /// A get variables response.
+    /// A set variables response.
     /// </summary>
-    public class GetVariablesResponse : AResponse<CS.GetVariablesRequest,
-                                                     GetVariablesResponse>
+    public class SetVariablesResponse : AResponse<CS.SetVariablesRequest,
+                                                     SetVariablesResponse>
     {
 
         #region Properties
 
         /// <summary>
-        /// The get variables results.
+        /// The enumeration of set variable result status per component and variable.
         /// </summary>
         [Mandatory]
-        public IEnumerable<GetVariableResult>  Results    { get; }
+        public IEnumerable<SetVariableResult>  SetVariableResults    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region GetVariablesResponse(Request, Results, ...)
+        #region SetVariablesResponse(Request, Status, SetResults)
 
         /// <summary>
-        /// Create a new get variables response.
+        /// Create a new set variables response.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
-        /// <param name="Results">The get variables results.</param>
-        /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
-        public GetVariablesResponse(CS.GetVariablesRequest          Request,
-                                    IEnumerable<GetVariableResult>  Results,
+        /// <param name="Request">The set variables request leading to this response.</param>
+        /// <param name="SetVariableResults">An enumeration of set variable result status per component and variable.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        public SetVariablesResponse(CS.SetVariablesRequest          Request,
+                                    IEnumerable<SetVariableResult>  SetVariableResults,
                                     CustomData?                     CustomData   = null)
 
             : base(Request,
@@ -63,24 +63,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         {
 
-            if (!Results.Any())
-                throw new ArgumentException("The given enumeration of get variables results must not be empty!",
-                                            nameof(Results));
-
-            this.Results = Results.Distinct();
+            this.SetVariableResults = SetVariableResults;
 
         }
 
         #endregion
 
-        #region GetVariablesResponse(Request, Result)
+        #region SetVariablesResponse(Request, Result)
 
         /// <summary>
-        /// Create a new get variables response.
+        /// Create a new set variables response.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="Request">The set variables request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public GetVariablesResponse(CS.GetVariablesRequest  Request,
+        public SetVariablesResponse(CS.SetVariablesRequest  Request,
                                     Result                  Result)
 
             : base(Request,
@@ -88,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         {
 
-            this.Results = Array.Empty<GetVariableResult>();
+            this.SetVariableResults = Array.Empty<SetVariableResult>();
 
         }
 
@@ -101,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:GetVariablesResponse",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:SetVariablesResponse",
         //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
         //     "CustomDataType": {
@@ -119,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //       ]
         //     },
         //     "AttributeEnumType": {
-        //       "description": "Attribute type for which value is requested. When absent, default Actual is assumed.\r\n",
+        //       "description": "Type of attribute: Actual, Target, MinSet, MaxSet. Default is Actual when omitted.\r\n",
         //       "javaType": "AttributeEnum",
         //       "type": "string",
         //       "default": "Actual",
@@ -131,9 +127,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //         "MaxSet"
         //       ]
         //     },
-        //     "GetVariableStatusEnumType": {
-        //       "description": "Result status of getting the variable.\r\n\r\n",
-        //       "javaType": "GetVariableStatusEnum",
+        //     "SetVariableStatusEnumType": {
+        //       "description": "Result status of setting the variable.\r\n",
+        //       "javaType": "SetVariableStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
@@ -141,7 +137,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //         "Rejected",
         //         "UnknownComponent",
         //         "UnknownVariable",
-        //         "NotSupportedAttributeType"
+        //         "NotSupportedAttributeType",
+        //         "RebootRequired"
         //       ]
         //     },
         //     "ComponentType": {
@@ -193,28 +190,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //         "id"
         //       ]
         //     },
-        //     "GetVariableResultType": {
-        //       "description": "Class to hold results of GetVariables request.\r\n",
-        //       "javaType": "GetVariableResult",
+        //     "SetVariableResultType": {
+        //       "javaType": "SetVariableResult",
         //       "type": "object",
         //       "additionalProperties": false,
         //       "properties": {
         //         "customData": {
         //           "$ref": "#/definitions/CustomDataType"
         //         },
-        //         "attributeStatusInfo": {
-        //           "$ref": "#/definitions/StatusInfoType"
-        //         },
-        //         "attributeStatus": {
-        //           "$ref": "#/definitions/GetVariableStatusEnumType"
-        //         },
         //         "attributeType": {
         //           "$ref": "#/definitions/AttributeEnumType"
         //         },
-        //         "attributeValue": {
-        //           "description": "Value of requested attribute type of component-variable. This field can only be empty when the given status is NOT accepted.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-reporting-value-size,ReportingValueSize&gt;&gt; can be used to limit GetVariableResult.attributeValue, VariableAttribute.value and EventData.actualValue. The max size of these values will always remain equal. \r\n\r\n",
-        //           "type": "string",
-        //           "maxLength": 2500
+        //         "attributeStatus": {
+        //           "$ref": "#/definitions/SetVariableStatusEnumType"
+        //         },
+        //         "attributeStatusInfo": {
+        //           "$ref": "#/definitions/StatusInfoType"
         //         },
         //         "component": {
         //           "$ref": "#/definitions/ComponentType"
@@ -284,79 +275,79 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //     "customData": {
         //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "getVariableResult": {
+        //     "setVariableResult": {
         //       "type": "array",
         //       "additionalItems": false,
         //       "items": {
-        //         "$ref": "#/definitions/GetVariableResultType"
+        //         "$ref": "#/definitions/SetVariableResultType"
         //       },
         //       "minItems": 1
         //     }
         //   },
         //   "required": [
-        //     "getVariableResult"
+        //     "setVariableResult"
         //   ]
         // }
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomGetVariablesResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomSetVariablesResponseParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get variables response.
+        /// Parse the given JSON representation of a set variables response.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="Request">The set variables request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomGetVariablesResponseParser">A delegate to parse custom get variables responses.</param>
-        public static GetVariablesResponse Parse(CS.GetVariablesRequest                              Request,
+        /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom set variables responses.</param>
+        public static SetVariablesResponse Parse(CS.SetVariablesRequest                              Request,
                                                  JObject                                             JSON,
-                                                 CustomJObjectParserDelegate<GetVariablesResponse>?  CustomGetVariablesResponseParser   = null)
+                                                 CustomJObjectParserDelegate<SetVariablesResponse>?  CustomSetVariablesResponseParser   = null)
         {
 
             if (TryParse(Request,
                          JSON,
-                         out var getVariablesResponse,
+                         out var setVariablesResponse,
                          out var errorResponse,
-                         CustomGetVariablesResponseParser))
+                         CustomSetVariablesResponseParser))
             {
-                return getVariablesResponse!;
+                return setVariablesResponse!;
             }
 
-            throw new ArgumentException("The given JSON representation of a get variables response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a set variables response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out GetVariablesResponse, out ErrorResponse, CustomGetVariablesResponseParser = null)
+        #region (static) TryParse(Request, JSON, out SetVariablesResponse, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get variables response.
+        /// Try to parse the given JSON representation of a set variables response.
         /// </summary>
-        /// <param name="Request">The reset request leading to this response.</param>
+        /// <param name="Request">The set variables request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="GetVariablesResponse">The parsed get variables response.</param>
+        /// <param name="SetVariablesResponse">The parsed set variables response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetVariablesResponseParser">A delegate to parse custom get variables responses.</param>
-        public static Boolean TryParse(CS.GetVariablesRequest                              Request,
+        /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom set variables responses.</param>
+        public static Boolean TryParse(CS.SetVariablesRequest                              Request,
                                        JObject                                             JSON,
-                                       out GetVariablesResponse?                           GetVariablesResponse,
+                                       out SetVariablesResponse?                           SetVariablesResponse,
                                        out String?                                         ErrorResponse,
-                                       CustomJObjectParserDelegate<GetVariablesResponse>?  CustomGetVariablesResponseParser   = null)
+                                       CustomJObjectParserDelegate<SetVariablesResponse>?  CustomSetVariablesResponseParser   = null)
         {
 
             try
             {
 
-                GetVariablesResponse = null;
+                SetVariablesResponse = null;
 
-                #region Results       [mandatory]
+                #region SetVariableResults    [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("getVariableResult",
-                                                "get variable results",
-                                                GetVariableResult.TryParse,
-                                                out HashSet<GetVariableResult> Results,
+                if (!JSON.ParseMandatoryHashSet("setVariableResult",
+                                                "set variable results",
+                                                SetVariableResult.TryParse,
+                                                out HashSet<SetVariableResult> SetVariableResults,
                                                 out ErrorResponse))
                 {
                     return false;
@@ -364,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #endregion
 
-                #region CustomData    [optional]
+                #region CustomData            [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -379,21 +370,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #endregion
 
 
-                GetVariablesResponse = new GetVariablesResponse(Request,
-                                                                Results,
+                SetVariablesResponse = new SetVariablesResponse(Request,
+                                                                SetVariableResults,
                                                                 CustomData);
 
-                if (CustomGetVariablesResponseParser is not null)
-                    GetVariablesResponse = CustomGetVariablesResponseParser(JSON,
-                                                                            GetVariablesResponse);
+                if (CustomSetVariablesResponseParser is not null)
+                    SetVariablesResponse = CustomSetVariablesResponseParser(JSON,
+                                                                            SetVariablesResponse);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                GetVariablesResponse  = null;
-                ErrorResponse         = "The given JSON representation of a get variables response is invalid: " + e.Message;
+                SetVariablesResponse  = null;
+                ErrorResponse         = "The given JSON representation of a set variables response is invalid: " + e.Message;
                 return false;
             }
 
@@ -401,20 +392,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomGetVariablesResponseSerializer = null, CustomCustomDataSerializer = null, ...)
+        #region ToJSON(CustomSetVariablesResponseSerializer = null, CustomSetResultSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetVariablesResponseSerializer">A delegate to serialize custom get variables responses.</param>
-        /// <param name="CustomGetVariableResultSerializer">A delegate to serialize custom get variable results.</param>
+        /// <param name="CustomSetVariablesResponseSerializer">A delegate to serialize custom charging profile responses.</param>
+        /// <param name="CustomSetVariableResultSerializer">A delegate to serialize custom set results.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomVariableSerializer">A delegate to serialize custom variables.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetVariablesResponse>?  CustomGetVariablesResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<GetVariableResult>?     CustomGetVariableResultSerializer      = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SetVariablesResponse>?  CustomSetVariablesResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<SetVariableResult>?     CustomSetVariableResultSerializer      = null,
                               CustomJObjectSerializerDelegate<Component>?             CustomComponentSerializer              = null,
                               CustomJObjectSerializerDelegate<EVSE>?                  CustomEVSESerializer                   = null,
                               CustomJObjectSerializerDelegate<Variable>?              CustomVariableSerializer               = null,
@@ -424,12 +415,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
             var json = JSONObject.Create(
 
-                                 new JProperty("getVariableResult",  new JArray(Results.Select(result => result.ToJSON(CustomGetVariableResultSerializer,
-                                                                                                                       CustomComponentSerializer,
-                                                                                                                       CustomEVSESerializer,
-                                                                                                                       CustomVariableSerializer,
-                                                                                                                       CustomStatusInfoSerializer,
-                                                                                                                       CustomCustomDataSerializer)))),
+                                 new JProperty("setVariableResult",  new JArray(SetVariableResults.Select(setVariableResult => setVariableResult.ToJSON(CustomSetVariableResultSerializer,
+                                                                                                                                                        CustomComponentSerializer,
+                                                                                                                                                        CustomEVSESerializer,
+                                                                                                                                                        CustomVariableSerializer,
+                                                                                                                                                        CustomStatusInfoSerializer,
+                                                                                                                                                        CustomCustomDataSerializer)))),
 
                            CustomData is not null
                                ? new JProperty("customData",         CustomData.ToJSON(CustomCustomDataSerializer))
@@ -437,8 +428,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                        );
 
-            return CustomGetVariablesResponseSerializer is not null
-                       ? CustomGetVariablesResponseSerializer(this, json)
+            return CustomSetVariablesResponseSerializer is not null
+                       ? CustomSetVariablesResponseSerializer(this, json)
                        : json;
 
         }
@@ -449,10 +440,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Static methods
 
         /// <summary>
-        /// The get variables command failed.
+        /// The set variables command failed.
         /// </summary>
-        /// <param name="Request">The get variables request leading to this response.</param>
-        public static GetVariablesResponse Failed(CS.GetVariablesRequest Request)
+        /// <param name="Request">The set variables request leading to this response.</param>
+        public static SetVariablesResponse Failed(CS.SetVariablesRequest Request)
 
             => new (Request,
                     Result.Server());
@@ -462,78 +453,78 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Operator overloading
 
-        #region Operator == (GetVariablesResponse1, GetVariablesResponse2)
+        #region Operator == (SetVariablesResponse1, SetVariablesResponse2)
 
         /// <summary>
-        /// Compares two get variables responses for equality.
+        /// Compares two set variables responses for equality.
         /// </summary>
-        /// <param name="GetVariablesResponse1">A get variables response.</param>
-        /// <param name="GetVariablesResponse2">Another get variables response.</param>
+        /// <param name="SetVariablesResponse1">A set variables response.</param>
+        /// <param name="SetVariablesResponse2">Another set variables response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetVariablesResponse? GetVariablesResponse1,
-                                           GetVariablesResponse? GetVariablesResponse2)
+        public static Boolean operator == (SetVariablesResponse? SetVariablesResponse1,
+                                           SetVariablesResponse? SetVariablesResponse2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(GetVariablesResponse1, GetVariablesResponse2))
+            if (ReferenceEquals(SetVariablesResponse1, SetVariablesResponse2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (GetVariablesResponse1 is null || GetVariablesResponse2 is null)
+            if (SetVariablesResponse1 is null || SetVariablesResponse2 is null)
                 return false;
 
-            return GetVariablesResponse1.Equals(GetVariablesResponse2);
+            return SetVariablesResponse1.Equals(SetVariablesResponse2);
 
         }
 
         #endregion
 
-        #region Operator != (GetVariablesResponse1, GetVariablesResponse2)
+        #region Operator != (SetVariablesResponse1, SetVariablesResponse2)
 
         /// <summary>
-        /// Compares two get variables responses for inequality.
+        /// Compares two set variables responses for inequality.
         /// </summary>
-        /// <param name="GetVariablesResponse1">A get variables response.</param>
-        /// <param name="GetVariablesResponse2">Another get variables response.</param>
+        /// <param name="SetVariablesResponse1">A set variables response.</param>
+        /// <param name="SetVariablesResponse2">Another set variables response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator !=(GetVariablesResponse? GetVariablesResponse1,
-                                           GetVariablesResponse? GetVariablesResponse2)
+        public static Boolean operator != (SetVariablesResponse? SetVariablesResponse1,
+                                           SetVariablesResponse? SetVariablesResponse2)
 
-            => !(GetVariablesResponse1 == GetVariablesResponse2);
-
-        #endregion
+            => !(SetVariablesResponse1 == SetVariablesResponse2);
 
         #endregion
 
-        #region IEquatable<GetVariablesResponse> Members
+        #endregion
+
+        #region IEquatable<SetVariablesResponse> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get variables responses for equality.
+        /// Compares two set variables responses for equality.
         /// </summary>
-        /// <param name="Object">A get variables response to compare with.</param>
+        /// <param name="Object">A set variables response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is GetVariablesResponse getVariablesResponse &&
-                   Equals(getVariablesResponse);
+            => Object is SetVariablesResponse setVariablesResponse &&
+                   Equals(setVariablesResponse);
 
         #endregion
 
-        #region Equals(GetVariablesResponse)
+        #region Equals(SetVariablesResponse)
 
         /// <summary>
-        /// Compares two get variables responses for equality.
+        /// Compares two set variables responses for equality.
         /// </summary>
-        /// <param name="GetVariablesResponse">A get variables response to compare with.</param>
-        public override Boolean Equals(GetVariablesResponse? GetVariablesResponse)
+        /// <param name="SetVariablesResponse">A set variables response to compare with.</param>
+        public override Boolean Equals(SetVariablesResponse? SetVariablesResponse)
 
-            => GetVariablesResponse is not null &&
+            => SetVariablesResponse is not null &&
 
-               Results.Count().Equals(GetVariablesResponse.Results.Count())     &&
-               Results.All(data => GetVariablesResponse.Results.Contains(data)) &&
+               SetVariableResults.Count().Equals(SetVariablesResponse.SetVariableResults.Count())     &&
+               SetVariableResults.All(data => SetVariablesResponse.SetVariableResults.Contains(data)) &&
 
-               base.GenericEquals(GetVariablesResponse);
+               base.GenericEquals(SetVariablesResponse);
 
         #endregion
 
@@ -546,12 +537,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
+{
             unchecked
             {
 
-                return //ToDo: Add Results!
-                       base.GetHashCode();
+                return //ToDo: Add SetResult!
+                       base.       GetHashCode();
 
             }
         }
@@ -565,7 +556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// </summary>
         public override String ToString()
 
-            => Results.Count() + " result(s)";
+            => SetVariableResults.Count() + " set variable result(s)";
 
         #endregion
 

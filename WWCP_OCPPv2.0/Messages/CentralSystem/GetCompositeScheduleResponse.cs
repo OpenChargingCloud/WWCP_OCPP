@@ -409,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="CustomGetCompositeScheduleResponseSerializer">A delegate to serialize custom get composite schedule responses.</param>
         /// <param name="CustomCompositeScheduleSerializer">A delegate to serialize custom composite schedule requests.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
-        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status info objects.</param>
+        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<CompositeSchedule>?             CustomCompositeScheduleSerializer              = null,

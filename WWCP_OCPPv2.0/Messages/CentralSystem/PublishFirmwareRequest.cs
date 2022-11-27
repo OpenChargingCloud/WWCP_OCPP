@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
-    /// The publish firmware request onto a local controller.
+    /// The publish firmware (onto a local controller) request.
     /// </summary>
     public class PublishFirmwareRequest : ARequest<PublishFirmwareRequest>
     {
@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomPublishFirmwareRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        /// <param name="CustomPublishFirmwareRequestSerializer">A delegate to serialize custom publish firmware requests.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<PublishFirmwareRequest>?  CustomPublishFirmwareRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataSerializer               = null)

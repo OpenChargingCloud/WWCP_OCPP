@@ -27,29 +27,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
-    /// The get variables request.
+    /// The set variables request.
     /// </summary>
-    public class GetVariablesRequest : ARequest<GetVariablesRequest>
+    public class SetVariablesRequest : ARequest<SetVariablesRequest>
     {
 
         #region Properties
 
         /// <summary>
-        /// The enumeration of requested variable data sets.
+        /// The enumeration of set variable data.
         /// </summary>
-        [Optional]
-        public IEnumerable<GetVariableData>  VariableData    { get; }
+        [Mandatory]
+        public IEnumerable<SetVariableData>  VariableData    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new get variables request.
+        /// Create a new set variables request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
-        /// <param name="VariableData">An enumeration of requested variable data sets.</param>
+        /// <param name="VariableData">An enumeration of set variable data.</param>
         /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
@@ -57,9 +56,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetVariablesRequest(ChargeBox_Id                  ChargeBoxId,
-
-                                   IEnumerable<GetVariableData>  VariableData,
+        public SetVariablesRequest(ChargeBox_Id                  ChargeBoxId,
+                                   IEnumerable<SetVariableData>  VariableData,
 
                                    CustomData?                   CustomData          = null,
                                    Request_Id?                   RequestId           = null,
@@ -69,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                    CancellationToken?            CancellationToken   = null)
 
             : base(ChargeBoxId,
-                   "GetVariables",
+                   "SetVariables",
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -94,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:GetVariablesRequest",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:SetVariablesRequest",
         //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
         //     "CustomDataType": {
@@ -112,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         //       ]
         //     },
         //     "AttributeEnumType": {
-        //       "description": "Attribute type for which value is requested. When absent, default Actual is assumed.\r\n",
+        //       "description": "Type of attribute: Actual, Target, MinSet, MaxSet. Default is Actual when omitted.\r\n",
         //       "javaType": "AttributeEnum",
         //       "type": "string",
         //       "default": "Actual",
@@ -173,9 +171,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         //         "id"
         //       ]
         //     },
-        //     "GetVariableDataType": {
-        //       "description": "Class to hold parameters for GetVariables request.\r\n",
-        //       "javaType": "GetVariableData",
+        //     "SetVariableDataType": {
+        //       "javaType": "SetVariableData",
         //       "type": "object",
         //       "additionalProperties": false,
         //       "properties": {
@@ -185,6 +182,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         //         "attributeType": {
         //           "$ref": "#/definitions/AttributeEnumType"
         //         },
+        //         "attributeValue": {
+        //           "description": "Value to be assigned to attribute of variable.\r\n\r\nThe Configuration Variable &lt;&lt;configkey-configuration-value-size,ConfigurationValueSize&gt;&gt; can be used to limit SetVariableData.attributeValue and VariableCharacteristics.valueList. The max size of these values will always remain equal. \r\n",
+        //           "type": "string",
+        //           "maxLength": 1000
+        //         },
         //         "component": {
         //           "$ref": "#/definitions/ComponentType"
         //         },
@@ -193,6 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         //         }
         //       },
         //       "required": [
+        //         "attributeValue",
         //         "component",
         //         "variable"
         //       ]
@@ -228,109 +231,109 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         //     "customData": {
         //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "getVariableData": {
+        //     "setVariableData": {
         //       "type": "array",
         //       "additionalItems": false,
         //       "items": {
-        //         "$ref": "#/definitions/GetVariableDataType"
+        //         "$ref": "#/definitions/SetVariableDataType"
         //       },
         //       "minItems": 1
         //     }
         //   },
         //   "required": [
-        //     "getVariableData"
+        //     "setVariableData"
         //   ]
         // }
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomGetVariablesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomSetVariablesRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get variables request.
+        /// Parse the given JSON representation of a set variables request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomGetVariablesRequestParser">A delegate to parse custom get variables requests.</param>
-        public static GetVariablesRequest Parse(JObject                                            JSON,
+        /// <param name="CustomSetVariablesRequestParser">A delegate to parse custom set variables requests.</param>
+        public static SetVariablesRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
                                                 ChargeBox_Id                                       ChargeBoxId,
-                                                CustomJObjectParserDelegate<GetVariablesRequest>?  CustomGetVariablesRequestParser   = null)
+                                                CustomJObjectParserDelegate<SetVariablesRequest>?  CustomSetVariablesRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
                          ChargeBoxId,
-                         out var getVariablesRequest,
+                         out var setVariableRequest,
                          out var errorResponse,
-                         CustomGetVariablesRequestParser))
+                         CustomSetVariablesRequestParser))
             {
-                return getVariablesRequest!;
+                return setVariableRequest!;
             }
 
-            throw new ArgumentException("The given JSON representation of a get variables request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a set variables request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out GetVariablesRequest, out ErrorResponse, CustomGetVariablesRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out SetVariablesRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get variables request.
+        /// Try to parse the given JSON representation of a set variables request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="GetVariablesRequest">The parsed get variables request.</param>
+        /// <param name="SetVariablesRequest">The parsed set variables request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                   JSON,
                                        Request_Id                RequestId,
                                        ChargeBox_Id              ChargeBoxId,
-                                       out GetVariablesRequest?  GetVariablesRequest,
+                                       out SetVariablesRequest?  SetVariablesRequest,
                                        out String?               ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
                         ChargeBoxId,
-                        out GetVariablesRequest,
+                        out SetVariablesRequest,
                         out ErrorResponse,
                         null);
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get variables request.
+        /// Try to parse the given JSON representation of a set variables request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="GetVariablesRequest">The parsed get variables request.</param>
+        /// <param name="SetVariablesRequest">The parsed set variables request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetVariablesRequestParser">A delegate to parse custom get variables requests.</param>
+        /// <param name="CustomSetVariablesRequestParser">A delegate to parse custom set variables requests.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
                                        ChargeBox_Id                                       ChargeBoxId,
-                                       out GetVariablesRequest?                           GetVariablesRequest,
+                                       out SetVariablesRequest?                           SetVariablesRequest,
                                        out String?                                        ErrorResponse,
-                                       CustomJObjectParserDelegate<GetVariablesRequest>?  CustomGetVariablesRequestParser)
+                                       CustomJObjectParserDelegate<SetVariablesRequest>?  CustomSetVariablesRequestParser)
         {
 
             try
             {
 
-                GetVariablesRequest = null;
+                SetVariablesRequest = null;
 
-                #region VariableData    [optional]
+                #region VariableData    [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("customData",
-                                             "custom data",
-                                             GetVariableData.TryParse,
-                                             out IEnumerable<GetVariableData> VariableData,
-                                             out ErrorResponse))
+                if (!JSON.ParseMandatoryHashSet("setVariableData",
+                                                "set variable data",
+                                                SetVariableData.TryParse,
+                                                out HashSet<SetVariableData> VariableData,
+                                                out ErrorResponse))
                 {
                     return false;
                 }
@@ -371,22 +374,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                 #endregion
 
 
-                GetVariablesRequest = new GetVariablesRequest(ChargeBoxId,
+                SetVariablesRequest = new SetVariablesRequest(ChargeBoxId,
                                                               VariableData,
                                                               CustomData,
                                                               RequestId);
 
-                if (CustomGetVariablesRequestParser is not null)
-                    GetVariablesRequest = CustomGetVariablesRequestParser(JSON,
-                                                                          GetVariablesRequest);
+                if (CustomSetVariablesRequestParser is not null)
+                    SetVariablesRequest = CustomSetVariablesRequestParser(JSON,
+                                                                          SetVariablesRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                GetVariablesRequest  = null;
-                ErrorResponse        = "The given JSON representation of a get variables request is invalid: " + e.Message;
+                SetVariablesRequest  = null;
+                ErrorResponse        = "The given JSON representation of a set variables request is invalid: " + e.Message;
                 return false;
             }
 
@@ -394,41 +397,41 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ToJSON(CustomGetVariablesRequestSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomSetVariablesRequestSerializer = null, CustomSetVariableDataSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetVariablesRequestSerializer">A delegate to serialize custom get variables requests.</param>
-        /// <param name="CustomGetVariableDataSerializer">A delegate to serialize custom get variable data objects.</param>
+        /// <param name="CustomSetVariablesRequestSerializer">A delegate to serialize custom set variables requests.</param>
+        /// <param name="CustomSetVariableDataSerializer">A delegate to serialize custom set variable data.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomVariableSerializer">A delegate to serialize custom variables.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetVariablesRequest>?  CustomGetVariablesRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<GetVariableData>?      CustomGetVariableDataSerializer       = null,
-                              CustomJObjectSerializerDelegate<Component>?            CustomComponentSerializer             = null,
-                              CustomJObjectSerializerDelegate<EVSE>?                 CustomEVSESerializer                  = null,
-                              CustomJObjectSerializerDelegate<Variable>?             CustomVariableSerializer              = null,
-                              CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SetVariablesRequest>?  CustomSetVariablesRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<SetVariableData>?      CustomSetVariableDataSerializer      = null,
+                              CustomJObjectSerializerDelegate<Component>?            CustomComponentSerializer            = null,
+                              CustomJObjectSerializerDelegate<EVSE>?                 CustomEVSESerializer                 = null,
+                              CustomJObjectSerializerDelegate<Variable>?             CustomVariableSerializer             = null,
+                              CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer           = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("transactionId",  new JArray(VariableData.Select(data => data.ToJSON(CustomGetVariableDataSerializer,
-                                                                                                              CustomComponentSerializer,
-                                                                                                              CustomEVSESerializer,
-                                                                                                              CustomVariableSerializer,
-                                                                                                              CustomCustomDataSerializer)))),
+                                 new JProperty("setVariableData",  new JArray(VariableData.Select(variableData => variableData.ToJSON(CustomSetVariableDataSerializer,
+                                                                                                                                      CustomComponentSerializer,
+                                                                                                                                      CustomEVSESerializer,
+                                                                                                                                      CustomVariableSerializer,
+                                                                                                                                      CustomCustomDataSerializer)))),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomGetVariablesRequestSerializer is not null
-                       ? CustomGetVariablesRequestSerializer(this, json)
+            return CustomSetVariablesRequestSerializer is not null
+                       ? CustomSetVariablesRequestSerializer(this, json)
                        : json;
 
         }
@@ -438,78 +441,78 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #region Operator overloading
 
-        #region Operator == (GetVariablesRequest1, GetVariablesRequest2)
+        #region Operator == (SetVariablesRequest1, SetVariablesRequest2)
 
         /// <summary>
-        /// Compares two get variables requests for equality.
+        /// Compares two set variables requests for equality.
         /// </summary>
-        /// <param name="GetVariablesRequest1">A get variables request.</param>
-        /// <param name="GetVariablesRequest2">Another get variables request.</param>
+        /// <param name="SetVariablesRequest1">A set variables request.</param>
+        /// <param name="SetVariablesRequest2">Another set variables request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetVariablesRequest? GetVariablesRequest1,
-                                           GetVariablesRequest? GetVariablesRequest2)
+        public static Boolean operator == (SetVariablesRequest? SetVariablesRequest1,
+                                           SetVariablesRequest? SetVariablesRequest2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(GetVariablesRequest1, GetVariablesRequest2))
+            if (ReferenceEquals(SetVariablesRequest1, SetVariablesRequest2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (GetVariablesRequest1 is null || GetVariablesRequest2 is null)
+            if (SetVariablesRequest1 is null || SetVariablesRequest2 is null)
                 return false;
 
-            return GetVariablesRequest1.Equals(GetVariablesRequest2);
+            return SetVariablesRequest1.Equals(SetVariablesRequest2);
 
         }
 
         #endregion
 
-        #region Operator != (GetVariablesRequest1, GetVariablesRequest2)
+        #region Operator != (SetVariablesRequest1, SetVariablesRequest2)
 
         /// <summary>
-        /// Compares two get variables requests for inequality.
+        /// Compares two set variables requests for inequality.
         /// </summary>
-        /// <param name="GetVariablesRequest1">A get variables request.</param>
-        /// <param name="GetVariablesRequest2">Another get variables request.</param>
+        /// <param name="SetVariablesRequest1">A set variables request.</param>
+        /// <param name="SetVariablesRequest2">Another set variables request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetVariablesRequest? GetVariablesRequest1,
-                                           GetVariablesRequest? GetVariablesRequest2)
+        public static Boolean operator != (SetVariablesRequest? SetVariablesRequest1,
+                                           SetVariablesRequest? SetVariablesRequest2)
 
-            => !(GetVariablesRequest1 == GetVariablesRequest2);
-
-        #endregion
+            => !(SetVariablesRequest1 == SetVariablesRequest2);
 
         #endregion
 
-        #region IEquatable<GetVariablesRequest> Members
+        #endregion
+
+        #region IEquatable<SetVariablesRequest> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get variables requests for equality.
+        /// Compares two set variables requests for equality.
         /// </summary>
-        /// <param name="Object">A get variables request to compare with.</param>
+        /// <param name="Object">A set variables request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is GetVariablesRequest getVariablesRequest &&
-                   Equals(getVariablesRequest);
+            => Object is SetVariablesRequest setVariableRequest &&
+                   Equals(setVariableRequest);
 
         #endregion
 
-        #region Equals(GetVariablesRequest)
+        #region Equals(SetVariablesRequest)
 
         /// <summary>
-        /// Compares two get variables requests for equality.
+        /// Compares two set variables requests for equality.
         /// </summary>
-        /// <param name="GetVariablesRequest">A get variables request to compare with.</param>
-        public override Boolean Equals(GetVariablesRequest? GetVariablesRequest)
+        /// <param name="SetVariablesRequest">A set variables request to compare with.</param>
+        public override Boolean Equals(SetVariablesRequest? SetVariablesRequest)
 
-            => GetVariablesRequest is not null &&
+            => SetVariablesRequest is not null &&
 
-               VariableData.Count().Equals(GetVariablesRequest.VariableData.Count())     &&
-               VariableData.All(data => GetVariablesRequest.VariableData.Contains(data)) &&
+               VariableData.Count().Equals(SetVariablesRequest.VariableData.Count())     &&
+               VariableData.All(data => SetVariablesRequest.VariableData.Contains(data)) &&
 
-               base.GenericEquals(GetVariablesRequest);
+               base.GenericEquals(SetVariablesRequest);
 
         #endregion
 
@@ -526,7 +529,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             unchecked
             {
 
-                return //ToDo: Add VariableData
+                return //ToDo: Add Data!
                        base.GetHashCode();
 
             }
@@ -541,7 +544,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat("Getting ", VariableData.Count(), " variable(s)");
+            => String.Concat(
+
+                   VariableData.Count(),
+                   " variable data set(s)"
+
+               );
 
         #endregion
 

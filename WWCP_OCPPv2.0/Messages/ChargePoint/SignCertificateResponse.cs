@@ -23,47 +23,44 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_0.CP
+namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
-    /// A clear cache response.
+    /// A sign certificate response.
     /// </summary>
-    public class ClearCacheResponse : AResponse<CS.ClearCacheRequest,
-                                                   ClearCacheResponse>
+    public class SignCertificateResponse : AResponse<CP.SignCertificateRequest,
+                                                        SignCertificateResponse>
     {
 
         #region Properties
 
         /// <summary>
-        /// The success or failure of the clear cache command.
+        /// The success or failure status of the sign certificate request.
         /// </summary>
-        [Mandatory]
-        public ClearCacheStatus  Status        { get; }
+        public GenericStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?       StatusInfo    { get; }
+        public StatusInfo?    StatusInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region ClearCacheResponse(Request, Status)
+        #region SignCertificateResponse(Request, IdTagInfo)
 
         /// <summary>
-        /// Create a new clear cache response.
+        /// Create a sign certificate response.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
-        /// <param name="Status">The success or failure of the clear cache command.</param>
-        /// <param name="StatusInfo">Optional detailed status information.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public ClearCacheResponse(CS.ClearCacheRequest  Request,
-                                  ClearCacheStatus      Status,
-                                  StatusInfo?           StatusInfo   = null,
-                                  CustomData?           CustomData   = null)
+        /// <param name="Request">The sign certificate request leading to this response.</param>
+        /// <param name="Status">The success or failure status of the certificate signing request.</param>
+        public SignCertificateResponse(CP.SignCertificateRequest  Request,
+                                       GenericStatus              Status,
+                                       StatusInfo?                StatusInfo   = null,
+                                       CustomData?                CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -78,20 +75,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ClearCacheResponse(Request, Result)
+        #region SignCertificateResponse(Request, Result)
 
         /// <summary>
-        /// Create a new clear cache response.
+        /// Create a sign certificate response.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
+        /// <param name="Request">The sign certificate request leading to this response.</param>
         /// <param name="Result">The result.</param>
-        public ClearCacheResponse(CS.ClearCacheRequest  Request,
-                                  Result                Result)
+        public SignCertificateResponse(CP.SignCertificateRequest  Request,
+                                       Result                     Result)
 
             : base(Request,
                    Result)
 
-        { }
+        {
+
+            this.Status = GenericStatus.Unknown;
+
+        }
 
         #endregion
 
@@ -102,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:ClearCacheResponse",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:SignCertificateResponse",
         //   "comment": "OCPP 2.0.1 FINAL",
         //   "definitions": {
         //     "CustomDataType": {
@@ -119,9 +120,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //         "vendorId"
         //       ]
         //     },
-        //     "ClearCacheStatusEnumType": {
-        //       "description": "Accepted if the Charging Station has executed the request, otherwise rejected.\r\n",
-        //       "javaType": "ClearCacheStatusEnum",
+        //     "GenericStatusEnumType": {
+        //       "description": "Specifies whether the CSMS can process the request.\r\n",
+        //       "javaType": "GenericStatusEnum",
         //       "type": "string",
         //       "additionalProperties": false,
         //       "enum": [
@@ -161,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         //       "$ref": "#/definitions/CustomDataType"
         //     },
         //     "status": {
-        //       "$ref": "#/definitions/ClearCacheStatusEnumType"
+        //       "$ref": "#/definitions/GenericStatusEnumType"
         //     },
         //     "statusInfo": {
         //       "$ref": "#/definitions/StatusInfoType"
@@ -174,63 +175,63 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomClearCacheResponseParser = null)
+        #region (static) Parse   (Request, JSON, CustomSignCertificateRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a clear cache response.
+        /// Parse the given JSON representation of a sign certificate response.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
+        /// <param name="Request">The sign certificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearCacheResponse Parse(CS.ClearCacheRequest                              Request,
-                                               JObject                                           JSON,
-                                               CustomJObjectParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null)
+        /// <param name="CustomSignCertificateResponseParser">A delegate to parse custom sign certificate responses.</param>
+        public static SignCertificateResponse Parse(CP.SignCertificateRequest                              Request,
+                                                    JObject                                                JSON,
+                                                    CustomJObjectParserDelegate<SignCertificateResponse>?  CustomSignCertificateResponseParser   = null)
         {
+
 
             if (TryParse(Request,
                          JSON,
-                         out var clearCacheResponse,
+                         out var signCertificateResponse,
                          out var errorResponse,
-                         CustomClearCacheResponseParser))
+                         CustomSignCertificateResponseParser))
             {
-                return clearCacheResponse!;
+                return signCertificateResponse!;
             }
 
-            throw new ArgumentException("The given JSON representation of a clear cache response is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a sign certificate response is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out ClearCacheResponse, out ErrorResponse, CustomClearCacheResponseParser = null)
+        #region (static) TryParse(Request, JSON, out SignCertificateResponse, out ErrorResponse)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a clear cache response.
+        /// Try to parse the given JSON representation of a sign certificate response.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
+        /// <param name="Request">The sign certificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomClearCacheResponseParser">A delegate to parse custom clear cache responses.</param>
-        public static Boolean TryParse(CS.ClearCacheRequest                              Request,
-                                       JObject                                           JSON,
-                                       out ClearCacheResponse?                           ClearCacheResponse,
-                                       out String?                                       ErrorResponse,
-                                       CustomJObjectParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null)
+        /// <param name="SignCertificateResponse">The parsed sign certificate response.</param>
+        /// <param name="CustomSignCertificateResponseParser">A delegate to parse custom sign certificate responses.</param>
+        public static Boolean TryParse(CP.SignCertificateRequest                              Request,
+                                       JObject                                                JSON,
+                                       out SignCertificateResponse?                           SignCertificateResponse,
+                                       out String?                                            ErrorResponse,
+                                       CustomJObjectParserDelegate<SignCertificateResponse>?  CustomSignCertificateResponseParser   = null)
         {
 
             try
             {
 
-                ClearCacheResponse = null;
+                SignCertificateResponse = null;
 
-                #region ClearCacheStatus    [mandatory]
+                #region Status        [mandatory]
 
                 if (!JSON.ParseMandatory("status",
-                                         "clear cache status",
-                                         ClearCacheStatusExtentions.TryParse,
-                                         out ClearCacheStatus ClearCacheStatus,
+                                         "availability status",
+                                         GenericStatusExtentions.TryParse,
+                                         out GenericStatus Status,
                                          out ErrorResponse))
                 {
                     return false;
@@ -238,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #endregion
 
-                #region StatusInfo          [optional]
+                #region StatusInfo    [optional]
 
                 if (JSON.ParseOptionalJSON("statusInfo",
                                            "detailed status info",
@@ -252,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 #endregion
 
-                #region CustomData          [optional]
+                #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -267,22 +268,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 #endregion
 
 
-                ClearCacheResponse = new ClearCacheResponse(Request,
-                                                            ClearCacheStatus,
-                                                            StatusInfo,
-                                                            CustomData);
+                SignCertificateResponse = new SignCertificateResponse(Request,
+                                                                      Status,
+                                                                      StatusInfo,
+                                                                      CustomData);
 
-                if (CustomClearCacheResponseParser is not null)
-                    ClearCacheResponse = CustomClearCacheResponseParser(JSON,
-                                                                        ClearCacheResponse);
+                if (CustomSignCertificateResponseParser is not null)
+                    SignCertificateResponse = CustomSignCertificateResponseParser(JSON,
+                                                                                  SignCertificateResponse);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                ClearCacheResponse  = null;
-                ErrorResponse       = "The given JSON representation of a clear cache response is invalid: " + e.Message;
+                SignCertificateResponse  = null;
+                ErrorResponse            = "The given JSON representation of a sign certificate response is invalid: " + e.Message;
                 return false;
             }
 
@@ -290,17 +291,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomClearCacheResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
+        #region ToJSON(CustomSignCertificateResponseSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomClearCacheResponseSerializer">A delegate to serialize custom clear cache responses.</param>
+        /// <param name="CustomSignCertificateResponseSerializer">A delegate to serialize custom sign certificate responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearCacheResponse>?  CustomClearCacheResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?          CustomStatusInfoSerializer           = null,
-                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SignCertificateResponse>?  CustomSignCertificateResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?               CustomStatusInfoSerializer                = null,
+                              CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
         {
 
             var json = JSONObject.Create(
@@ -318,8 +319,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                        );
 
-            return CustomClearCacheResponseSerializer is not null
-                       ? CustomClearCacheResponseSerializer(this, json)
+            return CustomSignCertificateResponseSerializer is not null
+                       ? CustomSignCertificateResponseSerializer(this, json)
                        : json;
 
         }
@@ -330,93 +331,93 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         #region Static methods
 
         /// <summary>
-        /// The clear cache command failed.
+        /// The sign certificate request failed.
         /// </summary>
-        /// <param name="Request">The clear cache request leading to this response.</param>
-        public static ClearCacheResponse Failed(CS.ClearCacheRequest Request)
+        /// <param name="Request">The sign certificate request leading to this response.</param>
+        public static SignCertificateResponse Failed(CP.SignCertificateRequest Request)
 
             => new (Request,
-                    Result.Server());
+                    GenericStatus.Unknown);
 
         #endregion
 
 
         #region Operator overloading
 
-        #region Operator == (ClearCacheResponse1, ClearCacheResponse2)
+        #region Operator == (SignCertificateResponse1, SignCertificateResponse2)
 
         /// <summary>
-        /// Compares two clear cache responses for equality.
+        /// Compares two sign certificate responses for equality.
         /// </summary>
-        /// <param name="ClearCacheResponse1">A clear cache response.</param>
-        /// <param name="ClearCacheResponse2">Another clear cache response.</param>
+        /// <param name="SignCertificateResponse1">A sign certificate response.</param>
+        /// <param name="SignCertificateResponse2">Another sign certificate response.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ClearCacheResponse? ClearCacheResponse1,
-                                           ClearCacheResponse? ClearCacheResponse2)
+        public static Boolean operator == (SignCertificateResponse? SignCertificateResponse1,
+                                           SignCertificateResponse? SignCertificateResponse2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(ClearCacheResponse1, ClearCacheResponse2))
+            if (ReferenceEquals(SignCertificateResponse1, SignCertificateResponse2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (ClearCacheResponse1 is null || ClearCacheResponse2 is null)
+            if (SignCertificateResponse1 is null || SignCertificateResponse2 is null)
                 return false;
 
-            return ClearCacheResponse1.Equals(ClearCacheResponse2);
+            return SignCertificateResponse1.Equals(SignCertificateResponse2);
 
         }
 
         #endregion
 
-        #region Operator != (ClearCacheResponse1, ClearCacheResponse2)
+        #region Operator != (SignCertificateResponse1, SignCertificateResponse2)
 
         /// <summary>
-        /// Compares two clear cache responses for inequality.
+        /// Compares two sign certificate responses for inequality.
         /// </summary>
-        /// <param name="ClearCacheResponse1">A clear cache response.</param>
-        /// <param name="ClearCacheResponse2">Another clear cache response.</param>
+        /// <param name="SignCertificateResponse1">A sign certificate response.</param>
+        /// <param name="SignCertificateResponse2">Another sign certificate response.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ClearCacheResponse? ClearCacheResponse1,
-                                           ClearCacheResponse? ClearCacheResponse2)
+        public static Boolean operator != (SignCertificateResponse? SignCertificateResponse1,
+                                           SignCertificateResponse? SignCertificateResponse2)
 
-            => !(ClearCacheResponse1 == ClearCacheResponse2);
-
-        #endregion
+            => !(SignCertificateResponse1 == SignCertificateResponse2);
 
         #endregion
 
-        #region IEquatable<ClearCacheResponse> Members
+        #endregion
+
+        #region IEquatable<SignCertificateResponse> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two clear cache responses for equality.
+        /// Compares two sign certificate responses for equality.
         /// </summary>
-        /// <param name="Object">A clear cache response to compare with.</param>
+        /// <param name="Object">A sign certificate response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is ClearCacheResponse clearCacheResponse &&
-                   Equals(clearCacheResponse);
+            => Object is SignCertificateResponse signCertificateResponse &&
+                   Equals(signCertificateResponse);
 
         #endregion
 
-        #region Equals(ClearCacheResponse)
+        #region Equals(SignCertificateResponse)
 
         /// <summary>
-        /// Compares two clear cache responses for equality.
+        /// Compares two sign certificate responses for equality.
         /// </summary>
-        /// <param name="ClearCacheResponse">A clear cache response to compare with.</param>
-        public override Boolean Equals(ClearCacheResponse? ClearCacheResponse)
+        /// <param name="SignCertificateResponse">A sign certificate response to compare with.</param>
+        public override Boolean Equals(SignCertificateResponse? SignCertificateResponse)
 
-            => ClearCacheResponse is not null &&
+            => SignCertificateResponse is not null &&
 
-               Status.     Equals(ClearCacheResponse.Status) &&
+               Status.     Equals(SignCertificateResponse.Status) &&
 
-             ((StatusInfo is     null && ClearCacheResponse.StatusInfo is     null) ||
-               StatusInfo is not null && ClearCacheResponse.StatusInfo is not null && StatusInfo.Equals(ClearCacheResponse.StatusInfo)) &&
+             ((StatusInfo is     null && SignCertificateResponse.StatusInfo is     null) ||
+               StatusInfo is not null && SignCertificateResponse.StatusInfo is not null && StatusInfo.Equals(SignCertificateResponse.StatusInfo)) &&
 
-               base.GenericEquals(ClearCacheResponse);
+               base.GenericEquals(SignCertificateResponse);
 
         #endregion
 

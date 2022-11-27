@@ -269,8 +269,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomComponentSerializer">A delegate to serialize custom Component objects.</param>
-        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSE objects.</param>
+        /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<Component>?   CustomComponentSerializer    = null,
                               CustomJObjectSerializerDelegate<EVSE>?        CustomEVSESerializer         = null,
@@ -416,15 +416,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Name,
+            => String.Concat(
 
-                             Instance.IsNotNullOrEmpty()
-                                 ? " (" + Instance + ")"
-                                 : null,
+                   Name,
 
-                             EVSE is not null
-                                 ? " [" + EVSE.ToString() + "]"
-                                 : null);
+                   Instance is not null && Instance.IsNotNullOrEmpty()
+                       ? " (" + Instance + ")"
+                       : null,
+
+                   EVSE is not null
+                       ? " [" + EVSE.ToString() + "]"
+                       : null
+
+               );
 
         #endregion
 

@@ -24,18 +24,75 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class ChangeAvailabilityStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a change availability status.
+        /// </summary>
+        /// <param name="Text">A text representation of a change availability status.</param>
         public static ChangeAvailabilityStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Accepted"   => ChangeAvailabilityStatus.Accepted,
-                   "Rejected"   => ChangeAvailabilityStatus.Rejected,
-                   "Scheduled"  => ChangeAvailabilityStatus.Scheduled,
-                   _            => ChangeAvailabilityStatus.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return ChangeAvailabilityStatus.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a change availability status.
+        /// </summary>
+        /// <param name="Text">A text representation of a change availability status.</param>
+        public static ChangeAvailabilityStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ChangeAvailabilityStatus)
+
+        /// <summary>
+        /// Try to parse the given text as a change availability status.
+        /// </summary>
+        /// <param name="Text">A text representation of a change availability status.</param>
+        /// <param name="ChangeAvailabilityStatus">The parsed change availability status.</param>
+        public static Boolean TryParse(String Text, out ChangeAvailabilityStatus ChangeAvailabilityStatus)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Accepted":
+                    ChangeAvailabilityStatus = ChangeAvailabilityStatus.Accepted;
+                    return true;
+
+                case "Rejected":
+                    ChangeAvailabilityStatus = ChangeAvailabilityStatus.Rejected;
+                    return true;
+
+                case "Scheduled":
+                    ChangeAvailabilityStatus = ChangeAvailabilityStatus.Scheduled;
+                    return true;
+
+                default:
+                    ChangeAvailabilityStatus = ChangeAvailabilityStatus.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this ChangeAvailabilityStatus)
 

@@ -398,10 +398,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomIdTokenInfoSerializer">A delegate to serialize custom identification tokens info objects.</param>
+        /// <param name="CustomIdTokenInfoSerializer">A delegate to serialize custom identification tokens infos.</param>
         /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
-        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional info objects.</param>
-        /// <param name="CustomMessageContentSerializer">A delegate to serialize custom message content objects.</param>
+        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional infos.</param>
+        /// <param name="CustomMessageContentSerializer">A delegate to serialize custom message contents.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<IdTokenInfo>?     CustomIdTokenInfoSerializer      = null,
                               CustomJObjectSerializerDelegate<IdToken>?         CustomIdTokenSerializer          = null,

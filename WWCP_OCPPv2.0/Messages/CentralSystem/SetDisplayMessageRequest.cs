@@ -440,11 +440,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSetDisplayMessageRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        /// <param name="CustomSetDisplayMessageRequestSerializer">A delegate to serialize custom set display message requests.</param>
         /// <param name="CustomMessageInfoSerializer">A delegate to serialize custom message info objects.</param>
-        /// <param name="CustomMessageContentSerializer">A delegate to serialize custom message content objects.</param>
+        /// <param name="CustomMessageContentSerializer">A delegate to serialize custom message contents.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom component objects.</param>
-        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSE objects.</param>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SetDisplayMessageRequest>?  CustomSetDisplayMessageRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<MessageInfo>?               CustomMessageInfoSerializer                = null,

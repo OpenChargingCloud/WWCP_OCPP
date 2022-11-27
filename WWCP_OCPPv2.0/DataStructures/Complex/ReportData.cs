@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="CustomReportDataSerializer">A delegate to serialize custom report data objects.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom component objects.</param>
-        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSE objects.</param>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomVariableSerializer">A delegate to serialize custom variable objects.</param>
         /// <param name="CustomVariableAttributeSerializer">A delegate to serialize custom variable attribute objects.</param>
         /// <param name="CustomVariableCharacteristicsSerializer">A delegate to serialize custom variable characteristics objects.</param>

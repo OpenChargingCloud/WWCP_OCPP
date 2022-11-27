@@ -509,7 +509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSetNetworkProfileRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        /// <param name="CustomSetNetworkProfileRequestSerializer">A delegate to serialize custom set network profile requests.</param>
         /// <param name="CustomNetworkConnectionProfileSerializer">A delegate to serialize custom network connection profiles.</param>
         /// <param name="CustomVPNConfigurationSerializer">A delegate to serialize custom VPN configurations.</param>
         /// <param name="CustomAPNConfigurationSerializer">A delegate to serialize custom APN configurations.</param>

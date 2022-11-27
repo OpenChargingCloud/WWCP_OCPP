@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomVariableSerializer">A delegate to serialize custom Variable objects.</param>
+        /// <param name="CustomVariableSerializer">A delegate to serialize custom variables.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<Variable>?    CustomVariableSerializer     = null,
                               CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
@@ -378,10 +378,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Name,
-                             Instance.IsNotNullOrEmpty()
-                                 ? " (" + Instance + ")"
-                                 : null);
+            => String.Concat(
+
+                   Name,
+
+                   Instance is not null && Instance.IsNotNullOrEmpty()
+                       ? " (" + Instance + ")"
+                       : null
+
+               );
 
         #endregion
 
