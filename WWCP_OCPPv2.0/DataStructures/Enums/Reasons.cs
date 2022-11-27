@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Status)
+        #region TryParse(Text, out Reason)
 
         /// <summary>
         /// Try to parse the given text as a stop transaction reason.

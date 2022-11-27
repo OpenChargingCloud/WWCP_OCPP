@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -26,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
@@ -38,14 +36,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Properties
 
         /// <summary>
-        /// The URL where to download the firmware.
+        /// The firmware image to be installed at the charging station.
         /// </summary>
-        public URL        FirmwareURL          { get; }
+        [Mandatory]
+        public Firmware   Firmware                   { get; }
 
         /// <summary>
-        /// The timestamp when the charge point shall retrieve the firmware.
+        /// The update firmware request identification.
         /// </summary>
-        public DateTime   RetrieveTimestamp    { get; }
+        [Mandatory]
+        public Int32      UpdateFirmwareRequestId    { get; }
 
         /// <summary>
         /// The optional number of retries of a charge point for trying to
@@ -53,14 +53,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// present, it is left to the charge point to decide how many times
         /// it wants to retry.
         /// </summary>
-        public Byte?      Retries              { get; }
+        [Optional]
+        public Byte?      Retries                    { get; }
 
         /// <summary>
         /// The interval after which a retry may be attempted. If this field
         /// is not present, it is left to charge point to decide how long to
         /// wait between attempts.
         /// </summary>
-        public TimeSpan?  RetryInterval        { get; }
+        [Optional]
+        public TimeSpan?  RetryInterval              { get; }
 
         #endregion
 
@@ -70,19 +72,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a new update firmware request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="FirmwareURL">The URL where to download the firmware.</param>
-        /// <param name="RetrieveTimestamp">The timestamp when the charge point shall retrieve the firmware.</param>
+        /// <param name="Firmware">The firmware image to be installed at the charging station.</param>
+        /// <param name="UpdateFirmwareRequestId">The update firmware request identification.</param>
         /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
         /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public UpdateFirmwareRequest(ChargeBox_Id        ChargeBoxId,
-                                     URL                 FirmwareURL,
-                                     DateTime            RetrieveTimestamp,
+                                     Firmware            Firmware,
+                                     Int32               UpdateFirmwareRequestId,
                                      Byte?               Retries             = null,
                                      TimeSpan?           RetryInterval       = null,
 
+                                     CustomData?         CustomData          = null,
                                      Request_Id?         RequestId           = null,
                                      DateTime?           RequestTimestamp    = null,
                                      TimeSpan?           RequestTimeout      = null,
@@ -91,6 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             : base(ChargeBoxId,
                    "UpdateFirmware",
+                   CustomData,
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -99,10 +107,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         {
 
-            this.FirmwareURL        = FirmwareURL;
-            this.RetrieveTimestamp  = RetrieveTimestamp;
-            this.Retries            = Retries;
-            this.RetryInterval      = RetryInterval;
+            this.Firmware                 = Firmware;
+            this.UpdateFirmwareRequestId  = UpdateFirmwareRequestId;
+            this.Retries                  = Retries;
+            this.RetryInterval            = RetryInterval;
 
         }
 
@@ -111,87 +119,93 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Documentation
 
-        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-        //                xmlns:ns   = "urn://Ocpp/Cp/2015/10/">
-        //
-        //    <soap:Header>
-        //       ...
-        //    </soap:Header>
-        //
-        //    <soap:Body>
-        //       <ns:updateFirmwareRequest>
-        //
-        //          <ns:retrieveDate>?</ns:retrieveDate>
-        //          <ns:location>?</ns:location>
-        //
-        //          <!--Optional:-->
-        //          <ns:retries>?</ns:retries>
-        //
-        //          <!--Optional:-->
-        //          <ns:retryInterval>?</ns:retryInterval>
-        //
-        //       </ns:updateFirmwareRequest>
-        //    </soap:Body>
-        //
-        // </soap:Envelope>
-
         // {
-        //     "$schema": "http://json-schema.org/draft-04/schema#",
-        //     "id":      "urn:OCPP:1.6:2019:12:UpdateFirmwareRequest",
-        //     "title":   "UpdateFirmwareRequest",
-        //     "type":    "object",
-        //     "properties": {
-        //         "location": {
-        //             "type": "string",
-        //             "format": "uri"
-        //         },
-        //         "retries": {
-        //             "type": "integer"
-        //         },
-        //         "retrieveDate": {
-        //             "type": "string",
-        //             "format": "date-time"
-        //         },
-        //         "retryInterval": {
-        //             "type": "integer"
+        //   "$schema": "http://json-schema.org/draft-06/schema#",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:UpdateFirmwareRequest",
+        //   "comment": "OCPP 2.0.1 FINAL",
+        //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
         //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
         //     },
-        //     "additionalProperties": false,
-        //     "required": [
+        //     "FirmwareType": {
+        //       "description": "Firmware\r\nurn:x-enexis:ecdm:uid:2:233291\r\nRepresents a copy of the firmware that can be loaded/updated on the Charging Station.\r\n",
+        //       "javaType": "Firmware",
+        //       "type": "object",
+        //       "additionalProperties": false,
+        //       "properties": {
+        //         "customData": {
+        //           "$ref": "#/definitions/CustomDataType"
+        //         },
+        //         "location": {
+        //           "description": "Firmware. Location. URI\r\nurn:x-enexis:ecdm:uid:1:569460\r\nURI defining the origin of the firmware.\r\n",
+        //           "type": "string",
+        //           "maxLength": 512
+        //         },
+        //         "retrieveDateTime": {
+        //           "description": "Firmware. Retrieve. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569461\r\nDate and time at which the firmware shall be retrieved.\r\n",
+        //           "type": "string",
+        //           "format": "date-time"
+        //         },
+        //         "installDateTime": {
+        //           "description": "Firmware. Install. Date_ Time\r\nurn:x-enexis:ecdm:uid:1:569462\r\nDate and time at which the firmware shall be installed.\r\n",
+        //           "type": "string",
+        //           "format": "date-time"
+        //         },
+        //         "signingCertificate": {
+        //           "description": "Certificate with which the firmware was signed.\r\nPEM encoded X.509 certificate.\r\n",
+        //           "type": "string",
+        //           "maxLength": 5500
+        //         },
+        //         "signature": {
+        //           "description": "Firmware. Signature. Signature\r\nurn:x-enexis:ecdm:uid:1:569464\r\nBase64 encoded firmware signature.\r\n",
+        //           "type": "string",
+        //           "maxLength": 800
+        //         }
+        //       },
+        //       "required": [
         //         "location",
-        //         "retrieveDate"
-        //     ]
+        //         "retrieveDateTime"
+        //       ]
+        //     }
+        //   },
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     },
+        //     "retries": {
+        //       "description": "This specifies how many times Charging Station must try to download the firmware before giving up. If this field is not present, it is left to Charging Station to decide how many times it wants to retry.\r\n",
+        //       "type": "integer"
+        //     },
+        //     "retryInterval": {
+        //       "description": "The interval in seconds after which a retry may be attempted. If this field is not present, it is left to Charging Station to decide how long to wait between attempts.\r\n",
+        //       "type": "integer"
+        //     },
+        //     "requestId": {
+        //       "description": "The Id of this request\r\n",
+        //       "type": "integer"
+        //     },
+        //     "firmware": {
+        //       "$ref": "#/definitions/FirmwareType"
+        //     }
+        //   },
+        //   "required": [
+        //     "requestId",
+        //     "firmware"
+        //   ]
         // }
-
-        #endregion
-
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
-
-        /// <summary>
-        /// Parse the given XML representation of an update firmware request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        public static UpdateFirmwareRequest Parse(XElement      XML,
-                                                  Request_Id    RequestId,
-                                                  ChargeBox_Id  ChargeBoxId)
-        {
-
-            if (TryParse(XML,
-                         RequestId,
-                         ChargeBoxId,
-                         out var updateFirmwareRequest,
-                         out var errorResponse))
-            {
-                return updateFirmwareRequest!;
-            }
-
-            throw new ArgumentException("The given XML representation of an update firmware request is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
 
         #endregion
 
@@ -222,60 +236,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             throw new ArgumentException("The given JSON representation of an update firmware request is invalid: " + errorResponse,
                                         nameof(JSON));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out UpdateFirmwareRequest, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of an update firmware request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                    XML,
-                                       Request_Id                  RequestId,
-                                       ChargeBox_Id                ChargeBoxId,
-                                       out UpdateFirmwareRequest?  UpdateFirmwareRequest,
-                                       out String?                 ErrorResponse)
-        {
-
-            try
-            {
-
-                UpdateFirmwareRequest = new UpdateFirmwareRequest(
-
-                                            ChargeBoxId,
-
-                                            URL.Parse(XML.ElementValueOrFail(OCPPNS.OCPPv1_6_CP + "location")),
-
-                                            XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "retrieveDate",
-                                                                                        DateTime.Parse),
-
-                                            XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "retries",
-                                                                                        Byte.Parse),
-
-                                            XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "retryInterval",
-                                                                                        s => TimeSpan.FromSeconds(UInt32.Parse(s))),
-
-                                            RequestId
-
-                                        );
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                UpdateFirmwareRequest  = null;
-                ErrorResponse          = "The given XML representation of an update firmware request is invalid: " + e.Message;
-                return false;
-            }
 
         }
 
@@ -329,12 +289,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 UpdateFirmwareRequest = null;
 
-                #region FirmwareURL          [mandatory]
+                #region Firmware                   [mandatory]
 
-                if (!JSON.ParseMandatory("location",
-                                         "location",
-                                         URL.TryParse,
-                                         out URL FirmwareURL,
+                if (!JSON.ParseMandatoryJSON("firmware",
+                                             "firmware",
+                                             OCPPv2_0.Firmware.TryParse,
+                                             out Firmware? Firmware,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (Firmware is null)
+                    return false;
+
+                #endregion
+
+                #region UpdateFirmwareRequestId    [mandatory]
+
+                if (!JSON.ParseMandatory("requestId",
+                                         "request identification",
+                                         out Int32 UpdateFirmwareRequestId,
                                          out ErrorResponse))
                 {
                     return false;
@@ -342,19 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region RetrieveTimestamp    [mandatory]
-
-                if (!JSON.ParseMandatory("retrieveDate",
-                                         "retrieve date",
-                                         out DateTime RetrieveDate,
-                                         out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region Retries              [optional]
+                #region Retries                    [optional]
 
                 if (JSON.ParseOptional("retries",
                                        "retries",
@@ -367,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region RetryInterval        [optional]
+                #region RetryInterval              [optional]
 
                 if (JSON.ParseOptional("retryInterval",
                                        "retry interval",
@@ -380,7 +343,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region ChargeBoxId          [optional, OCPP_CSE]
+                #region CustomData                 [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region ChargeBoxId                [optional, OCPP_CSE]
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
@@ -401,10 +378,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
                 UpdateFirmwareRequest = new UpdateFirmwareRequest(ChargeBoxId,
-                                                                  FirmwareURL,
-                                                                  RetrieveDate,
+                                                                  Firmware,
+                                                                  UpdateFirmwareRequestId,
                                                                   Retries,
                                                                   RetryInterval,
+                                                                  CustomData,
                                                                   RequestId);
 
                 if (CustomUpdateFirmwareRequestParser is not null)
@@ -425,43 +403,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new (OCPPNS.OCPPv1_6_CP + "getDiagnosticsRequest",
-
-                   new XElement(OCPPNS.OCPPv1_6_CP + "retrieveDate",         RetrieveTimestamp.ToIso8601()),
-                   new XElement(OCPPNS.OCPPv1_6_CP + "location",             FirmwareURL. ToString()),
-
-                   Retries.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "retries",        Retries.Value)
-                       : null,
-
-                   RetryInterval.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "retryInterval",  (UInt64) RetryInterval.Value.TotalSeconds)
-                       : null
-
-               );
-
-        #endregion
-
-        #region ToJSON(CustomUpdateFirmwareRequestSerializer = null)
+        #region ToJSON(CustomUpdateFirmwareRequestSerializer = null, CustomFirmwareSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomUpdateFirmwareRequestSerializer">A delegate to serialize custom start transaction requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateFirmwareRequest>? CustomUpdateFirmwareRequestSerializer = null)
+        /// <param name="CustomFirmwareSerializer">A delegate to serialize custom firmwares.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Firmware>?               CustomFirmwareSerializer                = null,
+                              CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataSerializer              = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("retrieveDate",         RetrieveTimestamp.ToIso8601()),
-                           new JProperty("location",             FirmwareURL. ToString()),
+                                 new JProperty("firmware",       Firmware.ToJSON(CustomFirmwareSerializer,
+                                                                                 CustomCustomDataSerializer)),
+
+                                 new JProperty("requestId",      UpdateFirmwareRequestId),
 
                            Retries.HasValue
                                ? new JProperty("retries",        Retries.Value)
@@ -552,16 +512,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => UpdateFirmwareRequest is not null &&
 
-               FirmwareURL.    Equals(UpdateFirmwareRequest.FirmwareURL)     &&
-               RetrieveTimestamp.Equals(UpdateFirmwareRequest.RetrieveTimestamp) &&
+               Firmware.               Equals(UpdateFirmwareRequest.Firmware)                &&
+               UpdateFirmwareRequestId.Equals(UpdateFirmwareRequest.UpdateFirmwareRequestId) &&
 
-               ((!Retries.      HasValue && !UpdateFirmwareRequest.Retries.      HasValue) ||
-                 (Retries.      HasValue &&  UpdateFirmwareRequest.Retries.      HasValue && Retries.      Value.Equals(UpdateFirmwareRequest.Retries.      Value))) &&
+            ((!Retries.      HasValue &&  !UpdateFirmwareRequest.Retries.      HasValue) ||
+              (Retries.      HasValue &&   UpdateFirmwareRequest.Retries.      HasValue && Retries.      Value.Equals(UpdateFirmwareRequest.Retries.      Value))) &&
 
-               ((!RetryInterval.HasValue && !UpdateFirmwareRequest.RetryInterval.HasValue) ||
-                 (RetryInterval.HasValue &&  UpdateFirmwareRequest.RetryInterval.HasValue && RetryInterval.Value.Equals(UpdateFirmwareRequest.RetryInterval.Value))) &&
+            ((!RetryInterval.HasValue &&  !UpdateFirmwareRequest.RetryInterval.HasValue) ||
+              (RetryInterval.HasValue &&   UpdateFirmwareRequest.RetryInterval.HasValue && RetryInterval.Value.Equals(UpdateFirmwareRequest.RetryInterval.Value))) &&
 
-               base. GenericEquals(UpdateFirmwareRequest);
+               base.            GenericEquals(UpdateFirmwareRequest);
 
         #endregion
 
@@ -578,13 +538,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return FirmwareURL.      GetHashCode()       * 11 ^
-                       RetrieveTimestamp.  GetHashCode()       *  7 ^
+                return Firmware.               GetHashCode()       * 11 ^
+                       UpdateFirmwareRequestId.GetHashCode()       *  7 ^
+                      (Retries?.               GetHashCode() ?? 0) *  5 ^
+                      (RetryInterval?.         GetHashCode() ?? 0) *  3 ^
 
-                      (Retries?.      GetHashCode() ?? 0) *  5 ^
-                      (RetryInterval?.GetHashCode() ?? 0) *  3 ^
-
-                       base.          GetHashCode();
+                       base.                   GetHashCode();
 
             }
         }
@@ -598,17 +557,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(FirmwareURL,
+            => String.Concat(
 
-                             " till ", RetrieveTimestamp,
+                   UpdateFirmwareRequestId,
 
-                             Retries.HasValue
-                                 ? ", " + Retries.Value + " retries"
-                                 : "",
+                   ": ", Firmware,
 
-                             RetryInterval.HasValue
-                                 ? ", retry interval " + RetryInterval.Value.TotalSeconds + " sec(s)"
-                                 : "");
+                   Retries.HasValue
+                       ? ", " + Retries.Value + " retries"
+                       : "",
+
+                   RetryInterval.HasValue
+                       ? ", retry interval " + RetryInterval.Value.TotalSeconds + " sec(s)"
+                       : ""
+
+                );
 
         #endregion
 

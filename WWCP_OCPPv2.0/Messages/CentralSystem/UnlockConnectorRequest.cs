@@ -17,15 +17,13 @@
 
 #region Usings
 
-using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
@@ -37,8 +35,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region Properties
 
         /// <summary>
+        /// The identifier of the EVSE to be unlocked.
+        /// </summary>
+        [Mandatory]
+        public EVSE_Id       EVSEId         { get; }
+
+        /// <summary>
         /// The identifier of the connector to be unlocked.
         /// </summary>
+        [Mandatory]
         public Connector_Id  ConnectorId    { get; }
 
         #endregion
@@ -49,13 +54,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a new unlock connector request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="EVSEId">The identifier of the EVSE to be unlocked.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
         /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public UnlockConnectorRequest(ChargeBox_Id        ChargeBoxId,
+                                      EVSE_Id             EVSEId,
                                       Connector_Id        ConnectorId,
 
+                                      CustomData?         CustomData          = null,
                                       Request_Id?         RequestId           = null,
                                       DateTime?           RequestTimestamp    = null,
                                       TimeSpan?           RequestTimeout      = null,
@@ -64,6 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             : base(ChargeBoxId,
                    "UnlockConnector",
+                   CustomData,
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -72,7 +85,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         {
 
-            this.ConnectorId = ConnectorId;
+            this.EVSEId       = EVSEId;
+            this.ConnectorId  = ConnectorId;
 
         }
 
@@ -81,68 +95,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Documentation
 
-        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-        //                xmlns:ns   = "urn://Ocpp/Cp/2015/10/">
-        //
-        //    <soap:Header>
-        //       ...
-        //    </soap:Header>
-        //
-        //    <soap:Body>
-        //       <ns:unlockConnectorRequest>
-        //
-        //          <ns:connectorId>?</ns:connectorId>
-        //
-        //       </ns:unlockConnectorRequest>
-        //    </soap:Body>
-        //
-        // </soap:Envelope>
-
         // {
-        //     "$schema": "http://json-schema.org/draft-04/schema#",
-        //     "id":      "urn:OCPP:1.6:2019:12:UnlockConnectorRequest",
-        //     "title":   "UnlockConnectorRequest",
-        //     "type":    "object",
-        //     "properties": {
-        //         "connectorId": {
-        //             "type": "integer"
+        //   "$schema": "http://json-schema.org/draft-06/schema#",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:UnlockConnectorRequest",
+        //   "comment": "OCPP 2.0.1 FINAL",
+        //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
         //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
+        //     }
+        //   },
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "additionalProperties": false,
-        //     "required": [
-        //         "connectorId"
-        //     ]
+        //     "evseId": {
+        //       "description": "This contains the identifier of the EVSE for which a connector needs to be unlocked.\r\n",
+        //       "type": "integer"
+        //     },
+        //     "connectorId": {
+        //       "description": "This contains the identifier of the connector that needs to be unlocked.\r\n",
+        //       "type": "integer"
+        //     }
+        //   },
+        //   "required": [
+        //     "evseId",
+        //     "connectorId"
+        //   ]
         // }
-
-        #endregion
-
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
-
-        /// <summary>
-        /// Parse the given XML representation of an unlock connector request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        public static UnlockConnectorRequest Parse(XElement      XML,
-                                                   Request_Id    RequestId,
-                                                   ChargeBox_Id  ChargeBoxId)
-        {
-
-            if (TryParse(XML,
-                         RequestId,
-                         ChargeBoxId,
-                         out var unlockConnectorRequest,
-                         out var errorResponse))
-            {
-                return unlockConnectorRequest!;
-            }
-
-            throw new ArgumentException("The given XML representation of an unlock connector request is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
 
         #endregion
 
@@ -178,53 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out UnlockConnectorRequest, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of an unlock connector request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="UnlockConnectorRequest">The parsed unlock connector request.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(XElement                     XML,
-                                       Request_Id                   RequestId,
-                                       ChargeBox_Id                 ChargeBoxId,
-                                       out UnlockConnectorRequest?  UnlockConnectorRequest,
-                                       out String?                  ErrorResponse)
-        {
-
-            try
-            {
-
-                UnlockConnectorRequest = new UnlockConnectorRequest(
-
-                                             ChargeBoxId,
-
-                                             XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "connectorId",
-                                                                Connector_Id.Parse),
-
-                                             RequestId
-
-                                         );
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                UnlockConnectorRequest  = null;
-                ErrorResponse           = "The given XML representation of an unlock connector request is invalid: " + e.Message;
-                return false;
-            }
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out UnlockConnectorRequest, out ErrorResponse, CustomUnlockConnectorRequestParser = null)
+        #region (static) TryParse(JSON,  RequestId, ChargeBoxId, out UnlockConnectorRequest, out ErrorResponse, CustomUnlockConnectorRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -272,6 +218,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 UnlockConnectorRequest = null;
 
+                #region EVSEId         [mandatory]
+
+                if (!JSON.ParseMandatory("EVSEId",
+                                         "EVSE identification",
+                                         EVSE_Id.TryParse,
+                                         out EVSE_Id EVSEId,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
                 #region ConnectorId    [mandatory]
 
                 if (!JSON.ParseMandatory("connectorId",
@@ -281,6 +240,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                          out ErrorResponse))
                 {
                     return false;
+                }
+
+                #endregion
+
+                #region CustomData     [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -306,7 +279,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
                 UnlockConnectorRequest = new UnlockConnectorRequest(ChargeBoxId,
+                                                                    EVSEId,
                                                                     ConnectorId,
+                                                                    CustomData,
                                                                     RequestId);
 
                 if (CustomUnlockConnectorRequestParser is not null)
@@ -327,32 +302,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new (OCPPNS.OCPPv1_6_CP + "unlockConnectorRequest",
-
-                   new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",  ConnectorId.ToString())
-
-               );
-
-        #endregion
-
-        #region ToJSON(CustomUnlockConnectorRequestSerializer = null)
+        #region ToJSON(CustomUnlockConnectorRequestSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomUnlockConnectorRequestSerializer">A delegate to serialize custom unlock connector requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<UnlockConnectorRequest>? CustomUnlockConnectorRequestSerializer = null)
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<UnlockConnectorRequest>?  CustomUnlockConnectorRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataSerializer               = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("connectorId",  ConnectorId.Value)
+
+                                 new JProperty("EVSEId",       EVSEId.     Value),
+
+                                 new JProperty("ConnectorId",  ConnectorId.Value),
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData. ToJSON(CustomCustomDataSerializer))
+                               : null
+
                        );
 
             return CustomUnlockConnectorRequestSerializer is not null
@@ -434,6 +404,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => UnlockConnectorRequest is not null &&
 
+               EVSEId.     Equals(UnlockConnectorRequest.EVSEId)      &&
                ConnectorId.Equals(UnlockConnectorRequest.ConnectorId) &&
 
                base.GenericEquals(UnlockConnectorRequest);
@@ -453,7 +424,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return ConnectorId.GetHashCode() * 3 ^
+                return EVSEId.     GetHashCode() * 5 ^
+                       ConnectorId.GetHashCode() * 3 ^
+
                        base.       GetHashCode();
 
             }
@@ -468,7 +441,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => ConnectorId.ToString();
+            => String.Concat(
+
+                   EVSEId,
+                   " / ",
+                   ConnectorId
+
+               );
 
         #endregion
 

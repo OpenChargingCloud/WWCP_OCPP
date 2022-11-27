@@ -17,15 +17,13 @@
 
 #region Usings
 
-using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
@@ -39,13 +37,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The message to trigger.
         /// </summary>
+        [Mandatory]
         public MessageTriggers  RequestedMessage    { get; }
 
         /// <summary>
-        /// Optional connector identification whenever the message
-        /// applies to a specific connector.
+        /// The optional EVSE (and connector) identification whenever the message
+        /// applies to a specific EVSE and/or connector.
         /// </summary>
-        public Connector_Id?    ConnectorId         { get; }
+        [Optional]
+        public EVSE_Id?         EVSEId              { get; }
 
         #endregion
 
@@ -56,14 +56,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
-        /// <param name="ConnectorId">Optional connector identification whenever the message applies to a specific connector.</param>
+        /// <param name="EVSEId">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
         /// 
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public TriggerMessageRequest(ChargeBox_Id        ChargeBoxId,
                                      MessageTriggers     RequestedMessage,
-                                     Connector_Id?       ConnectorId         = null,
+                                     EVSE_Id?            EVSEId              = null,
 
+                                     CustomData?         CustomData          = null,
                                      Request_Id?         RequestId           = null,
                                      DateTime?           RequestTimestamp    = null,
                                      TimeSpan?           RequestTimeout      = null,
@@ -72,6 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             : base(ChargeBoxId,
                    "TriggerMessage",
+                   CustomData,
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -81,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             this.RequestedMessage  = RequestedMessage;
-            this.ConnectorId       = ConnectorId;
+            this.EVSEId            = EVSEId;
 
         }
 
@@ -90,83 +96,84 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Documentation
 
-        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
-        //                xmlns:ns   = "urn://Ocpp/Cp/2015/10/">
-        //
-        //    <soap:Header>
-        //       ...
-        //    </soap:Header>
-        //
-        //    <soap:Body>
-        //       <ns:triggerMessageRequest>
-        //
-        //          <ns:requestedMessage>?</ns:requestedMessage>
-        //
-        //          <!--Optional:-->
-        //          <ns:connectorId>?</ns:connectorId>
-        //
-        //       </ns:triggerMessageRequest>
-        //    </soap:Body>
-        //
-        // </soap:Envelope>
-
         // {
-        //     "$schema": "http://json-schema.org/draft-04/schema#",
-        //     "id":      "urn:OCPP:1.6:2019:12:TriggerMessageRequest",
-        //     "title":   "TriggerMessageRequest",
-        //     "type":    "object",
-        //     "properties": {
-        //         "requestedMessage": {
-        //             "type": "string",
-        //             "additionalProperties": false,
-        //             "enum": [
-        //                 "BootNotification",
-        //                 "DiagnosticsStatusNotification",
-        //                 "FirmwareStatusNotification",
-        //                 "Heartbeat",
-        //                 "MeterValues",
-        //                 "StatusNotification"
-        //             ]
+        //   "$schema": "http://json-schema.org/draft-06/schema#",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:TriggerMessageRequest",
+        //   "comment": "OCPP 2.0.1 FINAL",
+        //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
+        //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
+        //     },
+        //     "MessageTriggerEnumType": {
+        //       "description": "Type of message to be triggered.\r\n",
+        //       "javaType": "MessageTriggerEnum",
+        //       "type": "string",
+        //       "additionalProperties": false,
+        //       "enum": [
+        //         "BootNotification",
+        //         "LogStatusNotification",
+        //         "FirmwareStatusNotification",
+        //         "Heartbeat",
+        //         "MeterValues",
+        //         "SignChargingStationCertificate",
+        //         "SignV2GCertificate",
+        //         "StatusNotification",
+        //         "TransactionEvent",
+        //         "SignCombinedCertificate",
+        //         "PublishFirmwareStatusNotification"
+        //       ]
+        //     },
+        //     "EVSEType": {
+        //       "description": "EVSE\r\nurn:x-oca:ocpp:uid:2:233123\r\nElectric Vehicle Supply Equipment\r\n",
+        //       "javaType": "EVSE",
+        //       "type": "object",
+        //       "additionalProperties": false,
+        //       "properties": {
+        //         "customData": {
+        //           "$ref": "#/definitions/CustomDataType"
+        //         },
+        //         "id": {
+        //           "description": "Identified_ Object. MRID. Numeric_ Identifier\r\nurn:x-enexis:ecdm:uid:1:569198\r\nEVSE Identifier. This contains a number (&gt; 0) designating an EVSE of the Charging Station.\r\n",
+        //           "type": "integer"
         //         },
         //         "connectorId": {
-        //             "type": "integer"
+        //           "description": "An id to designate a specific connector (on an EVSE) by connector index number.\r\n",
+        //           "type": "integer"
         //         }
+        //       },
+        //       "required": [
+        //         "id"
+        //       ]
+        //     }
+        //   },
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
         //     },
-        //     "additionalProperties": false,
-        //     "required": [
-        //         "requestedMessage"
-        //     ]
+        //     "evse": {
+        //       "$ref": "#/definitions/EVSEType"
+        //     },
+        //     "requestedMessage": {
+        //       "$ref": "#/definitions/MessageTriggerEnumType"
+        //     }
+        //   },
+        //   "required": [
+        //     "requestedMessage"
+        //   ]
         // }
-
-        #endregion
-
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
-
-        /// <summary>
-        /// Parse the given XML representation of a trigger message request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        public static TriggerMessageRequest Parse(XElement      XML,
-                                                  Request_Id    RequestId,
-                                                  ChargeBox_Id  ChargeBoxId)
-        {
-
-            if (TryParse(XML,
-                         RequestId,
-                         ChargeBoxId,
-                         out var triggerMessageRequest,
-                         out var errorResponse))
-            {
-                return triggerMessageRequest!;
-            }
-
-            throw new ArgumentException("The given XML representation of a trigger message request is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
 
         #endregion
 
@@ -197,55 +204,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             throw new ArgumentException("The given JSON representation of a trigger message request is invalid: " + errorResponse,
                                         nameof(JSON));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out TriggerMessageRequest, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of a trigger message request.
-        /// </summary>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
-        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static Boolean TryParse(XElement                    XML,
-                                       Request_Id                  RequestId,
-                                       ChargeBox_Id                ChargeBoxId,
-                                       out TriggerMessageRequest?  TriggerMessageRequest,
-                                       out String?                 ErrorResponse)
-        {
-
-            try
-            {
-
-                TriggerMessageRequest = new TriggerMessageRequest(
-
-                                            ChargeBoxId,
-
-                                            XML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "requestedMessage",
-                                                                    MessageTriggersExtentions.Parse),
-
-                                            XML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "connectorId",
-                                                                    Connector_Id.Parse),
-
-                                            RequestId
-
-                                        );
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                TriggerMessageRequest  = null;
-                ErrorResponse          = "The given XML representation of a trigger message request is invalid: " + e.Message;
-                return false;
-            }
 
         }
 
@@ -312,13 +270,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region ConnectorId        [optional]
+                #region EVSEId             [optional]
 
-                if (JSON.ParseOptional("connectorId",
-                                       "connector identification",
-                                       Connector_Id.TryParse,
-                                       out Connector_Id ConnectorId,
+                if (JSON.ParseOptional("evseId",
+                                       "evse identification",
+                                       EVSE_Id.TryParse,
+                                       out EVSE_Id EVSEId,
                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData         [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -348,7 +320,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 TriggerMessageRequest = new TriggerMessageRequest(ChargeBoxId,
                                                                   MessageTriggers,
-                                                                  ConnectorId,
+                                                                  EVSEId,
+                                                                  CustomData,
                                                                   RequestId);
 
                 if (CustomTriggerMessageRequestParser is not null)
@@ -369,25 +342,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new (OCPPNS.OCPPv1_6_CP + "triggerMessageRequest",
-
-                   new XElement(OCPPNS.OCPPv1_6_CP + "requestedMessage",   RequestedMessage.AsText()),
-
-                   ConnectorId.HasValue
-                       ? new XElement(OCPPNS.OCPPv1_6_CP + "connectorId",  ConnectorId.ToString())
-                       : null
-
-               );
-
-        #endregion
-
         #region ToJSON(CustomTriggerMessageRequestSerializer = null)
 
         /// <summary>
@@ -399,10 +353,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var json = JSONObject.Create(
 
-                           new JProperty("requestedMessage",   RequestedMessage.AsText()),
+                           new JProperty("requestedMessage",  RequestedMessage.AsText()),
 
-                           ConnectorId.HasValue
-                               ? new JProperty("connectorId",  ConnectorId.Value.Value)
+                           EVSEId.HasValue
+                               ? new JProperty("evseId",      EVSEId.Value.Value)
                                : null
 
                        );
@@ -488,8 +442,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                RequestedMessage.Equals(TriggerMessageRequest.RequestedMessage) &&
 
-            ((!ConnectorId.HasValue && !TriggerMessageRequest.ConnectorId.HasValue) ||
-              (ConnectorId.HasValue &&  TriggerMessageRequest.ConnectorId.HasValue && ConnectorId.Equals(TriggerMessageRequest.ConnectorId))) &&
+            ((!EVSEId.HasValue && !TriggerMessageRequest.EVSEId.HasValue) ||
+              (EVSEId.HasValue &&  TriggerMessageRequest.EVSEId.HasValue && EVSEId.Equals(TriggerMessageRequest.EVSEId))) &&
 
                base.     GenericEquals(TriggerMessageRequest);
 
@@ -509,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 return RequestedMessage.GetHashCode()       * 5 ^
-                      (ConnectorId?.    GetHashCode() ?? 0) * 3 ^
+                      (EVSEId?.         GetHashCode() ?? 0) * 3 ^
 
                        base.            GetHashCode();
 
@@ -527,8 +481,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             => String.Concat(RequestedMessage,
 
-                             ConnectorId.HasValue
-                                 ? " for " + ConnectorId
+                             EVSEId.HasValue
+                                 ? " for " + EVSEId
                                  : "");
 
         #endregion

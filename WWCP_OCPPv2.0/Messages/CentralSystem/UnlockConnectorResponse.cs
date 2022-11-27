@@ -17,15 +17,13 @@
 
 #region Usings
 
-using System.Xml.Linq;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CP
+namespace cloud.charging.open.protocols.OCPPv2_0.CP
 {
 
     /// <summary>
@@ -40,28 +38,40 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The success or failure of the unlock connector request.
         /// </summary>
-        public UnlockStatus  Status    { get; }
+        public UnlockStatus  Status        { get; }
+
+        /// <summary>
+        /// Optional detailed status information.
+        /// </summary>
+        [Optional]
+        public StatusInfo?   StatusInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region UnlockConnectorResponse(Request, Status)
+        #region UnlockConnectorResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new unlock connector response.
         /// </summary>
         /// <param name="Request">The unlock connector request leading to this response.</param>
         /// <param name="Status">The success or failure of the unlock connector request.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public UnlockConnectorResponse(CS.UnlockConnectorRequest  Request,
-                                       UnlockStatus               Status)
+                                       UnlockStatus               Status,
+                                       StatusInfo?                StatusInfo   = null,
+                                       CustomData?                CustomData   = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   CustomData)
 
         {
 
-            this.Status = Status;
+            this.Status      = Status;
+            this.StatusInfo  = StatusInfo;
 
         }
 
@@ -89,65 +99,79 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Documentation
 
-        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
-        //                xmlns:ns   = "urn://Ocpp/Cp/2015/10/">
-        //    <soap:Header/>
-        //    <soap:Body>
-        //       <ns:unlockConnectorResponse>
-        //
-        //          <ns:status>?</ns:status>
-        //
-        //       </ns:unlockConnectorResponse>
-        //    </soap:Body>
-        // </soap:Envelope>
-
         // {
-        //     "$schema": "http://json-schema.org/draft-04/schema#",
-        //     "id":      "urn:OCPP:1.6:2019:12:UnlockConnectorResponse",
-        //     "title":   "UnlockConnectorResponse",
-        //     "type":    "object",
-        //     "properties": {
-        //         "status": {
-        //             "type": "string",
-        //             "additionalProperties": false,
-        //             "enum": [
-        //                 "Unlocked",
-        //                 "UnlockFailed",
-        //                 "NotSupported"
-        //             ]
+        //   "$schema": "http://json-schema.org/draft-06/schema#",
+        //   "$id": "urn:OCPP:Cp:2:2020:3:UnlockConnectorResponse",
+        //   "comment": "OCPP 2.0.1 FINAL",
+        //   "definitions": {
+        //     "CustomDataType": {
+        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
+        //       "javaType": "CustomData",
+        //       "type": "object",
+        //       "properties": {
+        //         "vendorId": {
+        //           "type": "string",
+        //           "maxLength": 255
         //         }
+        //       },
+        //       "required": [
+        //         "vendorId"
+        //       ]
         //     },
-        //     "additionalProperties": false,
-        //     "required": [
-        //         "status"
-        //     ]
+        //     "UnlockStatusEnumType": {
+        //       "description": "This indicates whether the Charging Station has unlocked the connector.\r\n",
+        //       "javaType": "UnlockStatusEnum",
+        //       "type": "string",
+        //       "additionalProperties": false,
+        //       "enum": [
+        //         "Unlocked",
+        //         "UnlockFailed",
+        //         "OngoingAuthorizedTransaction",
+        //         "UnknownConnector"
+        //       ]
+        //     },
+        //     "StatusInfoType": {
+        //       "description": "Element providing more information about the status.\r\n",
+        //       "javaType": "StatusInfo",
+        //       "type": "object",
+        //       "additionalProperties": false,
+        //       "properties": {
+        //         "customData": {
+        //           "$ref": "#/definitions/CustomDataType"
+        //         },
+        //         "reasonCode": {
+        //           "description": "A predefined code for the reason why the status is returned in this response. The string is case-insensitive.\r\n",
+        //           "type": "string",
+        //           "maxLength": 20
+        //         },
+        //         "additionalInfo": {
+        //           "description": "Additional text to provide detailed information.\r\n",
+        //           "type": "string",
+        //           "maxLength": 512
+        //         }
+        //       },
+        //       "required": [
+        //         "reasonCode"
+        //       ]
+        //     }
+        //   },
+        //   "type": "object",
+        //   "additionalProperties": false,
+        //   "properties": {
+        //     "customData": {
+        //       "$ref": "#/definitions/CustomDataType"
+        //     },
+        //     "status": {
+        //       "$ref": "#/definitions/UnlockStatusEnumType"
+        //     },
+        //     "statusInfo": {
+        //       "$ref": "#/definitions/StatusInfoType"
+        //     }
+        //   },
+        //   "required": [
+        //     "status"
+        //   ]
         // }
-
-        #endregion
-
-        #region (static) Parse   (Request, XML)
-
-        /// <summary>
-        /// Parse the given XML representation of an unlock connector response.
-        /// </summary>
-        /// <param name="Request">The unlock connector request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        public static UnlockConnectorResponse Parse(CS.UnlockConnectorRequest  Request,
-                                                    XElement                   XML)
-        {
-
-            if (TryParse(Request,
-                         XML,
-                         out var unlockConnectorResponse,
-                         out var errorResponse))
-            {
-                return unlockConnectorResponse!;
-            }
-
-            throw new ArgumentException("The given XML representation of an unlock connector response is invalid: " + errorResponse,
-                                        nameof(XML));
-
-        }
 
         #endregion
 
@@ -180,48 +204,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(Request, XML,  out UnlockConnectorResponse, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given XML representation of an unlock connector response.
-        /// </summary>
-        /// <param name="Request">The unlock connector request leading to this response.</param>
-        /// <param name="XML">The XML to be parsed.</param>
-        /// <param name="UnlockConnectorResponse">The parsed unlock connector response.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CS.UnlockConnectorRequest     Request,
-                                       XElement                      XML,
-                                       out UnlockConnectorResponse?  UnlockConnectorResponse,
-                                       out String?                   ErrorResponse)
-        {
-
-            try
-            {
-
-                UnlockConnectorResponse = new UnlockConnectorResponse(
-
-                                              Request,
-
-                                              XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                                        UnlockStatusExtentions.Parse)
-
-                                          );
-
-                ErrorResponse = null;
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                UnlockConnectorResponse  = null;
-                ErrorResponse            = "The given XML representation of an unlock connector response is invalid: " + e.Message;
-                return false;
-            }
-
-        }
-
-        #endregion
-
         #region (static) TryParse(Request, JSON, out UnlockConnectorResponse, out ErrorResponse, CustomUnlockConnectorResponseParser = null)
 
         /// <summary>
@@ -244,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 UnlockConnectorResponse = null;
 
-                #region UnlockStatus
+                #region UnlockStatus    [mandatory]
 
                 if (!JSON.MapMandatory("status",
                                        "unlock status",
@@ -257,9 +239,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
+                #region StatusInfo      [optional]
+
+                if (JSON.ParseOptionalJSON("statusInfo",
+                                           "detailed status info",
+                                           OCPPv2_0.StatusInfo.TryParse,
+                                           out StatusInfo? StatusInfo,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData      [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 UnlockConnectorResponse = new UnlockConnectorResponse(Request,
-                                                                      UnlockStatus);
+                                                                      UnlockStatus,
+                                                                      StatusInfo,
+                                                                      CustomData);
 
                 if (CustomUnlockConnectorResponseParser is not null)
                     UnlockConnectorResponse = CustomUnlockConnectorResponseParser(JSON,
@@ -279,30 +291,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToXML()
-
-        /// <summary>
-        /// Return a XML representation of this object.
-        /// </summary>
-        public XElement ToXML()
-
-            => new (OCPPNS.OCPPv1_6_CP + "unlockConnectorResponse",
-                   new XElement(OCPPNS.OCPPv1_6_CP + "status",  Status.AsText())
-               );
-
-        #endregion
-
-        #region ToJSON(CustomUnlockConnectorResponseSerializer = null)
+        #region ToJSON(CustomUnlockConnectorResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomUnlockConnectorResponseSerializer">A delegate to serialize custom unlock connector responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<UnlockConnectorResponse>? CustomUnlockConnectorResponseSerializer = null)
+        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<UnlockConnectorResponse>? CustomUnlockConnectorResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?              CustomStatusInfoSerializer                = null,
+                              CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataSerializer                = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("status",  Status.AsText())
+
+                                 new JProperty("status",      Status.    AsText()),
+
+                           StatusInfo is not null
+                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                CustomCustomDataSerializer))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               : null
+
                        );
 
             return CustomUnlockConnectorResponseSerializer is not null
@@ -397,7 +411,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public override Boolean Equals(UnlockConnectorResponse? UnlockConnectorResponse)
 
             => UnlockConnectorResponse is not null &&
-                   Status.Equals(UnlockConnectorResponse.Status);
+
+               Status.     Equals(UnlockConnectorResponse.Status) &&
+
+             ((StatusInfo is     null && UnlockConnectorResponse.StatusInfo is     null) ||
+               StatusInfo is not null && UnlockConnectorResponse.StatusInfo is not null && StatusInfo.Equals(UnlockConnectorResponse.StatusInfo)) &&
+
+               base.GenericEquals(UnlockConnectorResponse);
 
         #endregion
 
@@ -410,8 +430,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
+        {
+            unchecked
+            {
 
-            => Status.GetHashCode();
+                return Status.     GetHashCode()       * 5 ^
+                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
+
+                       base.       GetHashCode();
+
+            }
+        }
 
         #endregion
 

@@ -1707,7 +1707,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming UpdateFirmware request for '" + Request.Location + "'.");
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming UpdateFirmware request for '" + Request.FirmwareURL + "'.");
 
                     response = new UpdateFirmwareResponse(Request);
 

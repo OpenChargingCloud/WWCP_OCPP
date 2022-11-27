@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
     /// <summary>
-    /// Defines the trigger-message-status-values.
+    /// Trigger message status.
     /// </summary>
     public enum TriggerMessageStatus
     {

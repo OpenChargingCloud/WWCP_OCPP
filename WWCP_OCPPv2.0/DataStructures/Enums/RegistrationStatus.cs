@@ -24,22 +24,75 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     public static class RegistrationStatusExtentions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as registration status.
+        /// Parse the given text as a registration status.
         /// </summary>
-        /// <param name="Text">A string representation of a registration status.</param>
+        /// <param name="Text">A text representation of a registration status.</param>
         public static RegistrationStatus Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Accepted"  => RegistrationStatus.Accepted,
-                   "Pending"   => RegistrationStatus.Pending,
-                   "Rejected"  => RegistrationStatus.Rejected,
-                   _           => RegistrationStatus.Unknown
-               };
+            if (TryParse(Text, out var status))
+                return status;
+
+            return RegistrationStatus.Unknown;
+
+        }
 
         #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a registration status.
+        /// </summary>
+        /// <param name="Text">A text representation of a registration status.</param>
+        public static RegistrationStatus? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var status))
+                return status;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out TriggerReason)
+
+        /// <summary>
+        /// Try to parse the given text as a registration status.
+        /// </summary>
+        /// <param name="Text">A text representation of a registration status.</param>
+        /// <param name="RegistrationStatus">The parsed registration status.</param>
+        public static Boolean TryParse(String Text, out RegistrationStatus RegistrationStatus)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Accepted":
+                    RegistrationStatus = RegistrationStatus.Accepted;
+                    return true;
+
+                case "Pending":
+                    RegistrationStatus = RegistrationStatus.Pending;
+                    return true;
+
+                case "Rejected":
+                    RegistrationStatus = RegistrationStatus.Rejected;
+                    return true;
+
+                default:
+                    RegistrationStatus = RegistrationStatus.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
 
         #region AsText(this RegistrationStatus)
 

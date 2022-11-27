@@ -4406,14 +4406,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region UpdateFirmware        (ChargeBoxId, Location, RetrieveDate, Retries = null, RetryInterval = null, ...)
+        #region UpdateFirmware        (ChargeBoxId, FirmwareURL, RetrieveTimestamp, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Initiate a firmware download from the given location at the given charge box.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="Location">The URI where to download the firmware.</param>
-        /// <param name="RetrieveDate">The timestamp after which the charge point must retrieve the firmware.</param>
+        /// <param name="FirmwareURL">The URL where to download the firmware.</param>
+        /// <param name="RetrieveTimestamp">The timestamp after which the charge point must retrieve the firmware.</param>
         /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
         /// 
@@ -4424,8 +4424,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public async Task<CP.UpdateFirmwareResponse>
 
             UpdateFirmware(ChargeBox_Id        ChargeBoxId,
-                           String              Location,
-                           DateTime            RetrieveDate,
+                           URL                 FirmwareURL,
+                           DateTime            RetrieveTimestamp,
                            Byte?               Retries             = null,
                            TimeSpan?           RetryInterval       = null,
 
@@ -4442,8 +4442,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var request    = new UpdateFirmwareRequest(
                                  ChargeBoxId,
-                                 Location,
-                                 RetrieveDate,
+                                 FirmwareURL,
+                                 RetrieveTimestamp,
                                  Retries,
                                  RetryInterval,
 
