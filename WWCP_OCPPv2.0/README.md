@@ -5,8 +5,14 @@ This software will allow the communication between World Wide Charging
 Protocol (WWCP) entities and entities implementing the
 _Open ChargePoint Protocol Version 2.0.x_, which is defined by the
 Open Charge Alliance. The focus of this protocol are the communication
-aspects between a e-mobility charging station and its operator backend.
+aspects between an e-mobility charging station and its operator backend.
 For more details on this protocol please visit http://www.openchargealliance.org.
+
+
+## Differences to the official protocol specification
+
+The following desribes differences of this implementation to the official protocol specification.
+Most changes are intended to simplify the daily operations business, high availability or to support additional concepts/methods like *European General Data Protection Regulation (GDPR)*  and the *German Calibration Law (Eichrecht)*.
 
 
 ### Your participation
