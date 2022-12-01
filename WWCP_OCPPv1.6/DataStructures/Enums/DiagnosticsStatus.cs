@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for the diagnostics status.
+    /// Extensions methods for the diagnostics status.
     /// </summary>
-    public static class DiagnosticsStatusExtentions
+    public static class DiagnosticsStatusExtensions
     {
 
         #region Parse(Text)

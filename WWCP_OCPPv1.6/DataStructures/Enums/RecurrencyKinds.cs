@@ -19,24 +19,77 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for the recurrency kinds.
+    /// Extensions methods for the recurrency kinds.
     /// </summary>
-    public static class RecurrencyKindsExtentions
+    public static class RecurrencyKindsExtensions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a recurrency kind.
+        /// </summary>
+        /// <param name="Text">A text representation of a recurrency kind.</param>
         public static RecurrencyKinds Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "Daily"   => RecurrencyKinds.Daily,
-                   "Weekly"  => RecurrencyKinds.Weekly,
-                   _         => RecurrencyKinds.Unknown
-               };
+            if (TryParse(Text, out var kind))
+                return kind;
+
+            return RecurrencyKinds.Unknown;
+
+        }
 
         #endregion
 
-        #region AsText(this RecurrencyKindType)
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a recurrency kind.
+        /// </summary>
+        /// <param name="Text">A text representation of a recurrency kind.</param>
+        public static RecurrencyKinds? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var kind))
+                return kind;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out RecurrencyKind)
+
+        /// <summary>
+        /// Try to parse the given text as a recurrency kind.
+        /// </summary>
+        /// <param name="Text">A text representation of a recurrency kind.</param>
+        /// <param name="RecurrencyKind">The parsed recurrency kind.</param>
+        public static Boolean TryParse(String Text, out RecurrencyKinds RecurrencyKind)
+        {
+            switch (Text.Trim())
+            {
+
+                case "Daily":
+                    RecurrencyKind = RecurrencyKinds.Daily;
+                    return true;
+
+                case "Weekly":
+                    RecurrencyKind = RecurrencyKinds.Weekly;
+                    return true;
+
+                default:
+                    RecurrencyKind = RecurrencyKinds.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+        #region AsText  (this RecurrencyKindType)
 
         public static String AsText(this RecurrencyKinds RecurrencyKindType)
 

@@ -246,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (!JSON.ParseMandatory("reportBase",
                                          "report base",
-                                         ReportBasesExtentions.TryParse,
+                                         ReportBasesExtensions.TryParse,
                                          out ReportBases ReportBase,
                                          out ErrorResponse))
                 {

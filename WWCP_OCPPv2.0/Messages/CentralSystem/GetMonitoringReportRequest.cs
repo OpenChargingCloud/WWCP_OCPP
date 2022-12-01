@@ -369,7 +369,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (!JSON.ParseMandatoryHashSet("monitoringCriteria",
                                                 "monitoring criteria",
-                                                MonitoringCriteriaExtentions.TryParse,
+                                                MonitoringCriteriaExtensions.TryParse,
                                                 out HashSet<MonitoringCriteria> MonitoringCriteria,
                                                 out ErrorResponse))
                 {

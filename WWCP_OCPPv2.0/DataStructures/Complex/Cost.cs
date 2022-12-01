@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("costKind",
                                          "cost kind",
-                                         CostKindsExtentions.TryParse,
+                                         CostKindsExtensions.TryParse,
                                          out CostKinds CostKind,
                                          out ErrorResponse))
                 {

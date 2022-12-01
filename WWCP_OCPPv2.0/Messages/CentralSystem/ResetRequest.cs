@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (!JSON.ParseMandatory("type",
                                          "reset type",
-                                         ResetTypesExtentions.TryParse,
+                                         ResetTypesExtensions.TryParse,
                                          out ResetTypes ResetType,
                                          out ErrorResponse))
                 {

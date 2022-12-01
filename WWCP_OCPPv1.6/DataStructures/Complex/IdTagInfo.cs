@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 IdTagInfo = new IdTagInfo(
 
                                 XML.MapEnumValues     (OCPPNS.OCPPv1_6_CS + "status",
-                                                       AuthorizationStatusExtentions.Parse),
+                                                       AuthorizationStatusExtensions.Parse),
 
                                 XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "expiryDate",
                                                        DateTime.Parse),
@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (!JSON.MapMandatory("status",
                                        "authorization status",
-                                       AuthorizationStatusExtentions.Parse,
+                                       AuthorizationStatusExtensions.Parse,
                                        out AuthorizationStatus Status,
                                        out ErrorResponse))
                 {

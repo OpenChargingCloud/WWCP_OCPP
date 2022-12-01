@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("status",
                                        "signed update firmware status",
-                                       UpdateFirmwareStatusExtentions.Parse,
+                                       UpdateFirmwareStatusExtensions.Parse,
                                        out UpdateFirmwareStatus Status,
                                        out ErrorResponse))
                 {

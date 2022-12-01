@@ -251,11 +251,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region ChargingProfileId          [optional]
 
-                if (JSON.ParseOptionalStruct("chargingProfileId",
-                                             "charging profile identification",
-                                             ChargingProfile_Id.TryParse,
-                                             out ChargingProfile_Id? ChargingProfileId,
-                                             out ErrorResponse))
+                if (JSON.ParseOptional("chargingProfileId",
+                                       "charging profile identification",
+                                       ChargingProfile_Id.TryParse,
+                                       out ChargingProfile_Id? ChargingProfileId,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("status",
                                          "data transfer status",
-                                         DataTransferStatusExtentions.TryParse,
+                                         DataTransferStatusExtensions.TryParse,
                                          out DataTransferStatus DataTransferStatus,
                                          out ErrorResponse))
                 {

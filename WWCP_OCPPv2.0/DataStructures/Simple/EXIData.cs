@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for EXI data.
     /// </summary>
-    public static class EXIDataExtentions
+    public static class EXIDataExtensions
     {
 
         /// <summary>

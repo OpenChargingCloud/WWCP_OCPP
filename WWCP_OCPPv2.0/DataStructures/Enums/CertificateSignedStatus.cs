@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for certificate signed status.
+    /// Extensions methods for certificate signed status.
     /// </summary>
-    public static class CertificateSignedStatusExtentions
+    public static class CertificateSignedStatusExtensions
     {
 
         #region Parse   (Text)

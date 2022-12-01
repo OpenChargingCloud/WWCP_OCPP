@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for cryptographic hash algorithms.
+    /// Extensions methods for cryptographic hash algorithms.
     /// </summary>
-    public static class HashAlgorithmsExtentions
+    public static class HashAlgorithmsExtensions
     {
 
         #region Parse(Text)

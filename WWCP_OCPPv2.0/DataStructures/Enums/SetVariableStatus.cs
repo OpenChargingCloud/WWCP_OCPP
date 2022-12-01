@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for set variable status.
     /// </summary>
-    public static class SetVariableStatusExtentions
+    public static class SetVariableStatusExtensions
     {
 
         #region Parse   (Text)

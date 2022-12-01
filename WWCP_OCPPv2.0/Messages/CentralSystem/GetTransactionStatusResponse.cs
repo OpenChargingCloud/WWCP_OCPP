@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         public Boolean   MessagesInQueue     { get; }
 
         /// <summary>
-        /// Optional indication whether the transaction is still ongoing.
+        /// The optional indication whether the transaction is still ongoing.
         /// </summary>
         [Optional]
         public Boolean?  OngoingIndicator    { get; }
@@ -57,9 +57,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// Create a new get transaction status response.
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
-        /// <param name="Status">The success or failure of the get transaction status command.</param>
-        /// <param name="Filename">The name of the log file that will be uploaded. This field is not present when no logging information is available.</param>
-        /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="MessagesInQueue">Whether there are still message to be delivered.</param>
+        /// <param name="OngoingIndicator">An optional indication whether the transaction is still ongoing.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public GetTransactionStatusResponse(CS.GetTransactionStatusRequest  Request,
                                             Boolean                         MessagesInQueue,

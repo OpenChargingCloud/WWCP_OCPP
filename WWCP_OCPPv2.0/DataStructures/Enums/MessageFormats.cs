@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for message formats.
+    /// Extensions methods for message formats.
     /// </summary>
-    public static class MessageFormatsExtentions
+    public static class MessageFormatsExtensions
     {
 
         #region Parse   (Text)

@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// Extention methods for all central system clients
     /// </summary>
-    public static class ICentralSystemClientExtentions
+    public static class ICentralSystemClientExtensions
     {
 
         #region Reset                 (ChargeBoxId, ResetType, ...)

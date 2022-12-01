@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for get installed certificate status.
+    /// Extensions methods for get installed certificate status.
     /// </summary>
-    public static class GetInstalledCertificateStatusExtentions
+    public static class GetInstalledCertificateStatusExtensions
     {
 
         #region Parse   (Text)

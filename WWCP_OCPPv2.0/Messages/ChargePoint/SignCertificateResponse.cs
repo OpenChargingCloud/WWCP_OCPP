@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (!JSON.ParseMandatory("status",
                                          "availability status",
-                                         GenericStatusExtentions.TryParse,
+                                         GenericStatusExtensions.TryParse,
                                          out GenericStatus Status,
                                          out ErrorResponse))
                 {

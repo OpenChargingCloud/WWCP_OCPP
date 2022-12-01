@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("status",
                                          "install certificate status",
-                                         CertificateStatusExtentions.TryParse,
+                                         CertificateStatusExtensions.TryParse,
                                          out CertificateStatus Status,
                                          out ErrorResponse))
                 {

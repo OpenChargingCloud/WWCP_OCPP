@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for generic device model status.
+    /// Extensions methods for generic device model status.
     /// </summary>
-    public static class GenericDeviceModelStatusExtentions
+    public static class GenericDeviceModelStatusExtensions
     {
 
         #region Parse   (Text)

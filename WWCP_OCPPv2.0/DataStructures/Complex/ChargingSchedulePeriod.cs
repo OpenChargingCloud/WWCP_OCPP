@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("phaseToUse",
                                        "electrical phase to use",
-                                       PhasesToUseExtentions.TryParse,
+                                       PhasesToUseExtensions.TryParse,
                                        out PhasesToUse? PhaseToUse,
                                        out ErrorResponse))
                 {

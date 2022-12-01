@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for monitoring criteria.
     /// </summary>
-    public static class MonitoringCriteriaExtentions
+    public static class MonitoringCriteriaExtensions
     {
 
         #region Parse   (Text)

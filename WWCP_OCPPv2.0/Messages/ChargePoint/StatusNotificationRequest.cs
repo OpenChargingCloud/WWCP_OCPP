@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("connectorStatus",
                                          "connector status",
-                                         ConnectorStatusExtentions.TryParse,
+                                         ConnectorStatusExtensions.TryParse,
                                          out ConnectorStatus ConnectorStatus,
                                          out ErrorResponse))
                 {

@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for trigger reasons.
+    /// Extensions methods for trigger reasons.
     /// </summary>
-    public static class TriggerReasonsExtentions
+    public static class TriggerReasonsExtensions
     {
 
         #region Parse   (Text)

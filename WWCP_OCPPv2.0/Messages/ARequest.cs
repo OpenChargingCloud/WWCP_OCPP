@@ -138,13 +138,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region IEquatable<ARequest> Members
+        #region IEquatable<TRequest> Members
 
         /// <summary>
         /// Compare two abstract generic OCPP requests for equality.
         /// </summary>
-        /// <param name="ARequest">Another abstract generic OCPP request.</param>
-        public abstract Boolean Equals(TRequest? ARequest);
+        /// <param name="TRequest">Another abstract generic OCPP request.</param>
+        public abstract Boolean Equals(TRequest? TRequest);
 
         #endregion
 

@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for display message prioritys.
     /// </summary>
-    public static class MessagePrioritiesExtentions
+    public static class MessagePrioritiesExtensions
     {
 
         #region Parse   (Text)

@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for get display messages status.
     /// </summary>
-    public static class GetDisplayMessagesStatusExtentions
+    public static class GetDisplayMessagesStatusExtensions
     {
 
         #region Parse   (Text)

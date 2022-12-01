@@ -271,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (JSON.ParseOptional("certificateType",
                                        "certificate signing use",
-                                       CertificateSigningUseExtentions.TryParse,
+                                       CertificateSigningUseExtensions.TryParse,
                                        out CertificateSigningUse? CertificateType,
                                        out ErrorResponse))
                 {

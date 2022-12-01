@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (!JSON.ParseMandatory("logType",
                                          "log type",
-                                         LogTypesExtentions.TryParse,
+                                         LogTypesExtensions.TryParse,
                                          out LogTypes LogType,
                                          out ErrorResponse))
                 {

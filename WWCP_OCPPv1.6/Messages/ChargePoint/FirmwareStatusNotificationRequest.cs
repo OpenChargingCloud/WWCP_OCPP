@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 FirmwareStatusNotificationRequest = new FirmwareStatusNotificationRequest(
                                                         ChargeBoxId,
                                                         XML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "status",
-                                                                           FirmwareStatusExtentions.Parse),
+                                                                           FirmwareStatusExtensions.Parse),
                                                         RequestId
                                                     );
 
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("status",
                                        "firmware status",
-                                       FirmwareStatusExtentions.Parse,
+                                       FirmwareStatusExtensions.Parse,
                                        out FirmwareStatus Status,
                                        out ErrorResponse))
                 {

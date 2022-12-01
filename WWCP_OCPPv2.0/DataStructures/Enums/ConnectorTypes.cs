@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for connector types.
     /// </summary>
-    public static class ConnectorTypesExtentions
+    public static class ConnectorTypesExtensions
     {
 
         #region Parse   (Text)

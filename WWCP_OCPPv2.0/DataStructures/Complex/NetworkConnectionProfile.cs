@@ -249,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("ocppVersion",
                                          "OCPP version",
-                                         OCPPVersionsExtentions.TryParse,
+                                         OCPPVersionsExtensions.TryParse,
                                          out OCPPVersions Version,
                                          out ErrorResponse))
                 {
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("ocppTransport",
                                          "OCPP transport",
-                                         TransportProtocolsExtentions.TryParse,
+                                         TransportProtocolsExtensions.TryParse,
                                          out TransportProtocols Transport,
                                          out ErrorResponse))
                 {
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("ocppTransport",
                                          "OCPP security profile",
-                                         OCPPSecurityProfilesExtentions.TryParse,
+                                         OCPPSecurityProfilesExtensions.TryParse,
                                          out SecurityProfiles SecurityProfile,
                                          out ErrorResponse))
                 {
@@ -315,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("ocppTransport",
                                          "OCPP security profile",
-                                         NetworkInterfacesExtentions.TryParse,
+                                         NetworkInterfacesExtensions.TryParse,
                                          out NetworkInterfaces NetworkInterface,
                                          out ErrorResponse))
                 {

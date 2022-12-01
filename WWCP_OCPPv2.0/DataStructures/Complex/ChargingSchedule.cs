@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("chargingRateUnit",
                                          "charging rate unit",
-                                         ChargingRateUnitsExtentions.TryParse,
+                                         ChargingRateUnitsExtensions.TryParse,
                                          out ChargingRateUnits ChargingRateUnit,
                                          out ErrorResponse))
                 {

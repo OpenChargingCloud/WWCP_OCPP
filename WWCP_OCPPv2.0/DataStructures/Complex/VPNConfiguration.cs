@@ -277,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("name",
                                          "VPN configuration name",
-                                         VPNProtocolsExtentions.TryParse,
+                                         VPNProtocolsExtensions.TryParse,
                                          out VPNProtocols Protocol,
                                          out ErrorResponse))
                 {

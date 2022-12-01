@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for notify EV charging needs status.
+    /// Extensions methods for notify EV charging needs status.
     /// </summary>
-    public static class NotifyEVChargingNeedsStatusExtentions
+    public static class NotifyEVChargingNeedsStatusExtensions
     {
 
         #region Parse   (Text)

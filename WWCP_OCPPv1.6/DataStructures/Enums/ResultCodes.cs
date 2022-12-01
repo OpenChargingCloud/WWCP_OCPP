@@ -19,9 +19,9 @@
 //{
 
 //    /// <summary>
-//    /// Extentions methods for result and error codes.
+//    /// Extensions methods for result and error codes.
 //    /// </summary>
-//    public static class ResultCodesExtentions
+//    public static class ResultCodesExtensions
 //    {
 
 //        #region Parse(Text)

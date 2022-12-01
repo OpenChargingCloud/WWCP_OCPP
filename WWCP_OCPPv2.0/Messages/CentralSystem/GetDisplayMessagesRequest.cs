@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (JSON.ParseOptional("priority",
                                        "display message priority",
-                                       MessagePrioritiesExtentions.TryParse,
+                                       MessagePrioritiesExtensions.TryParse,
                                        out MessagePriorities? Priority,
                                        out ErrorResponse))
                 {
@@ -315,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (JSON.ParseOptional("state",
                                        "display message state",
-                                       MessageStatesExtentions.TryParse,
+                                       MessageStatesExtensions.TryParse,
                                        out MessageStates? State,
                                        out ErrorResponse))
                 {

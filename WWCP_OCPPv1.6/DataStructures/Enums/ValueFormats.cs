@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// Extention method for the value format.
     /// </summary>
-    public static class ValueFormatExtentions
+    public static class ValueFormatExtensions
     {
 
         #region Parse(Text)

@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (!JSON.ParseMandatory("status",
                                          "ISO 15118 EV certificate status",
-                                         ISO15118EVCertificateStatusExtentions.TryParse,
+                                         ISO15118EVCertificateStatusExtensions.TryParse,
                                          out ISO15118EVCertificateStatus Status,
                                          out ErrorResponse))
                 {

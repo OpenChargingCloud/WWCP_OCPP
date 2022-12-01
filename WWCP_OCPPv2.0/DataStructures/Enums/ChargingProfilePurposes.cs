@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for charging profile purposes.
+    /// Extensions methods for charging profile purposes.
     /// </summary>
-    public static class ChargingProfilePurposesExtentions
+    public static class ChargingProfilePurposesExtensions
     {
 
         #region Parse   (Text)
@@ -97,8 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-
-        #region AsText(this ChargingProfilePurpose)
+        #region AsText  (this ChargingProfilePurpose)
 
         public static String AsText(this ChargingProfilePurposes ChargingProfilePurpose)
 

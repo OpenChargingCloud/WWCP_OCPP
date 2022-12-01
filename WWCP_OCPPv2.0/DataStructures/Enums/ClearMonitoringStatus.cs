@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for clear monitoring status.
     /// </summary>
-    public static class ClearMonitoringStatusExtentions
+    public static class ClearMonitoringStatusExtensions
     {
 
         #region Parse   (Text)

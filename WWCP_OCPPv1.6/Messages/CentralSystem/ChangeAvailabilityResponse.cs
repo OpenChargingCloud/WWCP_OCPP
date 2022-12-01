@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                  Request,
 
                                                  XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                                              AvailabilityStatusExtentions.Parse)
+                                                                                              AvailabilityStatusExtensions.Parse)
 
                                              );
 
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("status",
                                        "availability status",
-                                       AvailabilityStatusExtentions.Parse,
+                                       AvailabilityStatusExtensions.Parse,
                                        out AvailabilityStatus AvailabilityStatus,
                                        out ErrorResponse))
                 {

@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for charging rate units.
+    /// Extensions methods for charging rate units.
     /// </summary>
-    public static class ChargingRateUnitsExtentions
+    public static class ChargingRateUnitsExtensions
     {
 
         #region Parse   (Text)
@@ -89,8 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-
-        #region AsText(this ChargingRateUnitType)
+        #region AsText  (this ChargingRateUnitType)
 
         public static String AsText(this ChargingRateUnits ChargingRateUnitType)
 

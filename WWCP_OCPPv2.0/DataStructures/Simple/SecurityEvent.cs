@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for security events.
     /// </summary>
-    public static class SecurityEventExtentions
+    public static class SecurityEventExtensions
     {
 
         /// <summary>

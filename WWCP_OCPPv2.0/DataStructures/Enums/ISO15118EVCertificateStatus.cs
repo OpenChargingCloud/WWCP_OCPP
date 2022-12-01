@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for ISO 15118 EV certificate status.
+    /// Extensions methods for ISO 15118 EV certificate status.
     /// </summary>
-    public static class ISO15118EVCertificateStatusExtentions
+    public static class ISO15118EVCertificateStatusExtensions
     {
 
         #region Parse   (Text)

@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for data types.
     /// </summary>
-    public static class DataTypesExtentions
+    public static class DataTypesExtensions
     {
 
         #region Parse   (Text)

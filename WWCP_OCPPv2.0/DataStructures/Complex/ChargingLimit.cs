@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("chargingLimitSource",
                                          "charging limit source",
-                                         ChargingLimitSourcesExtentions.TryParse,
+                                         ChargingLimitSourcesExtensions.TryParse,
                                          out ChargingLimitSources ChargingLimitSource,
                                          out ErrorResponse))
                 {

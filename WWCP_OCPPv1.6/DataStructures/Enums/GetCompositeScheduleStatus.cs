@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for the get composite schedule status.
+    /// Extensions methods for the get composite schedule status.
     /// </summary>
-    public static class GetCompositeScheduleStatusExtentions
+    public static class GetCompositeScheduleStatusExtensions
     {
 
         #region Parse(Text)

@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                            Request,
 
                                            XML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CP + "status",
-                                                                     DataTransferStatusExtentions.Parse),
+                                                                     DataTransferStatusExtensions.Parse),
 
                                            XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CP + "data")
 
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("status",
                                        "data transfer status",
-                                       DataTransferStatusExtentions.Parse,
+                                       DataTransferStatusExtensions.Parse,
                                        out DataTransferStatus DataTransferStatus,
                                        out ErrorResponse))
                 {

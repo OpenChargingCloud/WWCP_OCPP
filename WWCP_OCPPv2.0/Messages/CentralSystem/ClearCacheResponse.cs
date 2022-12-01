@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("status",
                                          "clear cache status",
-                                         ClearCacheStatusExtentions.TryParse,
+                                         ClearCacheStatusExtensions.TryParse,
                                          out ClearCacheStatus ClearCacheStatus,
                                          out ErrorResponse))
                 {

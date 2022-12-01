@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("status",
                                          "availability status",
-                                         ChangeAvailabilityStatusExtentions.TryParse,
+                                         ChangeAvailabilityStatusExtensions.TryParse,
                                          out ChangeAvailabilityStatus Status,
                                          out ErrorResponse))
                 {

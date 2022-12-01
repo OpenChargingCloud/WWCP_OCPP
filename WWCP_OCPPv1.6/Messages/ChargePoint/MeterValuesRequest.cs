@@ -495,11 +495,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region TransactionId    [optional]
 
-                if (!JSON.ParseOptionalStruct("transactionId",
-                                              "transaction identification",
-                                              Transaction_Id.TryParse,
-                                              out Transaction_Id? TransactionId,
-                                              out ErrorResponse))
+                if (!JSON.ParseOptional("transactionId",
+                                        "transaction identification",
+                                        Transaction_Id.TryParse,
+                                        out Transaction_Id? TransactionId,
+                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)

@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("requestedEnergyTransfer",
                                          "requested energy transfer",
-                                         EnergyTransferModesExtentions.TryParse,
+                                         EnergyTransferModesExtensions.TryParse,
                                          out EnergyTransferModes RequestedEnergyTransfer,
                                          out ErrorResponse))
                 {

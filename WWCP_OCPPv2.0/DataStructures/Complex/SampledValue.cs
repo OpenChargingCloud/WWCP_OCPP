@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("context",
                                        "context",
-                                       ReadingContextsExtentions.TryParse,
+                                       ReadingContextsExtensions.TryParse,
                                        out ReadingContexts? Context,
                                        out ErrorResponse))
                 {
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("measurand",
                                        "measurand",
-                                       MeasurandsExtentions.TryParse,
+                                       MeasurandsExtensions.TryParse,
                                        out Measurands? Measurand,
                                        out ErrorResponse))
                 {
@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("phase",
                                        "phase",
-                                       PhasesExtentions.TryParse,
+                                       PhasesExtensions.TryParse,
                                        out Phases? Phase,
                                        out ErrorResponse))
                 {
@@ -286,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("location",
                                        "measurment location",
-                                       MeasurementLocationsExtentions.TryParse,
+                                       MeasurementLocationsExtensions.TryParse,
                                        out MeasurementLocations? Location,
                                        out ErrorResponse))
                 {

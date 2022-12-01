@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("status",
                                          "clear charging profile status",
-                                         ClearChargingProfileStatusExtentions.TryParse,
+                                         ClearChargingProfileStatusExtensions.TryParse,
                                          out ClearChargingProfileStatus Status,
                                          out ErrorResponse))
                 {

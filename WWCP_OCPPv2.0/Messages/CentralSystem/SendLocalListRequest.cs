@@ -468,7 +468,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (!JSON.ParseMandatory("updateType",
                                          "update type",
-                                         UpdateTypesExtentions.TryParse,
+                                         UpdateTypesExtensions.TryParse,
                                          out UpdateTypes UpdateType,
                                          out ErrorResponse))
                 {

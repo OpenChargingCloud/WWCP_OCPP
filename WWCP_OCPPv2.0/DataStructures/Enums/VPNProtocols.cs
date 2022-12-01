@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for VPN protocols.
     /// </summary>
-    public static class VPNProtocolsExtentions
+    public static class VPNProtocolsExtensions
     {
 
         #region Parse   (Text)

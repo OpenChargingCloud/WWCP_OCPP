@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                    ChargeBoxId,
 
                                    XML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "type",
-                                                           ResetTypesExtentions.Parse),
+                                                           ResetTypesExtensions.Parse),
 
                                    RequestId
 
@@ -285,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.MapMandatory("type",
                                        "reset type",
-                                       ResetTypesExtentions.Parse,
+                                       ResetTypesExtensions.Parse,
                                        out ResetTypes ResetType,
                                        out ErrorResponse))
                 {

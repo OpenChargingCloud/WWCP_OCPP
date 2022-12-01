@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("status",
                                          "authorization status",
-                                         AuthorizationStatusExtentions.TryParse,
+                                         AuthorizationStatusExtensions.TryParse,
                                          out AuthorizationStatus AuthorizationStatus,
                                          out ErrorResponse))
                 {

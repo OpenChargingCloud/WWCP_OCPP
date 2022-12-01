@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for change availability status.
+    /// Extensions methods for change availability status.
     /// </summary>
-    public static class ChangeAvailabilityStatusExtentions
+    public static class ChangeAvailabilityStatusExtensions
     {
 
         #region Parse   (Text)

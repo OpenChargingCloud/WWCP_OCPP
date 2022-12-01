@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("connectorStatus",
                                          "connector status",
-                                         ChargingLimitSourcesExtentions.TryParse,
+                                         ChargingLimitSourcesExtensions.TryParse,
                                          out ChargingLimitSources ChargingLimitSource,
                                          out ErrorResponse))
                 {              

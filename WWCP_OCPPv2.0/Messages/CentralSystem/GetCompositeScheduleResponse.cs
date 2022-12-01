@@ -325,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("status",
                                          "get composite schedule status",
-                                         GenericStatusExtentions.TryParse,
+                                         GenericStatusExtensions.TryParse,
                                          out GenericStatus Status,
                                          out ErrorResponse))
                 {

@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for stop transaction reasons.
     /// </summary>
-    public static class ReasonsExtentions
+    public static class ReasonsExtensions
     {
 
         #region Parse   (Text)
@@ -153,8 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-
-        #region AsText(this Reason)
+        #region AsText  (this Reason)
 
         public static String AsText(this Reasons Reason)
 

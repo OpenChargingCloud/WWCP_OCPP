@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("type",
                                        "attribute type",
-                                       AttributeTypesExtentions.TryParse,
+                                       AttributeTypesExtensions.TryParse,
                                        out AttributeTypes? AttributeType,
                                        out ErrorResponse))
                 {
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("mutability",
                                        "attribute type",
-                                       MutabilityTypesExtentions.TryParse,
+                                       MutabilityTypesExtensions.TryParse,
                                        out MutabilityTypes? Mutability,
                                        out ErrorResponse))
                 {

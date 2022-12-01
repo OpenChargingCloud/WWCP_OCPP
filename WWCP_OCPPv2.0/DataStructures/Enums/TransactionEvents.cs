@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for transaction events.
+    /// Extensions methods for transaction events.
     /// </summary>
-    public static class TransactionEventsExtentions
+    public static class TransactionEventsExtensions
     {
 
         #region Parse   (Text)

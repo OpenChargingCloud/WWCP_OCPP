@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("status",
                                          "reset status",
-                                         ResetStatusExtentions.TryParse,
+                                         ResetStatusExtensions.TryParse,
                                          out ResetStatus ResetStatus,
                                          out ErrorResponse))
                 {

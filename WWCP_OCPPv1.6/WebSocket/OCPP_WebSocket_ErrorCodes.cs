@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// Extention methods for OCPP error codes.
     /// </summary>
-    public static class OCPP_WebSocket_ErrorCodesExtentions
+    public static class OCPP_WebSocket_ErrorCodesExtensions
     {
 
         /// <summary>

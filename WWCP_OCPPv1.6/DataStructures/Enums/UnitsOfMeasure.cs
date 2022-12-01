@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for units of measure.
+    /// Extensions methods for units of measure.
     /// </summary>
-    public static class UnitsOfMeasureExtentions
+    public static class UnitsOfMeasureExtensions
     {
 
         #region Parse(Text)

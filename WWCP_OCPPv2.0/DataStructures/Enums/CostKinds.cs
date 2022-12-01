@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for cost kinds.
     /// </summary>
-    public static class CostKindsExtentions
+    public static class CostKindsExtensions
     {
 
         #region Parse   (Text)

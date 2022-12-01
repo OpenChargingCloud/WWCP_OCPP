@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("status",
                                          "clear variable monitor status",
-                                         ClearMonitoringStatusExtentions.TryParse,
+                                         ClearMonitoringStatusExtensions.TryParse,
                                          out ClearMonitoringStatus Status,
                                          out ErrorResponse))
                 {

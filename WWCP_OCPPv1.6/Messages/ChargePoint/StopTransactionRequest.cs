@@ -461,7 +461,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                     IdToken.Parse),
 
                                              XML.MapEnumValues     (OCPPNS.OCPPv1_6_CS + "reason",
-                                                                    ReasonsExtentions.AsReasons),
+                                                                    ReasonsExtensions.Parse),
 
                                              XML.MapElements       (OCPPNS.OCPPv1_6_CS + "transactionData",
                                                                     MeterValue.Parse),
@@ -574,7 +574,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (JSON.ParseOptional("reason",
                                        "reason",
-                                       ReasonsExtentions.AsReasons,
+                                       ReasonsExtensions.TryParse,
                                        out Reasons? Reason,
                                        out ErrorResponse))
                 {

@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for generic message response status.
+    /// Extensions methods for generic message response status.
     /// </summary>
-    public static class GenericStatusExtentions
+    public static class GenericStatusExtensions
     {
 
         #region Parse   (Text)

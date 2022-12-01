@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for log types.
+    /// Extensions methods for log types.
     /// </summary>
-    public static class LogTypesExtentions
+    public static class LogTypesExtensions
     {
 
         #region Parse   (Text)

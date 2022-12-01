@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// Extention methods for charge point error codes.
     /// </summary>
-    public static class ChargePointErrorCodeExtentions
+    public static class ChargePointErrorCodeExtensions
     {
 
         #region Parse(Text)

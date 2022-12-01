@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for customer identifiers.
     /// </summary>
-    public static class CustomerIdentifierExtentions
+    public static class CustomerIdentifierExtensions
     {
 
         /// <summary>

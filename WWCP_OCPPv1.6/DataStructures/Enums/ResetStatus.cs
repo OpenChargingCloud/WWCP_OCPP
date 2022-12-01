@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for the reset status.
+    /// Extensions methods for the reset status.
     /// </summary>
-    public static class ResetStatusExtentions
+    public static class ResetStatusExtensions
     {
 
         #region Parse(Text)

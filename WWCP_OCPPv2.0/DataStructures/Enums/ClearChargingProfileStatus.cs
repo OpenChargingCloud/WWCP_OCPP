@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for clear charging profile status.
+    /// Extensions methods for clear charging profile status.
     /// </summary>
-    public static class ClearChargingProfileStatusExtentions
+    public static class ClearChargingProfileStatusExtensions
     {
 
         #region Parse   (Text)

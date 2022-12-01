@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for reservation status.
+    /// Extensions methods for reservation status.
     /// </summary>
-    public static class ReservationStatusExtentions
+    public static class ReservationStatusExtensions
     {
 
         #region Parse   (Text)

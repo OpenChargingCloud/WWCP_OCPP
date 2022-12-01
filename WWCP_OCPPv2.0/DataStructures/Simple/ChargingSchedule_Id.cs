@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for charging schedule identifications.
     /// </summary>
-    public static class ChargingScheduleIdExtentions
+    public static class ChargingScheduleIdExtensions
     {
 
         /// <summary>

@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            Request,
 
                                            XML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "status",
-                                                                     DataTransferStatusExtentions.Parse),
+                                                                     DataTransferStatusExtensions.Parse),
 
                                            XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "data")
 
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.MapMandatory("status",
                                                            "data transfer status",
-                                                           DataTransferStatusExtentions.Parse,
+                                                           DataTransferStatusExtensions.Parse,
                                                            out DataTransferStatus  DataTransferStatus,
                                                            out                     ErrorResponse))
                 {
@@ -337,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var json = JSONObject.Create(
 
-                           new JProperty("status",      DataTransferStatusExtentions.AsText(Status)),
+                           new JProperty("status",      DataTransferStatusExtensions.AsText(Status)),
 
                            Data.IsNotNullOrEmpty()
                                ? new JProperty("data",  Data)

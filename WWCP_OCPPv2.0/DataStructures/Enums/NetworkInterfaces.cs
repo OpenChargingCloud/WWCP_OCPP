@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for OCPP network interfaces.
     /// </summary>
-    public static class NetworkInterfacesExtentions
+    public static class NetworkInterfacesExtensions
     {
 
         #region Parse   (Text)

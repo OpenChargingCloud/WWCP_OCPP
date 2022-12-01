@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for the update firmware status.
+    /// Extensions methods for the update firmware status.
     /// </summary>
-    public static class UpdateFirmwareStatusExtentions
+    public static class UpdateFirmwareStatusExtensions
     {
 
         #region Parse(Text)

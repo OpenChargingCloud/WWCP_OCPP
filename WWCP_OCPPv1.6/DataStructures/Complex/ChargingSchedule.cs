@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 ChargingSchedule = new ChargingSchedule(
 
                                        XML.MapValueOrFail     (OCPPNS.OCPPv1_6_CP + "chargingRateUnit",
-                                                               ChargingRateUnitsExtentions.Parse),
+                                                               ChargingRateUnitsExtensions.Parse),
 
                                        XML.MapElementsOrFail  (OCPPNS.OCPPv1_6_CP + "chargingSchedulePeriod",
                                                                ChargingSchedulePeriod.Parse),
@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (!JSON.MapMandatory("chargingRateUnit",
                                        "charging rate unit",
-                                       ChargingRateUnitsExtentions.Parse,
+                                       ChargingRateUnitsExtensions.Parse,
                                        out ChargingRateUnits ChargingRateUnit,
                                        out ErrorResponse))
                 {

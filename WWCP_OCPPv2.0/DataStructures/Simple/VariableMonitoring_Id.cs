@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for variable monitoring identifications.
     /// </summary>
-    public static class VariableMonitoringIdExtentions
+    public static class VariableMonitoringIdExtensions
     {
 
         /// <summary>

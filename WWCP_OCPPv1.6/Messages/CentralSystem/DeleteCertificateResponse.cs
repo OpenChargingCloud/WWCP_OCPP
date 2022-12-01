@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("status",
                                        "delete certificate status",
-                                       DeleteCertificateStatusExtentions.Parse,
+                                       DeleteCertificateStatusExtensions.Parse,
                                        out DeleteCertificateStatus Status,
                                        out ErrorResponse))
                 {

@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for charging profile kinds.
+    /// Extensions methods for charging profile kinds.
     /// </summary>
-    public static class ChargingProfileKindsExtentions
+    public static class ChargingProfileKindsExtensions
     {
 
         #region Parse   (Text)

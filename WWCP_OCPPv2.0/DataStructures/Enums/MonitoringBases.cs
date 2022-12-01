@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for monitoring bases.
     /// </summary>
-    public static class MonitoringBasesExtentions
+    public static class MonitoringBasesExtensions
     {
 
         #region Parse   (Text)

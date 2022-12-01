@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("status",
                                          "reservation status",
-                                         ReservationStatusExtentions.TryParse,
+                                         ReservationStatusExtensions.TryParse,
                                          out ReservationStatus ReservationStatus,
                                          out ErrorResponse))
                 {

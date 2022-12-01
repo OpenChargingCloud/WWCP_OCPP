@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("action",
                                          "certificate action",
-                                         CertificateActionExtentions.TryParse,
+                                         CertificateActionExtensions.TryParse,
                                          out CertificateAction CertificateAction,
                                          out ErrorResponse))
                 {

@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for the reading context.
     /// </summary>
-    public static class ReadingContextsExtentions
+    public static class ReadingContextsExtensions
     {
 
         #region Parse   (Text)

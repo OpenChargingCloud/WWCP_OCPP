@@ -21,31 +21,111 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// Extention methods for stop transaction reasons.
     /// </summary>
-    public static class ReasonsExtentions
+    public static class ReasonsExtensions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
-        public static Reasons AsReasons(String Text)
+        /// <summary>
+        /// Parse the given text as a stop transaction reason.
+        /// </summary>
+        /// <param name="Text">A text representation of a stop transaction reason.</param>
+        public static Reasons Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "EmergencyStop"   => Reasons.EmergencyStop,
-                   "EVDisconnected"  => Reasons.EVDisconnected,
-                   "HardReset"       => Reasons.HardReset,
-                   "Local"           => Reasons.Local,
-                   "Other"           => Reasons.Other,
-                   "PowerLoss"       => Reasons.PowerLoss,
-                   "Reboot"          => Reasons.Reboot,
-                   "Remote"          => Reasons.Remote,
-                   "SoftReset"       => Reasons.SoftReset,
-                   "UnlockCommand"   => Reasons.UnlockCommand,
-                   "DeAuthorized"    => Reasons.DeAuthorized,
-                   _                 => Reasons.Unknown
-               };
+            if (TryParse(Text, out var reason))
+                return reason;
+
+            return Reasons.Unknown;
+
+        }
 
         #endregion
 
-        #region AsText(this Reasons)
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a stop transaction reason.
+        /// </summary>
+        /// <param name="Text">A text representation of a stop transaction reason.</param>
+        public static Reasons? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var reason))
+                return reason;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out Reason)
+
+        /// <summary>
+        /// Try to parse the given text as a stop transaction reason.
+        /// </summary>
+        /// <param name="Text">A text representation of a stop transaction reason.</param>
+        /// <param name="Reason">The parsed stop transaction reason.</param>
+        public static Boolean TryParse(String Text, out Reasons Reason)
+        {
+            switch (Text.Trim())
+            {
+
+                case "EmergencyStop":
+                    Reason = Reasons.EmergencyStop;
+                    return true;
+
+                case "EVDisconnected":
+                    Reason = Reasons.EVDisconnected;
+                    return true;
+
+                case "HardReset":
+                    Reason = Reasons.HardReset;
+                    return true;
+
+                case "Local":
+                    Reason = Reasons.Local;
+                    return true;
+
+                case "Other":
+                    Reason = Reasons.Other;
+                    return true;
+
+                case "PowerLoss":
+                    Reason = Reasons.PowerLoss;
+                    return true;
+
+                case "Reboot":
+                    Reason = Reasons.Reboot;
+                    return true;
+
+                case "Remote":
+                    Reason = Reasons.Remote;
+                    return true;
+
+                case "SoftReset":
+                    Reason = Reasons.SoftReset;
+                    return true;
+
+                case "UnlockCommand":
+                    Reason = Reasons.UnlockCommand;
+                    return true;
+
+                case "DeAuthorized":
+                    Reason = Reasons.DeAuthorized;
+                    return true;
+
+                default:
+                    Reason = Reasons.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+        #region AsText  (this Reasons)
 
         public static String AsText(this Reasons Reasons)
 

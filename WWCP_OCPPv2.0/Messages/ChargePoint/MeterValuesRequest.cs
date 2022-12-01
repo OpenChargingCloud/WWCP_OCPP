@@ -517,7 +517,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #endregion
 
-        #region ToJSON(CustomMeterValuesRequestSerializer = null, CustomMeterValueSerializer = null, ..)
+        #region ToJSON(CustomMeterValuesRequestSerializer = null, CustomMeterValueSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.

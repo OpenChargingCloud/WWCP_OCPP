@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 Request,
 
                                                 XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                   CancelReservationStatusExtentions.Parse)
+                                                                   CancelReservationStatusExtensions.Parse)
 
                                             );
 
@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("status",
                                        "cancel reservation status",
-                                       CancelReservationStatusExtentions.Parse,
+                                       CancelReservationStatusExtensions.Parse,
                                        out CancelReservationStatus Status,
                                        out ErrorResponse))
                 {

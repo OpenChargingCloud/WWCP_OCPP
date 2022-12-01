@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// Extention methods for the phases.
     /// </summary>
-    public static class PhasesExtentions
+    public static class PhasesExtensions
     {
 
         #region Parse(Text)

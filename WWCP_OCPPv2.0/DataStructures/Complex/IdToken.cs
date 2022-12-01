@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("type",
                                          "type",
-                                         IdTokenTypesExtentions.TryParse,
+                                         IdTokenTypesExtensions.TryParse,
                                          out IdTokenTypes Type,
                                          out ErrorResponse))
                 {

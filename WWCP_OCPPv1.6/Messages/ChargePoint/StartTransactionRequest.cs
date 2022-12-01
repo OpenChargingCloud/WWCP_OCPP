@@ -393,11 +393,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ReservationId    [optional]
 
-                if (JSON.ParseOptionalStruct("reservationId",
-                                             "reservation identification",
-                                             Reservation_Id.TryParse,
-                                             out Reservation_Id? ReservationId,
-                                             out ErrorResponse))
+                if (JSON.ParseOptional("reservationId",
+                                       "reservation identification",
+                                       Reservation_Id.TryParse,
+                                       out Reservation_Id? ReservationId,
+                                       out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)

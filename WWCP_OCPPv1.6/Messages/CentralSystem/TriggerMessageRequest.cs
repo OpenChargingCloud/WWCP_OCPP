@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             ChargeBoxId,
 
                                             XML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "requestedMessage",
-                                                                    MessageTriggersExtentions.Parse),
+                                                                    MessageTriggersExtensions.Parse),
 
                                             XML.MapValueOrNullable (OCPPNS.OCPPv1_6_CP + "connectorId",
                                                                     Connector_Id.Parse),
@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.MapMandatory("requestedMessage",
                                        "requested message",
-                                       MessageTriggersExtentions.Parse,
+                                       MessageTriggersExtensions.Parse,
                                        out MessageTriggers MessageTriggers,
                                        out ErrorResponse))
                 {

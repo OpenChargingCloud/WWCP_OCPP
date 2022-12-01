@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                     Request,
 
                                     XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                       ResetStatusExtentions.Parse)
+                                                       ResetStatusExtensions.Parse)
 
                                 );
 
@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("status",
                                        "reset status",
-                                       ResetStatusExtentions.Parse,
+                                       ResetStatusExtensions.Parse,
                                        out ResetStatus ResetStatus,
                                        out ErrorResponse))
                 {

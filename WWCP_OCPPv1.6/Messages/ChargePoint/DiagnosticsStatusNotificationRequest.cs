@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 DiagnosticsStatusNotificationRequest = new DiagnosticsStatusNotificationRequest(
                                                            ChargeBoxId,
                                                            XML.MapValueOrFail(OCPPNS.OCPPv1_6_CS + "status",
-                                                                              DiagnosticsStatusExtentions.Parse),
+                                                                              DiagnosticsStatusExtensions.Parse),
                                                            RequestId
                                                        );
 
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("status",
                                        "diagnostics status",
-                                       DiagnosticsStatusExtentions.Parse,
+                                       DiagnosticsStatusExtensions.Parse,
                                        out DiagnosticsStatus DiagnosticsStatus,
                                        out ErrorResponse))
                 {

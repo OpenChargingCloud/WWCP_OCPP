@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for clear cache status.
+    /// Extensions methods for clear cache status.
     /// </summary>
-    public static class ClearCacheStatusExtentions
+    public static class ClearCacheStatusExtensions
     {
 
         #region Parse   (Text)

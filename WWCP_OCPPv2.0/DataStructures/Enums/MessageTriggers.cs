@@ -21,9 +21,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     // ToDo: Should REALLY not be an enum, but a readonly struct to allow extensibility!
 
     /// <summary>
-    /// Extentions methods for message triggers.
+    /// Extensions methods for message triggers.
     /// </summary>
-    public static class MessageTriggersExtentions
+    public static class MessageTriggersExtensions
     {
 
         #region Parse   (Text)

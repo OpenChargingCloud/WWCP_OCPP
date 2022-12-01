@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for customer information status.
+    /// Extensions methods for customer information status.
     /// </summary>
-    public static class CustomerInformationStatusExtentions
+    public static class CustomerInformationStatusExtensions
     {
 
         #region Parse   (Text)

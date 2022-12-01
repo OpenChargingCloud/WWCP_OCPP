@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for charging limit sources.
     /// </summary>
-    public static class ChargingLimitSourcesExtentions
+    public static class ChargingLimitSourcesExtensions
     {
 
         #region Parse   (Text)

@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for the generic status.
+    /// Extensions methods for the generic status.
     /// </summary>
-    public static class GenericStatusExtentions
+    public static class GenericStatusExtensions
     {
 
         #region Parse(Text)

@@ -321,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    Request,
 
                                                    XML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                           GetCompositeScheduleStatusExtentions.Parse),
+                                                                           GetCompositeScheduleStatusExtensions.Parse),
 
                                                    XML.MapValueOrNull     (OCPPNS.OCPPv1_6_CP + "connectorId",
                                                                            Connector_Id.Parse),
@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("status",
                                        "get composite schedule status",
-                                       GetCompositeScheduleStatusExtentions.Parse,
+                                       GetCompositeScheduleStatusExtensions.Parse,
                                        out GetCompositeScheduleStatus GetCompositeScheduleStatus,
                                        out ErrorResponse))
                 {
@@ -386,11 +386,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #region ConnectorId
 
-                if (JSON.ParseOptionalStruct("connectorId",
-                                             "connector identification",
-                                             Connector_Id.TryParse,
-                                             out Connector_Id? ConnectorId,
-                                             out ErrorResponse))
+                if (JSON.ParseOptional("connectorId",
+                                       "connector identification",
+                                       Connector_Id.TryParse,
+                                       out Connector_Id? ConnectorId,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

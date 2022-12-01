@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("status",
                                        "status",
-                                       UploadLogStatusExtentions.Parse,
+                                       UploadLogStatusExtensions.Parse,
                                        out UploadLogStatus Status,
                                        out ErrorResponse))
                 {

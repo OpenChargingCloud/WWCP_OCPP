@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (!JSON.ParseMandatory("status",
                                          "notify EV charging needs status",
-                                         NotifyEVChargingNeedsStatusExtentions.TryParse,
+                                         NotifyEVChargingNeedsStatusExtensions.TryParse,
                                          out NotifyEVChargingNeedsStatus Status,
                                          out ErrorResponse))
                 {

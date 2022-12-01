@@ -418,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (JSON.ParseOptional("connectorType",
                                        "connector type",
-                                       ConnectorTypesExtentions.TryParse,
+                                       ConnectorTypesExtensions.TryParse,
                                        out ConnectorTypes? ConnectorType,
                                        out ErrorResponse))
                 {

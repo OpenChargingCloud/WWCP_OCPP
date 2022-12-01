@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("status",
                                          "status",
-                                         UploadLogStatusExtentions.TryParse,
+                                         UploadLogStatusExtensions.TryParse,
                                          out UploadLogStatus Status,
                                          out ErrorResponse))
                 {

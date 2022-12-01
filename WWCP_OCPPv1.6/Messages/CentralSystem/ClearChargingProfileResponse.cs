@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    Request,
 
                                                    XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                                      ClearChargingProfileStatusExtentions.Parse)
+                                                                      ClearChargingProfileStatusExtensions.Parse)
 
                                                );
 
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("status",
                                        "clear charging profile status",
-                                       ClearChargingProfileStatusExtentions.Parse,
+                                       ClearChargingProfileStatusExtensions.Parse,
                                        out ClearChargingProfileStatus Status,
                                        out ErrorResponse))
                 {

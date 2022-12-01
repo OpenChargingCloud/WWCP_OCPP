@@ -341,22 +341,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                    XML.ElementValueOrFail(OCPPNS.OCPPv1_6_CS + "value"),
 
                                    XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "context",
-                                                          ReadingContextExtentions.Parse),
+                                                          ReadingContextExtensions.Parse),
 
                                    XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "format",
-                                                          ValueFormatExtentions.Parse),
+                                                          ValueFormatExtensions.Parse),
 
                                    XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "measurand",
-                                                          MeasurandExtentions.Parse),
+                                                          MeasurandExtensions.Parse),
 
                                    XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "phase",
-                                                          PhasesExtentions.Parse),
+                                                          PhasesExtensions.Parse),
 
                                    XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "location",
-                                                          LocationExtentions.Parse),
+                                                          LocationExtensions.Parse),
 
                                    XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "unit",
-                                                          UnitsOfMeasureExtentions.Parse)
+                                                          UnitsOfMeasureExtensions.Parse)
 
                                );
 
@@ -431,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (JSON.ParseOptional("context",
                                        "context",
-                                       ReadingContextExtentions.Parse,
+                                       ReadingContextExtensions.Parse,
                                        out ReadingContexts Context,
                                        out ErrorResponse))
                 {
@@ -445,7 +445,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (JSON.ParseOptional("format",
                                        "format",
-                                       ValueFormatExtentions.Parse,
+                                       ValueFormatExtensions.Parse,
                                        out ValueFormats Format,
                                        out ErrorResponse))
                 {
@@ -459,7 +459,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (JSON.ParseOptional("measurand",
                                        "measurand",
-                                       MeasurandExtentions.Parse,
+                                       MeasurandExtensions.Parse,
                                        out Measurands Measurand,
                                        out ErrorResponse))
                 {
@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (JSON.ParseOptional("phase",
                                        "phase",
-                                       PhasesExtentions.Parse,
+                                       PhasesExtensions.Parse,
                                        out Phases Phase,
                                        out ErrorResponse))
                 {
@@ -487,7 +487,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (JSON.ParseOptional("location",
                                        "location",
-                                       LocationExtentions.Parse,
+                                       LocationExtensions.Parse,
                                        out Locations Location,
                                        out ErrorResponse))
                 {
@@ -501,7 +501,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (JSON.ParseOptional("unit",
                                        "unit",
-                                       UnitsOfMeasureExtentions.Parse,
+                                       UnitsOfMeasureExtensions.Parse,
                                        out UnitsOfMeasure Unit,
                                        out ErrorResponse))
                 {

@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                          s => TimeSpan.FromSeconds(UInt32.Parse(s))),
 
                                                   XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "chargingRateUnit",
-                                                                         ChargingRateUnitsExtentions.Parse),
+                                                                         ChargingRateUnitsExtensions.Parse),
 
                                                   RequestId
 
@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (JSON.ParseOptional("chargingRateUnit",
                                        "charging rate unit",
-                                       ChargingRateUnitsExtentions.Parse,
+                                       ChargingRateUnitsExtensions.TryParse,
                                        out ChargingRateUnits? ChargingRateUnit,
                                        out ErrorResponse))
                 {

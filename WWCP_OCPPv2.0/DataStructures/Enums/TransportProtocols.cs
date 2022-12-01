@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for OCPP transport protocols.
     /// </summary>
-    public static class TransportProtocolsExtentions
+    public static class TransportProtocolsExtensions
     {
 
         #region Parse   (Text)

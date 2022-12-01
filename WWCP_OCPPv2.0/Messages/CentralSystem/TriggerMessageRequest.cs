@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (!JSON.ParseMandatory("requestedMessage",
                                          "requested message",
-                                         MessageTriggersExtentions.TryParse,
+                                         MessageTriggersExtensions.TryParse,
                                          out MessageTriggers MessageTriggers,
                                          out ErrorResponse))
                 {

@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("status",
                                        "trigger message status",
-                                       TriggerMessageStatusExtentions.Parse,
+                                       TriggerMessageStatusExtensions.Parse,
                                        out TriggerMessageStatus ExtendedTriggerMessageStatus,
                                        out ErrorResponse))
                 {

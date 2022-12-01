@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for certificate status.
+    /// Extensions methods for certificate status.
     /// </summary>
-    public static class CertificateStatusExtentions
+    public static class CertificateStatusExtensions
     {
 
         #region Parse   (Text)
@@ -93,8 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-
-        #region AsText(this CertificateStatus)
+        #region AsText  (this CertificateStatus)
 
         public static String AsText(this CertificateStatus CertificateStatus)
 

@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for event triggers.
     /// </summary>
-    public static class EventTriggersExtentions
+    public static class EventTriggersExtensions
     {
 
         #region Parse   (Text)

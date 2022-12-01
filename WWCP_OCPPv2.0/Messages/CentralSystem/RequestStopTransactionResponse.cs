@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("status",
                                          "request start stop status",
-                                         RequestStartStopStatusExtentions.TryParse,
+                                         RequestStartStopStatusExtensions.TryParse,
                                          out RequestStartStopStatus RequestStartStopStatus,
                                          out ErrorResponse))
                 {

@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// Extention methods for reservation identifications.
     /// </summary>
-    public static class ReservationIdExtentions
+    public static class ReservationIdExtensions
     {
 
         /// <summary>

@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("hashAlgorithm",
                                          "hash algorithm",
-                                         HashAlgorithmsExtentions.TryParse,
+                                         HashAlgorithmsExtensions.TryParse,
                                          out HashAlgorithms HashAlgorithm,
                                          out ErrorResponse))
                 {

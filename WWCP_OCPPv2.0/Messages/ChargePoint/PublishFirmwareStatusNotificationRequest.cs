@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("status",
                                          "publish firmware status",
-                                         PublishFirmwareStatusExtentions.TryParse,
+                                         PublishFirmwareStatusExtensions.TryParse,
                                          out PublishFirmwareStatus Status,
                                          out ErrorResponse))
                 {

@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for severities.
     /// </summary>
-    public static class SeveritiesExtentions
+    public static class SeveritiesExtensions
     {
 
         #region Parse   (Text)

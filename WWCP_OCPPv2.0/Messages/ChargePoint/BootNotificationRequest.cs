@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("reason",
                                          "boot reason",
-                                         BootReasonsExtentions.TryParse,
+                                         BootReasonsExtensions.TryParse,
                                          out BootReasons Reason,
                                          out ErrorResponse))
                 {

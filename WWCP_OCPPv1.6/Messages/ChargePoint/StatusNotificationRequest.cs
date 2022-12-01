@@ -327,10 +327,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                                           Connector_Id.Parse),
 
                                                 XML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "status",
-                                                                          ChargePointStatusExtentions.Parse),
+                                                                          ChargePointStatusExtensions.Parse),
 
                                                 XML.MapEnumValuesOrFail  (OCPPNS.OCPPv1_6_CS + "errorCode",
-                                                                          ChargePointErrorCodeExtentions.Parse),
+                                                                          ChargePointErrorCodeExtensions.Parse),
 
                                                 XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "info"),
 
@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("status",
                                        "status",
-                                       ChargePointStatusExtentions.Parse,
+                                       ChargePointStatusExtensions.Parse,
                                        out ChargePointStatus Status,
                                        out ErrorResponse))
                 {
@@ -438,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("errorCode",
                                        "error code",
-                                       ChargePointErrorCodeExtentions.Parse,
+                                       ChargePointErrorCodeExtensions.Parse,
                                        out ChargePointErrorCodes ErrorCode,
                                        out ErrorResponse))
                 {

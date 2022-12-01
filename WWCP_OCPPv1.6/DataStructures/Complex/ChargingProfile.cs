@@ -371,10 +371,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                              UInt32.Parse),
 
                                       XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "chargingProfilePurpose",
-                                                             ChargingProfilePurposesExtentions.Parse),
+                                                             ChargingProfilePurposesExtensions.Parse),
 
                                       XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CP + "chargingProfileKind",
-                                                             ChargingProfileKindsExtentions.Parse),
+                                                             ChargingProfileKindsExtensions.Parse),
 
                                       XML.MapElementOrFail  (OCPPNS.OCPPv1_6_CP + "chargingSchedule",
                                                              ChargingSchedule.Parse),
@@ -383,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                              Transaction_Id.Parse),
 
                                       XML.MapValueOrNull    (OCPPNS.OCPPv1_6_CP + "recurrencyKind",
-                                                             RecurrencyKindsExtentions.Parse),
+                                                             RecurrencyKindsExtensions.Parse),
 
                                       XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "validFrom",
                                                              DateTime.Parse),
@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (!JSON.MapMandatory("chargingProfilePurpose",
                                        "charging profile purpose",
-                                       ChargingProfilePurposesExtentions.Parse,
+                                       ChargingProfilePurposesExtensions.Parse,
                                        out ChargingProfilePurposes ChargingProfilePurpose,
                                        out ErrorResponse))
                 {
@@ -490,7 +490,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (!JSON.MapMandatory("chargingProfileKind",
                                        "charging profile kind",
-                                       ChargingProfileKindsExtentions.Parse,
+                                       ChargingProfileKindsExtensions.Parse,
                                        out ChargingProfileKinds ChargingProfileKind,
                                        out ErrorResponse))
                 {
@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (JSON.ParseOptional("recurrencyKind",
                                        "recurrency kind",
-                                       RecurrencyKindsExtentions.Parse,
+                                       RecurrencyKindsExtensions.TryParse,
                                        out RecurrencyKinds? RecurrencyKind,
                                        out ErrorResponse))
                 {

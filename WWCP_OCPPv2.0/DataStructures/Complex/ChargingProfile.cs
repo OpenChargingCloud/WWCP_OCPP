@@ -304,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("chargingProfilePurpose",
                                          "charging profile purpose",
-                                         ChargingProfilePurposesExtentions.TryParse,
+                                         ChargingProfilePurposesExtensions.TryParse,
                                          out ChargingProfilePurposes ChargingProfilePurpose,
                                          out ErrorResponse))
                 {
@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("chargingProfileKind",
                                          "charging profile kind",
-                                         ChargingProfileKindsExtentions.TryParse,
+                                         ChargingProfileKindsExtensions.TryParse,
                                          out ChargingProfileKinds ChargingProfileKind,
                                          out ErrorResponse))
                 {
@@ -357,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("recurrencyKind",
                                        "recurrency kind",
-                                       RecurrencyKindsExtentions.TryParse,
+                                       RecurrencyKindsExtensions.TryParse,
                                        out RecurrencyKinds? RecurrencyKind,
                                        out ErrorResponse))
                 {

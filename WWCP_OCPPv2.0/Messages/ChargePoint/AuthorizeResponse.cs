@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (JSON.ParseOptional("certificateStatus",
                                        "certificate status",
-                                       AuthorizeCertificateStatusExtentions.TryParse,
+                                       AuthorizeCertificateStatusExtensions.TryParse,
                                        out AuthorizeCertificateStatus? CertificateStatus,
                                        out ErrorResponse))
                 {

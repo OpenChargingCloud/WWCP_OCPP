@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                          Connector_Id.Parse),
 
                                                   XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "chargingProfilePurpose",
-                                                                         ChargingProfilePurposesExtentions.Parse),
+                                                                         ChargingProfilePurposesExtensions.Parse),
 
                                                   XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CP + "stackLevel",
                                                                          UInt32.Parse),
@@ -335,11 +335,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ChargingProfileId         [optional]
 
-                if (JSON.ParseOptionalStruct("chargingProfileId",
-                                             "charging profile identification",
-                                             ChargingProfile_Id.TryParse,
-                                             out ChargingProfile_Id? ChargingProfileId,
-                                             out ErrorResponse))
+                if (JSON.ParseOptional("chargingProfileId",
+                                       "charging profile identification",
+                                       ChargingProfile_Id.TryParse,
+                                       out ChargingProfile_Id? ChargingProfileId,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -349,11 +349,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ConnectorId               [optional]
 
-                if (JSON.ParseOptionalStruct("connectorId",
-                                             "connector identification",
-                                             Connector_Id.TryParse,
-                                             out Connector_Id? ConnectorId,
-                                             out ErrorResponse))
+                if (JSON.ParseOptional("connectorId",
+                                       "connector identification",
+                                       Connector_Id.TryParse,
+                                       out Connector_Id? ConnectorId,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -365,7 +365,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (JSON.ParseOptional("chargingProfilePurpose",
                                        "charging profile purpose",
-                                       ChargingProfilePurposesExtentions.Parse,
+                                       ChargingProfilePurposesExtensions.TryParse,
                                        out ChargingProfilePurposes? ChargingProfilePurpose,
                                        out ErrorResponse))
                 {

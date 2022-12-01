@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for the unlock status.
+    /// Extensions methods for the unlock status.
     /// </summary>
-    public static class UnlockStatusExtentions
+    public static class UnlockStatusExtensions
     {
 
         #region Parse(Text)

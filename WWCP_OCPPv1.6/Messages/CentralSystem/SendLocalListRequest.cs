@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                    UInt64.Parse),
 
                                            XML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "updateType",
-                                                                   UpdateTypesExtentions.Parse),
+                                                                   UpdateTypesExtensions.Parse),
 
                                            XML.MapElements        (OCPPNS.OCPPv1_6_CP + "localAuthorizationList",
                                                                    AuthorizationData.Parse),
@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.MapMandatory("updateType",
                                        "update type",
-                                       UpdateTypesExtentions.Parse,
+                                       UpdateTypesExtensions.Parse,
                                        out UpdateTypes UpdateType,
                                        out ErrorResponse))
                 {

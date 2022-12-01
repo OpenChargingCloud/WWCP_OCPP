@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (!JSON.ParseMandatory("status",
                                          "registration status",
-                                         RegistrationStatusExtentions.TryParse,
+                                         RegistrationStatusExtensions.TryParse,
                                          out RegistrationStatus RegistrationStatus,
                                          out ErrorResponse))
                 {

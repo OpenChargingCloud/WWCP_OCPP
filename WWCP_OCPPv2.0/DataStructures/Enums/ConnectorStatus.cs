@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for the connector status.
     /// </summary>
-    public static class ConnectorStatusExtentions
+    public static class ConnectorStatusExtensions
     {
 
         #region Parse   (Text)

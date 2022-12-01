@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for component criteria.
     /// </summary>
-    public static class ComponentCriteriaExtentions
+    public static class ComponentCriteriaExtensions
     {
 
         #region Parse   (Text)

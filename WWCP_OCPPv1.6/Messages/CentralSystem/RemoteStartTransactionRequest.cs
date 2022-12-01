@@ -474,11 +474,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ConnectorId        [optional]
 
-                if (JSON.ParseOptionalStruct("connectorId",
-                                             "connector identification",
-                                             Connector_Id.TryParse,
-                                             out Connector_Id? ConnectorId,
-                                             out ErrorResponse))
+                if (JSON.ParseOptional("connectorId",
+                                       "connector identification",
+                                       Connector_Id.TryParse,
+                                       out Connector_Id? ConnectorId,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

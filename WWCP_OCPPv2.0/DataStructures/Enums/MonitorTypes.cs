@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for monitor types.
     /// </summary>
-    public static class MonitorTypesExtentions
+    public static class MonitorTypesExtensions
     {
 
         #region Parse   (Text)

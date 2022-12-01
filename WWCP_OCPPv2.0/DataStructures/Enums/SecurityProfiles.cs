@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for OCPP security profiles.
     /// </summary>
-    public static class OCPPSecurityProfilesExtentions
+    public static class OCPPSecurityProfilesExtensions
     {
 
         #region Parse   (Text)

@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// Extention methods for chargeBoxs.
     /// </summary>
-    public static class ChargeBoxExtentions
+    public static class ChargeBoxExtensions
     {
 
         #region ToJSON(this ChargeBoxs, Skip = null, Take = null, Embedded = false, ...)

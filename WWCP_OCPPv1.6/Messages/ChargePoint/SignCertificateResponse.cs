@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.MapMandatory("status",
                                        "identification tag information",
-                                       GenericStatusExtentions.Parse,
+                                       GenericStatusExtensions.Parse,
                                        out GenericStatus Status,
                                        out ErrorResponse))
                 {

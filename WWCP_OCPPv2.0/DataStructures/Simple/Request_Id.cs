@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for request identifications.
     /// </summary>
-    public static class RequestIdExtentions
+    public static class RequestIdExtensions
     {
 
         /// <summary>

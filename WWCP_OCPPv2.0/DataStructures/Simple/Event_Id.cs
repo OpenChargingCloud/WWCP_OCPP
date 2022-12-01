@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for event identifications.
     /// </summary>
-    public static class EventIdExtentions
+    public static class EventIdExtensions
     {
 
         /// <summary>

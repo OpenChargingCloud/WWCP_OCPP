@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for get variable status.
+    /// Extensions methods for get variable status.
     /// </summary>
-    public static class GetVariableStatusExtentions
+    public static class GetVariableStatusExtensions
     {
 
         #region Parse   (Text)

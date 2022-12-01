@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for request start stop status.
+    /// Extensions methods for request start stop status.
     /// </summary>
-    public static class RequestStartStopStatusExtentions
+    public static class RequestStartStopStatusExtensions
     {
 
         #region Parse   (Text)

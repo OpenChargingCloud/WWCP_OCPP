@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for recurrency kinds.
+    /// Extensions methods for recurrency kinds.
     /// </summary>
-    public static class RecurrencyKindsExtentions
+    public static class RecurrencyKindsExtensions
     {
 
         #region Parse   (Text)
@@ -89,8 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-
-        #region AsText(this RecurrencyKind)
+        #region AsText  (this RecurrencyKind)
 
         public static String AsText(this RecurrencyKinds RecurrencyKind)
 

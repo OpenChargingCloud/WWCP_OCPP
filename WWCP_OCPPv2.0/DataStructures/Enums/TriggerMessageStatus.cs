@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for trigger message status.
+    /// Extensions methods for trigger message status.
     /// </summary>
-    public static class TriggerMessageStatusExtentions
+    public static class TriggerMessageStatusExtensions
     {
 
         #region Parse   (Text)

@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("chargingState",
                                        "charging state",
-                                       ChargingStatesExtentions.TryParse,
+                                       ChargingStatesExtensions.TryParse,
                                        out ChargingStates? ChargingState,
                                        out ErrorResponse))
                 {
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("stoppedReason",
                                        "stopped reason",
-                                       ReasonsExtentions.TryParse,
+                                       ReasonsExtensions.TryParse,
                                        out Reasons? StoppedReason,
                                        out ErrorResponse))
                 {

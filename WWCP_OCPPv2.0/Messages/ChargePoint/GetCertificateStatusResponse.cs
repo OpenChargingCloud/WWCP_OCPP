@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (!JSON.ParseMandatory("status",
                                          "get certificate status",
-                                         GetCertificateStatusExtentions.TryParse,
+                                         GetCertificateStatusExtensions.TryParse,
                                          out GetCertificateStatus Status,
                                          out ErrorResponse))
                 {

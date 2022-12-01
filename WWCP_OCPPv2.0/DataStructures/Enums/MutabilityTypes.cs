@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for mutability types.
     /// </summary>
-    public static class MutabilityTypesExtentions
+    public static class MutabilityTypesExtensions
     {
 
         #region Parse   (Text)

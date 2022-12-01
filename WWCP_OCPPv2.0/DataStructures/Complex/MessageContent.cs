@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("format",
                                          "message format",
-                                         MessageFormatsExtentions.TryParse,
+                                         MessageFormatsExtensions.TryParse,
                                          out MessageFormats Format,
                                          out ErrorResponse))
                 {

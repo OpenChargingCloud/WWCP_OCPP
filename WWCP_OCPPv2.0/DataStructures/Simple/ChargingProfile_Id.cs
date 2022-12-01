@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for charging profile identifications.
     /// </summary>
-    public static class ChargingProfileIdExtentions
+    public static class ChargingProfileIdExtensions
     {
 
         /// <summary>

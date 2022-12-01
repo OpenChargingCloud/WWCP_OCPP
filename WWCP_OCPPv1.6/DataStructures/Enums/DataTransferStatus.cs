@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for the data transfer status.
+    /// Extensions methods for the data transfer status.
     /// </summary>
-    public static class DataTransferStatusExtentions
+    public static class DataTransferStatusExtensions
     {
 
         #region Parse(Text)

@@ -364,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("type",
                                          "monitor type",
-                                         MonitorTypesExtentions.TryParse,
+                                         MonitorTypesExtensions.TryParse,
                                          out MonitorTypes MonitorType,
                                          out ErrorResponse))
                 {
@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("severity",
                                          "severity",
-                                         SeveritiesExtentions.TryParse,
+                                         SeveritiesExtensions.TryParse,
                                          out Severities Severity,
                                          out ErrorResponse))
                 {

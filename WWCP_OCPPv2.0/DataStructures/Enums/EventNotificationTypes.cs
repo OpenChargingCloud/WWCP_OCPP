@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for event notification types.
     /// </summary>
-    public static class EventNotificationTypesExtentions
+    public static class EventNotificationTypesExtensions
     {
 
         #region Parse   (Text)

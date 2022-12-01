@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("attributeStatus",
                                          "attribute status",
-                                         SetVariableStatusExtentions.TryParse,
+                                         SetVariableStatusExtensions.TryParse,
                                          out SetVariableStatus Status,
                                          out ErrorResponse))
                 {
@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("attributeType",
                                        "attribute type",
-                                       AttributeTypesExtentions.TryParse,
+                                       AttributeTypesExtensions.TryParse,
                                        out AttributeTypes? AttributeType,
                                        out ErrorResponse))
                 {

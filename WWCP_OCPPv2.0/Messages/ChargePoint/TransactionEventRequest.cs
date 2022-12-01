@@ -753,7 +753,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("eventType",
                                          "event type",
-                                         TransactionEventsExtentions.TryParse,
+                                         TransactionEventsExtensions.TryParse,
                                          out TransactionEvents EventType,
                                          out ErrorResponse))
                 {
@@ -778,7 +778,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("triggerReason",
                                          "trigger reason",
-                                         TriggerReasonsExtentions.TryParse,
+                                         TriggerReasonsExtensions.TryParse,
                                          out TriggerReasons TriggerReason,
                                          out ErrorResponse))
                 {

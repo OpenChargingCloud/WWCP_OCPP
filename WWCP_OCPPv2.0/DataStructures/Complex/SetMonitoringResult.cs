@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("status",
                                          "set monitoring status",
-                                         SetMonitoringStatusExtentions.TryParse,
+                                         SetMonitoringStatusExtensions.TryParse,
                                          out SetMonitoringStatus Status,
                                          out ErrorResponse))
                 {
@@ -246,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("type",
                                          "monitor type",
-                                         MonitorTypesExtentions.TryParse,
+                                         MonitorTypesExtensions.TryParse,
                                          out MonitorTypes Type,
                                          out ErrorResponse))
                 {

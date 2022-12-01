@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for get charging profile status.
+    /// Extensions methods for get charging profile status.
     /// </summary>
-    public static class GetChargingProfileStatusExtentions
+    public static class GetChargingProfileStatusExtensions
     {
 
         #region Parse   (Text)

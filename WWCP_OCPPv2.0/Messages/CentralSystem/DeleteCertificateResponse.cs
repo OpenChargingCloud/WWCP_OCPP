@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("status",
                                          "delete certificate status",
-                                         DeleteCertificateStatusExtentions.TryParse,
+                                         DeleteCertificateStatusExtensions.TryParse,
                                          out DeleteCertificateStatus Status,
                                          out ErrorResponse))
                 {

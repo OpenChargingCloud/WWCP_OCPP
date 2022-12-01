@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for the reset types.
+    /// Extensions methods for the reset types.
     /// </summary>
-    public static class ResetTypesExtentions
+    public static class ResetTypesExtensions
     {
 
         #region Parse(Text)

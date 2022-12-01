@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("name",
                                          "APN authentication method",
-                                         APNAuthenticationMethodsExtentions.TryParse,
+                                         APNAuthenticationMethodsExtensions.TryParse,
                                          out APNAuthenticationMethods AuthenticationMethod,
                                          out ErrorResponse))
                 {

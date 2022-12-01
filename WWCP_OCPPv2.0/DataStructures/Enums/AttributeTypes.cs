@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for attribute types.
     /// </summary>
-    public static class AttributeTypesExtentions
+    public static class AttributeTypesExtensions
     {
 
         #region Parse   (Text)

@@ -19,24 +19,77 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for charging rate units.
+    /// Extensions methods for charging rate units.
     /// </summary>
-    public static class ChargingRateUnitsExtentions
+    public static class ChargingRateUnitsExtensions
     {
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
+        /// <summary>
+        /// Parse the given text as a charging rate unit.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging rate unit.</param>
         public static ChargingRateUnits Parse(String Text)
+        {
 
-            => Text.Trim() switch {
-                   "A"  => ChargingRateUnits.Amperes,
-                   "W"  => ChargingRateUnits.Watts,
-                   _    => ChargingRateUnits.Unknown
-               };
+            if (TryParse(Text, out var unit))
+                return unit;
+
+            return ChargingRateUnits.Unknown;
+
+        }
 
         #endregion
 
-        #region AsText(this ChargingRateUnitType)
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a charging rate unit.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging rate unit.</param>
+        public static ChargingRateUnits? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var unit))
+                return unit;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ChargingRateUnit)
+
+        /// <summary>
+        /// Try to parse the given text as a charging rate unit.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging rate unit.</param>
+        /// <param name="ChargingRateUnit">The parsed charging rate unit.</param>
+        public static Boolean TryParse(String Text, out ChargingRateUnits ChargingRateUnit)
+        {
+            switch (Text.Trim())
+            {
+
+                case "A":
+                    ChargingRateUnit = ChargingRateUnits.Amperes;
+                    return true;
+
+                case "W":
+                    ChargingRateUnit = ChargingRateUnits.Watts;
+                    return true;
+
+                default:
+                    ChargingRateUnit = ChargingRateUnits.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+        #region AsText  (this ChargingRateUnitType)
 
         public static String AsText(this ChargingRateUnits ChargingRateUnitType)
 

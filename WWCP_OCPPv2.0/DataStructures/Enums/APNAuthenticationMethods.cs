@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for APN authentication methods.
     /// </summary>
-    public static class APNAuthenticationMethodsExtentions
+    public static class APNAuthenticationMethodsExtensions
     {
 
         #region Parse   (Text)

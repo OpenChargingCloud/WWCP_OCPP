@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for delete certificate status.
+    /// Extensions methods for delete certificate status.
     /// </summary>
-    public static class DeleteCertificateStatusExtentions
+    public static class DeleteCertificateStatusExtensions
     {
 
         #region Parse   (Text)

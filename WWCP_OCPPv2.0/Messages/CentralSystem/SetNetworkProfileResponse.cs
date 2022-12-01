@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 if (!JSON.ParseMandatory("status",
                                          "set network profile status",
-                                         SetNetworkProfileStatusExtentions.TryParse,
+                                         SetNetworkProfileStatusExtensions.TryParse,
                                          out SetNetworkProfileStatus Status,
                                          out ErrorResponse))
                 {

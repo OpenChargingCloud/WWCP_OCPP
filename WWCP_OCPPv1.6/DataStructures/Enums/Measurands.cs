@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// Extention methods for the measurands.
     /// </summary>
-    public static class MeasurandExtentions
+    public static class MeasurandExtensions
     {
 
         #region Parse(Text)

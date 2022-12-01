@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for authorize certificate status.
+    /// Extensions methods for authorize certificate status.
     /// </summary>
-    public static class AuthorizeCertificateStatusExtentions
+    public static class AuthorizeCertificateStatusExtensions
     {
 
         #region Parse   (Text)

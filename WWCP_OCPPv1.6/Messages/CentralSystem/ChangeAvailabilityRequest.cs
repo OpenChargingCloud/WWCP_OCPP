@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                         Connector_Id.Parse),
 
                                                 XML.MapEnumValuesOrFail(OCPPNS.OCPPv1_6_CP + "type",
-                                                                        AvailabilityTypesExtentions.Parse),
+                                                                        AvailabilityTypesExtensions.Parse),
 
                                                 RequestId
 
@@ -315,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.MapMandatory("type",
                                        "availability type",
-                                       AvailabilityTypesExtentions.Parse,
+                                       AvailabilityTypesExtensions.Parse,
                                        out Availabilities Type,
                                        out ErrorResponse))
                 {

@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for identification token types.
     /// </summary>
-    public static class IdTokenTypesExtentions
+    public static class IdTokenTypesExtensions
     {
 
         #region Parse   (Text)

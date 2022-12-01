@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for the upload log status.
+    /// Extensions methods for the upload log status.
     /// </summary>
-    public static class UploadLogStatusExtentions
+    public static class UploadLogStatusExtensions
     {
 
         #region Parse(Text)

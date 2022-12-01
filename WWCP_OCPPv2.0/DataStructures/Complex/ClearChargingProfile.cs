@@ -177,11 +177,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region EVSEId                    [optional]
 
-                if (JSON.ParseOptionalStruct("evseId",
-                                             "EVSE identification",
-                                             EVSE_Id.TryParse,
-                                             out EVSE_Id? EVSEId,
-                                             out ErrorResponse))
+                if (JSON.ParseOptional("evseId",
+                                       "EVSE identification",
+                                       EVSE_Id.TryParse,
+                                       out EVSE_Id? EVSEId,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("chargingProfilePurpose",
                                        "charging profile purpose",
-                                       ChargingProfilePurposesExtentions.TryParse,
+                                       ChargingProfilePurposesExtensions.TryParse,
                                        out ChargingProfilePurposes? ChargingProfilePurpose,
                                        out ErrorResponse))
                 {

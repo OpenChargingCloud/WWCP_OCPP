@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("chargingProfilePurpose",
                                        "charging profile purpose",
-                                       ChargingProfilePurposesExtentions.TryParse,
+                                       ChargingProfilePurposesExtensions.TryParse,
                                        out ChargingProfilePurposes? ChargingProfilePurpose,
                                        out ErrorResponse))
                 {
@@ -265,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (JSON.ParseOptional("evseId",
                                        "EVSE identification",
-                                       ChargingLimitSourcesExtentions.TryParse,
+                                       ChargingLimitSourcesExtensions.TryParse,
                                        out ChargingLimitSources? ChargingLimitSource,
                                        out ErrorResponse))
                 {

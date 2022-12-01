@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for the availability types.
+    /// Extensions methods for the availability types.
     /// </summary>
-    public static class AvailabilityTypesExtentions
+    public static class AvailabilityTypesExtensions
     {
 
         #region Parse(Text)

@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for update types.
+    /// Extensions methods for update types.
     /// </summary>
-    public static class UpdateTypesExtentions
+    public static class UpdateTypesExtensions
     {
 
         #region Parse   (Text)

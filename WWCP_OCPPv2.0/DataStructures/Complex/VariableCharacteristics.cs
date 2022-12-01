@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("dataType",
                                          "data type",
-                                         DataTypesExtentions.TryParse,
+                                         DataTypesExtensions.TryParse,
                                          out DataTypes DataType,
                                          out ErrorResponse))
                 {

@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.MapMandatory("logType",
                                        "log type",
-                                       LogTypesExtentions.Parse,
+                                       LogTypesExtensions.Parse,
                                        out LogTypes LogType,
                                        out ErrorResponse))
                 {

@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extentions methods for the remote start stop status.
+    /// Extensions methods for the remote start stop status.
     /// </summary>
-    public static class RemoteStartStopStatusExtentions
+    public static class RemoteStartStopStatusExtensions
     {
 
         #region Parse(Text)

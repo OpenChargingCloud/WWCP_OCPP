@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for energy transfer modes.
     /// </summary>
-    public static class EnergyTransferModesExtentions
+    public static class EnergyTransferModesExtensions
     {
 
         #region Parse   (Text)

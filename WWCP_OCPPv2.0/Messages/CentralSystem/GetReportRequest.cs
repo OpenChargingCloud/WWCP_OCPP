@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 if (!JSON.ParseMandatoryHashSet("componentCriteria",
                                                 "component criteria",
-                                                ComponentCriteriaExtentions.TryParse,
+                                                ComponentCriteriaExtensions.TryParse,
                                                 out HashSet<ComponentCriteria> ComponentCriteria,
                                                 out ErrorResponse))
                 {

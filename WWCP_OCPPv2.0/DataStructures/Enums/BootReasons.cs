@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for boot reasons.
     /// </summary>
-    public static class BootReasonsExtentions
+    public static class BootReasonsExtensions
     {
 
         #region Parse   (Text)

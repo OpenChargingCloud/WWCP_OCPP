@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                          Request,
 
                                          XML.MapValueOrFail(OCPPNS.OCPPv1_6_CP + "status",
-                                                            ClearCacheStatusExtentions.Parse)
+                                                            ClearCacheStatusExtensions.Parse)
 
                                      );
 
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 if (!JSON.MapMandatory("status",
                                        "clear cache status",
-                                       ClearCacheStatusExtentions.Parse,
+                                       ClearCacheStatusExtensions.Parse,
                                        out ClearCacheStatus ClearCacheStatus,
                                        out ErrorResponse))
                 {

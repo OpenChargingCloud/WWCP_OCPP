@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.MapMandatory("certificateType",
                                        "certificate type",
-                                       CertificateUseExtentions.Parse,
+                                       CertificateUseExtensions.Parse,
                                        out CertificateUse CertificateType,
                                        out ErrorResponse))
                 {

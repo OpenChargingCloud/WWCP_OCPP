@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for set network profile status.
+    /// Extensions methods for set network profile status.
     /// </summary>
-    public static class SetNetworkProfileStatusExtentions
+    public static class SetNetworkProfileStatusExtensions
     {
 
         #region Parse   (Text)

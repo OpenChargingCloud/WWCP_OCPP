@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for measurement locations.
+    /// Extensions methods for measurement locations.
     /// </summary>
-    public static class MeasurementLocationsExtentions
+    public static class MeasurementLocationsExtensions
     {
 
         #region Parse   (Text)

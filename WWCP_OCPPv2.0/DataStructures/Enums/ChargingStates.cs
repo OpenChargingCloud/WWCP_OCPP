@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for charging states.
+    /// Extensions methods for charging states.
     /// </summary>
-    public static class ChargingStatesExtentions
+    public static class ChargingStatesExtensions
     {
 
         #region Parse   (Text)

@@ -346,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("trigger",
                                          "event trigger",
-                                         EventTriggersExtentions.TryParse,
+                                         EventTriggersExtensions.TryParse,
                                          out EventTriggers Trigger,
                                          out ErrorResponse))
                 {
@@ -371,7 +371,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("eventNotificationType",
                                          "event notification type",
-                                         EventNotificationTypesExtentions.TryParse,
+                                         EventNotificationTypesExtensions.TryParse,
                                          out EventNotificationTypes EventNotificationType,
                                          out ErrorResponse))
                 {

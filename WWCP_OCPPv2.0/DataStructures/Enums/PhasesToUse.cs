@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for electrical phases.
+    /// Extensions methods for electrical phases.
     /// </summary>
-    public static class PhasesToUseExtentions
+    public static class PhasesToUseExtensions
     {
 
         #region Parse   (Text)

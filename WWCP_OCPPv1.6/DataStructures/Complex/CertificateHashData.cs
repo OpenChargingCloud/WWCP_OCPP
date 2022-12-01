@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (!JSON.MapMandatory("hashAlgorithm",
                                        "hash algorithm",
-                                       HashAlgorithmsExtentions.Parse,
+                                       HashAlgorithmsExtensions.Parse,
                                        out HashAlgorithms HashAlgorithm,
                                        out ErrorResponse))
                 {

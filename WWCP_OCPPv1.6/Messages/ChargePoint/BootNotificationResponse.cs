@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                Request,
 
                                                XML.MapValueOrFail      (OCPPNS.OCPPv1_6_CS + "status",
-                                                                        RegistrationStatusExtentions.Parse),
+                                                                        RegistrationStatusExtensions.Parse),
 
                                                XML.ParseTimestampOrFail(OCPPNS.OCPPv1_6_CS + "currentTime"),
 
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (!JSON.MapMandatory("status",
                                        "registration status",
-                                       RegistrationStatusExtentions.Parse,
+                                       RegistrationStatusExtensions.Parse,
                                        out RegistrationStatus RegistrationStatus,
                                        out ErrorResponse))
                 {

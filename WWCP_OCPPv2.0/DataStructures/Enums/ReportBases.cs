@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extentions methods for report bases.
+    /// Extensions methods for report bases.
     /// </summary>
-    public static class ReportBasesExtentions
+    public static class ReportBasesExtensions
     {
 
         #region Parse   (Text)
