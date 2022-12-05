@@ -556,15 +556,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Id.              GetHashCode()       * 19 ^
-                       ChargingRateUnit.GetHashCode()       * 17 ^
-                       //ToDo: Add ChargingSchedulePeriods!
-                      (StartSchedule?.  GetHashCode() ?? 0) * 11 ^
-                      (Duration?.       GetHashCode() ?? 0) *  7 ^
-                      (MinChargingRate?.GetHashCode() ?? 0) *  5 ^
-                      (SalesTariff?.    GetHashCode() ?? 0) *  3 ^
+                return Id.                     GetHashCode()       * 19 ^
+                       ChargingRateUnit.       GetHashCode()       * 17 ^
+                       ChargingSchedulePeriods.CalcHashCode()      * 13 ^
+                      (StartSchedule?.         GetHashCode() ?? 0) * 11 ^
+                      (Duration?.              GetHashCode() ?? 0) *  7 ^
+                      (MinChargingRate?.       GetHashCode() ?? 0) *  5 ^
+                      (SalesTariff?.           GetHashCode() ?? 0) *  3 ^
 
-                       base.            GetHashCode();
+                       base.                   GetHashCode();
 
             }
         }

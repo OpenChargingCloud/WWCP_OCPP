@@ -568,10 +568,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Status.              GetHashCode()       * 19 ^
-                       ChargingPriority.    GetHashCode()       * 17 ^
-
-                       //ToDo: Add ValidEVSEIds!
+                return Status.              GetHashCode()       * 23 ^
+                       ChargingPriority.    GetHashCode()       * 19 ^
+                       ValidEVSEIds.        CalcHashCode()      * 17 ^
 
                       (CacheExpiryDateTime?.GetHashCode() ?? 0) * 13 ^
                       (GroupIdToken?.       GetHashCode() ?? 0) * 11 ^

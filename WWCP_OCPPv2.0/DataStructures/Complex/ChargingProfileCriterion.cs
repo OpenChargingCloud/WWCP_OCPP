@@ -469,9 +469,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 return (ChargingProfilePurpose?.GetHashCode() ?? 0) * 11 ^
                        (StackLevel?.            GetHashCode() ?? 0) *  7 ^
                        (ChargingLimitSource?.   GetHashCode() ?? 0) *  5 ^
-                       //ToDo: Add ChargingProfileIds
+                        ChargingProfileIds.     CalcHashCode()      *  3 ^
 
-                       base.                    GetHashCode();
+                        base.                   GetHashCode();
 
             }
         }

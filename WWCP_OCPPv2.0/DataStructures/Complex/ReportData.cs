@@ -447,7 +447,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 return Component.               GetHashCode()       * 11 ^
                        Variable.                GetHashCode()       *  7 ^
-                       //ToDo: Add VariableAttributes!
+                       VariableAttributes.      CalcHashCode()      *  5 ^
                       (VariableCharacteristics?.GetHashCode() ?? 0) *  3 ^
 
                        base.                    GetHashCode();

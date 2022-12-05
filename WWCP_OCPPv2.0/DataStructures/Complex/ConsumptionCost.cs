@@ -363,8 +363,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return StartValue.GetHashCode() * 5 ^
-                       //ToDo: Add Costs!
+                return StartValue.GetHashCode()  * 5 ^
+                       Costs.     CalcHashCode() * 3 ^
 
                        base.      GetHashCode();
 

@@ -605,9 +605,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return ListVersion.           GetHashCode() * 7 ^
-                       UpdateType.            GetHashCode() * 5 ^
-                       LocalAuthorizationList.GetHashCode() * 3 ^
+                return ListVersion.           GetHashCode()  * 7 ^
+                       UpdateType.            GetHashCode()  * 5 ^
+                       LocalAuthorizationList.CalcHashCode() * 3 ^
 
                        base.                  GetHashCode();
 

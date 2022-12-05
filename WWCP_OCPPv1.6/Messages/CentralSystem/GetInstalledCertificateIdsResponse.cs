@@ -409,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 return Status.             GetHashCode() * 3 ^
-                       CertificateHashData.GetHashCode();
+                       CertificateHashData.CalcHashCode();
 
             }
         }

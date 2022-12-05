@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using Org.BouncyCastle.Utilities;
 
 #endregion
 
@@ -68,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="ConsumptionCosts">Optional additional means for further relative price information and/or alternative costs.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public SalesTariffEntry(RelativeTimeInterval           RelativeTimeInterval,
-                                UInt32?                        EPriceLevel,
+                                UInt32?                        EPriceLevel        = null,
                                 IEnumerable<ConsumptionCost>?  ConsumptionCosts   = null,
                                 CustomData?                    CustomData         = null)
 
@@ -409,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 return RelativeTimeInterval.GetHashCode()       * 7 ^
                       (EPriceLevel?.        GetHashCode() ?? 0) * 5 ^
-                       //ToDo: Add ConsumptionCosts!
+                       ConsumptionCosts.    CalcHashCode()      * 3 ^
 
                        base.                GetHashCode();
 

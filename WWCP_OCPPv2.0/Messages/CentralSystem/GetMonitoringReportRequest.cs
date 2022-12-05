@@ -591,11 +591,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             unchecked
             {
 
-                return GetMonitoringReportRequestId.GetHashCode() * 7 ^
-                       //ToDo: Add MonitoringCriteria
-                       //ToDo: Add ComponentVariable
+                return GetMonitoringReportRequestId.GetHashCode()  * 7 ^
+                       MonitoringCriteria.          CalcHashCode() * 5 ^
+                       ComponentVariables.          CalcHashCode() * 3 ^
 
-                       base.          GetHashCode();
+                       base.                        GetHashCode();
 
             }
         }

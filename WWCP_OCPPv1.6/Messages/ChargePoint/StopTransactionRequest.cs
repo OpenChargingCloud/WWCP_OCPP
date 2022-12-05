@@ -835,8 +835,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 return TransactionId.  GetHashCode()       * 17 ^
                        StopTimestamp.  GetHashCode()       * 13 ^
                        MeterStop.      GetHashCode()       * 11 ^
-                       TransactionData.GetHashCode()       *  7 ^
-
+                       TransactionData.CalcHashCode()      *  7 ^
                       (IdTag?.         GetHashCode() ?? 0) *  5 ^
                       (Reason?.        GetHashCode() ?? 0) *  3 ^
 

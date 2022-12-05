@@ -494,7 +494,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                       (Unit?.             GetHashCode() ?? 0) * 11 ^
                       (MinLimit?.         GetHashCode() ?? 0) *  7 ^
                       (MaxLimit?.         GetHashCode() ?? 0) *  5 ^
-                       //ToDo: Add ValuesList!
+                       ValuesList.        CalcHashCode()      *  3 ^
 
                        base.              GetHashCode();
 

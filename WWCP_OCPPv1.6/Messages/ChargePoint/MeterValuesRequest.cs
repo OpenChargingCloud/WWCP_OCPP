@@ -709,8 +709,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 return ConnectorId.   GetHashCode()       * 7 ^
-                       MeterValues.   GetHashCode()       * 5 ^
-
+                       MeterValues.   CalcHashCode()      * 5 ^
                       (TransactionId?.GetHashCode() ?? 0) * 3 ^
 
                        base.          GetHashCode();

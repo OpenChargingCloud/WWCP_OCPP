@@ -465,10 +465,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             unchecked
             {
 
-                return Status.                                     GetHashCode()       * 11 ^
-                      (PublishFirmwareStatusNotificationRequestId?.GetHashCode() ?? 0) *  7 ^
-                      //ToDo: Add ReportData
-                      (CustomData?.                                GetHashCode() ?? 0) *  3 ^
+                return Status.                                     GetHashCode()       * 7 ^
+                      (PublishFirmwareStatusNotificationRequestId?.GetHashCode() ?? 0) * 5 ^
+                       DownloadLocations.                          CalcHashCode()      * 3 ^
 
                        base.                                       GetHashCode();
 

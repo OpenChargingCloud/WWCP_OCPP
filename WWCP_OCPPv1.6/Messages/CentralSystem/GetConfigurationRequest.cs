@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             unchecked
             {
 
-                return Keys.GetHashCode() * 3 ^
+                return Keys.CalcHashCode() * 3 ^
                        base.GetHashCode();
 
             }

@@ -865,7 +865,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 return ReportChargingProfilesRequestId.GetHashCode()       * 17 ^
                        ChargingLimitSource.            GetHashCode()       * 13 ^
                        EVSEId.                         GetHashCode()       * 11 ^
-                      //ToDo: Add ChargingProfiles
+                       ChargingProfiles.               CalcHashCode()      *  7 ^
                       (ToBeContinued?.                 GetHashCode() ?? 0) *  5 ^
                       (CustomData?.                    GetHashCode() ?? 0) *  3 ^
 

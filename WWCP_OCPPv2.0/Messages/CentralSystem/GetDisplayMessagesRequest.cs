@@ -523,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             {
 
                 return GetDisplayMessagesRequestId.GetHashCode()       * 11 ^
-                       //ToDo: Add Ids
+                       Ids.                        CalcHashCode()      *  7 ^
                       (Priority?.                  GetHashCode() ?? 0) *  5 ^
                       (State?.                     GetHashCode() ?? 0) *  3 ^
 

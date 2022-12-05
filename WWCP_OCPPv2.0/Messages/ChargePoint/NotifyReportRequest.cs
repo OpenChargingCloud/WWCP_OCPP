@@ -716,7 +716,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 return NotifyReportRequestId.GetHashCode()       * 13 ^
                        SequenceNumber.       GetHashCode()       * 11 ^
                        GeneratedAt.          GetHashCode()       *  7 ^
-                      //ToDo: Add ReportData
+                       ReportData.           CalcHashCode()      *  5 ^
                       (CustomData?.          GetHashCode() ?? 0) *  3 ^
 
                        base.                 GetHashCode();

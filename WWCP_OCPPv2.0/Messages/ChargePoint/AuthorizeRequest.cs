@@ -562,7 +562,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
               (Certificate is not null && AuthorizeRequest.Certificate is not null && Certificate.Equals(AuthorizeRequest.Certificate))) &&
 
                ISO15118CertificateHashData.Count().Equals(AuthorizeRequest.ISO15118CertificateHashData.Count())     &&
-               ISO15118CertificateHashData.All(data => AuthorizeRequest.ISO15118CertificateHashData.Contains(data)) &&
+               ISO15118CertificateHashData.All(data =>    AuthorizeRequest.ISO15118CertificateHashData.Contains(data)) &&
 
                base.GenericEquals(AuthorizeRequest);
 
@@ -581,11 +581,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             unchecked
             {
 
-                return IdToken.     GetHashCode()       * 7 ^
-                      (Certificate?.GetHashCode() ?? 0) * 5 ^
-                       //ToDo: Add ISO15118CertificateHashData!
+                return IdToken.                    GetHashCode()       * 7 ^
+                      (Certificate?.               GetHashCode() ?? 0) * 5 ^
+                       ISO15118CertificateHashData.CalcHashCode()      * 3 ^
 
-                       base.        GetHashCode();
+                       base.                       GetHashCode();
 
             }
         }

@@ -550,7 +550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             unchecked
             {
 
-                return //ToDo: Add Results!
+                return Results.CalcHashCode() * 3 ^
                        base.GetHashCode();
 
             }

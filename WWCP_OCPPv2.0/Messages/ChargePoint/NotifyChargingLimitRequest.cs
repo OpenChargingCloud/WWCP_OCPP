@@ -740,11 +740,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             unchecked
             {
 
-                return ChargingLimit.  GetHashCode()       * 7 ^
-                       //ToDo: Add ChargingSchedules!
-                      (EVSEId?.        GetHashCode() ?? 0) * 3 ^
+                return ChargingLimit.    GetHashCode()       * 7 ^
+                       ChargingSchedules.CalcHashCode()      * 5 ^
+                      (EVSEId?.          GetHashCode() ?? 0) * 3 ^
 
-                       base.           GetHashCode();
+                       base.             GetHashCode();
 
             }
         }

@@ -493,8 +493,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return ConfigurationKeys.GetHashCode() * 5 ^
-                       UnknownKeys.      GetHashCode() * 3;
+                return ConfigurationKeys.CalcHashCode() * 5 ^
+                       UnknownKeys.      GetHashCode()  * 3;
 
             }
         }

@@ -1190,7 +1190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                       (ReservationId?.     GetHashCode() ?? 0) * 11 ^
                       (IdToken?.           GetHashCode() ?? 0) *  7 ^
                       (EVSE?.              GetHashCode() ?? 0) *  5 ^
-                       //ToDo: Add MeterValues!
+                       MeterValues.        CalcHashCode()      *  3 ^
 
                        base.               GetHashCode();
 

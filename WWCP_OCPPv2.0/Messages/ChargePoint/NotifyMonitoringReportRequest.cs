@@ -675,7 +675,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                 return NotifyMonitoringReportRequestId.GetHashCode()       * 17 ^
                        SequenceNumber.                 GetHashCode()       * 13 ^
                        GeneratedAt.                    GetHashCode()       * 11 ^
-                      //ToDo: Add EventData
+                       MonitoringData.                 CalcHashCode()      *  7 ^
                       (ToBeContinued?.                 GetHashCode() ?? 0) *  5 ^
                       (CustomData?.                    GetHashCode() ?? 0) *  3 ^
 

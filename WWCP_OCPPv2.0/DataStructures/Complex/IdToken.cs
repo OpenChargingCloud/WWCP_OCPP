@@ -394,11 +394,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Value.GetHashCode() * 7 ^
-                       Type. GetHashCode() * 5 ^
-                       //ToDo: Add AdditionalInfos!
+                return Value.          GetHashCode()  * 7 ^
+                       Type.           GetHashCode()  * 5 ^
+                       AdditionalInfos.CalcHashCode() * 3 ^
 
-                       base. GetHashCode();
+                       base.           GetHashCode();
 
             }
         }

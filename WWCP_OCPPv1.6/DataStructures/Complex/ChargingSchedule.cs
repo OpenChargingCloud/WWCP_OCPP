@@ -591,7 +591,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 return ChargingRateUnit.       GetHashCode()       * 13 ^
-                       ChargingSchedulePeriods.GetHashCode()       * 11 ^
+                       ChargingSchedulePeriods.CalcHashCode()      * 11 ^
 
                        (Duration?.             GetHashCode() ?? 0) *  7 ^
                        (StartSchedule?.        GetHashCode() ?? 0) *  5 ^

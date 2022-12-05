@@ -437,12 +437,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Id.               GetHashCode()       * 11 ^
-                       //ToDo: Add SalesTariffEntries
-                       (Description?.    GetHashCode() ?? 0) *  5 ^
-                       (NumEPriceLevels?.GetHashCode() ?? 0) *  3 ^
+                return Id.                GetHashCode()       * 11 ^
+                       SalesTariffEntries.CalcHashCode()      *  7 ^
+                       (Description?.     GetHashCode() ?? 0) *  5 ^
+                       (NumEPriceLevels?. GetHashCode() ?? 0) *  3 ^
 
-                       base.             GetHashCode();
+                       base.              GetHashCode();
 
             }
         }

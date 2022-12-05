@@ -552,8 +552,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             unchecked
             {
 
-                return //ToDo: Add SetMonitoringResult!
-                       base.       GetHashCode();
+                return SetMonitoringResults.CalcHashCode() * 3 ^
+                       base.                GetHashCode();
 
             }
         }

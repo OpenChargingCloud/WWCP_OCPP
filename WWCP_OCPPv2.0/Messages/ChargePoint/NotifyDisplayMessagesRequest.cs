@@ -616,7 +616,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             {
 
                 return NotifyDisplayMessagesRequestId.GetHashCode()       * 7 ^
-                       //ToDo: Add MessageInfos
+                       MessageInfos.                  CalcHashCode()      * 5 ^
                       (ToBeContinued?.                GetHashCode() ?? 0) * 3 ^
 
                        base.                          GetHashCode();

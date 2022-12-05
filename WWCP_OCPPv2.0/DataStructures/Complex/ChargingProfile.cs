@@ -600,7 +600,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        StackLevel            .GetHashCode()       * 19 ^
                        ChargingProfilePurpose.GetHashCode()       * 17 ^
                        ChargingProfileKind   .GetHashCode()       * 13 ^
-                       //ToDo: Add ChargingSchedules!
+                       ChargingSchedules.     CalcHashCode()      * 11 ^
 
                        (TransactionId?.       GetHashCode() ?? 0) *  7 ^
                        (RecurrencyKind?.      GetHashCode() ?? 0) *  5 ^

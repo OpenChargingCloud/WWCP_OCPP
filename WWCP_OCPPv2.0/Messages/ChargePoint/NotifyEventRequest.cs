@@ -663,7 +663,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                 return GeneratedAt.   GetHashCode()       * 13 ^
                        SequenceNumber.GetHashCode()       * 11 ^
-                      //ToDo: Add EventData
+                       EventData.     CalcHashCode()      *  7 ^
                       (ToBeContinued?.GetHashCode() ?? 0) *  5 ^
                       (CustomData?.   GetHashCode() ?? 0) *  3 ^
 

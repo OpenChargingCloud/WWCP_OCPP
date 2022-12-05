@@ -555,7 +555,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 return Timestamp.    GetHashCode() * 3 ^
-                       SampledValues.GetHashCode();
+                       SampledValues.CalcHashCode();
 
             }
         }

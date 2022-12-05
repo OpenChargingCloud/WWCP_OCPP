@@ -369,11 +369,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Timestamp.GetHashCode() * 3 ^
+                return Timestamp.    GetHashCode()   * 5 ^
+                       SampledValues.CalcHashCode( ) * 3 ^
 
-                       //ToDo: Add SampledValues!
-
-                       base.     GetHashCode();
+                       base.         GetHashCode();
 
             }
         }

@@ -592,11 +592,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             unchecked
             {
 
-                return GetReportRequestId.GetHashCode() * 7 ^
-                       //ToDo: Add ComponentCriteria
-                       //ToDo: Add ComponentVariable
+                return GetReportRequestId.GetHashCode()  * 7 ^
+                       ComponentCriteria .CalcHashCode() * 5 ^
+                       ComponentVariables.CalcHashCode() * 3 ^
 
-                       base.          GetHashCode();
+                       base.              GetHashCode();
 
             }
         }
