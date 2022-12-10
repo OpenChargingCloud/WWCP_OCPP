@@ -780,7 +780,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             unchecked
             {
 
-                return ChargePointVendor.       GetHashCode()       * 27 ^
+                return ChargePointVendor.       GetHashCode()       * 29 ^
                        ChargePointModel.        GetHashCode()       * 23 ^
 
                       (ChargePointSerialNumber?.GetHashCode() ?? 0) * 19 ^

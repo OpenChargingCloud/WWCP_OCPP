@@ -562,7 +562,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return EVMaxCurrent.     GetHashCode()       * 27 ^
+                return EVMaxCurrent.     GetHashCode()       * 29 ^
                        EVMaxVoltage.     GetHashCode()       * 19 ^
 
                       (EnergyAmount?.    GetHashCode() ?? 0) * 17 ^

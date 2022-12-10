@@ -558,7 +558,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Id.             GetHashCode()       * 27 ^
+                return Id.             GetHashCode()       * 23 ^
                        Priority.       GetHashCode()       * 19 ^
                        Message.        GetHashCode()       * 17 ^
                       (State?.         GetHashCode() ?? 0) * 13 ^
