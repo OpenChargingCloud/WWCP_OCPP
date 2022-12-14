@@ -722,7 +722,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region / - Reset
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "Reset",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CP + "resetRequest").FirstOrDefault()!,
@@ -884,7 +885,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region / - ReserveNow
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "ReserveNow",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CP + "reserveNowRequest").FirstOrDefault()!,
@@ -1045,7 +1047,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region / - CancelReservation
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "CancelReservation",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CP + "cancelReservationRequest").FirstOrDefault()!,
@@ -1155,7 +1158,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region / - RemoteStartTransaction
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "RemoteStartTransaction",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CP + "remoteStartTransactionRequest").FirstOrDefault()!,
@@ -1265,7 +1269,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region / - RemoteStopTransaction
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "RemoteStopTransaction",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CP + "remoteStopTransactionRequest").FirstOrDefault()!,
@@ -1376,7 +1381,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region / - DataTransfer
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "DataTransfer",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CP + "dataTransferRequest").FirstOrDefault()!,

@@ -464,7 +464,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region / - BootNotification
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "BootNotification",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "bootNotificationRequest").FirstOrDefault()!,
@@ -625,7 +626,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region / - Heartbeat
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "Heartbeat",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "heartbeatRequest").FirstOrDefault()!,
@@ -787,7 +789,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region / - Authorize
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "Authorize",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "authorizeRequest").FirstOrDefault()!,
@@ -948,7 +951,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region / - StartTransaction
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "StartTransaction",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "startTransactionRequest").FirstOrDefault()!,
@@ -1109,7 +1113,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region / - StatusNotification
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "StatusNotification",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "statusNotificationRequest").FirstOrDefault()!,
@@ -1270,7 +1275,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region / - MeterValues
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "MeterValues",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "meterValuesRequest").FirstOrDefault()!,
@@ -1431,7 +1437,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region / - StopTransaction
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "StopTransaction",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "startTransactionRequest").FirstOrDefault()!,
@@ -1593,7 +1600,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region / - IncomingDataTransfer
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "DataTransfer",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "dataTransferRequest").FirstOrDefault()!,
@@ -1755,7 +1763,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region / - DiagnosticsStatusNotification
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "DiagnosticsStatusNotification",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "diagnosticsStatusNotificationRequest").FirstOrDefault()!,
@@ -1917,7 +1926,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region / - FirmwareStatusNotification
 
-            SOAPServer.RegisterSOAPDelegate(HTTPHostname.Any,
+            SOAPServer.RegisterSOAPDelegate(null,
+                                            HTTPHostname.Any,
                                             URLPrefix,
                                             "FirmwareStatusNotification",
                                             XML => XML.Descendants(OCPPNS.OCPPv1_6_CS + "firmwareStatusNotificationRequest").FirstOrDefault()!,

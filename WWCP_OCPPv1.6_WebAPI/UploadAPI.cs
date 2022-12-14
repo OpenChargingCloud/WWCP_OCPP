@@ -165,53 +165,53 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #region PUT  ~/*
 
             // curl -X PUT http://127.0.0.1:9901/diagnostics/test.log -T test.log
-            HTTPServer.AddMethodCallback(HTTPHostname.Any,
-                                         HTTPMethod.PUT,
-                                         URLPathPrefix + "{file}",
-                                         HTTPDelegate: async Request => {
+            AddMethodCallback(HTTPHostname.Any,
+                              HTTPMethod.PUT,
+                              URLPathPrefix + "{file}",
+                              HTTPDelegate: async Request => {
 
-                                             try
-                                             {
+                                  try
+                                  {
 
-                                                 var filepath  = Request.Path.ToString().Replace("..", "");
-                                                 var filename  = filepath.Substring(filepath.LastIndexOf("/") + 1);
-                                                 var file      = File.Create(filename);
-                                                 var data      = Request.HTTPBody;
+                                      var filepath  = Request.Path.ToString().Replace("..", "");
+                                      var filename  = filepath.Substring(filepath.LastIndexOf("/") + 1);
+                                      var file      = File.Create(filename);
+                                      var data      = Request.HTTPBody;
 
-                                                 await file.WriteAsync(data, 0, data.Length);
+                                      await file.WriteAsync(data, 0, data.Length);
 
-                                                 DebugX.Log("UploadAPI: Received file '" + filename + "'!");
+                                      DebugX.Log("UploadAPI: Received file '" + filename + "'!");
 
 
-                                                 return new HTTPResponse.Builder(Request) {
-                                                            HTTPStatusCode             = HTTPStatusCode.Created,
-                                                            Server                     = DefaultHTTPServerName,
-                                                            Date                       = Timestamp.Now,
-                                                            AccessControlAllowOrigin   = "*",
-                                                            AccessControlAllowMethods  = "PUT",
-                                                            Connection                 = "close"
-                                                        };
+                                      return new HTTPResponse.Builder(Request) {
+                                                 HTTPStatusCode             = HTTPStatusCode.Created,
+                                                 Server                     = DefaultHTTPServerName,
+                                                 Date                       = Timestamp.Now,
+                                                 AccessControlAllowOrigin   = "*",
+                                                 AccessControlAllowMethods  = "PUT",
+                                                 Connection                 = "close"
+                                             };
 
-                                             }
-                                             catch (Exception e)
-                                             {
+                                  }
+                                  catch (Exception e)
+                                  {
 
-                                                 DebugX.Log("UploadAPI: Could not received file: " + e.Message);
+                                      DebugX.Log("UploadAPI: Could not received file: " + e.Message);
 
-                                                 return new HTTPResponse.Builder(Request) {
-                                                            HTTPStatusCode             = HTTPStatusCode.InternalServerError,
-                                                            Server                     = DefaultHTTPServerName,
-                                                            Date                       = Timestamp.Now,
-                                                            AccessControlAllowOrigin   = "*",
-                                                            AccessControlAllowMethods  = "PUT",
-                                                            ContentType                = HTTPContentType.TEXT_UTF8,
-                                                            Content                    = e.Message.ToUTF8Bytes(),
-                                                            Connection                 = "close"
-                                                        };
+                                      return new HTTPResponse.Builder(Request) {
+                                                 HTTPStatusCode             = HTTPStatusCode.InternalServerError,
+                                                 Server                     = DefaultHTTPServerName,
+                                                 Date                       = Timestamp.Now,
+                                                 AccessControlAllowOrigin   = "*",
+                                                 AccessControlAllowMethods  = "PUT",
+                                                 ContentType                = HTTPContentType.TEXT_UTF8,
+                                                 Content                    = e.Message.ToUTF8Bytes(),
+                                                 Connection                 = "close"
+                                             };
 
-                                             }
+                                  }
 
-                                         });
+                              });
 
             #endregion
 
@@ -219,53 +219,53 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #region PUT  ~/*
 
             // curl -X PUT http://127.0.0.1:9901/diagnostics/test.log -T test.log
-            HTTPServer.AddMethodCallback(HTTPHostname.Any,
-                                         HTTPMethod.POST,
-                                         URLPathPrefix + "{file}",
-                                         HTTPDelegate: async Request => {
+            AddMethodCallback(HTTPHostname.Any,
+                              HTTPMethod.POST,
+                              URLPathPrefix + "{file}",
+                              HTTPDelegate: async Request => {
 
-                                             try
-                                             {
+                                  try
+                                  {
 
-                                                 var filepath  = Request.Path.ToString().Replace("..", "");
-                                                 var filename  = filepath.Substring(filepath.LastIndexOf("/") + 1);
-                                                 var file      = File.Create(filename);
-                                                 var data      = Request.HTTPBody;
+                                      var filepath  = Request.Path.ToString().Replace("..", "");
+                                      var filename  = filepath.Substring(filepath.LastIndexOf("/") + 1);
+                                      var file      = File.Create(filename);
+                                      var data      = Request.HTTPBody;
 
-                                                 await file.WriteAsync(data, 0, data.Length);
+                                      await file.WriteAsync(data, 0, data.Length);
 
-                                                 DebugX.Log("UploadAPI: Received file '" + filename + "'!");
+                                      DebugX.Log("UploadAPI: Received file '" + filename + "'!");
 
 
-                                                 return new HTTPResponse.Builder(Request) {
-                                                            HTTPStatusCode             = HTTPStatusCode.Created,
-                                                            Server                     = DefaultHTTPServerName,
-                                                            Date                       = Timestamp.Now,
-                                                            AccessControlAllowOrigin   = "*",
-                                                            AccessControlAllowMethods  = "PUT",
-                                                            Connection                 = "close"
-                                                        };
+                                      return new HTTPResponse.Builder(Request) {
+                                                 HTTPStatusCode             = HTTPStatusCode.Created,
+                                                 Server                     = DefaultHTTPServerName,
+                                                 Date                       = Timestamp.Now,
+                                                 AccessControlAllowOrigin   = "*",
+                                                 AccessControlAllowMethods  = "PUT",
+                                                 Connection                 = "close"
+                                             };
 
-                                             }
-                                             catch (Exception e)
-                                             {
+                                  }
+                                  catch (Exception e)
+                                  {
 
-                                                 DebugX.Log("UploadAPI: Could not received file: " + e.Message);
+                                      DebugX.Log("UploadAPI: Could not received file: " + e.Message);
 
-                                                 return new HTTPResponse.Builder(Request) {
-                                                            HTTPStatusCode             = HTTPStatusCode.InternalServerError,
-                                                            Server                     = DefaultHTTPServerName,
-                                                            Date                       = Timestamp.Now,
-                                                            AccessControlAllowOrigin   = "*",
-                                                            AccessControlAllowMethods  = "PUT",
-                                                            ContentType                = HTTPContentType.TEXT_UTF8,
-                                                            Content                    = e.Message.ToUTF8Bytes(),
-                                                            Connection                 = "close"
-                                                        };
+                                      return new HTTPResponse.Builder(Request) {
+                                                 HTTPStatusCode             = HTTPStatusCode.InternalServerError,
+                                                 Server                     = DefaultHTTPServerName,
+                                                 Date                       = Timestamp.Now,
+                                                 AccessControlAllowOrigin   = "*",
+                                                 AccessControlAllowMethods  = "PUT",
+                                                 ContentType                = HTTPContentType.TEXT_UTF8,
+                                                 Content                    = e.Message.ToUTF8Bytes(),
+                                                 Connection                 = "close"
+                                             };
 
-                                             }
+                                  }
 
-                                         });
+                              });
 
             #endregion
 

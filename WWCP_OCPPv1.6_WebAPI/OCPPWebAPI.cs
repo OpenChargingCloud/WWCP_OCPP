@@ -321,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var LogfilePrefix        = "HTTPSSEs" + Path.DirectorySeparatorChar;
 
-            this.EventLog            = HTTPServer.AddJSONEventSource(
+            this.EventLog            = this.AddJSONEventSource(
                                            EventIdentification:      EventLogId,
                                            URLTemplate:              this.URLPathPrefix + "/events",
                                            MaxNumberOfCachedEvents:  10000,
@@ -1371,7 +1371,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region / (HTTPRoot)
 
-            HTTPServer.RegisterResourcesFolder(HTTPHostname.Any,
+            HTTPServer.RegisterResourcesFolder(this,
+                                               HTTPHostname.Any,
                                                URLPathPrefix,
                                                "cloud.charging.open.protocols.OCPPv1_6.WebAPI.HTTPRoot",
                                                DefaultFilename: "index.html");
@@ -1406,109 +1407,109 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region ~/chargeBoxIds
 
-            HTTPServer.AddMethodCallback(HTTPHostname.Any,
-                                         HTTPMethod.GET,
-                                         URLPathPrefix + "chargeBoxIds",
-                                         HTTPContentType.JSON_UTF8,
-                                         HTTPDelegate: Request => {
+            AddMethodCallback(HTTPHostname.Any,
+                              HTTPMethod.GET,
+                              URLPathPrefix + "chargeBoxIds",
+                              HTTPContentType.JSON_UTF8,
+                              HTTPDelegate: Request => {
 
-                                             return Task.FromResult(
-                                                 new HTTPResponse.Builder(Request) {
-                                                     HTTPStatusCode             = HTTPStatusCode.OK,
-                                                     Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
-                                                     AccessControlAllowOrigin   = "*",
-                                                     AccessControlAllowMethods  = "OPTIONS, GET",
-                                                     AccessControlAllowHeaders  = "Authorization",
-                                                     ContentType                = HTTPContentType.JSON_UTF8,
-                                                     Content                    = JSONArray.Create(
-                                                                                      CentralSystem.ChargeBoxIds.Select(chargeBoxId => new JObject(new JProperty("@id", chargeBoxId.ToString())))
-                                                                                  ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
-                                                     Connection                 = "close"
-                                                 }.AsImmutable);
+                                  return Task.FromResult(
+                                      new HTTPResponse.Builder(Request) {
+                                          HTTPStatusCode             = HTTPStatusCode.OK,
+                                          Server                     = DefaultHTTPServerName,
+                                          Date                       = Timestamp.Now,
+                                          AccessControlAllowOrigin   = "*",
+                                          AccessControlAllowMethods  = "OPTIONS, GET",
+                                          AccessControlAllowHeaders  = "Authorization",
+                                          ContentType                = HTTPContentType.JSON_UTF8,
+                                          Content                    = JSONArray.Create(
+                                                                           CentralSystem.ChargeBoxIds.Select(chargeBoxId => new JObject(new JProperty("@id", chargeBoxId.ToString())))
+                                                                       ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
+                                          Connection                 = "close"
+                                      }.AsImmutable);
 
-                                         });
+                              });
 
             #endregion
 
             #region ~/chargeBoxes
 
-            HTTPServer.AddMethodCallback(HTTPHostname.Any,
-                                         HTTPMethod.GET,
-                                         URLPathPrefix + "chargeBoxes",
-                                         HTTPContentType.JSON_UTF8,
-                                         HTTPDelegate: Request => {
+            AddMethodCallback(HTTPHostname.Any,
+                              HTTPMethod.GET,
+                              URLPathPrefix + "chargeBoxes",
+                              HTTPContentType.JSON_UTF8,
+                              HTTPDelegate: Request => {
 
-                                             return Task.FromResult(
-                                                 new HTTPResponse.Builder(Request) {
-                                                     HTTPStatusCode             = HTTPStatusCode.OK,
-                                                     Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
-                                                     AccessControlAllowOrigin   = "*",
-                                                     AccessControlAllowMethods  = "OPTIONS, GET",
-                                                     AccessControlAllowHeaders  = "Authorization",
-                                                     ContentType                = HTTPContentType.JSON_UTF8,
-                                                     Content                    = JSONArray.Create(
-                                                                                      CentralSystem.ChargeBoxes.Select(chargeBox => chargeBox.ToJSON())
-                                                                                  ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
-                                                     Connection                 = "close"
-                                                 }.AsImmutable);
+                                  return Task.FromResult(
+                                      new HTTPResponse.Builder(Request) {
+                                          HTTPStatusCode             = HTTPStatusCode.OK,
+                                          Server                     = DefaultHTTPServerName,
+                                          Date                       = Timestamp.Now,
+                                          AccessControlAllowOrigin   = "*",
+                                          AccessControlAllowMethods  = "OPTIONS, GET",
+                                          AccessControlAllowHeaders  = "Authorization",
+                                          ContentType                = HTTPContentType.JSON_UTF8,
+                                          Content                    = JSONArray.Create(
+                                                                           CentralSystem.ChargeBoxes.Select(chargeBox => chargeBox.ToJSON())
+                                                                       ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
+                                          Connection                 = "close"
+                                      }.AsImmutable);
 
-                                         });
+                              });
 
             #endregion
 
 
             #region ~/chargeBoxes/{chargeBoxId}
 
-            HTTPServer.AddMethodCallback(HTTPHostname.Any,
-                                         HTTPMethod.GET,
-                                         URLPathPrefix + "chargeBoxes/{chargeBoxId}",
-                                         HTTPContentType.JSON_UTF8,
-                                         HTTPDelegate: Request => {
+            AddMethodCallback(HTTPHostname.Any,
+                              HTTPMethod.GET,
+                              URLPathPrefix + "chargeBoxes/{chargeBoxId}",
+                              HTTPContentType.JSON_UTF8,
+                              HTTPDelegate: Request => {
 
-                                             #region Get HTTP user and its organizations
+                                  #region Get HTTP user and its organizations
 
-                                             //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
-                                             //if (!TryGetHTTPUser(Request,
-                                             //                    out User                   HTTPUser,
-                                             //                    out HashSet<Organization>  HTTPOrganizations,
-                                             //                    out HTTPResponse.Builder   Response,
-                                             //                    AccessLevel:               Access_Levels.ReadOnly,
-                                             //                    Recursive:                 true))
-                                             //{
-                                             //    return Task.FromResult(Response.AsImmutable);
-                                             //}
+                                  //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                                  //if (!TryGetHTTPUser(Request,
+                                  //                    out User                   HTTPUser,
+                                  //                    out HashSet<Organization>  HTTPOrganizations,
+                                  //                    out HTTPResponse.Builder   Response,
+                                  //                    AccessLevel:               Access_Levels.ReadOnly,
+                                  //                    Recursive:                 true))
+                                  //{
+                                  //    return Task.FromResult(Response.AsImmutable);
+                                  //}
 
-                                             #endregion
+                                  #endregion
 
-                                             #region Check ChargeBoxId URL parameter
+                                  #region Check ChargeBoxId URL parameter
 
-                                             if (!Request.ParseChargeBox(this,
-                                                                         out ChargeBox_Id?         ChargeBoxId,
-                                                                         out ChargeBox             ChargeBox,
-                                                                         out HTTPResponse.Builder  Response))
-                                             {
-                                                 return Task.FromResult(Response.AsImmutable);
-                                             }
+                                  if (!Request.ParseChargeBox(this,
+                                                              out ChargeBox_Id?          ChargeBoxId,
+                                                              out ChargeBox?             ChargeBox,
+                                                              out HTTPResponse.Builder?  Response))
+                                  {
+                                      return Task.FromResult(Response.AsImmutable);
+                                  }
 
-                                             #endregion
+                                  #endregion
 
 
-                                             return Task.FromResult(
-                                                 new HTTPResponse.Builder(Request) {
-                                                     HTTPStatusCode             = HTTPStatusCode.OK,
-                                                     Server                     = DefaultHTTPServerName,
-                                                     Date                       = Timestamp.Now,
-                                                     AccessControlAllowOrigin   = "*",
-                                                     AccessControlAllowMethods  = "OPTIONS, GET",
-                                                     AccessControlAllowHeaders  = "Authorization",
-                                                     ContentType                = HTTPContentType.JSON_UTF8,
-                                                     Content                    = ChargeBox.ToJSON().ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
-                                                     Connection                 = "close"
-                                                 }.AsImmutable);
+                                  return Task.FromResult(
+                                      new HTTPResponse.Builder(Request) {
+                                          HTTPStatusCode             = HTTPStatusCode.OK,
+                                          Server                     = DefaultHTTPServerName,
+                                          Date                       = Timestamp.Now,
+                                          AccessControlAllowOrigin   = "*",
+                                          AccessControlAllowMethods  = "OPTIONS, GET",
+                                          AccessControlAllowHeaders  = "Authorization",
+                                          ContentType                = HTTPContentType.JSON_UTF8,
+                                          Content                    = ChargeBox.ToJSON().ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
+                                          Connection                 = "close"
+                                      }.AsImmutable);
 
-                                         });
+                              });
 
             #endregion
 
@@ -1520,41 +1521,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             // --------------------------------------------------------------------
             // curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
             // --------------------------------------------------------------------
-            HTTPServer.AddMethodCallback(Hostname,
-                                         HTTPMethod.GET,
-                                         URLPathPrefix + "events",
-                                         HTTPContentType.HTML_UTF8,
-                                         HTTPDelegate: Request => {
+            AddMethodCallback(Hostname,
+                              HTTPMethod.GET,
+                              URLPathPrefix + "events",
+                              HTTPContentType.HTML_UTF8,
+                              HTTPDelegate: Request => {
 
-                                             #region Get HTTP user and its organizations
+                                  #region Get HTTP user and its organizations
 
-                                             //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
-                                             //if (!TryGetHTTPUser(Request,
-                                             //                    out User                   HTTPUser,
-                                             //                    out HashSet<Organization>  HTTPOrganizations,
-                                             //                    out HTTPResponse.Builder   Response,
-                                             //                    Recursive:                 true))
-                                             //{
-                                             //    return Task.FromResult(Response.AsImmutable);
-                                             //}
+                                  //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                                  //if (!TryGetHTTPUser(Request,
+                                  //                    out User                   HTTPUser,
+                                  //                    out HashSet<Organization>  HTTPOrganizations,
+                                  //                    out HTTPResponse.Builder   Response,
+                                  //                    Recursive:                 true))
+                                  //{
+                                  //    return Task.FromResult(Response.AsImmutable);
+                                  //}
 
-                                             #endregion
+                                  #endregion
 
-                                             return Task.FromResult(
-                                                        new HTTPResponse.Builder(Request) {
-                                                            HTTPStatusCode             = HTTPStatusCode.OK,
-                                                            Server                     = DefaultHTTPServerName,
-                                                            Date                       = Timestamp.Now,
-                                                            AccessControlAllowOrigin   = "*",
-                                                            AccessControlAllowMethods  = "GET",
-                                                            AccessControlAllowHeaders  = "Content-Type, Accept, Authorization",
-                                                            ContentType                = HTTPContentType.HTML_UTF8,
-                                                            Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
-                                                            Connection                 = "close",
-                                                            Vary                       = "Accept"
-                                                        }.AsImmutable);
+                                  return Task.FromResult(
+                                             new HTTPResponse.Builder(Request) {
+                                                 HTTPStatusCode             = HTTPStatusCode.OK,
+                                                 Server                     = DefaultHTTPServerName,
+                                                 Date                       = Timestamp.Now,
+                                                 AccessControlAllowOrigin   = "*",
+                                                 AccessControlAllowMethods  = "GET",
+                                                 AccessControlAllowHeaders  = "Content-Type, Accept, Authorization",
+                                                 ContentType                = HTTPContentType.HTML_UTF8,
+                                                 Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
+                                                 Connection                 = "close",
+                                                 Vary                       = "Accept"
+                                             }.AsImmutable);
 
-                                         });
+                              });
 
             #endregion
 
