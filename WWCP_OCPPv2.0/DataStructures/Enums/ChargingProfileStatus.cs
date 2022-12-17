@@ -93,7 +93,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-
         #region AsText(this ChargingProfileStatus)
 
         public static String AsText(this ChargingProfileStatus ChargingProfileStatus)

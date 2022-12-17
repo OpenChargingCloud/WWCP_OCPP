@@ -675,25 +675,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// </summary>
         public override String ToString()
 
-            => new String[] {
+            => new String?[] {
 
                    TotalCost.HasValue
                        ? "Total cost: "               + TotalCost
-                       : "",
+                       : null,
 
                    ChargingPriority.HasValue
                        ? "Charging priority: "        + TotalCost
-                       : "",
+                       : null,
 
                    IdTokenInfo is not null
                        ? "Id token info: "            + IdTokenInfo
-                       : "",
+                       : null,
 
                    UpdatedPersonalMessage is not null
                        ? "Updated personal message: " + UpdatedPersonalMessage
-                       : ""
+                       : null
 
-               }.AggregateWith(", ");
+               }.Where(text => text is not null).
+                 AggregateWith(", ");
 
         #endregion
 

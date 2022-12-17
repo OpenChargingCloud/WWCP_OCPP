@@ -725,19 +725,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// </summary>
         public override String ToString()
 
-            => new String[] {
+            => new String?[] {
 
                    CustomerInformationRequestId.ToString(),
 
                    Report
                        ? "[report]"
-                       : "",
+                       : null,
 
                    Clear
                        ? "[clear]"
-                       : ""
+                       : null
 
-               }.AggregateWith(" ");
+               }.Where(text => text is not null).
+                 AggregateWith(", ");
 
         #endregion
 

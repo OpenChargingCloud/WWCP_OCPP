@@ -485,25 +485,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public override String ToString()
 
-            => new String[] {
+            => new String?[] {
 
                    ChargingProfilePurpose.HasValue
                        ? "ChargingProfilePurpose: " + ChargingProfilePurpose.Value
-                       : "",
+                       : null,
 
                    StackLevel.HasValue
                        ? "StackLevel: "             + StackLevel.Value
-                       : "",
+                       : null,
 
                    ChargingProfileIds.Any()
                        ? "ChargingProfileIds: "     + ChargingProfileIds.AggregateWith(",")
-                       : "",
+                       : null,
 
                    ChargingLimitSource.HasValue
                        ? "ChargingLimitSource: "    + ChargingLimitSource
-                       : ""
+                       : null
 
-               }.AggregateWith(", ");
+               }.Where(text => text is not null).
+                 AggregateWith(", ");
 
         #endregion
 

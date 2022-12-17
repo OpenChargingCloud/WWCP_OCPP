@@ -510,31 +510,31 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public override String ToString()
 
-            => new String[] {
+            => new String?[] {
 
                    DataType.AsText(),
 
                    SupportsMonitoring
                        ? "supports monitoring"
-                       : "",
+                       : null,
 
                    Unit is not null
                        ? "Unit: " + Unit
-                       : "",
+                       : null,
 
                    MinLimit.HasValue
                        ? "MinLimit: " + MinLimit.Value
-                       : "",
+                       : null,
 
                    MaxLimit.HasValue
                        ? "MaxLimit: " + MaxLimit.Value
-                       : "",
+                       : null,
 
                    ValuesList.Any()
                        ? "ValuesList: " + ValuesList.AggregateWith('|')
-                       : ""
+                       : null
 
-               }.Where(element => element.IsNotNullOrEmpty()).
+               }.Where(text => text is not null).
                  AggregateWith(", ");
 
         #endregion

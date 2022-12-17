@@ -475,33 +475,34 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public override String ToString()
 
-            => new String[] {
+            => new String?[] {
 
                    Type.HasValue
                        ? "Type: " + Type.Value.AsText()
-                       : "",
+                       : null,
 
                    Value is not null && Value.IsNotNullOrEmpty()
                        ? "Value: " + Value.SubstringMax(20)
-                       : "",
+                       : null,
 
                    Mutability.HasValue
                        ? "Mutability: " + Mutability.Value.AsText()
-                       : "",
+                       : null,
 
                    Persistent.HasValue
                        ? Persistent.Value
                              ? "persistent"
                              : "not persistent"
-                       : "",
+                       : null,
 
                    Constant.HasValue
                        ? Constant.Value
                              ? "constant"
                              : "not constant"
-                       : ""
+                       : null
 
-               }.AggregateWith(", ");
+               }.Where(text => text is not null).
+                 AggregateWith(", ");
 
         #endregion
 

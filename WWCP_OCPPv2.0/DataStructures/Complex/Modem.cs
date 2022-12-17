@@ -376,18 +376,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public override String ToString()
 
-            => new String[] {
+            => new String?[] {
 
                     ICCID is not null
                         ? "ICCID: " + ICCID
-                        : "",
+                        : null,
 
                     IMSI  is not null
                         ? "IMSI: "  + IMSI
-                        : "",
-               }.
-               Where(element => element.IsNotNullOrEmpty()).
-               AggregateWith(", ");
+                        : null
+
+               }.Where(text => text is not null).
+                 AggregateWith(", ");
 
         #endregion
 

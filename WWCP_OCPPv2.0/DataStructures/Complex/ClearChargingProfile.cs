@@ -415,21 +415,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public override String ToString()
 
-            => new String[] {
+            => new String?[] {
 
                    EVSEId.HasValue
                        ? "EVSEId: " + EVSEId
-                       : "",
+                       : null,
 
                    ChargingProfilePurpose.HasValue
                        ? "ChargingProfilePurpose: " + ChargingProfilePurpose.Value
-                       : "",
+                       : null,
 
                    StackLevel.HasValue
                        ? "StackLevel: " + StackLevel.Value
-                       : ""
+                       : null
 
-               }.AggregateWith(", ");
+               }.Where(text => text is not null).
+                 AggregateWith(", ");
 
         #endregion
 
