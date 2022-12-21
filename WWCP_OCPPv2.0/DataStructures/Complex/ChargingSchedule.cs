@@ -525,7 +525,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                ChargingRateUnit.Equals(ChargingSchedule.ChargingRateUnit) &&
 
                ChargingSchedulePeriods.Count().Equals(ChargingSchedule.ChargingSchedulePeriods.Count())     &&
-               ChargingSchedulePeriods.All(data => ChargingSchedule.ChargingSchedulePeriods.Contains(data)) &&
+               ChargingSchedulePeriods.All(chargingSchedulePeriod => ChargingSchedule.ChargingSchedulePeriods.Contains(chargingSchedulePeriod)) &&
 
             ((!StartSchedule.  HasValue    && !ChargingSchedule.StartSchedule.  HasValue)    ||
               (StartSchedule.  HasValue    &&  ChargingSchedule.StartSchedule.  HasValue && StartSchedule.  Value.Equals(ChargingSchedule.StartSchedule.  Value))) &&
