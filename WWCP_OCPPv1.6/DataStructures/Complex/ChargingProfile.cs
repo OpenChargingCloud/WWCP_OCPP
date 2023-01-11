@@ -501,17 +501,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 #region ChargingSchedule
 
-                if (!JSON.ParseMandatoryJSON2("chargingSchedule",
-                                              "charging schedule",
-                                              OCPPv1_6.ChargingSchedule.TryParse,
-                                              out ChargingSchedule? ChargingSchedule,
-                                              out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("chargingSchedule",
+                                             "charging schedule",
+                                             OCPPv1_6.ChargingSchedule.TryParse,
+                                             out ChargingSchedule? ChargingSchedule,
+                                             out ErrorResponse) ||
+                     ChargingSchedule is null)
                 {
                     return false;
                 }
-
-                if (ChargingSchedule is null)
-                    return false;
 
                 #endregion
 

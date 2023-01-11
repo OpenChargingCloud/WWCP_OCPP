@@ -457,17 +457,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #region ChargingProfile    [mandatory]
 
-                if (!JSON.ParseMandatoryJSON2("csChargingProfiles",
-                                              "charging station charging profiles",
-                                              OCPPv1_6.ChargingProfile.TryParse,
-                                              out ChargingProfile? ChargingProfile,
-                                              out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("csChargingProfiles",
+                                             "charging station charging profiles",
+                                             OCPPv1_6.ChargingProfile.TryParse,
+                                             out ChargingProfile? ChargingProfile,
+                                             out ErrorResponse) ||
+                     ChargingProfile is null)
                 {
                     return false;
                 }
-
-                if (ChargingProfile is null)
-                    return false;
 
                 #endregion
 
