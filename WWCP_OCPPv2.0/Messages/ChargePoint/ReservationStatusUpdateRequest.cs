@@ -64,17 +64,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ReservationStatusUpdateRequest(ChargeBox_Id                  ChargeBoxId,
+        public ReservationStatusUpdateRequest(ChargeBox_Id             ChargeBoxId,
 
-                                              Reservation_Id                ReservationId,
+                                              Reservation_Id           ReservationId,
                                               ReservationUpdateStatus  ReservationUpdateStatus,
 
-                                              CustomData?                   CustomData          = null,
-                                              Request_Id?                   RequestId           = null,
-                                              DateTime?                     RequestTimestamp    = null,
-                                              TimeSpan?                     RequestTimeout      = null,
-                                              EventTracking_Id?             EventTrackingId     = null,
-                                              CancellationToken?            CancellationToken   = null)
+                                              CustomData?              CustomData          = null,
+                                              Request_Id?              RequestId           = null,
+                                              DateTime?                RequestTimestamp    = null,
+                                              TimeSpan?                RequestTimeout      = null,
+                                              EventTracking_Id?        EventTrackingId     = null,
+                                              CancellationToken?       CancellationToken   = null)
 
             : base(ChargeBoxId,
                    "ReservationStatusUpdate",

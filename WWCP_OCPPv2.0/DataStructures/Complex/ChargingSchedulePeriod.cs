@@ -40,19 +40,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// This value also defines the stop time of the previous period.
         /// </summary>
         [Mandatory]
-        public TimeSpan      StartPeriod     { get; }
+        public TimeSpan      StartPeriod       { get; }
 
         /// <summary>
         /// Power limit during the schedule period in Amperes.
         /// </summary>
         [Mandatory]
-        public Decimal       Limit           { get; }
+        public Decimal       Limit             { get; }
 
         /// <summary>
         /// The number of phases that can be used for charging.
         /// </summary>
         [Optional]
-        public Byte?         NumberPhases    { get; }
+        public Byte?         NumberOfPhases    { get; }
 
         /// <summary>
         /// Optional electrical phase to use for charging.
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// the charging station / EVSE will make the selection on its own.
         /// </summary>
         [Optional]
-        public PhasesToUse?  PhaseToUse      { get; }
+        public PhasesToUse?  PhaseToUse        { get; }
 
         #endregion
 
@@ -73,22 +73,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="StartPeriod">The start of the period relative to the start of the charging schedule. This value also defines the stop time of the previous period.</param>
         /// <param name="Limit">Power limit during the schedule period in Amperes.</param>
-        /// <param name="NumberPhases">The number of phases that can be used for charging.</param>
+        /// <param name="NumberOfPhases">The number of phases that can be used for charging.</param>
         /// <param name="PhaseToUse">Optional electrical phase to use for charging.</param>
         public ChargingSchedulePeriod(TimeSpan      StartPeriod,
                                       Decimal       Limit,
-                                      Byte?         NumberPhases   = null,
-                                      PhasesToUse?  PhaseToUse     = null,
-                                      CustomData?   CustomData     = null)
+                                      Byte?         NumberOfPhases   = null,
+                                      PhasesToUse?  PhaseToUse       = null,
+                                      CustomData?   CustomData       = null)
 
             : base(CustomData)
 
         {
 
-            this.StartPeriod   = StartPeriod;
-            this.Limit         = Limit;
-            this.NumberPhases  = NumberPhases;
-            this.PhaseToUse    = PhaseToUse;
+            this.StartPeriod     = StartPeriod;
+            this.Limit           = Limit;
+            this.NumberOfPhases  = NumberOfPhases;
+            this.PhaseToUse      = PhaseToUse;
 
         }
 
@@ -305,8 +305,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                            new JProperty("startPeriod",         (UInt32) Math.Round(StartPeriod.TotalSeconds, 0)),
                            new JProperty("limit",               Math.Round(Limit, 1)),
 
-                           NumberPhases.HasValue
-                               ? new JProperty("numberPhases",  NumberPhases)
+                           NumberOfPhases.HasValue
+                               ? new JProperty("numberPhases",  NumberOfPhases)
                                : null,
 
                            PhaseToUse.HasValue
@@ -401,8 +401,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                StartPeriod.Equals(ChargingSchedulePeriod.StartPeriod) &&
                Limit.      Equals(ChargingSchedulePeriod.Limit)       &&
 
-            ((!NumberPhases.HasValue && !ChargingSchedulePeriod.NumberPhases.HasValue) ||
-              (NumberPhases.HasValue &&  ChargingSchedulePeriod.NumberPhases.HasValue && NumberPhases.Value.Equals(ChargingSchedulePeriod.NumberPhases.Value))) &&
+            ((!NumberOfPhases.HasValue && !ChargingSchedulePeriod.NumberOfPhases.HasValue) ||
+              (NumberOfPhases.HasValue &&  ChargingSchedulePeriod.NumberOfPhases.HasValue && NumberOfPhases.Value.Equals(ChargingSchedulePeriod.NumberOfPhases.Value))) &&
 
             ((!PhaseToUse.  HasValue && !ChargingSchedulePeriod.PhaseToUse.  HasValue) ||
               (PhaseToUse.  HasValue &&  ChargingSchedulePeriod.PhaseToUse.  HasValue && PhaseToUse.  Value.Equals(ChargingSchedulePeriod.PhaseToUse.  Value))) &&
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 return StartPeriod.  GetHashCode()       * 11 ^
                        Limit.        GetHashCode()       *  7 ^
-                      (NumberPhases?.GetHashCode() ?? 0) *  5 ^
+                      (NumberOfPhases?.GetHashCode() ?? 0) *  5 ^
                       (PhaseToUse?.  GetHashCode() ?? 0) *  3 ^
 
                        base.         GetHashCode();
@@ -447,8 +447,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                              " / ",
                              " with ", Limit, " Ampere",
 
-                             NumberPhases.HasValue
-                                 ? ", " + NumberPhases + " phases"
+                             NumberOfPhases.HasValue
+                                 ? ", " + NumberOfPhases + " phases"
                                  : "",
 
                              PhaseToUse.HasValue

@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region SecurityEventNotificationResponse(Request, IdTagInfo)
+        #region SecurityEventNotificationResponse(Request)
 
         /// <summary>
         /// Create a new security event notification response.

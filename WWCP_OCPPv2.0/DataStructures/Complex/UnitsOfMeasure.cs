@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public UnitsOfMeasure(String       Unit,
                               Int32        Multiplier,
-                              CustomData?  CustomData  = null)
+                              CustomData?  CustomData   = null)
 
             : base(CustomData)
 
@@ -258,6 +258,171 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        : JSON;
 
         }
+
+        #endregion
+
+
+        #region Static Definitions
+
+        /// <summary>
+        /// Degrees (temperature).
+        /// </summary>
+        public static UnitsOfMeasure Celsius(Int32        Multiplier,
+                                             CustomData?  CustomData   = null)
+
+            => new ("Celsius",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// Degrees (temperature).
+        /// </summary>
+        public static UnitsOfMeasure Fahrenheit(Int32        Multiplier,
+                                                CustomData?  CustomData   = null)
+
+            => new ("Fahrenheit",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// Watt-hours (energy).
+        /// </summary>
+        public static UnitsOfMeasure Wh(Int32        Multiplier,
+                                        CustomData?  CustomData   = null)
+
+            => new ("Wh",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// kiloWatt-hours (energy).
+        /// </summary>
+        public static UnitsOfMeasure kWh(Int32        Multiplier,
+                                         CustomData?  CustomData   = null)
+
+            => new ("kWh",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// Var-hours (reactive energy).
+        /// </summary>
+        public static UnitsOfMeasure varh(Int32        Multiplier,
+                                          CustomData?  CustomData   = null)
+
+            => new ("varh",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// kilovar-hours (reactive energy).
+        /// </summary>
+        public static UnitsOfMeasure kvarh(Int32        Multiplier,
+                                           CustomData?  CustomData   = null)
+
+            => new ("kvarh",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// Watts (power).
+        /// </summary>
+        public static UnitsOfMeasure Watts(Int32        Multiplier,
+                                           CustomData?  CustomData   = null)
+
+            => new ("Watts",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// kiloWatts (power).
+        /// </summary>
+        public static UnitsOfMeasure kW(Int32        Multiplier,
+                                        CustomData?  CustomData   = null)
+
+            => new ("kW",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// VoltAmpere (apparent power).
+        /// </summary>
+        public static UnitsOfMeasure VoltAmpere(Int32        Multiplier,
+                                                CustomData?  CustomData   = null)
+
+            => new ("VoltAmpere",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// kiloVolt Ampere (apparent power).
+        /// </summary>
+        public static UnitsOfMeasure kVA(Int32        Multiplier,
+                                         CustomData?  CustomData   = null)
+
+            => new ("kVA",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// Vars (reactive power).
+        /// </summary>
+        public static UnitsOfMeasure var(Int32        Multiplier,
+                                         CustomData?  CustomData   = null)
+
+            => new ("var",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// kilovars (reactive power).
+        /// </summary>
+        public static UnitsOfMeasure kvar(Int32        Multiplier,
+                                          CustomData?  CustomData   = null)
+
+            => new ("kvar",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// Amperes (current).
+        /// </summary>
+        public static UnitsOfMeasure Amperes(Int32        Multiplier,
+                                             CustomData?  CustomData   = null)
+
+            => new ("Amperes",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// Voltage (r.m.s. AC).
+        /// </summary>
+        public static UnitsOfMeasure Voltage(Int32        Multiplier,
+                                             CustomData?  CustomData   = null)
+
+            => new ("Voltage",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// Degrees Kelvin (temperature).
+        /// </summary>
+        public static UnitsOfMeasure Kelvin(Int32        Multiplier,
+                                            CustomData?  CustomData   = null)
+
+            => new ("Kelvin",
+                    Multiplier,
+                    CustomData);
+
+        /// <summary>
+        /// Percentage.
+        /// </summary>
+        public static UnitsOfMeasure Percent(Int32        Multiplier,
+                                             CustomData?  CustomData   = null)
+
+            => new ("Percent",
+                    Multiplier,
+                    CustomData);
 
         #endregion
 

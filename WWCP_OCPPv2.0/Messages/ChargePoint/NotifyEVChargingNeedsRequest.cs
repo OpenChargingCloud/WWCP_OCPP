@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
                                             EVSE_Id             EVSEId,
                                             ChargingNeeds       ChargingNeeds,
-                                            UInt16?             MaxScheduleTuples = null,
+                                            UInt16?             MaxScheduleTuples   = null,
 
                                             CustomData?         CustomData          = null,
                                             Request_Id?         RequestId           = null,

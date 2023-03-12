@@ -63,30 +63,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     {
 
         /// <summary>
-        /// Body.
+        /// Body
         /// </summary>
         Body,
 
         /// <summary>
-        /// Cable.
+        /// Cable
         /// </summary>
         Cable,
 
         /// <summary>
-        /// EV.
+        /// EV
         /// </summary>
         EV,
 
         /// <summary>
-        /// Inlet.
+        /// Inlet
         /// </summary>
         Inlet,
 
         /// <summary>
-        /// Outlet.
+        /// Outlet
         /// </summary>
         Outlet
-
 
     }
 

@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #region Constructor(s)
 
-        #region TransactionEventResponse(Request, IdTagInfo)
+        #region TransactionEventResponse(Request, TotalCost = null, ChargingPriority = null, IdTokenInfo = null, UpdatedPersonalMessage = null, CustomData = null)
 
         /// <summary>
         /// Create a transaction event response.

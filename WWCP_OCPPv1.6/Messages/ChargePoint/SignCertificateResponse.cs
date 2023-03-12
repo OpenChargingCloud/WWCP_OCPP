@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region SignCertificateResponse(Request, IdTagInfo)
+        #region SignCertificateResponse(Request, Status)
 
         /// <summary>
         /// Create a sign certificate response.

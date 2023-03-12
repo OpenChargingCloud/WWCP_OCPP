@@ -130,7 +130,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         L3_L1
 
-
     }
 
 }

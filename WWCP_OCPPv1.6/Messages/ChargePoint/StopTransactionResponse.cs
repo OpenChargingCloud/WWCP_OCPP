@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region StopTransactionResponse(Request, IdTagInfo)
+        #region StopTransactionResponse(Request, IdTagInfo = null)
 
         /// <summary>
         /// Create a new stop transaction response.

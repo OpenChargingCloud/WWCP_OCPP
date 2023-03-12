@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Constructor(s)
 
-        #region SignedFirmwareStatusNotificationResponse()
+        #region SignedFirmwareStatusNotificationResponse(Request)
 
         /// <summary>
         /// Create a new signed firmware status notification response.
