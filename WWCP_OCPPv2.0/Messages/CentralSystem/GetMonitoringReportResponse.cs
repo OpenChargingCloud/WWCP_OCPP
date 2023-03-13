@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region GetMonitoringReportResponse(Request, Status, StatusInfo = null, ...)
+        #region GetMonitoringReportResponse(Request, Status, StatusInfo = null, CustomData = null)
 
         /// <summary>
         /// Create a new get monitoring report response.

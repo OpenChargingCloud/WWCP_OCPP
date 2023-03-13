@@ -152,6 +152,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     {
 
         /// <summary>
+        /// Unknown severity.
+        /// </summary>
+        Unknown,
+
+        /// <summary>
         /// Indicates lives are potentially in danger.
         /// Urgent attention is needed and action should be taken immediately.
         /// </summary>
@@ -209,12 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Indicates information useful to developers for debugging, not useful during operations.
         /// </summary>
-        Debug,
-
-        /// <summary>
-        /// Unknown severity.
-        /// </summary>
-        Unknown,
+        Debug
 
     }
 

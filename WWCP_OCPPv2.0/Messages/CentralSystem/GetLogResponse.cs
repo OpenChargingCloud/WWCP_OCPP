@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region GetLogResponse(Request, Status, Filename = null, StatusInfo = null, ...)
+        #region GetLogResponse(Request, Status, Filename = null, StatusInfo = null, CustomData = null)
 
         /// <summary>
         /// Create a new get log response.

@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region GetVariablesResponse(Request, Results, ...)
+        #region GetVariablesResponse(Request, Results, CustomData = null)
 
         /// <summary>
         /// Create a new get variables response.

@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region ChangeConfigurationResponse(Status)
+        #region ChangeConfigurationResponse(Request, Status)
 
         /// <summary>
         /// Create a new change configuration response.

@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region ResetResponse(Request, Status)
+        #region ResetResponse(Request, Status, StatusInfo = null, CustomData = null)
 
         /// <summary>
         /// Create a new reset response.

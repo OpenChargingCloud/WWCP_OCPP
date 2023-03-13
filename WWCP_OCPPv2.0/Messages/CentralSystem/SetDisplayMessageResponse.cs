@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region SetDisplayMessageResponse(Request, Status, StatusInfo = null)
+        #region SetDisplayMessageResponse(Request, Status, StatusInfo = null, CustomData = null)
 
         /// <summary>
         /// Create a new set display message response.

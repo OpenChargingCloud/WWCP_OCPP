@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region CostUpdatedResponse(Request, ...)
+        #region CostUpdatedResponse(Request, CustomData = null)
 
         /// <summary>
         /// Create a new cost updated response.

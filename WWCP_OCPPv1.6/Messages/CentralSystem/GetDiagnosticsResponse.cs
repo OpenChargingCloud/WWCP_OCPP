@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region GetDiagnosticsResponse(Request, Status)
+        #region GetDiagnosticsResponse(Request, FileName = null)
 
         /// <summary>
         /// Create a new get diagnostics response.

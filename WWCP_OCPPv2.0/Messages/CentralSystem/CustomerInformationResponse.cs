@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region CustomerInformationResponse(Request, Status, StatusInfo = null, ...)
+        #region CustomerInformationResponse(Request, Status, StatusInfo = null, CustomData = null)
 
         /// <summary>
         /// Create a new customer information response.

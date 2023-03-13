@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region UnpublishFirmwareResponse(Request, Status, ...)
+        #region UnpublishFirmwareResponse(Request, Status, CustomData = null)
 
         /// <summary>
         /// Create a new unpublish firmware response.

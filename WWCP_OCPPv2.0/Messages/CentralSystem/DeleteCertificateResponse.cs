@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region DeleteCertificateResponse(Request, Status, StatusInfo = null, ...)
+        #region DeleteCertificateResponse(Request, Status, StatusInfo = null, CustomData = null)
 
         /// <summary>
         /// Create a new delete certificate response.

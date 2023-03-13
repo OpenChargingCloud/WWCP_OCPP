@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region ClearVariableMonitoringResponse(Request, Status, ...)
+        #region ClearVariableMonitoringResponse(Request, ClearMonitoringResults, CustomData = null)
 
         /// <summary>
         /// Create a new clear variable monitoring response.

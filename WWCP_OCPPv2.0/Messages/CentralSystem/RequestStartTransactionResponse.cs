@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region RequestStartTransactionResponse(Request, Status, TransactionId = null, StatusInfo = null, ...)
+        #region RequestStartTransactionResponse(Request, Status, TransactionId = null, StatusInfo = null, CustomData = null)
 
         /// <summary>
         /// Create a new request start transaction response.
@@ -74,8 +74,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         public RequestStartTransactionResponse(CS.RequestStartTransactionRequest  Request,
                                                RequestStartStopStatus             Status,
                                                Transaction_Id?                    TransactionId,
-                                               StatusInfo?                        StatusInfo,
-                                               CustomData?                        CustomData = null)
+                                               StatusInfo?                        StatusInfo   = null,
+                                               CustomData?                        CustomData   = null)
 
             : base(Request,
                    Result.OK(),

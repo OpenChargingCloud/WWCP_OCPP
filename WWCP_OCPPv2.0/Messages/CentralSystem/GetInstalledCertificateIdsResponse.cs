@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region GetInstalledCertificateIdsResponse(Request, Status, CertificateHashDataChain, StatusInfo = null, ...)
+        #region GetInstalledCertificateIdsResponse(Request, Status, CertificateHashDataChain, StatusInfo = null, CustomData = null)
 
         /// <summary>
         /// Create a new get installed certificate ids response.

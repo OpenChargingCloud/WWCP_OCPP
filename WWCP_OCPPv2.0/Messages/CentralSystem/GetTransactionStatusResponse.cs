@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region GetTransactionStatusResponse(Request, Status, StatusInfo = null, ...)
+        #region GetTransactionStatusResponse(Request, MessagesInQueue, OngoingIndicator = null, CustomData = null)
 
         /// <summary>
         /// Create a new get transaction status response.

@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region GetLocalListVersionResponse(Request, ListVersion, ...)
+        #region GetLocalListVersionResponse(Request, ListVersion, CustomData = null)
 
         /// <summary>
         /// Create a new get local list version response.

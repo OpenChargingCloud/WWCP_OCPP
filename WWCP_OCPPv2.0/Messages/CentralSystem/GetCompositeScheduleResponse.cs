@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region GetCompositeScheduleResponse(Request, Status, Schedule = null, StatusInfo = null, ...)
+        #region GetCompositeScheduleResponse(Request, Status, Schedule = null, StatusInfo = null, CustomData = null)
 
         /// <summary>
         /// Create a new get composite schedule response.

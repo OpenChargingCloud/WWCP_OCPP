@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region SetChargingProfileResponse(Request, Status)
+        #region SetChargingProfileResponse(Request, Status, StatusInfo = null, CustomData = null)
 
         /// <summary>
         /// Create a new set charging profile response.

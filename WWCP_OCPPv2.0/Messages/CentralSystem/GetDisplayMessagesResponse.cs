@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region GetDisplayMessagesResponse(Request, Status, StatusInfo = null, ...)
+        #region GetDisplayMessagesResponse(Request, Status, StatusInfo = null, CustomData = null)
 
         /// <summary>
         /// Create a new get display messages response.

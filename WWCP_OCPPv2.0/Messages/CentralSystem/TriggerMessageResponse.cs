@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         #region Constructor(s)
 
-        #region TriggerMessageResponse(Request, Status)
+        #region TriggerMessageResponse(Request, Status, StatusInfo = null, CustomData = null)
 
         /// <summary>
         /// Create a new trigger message response.
@@ -60,8 +60,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
         /// <param name="Status">The success or failure of the trigger message command.</param>
         public TriggerMessageResponse(CS.TriggerMessageRequest  Request,
                                       TriggerMessageStatus      Status,
-                                      StatusInfo?               StatusInfo = null,
-                                      CustomData?               CustomData = null)
+                                      StatusInfo?               StatusInfo   = null,
+                                      CustomData?               CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -69,8 +69,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
 
         {
 
-            this.Status = Status;
-            this.StatusInfo = StatusInfo;
+            this.Status      = Status;
+            this.StatusInfo  = StatusInfo;
 
         }
 

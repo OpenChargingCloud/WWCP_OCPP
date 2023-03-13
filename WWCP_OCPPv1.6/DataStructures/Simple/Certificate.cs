@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         {
 
             this.InternalText  = Text;
-            this.Parsed          = ParsedCertificate;
+            this.Parsed        = ParsedCertificate;
 
         }
 
