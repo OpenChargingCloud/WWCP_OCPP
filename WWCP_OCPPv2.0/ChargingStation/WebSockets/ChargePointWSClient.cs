@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2022 GraphDefined GmbH
+ * Copyright (c) 2014-2023 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
             public DateTime                       Timeout             { get; }
 
             public JObject?                       Response            { get; set; }
-            public ResultCodes?     ErrorCode           { get; set; }
+            public ResultCodes?                   ErrorCode           { get; set; }
             public String?                        ErrorDescription    { get; set; }
             public JObject?                       ErrorDetails        { get; set; }
 
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CP
                                      DateTime                       Timeout,
 
                                      JObject?                       Response           = null,
-                                     ResultCodes?     ErrorCode          = null,
+                                     ResultCodes?                   ErrorCode          = null,
                                      String?                        ErrorDescription   = null,
                                      JObject?                       ErrorDetails       = null)
             {
