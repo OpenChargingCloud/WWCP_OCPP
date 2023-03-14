@@ -19,6 +19,8 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using static cloud.charging.open.protocols.OCPPv2_0.CS.CentralSystemWSServer;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_0
@@ -38,9 +40,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public ResultCodes  ResultCode     { get; }
 
         /// <summary>
-        /// An optional human-readable error description.
+        /// A human-readable error description.
         /// </summary>
         public String?      Description    { get; }
+
+        /// <summary>
+        /// Human-readable error details.
+        /// </summary>
+        public String?      Details        { get; }
 
         #endregion
 
@@ -50,88 +57,102 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Create a new generic OCPP result.
         /// </summary>
         /// <param name="ResultCode">The machine-readable result code.</param>
-        /// <param name="Description">An optional human-readable error description.</param>
+        /// <param name="Description">A human-readable error description.</param>
         public Result(ResultCodes  ResultCode,
-                      String?      Description   = null)
+                      String?      Description   = null,
+                      String?      Details       = null)
         {
 
             this.ResultCode   = ResultCode;
-            this.Description  = Description;
+            this.Description  = Description?.Trim();
+            this.Details      = Details?.Trim();
 
         }
 
         #endregion
 
 
-        #region Static methods
+
+        public static Result FromSendRequestState(SendRequestState SendRequestState)
+
+            => new (
+                   SendRequestState.ErrorCode ?? ResultCodes.GenericError,
+                   SendRequestState.ErrorDescription,
+                   SendRequestState.ErrorDetails?.ToString()
+               );
+
+
+        #region Static Definitions
 
         /// <summary>
         /// Unknown result code.
         /// </summary>
-        /// <param name="Description">An optional human-readable error description.</param>
-        public static Result Unknown(String? Description = null)
+        /// <param name="Description">A human-readable error description.</param>
+        public static Result GenericError(String? Description   = null,
+                                          String? Details       = null)
 
-            => new (ResultCodes.Unknown,
-                    Description);
+            => new (ResultCodes.GenericError,
+                    Description,
+                    Details);
 
 
         /// <summary>
         /// Data accepted and processed.
         /// </summary>
-        /// <param name="Description">An optional human-readable error description.</param>
+        /// <param name="Description">A human-readable error description.</param>
         public static Result OK(String? Description = null)
 
-            => new (ResultCodes.Unknown,
+            => new (ResultCodes.OK,
                     Description);
 
 
-        /// <summary>
-        /// Only part of the data was accepted.
-        /// </summary>
-        /// <param name="Description">An optional human-readable error description.</param>
-        public static Result Partly(String? Description = null)
+        ///// <summary>
+        ///// Only part of the data was accepted.
+        ///// </summary>
+        ///// <param name="Description">A human-readable error description.</param>
+        //public static Result Partly(String? Description = null)
 
-            => new (ResultCodes.Unknown,
-                    Description);
-
-
-        /// <summary>
-        /// Wrong username and/or password.
-        /// </summary>
-        /// <param name="Description">An optional human-readable error description.</param>
-        public static Result NotAuthorized(String? Description = null)
-
-            => new (ResultCodes.Unknown,
-                    Description);
+        //    => new (ResultCodes.Partly,
+        //            Description);
 
 
-        /// <summary>
-        /// One or more ID (EVSE/Contract) were not valid for this user.
-        /// </summary>
-        /// <param name="Description">An optional human-readable error description.</param>
-        public static Result InvalidId(String? Description = null)
+        ///// <summary>
+        ///// Wrong username and/or password.
+        ///// </summary>
+        ///// <param name="Description">A human-readable error description.</param>
+        //public static Result NotAuthorized(String? Description = null)
 
-            => new (ResultCodes.Unknown,
-                    Description);
+        //    => new (ResultCodes.NotAuthorized,
+        //            Description);
+
+
+        ///// <summary>
+        ///// One or more ID (EVSE/Contract) were not valid for this user.
+        ///// </summary>
+        ///// <param name="Description">A human-readable error description.</param>
+        //public static Result InvalidId(String? Description = null)
+
+        //    => new (ResultCodes.InvalidId,
+        //            Description);
 
 
         /// <summary>
         /// Internal server error.
         /// </summary>
-        /// <param name="Description">An optional human-readable error description.</param>
+        /// <param name="Description">A human-readable error description.</param>
         public static Result Server(String? Description = null)
 
-            => new (ResultCodes.Unknown,
+            => new (ResultCodes.NetworkError,
                     Description);
 
 
         /// <summary>
         /// Data has technical errors.
         /// </summary>
-        /// <param name="Description">An optional human-readable error description.</param>
+        /// <param name="Description">A human-readable error description.</param>
         public static Result Format(String? Description = null)
 
-            => new (ResultCodes.Unknown,
+            => new (ResultCodes.FormationViolation,
                     Description);
 
         #endregion

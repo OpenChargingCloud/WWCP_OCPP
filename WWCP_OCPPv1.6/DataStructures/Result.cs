@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                );
 
 
-        #region Static methods
+        #region Static Definitions
 
         /// <summary>
         /// Unknown result code.
