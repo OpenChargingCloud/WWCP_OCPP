@@ -18,8 +18,9 @@
 #region Usings
 
 using NUnit.Framework;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -27,9 +28,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 {
 
     /// <summary>
-    /// Charge point test defaults.
+    /// Charging station test defaults.
     /// </summary>
-    public abstract class AChargePointTests : ACSMSTests
+    public abstract class AChargingStationTests : ACSMSTests
     {
 
         #region Data
@@ -51,13 +52,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             chargingStation1  = new TestChargingStation(
                                     ChargeBoxId:              ChargeBox_Id.Parse("GD001"),
-                                    ChargePointVendor:        "GraphDefined OEM #1",
-                                    ChargePointModel:         "VCP.1",
+                                    Vendor:                   "GraphDefined OEM #1",
+                                    Model:                    "VCP.1",
                                     NumberOfConnectors:       2,
 
                                     Description:              I18NString.Create(Languages.en, "Our first virtual charging station!"),
-                                    ChargingStationSerialNumber:  "SN-CS0001",
-                                    //ChargeBoxSerialNumber:    "SN-CB0001",
+                                    SerialNumber:             "SN-CS0001",
                                     FirmwareVersion:          "v0.1",
                                     Iccid:                    "0000",
                                     IMSI:                     "1111",
@@ -74,13 +74,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             chargingStation2  = new TestChargingStation(
                                     ChargeBoxId:              ChargeBox_Id.Parse("CP002"),
-                                    ChargePointVendor:        "GraphDefined OEM #2",
-                                    ChargePointModel:         "VCP.2",
+                                    Vendor:                   "GraphDefined OEM #2",
+                                    Model:                    "VCP.2",
                                     NumberOfConnectors:       2,
 
                                     Description:              I18NString.Create(Languages.en, "Our 2nd virtual charging station!"),
-                                    ChargingStationSerialNumber:  "SN-CS0002",
-                                    //ChargeBoxSerialNumber:    "SN-CB0002",
+                                    SerialNumber:             "SN-CS0002",
                                     FirmwareVersion:          "v0.2",
                                     Iccid:                    "3333",
                                     IMSI:                     "4444",
@@ -95,13 +94,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             chargingStation3  = new TestChargingStation(
                                     ChargeBoxId:              ChargeBox_Id.Parse("CP003"),
-                                    ChargePointVendor:        "GraphDefined OEM #3",
-                                    ChargePointModel:         "VCP.3",
+                                    Vendor:                   "GraphDefined OEM #3",
+                                    Model:                    "VCP.3",
                                     NumberOfConnectors:       4,
 
                                     Description:              I18NString.Create(Languages.en, "Our 3rd virtual charging station!"),
-                                    ChargingStationSerialNumber:  "SN-CS0003",
-                                    //ChargeBoxSerialNumber:    "SN-CB0003",
+                                    SerialNumber:             "SN-CS0003",
                                     FirmwareVersion:          "v0.3",
                                     Iccid:                    "5555",
                                     IMSI:                     "6666",

@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
     /// <summary>
-    /// The central system HTTP/WebSocket/JSON server.
+    /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
     public class CSMSWSServer : WebSocketServer,
                                 ICSMS
@@ -289,6 +289,35 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
+        #region OnTransactionEvent
+
+        /// <summary>
+        /// An event sent whenever a transaction event web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?           OnTransactionEventWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a transaction event request was received.
+        /// </summary>
+        public event OnTransactionEventRequestDelegate?    OnTransactionEventRequest;
+
+        /// <summary>
+        /// An event sent whenever a transaction event request was received.
+        /// </summary>
+        public event OnTransactionEventDelegate?           OnTransactionEvent;
+
+        /// <summary>
+        /// An event sent whenever a transaction event response was sent.
+        /// </summary>
+        public event OnTransactionEventResponseDelegate?   OnTransactionEventResponse;
+
+        /// <summary>
+        /// An event sent whenever a transaction event web socket response was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?          OnTransactionEventWSResponse;
+
+        #endregion
+
         #region OnStatusNotification
 
         /// <summary>
@@ -405,8 +434,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
-
-        // Security extensions
 
         #region OnLogStatusNotification
 
@@ -698,8 +725,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
 
-        // Security extensions
-
         #region OnCertificateSigned
 
         /// <summary>
@@ -791,6 +816,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public CustomJObjectParserDelegate<AuthorizeRequest>?                         CustomAuthorizeRequestParser                           { get; set; }
 
         /// <summary>
+        /// A delegate to parse custom TransactionEvent requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<TransactionEventRequest>?                  CustomTransactionEventRequestParser                    { get; set; }
+
+        /// <summary>
         /// A delegate to parse custom StatusNotification requests.
         /// </summary>
         public CustomJObjectParserDelegate<StatusNotificationRequest>?                CustomStatusNotificationRequestParser                  { get; set; }
@@ -810,9 +840,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// A delegate to parse custom FirmwareStatusNotification requests.
         /// </summary>
         public CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>?        CustomFirmwareStatusNotificationRequestParser          { get; set; }
-
-
-        // Security extensions
 
         /// <summary>
         /// A delegate to parse custom LogStatusNotification requests.
@@ -867,7 +894,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public CustomJObjectSerializerDelegate<ClearCacheRequest>?                    CustomClearCacheRequestSerializer                      { get; set; }
 
 
-        // Security extensions
         public CustomJObjectSerializerDelegate<CertificateSignedRequest>?             CustomCertificateSignedRequestSerializer               { get; set; }
         public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?             CustomDeleteCertificateRequestSerializer               { get; set; }
         public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?    CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
@@ -879,7 +905,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Initialize a new HTTP server for the central system HTTP/WebSocket/JSON API.
+        /// Initialize a new HTTP server for the CSMS HTTP/WebSocket/JSON API.
         /// </summary>
         /// <param name="HTTPServiceName">An optional identification string for the HTTP service.</param>
         /// <param name="IPAddress">An IP address to listen on.</param>
@@ -1157,7 +1183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 DebugX.Log(nameof(CSMSWSServer) + " The given OCPP message must not be null or empty!");
 
-                // "No response" to the charge point!
+                // "No response" to the charging station!
                 return new WebSocketTextMessageResponse(
                            RequestTimestamp,
                            OCPPTextMessage,
@@ -1182,7 +1208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                 //                                 "Message received: ", JSON.ToString(Newtonsoft.Json.Formatting.Indented),                           Environment.NewLine,
                 //                                 "--------------------------------------------------------------------------------------------",     Environment.NewLine));
 
-                #region MessageType 2: CALL        (A request from a charge point)
+                #region MessageType 2: CALL        (A request from a charging station)
 
                 // [
                 //     2,                  // MessageType: CALL
@@ -1693,6 +1719,154 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                     catch (Exception e)
                                     {
                                         DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAuthorizeWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region TransactionEvent
+
+                            case "TransactionEvent":
+                                {
+
+                                    #region Send OnTransactionEventWSRequest event
+
+                                    try
+                                    {
+
+                                        OnTransactionEventWSRequest?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTransactionEventWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (TransactionEventRequest.TryParse(requestData,
+                                                                             requestId.Value,
+                                                                             chargeBoxId.Value,
+                                                                             out var request,
+                                                                             out var errorResponse,
+                                                                             CustomTransactionEventRequestParser) && request is not null) {
+
+                                            #region Send OnTransactionEventRequest event
+
+                                            try
+                                            {
+
+                                                OnTransactionEventRequest?.Invoke(Timestamp.Now,
+                                                                                  this,
+                                                                                  request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTransactionEventRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            TransactionEventResponse? response = null;
+
+                                            var responseTasks = OnTransactionEvent?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnTransactionEventDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                this,
+                                                                                                                                                request,
+                                                                                                                                                CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= TransactionEventResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnTransactionEventResponse event
+
+                                            try
+                                            {
+
+                                                OnTransactionEventResponse?.Invoke(Timestamp.Now,
+                                                                                   this,
+                                                                                   request,
+                                                                                   response,
+                                                                                   response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTransactionEventResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'TransactionEvent' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'TransactionEvent' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnTransactionEventWSResponse event
+
+                                    try
+                                    {
+
+                                        OnTransactionEventWSResponse?.Invoke(Timestamp.Now,
+                                                                             this,
+                                                                             json,
+                                                                             OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTransactionEventWSResponse));
                                     }
 
                                     #endregion
@@ -2296,8 +2470,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                             #endregion
 
 
-                            // Security extensions
-
                             #region LogStatusNotification
 
                             case "LogStatusNotification":
@@ -2742,11 +2914,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                             #endregion
 
-                            // LogStatusNotification
-                            // SecurityEventNotification
-                            // SignCertificate
-                            // SignedFirmwareStatusNotification
-
 
                             default:
 
@@ -2768,7 +2935,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 #endregion
 
-                #region MessageType 3: CALLRESULT  (A response from charge point)
+                #region MessageType 3: CALLRESULT  (A response from charging station)
 
                 // [
                 //     3,                         // MessageType: CALLRESULT
@@ -2796,13 +2963,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                         }
                     }
 
-                    // No response to the charge point!
+                    // No response to the charging station!
 
                 }
 
                 #endregion
 
-                #region MessageType 4: CALLERROR   (A charge point reports an error on a received request)
+                #region MessageType 4: CALLERROR   (A charging station reports an error on a received request)
 
                 // [
                 //     4,                         // MessageType: CALLERROR
@@ -2855,7 +3022,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                         }
                     }
 
-                    // No response to the charge point!
+                    // No response to the charging station!
 
                 }
 
@@ -2874,7 +3041,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                     //                                      new JProperty("request", TextMessage)
                     //                                 ));
 
-                    //// No response to the charge point!
+                    //// No response to the charging station!
                     //return null;
 
                 }
@@ -2899,7 +3066,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             }
 
-            // The response to the charge point...
+            // The response to the charging station...
             return new WebSocketTextMessageResponse(
                        RequestTimestamp,
                        OCPPTextMessage,
@@ -4252,13 +4419,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
 
-
-        // Security extensions
-
         #region CertificateSigned         (Request)
 
         /// <summary>
-        /// Send the signed certificate to the charge point.
+        /// Send the signed certificate to the charging station.
         /// </summary>
         /// <param name="Request">A certificate signed request.</param>
         public async Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request)
@@ -4342,7 +4506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region DeleteCertificate         (Request)
 
         /// <summary>
-        /// Delete the given certificate on the charge point.
+        /// Delete the given certificate on the charging station.
         /// </summary>
         /// <param name="Request">A delete certificate request.</param>
         public async Task<DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request)
@@ -4426,7 +4590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region GetInstalledCertificateIds(Request)
 
         /// <summary>
-        /// Retrieve a list of all installed certificates within the charge point.
+        /// Retrieve a list of all installed certificates within the charging station.
         /// </summary>
         /// <param name="Request">A get installed certificate ids request.</param>
         public async Task<GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
@@ -4510,7 +4674,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region GetLog                    (Request)
 
         /// <summary>
-        /// Retrieve log files from the charge point.
+        /// Retrieve log files from the charging station.
         /// </summary>
         /// <param name="Request">A get log request.</param>
         public async Task<GetLogResponse> GetLog(GetLogRequest Request)
@@ -4594,7 +4758,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region InstallCertificate        (Request)
 
         /// <summary>
-        /// Install the given certificate within the charge point.
+        /// Install the given certificate within the charging station.
         /// </summary>
         /// <param name="Request">An install certificate request.</param>
         public async Task<InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request)

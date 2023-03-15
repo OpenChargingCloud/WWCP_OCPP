@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 {
 
     /// <summary>
-    /// The common interface of a central system server.
+    /// The common interface of a CSMS server.
     /// </summary>
     public interface ICSMSServer : IEventSender
     {
@@ -96,6 +96,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// An event sent whenever an authorize response was sent.
         /// </summary>
         event OnAuthorizeResponseDelegate   OnAuthorizeResponse;
+
+        #endregion
+
+        #region OnTransactionEvent
+
+        /// <summary>
+        /// An event sent whenever a transaction event request was received.
+        /// </summary>
+        event OnTransactionEventRequestDelegate    OnTransactionEventRequest;
+
+        /// <summary>
+        /// An event sent whenever a transaction event request was received.
+        /// </summary>
+        event OnTransactionEventDelegate           OnTransactionEvent;
+
+        /// <summary>
+        /// An event sent whenever a transaction event response was sent.
+        /// </summary>
+        event OnTransactionEventResponseDelegate   OnTransactionEventResponse;
 
         #endregion
 

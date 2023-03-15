@@ -169,9 +169,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Properties
 
         /// <summary>
-        /// The client connected to a central system.
+        /// The client connected to a CSMS.
         /// </summary>
-        public IChargingStationClient       CPClient                    { get; private set; }
+        public IChargingStationClient       CSClient                    { get; private set; }
 
 
         /// <summary>
@@ -191,13 +191,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// The charging station vendor identification.
         /// </summary>
         [Mandatory]
-        public String                   ChargingStationVendor           { get; }
+        public String                   Vendor           { get; }
 
         /// <summary>
         ///  The charging station model identification.
         /// </summary>
         [Mandatory]
-        public String                   ChargingStationModel            { get; }
+        public String                   Model            { get; }
 
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// The optional serial number of the charging station.
         /// </summary>
         [Optional]
-        public String?                  ChargingStationSerialNumber     { get; }
+        public String?                  SerialNumber     { get; }
 
         ///// <summary>
         ///// The optional serial number of the charging station.
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public TimeSpan                 SendHeartbeatEvery          { get; set; }
 
         /// <summary>
-        /// The time at the central system.
+        /// The time at the CSMS.
         /// </summary>
         public DateTime?                CSMSTime           { get; private set; }
 
@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
 
-        // Controlled by the central system!
+        // Controlled by the CSMS!
 
         private readonly Dictionary<Connector_Id, ChargingStationConnector> connectors;
 
@@ -304,12 +304,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Events
 
-        // Outgoing messages (to central system)
+        // Outgoing messages (to CSMS)
 
         #region OnBootNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a boot notification request will be send to the central system.
+        /// An event fired whenever a boot notification request will be send to the CSMS.
         /// </summary>
         public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
@@ -323,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region OnHeartbeatRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a heartbeat request will be send to the central system.
+        /// An event fired whenever a heartbeat request will be send to the CSMS.
         /// </summary>
         public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
 
@@ -338,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region OnAuthorizeRequest/-Response
 
         /// <summary>
-        /// An event fired whenever an authorize request will be send to the central system.
+        /// An event fired whenever an authorize request will be send to the CSMS.
         /// </summary>
         public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
 
@@ -349,10 +349,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+        #region OnTransactionEventRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a transaction event request will be send to the CSMS.
+        /// </summary>
+        public event OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a transaction event request was received.
+        /// </summary>
+        public event OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
+
+        #endregion
+
         #region OnStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a status notification request will be send to the central system.
+        /// An event fired whenever a status notification request will be send to the CSMS.
         /// </summary>
         public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
@@ -366,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region OnMeterValuesRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a meter values request will be send to the central system.
+        /// An event fired whenever a meter values request will be send to the CSMS.
         /// </summary>
         public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
 
@@ -381,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region OnDataTransferRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a data transfer request will be send to the central system.
+        /// An event fired whenever a data transfer request will be send to the CSMS.
         /// </summary>
         public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
@@ -395,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region OnFirmwareStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a firmware status notification request will be send to the central system.
+        /// An event fired whenever a firmware status notification request will be send to the CSMS.
         /// </summary>
         public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
 
@@ -408,7 +422,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
 
-        // Incoming messages (from central system)
+        // Incoming messages (from CSMS)
 
         #region OnResetRequest/-Response
 
@@ -617,12 +631,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="NumberOfConnectors">Number of available connectors.</param>
-        /// <param name="ChargePointVendor">The charging station vendor identification.</param>
-        /// <param name="ChargePointModel">The charging station model identification.</param>
+        /// <param name="Vendor">The charging station vendor identification.</param>
+        /// <param name="Model">The charging station model identification.</param>
         /// 
         /// <param name="Description">An optional multi-language charge box description.</param>
-        /// <param name="ChargingStationSerialNumber">An optional serial number of the charging station.</param>
-        /// <param name="ChargeBoxSerialNumber">An optional serial number of the charging station.</param>
+        /// <param name="SerialNumber">An optional serial number of the charging station.</param>
         /// <param name="FirmwareVersion">An optional firmware version of the charging station.</param>
         /// <param name="Iccid">An optional ICCID of the charging station's SIM card.</param>
         /// <param name="IMSI">An optional IMSI of the charging station’s SIM card.</param>
@@ -634,40 +647,39 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// 
         /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
         public TestChargingStation(ChargeBox_Id            ChargeBoxId,
-                               Byte                    NumberOfConnectors,
-                               String                  ChargePointVendor,
-                               String                  ChargePointModel,
+                                   Byte                    NumberOfConnectors,
+                                   String                  Vendor,
+                                   String                  Model,
 
-                               I18NString?             Description               = null,
-                               String?                 ChargingStationSerialNumber   = null,
-                               //String?                 ChargeBoxSerialNumber     = null,
-                               String?                 FirmwareVersion           = null,
-                               String?                 Iccid                     = null,
-                               String?                 IMSI                      = null,
-                               String?                 MeterType                 = null,
-                               String?                 MeterSerialNumber         = null,
-                               String?                 MeterPublicKey            = null,
+                                   I18NString?             Description               = null,
+                                   String?                 SerialNumber              = null,
+                                   String?                 FirmwareVersion           = null,
+                                   String?                 Iccid                     = null,
+                                   String?                 IMSI                      = null,
+                                   String?                 MeterType                 = null,
+                                   String?                 MeterSerialNumber         = null,
+                                   String?                 MeterPublicKey            = null,
 
-                               Boolean                 DisableSendHeartbeats     = false,
-                               TimeSpan?               SendHeartbeatEvery        = null,
+                                   Boolean                 DisableSendHeartbeats     = false,
+                                   TimeSpan?               SendHeartbeatEvery        = null,
 
-                               Boolean                 DisableMaintenanceTasks   = false,
-                               TimeSpan?               MaintenanceEvery          = null,
+                                   Boolean                 DisableMaintenanceTasks   = false,
+                                   TimeSpan?               MaintenanceEvery          = null,
 
-                               TimeSpan?               DefaultRequestTimeout     = null,
-                               Tuple<String, String>?  HTTPBasicAuth             = null,
-                               DNSClient?              DNSClient                 = null)
+                                   TimeSpan?               DefaultRequestTimeout     = null,
+                                   Tuple<String, String>?  HTTPBasicAuth             = null,
+                                   DNSClient?              DNSClient                 = null)
 
         {
 
             if (ChargeBoxId.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(ChargeBoxId),        "The given charge box identification must not be null or empty!");
 
-            if (ChargePointVendor.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(ChargePointVendor),  "The given charging station vendor must not be null or empty!");
+            if (Vendor.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Vendor),  "The given charging station vendor must not be null or empty!");
 
-            if (ChargePointModel.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(ChargePointModel),   "The given charging station model must not be null or empty!");
+            if (Model.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Model),   "The given charging station model must not be null or empty!");
 
 
             this.ChargeBoxId              = ChargeBoxId;
@@ -688,13 +700,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             //};
             this.EnquedRequests           = new List<EnquedRequest>();
 
-            this.ChargingStationVendor        = ChargePointVendor;
-            this.ChargingStationModel         = ChargePointModel;
-
+            this.Vendor                   = Vendor;
+            this.Model                    = Model;
             this.Description              = Description;
-            this.ChargingStationSerialNumber     = ChargingStationSerialNumber;
-            //this.ChargeBoxSerialNumber           = ChargeBoxSerialNumber;
-            this.FirmwareVersion  = FirmwareVersion;
+            this.SerialNumber             = SerialNumber;
+            this.FirmwareVersion          = FirmwareVersion;
             this.Iccid                    = Iccid;
             this.IMSI                     = IMSI;
             this.MeterType                = MeterType;
@@ -794,7 +804,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  DNSClient ?? this.DNSClient
                              );
 
-            this.CPClient  = WSClient;
+            this.CSClient  = WSClient;
 
             WireEvents(WSClient);
 
@@ -1896,7 +1906,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             foreach (var enquedRequest in EnquedRequests.ToArray())
             {
-                if (CPClient is ChargingStationWSClient wsClient)
+                if (CSClient is ChargingStationWSClient wsClient)
                 {
 
                     var response = await wsClient.SendRequest(
@@ -2012,9 +2022,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             var request    = new BootNotificationRequest(
                                  ChargeBoxId,
                                  new ChargingStation(
-                                     ChargingStationModel,
-                                     ChargingStationVendor,
-                                     ChargingStationSerialNumber,
+                                     Model,
+                                     Vendor,
+                                     SerialNumber,
                                      new Modem(
                                          Iccid,
                                          IMSI,
@@ -2061,8 +2071,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             CSMS.BootNotificationResponse? response = null;
 
-            if (CPClient is not null)
-                response = await CPClient.SendBootNotification(request);
+            if (CSClient is not null)
+                response = await CSClient.SendBootNotification(request);
 
             if (response is not null)
             {
@@ -2175,8 +2185,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             CSMS.HeartbeatResponse? response = null;
 
-            if (CPClient is not null)
-                response = await CPClient.SendHeartbeat(request);
+            if (CSClient is not null)
+                response = await CSClient.SendHeartbeat(request);
 
             if (response is not null)
             {
@@ -2282,8 +2292,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             CSMS.AuthorizeResponse? response = null;
 
-            if (CPClient is not null)
-                response = await CPClient.Authorize(request);
+            if (CSClient is not null)
+                response = await CSClient.Authorize(request);
 
             response ??= new CSMS.AuthorizeResponse(request,
                                                   Result.Server("Response is null!"));
@@ -2306,6 +2316,138 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnAuthorizeResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendTransactionEvent             (EventType, Timestamp, TriggerReason, SequenceNumber, TransactionInfo, ...)
+
+        /// <summary>
+        /// TransactionEvent the given token.
+        /// </summary>
+        /// <param name="EventType">The type of this transaction event. The first event of a transaction SHALL be of type "started", the last of type "ended". All others should be of type "updated".</param>
+        /// <param name="Timestamp">The timestamp at which this transaction event occurred.</param>
+        /// <param name="TriggerReason">The reason the charging station sends this message.</param>
+        /// <param name="SequenceNumber">This incremental sequence number, helps to determine whether all messages of a transaction have been received.</param>
+        /// <param name="TransactionInfo">Transaction related information.</param>
+        /// 
+        /// <param name="Offline">An optional indication whether this transaction event happened when the charging station was offline.</param>
+        /// <param name="NumberOfPhasesUsed">An optional numer of electrical phases used, when the charging station is able to report it.</param>
+        /// <param name="CableMaxCurrent">An optional maximum current of the connected cable in amperes.</param>
+        /// <param name="ReservationId">An optional unqiue reservation identification of the reservation that terminated as a result of this transaction.</param>
+        /// <param name="IdToken">An optional identification token for which a transaction has to be/was started.</param>
+        /// <param name="EVSE">An optional indication of the EVSE (and connector) used.</param>
+        /// <param name="MeterValues">An optional enumeration of meter values.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.TransactionEventResponse>
+
+            SendTransactionEvent(TransactionEvents         EventType,
+                                 DateTime                  Timestamp,
+                                 TriggerReasons            TriggerReason,
+                                 UInt32                    SequenceNumber,
+                                 Transaction               TransactionInfo,
+
+                                 Boolean?                  Offline              = null,
+                                 Byte?                     NumberOfPhasesUsed   = null,
+                                 Int16?                    CableMaxCurrent      = null,
+                                 Reservation_Id?           ReservationId        = null,
+                                 IdToken?                  IdToken              = null,
+                                 EVSE?                     EVSE                 = null,
+                                 IEnumerable<MeterValue>?  MeterValues          = null,
+                                 CustomData?               CustomData           = null,
+
+                                 DateTime?                 RequestTimestamp     = null,
+                                 TimeSpan?                 RequestTimeout       = null,
+                                 EventTracking_Id?         EventTrackingId      = null,
+                                 CancellationToken?        CancellationToken    = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+
+            var request    = new TransactionEventRequest(
+                                 ChargeBoxId,
+
+                                 EventType,
+                                 Timestamp,
+                                 TriggerReason,
+                                 SequenceNumber,
+                                 TransactionInfo,
+
+                                 Offline,
+                                 NumberOfPhasesUsed,
+                                 CableMaxCurrent,
+                                 ReservationId,
+                                 IdToken,
+                                 EVSE,
+                                 MeterValues,
+                                 CustomData,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnTransactionEventRequest event
+
+            try
+            {
+
+                OnTransactionEventRequest?.Invoke(startTime,
+                                                  this,
+                                                  request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnTransactionEventRequest));
+            }
+
+            #endregion
+
+
+            CSMS.TransactionEventResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.SendTransactionEvent(request);
+
+            response ??= new CSMS.TransactionEventResponse(request,
+                                                           Result.Server("Response is null!"));
+
+
+            #region Send OnTransactionEventResponse event
+
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+
+            try
+            {
+
+                OnTransactionEventResponse?.Invoke(endTime,
+                                                   this,
+                                                   request,
+                                                   response,
+                                                   endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnTransactionEventResponse));
             }
 
             #endregion
@@ -2386,8 +2528,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             CSMS.StatusNotificationResponse? response = null;
 
-            if (CPClient is not null)
-                response = await CPClient.SendStatusNotification(request);
+            if (CSClient is not null)
+                response = await CSClient.SendStatusNotification(request);
 
             response ??= new CSMS.StatusNotificationResponse(request,
                                                            Result.Server("Response is null!"));
@@ -2484,8 +2626,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             CSMS.MeterValuesResponse? response = null;
 
-            if (CPClient is not null)
-                response = await CPClient.SendMeterValues(request);
+            if (CSClient is not null)
+                response = await CSClient.SendMeterValues(request);
 
             response ??= new CSMS.MeterValuesResponse(request,
                                                     Result.Server("Response is null!"));
@@ -2523,7 +2665,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region TransferData                     (VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
-        /// Send the given vendor-specific data to the central system.
+        /// Send the given vendor-specific data to the CSMS.
         /// </summary>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">The charging station model identification.</param>
@@ -2587,8 +2729,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             CSMS.DataTransferResponse? response = null;
 
-            if (CPClient is not null)
-                response = await CPClient.TransferData(request);
+            if (CSClient is not null)
+                response = await CSClient.TransferData(request);
 
             response ??= new CSMS.DataTransferResponse(request,
                                                      Result.Server("Response is null!"));
@@ -2624,7 +2766,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region SendFirmwareStatusNotification   (Status, ...)
 
         /// <summary>
-        /// Send a firmware status notification to the central system.
+        /// Send a firmware status notification to the CSMS.
         /// </summary>
         /// <param name="Status">The status of the firmware installation.</param>
         /// 
@@ -2683,8 +2825,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             CSMS.FirmwareStatusNotificationResponse? response = null;
 
-            if (CPClient is not null)
-                response = await CPClient.SendFirmwareStatusNotification(request);
+            if (CSClient is not null)
+                response = await CSClient.SendFirmwareStatusNotification(request);
 
             response ??= new CSMS.FirmwareStatusNotificationResponse(request,
                                                                    Result.Server("Response is null!"));
@@ -2717,8 +2859,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-
-        //ToDo: Add security extensions
 
     }
 

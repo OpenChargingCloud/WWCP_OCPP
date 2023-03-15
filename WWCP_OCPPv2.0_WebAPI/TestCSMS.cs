@@ -157,6 +157,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+        #region OnTransactionEvent
+
+        /// <summary>
+        /// An event sent whenever a transaction event request was received.
+        /// </summary>
+        public event OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a transaction event request was sent.
+        /// </summary>
+        public event OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
+
+        #endregion
+
         #region OnStatusNotification
 
         /// <summary>
@@ -1086,6 +1100,92 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 catch (Exception e)
                 {
                     DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnAuthorizeResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnTransactionEvent
+
+            CSMSServer.OnTransactionEvent += async (LogTimestamp,
+                                                    Sender,
+                                                    Request,
+                                                    CancellationToken) => {
+
+                #region Send OnTransactionEventRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnTransactionEventRequest?.Invoke(startTime,
+                                                      this,
+                                                      Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnTransactionEventRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnTransactionEvent: " + Request.ChargeBoxId + ", " +
+                                                           Request.IdToken);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                    //if (Sender is CSMSSOAPServer centralSystemSOAPServer)
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                    //if (Sender is CSMSSOAPServer centralSystemSOAPServer)
+
+                }
+
+                await Task.Delay(100, CancellationToken);
+
+                var response = new TransactionEventResponse(
+                                   Request:                 Request,
+                                   TotalCost:               null,
+                                   ChargingPriority:        null,
+                                   IdTokenInfo:             null,
+                                   UpdatedPersonalMessage:  null,
+                                   CustomData:              null
+                               );
+
+
+                #region Send OnTransactionEventResponse event
+
+                try
+                {
+
+                    OnTransactionEventResponse?.Invoke(Timestamp.Now,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnTransactionEventResponse));
                 }
 
                 #endregion

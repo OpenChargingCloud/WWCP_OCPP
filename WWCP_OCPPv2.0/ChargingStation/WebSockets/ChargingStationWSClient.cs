@@ -39,8 +39,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
-    /// The charge point HTTP web socket client runs on a charge point
-    /// and connects to a central system to invoke methods.
+    /// The charging station HTTP web socket client runs on a charging station
+    /// and connects to a CSMS to invoke methods.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
@@ -154,17 +154,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #region Events
 
-        // Outgoing messages (to central system)
+        // Outgoing messages (to CSMS)
 
         #region OnBootNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a boot notification request will be send to the central system.
+        /// An event fired whenever a boot notification request will be send to the CSMS.
         /// </summary>
         public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a boot notification request will be send to the central system.
+        /// An event fired whenever a boot notification request will be send to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?             OnBootNotificationWSRequest;
 
@@ -183,12 +183,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnHeartbeatRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a heartbeat request will be send to the central system.
+        /// An event fired whenever a heartbeat request will be send to the CSMS.
         /// </summary>
         public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
 
         /// <summary>
-        /// An event fired whenever a heartbeat request will be send to the central system.
+        /// An event fired whenever a heartbeat request will be send to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?      OnHeartbeatWSRequest;
 
@@ -208,12 +208,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnAuthorizeRequest/-Response
 
         /// <summary>
-        /// An event fired whenever an authorize request will be send to the central system.
+        /// An event fired whenever an authorize request will be send to the CSMS.
         /// </summary>
         public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
 
         /// <summary>
-        /// An event fired whenever an authorize request will be send to the central system.
+        /// An event fired whenever an authorize request will be send to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?      OnAuthorizeWSRequest;
 
@@ -229,15 +229,39 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
+        #region OnTransactionEventRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever an authorize request will be send to the CSMS.
+        /// </summary>
+        public event OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
+
+        /// <summary>
+        /// An event fired whenever an authorize request will be send to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?             OnTransactionEventWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an authorize request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?            OnTransactionEventWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to an authorize request was received.
+        /// </summary>
+        public event OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
+
+        #endregion
+
         #region OnStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a status notification request will be send to the central system.
+        /// An event fired whenever a status notification request will be send to the CSMS.
         /// </summary>
         public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a status notification request will be send to the central system.
+        /// An event fired whenever a status notification request will be send to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?               OnStatusNotificationWSRequest;
 
@@ -256,12 +280,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnMeterValuesRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a meter values request will be send to the central system.
+        /// An event fired whenever a meter values request will be send to the CSMS.
         /// </summary>
         public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
 
         /// <summary>
-        /// An event fired whenever a meter values request will be send to the central system.
+        /// An event fired whenever a meter values request will be send to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?        OnMeterValuesWSRequest;
 
@@ -281,12 +305,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnDataTransferRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a data transfer request will be send to the central system.
+        /// An event fired whenever a data transfer request will be send to the CSMS.
         /// </summary>
         public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
-        /// An event fired whenever a data transfer request will be send to the central system.
+        /// An event fired whenever a data transfer request will be send to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?         OnDataTransferWSRequest;
 
@@ -305,12 +329,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnFirmwareStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a firmware status notification request will be send to the central system.
+        /// An event fired whenever a firmware status notification request will be send to the CSMS.
         /// </summary>
         public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a firmware status notification request will be send to the central system.
+        /// An event fired whenever a firmware status notification request will be send to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                       OnFirmwareStatusNotificationWSRequest;
 
@@ -327,17 +351,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #endregion
 
 
-        // Security extensions
-
         #region OnLogStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a log status notification request will be send to the central system.
+        /// An event fired whenever a log status notification request will be send to the CSMS.
         /// </summary>
         public event OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a log status notification request will be send to the central system.
+        /// An event fired whenever a log status notification request will be send to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                  OnLogStatusNotificationWSRequest;
 
@@ -356,12 +378,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnSecurityEventNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a security event notification request will be send to the central system.
+        /// An event fired whenever a security event notification request will be send to the CSMS.
         /// </summary>
         public event OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a security event notification request will be send to the central system.
+        /// An event fired whenever a security event notification request will be send to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                      OnSecurityEventNotificationWSRequest;
 
@@ -380,12 +402,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnSignCertificateRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a sign certificate request will be send to the central system.
+        /// An event fired whenever a sign certificate request will be send to the CSMS.
         /// </summary>
         public event OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
 
         /// <summary>
-        /// An event fired whenever a sign certificate request will be send to the central system.
+        /// An event fired whenever a sign certificate request will be send to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?            OnSignCertificateWSRequest;
 
@@ -402,7 +424,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #endregion
 
 
-        // Incoming messages (from central system)
+
+
+        // Incoming messages (from CSMS)
 
         #region OnReset
 
@@ -812,17 +836,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-
-        // Security extensions
-
-
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charge point websocket client running on a charge point
-        /// and connecting to a central system to invoke methods.
+        /// Create a new charging station websocket client running on a charging station
+        /// and connecting to a CSMS to invoke methods.
         /// </summary>
         /// <param name="ChargeBoxIdentity">The unique identification of this charge box.</param>
         /// <param name="From">The source URI of the websocket message.</param>
@@ -3233,6 +3253,82 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
+        #region SendTransactionEvent             (Request)
+
+        /// <summary>
+        /// Sned a transaction event.
+        /// </summary>
+        /// <param name="Request">A transaction event request.</param>
+        public async Task<TransactionEventResponse>
+
+            SendTransactionEvent(TransactionEventRequest  Request)
+
+        {
+
+            #region Send OnTransactionEventRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnTransactionEventRequest?.Invoke(startTime,
+                                                  this,
+                                                  Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnTransactionEventRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!TransactionEventResponse.TryParse(Request,
+                                                   (await WaitForResponse(requestId)) ?? new JObject(),
+                                                   out var response,
+                                                   out var errorResponse))
+            {
+                response = new TransactionEventResponse(Request,
+                                                        Result.Format(errorResponse));
+            }
+
+            response ??= new TransactionEventResponse(Request,
+                                                      Result.GenericError());
+
+
+            #region Send OnTransactionEventResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnTransactionEventResponse?.Invoke(endTime,
+                                                   this,
+                                                   Request,
+                                                   response,
+                                                   endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnTransactionEventResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
         #region SendStatusNotification           (Request)
 
         /// <summary>
@@ -3388,7 +3484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region TransferData                     (Request)
 
         /// <summary>
-        /// Send the given vendor-specific data to the central system.
+        /// Send the given vendor-specific data to the CSMS.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
         public async Task<CSMS.DataTransferResponse>
@@ -3464,7 +3560,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region SendFirmwareStatusNotification   (Request)
 
         /// <summary>
-        /// Send a firmware status notification to the central system.
+        /// Send a firmware status notification to the CSMS.
         /// </summary>
         /// <param name="Request">A firmware status notification request.</param>
         public async Task<FirmwareStatusNotificationResponse>
@@ -3538,12 +3634,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #endregion
 
 
-        // Security extensions
-
         #region LogStatusNotification            (Request)
 
         /// <summary>
-        /// Send a log status notification to the central system.
+        /// Send a log status notification to the CSMS.
         /// </summary>
         /// <param name="Request">A start transaction request.</param>
         public async Task<LogStatusNotificationResponse>
@@ -3695,7 +3789,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region SignCertificate                  (Request)
 
         /// <summary>
-        /// Send certificate signing request to the central system.
+        /// Send certificate signing request to the CSMS.
         /// </summary>
         /// <param name="Request">A stop transaction request.</param>
         public async Task<SignCertificateResponse>

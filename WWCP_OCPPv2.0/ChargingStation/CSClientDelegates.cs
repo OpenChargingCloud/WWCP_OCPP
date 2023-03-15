@@ -29,24 +29,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     #region OnBootNotification
 
     /// <summary>
-    /// A delegate called whenever a boot notification request will be send to the central system.
+    /// A delegate called whenever a boot notification request will be send to the CSMS.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The reserve now request.</param>
-    public delegate Task OnBootNotificationRequestDelegate (DateTime                  LogTimestamp,
+    public delegate Task OnBootNotificationRequestDelegate (DateTime                  Timestamp,
                                                             IEventSender              Sender,
                                                             BootNotificationRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a boot notification request was received.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnBootNotificationResponseDelegate(DateTime                   LogTimestamp,
+    public delegate Task OnBootNotificationResponseDelegate(DateTime                   Timestamp,
                                                             IEventSender               Sender,
                                                             BootNotificationRequest    Request,
                                                             BootNotificationResponse   Response,
@@ -57,24 +57,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     #region OnHeartbeat
 
     /// <summary>
-    /// A delegate called whenever a heartbeat request will be send to the central system.
+    /// A delegate called whenever a heartbeat request will be send to the CSMS.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The reserve now request.</param>
-    public delegate Task OnHeartbeatRequestDelegate (DateTime           LogTimestamp,
+    public delegate Task OnHeartbeatRequestDelegate (DateTime           Timestamp,
                                                      IEventSender       Sender,
                                                      HeartbeatRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a heartbeat request was received.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnHeartbeatResponseDelegate(DateTime            LogTimestamp,
+    public delegate Task OnHeartbeatResponseDelegate(DateTime            Timestamp,
                                                      IEventSender        Sender,
                                                      HeartbeatRequest    Request,
                                                      HeartbeatResponse   Response,
@@ -86,24 +86,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     #region OnAuthorize
 
     /// <summary>
-    /// A delegate called whenever an authorize request will be send to the central system.
+    /// A delegate called whenever an authorize request will be send to the CSMS.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The request.</param>
-    public delegate Task OnAuthorizeRequestDelegate (DateTime           LogTimestamp,
-                                                     IEventSender       Sender,
-                                                     AuthorizeRequest   Request);
+    /// <param name="Timestamp">The timestamp of the authorize request.</param>
+    /// <param name="Sender">The sender of the authorize request.</param>
+    /// <param name="Request">The authorize request.</param>
+    public delegate Task OnAuthorizeRequestDelegate(DateTime           Timestamp,
+                                                    IEventSender       Sender,
+                                                    AuthorizeRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to an authorize request was received.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="Response">The response.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnAuthorizeResponseDelegate(DateTime            LogTimestamp,
+    /// <param name="Timestamp">The timestamp of the authorize request.</param>
+    /// <param name="Sender">The sender of the authorize request.</param>
+    /// <param name="Request">The authorize request.</param>
+    /// <param name="Response">The authorize response.</param>
+    /// <param name="Runtime">The runtime of the authorize request.</param>
+    public delegate Task OnAuthorizeResponseDelegate(DateTime            Timestamp,
                                                      IEventSender        Sender,
                                                      AuthorizeRequest    Request,
                                                      AuthorizeResponse   Response,
@@ -111,27 +111,55 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
     #endregion
 
+    #region OnTransactionEvent
+
+    /// <summary>
+    /// A delegate called whenever a transaction event request will be send to the CSMS.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the transaction event request.</param>
+    /// <param name="Sender">The sender of the transaction event request.</param>
+    /// <param name="Request">The transaction event request.</param>
+    public delegate Task OnTransactionEventRequestDelegate(DateTime                  Timestamp,
+                                                           IEventSender              Sender,
+                                                           TransactionEventRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a transaction event request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the transaction event request.</param>
+    /// <param name="Sender">The sender of the transaction event request.</param>
+    /// <param name="Request">The transaction event request.</param>
+    /// <param name="Response">The transaction event response.</param>
+    /// <param name="Runtime">The runtime of the transaction event request.</param>
+    public delegate Task OnTransactionEventResponseDelegate(DateTime                   Timestamp,
+                                                            IEventSender               Sender,
+                                                            TransactionEventRequest    Request,
+                                                            TransactionEventResponse   Response,
+                                                            TimeSpan                   Runtime);
+
+    #endregion
+
     #region OnStatusNotification
 
     /// <summary>
-    /// A delegate called whenever a status notification request will be send to the central system.
+    /// A delegate called whenever a status notification request will be send to the CSMS.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnStatusNotificationRequestDelegate (DateTime                    LogTimestamp,
-                                                              IEventSender                Sender,
-                                                              StatusNotificationRequest   Request);
+    public delegate Task OnStatusNotificationRequestDelegate(DateTime                    Timestamp,
+                                                             IEventSender                Sender,
+                                                             StatusNotificationRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a status notification request was received.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnStatusNotificationResponseDelegate(DateTime                     LogTimestamp,
+    public delegate Task OnStatusNotificationResponseDelegate(DateTime                     Timestamp,
                                                               IEventSender                 Sender,
                                                               StatusNotificationRequest    Request,
                                                               StatusNotificationResponse   Response,
@@ -142,24 +170,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     #region OnMeterValues
 
     /// <summary>
-    /// A delegate called whenever a meter values request will be send to the central system.
+    /// A delegate called whenever a meter values request will be send to the CSMS.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnMeterValuesRequestDelegate (DateTime             LogTimestamp,
+    public delegate Task OnMeterValuesRequestDelegate (DateTime             Timestamp,
                                                        IEventSender         Sender,
                                                        MeterValuesRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a meter values request was received.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnMeterValuesResponseDelegate(DateTime              LogTimestamp,
+    public delegate Task OnMeterValuesResponseDelegate(DateTime              Timestamp,
                                                        IEventSender          Sender,
                                                        MeterValuesRequest    Request,
                                                        MeterValuesResponse   Response,
@@ -170,24 +198,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     #region OnDataTransfer
 
     /// <summary>
-    /// A delegate called whenever a data transfer request will be send to the central system.
+    /// A delegate called whenever a data transfer request will be send to the CSMS.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnDataTransferRequestDelegate (DateTime              LogTimestamp,
+    public delegate Task OnDataTransferRequestDelegate (DateTime              Timestamp,
                                                         IEventSender          Sender,
                                                         DataTransferRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a data transfer request was received.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnDataTransferResponseDelegate(DateTime                  LogTimestamp,
+    public delegate Task OnDataTransferResponseDelegate(DateTime                  Timestamp,
                                                         IEventSender              Sender,
                                                         DataTransferRequest       Request,
                                                         CSMS.DataTransferResponse   Response,
@@ -198,24 +226,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     #region OnFirmwareStatusNotification
 
     /// <summary>
-    /// A delegate called whenever a firmware status notification request will be send to the central system.
+    /// A delegate called whenever a firmware status notification request will be send to the CSMS.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnFirmwareStatusNotificationRequestDelegate (DateTime                            LogTimestamp,
+    public delegate Task OnFirmwareStatusNotificationRequestDelegate (DateTime                            Timestamp,
                                                                       IEventSender                        Sender,
                                                                       FirmwareStatusNotificationRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a firmware status notification request was received.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnFirmwareStatusNotificationResponseDelegate(DateTime                             LogTimestamp,
+    public delegate Task OnFirmwareStatusNotificationResponseDelegate(DateTime                             Timestamp,
                                                                       IEventSender                         Sender,
                                                                       FirmwareStatusNotificationRequest    Request,
                                                                       FirmwareStatusNotificationResponse   Response,
@@ -224,29 +252,27 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     #endregion
 
 
-    // Security extensions
-
     #region OnLogStatusNotification
 
     /// <summary>
-    /// A delegate called whenever a log status notification request will be send to the central system.
+    /// A delegate called whenever a log status notification request will be send to the CSMS.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnLogStatusNotificationRequestDelegate (DateTime                       LogTimestamp,
+    public delegate Task OnLogStatusNotificationRequestDelegate (DateTime                       Timestamp,
                                                                  IEventSender                   Sender,
                                                                  LogStatusNotificationRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a log status notification request was received.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnLogStatusNotificationResponseDelegate(DateTime                        LogTimestamp,
+    public delegate Task OnLogStatusNotificationResponseDelegate(DateTime                        Timestamp,
                                                                  IEventSender                    Sender,
                                                                  LogStatusNotificationRequest    Request,
                                                                  LogStatusNotificationResponse   Response,
@@ -257,24 +283,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     #region OnSecurityEventNotification
 
     /// <summary>
-    /// A delegate called whenever a security event notification request will be send to the central system.
+    /// A delegate called whenever a security event notification request will be send to the CSMS.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnSecurityEventNotificationRequestDelegate (DateTime                           LogTimestamp,
+    public delegate Task OnSecurityEventNotificationRequestDelegate (DateTime                           Timestamp,
                                                                      IEventSender                       Sender,
                                                                      SecurityEventNotificationRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a security event notification request was received.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnSecurityEventNotificationResponseDelegate(DateTime                            LogTimestamp,
+    public delegate Task OnSecurityEventNotificationResponseDelegate(DateTime                            Timestamp,
                                                                      IEventSender                        Sender,
                                                                      SecurityEventNotificationRequest    Request,
                                                                      SecurityEventNotificationResponse   Response,
@@ -285,30 +311,29 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     #region OnSignCertificate
 
     /// <summary>
-    /// A delegate called whenever a sign certificate request will be send to the central system.
+    /// A delegate called whenever a sign certificate request will be send to the CSMS.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnSignCertificateRequestDelegate (DateTime                 LogTimestamp,
+    public delegate Task OnSignCertificateRequestDelegate (DateTime                 Timestamp,
                                                            IEventSender             Sender,
                                                            SignCertificateRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a sign certificate request was received.
     /// </summary>
-    /// <param name="LogTimestamp">The timestamp of the log request.</param>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnSignCertificateResponseDelegate(DateTime                  LogTimestamp,
+    public delegate Task OnSignCertificateResponseDelegate(DateTime                  Timestamp,
                                                            IEventSender              Sender,
                                                            SignCertificateRequest    Request,
                                                            SignCertificateResponse   Response,
                                                            TimeSpan                  Runtime);
 
     #endregion
-
 
 }

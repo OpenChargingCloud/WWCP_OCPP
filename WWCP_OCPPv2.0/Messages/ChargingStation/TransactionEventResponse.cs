@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <param name="Request">The transaction event request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public TransactionEventResponse(CS.TransactionEventRequest  Request,
-                                       Result                     Result)
+                                        Result                      Result)
 
             : base(Request,
                    Result)
@@ -553,6 +553,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                        : json;
 
         }
+
+        #endregion
+
+
+        #region Static methods
+
+        /// <summary>
+        /// The transaction event failed.
+        /// </summary>
+        public static TransactionEventResponse Failed(CS.TransactionEventRequest Request)
+
+            => new (Request,
+                    Result.Server());
 
         #endregion
 

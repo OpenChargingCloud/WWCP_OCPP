@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// The common interface of all charge point clients.
     /// </summary>
     public interface IChargingStationClient : IHTTPClient,
-                                          IEventSender
+                                              IEventSender
     {
 
         #region Events
@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnBootNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a boot notification request will be send to the central system.
+        /// An event fired whenever a boot notification request will be send to the CSMS.
         /// </summary>
         event OnBootNotificationRequestDelegate   OnBootNotificationRequest;
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnHeartbeatRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a heartbeat request will be send to the central system.
+        /// An event fired whenever a heartbeat request will be send to the CSMS.
         /// </summary>
         event OnHeartbeatRequestDelegate   OnHeartbeatRequest;
 
@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnAuthorizeRequest/-Response
 
         /// <summary>
-        /// An event fired whenever an authorize request will be send to the central system.
+        /// An event fired whenever an authorize request will be send to the CSMS.
         /// </summary>
         event OnAuthorizeRequestDelegate   OnAuthorizeRequest;
 
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a status notification request will be send to the central system.
+        /// An event fired whenever a status notification request will be send to the CSMS.
         /// </summary>
         event OnStatusNotificationRequestDelegate   OnStatusNotificationRequest;
 
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnMeterValuesRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a meter values request will be send to the central system.
+        /// An event fired whenever a meter values request will be send to the CSMS.
         /// </summary>
         event OnMeterValuesRequestDelegate   OnMeterValuesRequest;
 
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnDataTransferRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a data transfer request will be send to the central system.
+        /// An event fired whenever a data transfer request will be send to the CSMS.
         /// </summary>
         event OnDataTransferRequestDelegate   OnDataTransferRequest;
 
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnFirmwareStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a firmware status notification request will be send to the central system.
+        /// An event fired whenever a firmware status notification request will be send to the CSMS.
         /// </summary>
         event OnFirmwareStatusNotificationRequestDelegate   OnFirmwareStatusNotificationRequest;
 
@@ -159,7 +159,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        // ReservationStatusUpdate
+
+        // SendReservationStatusUpdate
 
         #region Authorize
 
@@ -171,7 +172,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        // SendTransactionEvent
+        #region SendTransactionEvent
+
+        /// <summary>
+        /// Send a transaction event.
+        /// </summary>
+        /// <param name="Request">A transaction event request.</param>
+        public Task<TransactionEventResponse> SendTransactionEvent(TransactionEventRequest Request);
+
+        #endregion
 
         #region SendStatusNotification
 
@@ -196,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region TransferData
 
         /// <summary>
-        /// Send the given vendor-specific data to the central system.
+        /// Send the given vendor-specific data to the CSMS.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
         public Task<CSMS.DataTransferResponse> TransferData(DataTransferRequest Request);
@@ -207,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region SendLogStatusNotification
 
         /// <summary>
-        /// Send a log status notification to the central system.
+        /// Send a log status notification to the CSMS.
         /// </summary>
         /// <param name="Request">A log status notification request.</param>
         public Task<LogStatusNotificationResponse>
@@ -219,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region SendSecurityEventNotification
 
         /// <summary>
-        /// Send a security event notification to the central system.
+        /// Send a security event notification to the CSMS.
         /// </summary>
         /// <param name="Request">A security event notification request.</param>
         public Task<SecurityEventNotificationResponse>
@@ -232,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region SignCertificate
 
         /// <summary>
-        /// Send certificate signing request to the central system.
+        /// Send certificate signing request to the CSMS.
         /// </summary>
         /// <param name="Request">A sign certificate request.</param>
         public Task<SignCertificateResponse>
@@ -260,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region SendFirmwareStatusNotification
 
         /// <summary>
-        /// Send a firmware status notification to the central system.
+        /// Send a firmware status notification to the CSMS.
         /// </summary>
         /// <param name="Request">A firmware status notification request.</param>
         public Task<FirmwareStatusNotificationResponse> SendFirmwareStatusNotification(FirmwareStatusNotificationRequest Request);

@@ -699,9 +699,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     #endregion
 
 
-
-    // Security extensions...
-
     #region OnCertificateSigned
 
     /// <summary>

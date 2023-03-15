@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
-    /// The common interface of all HTTP web socket charge point clients.
+    /// The common interface of all HTTP web socket charging station clients.
     /// </summary>
     public interface IChargingStationWebSocketClient : IChargingStationClient
     {
@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnBootNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a boot notification WS request will be send to the central system.
+        /// An event fired whenever a boot notification WS request will be send to the CSMS.
         /// </summary>
         event ClientRequestLogHandler   OnBootNotificationWSRequest;
 
@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnHeartbeatRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a heartbeat WS request will be send to the central system.
+        /// An event fired whenever a heartbeat WS request will be send to the CSMS.
         /// </summary>
         event ClientRequestLogHandler   OnHeartbeatWSRequest;
 
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnAuthorizeRequest/-Response
 
         /// <summary>
-        /// An event fired whenever an authorize WS request will be send to the central system.
+        /// An event fired whenever an authorize WS request will be send to the CSMS.
         /// </summary>
         event ClientRequestLogHandler   OnAuthorizeWSRequest;
 
@@ -73,10 +73,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
+        #region OnTransactionEventRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a transaction event WS request will be send to the CSMS.
+        /// </summary>
+        event ClientRequestLogHandler   OnTransactionEventWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a transaction event WS request was received.
+        /// </summary>
+        event ClientResponseLogHandler OnTransactionEventWSResponse;
+
+        #endregion
+
         #region OnStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a status notification WS request will be send to the central system.
+        /// An event fired whenever a status notification WS request will be send to the CSMS.
         /// </summary>
         event ClientRequestLogHandler   OnStatusNotificationWSRequest;
 
@@ -90,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnMeterValuesRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a meter values WS request will be send to the central system.
+        /// An event fired whenever a meter values WS request will be send to the CSMS.
         /// </summary>
         event ClientRequestLogHandler   OnMeterValuesWSRequest;
 
@@ -105,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnDataTransferRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a data transfer WS request will be send to the central system.
+        /// An event fired whenever a data transfer WS request will be send to the CSMS.
         /// </summary>
         event ClientRequestLogHandler   OnDataTransferWSRequest;
 
@@ -119,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnFirmwareStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a firmware status notification WS request will be send to the central system.
+        /// An event fired whenever a firmware status notification WS request will be send to the CSMS.
         /// </summary>
         event ClientRequestLogHandler   OnFirmwareStatusNotificationWSRequest;
 
@@ -131,12 +145,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #endregion
 
 
-        // Security extensions
-
         #region OnLogStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a log status notification WS request will be send to the central system.
+        /// An event fired whenever a log status notification WS request will be send to the CSMS.
         /// </summary>
         event ClientRequestLogHandler   OnLogStatusNotificationWSRequest;
 
@@ -150,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnSecurityEventNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a security event notification WS request will be send to the central system.
+        /// An event fired whenever a security event notification WS request will be send to the CSMS.
         /// </summary>
         event ClientRequestLogHandler   OnSecurityEventNotificationWSRequest;
 
@@ -164,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnSignCertificateRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a sign certificate WS request will be send to the central system.
+        /// An event fired whenever a sign certificate WS request will be send to the CSMS.
         /// </summary>
         event ClientRequestLogHandler   OnSignCertificateWSRequest;
 
@@ -174,7 +186,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         event ClientResponseLogHandler  OnSignCertificateWSResponse;
 
         #endregion
-
 
     }
 

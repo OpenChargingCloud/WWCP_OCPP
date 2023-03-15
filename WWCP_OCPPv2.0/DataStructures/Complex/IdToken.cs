@@ -118,6 +118,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+        #region (static) NewRandomRFID(Length)
+
+        /// <summary>
+        /// Create a new random identification token.
+        /// </summary>
+        /// <param name="Length">The expected length of the random identification token.</param>
+        public static IdToken NewRandomRFID(Byte Length = 8)
+
+            => new (RandomExtensions.RandomString(Length).ToUpper(),
+                    IdTokenTypes.ISO14443);
+
+        #endregion
+
         #region (static) Parse   (JSON, CustomIdTokenParser = null)
 
         /// <summary>

@@ -29,8 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <summary>
     /// A boot notification request.
     /// </summary>
-    /// <param name="Timestamp">The log timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Timestamp">The timestamp of the boot notification request.</param>
+    /// <param name="Sender">The sender of the boot notification request.</param>
     /// <param name="Request">The boot notification request.</param>
     public delegate Task
 
@@ -42,10 +42,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <summary>
     /// A boot notification.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Timestamp">The timestamp of the boot notification request.</param>
+    /// <param name="Sender">The sender of the boot notification request.</param>
     /// <param name="Request">The boot notification request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
+    /// <param name="CancellationToken">A token to cancel this boot notification request.</param>
     public delegate Task<BootNotificationResponse>
 
         OnBootNotificationDelegate(DateTime                    Timestamp,
@@ -57,29 +57,29 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <summary>
     /// A boot notification response.
     /// </summary>
-    /// <param name="Timestamp">The log timestamp of the response.</param>
-    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Timestamp">The timestamp of the boot notification response.</param>
+    /// <param name="Sender">The sender of the boot notification response.</param>
     /// <param name="Request">The boot notification request.</param>
     /// <param name="Response">The boot notification response.</param>
-    /// <param name="Runtime">The runtime of this request.</param>
+    /// <param name="Runtime">The runtime of the boot notification response.</param>
     public delegate Task
 
-        OnBootNotificationResponseDelegate(DateTime                     Timestamp,
-                                           IEventSender                 Sender,
-                                           CS.BootNotificationRequest   Request,
+        OnBootNotificationResponseDelegate(DateTime                       Timestamp,
+                                           IEventSender                   Sender,
+                                           CS.BootNotificationRequest     Request,
                                            CSMS.BootNotificationResponse  Response,
-                                           TimeSpan                     Runtime);
+                                           TimeSpan                       Runtime);
 
     #endregion
 
     #region OnHeartbeat
 
     /// <summary>
-    /// A charge point heartbeat request.
+    /// A charging station heartbeat request.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The heartbeat request.</param>
+    /// <param name="Timestamp">The timestamp of the charging station heartbeat request.</param>
+    /// <param name="Sender">The sender of the charging station heartbeat request.</param>
+    /// <param name="Request">The charging station heartbeat request.</param>
     public delegate Task
 
         OnHeartbeatRequestDelegate(DateTime             Timestamp,
@@ -88,12 +88,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
     /// <summary>
-    /// A charge point heartbeat.
+    /// A charging station heartbeat.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The heartbeat request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
+    /// <param name="Timestamp">The timestamp of the charging station heartbeat request.</param>
+    /// <param name="Sender">The sender of the charging station heartbeat request.</param>
+    /// <param name="Request">The heartbeat charging station heartbeat request.</param>
+    /// <param name="CancellationToken">A token to cancel this charging station heartbeat request.</param>
     public delegate Task<HeartbeatResponse>
 
         OnHeartbeatDelegate(DateTime             Timestamp,
@@ -103,20 +103,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
     /// <summary>
-    /// A charge point heartbeat response.
+    /// A charging station heartbeat response.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The heartbeat request.</param>
-    /// <param name="Response">The heartbeat response.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
+    /// <param name="Timestamp">The timestamp of the charging station heartbeat response.</param>
+    /// <param name="Sender">The sender of the charging station heartbeat response.</param>
+    /// <param name="Request">The charging station heartbeat request.</param>
+    /// <param name="Response">The charging station heartbeat response.</param>
+    /// <param name="Runtime">The runtime of the charging station heartbeat response.</param>
     public delegate Task
 
-        OnHeartbeatResponseDelegate(DateTime              Timestamp,
-                                    IEventSender          Sender,
-                                    CS.HeartbeatRequest   Request,
+        OnHeartbeatResponseDelegate(DateTime                Timestamp,
+                                    IEventSender            Sender,
+                                    CS.HeartbeatRequest     Request,
                                     CSMS.HeartbeatResponse  Response,
-                                    TimeSpan              Runtime);
+                                    TimeSpan                Runtime);
 
     #endregion
 
@@ -126,8 +126,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <summary>
     /// An authorize request.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Timestamp">The timestamp of the authorize request.</param>
+    /// <param name="Sender">The sender of the authorize request.</param>
     /// <param name="Request">The authorize request.</param>
     public delegate Task
 
@@ -139,10 +139,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <summary>
     /// Authorize the given identification token.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Timestamp">The timestamp of the authorize request.</param>
+    /// <param name="Sender">The sender of the authorize request.</param>
     /// <param name="Request">The authorize request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
+    /// <param name="CancellationToken">A token to cancel this authorize request.</param>
     public delegate Task<AuthorizeResponse>
 
         OnAuthorizeDelegate(DateTime             Timestamp,
@@ -154,25 +154,73 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <summary>
     /// An authorize response.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Timestamp">The timestamp of the authorize response.</param>
+    /// <param name="Sender">The sender of the authorize response.</param>
     /// <param name="Request">The authorize request.</param>
     /// <param name="Response">The authorize response.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
+    /// <param name="Runtime">The runtime of the authorize response.</param>
     public delegate Task
 
-        OnAuthorizeResponseDelegate(DateTime               Timestamp,
-                                    IEventSender           Sender,
-                                    CS.AuthorizeRequest    Request,
-                                    CSMS.AuthorizeResponse   Response,
-                                    TimeSpan               Runtime);
+        OnAuthorizeResponseDelegate(DateTime                Timestamp,
+                                    IEventSender            Sender,
+                                    CS.AuthorizeRequest     Request,
+                                    CSMS.AuthorizeResponse  Response,
+                                    TimeSpan                Runtime);
+
+    #endregion
+
+    #region OnTransactionEvent
+
+    /// <summary>
+    /// A transaction event request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the transaction event request.</param>
+    /// <param name="Sender">The sender of the transaction event request.</param>
+    /// <param name="Request">The transaction event request.</param>
+    public delegate Task
+
+        OnTransactionEventRequestDelegate(DateTime                    Timestamp,
+                                          IEventSender                Sender,
+                                          CS.TransactionEventRequest  Request);
+
+
+    /// <summary>
+    /// A transaction event.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the transaction event request.</param>
+    /// <param name="Sender">The sender of the transaction event request.</param>
+    /// <param name="Request">The transaction event request.</param>
+    /// <param name="CancellationToken">A token to cancel this transaction event request.</param>
+    public delegate Task<TransactionEventResponse>
+
+        OnTransactionEventDelegate(DateTime                    Timestamp,
+                                   IEventSender                Sender,
+                                   CS.TransactionEventRequest  Request,
+                                   CancellationToken           CancellationToken);
+
+
+    /// <summary>
+    /// A transaction event response.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the transaction event response.</param>
+    /// <param name="Sender">The sender of the transaction event response.</param>
+    /// <param name="Request">The transaction event request.</param>
+    /// <param name="Response">The transaction event response.</param>
+    /// <param name="Runtime">The runtime of the transaction event response.</param>
+    public delegate Task
+
+        OnTransactionEventResponseDelegate(DateTime                       Timestamp,
+                                           IEventSender                   Sender,
+                                           CS.TransactionEventRequest     Request,
+                                           CSMS.TransactionEventResponse  Response,
+                                           TimeSpan                       Runtime);
 
     #endregion
 
     #region OnStatusNotification
 
     /// <summary>
-    /// A charge point status notification request.
+    /// A charging station status notification request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -185,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
     /// <summary>
-    /// Send a charge point status notification.
+    /// Send a charging station status notification.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -200,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
     /// <summary>
-    /// A charge point status notification response.
+    /// A charging station status notification response.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -220,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     #region OnMeterValues
 
     /// <summary>
-    /// A charge point meter values request.
+    /// A charging station meter values request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -233,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
     /// <summary>
-    /// Send charge point meter values.
+    /// Send charging station meter values.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -248,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
     /// <summary>
-    /// A charge point meter values response.
+    /// A charging station meter values response.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -281,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
     /// <summary>
-    /// An incoming data transfer from the given charge point.
+    /// An incoming data transfer from the given charging station.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -330,7 +378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
     /// <summary>
-    /// A firmware installation status notification from the given charge point.
+    /// A firmware installation status notification from the given charging station.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -363,8 +411,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     #endregion
 
 
-    // Security extensions
-
     #region OnLogStatusNotification
 
     /// <summary>
@@ -381,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
     /// <summary>
-    /// A log status notification at the given charge point.
+    /// A log status notification at the given charging station.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -429,7 +475,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
     /// <summary>
-    /// A security event notification at the given charge point.
+    /// A security event notification at the given charging station.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -477,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
     /// <summary>
-    /// A sign certificate at the given charge point.
+    /// A sign certificate at the given charging station.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>

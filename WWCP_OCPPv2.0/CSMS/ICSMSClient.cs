@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 {
 
     /// <summary>
-    /// Extention methods for all central system clients
+    /// Extention methods for all CSMS clients
     /// </summary>
     public static class ICSMSClientExtensions
     {
@@ -39,9 +39,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// Reset the given charge box.
         /// </summary>
-        /// <param name="ICSMSClient">A central system.</param>
+        /// <param name="ICSMSClient">A CSMS.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ResetType">The type of reset that the charge point should perform.</param>
+        /// <param name="ResetType">The type of reset that the charging station should perform.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
@@ -78,10 +78,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// Change the availability of the given charge box.
         /// </summary>
-        /// <param name="ICSMSClient">A central system.</param>
+        /// <param name="ICSMSClient">A CSMS.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ConnectorId">The identification of the connector for which its availability should be changed. Id '0' (zero) is used if the availability of the entire charge point and all its connectors should be changed.</param>
-        /// <param name="OperationalStatus">The new availability of the charge point or charge point connector.</param>
+        /// <param name="ConnectorId">The identification of the connector for which its availability should be changed. Id '0' (zero) is used if the availability of the entire charging station and all its connectors should be changed.</param>
+        /// <param name="OperationalStatus">The new availability of the charging station or charging station connector.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// Transfer the given data to the given charge box.
         /// </summary>
-        /// <param name="ICSMSClient">A central system.</param>
+        /// <param name="ICSMSClient">A CSMS.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// Create a trigger for the given message at the given charge box connector.
         /// </summary>
-        /// <param name="ICSMSClient">A central system.</param>
+        /// <param name="ICSMSClient">A CSMS.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="EVSEId">Optional connector identification whenever the message applies to a specific connector.</param>
@@ -207,11 +207,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// Initiate a firmware download from the given location at the given charge box.
         /// </summary>
-        /// <param name="ICSMSClient">A central system.</param>
+        /// <param name="ICSMSClient">A CSMS.</param>
         /// <param name="FirmwareURL">The URI where to download the firmware.</param>
-        /// <param name="RetrieveTimestamp">The timestamp after which the charge point must retrieve the firmware.</param>
-        /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
-        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
+        /// <param name="RetrieveTimestamp">The timestamp after which the charging station must retrieve the firmware.</param>
+        /// <param name="Retries">The optional number of retries of a charging station for trying to download the firmware before giving up. If this field is not present, it is left to the charging station to decide how many times it wants to retry.</param>
+        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charging station to decide how long to wait between attempts.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
@@ -254,11 +254,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// Create a charging reservation of the given charge box connector.
         /// </summary>
-        /// <param name="ICSMSClient">A central system.</param>
+        /// <param name="ICSMSClient">A CSMS.</param>
         /// <param name="ConnectorId">The identification of the connector to be reserved. A value of 0 means that the reservation is not for a specific connector.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
-        /// <param name="IdToken">The identifier for which the charge point has to reserve a connector.</param>
+        /// <param name="IdToken">The identifier for which the charging station has to reserve a connector.</param>
         /// <param name="GroupIdToken">An optional ParentIdTag.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// Cancel the given charging reservation at the given charge box.
         /// </summary>
-        /// <param name="ICSMSClient">A central system.</param>
+        /// <param name="ICSMSClient">A CSMS.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -350,8 +350,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// Set the charging profile of the given charge box connector.
         /// </summary>
-        /// <param name="ICSMSClient">A central system.</param>
-        /// <param name="EVSEId">The connector to which the charging profile applies. If connectorId = 0, the message contains an overall limit for the charge point.</param>
+        /// <param name="ICSMSClient">A CSMS.</param>
+        /// <param name="EVSEId">The connector to which the charging profile applies. If connectorId = 0, the message contains an overall limit for the charging station.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// Remove the charging profile at the given charge box connector.
         /// </summary>
-        /// <param name="ICSMSClient">A central system.</param>
+        /// <param name="ICSMSClient">A CSMS.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ChargingProfileId">The optional identification of the charging profile to clear.</param>
         /// 
@@ -434,7 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// Return the charging schedule of the given charge box connector.
         /// </summary>
-        /// <param name="ICSMSClient">A central system.</param>
+        /// <param name="ICSMSClient">A CSMS.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="EVSEId">The connector identification for which the schedule is requested. Connector identification 0 will calculate the expected consumption for the grid connection.</param>
         /// <param name="Duration">The length of requested schedule.</param>
@@ -479,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// Unlock the given charge box connector.
         /// </summary>
-        /// <param name="ICSMSClient">A central system.</param>
+        /// <param name="ICSMSClient">A CSMS.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
         /// 
@@ -521,7 +521,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// Return the local white list of the given charge box.
         /// </summary>
-        /// <param name="ICSMSClient">A central system.</param>
+        /// <param name="ICSMSClient">A CSMS.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -557,10 +557,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// Set the local white liste at the given charge box.
         /// </summary>
-        /// <param name="ICSMSClient">A central system.</param>
+        /// <param name="ICSMSClient">A CSMS.</param>
         /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
         /// <param name="UpdateType">The type of update (full or differential).</param>
-        /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charge point. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
+        /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charging station. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
@@ -601,7 +601,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// Clear the local white liste cache of the given charge box.
         /// </summary>
-        /// <param name="ICSMSClient">A central system.</param>
+        /// <param name="ICSMSClient">A CSMS.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -670,7 +670,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
     /// <summary>
-    /// The common interface of all central system clients.
+    /// The common interface of all CSMS clients.
     /// </summary>
     public interface ICSMSClient
     {
@@ -875,13 +875,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
 
-
-        // Security extensions
-
         #region CertificateSigned
 
         /// <summary>
-        /// Send the signed certificate to the charge point.
+        /// Send the signed certificate to the charging station.
         /// </summary>
         /// <param name="Request">A certificate signed request.</param>
         Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request);
@@ -891,7 +888,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region DeleteCertificate
 
         /// <summary>
-        /// Delete the given certificate on the charge point.
+        /// Delete the given certificate on the charging station.
         /// </summary>
         /// <param name="Request">A delete certificate request.</param>
         Task<DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request);
@@ -901,7 +898,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region GetInstalledCertificateIds
 
         /// <summary>
-        /// Retrieve a list of all installed certificates within the charge point.
+        /// Retrieve a list of all installed certificates within the charging station.
         /// </summary>
         /// <param name="Request">A get installed certificate ids request.</param>
         Task<GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request);
@@ -911,7 +908,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region GetLog
 
         /// <summary>
-        /// Retrieve log files from the charge point.
+        /// Retrieve log files from the charging station.
         /// </summary>
         /// <param name="Request">A get log request.</param>
         Task<GetLogResponse> GetLog(GetLogRequest Request);
@@ -921,13 +918,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region InstallCertificate
 
         /// <summary>
-        /// Install the given certificate within the charge point.
+        /// Install the given certificate within the charging station.
         /// </summary>
         /// <param name="Request">An install certificate request.</param>
         Task<InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request);
 
         #endregion
-
 
     }
 
