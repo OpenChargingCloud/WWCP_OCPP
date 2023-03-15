@@ -2,11 +2,11 @@
  * Copyright (c) 2014-2023 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.gnu.org/licenses/agpl.html
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
-using cloud.charging.open.protocols.OCPPv2_0.CS;
+using cloud.charging.open.protocols.OCPPv2_0.CSMS;
 
 #endregion
 
@@ -33,13 +33,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
     /// <summary>
     /// Central system test defaults.
     /// </summary>
-    public abstract class ACentralSystemTests
+    public abstract class ACSMSTests
     {
 
         #region Data
 
-        protected TestCentralSystem?      testCentralSystem01;
-        protected CentralSystemWSServer?  testBackendWebSockets01;
+        protected TestCSMS?      testCSMS01;
+        protected CSMSWSServer?  testBackendWebSockets01;
 
         #endregion
 
@@ -62,26 +62,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             Timestamp.Reset();
 
-            testCentralSystem01      = new TestCentralSystem(
-                                           CentralSystemId:        CentralSystem_Id.Parse("OCPPTest01"),
-                                           RequireAuthentication:  false,
-                                           HTTPUploadPort:         IPPort.Parse(9100),
-                                           DNSClient:              new DNSClient(
-                                                                       SearchForIPv6DNSServers: false,
-                                                                       SearchForIPv4DNSServers: false
-                                                                   )
-                                       );
+            testCSMS01      = new TestCSMS(
+                                  CSMSId:                 CSMS_Id.Parse("OCPPTest01"),
+                                  RequireAuthentication:  false,
+                                  HTTPUploadPort:         IPPort.Parse(9100),
+                                  DNSClient:              new DNSClient(
+                                                              SearchForIPv6DNSServers: false,
+                                                              SearchForIPv4DNSServers: false
+                                                          )
+                              );
 
-            Assert.IsNotNull(testCentralSystem01);
+            Assert.IsNotNull(testCSMS01);
 
-            testBackendWebSockets01  = testCentralSystem01.CreateWebSocketService(
+            testBackendWebSockets01  = testCSMS01.CreateWebSocketService(
                                            TCPPort:    IPPort.Parse(9101),
                                            Autostart:  true
                                        );
 
             Assert.IsNotNull(testBackendWebSockets01);
 
-            testCentralSystem01.AddHTTPBasicAuth(ChargeBox_Id.Parse("test01"), "1234abcd");
+            testCSMS01.AddHTTPBasicAuth(ChargeBox_Id.Parse("test01"), "1234abcd");
 
         }
 
@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             testBackendWebSockets01?.Shutdown();
 
-            testCentralSystem01      = null;
+            testCSMS01      = null;
             testBackendWebSockets01  = null;
 
         }

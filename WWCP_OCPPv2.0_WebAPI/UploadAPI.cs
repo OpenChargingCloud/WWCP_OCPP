@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public HTTPEventSource<JObject>?                    EventLog            { get; }
 
 
-        public TestCentralSystem                            CentralSystem       { get; }
+        public TestCSMS                            CSMS       { get; }
 
         #endregion
 
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URIs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public UploadAPI(TestCentralSystem                           TestCentralSystem,
+        public UploadAPI(TestCSMS                           TestCSMS,
                          HTTPServer                                  HTTPServer,
                          HTTPPath?                                   URLPathPrefix    = null,
                          HTTPPath?                                   BasePath         = null,
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         {
 
-            this.CentralSystem  = TestCentralSystem;
+            this.CSMS  = TestCSMS;
 
             this.HTTPRealm      = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;
             this.HTTPLogins     = HTTPLogins ?? Array.Empty<KeyValuePair<string, string>>();

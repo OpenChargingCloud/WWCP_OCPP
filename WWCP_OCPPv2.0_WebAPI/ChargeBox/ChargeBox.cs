@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using social.OpenData.UsersAPI;
 using social.OpenData.UsersAPI.Notifications;
 
-using cloud.charging.open.protocols.OCPPv2_0.CP;
+using cloud.charging.open.protocols.OCPPv2_0.CS;
 
 #endregion
 
@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The time at the central system.
         /// </summary>
-        public DateTime?                CentralSystemTime           { get; private set; }
+        public DateTime?                CSMSTime           { get; private set; }
 
         /// <summary>
         /// The default request timeout for all requests.
@@ -1157,7 +1157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             /// <summary>
             /// The time at the central system.
             /// </summary>
-            public DateTime?                CentralSystemTime           { get; set; }
+            public DateTime?                CSMSTime           { get; set; }
 
 
 

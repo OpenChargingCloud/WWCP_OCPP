@@ -239,14 +239,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The authentication credentials provided by the Charge Point were rejected by the Central System.
         /// </summary>
-        public readonly static SecurityEvent FailedToAuthenticateAtCentralSystem    = new ("FailedToAuthenticateAtCentralSystem",
+        public readonly static SecurityEvent FailedToAuthenticateAtCSMS    = new ("FailedToAuthenticateAtCSMS",
                                                                                            "The authentication credentials provided by the Charge Point were rejected by the Central System.",
                                                                                             false);
 
         /// <summary>
         /// The authentication credentials provided by the Central System were rejected by the Charge Point.
         /// </summary>
-        public readonly static SecurityEvent CentralSystemFailedToAuthenticate      = new ("CentralSystemFailedToAuthenticate",
+        public readonly static SecurityEvent CSMSFailedToAuthenticate      = new ("CSMSFailedToAuthenticate",
                                                                                            "The authentication credentials provided by the Central System were rejected by the Charge Point.",
                                                                                             false);
 
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The certificate that the Central System uses was not valid or could not be verified.
         /// </summary>
-        public readonly static SecurityEvent InvalidCentralSystemCertificate        = new ("InvalidCentralSystemCertificate",
+        public readonly static SecurityEvent InvalidCSMSCertificate        = new ("InvalidCSMSCertificate",
                                                                                            "The certificate that the Central System uses was not valid or could not be verified.",
                                                                                             false);
 

@@ -2,11 +2,11 @@
  * Copyright (c) 2014-2023 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.gnu.org/licenses/agpl.html
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,13 +42,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         public void ChargePoint_Init_Test()
         {
 
-            Assert.IsNotNull(testCentralSystem01);
+            Assert.IsNotNull(testCSMS01);
             Assert.IsNotNull(testBackendWebSockets01);
             Assert.IsNotNull(chargingStation1);
             Assert.IsNotNull(chargingStation2);
             Assert.IsNotNull(chargingStation3);
 
-            if (testCentralSystem01     is not null &&
+            if (testCSMS01     is not null &&
                 testBackendWebSockets01 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
@@ -74,22 +74,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         public async Task ChargePoint_SendBootNotifications_Test()
         {
 
-            Assert.IsNotNull(testCentralSystem01);
+            Assert.IsNotNull(testCSMS01);
             Assert.IsNotNull(testBackendWebSockets01);
             Assert.IsNotNull(chargingStation1);
             Assert.IsNotNull(chargingStation2);
             Assert.IsNotNull(chargingStation3);
 
-            if (testCentralSystem01     is not null &&
+            if (testCSMS01     is not null &&
                 testBackendWebSockets01 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
             {
 
-                var bootNotificationRequests = new List<CP.BootNotificationRequest>();
+                var bootNotificationRequests = new List<CS.BootNotificationRequest>();
 
-                testCentralSystem01.OnBootNotificationRequest += async (timestamp, sender, bootNotificationRequest) => {
+                testCSMS01.OnBootNotificationRequest += async (timestamp, sender, bootNotificationRequest) => {
                     bootNotificationRequests.Add(bootNotificationRequest);
                 };
 
@@ -123,22 +123,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         public async Task ChargePoint_SendSendHeartbeats_Test()
         {
 
-            Assert.IsNotNull(testCentralSystem01);
+            Assert.IsNotNull(testCSMS01);
             Assert.IsNotNull(testBackendWebSockets01);
             Assert.IsNotNull(chargingStation1);
             Assert.IsNotNull(chargingStation2);
             Assert.IsNotNull(chargingStation3);
 
-            if (testCentralSystem01     is not null &&
+            if (testCSMS01     is not null &&
                 testBackendWebSockets01 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
             {
 
-                var heartbeatRequests = new List<CP.HeartbeatRequest>();
+                var heartbeatRequests = new List<CS.HeartbeatRequest>();
 
-                testCentralSystem01.OnHeartbeatRequest += async (timestamp, sender, heartbeatRequest) => {
+                testCSMS01.OnHeartbeatRequest += async (timestamp, sender, heartbeatRequest) => {
                     heartbeatRequests.Add(heartbeatRequest);
                 };
 

@@ -27,22 +27,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// Extention methods for central system identifications.
     /// </summary>
-    public static class CentralSystemIdExtensions
+    public static class CSMSIdExtensions
     {
 
         /// <summary>
         /// Indicates whether this central system identification is null or empty.
         /// </summary>
-        /// <param name="CentralSystemId">A central system identification.</param>
-        public static Boolean IsNullOrEmpty(this CentralSystem_Id? CentralSystemId)
-            => !CentralSystemId.HasValue || CentralSystemId.Value.IsNullOrEmpty;
+        /// <param name="CSMSId">A central system identification.</param>
+        public static Boolean IsNullOrEmpty(this CSMS_Id? CSMSId)
+            => !CSMSId.HasValue || CSMSId.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this central system identification is null or empty.
         /// </summary>
-        /// <param name="CentralSystemId">A central system identification.</param>
-        public static Boolean IsNotNullOrEmpty(this CentralSystem_Id? CentralSystemId)
-            => CentralSystemId.HasValue && CentralSystemId.Value.IsNotNullOrEmpty;
+        /// <param name="CSMSId">A central system identification.</param>
+        public static Boolean IsNotNullOrEmpty(this CSMS_Id? CSMSId)
+            => CSMSId.HasValue && CSMSId.Value.IsNotNullOrEmpty;
 
     }
 
@@ -50,9 +50,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A central system identification.
     /// </summary>
-    public readonly struct CentralSystem_Id : IId,
-                                              IEquatable<CentralSystem_Id>,
-                                              IComparable<CentralSystem_Id>
+    public readonly struct CSMS_Id : IId,
+                                              IEquatable<CSMS_Id>,
+                                              IComparable<CSMS_Id>
     {
 
         #region Data
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Create a new central system identification based on the given string.
         /// </summary>
         /// <param name="String">The string representation of the central system identification.</param>
-        private CentralSystem_Id(String String)
+        private CSMS_Id(String String)
         {
             this.InternalId  = String;
         }
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Create a new random central system identification.
         /// </summary>
         /// <param name="Length">The expected length of the central system identification.</param>
-        public static CentralSystem_Id NewRandom(Byte Length = 30)
+        public static CSMS_Id NewRandom(Byte Length = 30)
 
             => new (RandomExtensions.RandomString(Length));
 
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Parse the given string as central system identification.
         /// </summary>
         /// <param name="Text">A text representation of a central system identification.</param>
-        public static CentralSystem_Id Parse(String Text)
+        public static CSMS_Id Parse(String Text)
         {
 
             if (TryParse(Text, out var centralSystemId))
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Try to parse the given text as central system identification.
         /// </summary>
         /// <param name="Text">A text representation of a central system identification.</param>
-        public static CentralSystem_Id? TryParse(String Text)
+        public static CSMS_Id? TryParse(String Text)
         {
 
             if (TryParse(Text, out var centralSystemId))
@@ -149,25 +149,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) TryParse(Text, out CentralSystemId)
+        #region (static) TryParse(Text, out CSMSId)
 
         /// <summary>
         /// Try to parse the given text as central system identification.
         /// </summary>
         /// <param name="Text">A text representation of a central system identification.</param>
-        /// <param name="CentralSystemId">The parsed central system identification.</param>
-        public static Boolean TryParse(String Text, out CentralSystem_Id CentralSystemId)
+        /// <param name="CSMSId">The parsed central system identification.</param>
+        public static Boolean TryParse(String Text, out CSMS_Id CSMSId)
         {
 
             Text = Text.Trim();
 
             if (Text.IsNotNullOrEmpty())
             {
-                CentralSystemId = new CentralSystem_Id(Text.Trim());
+                CSMSId = new CSMS_Id(Text.Trim());
                 return true;
             }
 
-            CentralSystemId = default;
+            CSMSId = default;
             return false;
 
         }
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Clone this central system identification.
         /// </summary>
-        public CentralSystem_Id Clone
+        public CSMS_Id Clone
 
             => new (
                    new String(InternalId?.ToCharArray())
@@ -190,99 +190,99 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Operator overloading
 
-        #region Operator == (CentralSystemId1, CentralSystemId2)
+        #region Operator == (CSMSId1, CSMSId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CentralSystemId1">A central system identification.</param>
-        /// <param name="CentralSystemId2">Another central system identification.</param>
+        /// <param name="CSMSId1">A central system identification.</param>
+        /// <param name="CSMSId2">Another central system identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (CentralSystem_Id CentralSystemId1,
-                                           CentralSystem_Id CentralSystemId2)
+        public static Boolean operator == (CSMS_Id CSMSId1,
+                                           CSMS_Id CSMSId2)
 
-            => CentralSystemId1.Equals(CentralSystemId2);
+            => CSMSId1.Equals(CSMSId2);
 
         #endregion
 
-        #region Operator != (CentralSystemId1, CentralSystemId2)
+        #region Operator != (CSMSId1, CSMSId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CentralSystemId1">A central system identification.</param>
-        /// <param name="CentralSystemId2">Another central system identification.</param>
+        /// <param name="CSMSId1">A central system identification.</param>
+        /// <param name="CSMSId2">Another central system identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (CentralSystem_Id CentralSystemId1,
-                                           CentralSystem_Id CentralSystemId2)
+        public static Boolean operator != (CSMS_Id CSMSId1,
+                                           CSMS_Id CSMSId2)
 
-            => !CentralSystemId1.Equals(CentralSystemId2);
+            => !CSMSId1.Equals(CSMSId2);
 
         #endregion
 
-        #region Operator <  (CentralSystemId1, CentralSystemId2)
+        #region Operator <  (CSMSId1, CSMSId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CentralSystemId1">A central system identification.</param>
-        /// <param name="CentralSystemId2">Another central system identification.</param>
+        /// <param name="CSMSId1">A central system identification.</param>
+        /// <param name="CSMSId2">Another central system identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (CentralSystem_Id CentralSystemId1,
-                                          CentralSystem_Id CentralSystemId2)
+        public static Boolean operator < (CSMS_Id CSMSId1,
+                                          CSMS_Id CSMSId2)
 
-            => CentralSystemId1.CompareTo(CentralSystemId2) < 0;
+            => CSMSId1.CompareTo(CSMSId2) < 0;
 
         #endregion
 
-        #region Operator <= (CentralSystemId1, CentralSystemId2)
+        #region Operator <= (CSMSId1, CSMSId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CentralSystemId1">A central system identification.</param>
-        /// <param name="CentralSystemId2">Another central system identification.</param>
+        /// <param name="CSMSId1">A central system identification.</param>
+        /// <param name="CSMSId2">Another central system identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (CentralSystem_Id CentralSystemId1,
-                                           CentralSystem_Id CentralSystemId2)
+        public static Boolean operator <= (CSMS_Id CSMSId1,
+                                           CSMS_Id CSMSId2)
 
-            => CentralSystemId1.CompareTo(CentralSystemId2) <= 0;
+            => CSMSId1.CompareTo(CSMSId2) <= 0;
 
         #endregion
 
-        #region Operator >  (CentralSystemId1, CentralSystemId2)
+        #region Operator >  (CSMSId1, CSMSId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CentralSystemId1">A central system identification.</param>
-        /// <param name="CentralSystemId2">Another central system identification.</param>
+        /// <param name="CSMSId1">A central system identification.</param>
+        /// <param name="CSMSId2">Another central system identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (CentralSystem_Id CentralSystemId1,
-                                          CentralSystem_Id CentralSystemId2)
+        public static Boolean operator > (CSMS_Id CSMSId1,
+                                          CSMS_Id CSMSId2)
 
-            => CentralSystemId1.CompareTo(CentralSystemId2) > 0;
+            => CSMSId1.CompareTo(CSMSId2) > 0;
 
         #endregion
 
-        #region Operator >= (CentralSystemId1, CentralSystemId2)
+        #region Operator >= (CSMSId1, CSMSId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CentralSystemId1">A central system identification.</param>
-        /// <param name="CentralSystemId2">Another central system identification.</param>
+        /// <param name="CSMSId1">A central system identification.</param>
+        /// <param name="CSMSId2">Another central system identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (CentralSystem_Id CentralSystemId1,
-                                           CentralSystem_Id CentralSystemId2)
+        public static Boolean operator >= (CSMS_Id CSMSId1,
+                                           CSMS_Id CSMSId2)
 
-            => CentralSystemId1.CompareTo(CentralSystemId2) >= 0;
-
-        #endregion
+            => CSMSId1.CompareTo(CSMSId2) >= 0;
 
         #endregion
 
-        #region IComparable<CentralSystemId> Members
+        #endregion
+
+        #region IComparable<CSMSId> Members
 
         #region CompareTo(Object)
 
@@ -292,30 +292,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Object">A central system identification to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is CentralSystem_Id centralSystemId
+            => Object is CSMS_Id centralSystemId
                    ? CompareTo(centralSystemId)
                    : throw new ArgumentException("The given object is not a central system identification!",
                                                  nameof(Object));
 
         #endregion
 
-        #region CompareTo(CentralSystemId)
+        #region CompareTo(CSMSId)
 
         /// <summary>
         /// Compares two central system identifications.
         /// </summary>
-        /// <param name="CentralSystemId">A central system identification to compare with.</param>
-        public Int32 CompareTo(CentralSystem_Id CentralSystemId)
+        /// <param name="CSMSId">A central system identification to compare with.</param>
+        public Int32 CompareTo(CSMS_Id CSMSId)
 
             => String.Compare(InternalId,
-                              CentralSystemId.InternalId,
+                              CSMSId.InternalId,
                               StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
         #endregion
 
-        #region IEquatable<CentralSystemId> Members
+        #region IEquatable<CSMSId> Members
 
         #region Equals(Object)
 
@@ -325,21 +325,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Object">A central system identification to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is CentralSystem_Id centralSystemId &&
+            => Object is CSMS_Id centralSystemId &&
                    Equals(centralSystemId);
 
         #endregion
 
-        #region Equals(CentralSystemId)
+        #region Equals(CSMSId)
 
         /// <summary>
         /// Compares two central system identifications for equality.
         /// </summary>
-        /// <param name="CentralSystemId">A central system identification to compare with.</param>
-        public Boolean Equals(CentralSystem_Id CentralSystemId)
+        /// <param name="CSMSId">A central system identification to compare with.</param>
+        public Boolean Equals(CSMS_Id CSMSId)
 
             => String.Equals(InternalId,
-                             CentralSystemId.InternalId,
+                             CSMSId.InternalId,
                              StringComparison.OrdinalIgnoreCase);
 
         #endregion

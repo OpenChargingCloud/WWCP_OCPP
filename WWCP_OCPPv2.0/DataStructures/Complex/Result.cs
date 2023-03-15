@@ -19,7 +19,7 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using static cloud.charging.open.protocols.OCPPv2_0.CS.CentralSystemWSServer;
+using static cloud.charging.open.protocols.OCPPv2_0.CSMS.CSMSWSServer;
 
 #endregion
 

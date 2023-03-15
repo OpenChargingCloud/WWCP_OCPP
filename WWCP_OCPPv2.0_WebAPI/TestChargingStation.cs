@@ -29,7 +29,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
-using cloud.charging.open.protocols.OCPPv2_0.CP;
+using cloud.charging.open.protocols.OCPPv2_0.CS;
 
 #endregion
 
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The client connected to a central system.
         /// </summary>
-        public IChargePointClient       CPClient                    { get; private set; }
+        public IChargingStationClient       CPClient                    { get; private set; }
 
 
         /// <summary>
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The time at the central system.
         /// </summary>
-        public DateTime?                CentralSystemTime           { get; private set; }
+        public DateTime?                CSMSTime           { get; private set; }
 
         /// <summary>
         /// The default request timeout for all requests.
@@ -760,7 +760,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         {
 
-            var WSClient   = new ChargePointWSClient(
+            var WSClient   = new ChargingStationWSClient(
                                  ChargeBoxId,
                                  From,
                                  To,
@@ -1896,7 +1896,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             foreach (var enquedRequest in EnquedRequests.ToArray())
             {
-                if (CPClient is ChargePointWSClient wsClient)
+                if (CPClient is ChargingStationWSClient wsClient)
                 {
 
                     var response = await wsClient.SendRequest(
@@ -1993,7 +1993,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.BootNotificationResponse>
+        public async Task<CSMS.BootNotificationResponse>
 
             SendBootNotification(BootReasons         BootReason,
                                  CustomData?         CustomData          = null,
@@ -2059,7 +2059,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             #endregion
 
 
-            CS.BootNotificationResponse? response = null;
+            CSMS.BootNotificationResponse? response = null;
 
             if (CPClient is not null)
                 response = await CPClient.SendBootNotification(request);
@@ -2070,7 +2070,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 {
 
                     case RegistrationStatus.Accepted:
-                        this.CentralSystemTime      = response.CurrentTime;
+                        this.CSMSTime      = response.CurrentTime;
                         this.SendHeartbeatEvery     = response.Interval >= TimeSpan.FromSeconds(5) ? response.Interval : TimeSpan.FromSeconds(5);
                         this.SendHeartbeatTimer.Change(this.SendHeartbeatEvery, this.SendHeartbeatEvery);
                         this.DisableSendHeartbeats  = false;
@@ -2087,7 +2087,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 }
             }
 
-            response ??= new CS.BootNotificationResponse(request,
+            response ??= new CSMS.BootNotificationResponse(request,
                                                          Result.Server("Response is null!"));
 
 
@@ -2127,7 +2127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.HeartbeatResponse>
+        public async Task<CSMS.HeartbeatResponse>
 
             SendHeartbeat(CustomData?         CustomData          = null,
 
@@ -2173,17 +2173,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             #endregion
 
 
-            CS.HeartbeatResponse? response = null;
+            CSMS.HeartbeatResponse? response = null;
 
             if (CPClient is not null)
                 response = await CPClient.SendHeartbeat(request);
 
             if (response is not null)
             {
-                this.CentralSystemTime = response.CurrentTime;
+                this.CSMSTime = response.CurrentTime;
             }
 
-            response ??= new CS.HeartbeatResponse(request,
+            response ??= new CSMS.HeartbeatResponse(request,
                                                   Result.Server("Response is null!"));
 
 
@@ -2228,7 +2228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.AuthorizeResponse>
+        public async Task<CSMS.AuthorizeResponse>
 
             Authorize(IdToken                        IdToken,
                       Certificate?                   Certificate                   = null,
@@ -2280,12 +2280,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             #endregion
 
 
-            CS.AuthorizeResponse? response = null;
+            CSMS.AuthorizeResponse? response = null;
 
             if (CPClient is not null)
                 response = await CPClient.Authorize(request);
 
-            response ??= new CS.AuthorizeResponse(request,
+            response ??= new CSMS.AuthorizeResponse(request,
                                                   Result.Server("Response is null!"));
 
 
@@ -2330,7 +2330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.StatusNotificationResponse>
+        public async Task<CSMS.StatusNotificationResponse>
 
             SendStatusNotification(EVSE_Id             EVSEId,
                                    Connector_Id        ConnectorId,
@@ -2384,12 +2384,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             #endregion
 
 
-            CS.StatusNotificationResponse? response = null;
+            CSMS.StatusNotificationResponse? response = null;
 
             if (CPClient is not null)
                 response = await CPClient.SendStatusNotification(request);
 
-            response ??= new CS.StatusNotificationResponse(request,
+            response ??= new CSMS.StatusNotificationResponse(request,
                                                            Result.Server("Response is null!"));
 
 
@@ -2432,7 +2432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.MeterValuesResponse>
+        public async Task<CSMS.MeterValuesResponse>
 
             SendMeterValues(EVSE_Id                  EVSEId, // 0 => main power meter; 1 => first EVSE
                             IEnumerable<MeterValue>  MeterValues,
@@ -2482,12 +2482,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             #endregion
 
 
-            CS.MeterValuesResponse? response = null;
+            CSMS.MeterValuesResponse? response = null;
 
             if (CPClient is not null)
                 response = await CPClient.SendMeterValues(request);
 
-            response ??= new CS.MeterValuesResponse(request,
+            response ??= new CSMS.MeterValuesResponse(request,
                                                     Result.Server("Response is null!"));
 
 
@@ -2533,7 +2533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.DataTransferResponse>
+        public async Task<CSMS.DataTransferResponse>
 
             TransferData(String              VendorId,
                          String?             MessageId           = null,
@@ -2585,12 +2585,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             #endregion
 
 
-            CS.DataTransferResponse? response = null;
+            CSMS.DataTransferResponse? response = null;
 
             if (CPClient is not null)
                 response = await CPClient.TransferData(request);
 
-            response ??= new CS.DataTransferResponse(request,
+            response ??= new CSMS.DataTransferResponse(request,
                                                      Result.Server("Response is null!"));
 
 
@@ -2632,7 +2632,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.FirmwareStatusNotificationResponse>
+        public async Task<CSMS.FirmwareStatusNotificationResponse>
 
             SendFirmwareStatusNotification(FirmwareStatus      Status,
                                            CustomData?         CustomData          = null,
@@ -2681,12 +2681,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             #endregion
 
 
-            CS.FirmwareStatusNotificationResponse? response = null;
+            CSMS.FirmwareStatusNotificationResponse? response = null;
 
             if (CPClient is not null)
                 response = await CPClient.SendFirmwareStatusNotification(request);
 
-            response ??= new CS.FirmwareStatusNotificationResponse(request,
+            response ??= new CSMS.FirmwareStatusNotificationResponse(request,
                                                                    Result.Server("Response is null!"));
 
 

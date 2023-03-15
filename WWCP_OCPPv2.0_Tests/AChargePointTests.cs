@@ -2,11 +2,11 @@
  * Copyright (c) 2014-2023 GraphDefined GmbH
  * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.gnu.org/licenses/agpl.html
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
     /// <summary>
     /// Charge point test defaults.
     /// </summary>
-    public abstract class AChargePointTests : ACentralSystemTests
+    public abstract class AChargePointTests : ACSMSTests
     {
 
         #region Data
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
                                     //HTTPBasicAuth:            new Tuple<String, String>("OLI_001", "1234"),
                                     //HTTPBasicAuth:            new Tuple<String, String>("GD001", "1234"),
-                                    DNSClient:                testCentralSystem01!.DNSClient
+                                    DNSClient:                testCSMS01!.DNSClient
                                 );
 
             Assert.IsNotNull(chargingStation1);
@@ -88,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                     MeterSerialNumber:        "SN-EN0002",
                                     MeterPublicKey:           "0xbabecafe",
 
-                                    DNSClient:                testCentralSystem01!.DNSClient
+                                    DNSClient:                testCSMS01!.DNSClient
                                 );
 
             Assert.IsNotNull(chargingStation2);
@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                     MeterSerialNumber:        "SN-EN0003",
                                     MeterPublicKey:           "0xbacafebe",
 
-                                    DNSClient:                testCentralSystem01!.DNSClient
+                                    DNSClient:                testCSMS01!.DNSClient
                                 );
 
             Assert.IsNotNull(chargingStation3);
