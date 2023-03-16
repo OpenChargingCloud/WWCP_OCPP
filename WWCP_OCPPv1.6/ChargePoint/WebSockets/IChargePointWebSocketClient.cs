@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnBootNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a boot notification WS request will be send to the central system.
+        /// An event fired whenever a boot notification WS request will be sent to the central system.
         /// </summary>
         event ClientRequestLogHandler   OnBootNotificationWSRequest;
 
@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnHeartbeatRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a heartbeat WS request will be send to the central system.
+        /// An event fired whenever a heartbeat WS request will be sent to the central system.
         /// </summary>
         event ClientRequestLogHandler   OnHeartbeatWSRequest;
 
@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnAuthorizeRequest/-Response
 
         /// <summary>
-        /// An event fired whenever an authorize WS request will be send to the central system.
+        /// An event fired whenever an authorize WS request will be sent to the central system.
         /// </summary>
         event ClientRequestLogHandler   OnAuthorizeWSRequest;
 
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStartTransactionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a start transaction WS request will be send to the central system.
+        /// An event fired whenever a start transaction WS request will be sent to the central system.
         /// </summary>
         event ClientRequestLogHandler   OnStartTransactionWSRequest;
 
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a status notification WS request will be send to the central system.
+        /// An event fired whenever a status notification WS request will be sent to the central system.
         /// </summary>
         event ClientRequestLogHandler   OnStatusNotificationWSRequest;
 
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnMeterValuesRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a meter values WS request will be send to the central system.
+        /// An event fired whenever a meter values WS request will be sent to the central system.
         /// </summary>
         event ClientRequestLogHandler   OnMeterValuesWSRequest;
 
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStopTransactionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a stop transaction WS request will be send to the central system.
+        /// An event fired whenever a stop transaction WS request will be sent to the central system.
         /// </summary>
         event ClientRequestLogHandler   OnStopTransactionWSRequest;
 
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnDataTransferRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a data transfer WS request will be send to the central system.
+        /// An event fired whenever a data transfer WS request will be sent to the central system.
         /// </summary>
         event ClientRequestLogHandler   OnDataTransferWSRequest;
 
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnDiagnosticsStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a diagnostics status notification WS request will be send to the central system.
+        /// An event fired whenever a diagnostics status notification WS request will be sent to the central system.
         /// </summary>
         event ClientRequestLogHandler   OnDiagnosticsStatusNotificationWSRequest;
 
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnFirmwareStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a firmware status notification WS request will be send to the central system.
+        /// An event fired whenever a firmware status notification WS request will be sent to the central system.
         /// </summary>
         event ClientRequestLogHandler   OnFirmwareStatusNotificationWSRequest;
 
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnLogStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a log status notification WS request will be send to the central system.
+        /// An event fired whenever a log status notification WS request will be sent to the central system.
         /// </summary>
         event ClientRequestLogHandler   OnLogStatusNotificationWSRequest;
 
@@ -192,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnSecurityEventNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a security event notification WS request will be send to the central system.
+        /// An event fired whenever a security event notification WS request will be sent to the central system.
         /// </summary>
         event ClientRequestLogHandler   OnSecurityEventNotificationWSRequest;
 
@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnSignCertificateRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a sign certificate WS request will be send to the central system.
+        /// An event fired whenever a sign certificate WS request will be sent to the central system.
         /// </summary>
         event ClientRequestLogHandler   OnSignCertificateWSRequest;
 
@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnSignedFirmwareStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a signed firmware status notification WS request will be send to the central system.
+        /// An event fired whenever a signed firmware status notification WS request will be sent to the central system.
         /// </summary>
         event ClientRequestLogHandler   OnSignedFirmwareStatusNotificationWSRequest;
 

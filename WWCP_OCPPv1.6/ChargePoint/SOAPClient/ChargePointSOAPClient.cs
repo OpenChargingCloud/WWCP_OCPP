@@ -94,12 +94,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnBootNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a boot notification Request will be send to the central system.
+        /// An event fired whenever a boot notification Request will be sent to the central system.
         /// </summary>
         public event OnBootNotificationRequestDelegate?    OnBootNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a boot notification SOAP Request will be send to the central system.
+        /// An event fired whenever a boot notification SOAP Request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?              OnBootNotificationSOAPRequest;
 
@@ -118,12 +118,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnHeartbeatRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a heartbeat Request will be send to the central system.
+        /// An event fired whenever a heartbeat Request will be sent to the central system.
         /// </summary>
         public event OnHeartbeatRequestDelegate?    OnHeartbeatRequest;
 
         /// <summary>
-        /// An event fired whenever a heartbeat SOAP Request will be send to the central system.
+        /// An event fired whenever a heartbeat SOAP Request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?       OnHeartbeatSOAPRequest;
 
@@ -143,12 +143,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnAuthorizeRequest/-Response
 
         /// <summary>
-        /// An event fired whenever an authorize Request will be send to the central system.
+        /// An event fired whenever an authorize Request will be sent to the central system.
         /// </summary>
         public event OnAuthorizeRequestDelegate?    OnAuthorizeRequest;
 
         /// <summary>
-        /// An event fired whenever an authorize SOAP Request will be send to the central system.
+        /// An event fired whenever an authorize SOAP Request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?       OnAuthorizeSOAPRequest;
 
@@ -167,12 +167,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStartTransactionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a start transaction Request will be send to the central system.
+        /// An event fired whenever a start transaction Request will be sent to the central system.
         /// </summary>
         public event OnStartTransactionRequestDelegate?    OnStartTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a start transaction SOAP Request will be send to the central system.
+        /// An event fired whenever a start transaction SOAP Request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?              OnStartTransactionSOAPRequest;
 
@@ -191,12 +191,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a status notification Request will be send to the central system.
+        /// An event fired whenever a status notification Request will be sent to the central system.
         /// </summary>
         public event OnStatusNotificationRequestDelegate?    OnStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a status notification SOAP Request will be send to the central system.
+        /// An event fired whenever a status notification SOAP Request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?                OnStatusNotificationSOAPRequest;
 
@@ -215,12 +215,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnMeterValuesRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a meter values Request will be send to the central system.
+        /// An event fired whenever a meter values Request will be sent to the central system.
         /// </summary>
         public event OnMeterValuesRequestDelegate?    OnMeterValuesRequest;
 
         /// <summary>
-        /// An event fired whenever a meter values SOAP Request will be send to the central system.
+        /// An event fired whenever a meter values SOAP Request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?         OnMeterValuesSOAPRequest;
 
@@ -239,12 +239,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStopTransactionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a stop transaction Request will be send to the central system.
+        /// An event fired whenever a stop transaction Request will be sent to the central system.
         /// </summary>
         public event OnStopTransactionRequestDelegate?    OnStopTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a stop transaction SOAP Request will be send to the central system.
+        /// An event fired whenever a stop transaction SOAP Request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?             OnStopTransactionSOAPRequest;
 
@@ -264,12 +264,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnDataTransferRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a data transfer Request will be send to the central system.
+        /// An event fired whenever a data transfer Request will be sent to the central system.
         /// </summary>
         public event OnDataTransferRequestDelegate?    OnDataTransferRequest;
 
         /// <summary>
-        /// An event fired whenever a data transfer SOAP Request will be send to the central system.
+        /// An event fired whenever a data transfer SOAP Request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?          OnDataTransferSOAPRequest;
 
@@ -288,12 +288,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnDiagnosticsStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a diagnostics status notification Request will be send to the central system.
+        /// An event fired whenever a diagnostics status notification Request will be sent to the central system.
         /// </summary>
         public event OnDiagnosticsStatusNotificationRequestDelegate?    OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a diagnostics status notification SOAP Request will be send to the central system.
+        /// An event fired whenever a diagnostics status notification SOAP Request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?                           OnDiagnosticsStatusNotificationSOAPRequest;
 
@@ -312,12 +312,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnFirmwareStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a firmware status notification Request will be send to the central system.
+        /// An event fired whenever a firmware status notification Request will be sent to the central system.
         /// </summary>
         public event OnFirmwareStatusNotificationRequestDelegate?    OnFirmwareStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a firmware status notification SOAP Request will be send to the central system.
+        /// An event fired whenever a firmware status notification SOAP Request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?                        OnFirmwareStatusNotificationSOAPRequest;
 

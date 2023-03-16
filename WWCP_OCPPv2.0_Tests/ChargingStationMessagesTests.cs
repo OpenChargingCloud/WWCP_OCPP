@@ -19,9 +19,10 @@
 
 using NUnit.Framework;
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Styx;
-using Telegram.Bot.Types;
 
 #endregion
 
@@ -311,6 +312,346 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 //Assert.AreEqual(startTimestamp.ToIso8601(),     transactionEventRequests.First().StartTimestamp.ToIso8601());
                 //Assert.AreEqual(meterStart,                     transactionEventRequests.First().MeterStart);
                 //Assert.AreEqual(reservationId,                  transactionEventRequests.First().ReservationId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingStation_StatusNotification_Test()
+
+        /// <summary>
+        /// A test for sending status notifications to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_StatusNotification_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var statusNotificationRequests = new List<CS.StatusNotificationRequest>();
+
+                testCSMS01.OnStatusNotificationRequest += async (timestamp, sender, statusNotificationRequest) => {
+                    statusNotificationRequests.Add(statusNotificationRequest);
+                };
+
+                var evseId           = EVSE_Id.     Parse(1);
+                var connectorId      = Connector_Id.Parse(1);
+                var connectorStatus  = ConnectorStatus.Available;
+                var statusTimestamp  = Timestamp.Now;
+
+                var response1        = await chargingStation1.SendStatusNotification(
+                                           EVSEId:        evseId,
+                                           ConnectorId:   connectorId,
+                                           Timestamp:     statusTimestamp,
+                                           Status:        connectorStatus,
+                                           CustomData:    null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              statusNotificationRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   statusNotificationRequests.First().ChargeBoxId);
+                Assert.AreEqual(evseId,                         statusNotificationRequests.First().EVSEId);
+                Assert.AreEqual(connectorId,                    statusNotificationRequests.First().ConnectorId);
+                Assert.AreEqual(connectorStatus,                statusNotificationRequests.First().ConnectorStatus);
+                Assert.AreEqual(statusTimestamp.ToIso8601(),    statusNotificationRequests.First().Timestamp.ToIso8601());
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingStation_SendMeterValues_Test()
+
+        /// <summary>
+        /// A test for sending meter values to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_SendMeterValues_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var meterValuesRequests = new List<CS.MeterValuesRequest>();
+
+                testCSMS01.OnMeterValuesRequest += async (timestamp, sender, meterValuesRequest) => {
+                    meterValuesRequests.Add(meterValuesRequest);
+                };
+
+                var evseId       = EVSE_Id.Parse(1);
+                var meterValues  = new MeterValue[] {
+                                       new MeterValue(
+                                           new SampledValue[] {
+                                               new SampledValue(
+                                                   Value:              1.01M,
+                                                   Context:            ReadingContexts.TransactionBegin,
+                                                   Measurand:          Measurands.Current_Import,
+                                                   Phase:              Phases.L1,
+                                                   Location:           MeasurementLocations.Outlet,
+                                                   SignedMeterValue:   new SignedMeterValue(
+                                                                           SignedMeterData:   "1.01",
+                                                                           SigningMethod:     "secp256r1_1.01",
+                                                                           EncodingMethod:    "base64_1.01",
+                                                                           PublicKey:         "pubkey_1.01",
+                                                                           CustomData:        null
+                                                                       ),
+                                                   UnitOfMeasure:      UnitsOfMeasure.kW(
+                                                                           Multiplier:   1,
+                                                                           CustomData:   null
+                                                                       ),
+                                                   CustomData:         null
+                                               ),
+                                               new SampledValue(
+                                                   Value:              1.02M,
+                                                   Context:            ReadingContexts.TransactionBegin,
+                                                   Measurand:          Measurands.Voltage,
+                                                   Phase:              Phases.L2,
+                                                   Location:           MeasurementLocations.Inlet,
+                                                   SignedMeterValue:   new SignedMeterValue(
+                                                                           SignedMeterData:   "1.02",
+                                                                           SigningMethod:     "secp256r1_1.02",
+                                                                           EncodingMethod:    "base64_1.02",
+                                                                           PublicKey:         "pubkey_1.02",
+                                                                           CustomData:        null
+                                                                       ),
+                                                   UnitOfMeasure:      UnitsOfMeasure.kW(
+                                                                           Multiplier:   2,
+                                                                           CustomData:   null
+                                                                       ),
+                                                   CustomData:         null
+                                               )
+                                           },
+                                           Timestamp.Now - TimeSpan.FromMinutes(5)
+                                       ),
+                                       new MeterValue(
+                                           new SampledValue[] {
+                                               new SampledValue(
+                                                   Value:              2.01M,
+                                                   Context:            ReadingContexts.TransactionEnd,
+                                                   Measurand:          Measurands.Current_Offered,
+                                                   Phase:              Phases.L3,
+                                                   Location:           MeasurementLocations.Cable,
+                                                   SignedMeterValue:   new SignedMeterValue(
+                                                                           SignedMeterData:   "2.01",
+                                                                           SigningMethod:     "secp256r1_2.01",
+                                                                           EncodingMethod:    "base64_2.01",
+                                                                           PublicKey:         "pubkey_2.01",
+                                                                           CustomData:        null
+                                                                       ),
+                                                   UnitOfMeasure:      UnitsOfMeasure.kW(
+                                                                           Multiplier:   3,
+                                                                           CustomData:   null
+                                                                       ),
+                                                   CustomData:         null
+                                               ),
+                                               new SampledValue(
+                                                   Value:              2.02M,
+                                                   Context:            ReadingContexts.TransactionEnd,
+                                                   Measurand:          Measurands.Frequency,
+                                                   Phase:              Phases.N,
+                                                   Location:           MeasurementLocations.EV,
+                                                   SignedMeterValue:   new SignedMeterValue(
+                                                                           SignedMeterData:   "2.02",
+                                                                           SigningMethod:     "secp256r1_2.02",
+                                                                           EncodingMethod:    "base64_2.02",
+                                                                           PublicKey:         "pubkey_2.02",
+                                                                           CustomData:        null
+                                                                       ),
+                                                   UnitOfMeasure:      UnitsOfMeasure.kW(
+                                                                           Multiplier:   4,
+                                                                           CustomData:   null
+                                                                       ),
+                                                   CustomData:         null
+                                               )
+                                           },
+                                           Timestamp.Now
+                                       )
+                                   };
+
+                var response1    = await chargingStation1.SendMeterValues(
+                                       EVSEId:        evseId,
+                                       MeterValues:   meterValues,
+                                       CustomData:    null
+                                   );
+
+
+                Assert.AreEqual (ResultCodes.OK,                                                  response1.Result.ResultCode);
+
+                Assert.AreEqual (1,                                                               meterValuesRequests.Count);
+                Assert.AreEqual (chargingStation1.ChargeBoxId,                                    meterValuesRequests.First().ChargeBoxId);
+                Assert.AreEqual (evseId,                                                          meterValuesRequests.First().EVSEId);
+
+                Assert.AreEqual (meterValues.Length,                                              meterValuesRequests.First().MeterValues.Count());
+                Assert.IsTrue   (meterValues.ElementAt(0).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(0).Timestamp < TimeSpan.FromSeconds(2));
+                Assert.IsTrue   (meterValues.ElementAt(1).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(1).Timestamp < TimeSpan.FromSeconds(2));
+
+                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.Count(),                  meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.Count());
+                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.Count(),                  meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.Count());
+
+                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Value,       meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Value);
+                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Value,       meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Value);
+                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Value,       meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Value);
+                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Value,       meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Value);
+
+                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Context,     meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Context);
+                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Context,     meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Context);
+                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Context,     meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Context);
+                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Context,     meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Context);
+
+                //Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Format,      meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Format);
+                //Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Format,      meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Format);
+                //Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Format,      meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Format);
+                //Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Format,      meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Format);
+
+                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Measurand,   meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Measurand);
+                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Measurand,   meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Measurand);
+                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Measurand,   meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Measurand);
+                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Measurand,   meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Measurand);
+
+                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Phase,       meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Phase);
+                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Phase,       meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Phase);
+                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Phase,       meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Phase);
+                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Phase,       meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Phase);
+
+                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Location,    meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Location);
+                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Location,    meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Location);
+                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Location,    meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Location);
+                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Location,    meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Location);
+
+                //Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Unit,        meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Unit);
+                //Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Unit,        meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Unit);
+                //Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Unit,        meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Unit);
+                //Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Unit,        meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Unit);
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region ChargingStation_TransferData_Test()
+
+        /// <summary>
+        /// A test for transfering data to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_TransferData_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var dataTransferRequests = new List<CS.DataTransferRequest>();
+
+                testCSMS01.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                    dataTransferRequests.Add(dataTransferRequest);
+                };
+
+                var vendorId   = "GraphDefined OEM";
+                var messageId  = RandomExtensions.RandomString(10);
+                var data       = RandomExtensions.RandomString(40);
+
+                var response1  = await chargingStation1.TransferData(
+                                     VendorId:    vendorId,
+                                     MessageId:   messageId,
+                                     Data:        data,
+                                     CustomData:  null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(data.Reverse(),                 response1.Data);
+
+                Assert.AreEqual(1,                              dataTransferRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
+                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
+                Assert.AreEqual(data,                           dataTransferRequests.First().Data);
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingStation_SendFirmwareStatusNotification_Test()
+
+        /// <summary>
+        /// A test for sending firmware status notifications to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_SendFirmwareStatusNotification_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var firmwareStatusNotifications = new List<CS.FirmwareStatusNotificationRequest>();
+
+                testCSMS01.OnFirmwareStatusNotificationRequest += async (timestamp, sender, firmwareStatusNotification) => {
+                    firmwareStatusNotifications.Add(firmwareStatusNotification);
+                };
+
+                var status     = FirmwareStatus.Installed;
+
+                var response1  = await chargingStation1.SendFirmwareStatusNotification(
+                                     Status:       status,
+                                     CustomData:   null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              firmwareStatusNotifications.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   firmwareStatusNotifications.First().ChargeBoxId);
+                Assert.AreEqual(status,                         firmwareStatusNotifications.First().Status);
 
             }
 

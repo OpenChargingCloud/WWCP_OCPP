@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region OnBootNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a boot notification request will be send to the central system.
+        /// An event fired whenever a boot notification request will be sent to the central system.
         /// </summary>
         public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region OnHeartbeatRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a heartbeat request will be send to the central system.
+        /// An event fired whenever a heartbeat request will be sent to the central system.
         /// </summary>
         public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
 
@@ -399,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region OnAuthorizeRequest/-Response
 
         /// <summary>
-        /// An event fired whenever an authorize request will be send to the central system.
+        /// An event fired whenever an authorize request will be sent to the central system.
         /// </summary>
         public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
 
@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region OnStartTransactionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a start transaction request will be send to the central system.
+        /// An event fired whenever a start transaction request will be sent to the central system.
         /// </summary>
         public event OnStartTransactionRequestDelegate?   OnStartTransactionRequest;
 
@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region OnStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a status notification request will be send to the central system.
+        /// An event fired whenever a status notification request will be sent to the central system.
         /// </summary>
         public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
@@ -441,7 +441,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region OnMeterValuesRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a meter values request will be send to the central system.
+        /// An event fired whenever a meter values request will be sent to the central system.
         /// </summary>
         public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
 
@@ -455,7 +455,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region OnStopTransactionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a stop transaction request will be send to the central system.
+        /// An event fired whenever a stop transaction request will be sent to the central system.
         /// </summary>
         public event OnStopTransactionRequestDelegate?   OnStopTransactionRequest;
 
@@ -470,7 +470,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region OnDataTransferRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a data transfer request will be send to the central system.
+        /// An event fired whenever a data transfer request will be sent to the central system.
         /// </summary>
         public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
@@ -484,7 +484,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region OnDiagnosticsStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a diagnostics status notification request will be send to the central system.
+        /// An event fired whenever a diagnostics status notification request will be sent to the central system.
         /// </summary>
         public event OnDiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
 
@@ -498,7 +498,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region OnFirmwareStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a firmware status notification request will be send to the central system.
+        /// An event fired whenever a firmware status notification request will be sent to the central system.
         /// </summary>
         public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
 

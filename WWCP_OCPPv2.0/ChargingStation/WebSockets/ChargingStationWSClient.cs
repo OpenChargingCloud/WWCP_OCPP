@@ -159,12 +159,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnBootNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a boot notification request will be send to the CSMS.
+        /// An event fired whenever a boot notification request will be sent to the CSMS.
         /// </summary>
         public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a boot notification request will be send to the CSMS.
+        /// An event fired whenever a boot notification request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?             OnBootNotificationWSRequest;
 
@@ -183,12 +183,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnHeartbeatRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a heartbeat request will be send to the CSMS.
+        /// An event fired whenever a heartbeat request will be sent to the CSMS.
         /// </summary>
         public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
 
         /// <summary>
-        /// An event fired whenever a heartbeat request will be send to the CSMS.
+        /// An event fired whenever a heartbeat request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?      OnHeartbeatWSRequest;
 
@@ -208,12 +208,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnAuthorizeRequest/-Response
 
         /// <summary>
-        /// An event fired whenever an authorize request will be send to the CSMS.
+        /// An event fired whenever an authorize request will be sent to the CSMS.
         /// </summary>
         public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
 
         /// <summary>
-        /// An event fired whenever an authorize request will be send to the CSMS.
+        /// An event fired whenever an authorize request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?      OnAuthorizeWSRequest;
 
@@ -232,12 +232,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnTransactionEventRequest/-Response
 
         /// <summary>
-        /// An event fired whenever an authorize request will be send to the CSMS.
+        /// An event fired whenever an authorize request will be sent to the CSMS.
         /// </summary>
         public event OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
 
         /// <summary>
-        /// An event fired whenever an authorize request will be send to the CSMS.
+        /// An event fired whenever an authorize request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?             OnTransactionEventWSRequest;
 
@@ -256,12 +256,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a status notification request will be send to the CSMS.
+        /// An event fired whenever a status notification request will be sent to the CSMS.
         /// </summary>
         public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a status notification request will be send to the CSMS.
+        /// An event fired whenever a status notification request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?               OnStatusNotificationWSRequest;
 
@@ -280,12 +280,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnMeterValuesRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a meter values request will be send to the CSMS.
+        /// An event fired whenever a meter values request will be sent to the CSMS.
         /// </summary>
         public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
 
         /// <summary>
-        /// An event fired whenever a meter values request will be send to the CSMS.
+        /// An event fired whenever a meter values request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?        OnMeterValuesWSRequest;
 
@@ -305,12 +305,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnDataTransferRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a data transfer request will be send to the CSMS.
+        /// An event fired whenever a data transfer request will be sent to the CSMS.
         /// </summary>
         public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
-        /// An event fired whenever a data transfer request will be send to the CSMS.
+        /// An event fired whenever a data transfer request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?         OnDataTransferWSRequest;
 
@@ -329,12 +329,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnFirmwareStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a firmware status notification request will be send to the CSMS.
+        /// An event fired whenever a firmware status notification request will be sent to the CSMS.
         /// </summary>
         public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a firmware status notification request will be send to the CSMS.
+        /// An event fired whenever a firmware status notification request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                       OnFirmwareStatusNotificationWSRequest;
 
@@ -354,12 +354,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnLogStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a log status notification request will be send to the CSMS.
+        /// An event fired whenever a log status notification request will be sent to the CSMS.
         /// </summary>
         public event OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a log status notification request will be send to the CSMS.
+        /// An event fired whenever a log status notification request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                  OnLogStatusNotificationWSRequest;
 
@@ -378,12 +378,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnSecurityEventNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a security event notification request will be send to the CSMS.
+        /// An event fired whenever a security event notification request will be sent to the CSMS.
         /// </summary>
         public event OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a security event notification request will be send to the CSMS.
+        /// An event fired whenever a security event notification request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                      OnSecurityEventNotificationWSRequest;
 
@@ -402,12 +402,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #region OnSignCertificateRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a sign certificate request will be send to the CSMS.
+        /// An event fired whenever a sign certificate request will be sent to the CSMS.
         /// </summary>
         public event OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
 
         /// <summary>
-        /// An event fired whenever a sign certificate request will be send to the CSMS.
+        /// An event fired whenever a sign certificate request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?            OnSignCertificateWSRequest;
 
@@ -835,6 +835,34 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         public event WSClientResponseLogHandler?      OnClearCacheWSResponse;
 
         #endregion
+
+
+        public event OnPublishFirmwareStatusNotificationRequestDelegate OnPublishFirmwareStatusNotificationRequest;
+        public event OnPublishFirmwareStatusNotificationResponseDelegate OnPublishFirmwareStatusNotificationResponse;
+        public event OnNotifyEventRequestDelegate OnNotifyEventRequest;
+        public event OnNotifyEventResponseDelegate OnNotifyEventResponse;
+        public event OnNotifyReportRequestDelegate OnNotifyReportRequest;
+        public event OnNotifyReportResponseDelegate OnNotifyReportResponse;
+        public event OnNotifyMonitoringReportRequestDelegate OnNotifyMonitoringReportRequest;
+        public event OnNotifyMonitoringReportResponseDelegate OnNotifyMonitoringReportResponse;
+        public event OnGet15118EVCertificateRequestDelegate OnGet15118EVCertificateRequest;
+        public event OnGet15118EVCertificateResponseDelegate OnGet15118EVCertificateResponse;
+        public event OnGetCertificateStatusRequestDelegate OnGetCertificateStatusRequest;
+        public event OnGetCertificateStatusResponseDelegate OnGetCertificateStatusResponse;
+        public event OnReservationStatusUpdateRequestDelegate OnReservationStatusUpdateRequest;
+        public event OnReservationStatusUpdateResponseDelegate OnReservationStatusUpdateResponse;
+        public event OnNotifyEVChargingNeedsRequestDelegate OnNotifyEVChargingNeedsRequest;
+        public event OnNotifyEVChargingNeedsResponseDelegate OnNotifyEVChargingNeedsResponse;
+        public event OnNotifyChargingLimitRequestDelegate OnNotifyChargingLimitRequest;
+        public event OnNotifyChargingLimitResponseDelegate OnNotifyChargingLimitResponse;
+        public event OnClearedChargingLimitRequestDelegate OnClearedChargingLimitRequest;
+        public event OnClearedChargingLimitResponseDelegate OnClearedChargingLimitResponse;
+        public event OnReportChargingProfilesRequestDelegate OnReportChargingProfilesRequest;
+        public event OnReportChargingProfilesResponseDelegate OnReportChargingProfilesResponse;
+        public event OnNotifyDisplayMessagesRequestDelegate OnNotifyDisplayMessagesRequest;
+        public event OnNotifyDisplayMessagesResponseDelegate OnNotifyDisplayMessagesResponse;
+        public event OnNotifyCustomerInformationRequestDelegate OnNotifyCustomerInformationRequest;
+        public event OnNotifyCustomerInformationResponseDelegate OnNotifyCustomerInformationResponse;
 
         #endregion
 
@@ -3861,6 +3889,71 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         }
 
         #endregion
+
+        public Task<PublishFirmwareStatusNotificationResponse> SendPublishFirmwareStatusNotification(PublishFirmwareStatusNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<NotifyEventResponse> NotifyEvent(NotifyEventRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<NotifyReportResponse> NotifyReport(NotifyReportRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<NotifyMonitoringReportResponse> NotifyMonitoringReport(NotifyMonitoringReportRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Get15118EVCertificateResponse> Get15118EVCertificate(Get15118EVCertificateRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetCertificateStatusResponse> GetCertificateStatus(GetCertificateStatusRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ReservationStatusUpdateResponse> SendReservationStatusUpdate(ReservationStatusUpdateRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<NotifyEVChargingNeedsResponse> NotifyEVChargingNeeds(NotifyEVChargingNeedsRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<NotifyChargingLimitResponse> NotifyChargingLimit(NotifyChargingLimitRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ClearedChargingLimitResponse> ClearedChargingLimit(ClearedChargingLimitRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ReportChargingProfilesResponse> ReportChargingProfiles(ReportChargingProfilesRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<NotifyDisplayMessagesResponse> NotifyDisplayMessages(NotifyDisplayMessagesRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<NotifyCustomerInformationResponse> NotifyCustomerInformation(NotifyCustomerInformationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
 
 
     }

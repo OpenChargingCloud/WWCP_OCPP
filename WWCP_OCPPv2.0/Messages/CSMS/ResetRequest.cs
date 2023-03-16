@@ -49,8 +49,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ResetType">The type of reset that the charging station should perform.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
@@ -58,8 +58,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ResetRequest(ChargeBox_Id        ChargeBoxId,
                             ResetTypes          ResetType,
-
                             CustomData?         CustomData          = null,
+
                             Request_Id?         RequestId           = null,
                             DateTime?           RequestTimestamp    = null,
                             TimeSpan?           RequestTimeout      = null,
@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         {
 
-            this.ResetType = ResetType;
+            this.ResetType  = ResetType;
 
         }
 

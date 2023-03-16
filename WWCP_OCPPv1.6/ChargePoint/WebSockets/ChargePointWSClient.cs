@@ -164,12 +164,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnBootNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a boot notification request will be send to the central system.
+        /// An event fired whenever a boot notification request will be sent to the central system.
         /// </summary>
         public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a boot notification request will be send to the central system.
+        /// An event fired whenever a boot notification request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?             OnBootNotificationWSRequest;
 
@@ -188,12 +188,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnHeartbeatRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a heartbeat request will be send to the central system.
+        /// An event fired whenever a heartbeat request will be sent to the central system.
         /// </summary>
         public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
 
         /// <summary>
-        /// An event fired whenever a heartbeat request will be send to the central system.
+        /// An event fired whenever a heartbeat request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?      OnHeartbeatWSRequest;
 
@@ -213,12 +213,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnAuthorizeRequest/-Response
 
         /// <summary>
-        /// An event fired whenever an authorize request will be send to the central system.
+        /// An event fired whenever an authorize request will be sent to the central system.
         /// </summary>
         public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
 
         /// <summary>
-        /// An event fired whenever an authorize request will be send to the central system.
+        /// An event fired whenever an authorize request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?      OnAuthorizeWSRequest;
 
@@ -237,12 +237,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStartTransactionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a start transaction request will be send to the central system.
+        /// An event fired whenever a start transaction request will be sent to the central system.
         /// </summary>
         public event OnStartTransactionRequestDelegate?   OnStartTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a start transaction request will be send to the central system.
+        /// An event fired whenever a start transaction request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?             OnStartTransactionWSRequest;
 
@@ -261,12 +261,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a status notification request will be send to the central system.
+        /// An event fired whenever a status notification request will be sent to the central system.
         /// </summary>
         public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a status notification request will be send to the central system.
+        /// An event fired whenever a status notification request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?               OnStatusNotificationWSRequest;
 
@@ -285,12 +285,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnMeterValuesRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a meter values request will be send to the central system.
+        /// An event fired whenever a meter values request will be sent to the central system.
         /// </summary>
         public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
 
         /// <summary>
-        /// An event fired whenever a meter values request will be send to the central system.
+        /// An event fired whenever a meter values request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?        OnMeterValuesWSRequest;
 
@@ -309,12 +309,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnStopTransactionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a stop transaction request will be send to the central system.
+        /// An event fired whenever a stop transaction request will be sent to the central system.
         /// </summary>
         public event OnStopTransactionRequestDelegate?   OnStopTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a stop transaction request will be send to the central system.
+        /// An event fired whenever a stop transaction request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?            OnStopTransactionWSRequest;
 
@@ -334,12 +334,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnDataTransferRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a data transfer request will be send to the central system.
+        /// An event fired whenever a data transfer request will be sent to the central system.
         /// </summary>
         public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
-        /// An event fired whenever a data transfer request will be send to the central system.
+        /// An event fired whenever a data transfer request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?         OnDataTransferWSRequest;
 
@@ -358,12 +358,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnDiagnosticsStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a diagnostics status notification request will be send to the central system.
+        /// An event fired whenever a diagnostics status notification request will be sent to the central system.
         /// </summary>
         public event OnDiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a diagnostics status notification request will be send to the central system.
+        /// An event fired whenever a diagnostics status notification request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?                          OnDiagnosticsStatusNotificationWSRequest;
 
@@ -382,12 +382,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnFirmwareStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a firmware status notification request will be send to the central system.
+        /// An event fired whenever a firmware status notification request will be sent to the central system.
         /// </summary>
         public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a firmware status notification request will be send to the central system.
+        /// An event fired whenever a firmware status notification request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?                       OnFirmwareStatusNotificationWSRequest;
 
@@ -409,12 +409,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnLogStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a log status notification request will be send to the central system.
+        /// An event fired whenever a log status notification request will be sent to the central system.
         /// </summary>
         public event OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a log status notification request will be send to the central system.
+        /// An event fired whenever a log status notification request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?                  OnLogStatusNotificationWSRequest;
 
@@ -433,12 +433,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnSecurityEventNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a security event notification request will be send to the central system.
+        /// An event fired whenever a security event notification request will be sent to the central system.
         /// </summary>
         public event OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a security event notification request will be send to the central system.
+        /// An event fired whenever a security event notification request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?                      OnSecurityEventNotificationWSRequest;
 
@@ -457,12 +457,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnSignCertificateRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a sign certificate request will be send to the central system.
+        /// An event fired whenever a sign certificate request will be sent to the central system.
         /// </summary>
         public event OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
 
         /// <summary>
-        /// An event fired whenever a sign certificate request will be send to the central system.
+        /// An event fired whenever a sign certificate request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?            OnSignCertificateWSRequest;
 
@@ -481,12 +481,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region OnSignedFirmwareStatusNotificationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a signed firmware status notification request will be send to the central system.
+        /// An event fired whenever a signed firmware status notification request will be sent to the central system.
         /// </summary>
         public event OnSignedFirmwareStatusNotificationRequestDelegate?   OnSignedFirmwareStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a signed firmware status notification request will be send to the central system.
+        /// An event fired whenever a signed firmware status notification request will be sent to the central system.
         /// </summary>
         public event ClientRequestLogHandler?                             OnSignedFirmwareStatusNotificationWSRequest;
 

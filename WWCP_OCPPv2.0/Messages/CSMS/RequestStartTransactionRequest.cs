@@ -79,9 +79,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <param name="IdToken">The identification token to start the charging transaction.</param>
         /// <param name="EVSEId">An optional EVSE identification on which the charging transaction should be started (SHALL be > 0).</param>
         /// <param name="ChargingProfile">An optional charging profile to be used by the charging station for the requested charging transaction.</param>
-        /// <param name="GroupIdToken"></param>
-        /// 
+        /// <param name="GroupIdToken">An optional group identifier.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
@@ -93,8 +93,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                               EVSE_Id?            EVSEId              = null,
                                               ChargingProfile?    ChargingProfile     = null,
                                               IdToken?            GroupIdToken        = null,
-
                                               CustomData?         CustomData          = null,
+
                                               Request_Id?         RequestId           = null,
                                               DateTime?           RequestTimestamp    = null,
                                               TimeSpan?           RequestTimeout      = null,

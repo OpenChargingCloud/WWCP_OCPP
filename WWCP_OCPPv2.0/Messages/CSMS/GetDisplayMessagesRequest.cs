@@ -67,26 +67,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// Create a new get display messages request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="GetDisplayMessagesRequestId">The unique identification of this get display messages request.</param>
         /// <param name="Ids">An optional filter on display message identifications. This field SHALL NOT contain more ids than set in NumberOfDisplayMessages.maxLimit.</param>
         /// <param name="Priority">The optional filter on message priorities.</param>
         /// <param name="State">The optional filter on message states.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public GetDisplayMessagesRequest(ChargeBox_Id                     ChargeBoxId,
-
                                          Int32                            GetDisplayMessagesRequestId,
                                          IEnumerable<DisplayMessage_Id>?  Ids                 = null,
                                          MessagePriorities?               Priority            = null,
                                          MessageStates?                   State               = null,
-
                                          CustomData?                      CustomData          = null,
+
                                          Request_Id?                      RequestId           = null,
                                          DateTime?                        RequestTimestamp    = null,
                                          TimeSpan?                        RequestTimeout      = null,

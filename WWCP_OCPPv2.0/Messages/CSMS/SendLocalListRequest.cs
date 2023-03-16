@@ -70,8 +70,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <param name="VersionNumber">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
         /// <param name="UpdateType">The type of update (full or differential).</param>
         /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charge point. Maximum number of authorization data elements is available in the configuration key: SendLocalListMaxLength.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
@@ -81,8 +81,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                     UInt64                           VersionNumber,
                                     UpdateTypes                      UpdateType,
                                     IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
-
                                     CustomData?                      CustomData               = null,
+
                                     Request_Id?                      RequestId                = null,
                                     DateTime?                        RequestTimestamp         = null,
                                     TimeSpan?                        RequestTimeout           = null,

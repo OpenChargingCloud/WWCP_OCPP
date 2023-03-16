@@ -50,8 +50,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Severity">The charging station SHALL only report events with a severity number lower than or equal to this severity.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
@@ -59,8 +59,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public SetMonitoringLevelRequest(ChargeBox_Id        ChargeBoxId,
                                          Severities          Severity,
-
                                          CustomData?         CustomData          = null,
+
                                          Request_Id?         RequestId           = null,
                                          DateTime?           RequestTimestamp    = null,
                                          TimeSpan?           RequestTimeout      = null,

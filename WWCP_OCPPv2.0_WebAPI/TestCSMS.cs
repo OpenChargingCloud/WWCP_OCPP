@@ -3607,7 +3607,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region DataTransfer          (ChargeBoxId, VendorId, MessageId = null, Data = null, ...)
+        #region TransferData          (ChargeBoxId, VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Transfer the given data to the given charge box.
@@ -3623,7 +3623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.DataTransferResponse>
 
-            DataTransfer(ChargeBox_Id        ChargeBoxId,
+            TransferData(ChargeBox_Id        ChargeBoxId,
                          String              VendorId,
                          String?             MessageId           = null,
                          String?             Data                = null,
@@ -3675,7 +3675,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-                               ? await centralSystem.Item1.DataTransfer(request)
+                               ? await centralSystem.Item1.TransferData(request)
 
                                : new CS.DataTransferResponse(request,
                                                              Result.Server("Unknown or unreachable charge box!"));
@@ -4798,9 +4798,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-
-        // Security extensions
-
         #region CertificateSigned         (ChargeBoxId, CertificateChain, ...)
 
         /// <summary>
@@ -4865,7 +4862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-                               ? await centralSystem.Item1.CertificateSigned(request)
+                               ? await centralSystem.Item1.SendSignedCertificate(request)
 
                                : new CS.CertificateSignedResponse(request,
                                                            Result.Server("Unknown or unreachable charge box!"));
@@ -5293,15 +5290,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-
-
-        // CertificateSigned
-        // DeleteCertificate
-        // ExtendedTriggerMessage
-        // GetInstalledCertificateIds
-        // GetLog
-        // InstallCertificate
-        // SignedUpdateFirmware
 
     }
 

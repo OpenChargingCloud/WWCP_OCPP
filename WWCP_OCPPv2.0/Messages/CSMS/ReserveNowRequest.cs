@@ -85,9 +85,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <param name="IdToken">The unique token identification for which the reservation is being made.</param>
         /// <param name="ConnectorType">An optional connector type to be reserved..</param>
         /// <param name="EVSEId">The identification of the EVSE to be reserved. A value of 0 means that the reservation is not for a specific EVSE.</param>
-        /// <param name="GroupIdToken">An optional group identifier for which the reservation is being made..</param>
-        /// 
+        /// <param name="GroupIdToken">An optional group identifier for which the reservation is being made.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
@@ -100,8 +100,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                  ConnectorTypes?     ConnectorType       = null,
                                  EVSE_Id?            EVSEId              = null,
                                  IdToken?            GroupIdToken        = null,
-
                                  CustomData?         CustomData          = null,
+
                                  Request_Id?         RequestId           = null,
                                  DateTime?           RequestTimestamp    = null,
                                  TimeSpan?           RequestTimeout      = null,

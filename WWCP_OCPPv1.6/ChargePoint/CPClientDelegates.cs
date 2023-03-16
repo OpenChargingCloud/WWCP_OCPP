@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnBootNotification
 
     /// <summary>
-    /// A delegate called whenever a boot notification request will be send to the central system.
+    /// A delegate called whenever a boot notification request will be sent to the central system.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnHeartbeat
 
     /// <summary>
-    /// A delegate called whenever a heartbeat request will be send to the central system.
+    /// A delegate called whenever a heartbeat request will be sent to the central system.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnAuthorize
 
     /// <summary>
-    /// A delegate called whenever an authorize request will be send to the central system.
+    /// A delegate called whenever an authorize request will be sent to the central system.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnStartTransaction
 
     /// <summary>
-    /// A delegate called whenever a start transaction request will be send to the central system.
+    /// A delegate called whenever a start transaction request will be sent to the central system.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnStatusNotification
 
     /// <summary>
-    /// A delegate called whenever a status notification request will be send to the central system.
+    /// A delegate called whenever a status notification request will be sent to the central system.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnMeterValues
 
     /// <summary>
-    /// A delegate called whenever a meter values request will be send to the central system.
+    /// A delegate called whenever a meter values request will be sent to the central system.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnStopTransaction
 
     /// <summary>
-    /// A delegate called whenever a stop transaction request will be send to the central system.
+    /// A delegate called whenever a stop transaction request will be sent to the central system.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnDataTransfer
 
     /// <summary>
-    /// A delegate called whenever a data transfer request will be send to the central system.
+    /// A delegate called whenever a data transfer request will be sent to the central system.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnDiagnosticsStatusNotification
 
     /// <summary>
-    /// A delegate called whenever a diagnostics status notification request will be send to the central system.
+    /// A delegate called whenever a diagnostics status notification request will be sent to the central system.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnFirmwareStatusNotification
 
     /// <summary>
-    /// A delegate called whenever a firmware status notification request will be send to the central system.
+    /// A delegate called whenever a firmware status notification request will be sent to the central system.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -314,7 +314,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnLogStatusNotification
 
     /// <summary>
-    /// A delegate called whenever a log status notification request will be send to the central system.
+    /// A delegate called whenever a log status notification request will be sent to the central system.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -342,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnSecurityEventNotification
 
     /// <summary>
-    /// A delegate called whenever a security event notification request will be send to the central system.
+    /// A delegate called whenever a security event notification request will be sent to the central system.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnSignCertificate
 
     /// <summary>
-    /// A delegate called whenever a sign certificate request will be send to the central system.
+    /// A delegate called whenever a sign certificate request will be sent to the central system.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -398,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     #region OnSignedFirmwareStatusNotification
 
     /// <summary>
-    /// A delegate called whenever a signed firmware status notification request will be send to the central system.
+    /// A delegate called whenever a signed firmware status notification request will be sent to the central system.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>

@@ -65,24 +65,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// Create a get charging profiles request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="GetChargingProfilesRequestId">An unique identification of the get charging profiles request.</param>
         /// <param name="ChargingProfile">Machting charging profiles.</param>
         /// <param name="EVSEId">Optional EVSE identification of the EVSE for which the installed charging profiles SHALL be reported. If 0, only charging profiles installed on the charging station itself (the grid connection) SHALL be reported.If omitted, all installed charging profiles SHALL be reported.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public GetChargingProfilesRequest(ChargeBox_Id              ChargeBoxId,
-
                                           Int64                     GetChargingProfilesRequestId,
                                           ChargingProfileCriterion  ChargingProfile,
                                           EVSE_Id?                  EVSEId              = null,
-
                                           CustomData?               CustomData          = null,
+
                                           Request_Id?               RequestId           = null,
                                           DateTime?                 RequestTimestamp    = null,
                                           TimeSpan?                 RequestTimeout      = null,

@@ -74,28 +74,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// Create a new get log request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="LogType">The type of the certificates requested.</param>
         /// <param name="LogRequestId">The unique identification of this request.</param>
         /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
         /// <param name="Retries">This specifies how many times the Charge Point must try to upload the log before giving up. If this field is not present, it is left to Charge Point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to Charge Point to decide how long to wait between attempts.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public GetLogRequest(ChargeBox_Id        ChargeBoxId,
-
                              LogTypes            LogType,
                              Int32               LogRequestId,
                              LogParameters       Log,
                              Byte?               Retries             = null,
                              TimeSpan?           RetryInterval       = null,
-
                              CustomData?         CustomData          = null,
+
                              Request_Id?         RequestId           = null,
                              DateTime?           RequestTimestamp    = null,
                              TimeSpan?           RequestTimeout      = null,

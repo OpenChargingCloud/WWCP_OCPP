@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnReset
 
     /// <summary>
-    /// A delegate called whenever a reset request will be send to a charge point.
+    /// A delegate called whenever a reset request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -49,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnChangeAvailability
 
     /// <summary>
-    /// A delegate called whenever a change availability request will be send to a charge point.
+    /// A delegate called whenever a change availability request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnGetConfiguration
 
     /// <summary>
-    /// A delegate called whenever a get configuration request will be send to a charge point.
+    /// A delegate called whenever a get configuration request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnChangeConfiguration
 
     /// <summary>
-    /// A delegate called whenever a change configuration request will be send to a charge point.
+    /// A delegate called whenever a change configuration request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -133,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnDataTransfer
 
     /// <summary>
-    /// A delegate called whenever a data transfer request will be send to a charge point.
+    /// A delegate called whenever a data transfer request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnGetDiagnostics
 
     /// <summary>
-    /// A delegate called whenever a get diagnostics request will be send to a charge point.
+    /// A delegate called whenever a get diagnostics request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnTriggerMessage
 
     /// <summary>
-    /// A delegate called whenever a trigger message request will be send to a charge point.
+    /// A delegate called whenever a trigger message request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnUpdateFirmware
 
     /// <summary>
-    /// A delegate called whenever a update firmware request will be send to a charge point.
+    /// A delegate called whenever a update firmware request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -246,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnReserveNow
 
     /// <summary>
-    /// A delegate called whenever a reserve now request will be send to a charge point.
+    /// A delegate called whenever a reserve now request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnCancelReservation
 
     /// <summary>
-    /// A delegate called whenever a cancel reservation request will be send to a charge point.
+    /// A delegate called whenever a cancel reservation request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnRemoteStartTransaction
 
     /// <summary>
-    /// A delegate called whenever a remote start transaction request will be send to a charge point.
+    /// A delegate called whenever a remote start transaction request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnRemoteStopTransaction
 
     /// <summary>
-    /// A delegate called whenever a remote stop transaction request will be send to a charge point.
+    /// A delegate called whenever a remote stop transaction request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -358,7 +358,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnUnlockConnector
 
     /// <summary>
-    /// A delegate called whenever a unlock connector request will be send to a charge point.
+    /// A delegate called whenever a unlock connector request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -386,7 +386,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnSetChargingProfile
 
     /// <summary>
-    /// A delegate called whenever a set charging profile request will be send to a charge point.
+    /// A delegate called whenever a set charging profile request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -414,7 +414,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnClearChargingProfile
 
     /// <summary>
-    /// A delegate called whenever a clear charging profile request will be send to a charge point.
+    /// A delegate called whenever a clear charging profile request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -442,7 +442,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnGetCompositeSchedule
 
     /// <summary>
-    /// A delegate called whenever a get composite schedule request will be send to a charge point.
+    /// A delegate called whenever a get composite schedule request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -471,7 +471,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnGetLocalListVersion
 
     /// <summary>
-    /// A delegate called whenever a get local list version request will be send to a charge point.
+    /// A delegate called whenever a get local list version request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -499,7 +499,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnSendLocalList
 
     /// <summary>
-    /// A delegate called whenever a send local list request will be send to a charge point.
+    /// A delegate called whenever a send local list request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -527,7 +527,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnClearCache
 
     /// <summary>
-    /// A delegate called whenever a clear cache request will be send to a charge point.
+    /// A delegate called whenever a clear cache request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -558,7 +558,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnCertificateSigned
 
     /// <summary>
-    /// A delegate called whenever an install certificate request will be send to a charge point.
+    /// A delegate called whenever an install certificate request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -586,7 +586,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnDeleteCertificate
 
     /// <summary>
-    /// A delegate called whenever a delete certificate request will be send to a charge point.
+    /// A delegate called whenever a delete certificate request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -614,7 +614,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnExtendedTriggerMessage
 
     /// <summary>
-    /// A delegate called whenever an extended trigger message request will be send to a charge point.
+    /// A delegate called whenever an extended trigger message request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -642,7 +642,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnGetInstalledCertificateIds
 
     /// <summary>
-    /// A delegate called whenever a get installed certificate ids request will be send to a charge point.
+    /// A delegate called whenever a get installed certificate ids request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -670,7 +670,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnGetLog
 
     /// <summary>
-    /// A delegate called whenever a get log request will be send to a charge point.
+    /// A delegate called whenever a get log request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -698,7 +698,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnInstallCertificate
 
     /// <summary>
-    /// A delegate called whenever an install certificate request will be send to a charge point.
+    /// A delegate called whenever an install certificate request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -726,7 +726,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     #region OnSignedUpdateFirmware
 
     /// <summary>
-    /// A delegate called whenever a signed update firmware request will be send to a charge point.
+    /// A delegate called whenever a signed update firmware request will be sent to a charge point.
     /// </summary>
     /// <param name="LogTimestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>

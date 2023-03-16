@@ -56,8 +56,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="EVSEId">The identifier of the EVSE to be unlocked.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
@@ -66,8 +66,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public UnlockConnectorRequest(ChargeBox_Id        ChargeBoxId,
                                       EVSE_Id             EVSEId,
                                       Connector_Id        ConnectorId,
-
                                       CustomData?         CustomData          = null,
+
                                       Request_Id?         RequestId           = null,
                                       DateTime?           RequestTimestamp    = null,
                                       TimeSpan?           RequestTimeout      = null,

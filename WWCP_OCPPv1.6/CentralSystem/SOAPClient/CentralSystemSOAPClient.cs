@@ -87,12 +87,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnResetRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a reset request will be send to a charge point.
+        /// An event fired whenever a reset request will be sent to a charge point.
         /// </summary>
         public event OnResetRequestDelegate?     OnResetRequest;
 
         /// <summary>
-        /// An event fired whenever a reset SOAP request will be send to a charge point.
+        /// An event fired whenever a reset SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?    OnResetSOAPRequest;
 
@@ -111,12 +111,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnChangeAvailabilityRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a change availability request will be send to a charge point.
+        /// An event fired whenever a change availability request will be sent to a charge point.
         /// </summary>
         public event OnChangeAvailabilityRequestDelegate?    OnChangeAvailabilityRequest;
 
         /// <summary>
-        /// An event fired whenever a change availability SOAP request will be send to a charge point.
+        /// An event fired whenever a change availability SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?                OnChangeAvailabilitySOAPRequest;
 
@@ -135,12 +135,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnGetConfigurationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a get configuration request will be send to a charge point.
+        /// An event fired whenever a get configuration request will be sent to a charge point.
         /// </summary>
         public event OnGetConfigurationRequestDelegate?    OnGetConfigurationRequest;
 
         /// <summary>
-        /// An event fired whenever a get configuration SOAP request will be send to a charge point.
+        /// An event fired whenever a get configuration SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?              OnGetConfigurationSOAPRequest;
 
@@ -159,12 +159,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnChangeConfigurationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a change configuration request will be send to a charge point.
+        /// An event fired whenever a change configuration request will be sent to a charge point.
         /// </summary>
         public event OnChangeConfigurationRequestDelegate?    OnChangeConfigurationRequest;
 
         /// <summary>
-        /// An event fired whenever a change configuration SOAP request will be send to a charge point.
+        /// An event fired whenever a change configuration SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?                 OnChangeConfigurationSOAPRequest;
 
@@ -183,12 +183,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnDataTransferRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a data transfer request will be send to a charge point.
+        /// An event fired whenever a data transfer request will be sent to a charge point.
         /// </summary>
         public event OnDataTransferRequestDelegate?    OnDataTransferRequest;
 
         /// <summary>
-        /// An event fired whenever a data transfer SOAP request will be send to a charge point.
+        /// An event fired whenever a data transfer SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?          OnDataTransferSOAPRequest;
 
@@ -207,12 +207,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnGetDiagnosticsRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a get diagnostics request will be send to a charge point.
+        /// An event fired whenever a get diagnostics request will be sent to a charge point.
         /// </summary>
         public event OnGetDiagnosticsRequestDelegate?    OnGetDiagnosticsRequest;
 
         /// <summary>
-        /// An event fired whenever a get diagnostics SOAP request will be send to a charge point.
+        /// An event fired whenever a get diagnostics SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?            OnGetDiagnosticsSOAPRequest;
 
@@ -231,12 +231,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnTriggerMessageRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a trigger message request will be send to a charge point.
+        /// An event fired whenever a trigger message request will be sent to a charge point.
         /// </summary>
         public event OnTriggerMessageRequestDelegate?    OnTriggerMessageRequest;
 
         /// <summary>
-        /// An event fired whenever a trigger message SOAP request will be send to a charge point.
+        /// An event fired whenever a trigger message SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?            OnTriggerMessageSOAPRequest;
 
@@ -255,12 +255,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnUpdateFirmwareRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a update firmware request will be send to a charge point.
+        /// An event fired whenever a update firmware request will be sent to a charge point.
         /// </summary>
         public event OnUpdateFirmwareRequestDelegate?    OnUpdateFirmwareRequest;
 
         /// <summary>
-        /// An event fired whenever a update firmware SOAP request will be send to a charge point.
+        /// An event fired whenever a update firmware SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?            OnUpdateFirmwareSOAPRequest;
 
@@ -280,12 +280,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnReserveNowRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a reserve now request will be send to a charge point.
+        /// An event fired whenever a reserve now request will be sent to a charge point.
         /// </summary>
         public event OnReserveNowRequestDelegate?    OnReserveNowRequest;
 
         /// <summary>
-        /// An event fired whenever a reserve now SOAP request will be send to a charge point.
+        /// An event fired whenever a reserve now SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?        OnReserveNowSOAPRequest;
 
@@ -304,12 +304,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnCancelReservationRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a cancel reservation request will be send to a charge point.
+        /// An event fired whenever a cancel reservation request will be sent to a charge point.
         /// </summary>
         public event OnCancelReservationRequestDelegate?    OnCancelReservationRequest;
 
         /// <summary>
-        /// An event fired whenever a cancel reservation SOAP request will be send to a charge point.
+        /// An event fired whenever a cancel reservation SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?               OnCancelReservationSOAPRequest;
 
@@ -328,12 +328,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnRemoteStartTransactionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a remote start transaction request will be send to a charge point.
+        /// An event fired whenever a remote start transaction request will be sent to a charge point.
         /// </summary>
         public event OnRemoteStartTransactionRequestDelegate?    OnRemoteStartTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a remote start transaction SOAP request will be send to a charge point.
+        /// An event fired whenever a remote start transaction SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?                    OnRemoteStartTransactionSOAPRequest;
 
@@ -352,12 +352,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnRemoteStopTransactionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a remote stop transaction request will be send to a charge point.
+        /// An event fired whenever a remote stop transaction request will be sent to a charge point.
         /// </summary>
         public event OnRemoteStopTransactionRequestDelegate?    OnRemoteStopTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a remote stop transaction SOAP request will be send to a charge point.
+        /// An event fired whenever a remote stop transaction SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?                   OnRemoteStopTransactionSOAPRequest;
 
@@ -376,12 +376,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnSetChargingProfileRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a set charging profile request will be send to a charge point.
+        /// An event fired whenever a set charging profile request will be sent to a charge point.
         /// </summary>
         public event OnSetChargingProfileRequestDelegate?    OnSetChargingProfileRequest;
 
         /// <summary>
-        /// An event fired whenever a set charging profile SOAP request will be send to a charge point.
+        /// An event fired whenever a set charging profile SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?                OnSetChargingProfileSOAPRequest;
 
@@ -400,12 +400,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnClearChargingProfileRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a clear charging profile request will be send to a charge point.
+        /// An event fired whenever a clear charging profile request will be sent to a charge point.
         /// </summary>
         public event OnClearChargingProfileRequestDelegate?    OnClearChargingProfileRequest;
 
         /// <summary>
-        /// An event fired whenever a clear charging profile SOAP request will be send to a charge point.
+        /// An event fired whenever a clear charging profile SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?                  OnClearChargingProfileSOAPRequest;
 
@@ -424,12 +424,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnGetCompositeScheduleRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a get composite schedule request will be send to a charge point.
+        /// An event fired whenever a get composite schedule request will be sent to a charge point.
         /// </summary>
         public event OnGetCompositeScheduleRequestDelegate?    OnGetCompositeScheduleRequest;
 
         /// <summary>
-        /// An event fired whenever a get composite schedule SOAP request will be send to a charge point.
+        /// An event fired whenever a get composite schedule SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?                  OnGetCompositeScheduleSOAPRequest;
 
@@ -448,12 +448,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnUnlockConnectorRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a unlock connector request will be send to a charge point.
+        /// An event fired whenever a unlock connector request will be sent to a charge point.
         /// </summary>
         public event OnUnlockConnectorRequestDelegate?    OnUnlockConnectorRequest;
 
         /// <summary>
-        /// An event fired whenever a unlock connector SOAP request will be send to a charge point.
+        /// An event fired whenever a unlock connector SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?             OnUnlockConnectorSOAPRequest;
 
@@ -473,12 +473,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnGetLocalListVersionRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a get local list version request will be send to a charge point.
+        /// An event fired whenever a get local list version request will be sent to a charge point.
         /// </summary>
         public event OnGetLocalListVersionRequestDelegate?    OnGetLocalListVersionRequest;
 
         /// <summary>
-        /// An event fired whenever a get local list version SOAP request will be send to a charge point.
+        /// An event fired whenever a get local list version SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?                 OnGetLocalListVersionSOAPRequest;
 
@@ -497,12 +497,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnSendLocalListRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a send local list request will be send to a charge point.
+        /// An event fired whenever a send local list request will be sent to a charge point.
         /// </summary>
         public event OnSendLocalListRequestDelegate?    OnSendLocalListRequest;
 
         /// <summary>
-        /// An event fired whenever a send local list SOAP request will be send to a charge point.
+        /// An event fired whenever a send local list SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?           OnSendLocalListSOAPRequest;
 
@@ -521,12 +521,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region OnClearCacheRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a clear cache request will be send to a charge point.
+        /// An event fired whenever a clear cache request will be sent to a charge point.
         /// </summary>
         public event OnClearCacheRequestDelegate?    OnClearCacheRequest;
 
         /// <summary>
-        /// An event fired whenever a clear cache SOAP request will be send to a charge point.
+        /// An event fired whenever a clear cache SOAP request will be sent to a charge point.
         /// </summary>
         public event ClientRequestLogHandler?        OnClearCacheSOAPRequest;
 

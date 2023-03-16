@@ -795,6 +795,50 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
+
+        public event OnPublishFirmwareRequestDelegate? OnPublishFirmwareRequest;
+        public event OnPublishFirmwareResponseDelegate? OnPublishFirmwareResponse;
+        public event OnUnpublishFirmwareRequestDelegate? OnUnpublishFirmwareRequest;
+        public event OnUnpublishFirmwareResponseDelegate? OnUnpublishFirmwareResponse;
+        public event OnGetBaseReportRequestDelegate? OnGetBaseReportRequest;
+        public event OnGetBaseReportResponseDelegate? OnGetBaseReportResponse;
+        public event OnGetReportRequestDelegate? OnGetReportRequest;
+        public event OnGetReportResponseDelegate? OnGetReportResponse;
+        public event OnSetVariablesRequestDelegate? OnSetVariablesRequest;
+        public event OnSetVariablesResponseDelegate? OnSetVariablesResponse;
+        public event OnGetVariablesRequestDelegate? OnGetVariablesRequest;
+        public event OnGetVariablesResponseDelegate? OnGetVariablesResponse;
+        public event OnSetMonitoringBaseRequestDelegate? OnSetMonitoringBaseRequest;
+        public event OnSetMonitoringBaseResponseDelegate? OnSetMonitoringBaseResponse;
+        public event OnGetMonitoringReportRequestDelegate? OnGetMonitoringReportRequest;
+        public event OnGetMonitoringReportResponseDelegate? OnGetMonitoringReportResponse;
+        public event OnSetMonitoringLevelRequestDelegate? OnSetMonitoringLevelRequest;
+        public event OnSetMonitoringLevelResponseDelegate? OnSetMonitoringLevelResponse;
+        public event OnSetVariableMonitoringRequestDelegate? OnSetVariableMonitoringRequest;
+        public event OnSetVariableMonitoringResponseDelegate? OnSetVariableMonitoringResponse;
+        public event OnClearVariableMonitoringRequestDelegate? OnClearVariableMonitoringRequest;
+        public event OnClearVariableMonitoringResponseDelegate? OnClearVariableMonitoringResponse;
+        public event OnSetNetworkProfileRequestDelegate? OnSetNetworkProfileRequest;
+        public event OnSetNetworkProfileResponseDelegate? OnSetNetworkProfileResponse;
+        public event OnRequestStartTransactionRequestDelegate? OnRequestStartTransactionRequest;
+        public event OnRequestStartTransactionResponseDelegate? OnRequestStartTransactionResponse;
+        public event OnRequestStopTransactionRequestDelegate? OnRequestStopTransactionRequest;
+        public event OnRequestStopTransactionResponseDelegate? OnRequestStopTransactionResponse;
+        public event OnGetTransactionStatusRequestDelegate? OnGetTransactionStatusRequest;
+        public event OnGetTransactionStatusResponseDelegate? OnGetTransactionStatusResponse;
+        public event OnGetChargingProfilesRequestDelegate? OnGetChargingProfilesRequest;
+        public event OnGetChargingProfilesResponseDelegate? OnGetChargingProfilesResponse;
+        public event OnSetDisplayMessageRequestDelegate? OnSetDisplayMessageRequest;
+        public event OnSetDisplayMessageResponseDelegate? OnSetDisplayMessageResponse;
+        public event OnGetDisplayMessagesRequestDelegate? OnGetDisplayMessagesRequest;
+        public event OnGetDisplayMessagesResponseDelegate? OnGetDisplayMessagesResponse;
+        public event OnClearDisplayMessageRequestDelegate? OnClearDisplayMessageRequest;
+        public event OnClearDisplayMessageResponseDelegate? OnClearDisplayMessageResponse;
+        public event OnCostUpdatedRequestDelegate? OnCostUpdatedRequest;
+        public event OnCostUpdatedResponseDelegate? OnCostUpdatedResponse;
+        public event OnCustomerInformationRequestDelegate? OnCustomerInformationRequest;
+        public event OnCustomerInformationResponseDelegate? OnCustomerInformationResponse;
+
         #endregion
 
         #region Custom JSON parser/serializer delegates
@@ -4425,7 +4469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// Send the signed certificate to the charging station.
         /// </summary>
         /// <param name="Request">A certificate signed request.</param>
-        public async Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request)
+        public async Task<CertificateSignedResponse> SendSignedCertificate(CertificateSignedRequest Request)
         {
 
             #region Send OnCertificateSignedRequest event
@@ -4838,6 +4882,117 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         }
 
         #endregion
+
+
+        public Task<PublishFirmwareResponse> PublishFirmware(PublishFirmwareRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UnpublishFirmwareResponse> UnpublishFirmware(UnpublishFirmwareRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetBaseReportResponse> GetBaseReport(GetBaseReportRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetReportResponse> GetReport(GetReportRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SetVariablesResponse> SetVariables(SetVariablesRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetVariablesResponse> GetVariables(GetVariablesRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SetMonitoringBaseResponse> SetMonitoringBase(SetMonitoringBaseRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetMonitoringReportResponse> GetMonitoringReport(GetMonitoringReportRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SetMonitoringLevelResponse> SetMonitoringLevel(SetMonitoringLevelRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SetVariableMonitoringResponse> SetVariableMonitoring(SetVariableMonitoringRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ClearVariableMonitoringResponse> ClearVariableMonitoring(ClearVariableMonitoringRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SetNetworkProfileResponse> SetNetworkProfile(SetNetworkProfileRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CS.DataTransferResponse> TransferData(DataTransferRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RequestStartTransactionResponse> StartCharging(RequestStartTransactionRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RequestStopTransactionResponse> StopCharging(RequestStopTransactionRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetTransactionStatusResponse> GetTransactionStatus(GetTransactionStatusRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetChargingProfilesResponse> GetChargingProfiles(GetChargingProfilesRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<SetDisplayMessageResponse> SetDisplayMessage(SetDisplayMessageRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetDisplayMessagesResponse> GetDisplayMessages(GetDisplayMessagesRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ClearDisplayMessageResponse> ClearDisplayMessage(ClearDisplayMessageRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CostUpdatedResponse> SendCostUpdated(CostUpdatedRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CustomerInformationResponse> RequestCustomerInformation(CustomerInformationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
 
 
     }
