@@ -51,16 +51,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
             Assert.IsNotNull(chargingStation2);
             Assert.IsNotNull(chargingStation3);
 
-            if (testCSMS01     is not null &&
+            if (testCSMS01              is not null &&
                 testBackendWebSockets01 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
                 chargingStation3        is not null)
             {
 
-                Assert.AreEqual("GraphDefined OEM #1",  chargingStation1.Vendor);
-                Assert.AreEqual("GraphDefined OEM #2",  chargingStation2.Vendor);
-                Assert.AreEqual("GraphDefined OEM #3",  chargingStation3.Vendor);
+                Assert.AreEqual("GraphDefined OEM #1",  chargingStation1.VendorName);
+                Assert.AreEqual("GraphDefined OEM #2",  chargingStation2.VendorName);
+                Assert.AreEqual("GraphDefined OEM #3",  chargingStation3.VendorName);
 
             }
 
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
             Assert.IsNotNull(chargingStation2);
             Assert.IsNotNull(chargingStation3);
 
-            if (testCSMS01     is not null &&
+            if (testCSMS01              is not null &&
                 testBackendWebSockets01 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
@@ -96,20 +96,37 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                     bootNotificationRequests.Add(bootNotificationRequest);
                 };
 
-                var response1 = await chargingStation1.SendBootNotification(BootReasons.PowerUp);
+                var reason     = BootReasons.PowerUp;
+                var response1  = await chargingStation1.SendBootNotification(reason);
 
-                Assert.AreEqual(ResultCodes.OK,                            response1.Result.ResultCode);
-                Assert.AreEqual(RegistrationStatus.Accepted,               response1.Status);
+                Assert.AreEqual (ResultCodes.OK,                         response1.Result.ResultCode);
+                Assert.AreEqual (RegistrationStatus.Accepted,            response1.Status);
 
-                Assert.AreEqual(1,                                         bootNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,              bootNotificationRequests.First().ChargeBoxId);
-                //Assert.AreEqual(chargingStation1.ChargingStationVendor,        bootNotificationRequests.First().ChargingStationVendor);
-                //Assert.AreEqual(chargingStation1.ChargingStationSerialNumber,  bootNotificationRequests.First().ChargingStationSerialNumber);
-                //Assert.AreEqual(chargingStation1.ChargeBoxSerialNumber,    bootNotificationRequests.First().ChargeBoxSerialNumber);
-                //Assert.AreEqual(chargingStation1.Iccid,                    bootNotificationRequests.First().Iccid);
-                //Assert.AreEqual(chargingStation1.IMSI,                     bootNotificationRequests.First().IMSI);
-                //Assert.AreEqual(chargingStation1.MeterType,                bootNotificationRequests.First().MeterType);
-                //Assert.AreEqual(chargingStation1.MeterSerialNumber,        bootNotificationRequests.First().MeterSerialNumber);
+                Assert.AreEqual (1,                                      bootNotificationRequests.Count);
+                Assert.AreEqual (chargingStation1.ChargeBoxId,           bootNotificationRequests.First().ChargeBoxId);
+                Assert.AreEqual (reason,                                 bootNotificationRequests.First().Reason);
+
+                var chargingStation = bootNotificationRequests.First().ChargingStation;
+
+                Assert.IsNotNull(chargingStation);
+                if (chargingStation is not null)
+                {
+
+                    Assert.AreEqual(chargingStation1.Model,              chargingStation.Model);
+                    Assert.AreEqual(chargingStation1.VendorName,         chargingStation.VendorName);
+                    Assert.AreEqual(chargingStation1.SerialNumber,       chargingStation.SerialNumber);
+                    Assert.AreEqual(chargingStation1.FirmwareVersion,    chargingStation.FirmwareVersion);
+
+                    var modem = chargingStation.Modem;
+
+                    Assert.IsNotNull(modem);
+                    if (modem is not null)
+                    {
+                        Assert.AreEqual(chargingStation1.Modem!.ICCID,   modem.ICCID);
+                        Assert.AreEqual(chargingStation1.Modem!.IMSI,    modem.IMSI);
+                    }
+
+                }
 
             }
 
@@ -117,13 +134,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #endregion
 
-        #region ChargingStation_SendSendHeartbeats_Test()
+        #region ChargingStation_SendHeartbeats_Test()
 
         /// <summary>
         /// A test for sending heartbeats to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_SendSendHeartbeats_Test()
+        public async Task ChargingStation_SendHeartbeats_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -132,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
             Assert.IsNotNull(chargingStation2);
             Assert.IsNotNull(chargingStation3);
 
-            if (testCSMS01     is not null &&
+            if (testCSMS01              is not null &&
                 testBackendWebSockets01 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&

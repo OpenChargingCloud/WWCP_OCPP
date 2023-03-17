@@ -92,9 +92,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The default HTTP user agent string.
         /// </summary>
-        public  new const  String  DefaultHTTPUserAgent  = "GraphDefined OCPP " + Version.Number + " CP WebSocket Client";
+        public  new const  String    DefaultHTTPUserAgent    = "GraphDefined OCPP " + Version.Number + " CP WebSocket Client";
 
-        private     const  String  LogfileName           = "ChargePointWSClient.log";
+        private     const  String    LogfileName             = "ChargePointWSClient.log";
+
+        public static      TimeSpan  DefaultRequestTimeout   = TimeSpan.FromSeconds(30);
 
         #endregion
 
@@ -1136,7 +1138,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    TLSProtocol,
                    PreferIPv4,
                    HTTPBasicAuth,
-                   RequestTimeout,
+                   RequestTimeout ?? DefaultRequestTimeout,
                    TransmissionRetryDelay,
                    MaxNumberOfRetries,
                    UseHTTPPipelining,
@@ -3868,7 +3870,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (!RequestId.HasValue)
                 return null;
 
-            var endTime = Timestamp.Now + TimeSpan.FromSeconds(10);
+            var endTime = Timestamp.Now + RequestTimeout;
 
             #region Wait for a response... till timeout
 

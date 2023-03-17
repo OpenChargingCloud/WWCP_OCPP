@@ -52,15 +52,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             chargingStation1  = new TestChargingStation(
                                     ChargeBoxId:              ChargeBox_Id.Parse("GD001"),
-                                    Vendor:                   "GraphDefined OEM #1",
+                                    VendorName:               "GraphDefined OEM #1",
                                     Model:                    "VCP.1",
                                     NumberOfConnectors:       2,
 
                                     Description:              I18NString.Create(Languages.en, "Our first virtual charging station!"),
                                     SerialNumber:             "SN-CS0001",
                                     FirmwareVersion:          "v0.1",
-                                    Iccid:                    "0000",
-                                    IMSI:                     "1111",
+                                    Modem:                    new Modem(
+                                                                  ICCID:   "0000",
+                                                                  IMSI:    "1111"
+                                                              ),
                                     MeterType:                "Virtual Energy Meter",
                                     MeterSerialNumber:        "SN-EN0001",
                                     MeterPublicKey:           "0xcafebabe",
@@ -74,15 +76,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             chargingStation2  = new TestChargingStation(
                                     ChargeBoxId:              ChargeBox_Id.Parse("CP002"),
-                                    Vendor:                   "GraphDefined OEM #2",
+                                    VendorName:               "GraphDefined OEM #2",
                                     Model:                    "VCP.2",
                                     NumberOfConnectors:       2,
 
                                     Description:              I18NString.Create(Languages.en, "Our 2nd virtual charging station!"),
                                     SerialNumber:             "SN-CS0002",
                                     FirmwareVersion:          "v0.2",
-                                    Iccid:                    "3333",
-                                    IMSI:                     "4444",
+                                    Modem:                    new Modem(
+                                                                  ICCID:   "3333",
+                                                                  IMSI:    "4444"
+                                                              ),
                                     MeterType:                "Virtual Energy Meter",
                                     MeterSerialNumber:        "SN-EN0002",
                                     MeterPublicKey:           "0xbabecafe",
@@ -94,15 +98,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             chargingStation3  = new TestChargingStation(
                                     ChargeBoxId:              ChargeBox_Id.Parse("CP003"),
-                                    Vendor:                   "GraphDefined OEM #3",
+                                    VendorName:               "GraphDefined OEM #3",
                                     Model:                    "VCP.3",
                                     NumberOfConnectors:       4,
 
                                     Description:              I18NString.Create(Languages.en, "Our 3rd virtual charging station!"),
                                     SerialNumber:             "SN-CS0003",
                                     FirmwareVersion:          "v0.3",
-                                    Iccid:                    "5555",
-                                    IMSI:                     "6666",
+                                    Modem:                    new Modem(
+                                                                  ICCID:   "5555",
+                                                                  IMSI:    "6666"
+                                                              ),
                                     MeterType:                "Virtual Energy Meter",
                                     MeterSerialNumber:        "SN-EN0003",
                                     MeterPublicKey:           "0xbacafebe",

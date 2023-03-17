@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region Modem              [optional]
 
-                if (JSON.ParseOptionalJSON("Modem",
+                if (JSON.ParseOptionalJSON("modem",
                                            "wireless communication module",
                                            OCPPv2_0.Modem.TryParse,
                                            out Modem? Modem,
@@ -308,17 +308,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer        = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                           new JProperty("model",                  Model),
-                           new JProperty("vendorName",             VendorName),
+                                 new JProperty("model",            Model),
+                                 new JProperty("vendorName",       VendorName),
 
                            SerialNumber    is not null
                                ? new JProperty("serialNumber",     SerialNumber)
                                : null,
 
                            Modem           is not null
-                               ? new JProperty("serialNumber",     Modem.     ToJSON(CustomModemSerializer,
+                               ? new JProperty("modem",            Modem.     ToJSON(CustomModemSerializer,
                                                                                      CustomCustomDataSerializer))
                                : null,
 
@@ -333,8 +333,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        );
 
             return CustomChargingStationSerializer is not null
-                       ? CustomChargingStationSerializer(this, JSON)
-                       : JSON;
+                       ? CustomChargingStationSerializer(this, json)
+                       : json;
 
         }
 

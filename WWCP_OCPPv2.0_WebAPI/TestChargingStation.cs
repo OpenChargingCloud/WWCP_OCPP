@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// The charging station vendor identification.
         /// </summary>
         [Mandatory]
-        public String                   Vendor           { get; }
+        public String                   VendorName           { get; }
 
         /// <summary>
         ///  The charging station model identification.
@@ -225,16 +225,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public String?                  FirmwareVersion             { get; }
 
         /// <summary>
-        /// The optional ICCID of the charging station's SIM card.
+        /// The modem of the charging station.
         /// </summary>
         [Optional]
-        public String?                  Iccid                       { get; }
-
-        /// <summary>
-        /// The optional IMSI of the charging station’s SIM card.
-        /// </summary>
-        [Optional]
-        public String?                  IMSI                        { get; }
+        public Modem?                   Modem                       { get; }
 
         /// <summary>
         /// The optional meter type of the main power meter of the charging station.
@@ -631,7 +625,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="NumberOfConnectors">Number of available connectors.</param>
-        /// <param name="Vendor">The charging station vendor identification.</param>
+        /// <param name="VendorName">The charging station vendor identification.</param>
         /// <param name="Model">The charging station model identification.</param>
         /// 
         /// <param name="Description">An optional multi-language charge box description.</param>
@@ -648,14 +642,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
         public TestChargingStation(ChargeBox_Id            ChargeBoxId,
                                    Byte                    NumberOfConnectors,
-                                   String                  Vendor,
+                                   String                  VendorName,
                                    String                  Model,
 
                                    I18NString?             Description               = null,
                                    String?                 SerialNumber              = null,
                                    String?                 FirmwareVersion           = null,
-                                   String?                 Iccid                     = null,
-                                   String?                 IMSI                      = null,
+                                   Modem?                  Modem                     = null,
                                    String?                 MeterType                 = null,
                                    String?                 MeterSerialNumber         = null,
                                    String?                 MeterPublicKey            = null,
@@ -675,8 +668,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             if (ChargeBoxId.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(ChargeBoxId),        "The given charge box identification must not be null or empty!");
 
-            if (Vendor.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Vendor),  "The given charging station vendor must not be null or empty!");
+            if (VendorName.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(VendorName),  "The given charging station vendor must not be null or empty!");
 
             if (Model.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Model),   "The given charging station model must not be null or empty!");
@@ -700,13 +693,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             //};
             this.EnquedRequests           = new List<EnquedRequest>();
 
-            this.Vendor                   = Vendor;
+            this.VendorName               = VendorName;
             this.Model                    = Model;
             this.Description              = Description;
             this.SerialNumber             = SerialNumber;
             this.FirmwareVersion          = FirmwareVersion;
-            this.Iccid                    = Iccid;
-            this.IMSI                     = IMSI;
+            this.Modem                    = Modem;
             this.MeterType                = MeterType;
             this.MeterSerialNumber        = MeterSerialNumber;
             this.MeterPublicKey           = MeterPublicKey;
@@ -2023,16 +2015,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ChargeBoxId,
                                  new ChargingStation(
                                      Model,
-                                     Vendor,
+                                     VendorName,
                                      SerialNumber,
-                                     new Modem(
-                                         Iccid,
-                                         IMSI,
-                                         new CustomData(
-                                             Vendor_Id.Parse("GraphDefined"),
-                                             new JObject()
-                                         )
-                                     ),
+                                     Modem,
                                      FirmwareVersion,
                                      new CustomData(
                                          Vendor_Id.Parse("GraphDefined"),
@@ -2080,7 +2065,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 {
 
                     case RegistrationStatus.Accepted:
-                        this.CSMSTime      = response.CurrentTime;
+                        this.CSMSTime               = response.CurrentTime;
                         this.SendHeartbeatEvery     = response.Interval >= TimeSpan.FromSeconds(5) ? response.Interval : TimeSpan.FromSeconds(5);
                         this.SendHeartbeatTimer.Change(this.SendHeartbeatEvery, this.SendHeartbeatEvery);
                         this.DisableSendHeartbeats  = false;
@@ -2098,7 +2083,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             }
 
             response ??= new CSMS.BootNotificationResponse(request,
-                                                         Result.Server("Response is null!"));
+                                                           Result.Server("Response is null!"));
 
 
             #region Send OnBootNotificationResponse event

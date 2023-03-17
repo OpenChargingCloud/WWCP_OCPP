@@ -151,6 +151,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 CustomData = default;
 
+                if (!JSON.HasValues) {
+                    CustomData     = null;
+                    ErrorResponse  = null;
+                    return true;
+                }
+
                 #region VendorId
 
                 if (!JSON.ParseMandatory("vendorId",
@@ -195,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public JObject ToJSON(CustomJObjectSerializerDelegate<CustomData>? CustomCustomDataSerializer = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
                            new JProperty("vendorId", VendorId.ToString())
                        );
 
@@ -203,14 +209,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             {
                 try
                 {
-                    JSON.Add(jtoken);
+                    json.Add(jtoken);
                 }
                 catch { }
             }
 
             return CustomCustomDataSerializer is not null
-                       ? CustomCustomDataSerializer(this, this)
-                       : this;
+                       ? CustomCustomDataSerializer(this, json)
+                       : json;
 
         }
 

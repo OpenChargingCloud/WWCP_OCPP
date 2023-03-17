@@ -114,13 +114,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
         #endregion
 
-        #region ChargePoint_SendSendHeartbeats_Test()
+        #region ChargePoint_SendHeartbeats_Test()
 
         /// <summary>
         /// A test for sending heartbeats to the central system.
         /// </summary>
         [Test]
-        public async Task ChargePoint_SendSendHeartbeats_Test()
+        public async Task ChargePoint_SendHeartbeats_Test()
         {
 
             Assert.IsNotNull(testCentralSystem01);

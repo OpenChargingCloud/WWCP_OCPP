@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            IMSI is not null
                                ? new JProperty("iccid",       ICCID)
@@ -258,8 +258,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        );
 
             return CustomModemSerializer is not null
-                       ? CustomModemSerializer(this, JSON)
-                       : JSON;
+                       ? CustomModemSerializer(this, json)
+                       : json;
 
         }
 
