@@ -31,16 +31,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     {
 
         /// <summary>
-        /// Indicates whether this OCPP web socket error code. is null or empty.
+        /// Indicates whether this OCPP WebSocket error code. is null or empty.
         /// </summary>
-        /// <param name="errorCode">An OCPP web socket error code.</param>
+        /// <param name="errorCode">An OCPP WebSocket error code.</param>
         public static Boolean IsNullOrEmpty(this ResultCodes? errorCode)
             => !errorCode.HasValue || errorCode.Value.IsNullOrEmpty;
 
         /// <summary>
-        /// Indicates whether this OCPP web socket error code. is null or empty.
+        /// Indicates whether this OCPP WebSocket error code. is null or empty.
         /// </summary>
-        /// <param name="errorCode">An OCPP web socket error code.</param>
+        /// <param name="errorCode">An OCPP WebSocket error code.</param>
         public static Boolean IsNotNullOrEmpty(this ResultCodes? errorCode)
             => errorCode.HasValue && errorCode.Value.IsNotNullOrEmpty;
 
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// An OCPP web socket error code.
+    /// An OCPP WebSocket error code.
     /// </summary>
     public readonly struct ResultCodes : IId,
                                          IEquatable<ResultCodes>,
@@ -103,16 +103,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as an OCPP web socket error code.
+        /// Parse the given string as an OCPP WebSocket error code.
         /// </summary>
-        /// <param name="Text">A text representation of an OCPP web socket error code.</param>
+        /// <param name="Text">A text representation of an OCPP WebSocket error code.</param>
         public static ResultCodes Parse(String Text)
         {
 
             if (TryParse(Text, out var errorCode))
                 return errorCode;
 
-            throw new ArgumentException("Invalid text representation of an OCPP web socket error code: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of an OCPP WebSocket error code: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -122,9 +122,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given text as an OCPP web socket error code.
+        /// Try to parse the given text as an OCPP WebSocket error code.
         /// </summary>
-        /// <param name="Text">A text representation of an OCPP web socket error code.</param>
+        /// <param name="Text">A text representation of an OCPP WebSocket error code.</param>
         public static ResultCodes? TryParse(String Text)
         {
 
@@ -140,10 +140,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region (static) TryParse(Text, out errorCode)
 
         /// <summary>
-        /// Try to parse the given text as an OCPP web socket error code.
+        /// Try to parse the given text as an OCPP WebSocket error code.
         /// </summary>
-        /// <param name="Text">A text representation of an OCPP web socket error code.</param>
-        /// <param name="errorCode">The parsed OCPP web socket error code.</param>
+        /// <param name="Text">A text representation of an OCPP WebSocket error code.</param>
+        /// <param name="errorCode">The parsed OCPP WebSocket error code.</param>
         public static Boolean TryParse(String Text, out ResultCodes errorCode)
         {
 
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Clone
 
         /// <summary>
-        /// Clone this OCPP web socket error code.
+        /// Clone this OCPP WebSocket error code.
         /// </summary>
         public ResultCodes Clone
 
@@ -245,8 +245,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ErrorCode1">An OCPP web socket error code.</param>
-        /// <param name="ErrorCode2">Another OCPP web socket error code.</param>
+        /// <param name="ErrorCode1">An OCPP WebSocket error code.</param>
+        /// <param name="ErrorCode2">Another OCPP WebSocket error code.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (ResultCodes ErrorCode1,
                                            ResultCodes ErrorCode2)
@@ -260,8 +260,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ErrorCode1">An OCPP web socket error code.</param>
-        /// <param name="ErrorCode2">Another OCPP web socket error code.</param>
+        /// <param name="ErrorCode1">An OCPP WebSocket error code.</param>
+        /// <param name="ErrorCode2">Another OCPP WebSocket error code.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (ResultCodes ErrorCode1,
                                            ResultCodes ErrorCode2)
@@ -275,8 +275,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ErrorCode1">An OCPP web socket error code.</param>
-        /// <param name="ErrorCode2">Another OCPP web socket error code.</param>
+        /// <param name="ErrorCode1">An OCPP WebSocket error code.</param>
+        /// <param name="ErrorCode2">Another OCPP WebSocket error code.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (ResultCodes ErrorCode1,
                                           ResultCodes ErrorCode2)
@@ -290,8 +290,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ErrorCode1">An OCPP web socket error code.</param>
-        /// <param name="ErrorCode2">Another OCPP web socket error code.</param>
+        /// <param name="ErrorCode1">An OCPP WebSocket error code.</param>
+        /// <param name="ErrorCode2">Another OCPP WebSocket error code.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (ResultCodes ErrorCode1,
                                            ResultCodes ErrorCode2)
@@ -305,8 +305,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ErrorCode1">An OCPP web socket error code.</param>
-        /// <param name="ErrorCode2">Another OCPP web socket error code.</param>
+        /// <param name="ErrorCode1">An OCPP WebSocket error code.</param>
+        /// <param name="ErrorCode2">Another OCPP WebSocket error code.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (ResultCodes ErrorCode1,
                                           ResultCodes ErrorCode2)
@@ -320,8 +320,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ErrorCode1">An OCPP web socket error code.</param>
-        /// <param name="ErrorCode2">Another OCPP web socket error code.</param>
+        /// <param name="ErrorCode1">An OCPP WebSocket error code.</param>
+        /// <param name="ErrorCode2">Another OCPP WebSocket error code.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (ResultCodes ErrorCode1,
                                            ResultCodes ErrorCode2)
@@ -337,9 +337,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two OCPP web socket error codes.
+        /// Compares two OCPP WebSocket error codes.
         /// </summary>
-        /// <param name="Object">An OCPP web socket error code to compare with.</param>
+        /// <param name="Object">An OCPP WebSocket error code to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is ResultCodes errorCode
@@ -352,9 +352,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region CompareTo(errorCode)
 
         /// <summary>
-        /// Compares two OCPP web socket error codes.
+        /// Compares two OCPP WebSocket error codes.
         /// </summary>
-        /// <param name="errorCode">An OCPP web socket error code to compare with.</param>
+        /// <param name="errorCode">An OCPP WebSocket error code to compare with.</param>
         public Int32 CompareTo(ResultCodes errorCode)
 
             => String.Compare(InternalId,
@@ -370,9 +370,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two OCPP web socket error codes for equality.
+        /// Compares two OCPP WebSocket error codes for equality.
         /// </summary>
-        /// <param name="Object">An OCPP web socket error code to compare with.</param>
+        /// <param name="Object">An OCPP WebSocket error code to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is ResultCodes errorCode &&
@@ -383,9 +383,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region Equals(errorCode)
 
         /// <summary>
-        /// Compares two OCPP web socket error codes for equality.
+        /// Compares two OCPP WebSocket error codes for equality.
         /// </summary>
-        /// <param name="errorCode">An OCPP web socket error code to compare with.</param>
+        /// <param name="errorCode">An OCPP WebSocket error code to compare with.</param>
         public Boolean Equals(ResultCodes errorCode)
 
             => String.Equals(InternalId,

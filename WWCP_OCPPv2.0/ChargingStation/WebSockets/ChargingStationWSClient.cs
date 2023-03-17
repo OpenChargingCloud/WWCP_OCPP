@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
 
     /// <summary>
-    /// The charging station HTTP web socket client runs on a charging station
+    /// The charging station HTTP WebSocket client runs on a charging station
     /// and connects to a CSMS to invoke methods.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
@@ -161,22 +161,70 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the CSMS.
         /// </summary>
-        public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+        public event OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?             OnBootNotificationWSRequest;
+        public event ClientRequestLogHandler?               OnBootNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
-        public event ClientResponseLogHandler?            OnBootNotificationWSResponse;
+        public event ClientResponseLogHandler?              OnBootNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
-        public event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+        public event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
+
+        #endregion
+
+        #region OnFirmwareStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a firmware status notification request will be sent to the CSMS.
+        /// </summary>
+        public event OnFirmwareStatusNotificationRequestDelegate?     OnFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a firmware status notification request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                         OnFirmwareStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a firmware status notification request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                        OnFirmwareStatusNotificationWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a firmware status notification request was received.
+        /// </summary>
+        public event OnFirmwareStatusNotificationResponseDelegate?    OnFirmwareStatusNotificationResponse;
+
+        #endregion
+
+        #region OnPublishFirmwareStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a publish firmware status notification request will be sent to the CSMS.
+        /// </summary>
+        public event OnPublishFirmwareStatusNotificationRequestDelegate?     OnPublishFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a publish firmware status notification request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                                OnPublishFirmwareStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a publish firmware status notification request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                               OnPublishFirmwareStatusNotificationWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a publish firmware status notification request was received.
+        /// </summary>
+        public event OnPublishFirmwareStatusNotificationResponseDelegate?    OnPublishFirmwareStatusNotificationResponse;
 
         #endregion
 
@@ -185,22 +233,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// An event fired whenever a heartbeat request will be sent to the CSMS.
         /// </summary>
-        public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
+        public event OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
 
         /// <summary>
         /// An event fired whenever a heartbeat request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?      OnHeartbeatWSRequest;
+        public event ClientRequestLogHandler?        OnHeartbeatWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
-        public event ClientResponseLogHandler?     OnHeartbeatWSResponse;
+        public event ClientResponseLogHandler?       OnHeartbeatWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
-        public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
+        public event OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
 
         #endregion
 
@@ -326,29 +374,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region OnFirmwareStatusNotificationRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a firmware status notification request will be sent to the CSMS.
-        /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
-
-        /// <summary>
-        /// An event fired whenever a firmware status notification request will be sent to the CSMS.
-        /// </summary>
-        public event ClientRequestLogHandler?                       OnFirmwareStatusNotificationWSRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a firmware status notification request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?                      OnFirmwareStatusNotificationWSResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a firmware status notification request was received.
-        /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
-
-        #endregion
 
 
         #region OnLogStatusNotificationRequest/-Response
@@ -425,6 +450,34 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
 
 
+        public event OnNotifyEventRequestDelegate OnNotifyEventRequest;
+        public event OnNotifyEventResponseDelegate OnNotifyEventResponse;
+        public event OnNotifyReportRequestDelegate OnNotifyReportRequest;
+        public event OnNotifyReportResponseDelegate OnNotifyReportResponse;
+        public event OnNotifyMonitoringReportRequestDelegate OnNotifyMonitoringReportRequest;
+        public event OnNotifyMonitoringReportResponseDelegate OnNotifyMonitoringReportResponse;
+        public event OnGet15118EVCertificateRequestDelegate OnGet15118EVCertificateRequest;
+        public event OnGet15118EVCertificateResponseDelegate OnGet15118EVCertificateResponse;
+        public event OnGetCertificateStatusRequestDelegate OnGetCertificateStatusRequest;
+        public event OnGetCertificateStatusResponseDelegate OnGetCertificateStatusResponse;
+        public event OnReservationStatusUpdateRequestDelegate OnReservationStatusUpdateRequest;
+        public event OnReservationStatusUpdateResponseDelegate OnReservationStatusUpdateResponse;
+        public event OnNotifyEVChargingNeedsRequestDelegate OnNotifyEVChargingNeedsRequest;
+        public event OnNotifyEVChargingNeedsResponseDelegate OnNotifyEVChargingNeedsResponse;
+        public event OnNotifyChargingLimitRequestDelegate OnNotifyChargingLimitRequest;
+        public event OnNotifyChargingLimitResponseDelegate OnNotifyChargingLimitResponse;
+        public event OnClearedChargingLimitRequestDelegate OnClearedChargingLimitRequest;
+        public event OnClearedChargingLimitResponseDelegate OnClearedChargingLimitResponse;
+        public event OnReportChargingProfilesRequestDelegate OnReportChargingProfilesRequest;
+        public event OnReportChargingProfilesResponseDelegate OnReportChargingProfilesResponse;
+        public event OnNotifyDisplayMessagesRequestDelegate OnNotifyDisplayMessagesRequest;
+        public event OnNotifyDisplayMessagesResponseDelegate OnNotifyDisplayMessagesResponse;
+        public event OnNotifyCustomerInformationRequestDelegate OnNotifyCustomerInformationRequest;
+        public event OnNotifyCustomerInformationResponseDelegate OnNotifyCustomerInformationResponse;
+        // ---------------
+
+
+
 
         // Incoming messages (from CSMS)
 
@@ -456,6 +509,95 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         public event WSClientResponseLogHandler?    OnResetWSResponse;
 
         #endregion
+
+        #region OnUpdateFirmware
+
+        /// <summary>
+        /// An event sent whenever an update firmware websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?           OnUpdateFirmwareWSRequest;
+
+        /// <summary>
+        /// An event sent whenever an update firmware request was received.
+        /// </summary>
+        public event OnUpdateFirmwareRequestDelegate?     OnUpdateFirmwareRequest;
+
+        /// <summary>
+        /// An event sent whenever an update firmware request was received.
+        /// </summary>
+        public event OnUpdateFirmwareDelegate?            OnUpdateFirmware;
+
+        /// <summary>
+        /// An event sent whenever a response to an update firmware request was sent.
+        /// </summary>
+        public event OnUpdateFirmwareResponseDelegate?    OnUpdateFirmwareResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to an update firmware request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?          OnUpdateFirmwareWSResponse;
+
+        #endregion
+
+        #region OnPublishFirmware
+
+        /// <summary>
+        /// An event sent whenever a publish firmware websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?            OnPublishFirmwareWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a publish firmware request was received.
+        /// </summary>
+        public event OnPublishFirmwareRequestDelegate?     OnPublishFirmwareRequest;
+
+        /// <summary>
+        /// An event sent whenever a publish firmware request was received.
+        /// </summary>
+        public event OnPublishFirmwareDelegate?            OnPublishFirmware;
+
+        /// <summary>
+        /// An event sent whenever a response to a publish firmware request was sent.
+        /// </summary>
+        public event OnPublishFirmwareResponseDelegate?    OnPublishFirmwareResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a publish firmware request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?           OnPublishFirmwareWSResponse;
+
+        #endregion
+
+        #region OnUnpublishFirmware
+
+        /// <summary>
+        /// An event sent whenever an unpublish firmware websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?              OnUnpublishFirmwareWSRequest;
+
+        /// <summary>
+        /// An event sent whenever an unpublish firmware request was received.
+        /// </summary>
+        public event OnUnpublishFirmwareRequestDelegate?     OnUnpublishFirmwareRequest;
+
+        /// <summary>
+        /// An event sent whenever an unpublish firmware request was received.
+        /// </summary>
+        public event OnUnpublishFirmwareDelegate?            OnUnpublishFirmware;
+
+        /// <summary>
+        /// An event sent whenever a response to an unpublish firmware request was sent.
+        /// </summary>
+        public event OnUnpublishFirmwareResponseDelegate?    OnUnpublishFirmwareResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to an unpublish firmware request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?             OnUnpublishFirmwareWSResponse;
+
+        #endregion
+
+
 
         #region OnChangeAvailability
 
@@ -544,34 +686,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region OnUpdateFirmware
-
-        /// <summary>
-        /// An event sent whenever a reset websocket request was received.
-        /// </summary>
-        public event WSClientRequestLogHandler?           OnUpdateFirmwareWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnUpdateFirmwareRequestDelegate?     OnUpdateFirmwareRequest;
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnUpdateFirmwareDelegate?            OnUpdateFirmware;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnUpdateFirmwareResponseDelegate?    OnUpdateFirmwareResponse;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a reset request was sent.
-        /// </summary>
-        public event WSClientResponseLogHandler?          OnUpdateFirmwareWSResponse;
-
-        #endregion
 
 
         #region OnReserveNow
@@ -837,32 +951,105 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #endregion
 
 
-        public event OnPublishFirmwareStatusNotificationRequestDelegate OnPublishFirmwareStatusNotificationRequest;
-        public event OnPublishFirmwareStatusNotificationResponseDelegate OnPublishFirmwareStatusNotificationResponse;
-        public event OnNotifyEventRequestDelegate OnNotifyEventRequest;
-        public event OnNotifyEventResponseDelegate OnNotifyEventResponse;
-        public event OnNotifyReportRequestDelegate OnNotifyReportRequest;
-        public event OnNotifyReportResponseDelegate OnNotifyReportResponse;
-        public event OnNotifyMonitoringReportRequestDelegate OnNotifyMonitoringReportRequest;
-        public event OnNotifyMonitoringReportResponseDelegate OnNotifyMonitoringReportResponse;
-        public event OnGet15118EVCertificateRequestDelegate OnGet15118EVCertificateRequest;
-        public event OnGet15118EVCertificateResponseDelegate OnGet15118EVCertificateResponse;
-        public event OnGetCertificateStatusRequestDelegate OnGetCertificateStatusRequest;
-        public event OnGetCertificateStatusResponseDelegate OnGetCertificateStatusResponse;
-        public event OnReservationStatusUpdateRequestDelegate OnReservationStatusUpdateRequest;
-        public event OnReservationStatusUpdateResponseDelegate OnReservationStatusUpdateResponse;
-        public event OnNotifyEVChargingNeedsRequestDelegate OnNotifyEVChargingNeedsRequest;
-        public event OnNotifyEVChargingNeedsResponseDelegate OnNotifyEVChargingNeedsResponse;
-        public event OnNotifyChargingLimitRequestDelegate OnNotifyChargingLimitRequest;
-        public event OnNotifyChargingLimitResponseDelegate OnNotifyChargingLimitResponse;
-        public event OnClearedChargingLimitRequestDelegate OnClearedChargingLimitRequest;
-        public event OnClearedChargingLimitResponseDelegate OnClearedChargingLimitResponse;
-        public event OnReportChargingProfilesRequestDelegate OnReportChargingProfilesRequest;
-        public event OnReportChargingProfilesResponseDelegate OnReportChargingProfilesResponse;
-        public event OnNotifyDisplayMessagesRequestDelegate OnNotifyDisplayMessagesRequest;
-        public event OnNotifyDisplayMessagesResponseDelegate OnNotifyDisplayMessagesResponse;
-        public event OnNotifyCustomerInformationRequestDelegate OnNotifyCustomerInformationRequest;
-        public event OnNotifyCustomerInformationResponseDelegate OnNotifyCustomerInformationResponse;
+
+        public event OnGetBaseReportRequestDelegate OnGetBaseReportRequest;
+        public event OnGetBaseReportDelegate OnGetBaseReport;
+        public event OnGetBaseReportResponseDelegate OnGetBaseReportResponse;
+        public event OnGetReportRequestDelegate OnGetReportRequest;
+        public event OnGetReportDelegate OnGetReport;
+        public event OnGetReportResponseDelegate OnGetReportResponse;
+        public event OnGetLogRequestDelegate OnGetLogRequest;
+        public event OnGetLogDelegate OnGetLog;
+        public event OnGetLogResponseDelegate OnGetLogResponse;
+        public event OnSetVariablesRequestDelegate OnSetVariablesRequest;
+        public event OnSetVariablesDelegate OnSetVariables;
+        public event OnSetVariablesResponseDelegate OnSetVariablesResponse;
+        public event OnGetVariablesRequestDelegate OnGetVariablesRequest;
+        public event OnGetVariablesDelegate OnGetVariables;
+        public event OnGetVariablesResponseDelegate OnGetVariablesResponse;
+        public event OnSetMonitoringBaseRequestDelegate OnSetMonitoringBaseRequest;
+        public event OnSetMonitoringBaseDelegate OnSetMonitoringBase;
+        public event OnSetMonitoringBaseResponseDelegate OnSetMonitoringBaseResponse;
+        public event OnGetMonitoringReportRequestDelegate OnGetMonitoringReportRequest;
+        public event OnGetMonitoringReportDelegate OnGetMonitoringReport;
+        public event OnGetMonitoringReportResponseDelegate OnGetMonitoringReportResponse;
+        public event OnSetMonitoringLevelRequestDelegate OnSetMonitoringLevelRequest;
+        public event OnSetMonitoringLevelDelegate OnSetMonitoringLevel;
+        public event OnSetMonitoringLevelResponseDelegate OnSetMonitoringLevelResponse;
+        public event OnSetVariableMonitoringRequestDelegate OnSetVariableMonitoringRequest;
+        public event OnSetVariableMonitoringDelegate OnSetVariableMonitoring;
+        public event OnSetVariableMonitoringResponseDelegate OnSetVariableMonitoringResponse;
+        public event OnClearVariableMonitoringRequestDelegate OnClearVariableMonitoringRequest;
+        public event OnClearVariableMonitoringDelegate OnClearVariableMonitoring;
+        public event OnClearVariableMonitoringResponseDelegate OnClearVariableMonitoringResponse;
+        public event OnSetNetworkProfileRequestDelegate OnSetNetworkProfileRequest;
+        public event OnSetNetworkProfileDelegate OnSetNetworkProfile;
+        public event OnSetNetworkProfileResponseDelegate OnSetNetworkProfileResponse;
+        public event OnCertificateSignedRequestDelegate OnCertificateSignedRequest;
+        public event OnCertificateSignedDelegate OnCertificateSigned;
+        public event OnCertificateSignedResponseDelegate OnCertificateSignedResponse;
+        public event OnInstallCertificateRequestDelegate OnInstallCertificateRequest;
+        public event OnInstallCertificateDelegate OnInstallCertificate;
+        public event OnInstallCertificateResponseDelegate OnInstallCertificateResponse;
+        public event OnGetInstalledCertificateIdsRequestDelegate OnGetInstalledCertificateIdsRequest;
+        public event OnGetInstalledCertificateIdsDelegate OnGetInstalledCertificateIds;
+        public event OnGetInstalledCertificateIdsResponseDelegate OnGetInstalledCertificateIdsResponse;
+        public event OnDeleteCertificateRequestDelegate OnDeleteCertificateRequest;
+        public event OnDeleteCertificateDelegate OnDeleteCertificate;
+        public event OnDeleteCertificateResponseDelegate OnDeleteCertificateResponse;
+        public event OnRequestStartTransactionRequestDelegate OnRequestStartTransactionRequest;
+        public event OnRequestStartTransactionDelegate OnRequestStartTransaction;
+        public event OnRequestStartTransactionResponseDelegate OnRequestStartTransactionResponse;
+        public event OnRequestStopTransactionRequestDelegate OnRequestStopTransactionRequest;
+        public event OnRequestStopTransactionDelegate OnRequestStopTransaction;
+        public event OnRequestStopTransactionResponseDelegate OnRequestStopTransactionResponse;
+        public event OnGetTransactionStatusRequestDelegate OnGetTransactionStatusRequest;
+        public event OnGetTransactionStatusDelegate OnGetTransactionStatus;
+        public event OnGetTransactionStatusResponseDelegate OnGetTransactionStatusResponse;
+        public event OnGetChargingProfilesRequestDelegate OnGetChargingProfilesRequest;
+        public event OnGetChargingProfilesDelegate OnGetChargingProfiles;
+        public event OnGetChargingProfilesResponseDelegate OnGetChargingProfilesResponse;
+        public event OnSetDisplayMessageRequestDelegate OnSetDisplayMessageRequest;
+        public event OnSetDisplayMessageDelegate OnSetDisplayMessage;
+        public event OnSetDisplayMessageResponseDelegate OnSetDisplayMessageResponse;
+        public event OnGetDisplayMessagesRequestDelegate OnGetDisplayMessagesRequest;
+        public event OnGetDisplayMessagesDelegate OnGetDisplayMessages;
+        public event OnGetDisplayMessagesResponseDelegate OnGetDisplayMessagesResponse;
+        public event OnClearDisplayMessageRequestDelegate OnClearDisplayMessageRequest;
+        public event OnClearDisplayMessageDelegate OnClearDisplayMessage;
+        public event OnClearDisplayMessageResponseDelegate OnClearDisplayMessageResponse;
+        public event OnCostUpdatedRequestDelegate OnCostUpdatedRequest;
+        public event OnCostUpdatedDelegate OnCostUpdated;
+        public event OnCostUpdatedResponseDelegate OnCostUpdatedResponse;
+        public event OnCustomerInformationRequestDelegate OnCustomerInformationRequest;
+        public event OnCustomerInformationDelegate OnCustomerInformation;
+        public event OnCustomerInformationResponseDelegate OnCustomerInformationResponse;
+
+
+        public event ClientRequestLogHandler OnNotifyEventWSRequest;
+        public event ClientResponseLogHandler OnNotifyEventWSResponse;
+        public event ClientRequestLogHandler OnNotifyReportWSRequest;
+        public event ClientResponseLogHandler OnNotifyReportWSResponse;
+        public event ClientRequestLogHandler OnNotifyMonitoringReportWSRequest;
+        public event ClientResponseLogHandler OnNotifyMonitoringReportWSResponse;
+        public event ClientRequestLogHandler OnGet15118EVCertificateWSRequest;
+        public event ClientResponseLogHandler OnGet15118EVCertificateWSResponse;
+        public event ClientRequestLogHandler OnGetCertificateStatusWSRequest;
+        public event ClientResponseLogHandler OnGetCertificateStatusWSResponse;
+        public event ClientRequestLogHandler OnReservationStatusUpdateWSRequest;
+        public event ClientResponseLogHandler OnReservationStatusUpdateWSResponse;
+        public event ClientRequestLogHandler OnNotifyEVChargingNeedsWSRequest;
+        public event ClientResponseLogHandler OnNotifyEVChargingNeedsWSResponse;
+        public event ClientRequestLogHandler OnNotifyChargingLimitWSRequest;
+        public event ClientResponseLogHandler OnNotifyChargingLimitWSResponse;
+        public event ClientRequestLogHandler OnClearedChargingLimitWSRequest;
+        public event ClientResponseLogHandler OnClearedChargingLimitWSResponse;
+        public event ClientRequestLogHandler OnReportChargingProfilesWSRequest;
+        public event ClientResponseLogHandler OnReportChargingProfilesWSResponse;
+        public event ClientRequestLogHandler OnNotifyDisplayMessagesWSRequest;
+        public event ClientResponseLogHandler OnNotifyDisplayMessagesWSResponse;
+        public event ClientRequestLogHandler OnNotifyCustomerInformationWSRequest;
+        public event ClientResponseLogHandler OnNotifyCustomerInformationWSResponse;
 
         #endregion
 
@@ -895,36 +1082,36 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
         public ChargingStationWSClient(ChargeBox_Id                          ChargeBoxIdentity,
-                                   String                                From,
-                                   String                                To,
+                                       String                                From,
+                                       String                                To,
 
-                                   URL                                   RemoteURL,
-                                   HTTPHostname?                         VirtualHostname              = null,
-                                   String?                               Description                  = null,
-                                   RemoteCertificateValidationCallback?  RemoteCertificateValidator   = null,
-                                   LocalCertificateSelectionCallback?    ClientCertificateSelector    = null,
-                                   X509Certificate?                      ClientCert                   = null,
-                                   String                                HTTPUserAgent                = DefaultHTTPUserAgent,
-                                   HTTPPath?                             URLPathPrefix                = null,
-                                   SslProtocols?                         TLSProtocol                  = null,
-                                   Boolean?                              PreferIPv4                   = null,
-                                   Tuple<String, String>?                HTTPBasicAuth                = null,
-                                   TimeSpan?                             RequestTimeout               = null,
-                                   TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
-                                   UInt16?                               MaxNumberOfRetries           = 3,
-                                   Boolean                               UseHTTPPipelining            = false,
+                                       URL                                   RemoteURL,
+                                       HTTPHostname?                         VirtualHostname              = null,
+                                       String?                               Description                  = null,
+                                       RemoteCertificateValidationCallback?  RemoteCertificateValidator   = null,
+                                       LocalCertificateSelectionCallback?    ClientCertificateSelector    = null,
+                                       X509Certificate?                      ClientCert                   = null,
+                                       String                                HTTPUserAgent                = DefaultHTTPUserAgent,
+                                       HTTPPath?                             URLPathPrefix                = null,
+                                       SslProtocols?                         TLSProtocol                  = null,
+                                       Boolean?                              PreferIPv4                   = null,
+                                       Tuple<String, String>?                HTTPBasicAuth                = null,
+                                       TimeSpan?                             RequestTimeout               = null,
+                                       TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
+                                       UInt16?                               MaxNumberOfRetries           = 3,
+                                       Boolean                               UseHTTPPipelining            = false,
 
-                                   Boolean                               DisableMaintenanceTasks      = false,
-                                   TimeSpan?                             MaintenanceEvery             = null,
-                                   Boolean                               DisableWebSocketPings        = false,
-                                   TimeSpan?                             WebSocketPingEvery           = null,
-                                   TimeSpan?                             SlowNetworkSimulationDelay   = null,
+                                       Boolean                               DisableMaintenanceTasks      = false,
+                                       TimeSpan?                             MaintenanceEvery             = null,
+                                       Boolean                               DisableWebSocketPings        = false,
+                                       TimeSpan?                             WebSocketPingEvery           = null,
+                                       TimeSpan?                             SlowNetworkSimulationDelay   = null,
 
-                                   String?                               LoggingPath                  = null,
-                                   String                                LoggingContext               = null, //CPClientLogger.DefaultContext,
-                                   LogfileCreatorDelegate?               LogfileCreator               = null,
-                                   HTTPClientLogger?                     HTTPLogger                   = null,
-                                   DNSClient?                            DNSClient                    = null)
+                                       String?                               LoggingPath                  = null,
+                                       String                                LoggingContext               = null, //CPClientLogger.DefaultContext,
+                                       LogfileCreatorDelegate?               LogfileCreator               = null,
+                                       HTTPClientLogger?                     HTTPLogger                   = null,
+                                       DNSClient?                            DNSClient                    = null)
 
             : base(RemoteURL,
                    VirtualHostname,
@@ -2971,7 +3158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                     else
                     {
 
-                        DebugX.Log("Invalid web socket connection!");
+                        DebugX.Log("Invalid WebSocket connection!");
 
                         //DebugX.Log("Will try to reconnect!");
                         //await Connect();

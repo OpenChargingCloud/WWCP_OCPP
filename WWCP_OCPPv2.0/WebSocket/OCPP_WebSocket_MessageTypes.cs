@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.WebSockets
 {
 
     /// <summary>
-    /// Extension methods for the OCPP web socket message types.
+    /// Extension methods for the OCPP WebSocket message types.
     /// </summary>
     public static class OCPP_WebSocket_MessageTypesExtensions
     {
@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.WebSockets
 
 
     /// <summary>
-    /// The OCPP web socket message types.
+    /// The OCPP WebSocket message types.
     /// </summary>
     public enum OCPP_WebSocket_MessageTypes : Byte
     {

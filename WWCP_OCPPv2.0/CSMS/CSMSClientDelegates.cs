@@ -304,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
     #endregion
 
-    #region GetMonitoringReport
+    #region OnGetMonitoringReport
 
     /// <summary>
     /// A delegate called whenever a get monitoring report request will be sent to a charging station.
@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     #region OnClearVariableMonitoring
 
     /// <summary>
-    /// A delegate called whenever a set variable monitoring request will be sent to a charging station.
+    /// A delegate called whenever a clear variable monitoring request will be sent to a charging station.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -401,7 +401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                                   ClearVariableMonitoringRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a set variable monitoring request was received.
+    /// A delegate called whenever a response to a clear variable monitoring request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -842,7 +842,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     #region OnGetTransactionStatus
 
     /// <summary>
-    /// A delegate called whenever a cancel reservation request will be sent to a charging station.
+    /// A delegate called whenever a get transaction status request will be sent to a charging station.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -852,7 +852,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                                GetTransactionStatusRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a cancel reservation request was received.
+    /// A delegate called whenever a response to a get transaction status request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>

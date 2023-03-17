@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.WebSockets
 {
 
     /// <summary>
-    /// An OCPP web socket error message.
+    /// An OCPP WebSocket error message.
     /// </summary>
     public class OCPP_WebSocket_ErrorMessage
     {
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.WebSockets
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new OCPP web socket response message.
+        /// Create a new OCPP WebSocket response message.
         /// </summary>
         /// <param name="RequestId">An unique request identification.</param>
         /// <param name="ErrorCode">An OCPP error code.</param>
@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.WebSockets
         /// Try to parse the given text representation of an error message.
         /// </summary>
         /// <param name="Text">The text to be parsed.</param>
-        /// <param name="ErrorMessage">The parsed OCPP web socket error message.</param>
+        /// <param name="ErrorMessage">The parsed OCPP WebSocket error message.</param>
         public static Boolean TryParse(String Text, out OCPP_WebSocket_ErrorMessage? ErrorMessage)
         {
 

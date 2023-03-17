@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 {
 
     /// <summary>
-    /// The delegate for the HTTP web socket request log.
+    /// The delegate for the HTTP WebSocket request log.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
     /// <param name="WebSocketServer">The sending WebSocket server.</param>
@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                     JArray           Request);
 
     /// <summary>
-    /// The delegate for the HTTP web socket response log.
+    /// The delegate for the HTTP WebSocket response log.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
     /// <param name="WebSocketServer">The sending WebSocket server.</param>
@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region OnBootNotification
 
         /// <summary>
-        /// An event sent whenever a boot notification web socket request was received.
+        /// An event sent whenever a boot notification WebSocket request was received.
         /// </summary>
         public event WebSocketRequestLogHandler?            OnBootNotificationWSRequest;
 
@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a web socket response to a boot notification was sent.
+        /// An event sent whenever a WebSocket response to a boot notification was sent.
         /// </summary>
         public event WebSocketResponseLogHandler?           OnBootNotificationWSResponse;
 
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region OnHeartbeat
 
         /// <summary>
-        /// An event sent whenever a heartbeat web socket request was received.
+        /// An event sent whenever a heartbeat WebSocket request was received.
         /// </summary>
         public event WebSocketRequestLogHandler?     OnHeartbeatWSRequest;
 
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public event OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
 
         /// <summary>
-        /// An event sent whenever a web socket response to a heartbeat was sent.
+        /// An event sent whenever a WebSocket response to a heartbeat was sent.
         /// </summary>
         public event WebSocketResponseLogHandler?    OnHeartbeatWSResponse;
 
@@ -263,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region OnAuthorize
 
         /// <summary>
-        /// An event sent whenever an authorize web socket request was received.
+        /// An event sent whenever an authorize WebSocket request was received.
         /// </summary>
         public event WebSocketRequestLogHandler?     OnAuthorizeWSRequest;
 
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public event OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
 
         /// <summary>
-        /// An event sent whenever an authorize web socket response was sent.
+        /// An event sent whenever an authorize WebSocket response was sent.
         /// </summary>
         public event WebSocketResponseLogHandler?    OnAuthorizeWSResponse;
 
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region OnTransactionEvent
 
         /// <summary>
-        /// An event sent whenever a transaction event web socket request was received.
+        /// An event sent whenever a transaction event WebSocket request was received.
         /// </summary>
         public event WebSocketRequestLogHandler?           OnTransactionEventWSRequest;
 
@@ -312,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public event OnTransactionEventResponseDelegate?   OnTransactionEventResponse;
 
         /// <summary>
-        /// An event sent whenever a transaction event web socket response was sent.
+        /// An event sent whenever a transaction event WebSocket response was sent.
         /// </summary>
         public event WebSocketResponseLogHandler?          OnTransactionEventWSResponse;
 
@@ -321,7 +321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region OnStatusNotification
 
         /// <summary>
-        /// An event sent whenever a status notification web socket request was received.
+        /// An event sent whenever a status notification WebSocket request was received.
         /// </summary>
         public event WebSocketRequestLogHandler?             OnStatusNotificationWSRequest;
 
@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public event OnStatusNotificationResponseDelegate?   OnStatusNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a web socket response to a status notification request was sent.
+        /// An event sent whenever a WebSocket response to a status notification request was sent.
         /// </summary>
         public event WebSocketResponseLogHandler?            OnStatusNotificationWSResponse;
 
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region OnMeterValues
 
         /// <summary>
-        /// An event sent whenever a meter values web socket request was received.
+        /// An event sent whenever a meter values WebSocket request was received.
         /// </summary>
         public event WebSocketRequestLogHandler?      OnMeterValuesWSRequest;
 
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public event OnMeterValuesResponseDelegate?   OnMeterValuesResponse;
 
         /// <summary>
-        /// An event sent whenever a web socket response to a meter values request was sent.
+        /// An event sent whenever a WebSocket response to a meter values request was sent.
         /// </summary>
         public event WebSocketResponseLogHandler?     OnMeterValuesWSResponse;
 
@@ -379,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region OnDataTransfer
 
         /// <summary>
-        /// An event sent whenever a data transfer web socket request was received.
+        /// An event sent whenever a data transfer WebSocket request was received.
         /// </summary>
         public event WebSocketRequestLogHandler?               OnIncomingDataTransferWSRequest;
 
@@ -399,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public event OnIncomingDataTransferResponseDelegate?   OnIncomingDataTransferResponse;
 
         /// <summary>
-        /// An event sent whenever a web socket response to a data transfer request was sent.
+        /// An event sent whenever a WebSocket response to a data transfer request was sent.
         /// </summary>
         public event WebSocketResponseLogHandler?              OnIncomingDataTransferWSResponse;
 
@@ -408,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region OnFirmwareStatusNotification
 
         /// <summary>
-        /// An event sent whenever a firmware status notification web socket request was received.
+        /// An event sent whenever a firmware status notification WebSocket request was received.
         /// </summary>
         public event WebSocketRequestLogHandler?                     OnFirmwareStatusNotificationWSRequest;
 
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public event OnFirmwareStatusNotificationResponseDelegate?   OnFirmwareStatusNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a web socket response to a firmware status notification request was sent.
+        /// An event sent whenever a WebSocket response to a firmware status notification request was sent.
         /// </summary>
         public event WebSocketResponseLogHandler?                    OnFirmwareStatusNotificationWSResponse;
 
@@ -438,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region OnLogStatusNotification
 
         /// <summary>
-        /// An event sent whenever a log status notification web socket request was received.
+        /// An event sent whenever a log status notification WebSocket request was received.
         /// </summary>
         public event WebSocketRequestLogHandler?                OnLogStatusNotificationWSRequest;
 
@@ -458,7 +458,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public event OnLogStatusNotificationResponseDelegate?   OnLogStatusNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a web socket response to a log status notification request was sent.
+        /// An event sent whenever a WebSocket response to a log status notification request was sent.
         /// </summary>
         public event WebSocketResponseLogHandler?               OnLogStatusNotificationWSResponse;
 
@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region OnSecurityEventNotification
 
         /// <summary>
-        /// An event sent whenever a security event notification web socket request was received.
+        /// An event sent whenever a security event notification WebSocket request was received.
         /// </summary>
         public event WebSocketRequestLogHandler?                    OnSecurityEventNotificationWSRequest;
 
@@ -487,7 +487,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public event OnSecurityEventNotificationResponseDelegate?   OnSecurityEventNotificationResponse;
 
         /// <summary>
-        /// An event sent whenever a web socket response to a security event notification request was sent.
+        /// An event sent whenever a WebSocket response to a security event notification request was sent.
         /// </summary>
         public event WebSocketResponseLogHandler?                   OnSecurityEventNotificationWSResponse;
 
@@ -496,7 +496,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region OnSignCertificate
 
         /// <summary>
-        /// An event sent whenever a sign certificate web socket request was received.
+        /// An event sent whenever a sign certificate WebSocket request was received.
         /// </summary>
         public event WebSocketRequestLogHandler?          OnSignCertificateWSRequest;
 
@@ -516,11 +516,53 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public event OnSignCertificateResponseDelegate?   OnSignCertificateResponse;
 
         /// <summary>
-        /// An event sent whenever a web socket response to a sign certificate request was sent.
+        /// An event sent whenever a WebSocket response to a sign certificate request was sent.
         /// </summary>
         public event WebSocketResponseLogHandler?         OnSignCertificateWSResponse;
 
         #endregion
+
+
+        public event OnPublishFirmwareStatusNotificationRequestDelegate OnPublishFirmwareStatusNotificationRequest;
+        public event OnPublishFirmwareStatusNotificationDelegate OnPublishFirmwareStatusNotification;
+        public event OnPublishFirmwareStatusNotificationResponseDelegate OnPublishFirmwareStatusNotificationResponse;
+        public event OnNotifyEventRequestDelegate OnNotifyEventRequest;
+        public event OnNotifyEventDelegate OnNotifyEvent;
+        public event OnNotifyEventResponseDelegate OnNotifyEventResponse;
+        public event OnNotifyReportRequestDelegate OnNotifyReportRequest;
+        public event OnNotifyReportDelegate OnNotifyReport;
+        public event OnNotifyReportResponseDelegate OnNotifyReportResponse;
+        public event OnNotifyMonitoringReportRequestDelegate OnNotifyMonitoringReportRequest;
+        public event OnNotifyMonitoringReportDelegate OnNotifyMonitoringReport;
+        public event OnNotifyMonitoringReportResponseDelegate OnNotifyMonitoringReportResponse;
+        public event OnGet15118EVCertificateRequestDelegate OnGet15118EVCertificateRequest;
+        public event OnGet15118EVCertificateDelegate OnGet15118EVCertificate;
+        public event OnGet15118EVCertificateResponseDelegate OnGet15118EVCertificateResponse;
+        public event OnGetCertificateStatusRequestDelegate OnGetCertificateStatusRequest;
+        public event OnGetCertificateStatusDelegate OnGetCertificateStatus;
+        public event OnGetCertificateStatusResponseDelegate OnGetCertificateStatusResponse;
+        public event OnReservationStatusUpdateRequestDelegate OnReservationStatusUpdateRequest;
+        public event OnReservationStatusUpdateDelegate OnReservationStatusUpdate;
+        public event OnReservationStatusUpdateResponseDelegate OnReservationStatusUpdateResponse;
+        public event OnNotifyEVChargingNeedsRequestDelegate OnNotifyEVChargingNeedsRequest;
+        public event OnNotifyEVChargingNeedsDelegate OnNotifyEVChargingNeeds;
+        public event OnNotifyEVChargingNeedsResponseDelegate OnNotifyEVChargingNeedsResponse;
+        public event OnNotifyChargingLimitRequestDelegate OnNotifyChargingLimitRequest;
+        public event OnNotifyChargingLimitDelegate OnNotifyChargingLimit;
+        public event OnNotifyChargingLimitResponseDelegate OnNotifyChargingLimitResponse;
+        public event OnClearedChargingLimitRequestDelegate OnClearedChargingLimitRequest;
+        public event OnClearedChargingLimitDelegate OnClearedChargingLimit;
+        public event OnClearedChargingLimitResponseDelegate OnClearedChargingLimitResponse;
+        public event OnReportChargingProfilesRequestDelegate OnReportChargingProfilesRequest;
+        public event OnReportChargingProfilesDelegate OnReportChargingProfiles;
+        public event OnReportChargingProfilesResponseDelegate OnReportChargingProfilesResponse;
+        public event OnNotifyDisplayMessagesRequestDelegate OnNotifyDisplayMessagesRequest;
+        public event OnNotifyDisplayMessagesDelegate OnNotifyDisplayMessages;
+        public event OnNotifyDisplayMessagesResponseDelegate OnNotifyDisplayMessagesResponse;
+        public event OnNotifyCustomerInformationRequestDelegate OnNotifyCustomerInformationRequest;
+        public event OnNotifyCustomerInformationDelegate OnNotifyCustomerInformation;
+        public event OnNotifyCustomerInformationResponseDelegate OnNotifyCustomerInformationResponse;
+
 
 
 
@@ -839,6 +881,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public event OnCustomerInformationRequestDelegate? OnCustomerInformationRequest;
         public event OnCustomerInformationResponseDelegate? OnCustomerInformationResponse;
 
+
+
+
         #endregion
 
         #region Custom JSON parser/serializer delegates
@@ -1053,7 +1098,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
             else if (!secWebSocketProtocols.Contains("ocpp1.6"))
             {
 
-                DebugX.Log("This web socket service only supports 'ocpp1.6'!");
+                DebugX.Log("This WebSocket service only supports 'ocpp1.6'!");
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {
@@ -1063,7 +1108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                            Content      = JSONObject.Create(
                                               new JProperty("description",
                                                   JSONObject.Create(
-                                                      new JProperty("en", "This web socket service only supports 'ocpp1.6'!")
+                                                      new JProperty("en", "This WebSocket service only supports 'ocpp1.6'!")
                                               ))).ToUTF8Bytes(),
                            Connection   = "close"
                        }.AsImmutable);
@@ -1124,7 +1169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                 ChargeBox_Id.TryParse(Connection.Request.Path.ToString().Substring(Connection.Request.Path.ToString().LastIndexOf("/") + 1), out var chargeBoxId))
             {
 
-                // Add the chargeBoxId to the web socket connection
+                // Add the chargeBoxId to the WebSocket connection
                 Connection.AddCustomData("chargeBoxId", chargeBoxId);
 
                 lock (connectedChargingBoxes)
@@ -1149,7 +1194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(nameof(CSMSWSServer) + " Closing old web socket connection failed: " + e.Message);
+                            DebugX.Log(nameof(CSMSWSServer) + " Closing old WebSocket connection failed: " + e.Message);
                         }
 
                     }
@@ -1208,10 +1253,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region (protected) ProcessTextMessages          (RequestTimestamp, Connection, OCPPTextMessage, EventTrackingId, CancellationToken)
 
         /// <summary>
-        /// Process all text messages of this web socket API.
+        /// Process all text messages of this WebSocket API.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
-        /// <param name="Connection">The web socket connection.</param>
+        /// <param name="Connection">The WebSocket connection.</param>
         /// <param name="OCPPTextMessage">The received OCPP message.</param>
         /// <param name="EventTrackingId">The event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
