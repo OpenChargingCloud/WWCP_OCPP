@@ -199,570 +199,257 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public event OnNewCSMSWSConnectionDelegate? OnNewCSMSWSConnection;
 
 
-        // CP -> CS
-
-        #region OnBootNotification
-
-        /// <summary>
-        /// An event sent whenever a boot notification WebSocket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?            OnBootNotificationWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a boot notification request was received.
-        /// </summary>
-        public event OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a boot notification was received.
-        /// </summary>
-        public event OnBootNotificationDelegate?            OnBootNotification;
-
-        /// <summary>
-        /// An event sent whenever a response to a boot notification was sent.
-        /// </summary>
-        public event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a boot notification was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?           OnBootNotificationWSResponse;
-
-        #endregion
-
-        #region OnHeartbeat
-
-        /// <summary>
-        /// An event sent whenever a heartbeat WebSocket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?     OnHeartbeatWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a heartbeat request was received.
-        /// </summary>
-        public event OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
-
-        /// <summary>
-        /// An event sent whenever a heartbeat was received.
-        /// </summary>
-        public event OnHeartbeatDelegate?            OnHeartbeat;
-
-        /// <summary>
-        /// An event sent whenever a response to a heartbeat was sent.
-        /// </summary>
-        public event OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a heartbeat was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?    OnHeartbeatWSResponse;
-
-        #endregion
-
-
-        #region OnAuthorize
-
-        /// <summary>
-        /// An event sent whenever an authorize WebSocket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?     OnAuthorizeWSRequest;
-
-        /// <summary>
-        /// An event sent whenever an authorize request was received.
-        /// </summary>
-        public event OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
-
-        /// <summary>
-        /// An event sent whenever an authorize request was received.
-        /// </summary>
-        public event OnAuthorizeDelegate?            OnAuthorize;
-
-        /// <summary>
-        /// An event sent whenever an authorize response was sent.
-        /// </summary>
-        public event OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
-
-        /// <summary>
-        /// An event sent whenever an authorize WebSocket response was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?    OnAuthorizeWSResponse;
-
-        #endregion
-
-        #region OnTransactionEvent
-
-        /// <summary>
-        /// An event sent whenever a transaction event WebSocket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?           OnTransactionEventWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a transaction event request was received.
-        /// </summary>
-        public event OnTransactionEventRequestDelegate?    OnTransactionEventRequest;
-
-        /// <summary>
-        /// An event sent whenever a transaction event request was received.
-        /// </summary>
-        public event OnTransactionEventDelegate?           OnTransactionEvent;
-
-        /// <summary>
-        /// An event sent whenever a transaction event response was sent.
-        /// </summary>
-        public event OnTransactionEventResponseDelegate?   OnTransactionEventResponse;
-
-        /// <summary>
-        /// An event sent whenever a transaction event WebSocket response was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?          OnTransactionEventWSResponse;
-
-        #endregion
-
-        #region OnStatusNotification
-
-        /// <summary>
-        /// An event sent whenever a status notification WebSocket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?             OnStatusNotificationWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a status notification request was received.
-        /// </summary>
-        public event OnStatusNotificationRequestDelegate?    OnStatusNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a status notification request was received.
-        /// </summary>
-        public event OnStatusNotificationDelegate?           OnStatusNotification;
-
-        /// <summary>
-        /// An event sent whenever a response to a status notification request was sent.
-        /// </summary>
-        public event OnStatusNotificationResponseDelegate?   OnStatusNotificationResponse;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a status notification request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?            OnStatusNotificationWSResponse;
-
-        #endregion
-
-        #region OnMeterValues
-
-        /// <summary>
-        /// An event sent whenever a meter values WebSocket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?      OnMeterValuesWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a meter values request was received.
-        /// </summary>
-        public event OnMeterValuesRequestDelegate?    OnMeterValuesRequest;
-
-        /// <summary>
-        /// An event sent whenever a meter values request was received.
-        /// </summary>
-        public event OnMeterValuesDelegate?           OnMeterValues;
-
-        /// <summary>
-        /// An event sent whenever a response to a meter values request was sent.
-        /// </summary>
-        public event OnMeterValuesResponseDelegate?   OnMeterValuesResponse;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a meter values request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?     OnMeterValuesWSResponse;
-
-        #endregion
-
-        #region OnDataTransfer
-
-        /// <summary>
-        /// An event sent whenever a data transfer WebSocket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?               OnIncomingDataTransferWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a data transfer request was received.
-        /// </summary>
-        public event OnIncomingDataTransferRequestDelegate?    OnIncomingDataTransferRequest;
-
-        /// <summary>
-        /// An event sent whenever a data transfer request was received.
-        /// </summary>
-        public event OnIncomingDataTransferDelegate?           OnIncomingDataTransfer;
-
-        /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
-        /// </summary>
-        public event OnIncomingDataTransferResponseDelegate?   OnIncomingDataTransferResponse;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a data transfer request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?              OnIncomingDataTransferWSResponse;
-
-        #endregion
-
-        #region OnFirmwareStatusNotification
-
-        /// <summary>
-        /// An event sent whenever a firmware status notification WebSocket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?                     OnFirmwareStatusNotificationWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a firmware status notification request was received.
-        /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?    OnFirmwareStatusNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a firmware status notification request was received.
-        /// </summary>
-        public event OnFirmwareStatusNotificationDelegate?           OnFirmwareStatusNotification;
-
-        /// <summary>
-        /// An event sent whenever a response to a firmware status notification request was sent.
-        /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?   OnFirmwareStatusNotificationResponse;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a firmware status notification request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?                    OnFirmwareStatusNotificationWSResponse;
-
-        #endregion
-
-
-        #region OnLogStatusNotification
-
-        /// <summary>
-        /// An event sent whenever a log status notification WebSocket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?                OnLogStatusNotificationWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a log status notification request was received.
-        /// </summary>
-        public event OnLogStatusNotificationRequestDelegate?    OnLogStatusNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a log status notification request was received.
-        /// </summary>
-        public event OnLogStatusNotificationDelegate?           OnLogStatusNotification;
-
-        /// <summary>
-        /// An event sent whenever a response to a log status notification request was sent.
-        /// </summary>
-        public event OnLogStatusNotificationResponseDelegate?   OnLogStatusNotificationResponse;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a log status notification request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?               OnLogStatusNotificationWSResponse;
-
-        #endregion
-
-        #region OnSecurityEventNotification
-
-        /// <summary>
-        /// An event sent whenever a security event notification WebSocket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?                    OnSecurityEventNotificationWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a security event notification request was received.
-        /// </summary>
-        public event OnSecurityEventNotificationRequestDelegate?    OnSecurityEventNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a security event notification request was received.
-        /// </summary>
-        public event OnSecurityEventNotificationDelegate?           OnSecurityEventNotification;
-
-        /// <summary>
-        /// An event sent whenever a response to a security event notification request was sent.
-        /// </summary>
-        public event OnSecurityEventNotificationResponseDelegate?   OnSecurityEventNotificationResponse;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a security event notification request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?                   OnSecurityEventNotificationWSResponse;
-
-        #endregion
-
-        #region OnSignCertificate
-
-        /// <summary>
-        /// An event sent whenever a sign certificate WebSocket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?          OnSignCertificateWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a sign certificate request was received.
-        /// </summary>
-        public event OnSignCertificateRequestDelegate?    OnSignCertificateRequest;
-
-        /// <summary>
-        /// An event sent whenever a sign certificate request was received.
-        /// </summary>
-        public event OnSignCertificateDelegate?           OnSignCertificate;
-
-        /// <summary>
-        /// An event sent whenever a response to a sign certificate request was sent.
-        /// </summary>
-        public event OnSignCertificateResponseDelegate?   OnSignCertificateResponse;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a sign certificate request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?         OnSignCertificateWSResponse;
-
-        #endregion
-
-
-        public event OnPublishFirmwareStatusNotificationRequestDelegate OnPublishFirmwareStatusNotificationRequest;
-        public event OnPublishFirmwareStatusNotificationDelegate OnPublishFirmwareStatusNotification;
-        public event OnPublishFirmwareStatusNotificationResponseDelegate OnPublishFirmwareStatusNotificationResponse;
-        public event OnNotifyEventRequestDelegate OnNotifyEventRequest;
-        public event OnNotifyEventDelegate OnNotifyEvent;
-        public event OnNotifyEventResponseDelegate OnNotifyEventResponse;
-        public event OnNotifyReportRequestDelegate OnNotifyReportRequest;
-        public event OnNotifyReportDelegate OnNotifyReport;
-        public event OnNotifyReportResponseDelegate OnNotifyReportResponse;
-        public event OnNotifyMonitoringReportRequestDelegate OnNotifyMonitoringReportRequest;
-        public event OnNotifyMonitoringReportDelegate OnNotifyMonitoringReport;
-        public event OnNotifyMonitoringReportResponseDelegate OnNotifyMonitoringReportResponse;
-        public event OnGet15118EVCertificateRequestDelegate OnGet15118EVCertificateRequest;
-        public event OnGet15118EVCertificateDelegate OnGet15118EVCertificate;
-        public event OnGet15118EVCertificateResponseDelegate OnGet15118EVCertificateResponse;
-        public event OnGetCertificateStatusRequestDelegate OnGetCertificateStatusRequest;
-        public event OnGetCertificateStatusDelegate OnGetCertificateStatus;
-        public event OnGetCertificateStatusResponseDelegate OnGetCertificateStatusResponse;
-        public event OnReservationStatusUpdateRequestDelegate OnReservationStatusUpdateRequest;
-        public event OnReservationStatusUpdateDelegate OnReservationStatusUpdate;
-        public event OnReservationStatusUpdateResponseDelegate OnReservationStatusUpdateResponse;
-        public event OnNotifyEVChargingNeedsRequestDelegate OnNotifyEVChargingNeedsRequest;
-        public event OnNotifyEVChargingNeedsDelegate OnNotifyEVChargingNeeds;
-        public event OnNotifyEVChargingNeedsResponseDelegate OnNotifyEVChargingNeedsResponse;
-        public event OnNotifyChargingLimitRequestDelegate OnNotifyChargingLimitRequest;
-        public event OnNotifyChargingLimitDelegate OnNotifyChargingLimit;
-        public event OnNotifyChargingLimitResponseDelegate OnNotifyChargingLimitResponse;
-        public event OnClearedChargingLimitRequestDelegate OnClearedChargingLimitRequest;
-        public event OnClearedChargingLimitDelegate OnClearedChargingLimit;
-        public event OnClearedChargingLimitResponseDelegate OnClearedChargingLimitResponse;
-        public event OnReportChargingProfilesRequestDelegate OnReportChargingProfilesRequest;
-        public event OnReportChargingProfilesDelegate OnReportChargingProfiles;
-        public event OnReportChargingProfilesResponseDelegate OnReportChargingProfilesResponse;
-        public event OnNotifyDisplayMessagesRequestDelegate OnNotifyDisplayMessagesRequest;
-        public event OnNotifyDisplayMessagesDelegate OnNotifyDisplayMessages;
-        public event OnNotifyDisplayMessagesResponseDelegate OnNotifyDisplayMessagesResponse;
-        public event OnNotifyCustomerInformationRequestDelegate OnNotifyCustomerInformationRequest;
-        public event OnNotifyCustomerInformationDelegate OnNotifyCustomerInformation;
-        public event OnNotifyCustomerInformationResponseDelegate OnNotifyCustomerInformationResponse;
-
-
-
-
-        // CS -> CP
+        #region CSMS -> Charging Station
 
         #region OnReset
 
         /// <summary>
-        /// An event sent whenever a reset request was sent.
+        /// An event sent whenever a Reset request was sent.
         /// </summary>
-        public event OnResetRequestDelegate?   OnResetRequest;
+        public event OnResetRequestDelegate?     OnResetRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event sent whenever a response to a Reset request was sent.
         /// </summary>
-        public event OnResetResponseDelegate?  OnResetResponse;
-
-        #endregion
-
-        #region OnChangeAvailability
-
-        /// <summary>
-        /// An event sent whenever a change availability request was sent.
-        /// </summary>
-        public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a change availability request was sent.
-        /// </summary>
-        public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
-
-        #endregion
-
-        #region OnDataTransfer
-
-        /// <summary>
-        /// An event sent whenever a data transfer request was sent.
-        /// </summary>
-        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
-        /// </summary>
-        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
-
-        #endregion
-
-        #region OnTriggerMessage
-
-        /// <summary>
-        /// An event sent whenever a trigger message request was sent.
-        /// </summary>
-        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a trigger message request was sent.
-        /// </summary>
-        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+        public event OnResetResponseDelegate?    OnResetResponse;
 
         #endregion
 
         #region OnUpdateFirmware
 
         /// <summary>
-        /// An event sent whenever an update firmware request was sent.
+        /// An event sent whenever an UpdateFirmware request was sent.
         /// </summary>
-        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+        public event OnUpdateFirmwareRequestDelegate?     OnUpdateFirmwareRequest;
 
         /// <summary>
-        /// An event sent whenever a response to an update firmware request was sent.
+        /// An event sent whenever a response to an UpdateFirmware request was sent.
         /// </summary>
-        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+        public event OnUpdateFirmwareResponseDelegate?    OnUpdateFirmwareResponse;
 
         #endregion
 
-
-        #region OnReserveNow
-
-        /// <summary>
-        /// An event sent whenever a reserve now request was sent.
-        /// </summary>
-        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
+        #region OnPublishFirmware
 
         /// <summary>
-        /// An event sent whenever a response to a reserve now request was sent.
+        /// An event sent whenever a PublishFirmware request was sent.
         /// </summary>
-        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
+        public event OnPublishFirmwareRequestDelegate?     OnPublishFirmwareRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a PublishFirmware request was sent.
+        /// </summary>
+        public event OnPublishFirmwareResponseDelegate?    OnPublishFirmwareResponse;
 
         #endregion
 
-        #region OnCancelReservation
+        #region OnUnpublishFirmware
 
         /// <summary>
-        /// An event sent whenever a cancel reservation request was sent.
+        /// An event sent whenever an UnpublishFirmware request was sent.
         /// </summary>
-        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+        public event OnUnpublishFirmwareRequestDelegate?     OnUnpublishFirmwareRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a cancel reservation request was sent.
+        /// An event sent whenever a response to an UnpublishFirmware request was sent.
         /// </summary>
-        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+        public event OnUnpublishFirmwareResponseDelegate?    OnUnpublishFirmwareResponse;
 
         #endregion
 
-        #region OnSetChargingProfile
+        #region OnGetBaseReport
 
         /// <summary>
-        /// An event sent whenever a set charging profile request was sent.
+        /// An event sent whenever a GetBaseReport request was sent.
         /// </summary>
-        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+        public event OnGetBaseReportRequestDelegate?     OnGetBaseReportRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a set charging profile request was sent.
+        /// An event sent whenever a response to a GetBaseReport request was sent.
         /// </summary>
-        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+        public event OnGetBaseReportResponseDelegate?    OnGetBaseReportResponse;
 
         #endregion
 
-        #region OnClearChargingProfile
+        #region OnGetReport
 
         /// <summary>
-        /// An event sent whenever a clear charging profile request was sent.
+        /// An event sent whenever a GetReport request was sent.
         /// </summary>
-        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+        public event OnGetReportRequestDelegate?     OnGetReportRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a clear charging profile request was sent.
+        /// An event sent whenever a response to a GetReport request was sent.
         /// </summary>
-        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+        public event OnGetReportResponseDelegate?    OnGetReportResponse;
 
         #endregion
 
-        #region OnGetCompositeSchedule
+        #region OnGetLog
 
         /// <summary>
-        /// An event sent whenever a get composite schedule request was sent.
+        /// An event sent whenever a GetLog request was sent.
         /// </summary>
-        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+        public event OnGetLogRequestDelegate?     OnGetLogRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a get composite schedule request was sent.
+        /// An event sent whenever a response to a GetLog request was sent.
         /// </summary>
-        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+        public event OnGetLogResponseDelegate?    OnGetLogResponse;
 
         #endregion
 
-        #region OnUnlockConnector
+        #region OnSetVariables
 
         /// <summary>
-        /// An event sent whenever an unlock connector request was sent.
+        /// An event sent whenever a SetVariables request was sent.
         /// </summary>
-        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+        public event OnSetVariablesRequestDelegate?     OnSetVariablesRequest;
 
         /// <summary>
-        /// An event sent whenever a response to an unlock connector request was sent.
+        /// An event sent whenever a response to a SetVariables request was sent.
         /// </summary>
-        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+        public event OnSetVariablesResponseDelegate?    OnSetVariablesResponse;
 
         #endregion
 
-
-        #region OnGetLocalListVersion
-
-        /// <summary>
-        /// An event sent whenever a get local list version request was sent.
-        /// </summary>
-        public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+        #region OnGetVariables
 
         /// <summary>
-        /// An event sent whenever a response to a get local list version request was sent.
+        /// An event sent whenever a GetVariables request was sent.
         /// </summary>
-        public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+        public event OnGetVariablesRequestDelegate?     OnGetVariablesRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetVariables request was sent.
+        /// </summary>
+        public event OnGetVariablesResponseDelegate?    OnGetVariablesResponse;
 
         #endregion
 
-        #region OnSendLocalList
+        #region OnSetMonitoringBase
 
         /// <summary>
-        /// An event sent whenever a send local list request was sent.
+        /// An event sent whenever a SetMonitoringBase request was sent.
         /// </summary>
-        public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+        public event OnSetMonitoringBaseRequestDelegate?     OnSetMonitoringBaseRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a send local list request was sent.
+        /// An event sent whenever a response to a SetMonitoringBase request was sent.
         /// </summary>
-        public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+        public event OnSetMonitoringBaseResponseDelegate?    OnSetMonitoringBaseResponse;
 
         #endregion
 
-        #region OnClearCache
+        #region OnGetMonitoringReport
 
         /// <summary>
-        /// An event sent whenever a clear cache request was sent.
+        /// An event sent whenever a GetMonitoringReport request was sent.
         /// </summary>
-        public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
+        public event OnGetMonitoringReportRequestDelegate?     OnGetMonitoringReportRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a clear cache request was sent.
+        /// An event sent whenever a response to a GetMonitoringReport request was sent.
         /// </summary>
-        public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
+        public event OnGetMonitoringReportResponseDelegate?    OnGetMonitoringReportResponse;
+
+        #endregion
+
+        #region OnSetMonitoringLevel
+
+        /// <summary>
+        /// An event sent whenever a SetMonitoringLevel request was sent.
+        /// </summary>
+        public event OnSetMonitoringLevelRequestDelegate?     OnSetMonitoringLevelRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SetMonitoringLevel request was sent.
+        /// </summary>
+        public event OnSetMonitoringLevelResponseDelegate?    OnSetMonitoringLevelResponse;
+
+        #endregion
+
+        #region OnSetVariableMonitoring
+
+        /// <summary>
+        /// An event sent whenever a SetVariableMonitoring request was sent.
+        /// </summary>
+        public event OnSetVariableMonitoringRequestDelegate?     OnSetVariableMonitoringRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SetVariableMonitoring request was sent.
+        /// </summary>
+        public event OnSetVariableMonitoringResponseDelegate?    OnSetVariableMonitoringResponse;
+
+        #endregion
+
+        #region OnClearVariableMonitoring
+
+        /// <summary>
+        /// An event sent whenever a ClearVariableMonitoring request was sent.
+        /// </summary>
+        public event OnClearVariableMonitoringRequestDelegate?     OnClearVariableMonitoringRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ClearVariableMonitoring request was sent.
+        /// </summary>
+        public event OnClearVariableMonitoringResponseDelegate?    OnClearVariableMonitoringResponse;
+
+        #endregion
+
+        #region OnSetNetworkProfile
+
+        /// <summary>
+        /// An event sent whenever a SetNetworkProfile request was sent.
+        /// </summary>
+        public event OnSetNetworkProfileRequestDelegate?     OnSetNetworkProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SetNetworkProfile request was sent.
+        /// </summary>
+        public event OnSetNetworkProfileResponseDelegate?    OnSetNetworkProfileResponse;
+
+        #endregion
+
+        #region OnChangeAvailability
+
+        /// <summary>
+        /// An event sent whenever a ChangeAvailability request was sent.
+        /// </summary>
+        public event OnChangeAvailabilityRequestDelegate?     OnChangeAvailabilityRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ChangeAvailability request was sent.
+        /// </summary>
+        public event OnChangeAvailabilityResponseDelegate?    OnChangeAvailabilityResponse;
+
+        #endregion
+
+        #region OnTriggerMessage
+
+        /// <summary>
+        /// An event sent whenever a TriggerMessage request was sent.
+        /// </summary>
+        public event OnTriggerMessageRequestDelegate?     OnTriggerMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a TriggerMessage request was sent.
+        /// </summary>
+        public event OnTriggerMessageResponseDelegate?    OnTriggerMessageResponse;
+
+        #endregion
+
+        #region OnDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a DataTransfer request was sent.
+        /// </summary>
+        public event OnDataTransferRequestDelegate?     OnDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a DataTransfer request was sent.
+        /// </summary>
+        public event OnDataTransferResponseDelegate?    OnDataTransferResponse;
 
         #endregion
 
@@ -770,119 +457,1018 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region OnCertificateSigned
 
         /// <summary>
-        /// An event sent whenever a certificate signed request was sent.
+        /// An event sent whenever a CertificateSigned request was sent.
         /// </summary>
-        public event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+        public event OnCertificateSignedRequestDelegate?     OnCertificateSignedRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a certificate signed request was sent.
+        /// An event sent whenever a response to a CertificateSigned request was sent.
         /// </summary>
-        public event OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
-
-        #endregion
-
-        #region OnDeleteCertificate
-
-        /// <summary>
-        /// An event sent whenever a delete certificate request was sent.
-        /// </summary>
-        public event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a delete certificate request was sent.
-        /// </summary>
-        public event OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
-
-        #endregion
-
-        #region OnGetInstalledCertificateIds
-
-        /// <summary>
-        /// An event sent whenever a get installed certificate ids request was sent.
-        /// </summary>
-        public event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a get installed certificate ids request was sent.
-        /// </summary>
-        public event OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
-
-        #endregion
-
-        #region OnGetLog
-
-        /// <summary>
-        /// An event sent whenever a get log request was sent.
-        /// </summary>
-        public event OnGetLogRequestDelegate?   OnGetLogRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a get log request was sent.
-        /// </summary>
-        public event OnGetLogResponseDelegate?  OnGetLogResponse;
+        public event OnCertificateSignedResponseDelegate?    OnCertificateSignedResponse;
 
         #endregion
 
         #region OnInstallCertificate
 
         /// <summary>
-        /// An event sent whenever an install certificate request was sent.
+        /// An event sent whenever an InstallCertificate request was sent.
         /// </summary>
-        public event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+        public event OnInstallCertificateRequestDelegate?     OnInstallCertificateRequest;
 
         /// <summary>
-        /// An event sent whenever a response to an install certificate request was sent.
+        /// An event sent whenever a response to an InstallCertificate request was sent.
         /// </summary>
-        public event OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+        public event OnInstallCertificateResponseDelegate?    OnInstallCertificateResponse;
+
+        #endregion
+
+        #region OnGetInstalledCertificateIds
+
+        /// <summary>
+        /// An event sent whenever a GetInstalledCertificateIds request was sent.
+        /// </summary>
+        public event OnGetInstalledCertificateIdsRequestDelegate?     OnGetInstalledCertificateIdsRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetInstalledCertificateIds request was sent.
+        /// </summary>
+        public event OnGetInstalledCertificateIdsResponseDelegate?    OnGetInstalledCertificateIdsResponse;
+
+        #endregion
+
+        #region OnDeleteCertificate
+
+        /// <summary>
+        /// An event sent whenever a DeleteCertificate request was sent.
+        /// </summary>
+        public event OnDeleteCertificateRequestDelegate?     OnDeleteCertificateRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a DeleteCertificate request was sent.
+        /// </summary>
+        public event OnDeleteCertificateResponseDelegate?    OnDeleteCertificateResponse;
 
         #endregion
 
 
-        public event OnPublishFirmwareRequestDelegate? OnPublishFirmwareRequest;
-        public event OnPublishFirmwareResponseDelegate? OnPublishFirmwareResponse;
-        public event OnUnpublishFirmwareRequestDelegate? OnUnpublishFirmwareRequest;
-        public event OnUnpublishFirmwareResponseDelegate? OnUnpublishFirmwareResponse;
-        public event OnGetBaseReportRequestDelegate? OnGetBaseReportRequest;
-        public event OnGetBaseReportResponseDelegate? OnGetBaseReportResponse;
-        public event OnGetReportRequestDelegate? OnGetReportRequest;
-        public event OnGetReportResponseDelegate? OnGetReportResponse;
-        public event OnSetVariablesRequestDelegate? OnSetVariablesRequest;
-        public event OnSetVariablesResponseDelegate? OnSetVariablesResponse;
-        public event OnGetVariablesRequestDelegate? OnGetVariablesRequest;
-        public event OnGetVariablesResponseDelegate? OnGetVariablesResponse;
-        public event OnSetMonitoringBaseRequestDelegate? OnSetMonitoringBaseRequest;
-        public event OnSetMonitoringBaseResponseDelegate? OnSetMonitoringBaseResponse;
-        public event OnGetMonitoringReportRequestDelegate? OnGetMonitoringReportRequest;
-        public event OnGetMonitoringReportResponseDelegate? OnGetMonitoringReportResponse;
-        public event OnSetMonitoringLevelRequestDelegate? OnSetMonitoringLevelRequest;
-        public event OnSetMonitoringLevelResponseDelegate? OnSetMonitoringLevelResponse;
-        public event OnSetVariableMonitoringRequestDelegate? OnSetVariableMonitoringRequest;
-        public event OnSetVariableMonitoringResponseDelegate? OnSetVariableMonitoringResponse;
-        public event OnClearVariableMonitoringRequestDelegate? OnClearVariableMonitoringRequest;
-        public event OnClearVariableMonitoringResponseDelegate? OnClearVariableMonitoringResponse;
-        public event OnSetNetworkProfileRequestDelegate? OnSetNetworkProfileRequest;
-        public event OnSetNetworkProfileResponseDelegate? OnSetNetworkProfileResponse;
-        public event OnRequestStartTransactionRequestDelegate? OnRequestStartTransactionRequest;
-        public event OnRequestStartTransactionResponseDelegate? OnRequestStartTransactionResponse;
-        public event OnRequestStopTransactionRequestDelegate? OnRequestStopTransactionRequest;
-        public event OnRequestStopTransactionResponseDelegate? OnRequestStopTransactionResponse;
-        public event OnGetTransactionStatusRequestDelegate? OnGetTransactionStatusRequest;
-        public event OnGetTransactionStatusResponseDelegate? OnGetTransactionStatusResponse;
-        public event OnGetChargingProfilesRequestDelegate? OnGetChargingProfilesRequest;
-        public event OnGetChargingProfilesResponseDelegate? OnGetChargingProfilesResponse;
-        public event OnSetDisplayMessageRequestDelegate? OnSetDisplayMessageRequest;
-        public event OnSetDisplayMessageResponseDelegate? OnSetDisplayMessageResponse;
-        public event OnGetDisplayMessagesRequestDelegate? OnGetDisplayMessagesRequest;
-        public event OnGetDisplayMessagesResponseDelegate? OnGetDisplayMessagesResponse;
-        public event OnClearDisplayMessageRequestDelegate? OnClearDisplayMessageRequest;
-        public event OnClearDisplayMessageResponseDelegate? OnClearDisplayMessageResponse;
-        public event OnCostUpdatedRequestDelegate? OnCostUpdatedRequest;
-        public event OnCostUpdatedResponseDelegate? OnCostUpdatedResponse;
-        public event OnCustomerInformationRequestDelegate? OnCustomerInformationRequest;
-        public event OnCustomerInformationResponseDelegate? OnCustomerInformationResponse;
+        #region OnGetLocalListVersion
+
+        /// <summary>
+        /// An event sent whenever a GetLocalListVersion request was sent.
+        /// </summary>
+        public event OnGetLocalListVersionRequestDelegate?     OnGetLocalListVersionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetLocalListVersion request was sent.
+        /// </summary>
+        public event OnGetLocalListVersionResponseDelegate?    OnGetLocalListVersionResponse;
+
+        #endregion
+
+        #region OnSendLocalList
+
+        /// <summary>
+        /// An event sent whenever a SendLocalList request was sent.
+        /// </summary>
+        public event OnSendLocalListRequestDelegate?     OnSendLocalListRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SendLocalList request was sent.
+        /// </summary>
+        public event OnSendLocalListResponseDelegate?    OnSendLocalListResponse;
+
+        #endregion
+
+        #region OnClearCache
+
+        /// <summary>
+        /// An event sent whenever a ClearCache request was sent.
+        /// </summary>
+        public event OnClearCacheRequestDelegate?     OnClearCacheRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ClearCache request was sent.
+        /// </summary>
+        public event OnClearCacheResponseDelegate?    OnClearCacheResponse;
+
+        #endregion
 
 
+        #region OnReserveNow
 
+        /// <summary>
+        /// An event sent whenever a ReserveNow request was sent.
+        /// </summary>
+        public event OnReserveNowRequestDelegate?     OnReserveNowRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ReserveNow request was sent.
+        /// </summary>
+        public event OnReserveNowResponseDelegate?    OnReserveNowResponse;
+
+        #endregion
+
+        #region OnCancelReservation
+
+        /// <summary>
+        /// An event sent whenever a CancelReservation request was sent.
+        /// </summary>
+        public event OnCancelReservationRequestDelegate?     OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a CancelReservation request was sent.
+        /// </summary>
+        public event OnCancelReservationResponseDelegate?    OnCancelReservationResponse;
+
+        #endregion
+
+        #region OnRequestStartTransaction
+
+        /// <summary>
+        /// An event sent whenever a RequestStartTransaction request was sent.
+        /// </summary>
+        public event OnRequestStartTransactionRequestDelegate?     OnRequestStartTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a RequestStartTransaction request was sent.
+        /// </summary>
+        public event OnRequestStartTransactionResponseDelegate?    OnRequestStartTransactionResponse;
+
+        #endregion
+
+        #region OnRequestStopTransaction
+
+        /// <summary>
+        /// An event sent whenever a RequestStopTransaction request was sent.
+        /// </summary>
+        public event OnRequestStopTransactionRequestDelegate?     OnRequestStopTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a RequestStopTransaction request was sent.
+        /// </summary>
+        public event OnRequestStopTransactionResponseDelegate?    OnRequestStopTransactionResponse;
+
+        #endregion
+
+        #region OnGetTransactionStatus
+
+        /// <summary>
+        /// An event sent whenever a GetTransactionStatus request was sent.
+        /// </summary>
+        public event OnGetTransactionStatusRequestDelegate?     OnGetTransactionStatusRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetTransactionStatus request was sent.
+        /// </summary>
+        public event OnGetTransactionStatusResponseDelegate?    OnGetTransactionStatusResponse;
+
+        #endregion
+
+        #region OnSetChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a SetChargingProfile request was sent.
+        /// </summary>
+        public event OnSetChargingProfileRequestDelegate?     OnSetChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SetChargingProfile request was sent.
+        /// </summary>
+        public event OnSetChargingProfileResponseDelegate?    OnSetChargingProfileResponse;
+
+        #endregion
+
+        #region OnGetChargingProfiles
+
+        /// <summary>
+        /// An event sent whenever a GetChargingProfiles request was sent.
+        /// </summary>
+        public event OnGetChargingProfilesRequestDelegate?     OnGetChargingProfilesRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetChargingProfiles request was sent.
+        /// </summary>
+        public event OnGetChargingProfilesResponseDelegate?    OnGetChargingProfilesResponse;
+
+        #endregion
+
+        #region OnClearChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a ClearChargingProfile request was sent.
+        /// </summary>
+        public event OnClearChargingProfileRequestDelegate?     OnClearChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ClearChargingProfile request was sent.
+        /// </summary>
+        public event OnClearChargingProfileResponseDelegate?    OnClearChargingProfileResponse;
+
+        #endregion
+
+        #region OnGetCompositeSchedule
+
+        /// <summary>
+        /// An event sent whenever a GetCompositeSchedule request was sent.
+        /// </summary>
+        public event OnGetCompositeScheduleRequestDelegate?     OnGetCompositeScheduleRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetCompositeSchedule request was sent.
+        /// </summary>
+        public event OnGetCompositeScheduleResponseDelegate?    OnGetCompositeScheduleResponse;
+
+        #endregion
+
+        #region OnUnlockConnector
+
+        /// <summary>
+        /// An event sent whenever an UnlockConnector request was sent.
+        /// </summary>
+        public event OnUnlockConnectorRequestDelegate?     OnUnlockConnectorRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an UnlockConnector request was sent.
+        /// </summary>
+        public event OnUnlockConnectorResponseDelegate?    OnUnlockConnectorResponse;
+
+        #endregion
+
+
+        #region OnSetDisplayMessage
+
+        /// <summary>
+        /// An event sent whenever a SetDisplayMessage request was sent.
+        /// </summary>
+        public event OnSetDisplayMessageRequestDelegate?     OnSetDisplayMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SetDisplayMessage request was sent.
+        /// </summary>
+        public event OnSetDisplayMessageResponseDelegate?    OnSetDisplayMessageResponse;
+
+        #endregion
+
+        #region OnGetDisplayMessages
+
+        /// <summary>
+        /// An event sent whenever a GetDisplayMessages request was sent.
+        /// </summary>
+        public event OnGetDisplayMessagesRequestDelegate?     OnGetDisplayMessagesRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetDisplayMessages request was sent.
+        /// </summary>
+        public event OnGetDisplayMessagesResponseDelegate?    OnGetDisplayMessagesResponse;
+
+        #endregion
+
+        #region OnClearDisplayMessage
+
+        /// <summary>
+        /// An event sent whenever a ClearDisplayMessage request was sent.
+        /// </summary>
+        public event OnClearDisplayMessageRequestDelegate?     OnClearDisplayMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ClearDisplayMessage request was sent.
+        /// </summary>
+        public event OnClearDisplayMessageResponseDelegate?    OnClearDisplayMessageResponse;
+
+        #endregion
+
+        #region OnCostUpdated
+
+        /// <summary>
+        /// An event sent whenever a CostUpdated request was sent.
+        /// </summary>
+        public event OnCostUpdatedRequestDelegate?     OnCostUpdatedRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a CostUpdated request was sent.
+        /// </summary>
+        public event OnCostUpdatedResponseDelegate?    OnCostUpdatedResponse;
+
+        #endregion
+
+        #region OnCustomerInformation
+
+        /// <summary>
+        /// An event sent whenever a CustomerInformation request was sent.
+        /// </summary>
+        public event OnCustomerInformationRequestDelegate?     OnCustomerInformationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a CustomerInformation request was sent.
+        /// </summary>
+        public event OnCustomerInformationResponseDelegate?    OnCustomerInformationResponse;
+
+        #endregion
+
+        #endregion
+
+        #region CSMS <- Charging Station
+
+        #region OnBootNotification
+
+        /// <summary>
+        /// An event sent whenever a BootNotification WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?            OnBootNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a BootNotification request was received.
+        /// </summary>
+        public event OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a BootNotification was received.
+        /// </summary>
+        public event OnBootNotificationDelegate?            OnBootNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a BootNotification was sent.
+        /// </summary>
+        public event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a BootNotification was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?           OnBootNotificationWSResponse;
+
+        #endregion
+
+        #region OnFirmwareStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a FirmwareStatusNotification WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                      OnFirmwareStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a FirmwareStatusNotification request was received.
+        /// </summary>
+        public event OnFirmwareStatusNotificationRequestDelegate?     OnFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a FirmwareStatusNotification request was received.
+        /// </summary>
+        public event OnFirmwareStatusNotificationDelegate?            OnFirmwareStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
+        /// </summary>
+        public event OnFirmwareStatusNotificationResponseDelegate?    OnFirmwareStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a FirmwareStatusNotification request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                     OnFirmwareStatusNotificationWSResponse;
+
+        #endregion
+
+        #region OnPublishFirmwareStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a PublishFirmwareStatusNotification WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                             OnPublishFirmwareStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a PublishFirmwareStatusNotification request was received.
+        /// </summary>
+        public event OnPublishFirmwareStatusNotificationRequestDelegate?     OnPublishFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a PublishFirmwareStatusNotification request was received.
+        /// </summary>
+        public event OnPublishFirmwareStatusNotificationDelegate?            OnPublishFirmwareStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a PublishFirmwareStatusNotification request was sent.
+        /// </summary>
+        public event OnPublishFirmwareStatusNotificationResponseDelegate?    OnPublishFirmwareStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a PublishFirmwareStatusNotification request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                            OnPublishFirmwareStatusNotificationWSResponse;
+
+        #endregion
+
+        #region OnHeartbeat
+
+        /// <summary>
+        /// An event sent whenever a Heartbeat WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?     OnHeartbeatWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a Heartbeat request was received.
+        /// </summary>
+        public event OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
+
+        /// <summary>
+        /// An event sent whenever a Heartbeat was received.
+        /// </summary>
+        public event OnHeartbeatDelegate?            OnHeartbeat;
+
+        /// <summary>
+        /// An event sent whenever a response to a Heartbeat was sent.
+        /// </summary>
+        public event OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a Heartbeat was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?    OnHeartbeatWSResponse;
+
+        #endregion
+
+        #region OnNotifyEvent
+
+        /// <summary>
+        /// An event sent whenever a NotifyEvent WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?       OnNotifyEventWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyEvent request was received.
+        /// </summary>
+        public event OnNotifyEventRequestDelegate?     OnNotifyEventRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyEvent was received.
+        /// </summary>
+        public event OnNotifyEventDelegate?            OnNotifyEvent;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyEvent was sent.
+        /// </summary>
+        public event OnNotifyEventResponseDelegate?    OnNotifyEventResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a NotifyEvent was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?      OnNotifyEventWSResponse;
+
+        #endregion
+
+        #region OnSecurityEventNotification
+
+        /// <summary>
+        /// An event sent whenever a SecurityEventNotification WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                     OnSecurityEventNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a SecurityEventNotification request was received.
+        /// </summary>
+        public event OnSecurityEventNotificationRequestDelegate?     OnSecurityEventNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a SecurityEventNotification request was received.
+        /// </summary>
+        public event OnSecurityEventNotificationDelegate?            OnSecurityEventNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a SecurityEventNotification request was sent.
+        /// </summary>
+        public event OnSecurityEventNotificationResponseDelegate?    OnSecurityEventNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a SecurityEventNotification request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                    OnSecurityEventNotificationWSResponse;
+
+        #endregion
+
+        #region OnNotifyReport
+
+        /// <summary>
+        /// An event sent whenever a NotifyReport WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?        OnNotifyReportWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyReport request was received.
+        /// </summary>
+        public event OnNotifyReportRequestDelegate?     OnNotifyReportRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyReport was received.
+        /// </summary>
+        public event OnNotifyReportDelegate?            OnNotifyReport;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyReport was sent.
+        /// </summary>
+        public event OnNotifyReportResponseDelegate?    OnNotifyReportResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a NotifyReport was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?       OnNotifyReportWSResponse;
+
+        #endregion
+
+        #region OnNotifyMonitoringReport
+
+        /// <summary>
+        /// An event sent whenever a NotifyMonitoringReport WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                  OnNotifyMonitoringReportWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyMonitoringReport request was received.
+        /// </summary>
+        public event OnNotifyMonitoringReportRequestDelegate?     OnNotifyMonitoringReportRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyMonitoringReport was received.
+        /// </summary>
+        public event OnNotifyMonitoringReportDelegate?            OnNotifyMonitoringReport;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyMonitoringReport was sent.
+        /// </summary>
+        public event OnNotifyMonitoringReportResponseDelegate?    OnNotifyMonitoringReportResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a NotifyMonitoringReport was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                 OnNotifyMonitoringReportWSResponse;
+
+        #endregion
+
+        #region OnLogStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a LogStatusNotification WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                 OnLogStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a LogStatusNotification request was received.
+        /// </summary>
+        public event OnLogStatusNotificationRequestDelegate?     OnLogStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a LogStatusNotification request was received.
+        /// </summary>
+        public event OnLogStatusNotificationDelegate?            OnLogStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a LogStatusNotification request was sent.
+        /// </summary>
+        public event OnLogStatusNotificationResponseDelegate?    OnLogStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a LogStatusNotification request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                OnLogStatusNotificationWSResponse;
+
+        #endregion
+
+        #region OnDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a DataTransfer WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                OnIncomingDataTransferWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a DataTransfer request was received.
+        /// </summary>
+        public event OnIncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a DataTransfer request was received.
+        /// </summary>
+        public event OnIncomingDataTransferDelegate?            OnIncomingDataTransfer;
+
+        /// <summary>
+        /// An event sent whenever a response to a DataTransfer request was sent.
+        /// </summary>
+        public event OnIncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a DataTransfer request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?               OnIncomingDataTransferWSResponse;
+
+        #endregion
+
+
+        #region OnSignCertificate
+
+        /// <summary>
+        /// An event sent whenever a SignCertificate WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?           OnSignCertificateWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a SignCertificate request was received.
+        /// </summary>
+        public event OnSignCertificateRequestDelegate?     OnSignCertificateRequest;
+
+        /// <summary>
+        /// An event sent whenever a SignCertificate request was received.
+        /// </summary>
+        public event OnSignCertificateDelegate?            OnSignCertificate;
+
+        /// <summary>
+        /// An event sent whenever a response to a SignCertificate request was sent.
+        /// </summary>
+        public event OnSignCertificateResponseDelegate?    OnSignCertificateResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a SignCertificate request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?          OnSignCertificateWSResponse;
+
+        #endregion
+
+        #region OnGet15118EVCertificate
+
+        /// <summary>
+        /// An event sent whenever a Get15118EVCertificate WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                 OnGet15118EVCertificateWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a Get15118EVCertificate request was received.
+        /// </summary>
+        public event OnGet15118EVCertificateRequestDelegate?     OnGet15118EVCertificateRequest;
+
+        /// <summary>
+        /// An event sent whenever a Get15118EVCertificate was received.
+        /// </summary>
+        public event OnGet15118EVCertificateDelegate?            OnGet15118EVCertificate;
+
+        /// <summary>
+        /// An event sent whenever a response to a Get15118EVCertificate was sent.
+        /// </summary>
+        public event OnGet15118EVCertificateResponseDelegate?    OnGet15118EVCertificateResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a Get15118EVCertificate was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                OnGet15118EVCertificateWSResponse;
+
+        #endregion
+
+        #region OnGetCertificateStatus
+
+        /// <summary>
+        /// An event sent whenever a GetCertificateStatus WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                OnGetCertificateStatusWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a GetCertificateStatus request was received.
+        /// </summary>
+        public event OnGetCertificateStatusRequestDelegate?     OnGetCertificateStatusRequest;
+
+        /// <summary>
+        /// An event sent whenever a GetCertificateStatus was received.
+        /// </summary>
+        public event OnGetCertificateStatusDelegate?            OnGetCertificateStatus;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetCertificateStatus was sent.
+        /// </summary>
+        public event OnGetCertificateStatusResponseDelegate?    OnGetCertificateStatusResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a GetCertificateStatus was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?               OnGetCertificateStatusWSResponse;
+
+        #endregion
+
+
+        #region OnReservationStatusUpdate
+
+        /// <summary>
+        /// An event sent whenever a ReservationStatusUpdate WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                   OnReservationStatusUpdateWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a ReservationStatusUpdate request was received.
+        /// </summary>
+        public event OnReservationStatusUpdateRequestDelegate?     OnReservationStatusUpdateRequest;
+
+        /// <summary>
+        /// An event sent whenever a ReservationStatusUpdate was received.
+        /// </summary>
+        public event OnReservationStatusUpdateDelegate?            OnReservationStatusUpdate;
+
+        /// <summary>
+        /// An event sent whenever a response to a ReservationStatusUpdate was sent.
+        /// </summary>
+        public event OnReservationStatusUpdateResponseDelegate?    OnReservationStatusUpdateResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a ReservationStatusUpdate was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                  OnReservationStatusUpdateWSResponse;
+
+        #endregion
+
+        #region OnAuthorize
+
+        /// <summary>
+        /// An event sent whenever an Authorize WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?     OnAuthorizeWSRequest;
+
+        /// <summary>
+        /// An event sent whenever an Authorize request was received.
+        /// </summary>
+        public event OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
+
+        /// <summary>
+        /// An event sent whenever an Authorize request was received.
+        /// </summary>
+        public event OnAuthorizeDelegate?            OnAuthorize;
+
+        /// <summary>
+        /// An event sent whenever an Authorize response was sent.
+        /// </summary>
+        public event OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
+
+        /// <summary>
+        /// An event sent whenever an Authorize WebSocket response was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?    OnAuthorizeWSResponse;
+
+        #endregion
+
+        #region OnNotifyEVChargingNeeds
+
+        /// <summary>
+        /// An event sent whenever a NotifyEVChargingNeeds WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                 OnNotifyEVChargingNeedsWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyEVChargingNeeds request was received.
+        /// </summary>
+        public event OnNotifyEVChargingNeedsRequestDelegate?     OnNotifyEVChargingNeedsRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyEVChargingNeeds was received.
+        /// </summary>
+        public event OnNotifyEVChargingNeedsDelegate?            OnNotifyEVChargingNeeds;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyEVChargingNeeds was sent.
+        /// </summary>
+        public event OnNotifyEVChargingNeedsResponseDelegate?    OnNotifyEVChargingNeedsResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a NotifyEVChargingNeeds was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                OnNotifyEVChargingNeedsWSResponse;
+
+        #endregion
+
+        #region OnTransactionEvent
+
+        /// <summary>
+        /// An event sent whenever a TransactionEvent WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?            OnTransactionEventWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a TransactionEvent request was received.
+        /// </summary>
+        public event OnTransactionEventRequestDelegate?     OnTransactionEventRequest;
+
+        /// <summary>
+        /// An event sent whenever a TransactionEvent request was received.
+        /// </summary>
+        public event OnTransactionEventDelegate?            OnTransactionEvent;
+
+        /// <summary>
+        /// An event sent whenever a TransactionEvent response was sent.
+        /// </summary>
+        public event OnTransactionEventResponseDelegate?    OnTransactionEventResponse;
+
+        /// <summary>
+        /// An event sent whenever a TransactionEvent WebSocket response was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?           OnTransactionEventWSResponse;
+
+        #endregion
+
+        #region OnStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a StatusNotification WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?              OnStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a StatusNotification request was received.
+        /// </summary>
+        public event OnStatusNotificationRequestDelegate?     OnStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a StatusNotification request was received.
+        /// </summary>
+        public event OnStatusNotificationDelegate?            OnStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a StatusNotification request was sent.
+        /// </summary>
+        public event OnStatusNotificationResponseDelegate?    OnStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a StatusNotification request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?             OnStatusNotificationWSResponse;
+
+        #endregion
+
+        #region OnMeterValues
+
+        /// <summary>
+        /// An event sent whenever a MeterValues WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?       OnMeterValuesWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a MeterValues request was received.
+        /// </summary>
+        public event OnMeterValuesRequestDelegate?     OnMeterValuesRequest;
+
+        /// <summary>
+        /// An event sent whenever a MeterValues request was received.
+        /// </summary>
+        public event OnMeterValuesDelegate?            OnMeterValues;
+
+        /// <summary>
+        /// An event sent whenever a response to a MeterValues request was sent.
+        /// </summary>
+        public event OnMeterValuesResponseDelegate?    OnMeterValuesResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a MeterValues request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?      OnMeterValuesWSResponse;
+
+        #endregion
+
+        #region OnNotifyChargingLimit
+
+        /// <summary>
+        /// An event sent whenever a NotifyChargingLimit WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?               OnNotifyChargingLimitWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyChargingLimit request was received.
+        /// </summary>
+        public event OnNotifyChargingLimitRequestDelegate?     OnNotifyChargingLimitRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyChargingLimit was received.
+        /// </summary>
+        public event OnNotifyChargingLimitDelegate?            OnNotifyChargingLimit;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyChargingLimit was sent.
+        /// </summary>
+        public event OnNotifyChargingLimitResponseDelegate?    OnNotifyChargingLimitResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a NotifyChargingLimit was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?              OnNotifyChargingLimitWSResponse;
+
+        #endregion
+
+        #region OnClearedChargingLimit
+
+        /// <summary>
+        /// An event sent whenever a ClearedChargingLimit WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                OnClearedChargingLimitWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a ClearedChargingLimit request was received.
+        /// </summary>
+        public event OnClearedChargingLimitRequestDelegate?     OnClearedChargingLimitRequest;
+
+        /// <summary>
+        /// An event sent whenever a ClearedChargingLimit was received.
+        /// </summary>
+        public event OnClearedChargingLimitDelegate?            OnClearedChargingLimit;
+
+        /// <summary>
+        /// An event sent whenever a response to a ClearedChargingLimit was sent.
+        /// </summary>
+        public event OnClearedChargingLimitResponseDelegate?    OnClearedChargingLimitResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a ClearedChargingLimit was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?               OnClearedChargingLimitWSResponse;
+
+        #endregion
+
+        #region OnReportChargingProfiles
+
+        /// <summary>
+        /// An event sent whenever a ReportChargingProfiles WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                  OnReportChargingProfilesWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a ReportChargingProfiles request was received.
+        /// </summary>
+        public event OnReportChargingProfilesRequestDelegate?     OnReportChargingProfilesRequest;
+
+        /// <summary>
+        /// An event sent whenever a ReportChargingProfiles was received.
+        /// </summary>
+        public event OnReportChargingProfilesDelegate?            OnReportChargingProfiles;
+
+        /// <summary>
+        /// An event sent whenever a response to a ReportChargingProfiles was sent.
+        /// </summary>
+        public event OnReportChargingProfilesResponseDelegate?    OnReportChargingProfilesResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a ReportChargingProfiles was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                 OnReportChargingProfilesWSResponse;
+
+        #endregion
+
+
+        #region OnNotifyDisplayMessages
+
+        /// <summary>
+        /// An event sent whenever a NotifyDisplayMessages WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                 OnNotifyDisplayMessagesWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyDisplayMessages request was received.
+        /// </summary>
+        public event OnNotifyDisplayMessagesRequestDelegate?     OnNotifyDisplayMessagesRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyDisplayMessages was received.
+        /// </summary>
+        public event OnNotifyDisplayMessagesDelegate?            OnNotifyDisplayMessages;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyDisplayMessages was sent.
+        /// </summary>
+        public event OnNotifyDisplayMessagesResponseDelegate?    OnNotifyDisplayMessagesResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a NotifyDisplayMessages was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                OnNotifyDisplayMessagesWSResponse;
+
+        #endregion
+
+        #region OnNotifyCustomerInformation
+
+        /// <summary>
+        /// An event sent whenever a NotifyCustomerInformation WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                     OnNotifyCustomerInformationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyCustomerInformation request was received.
+        /// </summary>
+        public event OnNotifyCustomerInformationRequestDelegate?     OnNotifyCustomerInformationRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyCustomerInformation was received.
+        /// </summary>
+        public event OnNotifyCustomerInformationDelegate?            OnNotifyCustomerInformation;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyCustomerInformation was sent.
+        /// </summary>
+        public event OnNotifyCustomerInformationResponseDelegate?    OnNotifyCustomerInformationResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a NotifyCustomerInformation was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                    OnNotifyCustomerInformationWSResponse;
+
+        #endregion
+
+        #endregion
 
         #endregion
 
@@ -891,60 +1477,128 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// A delegate to parse custom BootNotification requests.
         /// </summary>
-        public CustomJObjectParserDelegate<BootNotificationRequest>?                  CustomBootNotificationRequestParser                    { get; set; }
+        public CustomJObjectParserDelegate<BootNotificationRequest>?                   CustomBootNotificationRequestParser                     { get; set; }
 
-        /// <summary>
-        /// A delegate to parse custom Heartbeat requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<HeartbeatRequest>?                         CustomHeartbeatRequestParser                           { get; set; }
-
-
-        /// <summary>
-        /// A delegate to parse custom Authorize requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<AuthorizeRequest>?                         CustomAuthorizeRequestParser                           { get; set; }
-
-        /// <summary>
-        /// A delegate to parse custom TransactionEvent requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<TransactionEventRequest>?                  CustomTransactionEventRequestParser                    { get; set; }
-
-        /// <summary>
-        /// A delegate to parse custom StatusNotification requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<StatusNotificationRequest>?                CustomStatusNotificationRequestParser                  { get; set; }
-
-        /// <summary>
-        /// A delegate to parse custom MeterValues requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<MeterValuesRequest>?                       CustomMeterValuesRequestParser                         { get; set; }
-
-
-        /// <summary>
-        /// A delegate to parse custom DataTransfer requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<CS.DataTransferRequest>?                   CustomDataTransferRequestParser                        { get; set; }
 
         /// <summary>
         /// A delegate to parse custom FirmwareStatusNotification requests.
         /// </summary>
-        public CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>?        CustomFirmwareStatusNotificationRequestParser          { get; set; }
+        public CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>?         CustomFirmwareStatusNotificationRequestParser           { get; set; }
+
 
         /// <summary>
-        /// A delegate to parse custom LogStatusNotification requests.
+        /// A delegate to parse custom PublishFirmwareStatusNotification requests.
         /// </summary>
-        public CustomJObjectParserDelegate<LogStatusNotificationRequest>?             CustomLogStatusNotificationRequestParser               { get; set; }
+        public CustomJObjectParserDelegate<PublishFirmwareStatusNotificationRequest>?  CustomPublishFirmwareStatusNotificationRequestParser    { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom Heartbeat requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<HeartbeatRequest>?                          CustomHeartbeatRequestParser                            { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom NotifyEvent requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<NotifyEventRequest>?                        CustomNotifyEventRequestParser                          { get; set; }
 
         /// <summary>
         /// A delegate to parse custom SecurityEventNotification requests.
         /// </summary>
-        public CustomJObjectParserDelegate<SecurityEventNotificationRequest>?         CustomSecurityEventNotificationRequestParser           { get; set; }
+        public CustomJObjectParserDelegate<SecurityEventNotificationRequest>?          CustomSecurityEventNotificationRequestParser            { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom NotifyReport requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<NotifyReportRequest>?                       CustomNotifyReportRequestParser                         { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom NotifyMonitoringReport requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<NotifyMonitoringReportRequest>?             CustomNotifyMonitoringReportRequestParser               { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom LogStatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<LogStatusNotificationRequest>?              CustomLogStatusNotificationRequestParser                { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom DataTransfer requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<CS.DataTransferRequest>?                    CustomDataTransferRequestParser                         { get; set; }
+
 
         /// <summary>
         /// A delegate to parse custom SignCertificate requests.
         /// </summary>
-        public CustomJObjectParserDelegate<SignCertificateRequest>?                   CustomSignCertificateRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<SignCertificateRequest>?                    CustomSignCertificateRequestParser                      { get; set; }
 
+        /// <summary>
+        /// A delegate to parse custom Get15118EVCertificate requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<Get15118EVCertificateRequest>?              CustomGet15118EVCertificateRequestParser                { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom GetCertificateStatus requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<GetCertificateStatusRequest>?               CustomGetCertificateStatusRequestParser                 { get; set; }
+
+
+        /// <summary>
+        /// A delegate to parse custom ReservationStatusUpdate requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<ReservationStatusUpdateRequest>?            CustomReservationStatusUpdateRequestParser              { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom Authorize requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<AuthorizeRequest>?                          CustomAuthorizeRequestParser                            { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom NotifyEVChargingNeeds requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<NotifyEVChargingNeedsRequest>?              CustomNotifyEVChargingNeedsRequestParser                { get; set; }
+
+
+        /// <summary>
+        /// A delegate to parse custom TransactionEvent requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<TransactionEventRequest>?                   CustomTransactionEventRequestParser                     { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom StatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<StatusNotificationRequest>?                 CustomStatusNotificationRequestParser                   { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom MeterValues requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<MeterValuesRequest>?                        CustomMeterValuesRequestParser                          { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom NotifyChargingLimit requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<NotifyChargingLimitRequest>?                CustomNotifyChargingLimitRequestParser                  { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom ClearedChargingLimit requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<ClearedChargingLimitRequest>?               CustomClearedChargingLimitRequestParser                 { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom ReportChargingProfiles requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<ReportChargingProfilesRequest>?             CustomReportChargingProfilesRequestParser               { get; set; }
+
+
+        /// <summary>
+        /// A delegate to parse custom NotifyDisplayMessages requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<NotifyDisplayMessagesRequest>?              CustomNotifyDisplayMessagesRequestParser                { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom NotifyCustomerInformation requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<NotifyCustomerInformationRequest>?          CustomNotifyCustomerInformationRequestParser            { get; set; }
 
         #endregion
 
@@ -1576,6 +2230,302 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                             #endregion
 
+                            #region FirmwareStatusNotification
+
+                            case "FirmwareStatusNotification":
+                                {
+
+                                    #region Send OnFirmwareStatusNotificationWSRequest event
+
+                                    try
+                                    {
+
+                                        OnFirmwareStatusNotificationWSRequest?.Invoke(Timestamp.Now,
+                                                                                      this,
+                                                                                      json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (FirmwareStatusNotificationRequest.TryParse(requestData,
+                                                                                       requestId.Value,
+                                                                                       chargeBoxId.Value,
+                                                                                       out var request,
+                                                                                       out var errorResponse,
+                                                                                       CustomFirmwareStatusNotificationRequestParser) && request is not null) {
+
+                                            #region Send OnFirmwareStatusNotificationRequest event
+
+                                            try
+                                            {
+
+                                                OnFirmwareStatusNotificationRequest?.Invoke(Timestamp.Now,
+                                                                                            this,
+                                                                                            request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            FirmwareStatusNotificationResponse? response = null;
+
+                                            var responseTasks = OnFirmwareStatusNotification?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                          this,
+                                                                                                                                                          request,
+                                                                                                                                                          CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= FirmwareStatusNotificationResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnFirmwareStatusNotificationResponse event
+
+                                            try
+                                            {
+
+                                                OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
+                                                                                             this,
+                                                                                             request,
+                                                                                             response,
+                                                                                             response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'FirmwareStatusNotification' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'FirmwareStatusNotification' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnFirmwareStatusNotificationWSResponse event
+
+                                    try
+                                    {
+
+                                        OnFirmwareStatusNotificationWSResponse?.Invoke(Timestamp.Now,
+                                                                                       this,
+                                                                                       json,
+                                                                                       OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region PublishFirmwareStatusNotification
+
+                            case "PublishFirmwareStatusNotification":
+                                {
+
+                                    #region Send OnPublishFirmwareStatusNotificationWSRequest event
+
+                                    try
+                                    {
+
+                                        OnPublishFirmwareStatusNotificationWSRequest?.Invoke(Timestamp.Now,
+                                                                                             this,
+                                                                                             json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPublishFirmwareStatusNotificationWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (PublishFirmwareStatusNotificationRequest.TryParse(requestData,
+                                                                                              requestId.Value,
+                                                                                              chargeBoxId.Value,
+                                                                                              out var request,
+                                                                                              out var errorResponse,
+                                                                                              CustomPublishFirmwareStatusNotificationRequestParser) && request is not null) {
+
+                                            #region Send OnPublishFirmwareStatusNotificationRequest event
+
+                                            try
+                                            {
+
+                                                OnPublishFirmwareStatusNotificationRequest?.Invoke(Timestamp.Now,
+                                                                                                   this,
+                                                                                                   request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPublishFirmwareStatusNotificationRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            PublishFirmwareStatusNotificationResponse? response = null;
+
+                                            var responseTasks = OnPublishFirmwareStatusNotification?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnPublishFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                                 this,
+                                                                                                                                                                 request,
+                                                                                                                                                                 CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= PublishFirmwareStatusNotificationResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnPublishFirmwareStatusNotificationResponse event
+
+                                            try
+                                            {
+
+                                                OnPublishFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
+                                                                                                    this,
+                                                                                                    request,
+                                                                                                    response,
+                                                                                                    response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPublishFirmwareStatusNotificationResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'PublishFirmwareStatusNotification' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'PublishFirmwareStatusNotification' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnPublishFirmwareStatusNotificationWSResponse event
+
+                                    try
+                                    {
+
+                                        OnPublishFirmwareStatusNotificationWSResponse?.Invoke(Timestamp.Now,
+                                                                                              this,
+                                                                                              json,
+                                                                                              OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPublishFirmwareStatusNotificationWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
                             #region Heartbeat
 
                             case "Heartbeat":
@@ -1724,6 +2674,1487 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                             #endregion
 
+                            #region NotifyEvent
+
+                            case "NotifyEvent":
+                                {
+
+                                    #region Send OnNotifyEventWSRequest event
+
+                                    try
+                                    {
+
+                                        OnNotifyEventWSRequest?.Invoke(Timestamp.Now,
+                                                                       this,
+                                                                       json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyEventWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (NotifyEventRequest.TryParse(requestData,
+                                                                        requestId.Value,
+                                                                        chargeBoxId.Value,
+                                                                        out var request,
+                                                                        out var errorResponse,
+                                                                        CustomNotifyEventRequestParser) && request is not null) {
+
+                                            #region Send OnNotifyEventRequest event
+
+                                            try
+                                            {
+
+                                                OnNotifyEventRequest?.Invoke(Timestamp.Now,
+                                                                             this,
+                                                                             request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyEventRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            NotifyEventResponse? response = null;
+
+                                            var responseTasks = OnNotifyEvent?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnNotifyEventDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                           this,
+                                                                                                                                           request,
+                                                                                                                                           CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= NotifyEventResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnNotifyEventResponse event
+
+                                            try
+                                            {
+
+                                                OnNotifyEventResponse?.Invoke(Timestamp.Now,
+                                                                              this,
+                                                                              request,
+                                                                              response,
+                                                                              response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyEventResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'NotifyEvent' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'NotifyEvent' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnNotifyEventWSResponse event
+
+                                    try
+                                    {
+
+                                        OnNotifyEventWSResponse?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        json,
+                                                                        OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyEventWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region SecurityEventNotification
+
+                            case "SecurityEventNotification":
+                                {
+
+                                    #region Send OnSecurityEventNotificationWSRequest event
+
+                                    try
+                                    {
+
+                                        OnSecurityEventNotificationWSRequest?.Invoke(Timestamp.Now,
+                                                                                     this,
+                                                                                     json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSecurityEventNotificationWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (SecurityEventNotificationRequest.TryParse(requestData,
+                                                                                      requestId.Value,
+                                                                                      chargeBoxId.Value,
+                                                                                      out var request,
+                                                                                      out var errorResponse,
+                                                                                      CustomSecurityEventNotificationRequestParser) && request is not null) {
+
+                                            #region Send OnSecurityEventNotificationRequest event
+
+                                            try
+                                            {
+
+                                                OnSecurityEventNotificationRequest?.Invoke(Timestamp.Now,
+                                                                                           this,
+                                                                                           request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSecurityEventNotificationRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            SecurityEventNotificationResponse? response = null;
+
+                                            var responseTasks = OnSecurityEventNotification?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnSecurityEventNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                         this,
+                                                                                                                                                         request,
+                                                                                                                                                         CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= SecurityEventNotificationResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnSecurityEventNotificationResponse event
+
+                                            try
+                                            {
+
+                                                OnSecurityEventNotificationResponse?.Invoke(Timestamp.Now,
+                                                                                            this,
+                                                                                            request,
+                                                                                            response,
+                                                                                            response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSecurityEventNotificationResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'SecurityEventNotification' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'SecurityEventNotification' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnSecurityEventNotificationWSResponse event
+
+                                    try
+                                    {
+
+                                        OnSecurityEventNotificationWSResponse?.Invoke(Timestamp.Now,
+                                                                                      this,
+                                                                                      json,
+                                                                                      OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSecurityEventNotificationWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region NotifyReport
+
+                            case "NotifyReport":
+                                {
+
+                                    #region Send OnNotifyReportWSRequest event
+
+                                    try
+                                    {
+
+                                        OnNotifyReportWSRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyReportWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (NotifyReportRequest.TryParse(requestData,
+                                                                         requestId.Value,
+                                                                         chargeBoxId.Value,
+                                                                         out var request,
+                                                                         out var errorResponse,
+                                                                         CustomNotifyReportRequestParser) && request is not null) {
+
+                                            #region Send OnNotifyReportRequest event
+
+                                            try
+                                            {
+
+                                                OnNotifyReportRequest?.Invoke(Timestamp.Now,
+                                                                              this,
+                                                                              request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyReportRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            NotifyReportResponse? response = null;
+
+                                            var responseTasks = OnNotifyReport?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnNotifyReportDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                            this,
+                                                                                                                                            request,
+                                                                                                                                            CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= NotifyReportResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnNotifyReportResponse event
+
+                                            try
+                                            {
+
+                                                OnNotifyReportResponse?.Invoke(Timestamp.Now,
+                                                                               this,
+                                                                               request,
+                                                                               response,
+                                                                               response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyReportResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'NotifyReport' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'NotifyReport' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnNotifyReportWSResponse event
+
+                                    try
+                                    {
+
+                                        OnNotifyReportWSResponse?.Invoke(Timestamp.Now,
+                                                                         this,
+                                                                         json,
+                                                                         OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyReportWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region NotifyMonitoringReport
+
+                            case "NotifyMonitoringReport":
+                                {
+
+                                    #region Send OnNotifyMonitoringReportWSRequest event
+
+                                    try
+                                    {
+
+                                        OnNotifyMonitoringReportWSRequest?.Invoke(Timestamp.Now,
+                                                                                  this,
+                                                                                  json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyMonitoringReportWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (NotifyMonitoringReportRequest.TryParse(requestData,
+                                                                                   requestId.Value,
+                                                                                   chargeBoxId.Value,
+                                                                                   out var request,
+                                                                                   out var errorResponse,
+                                                                                   CustomNotifyMonitoringReportRequestParser) && request is not null) {
+
+                                            #region Send OnNotifyMonitoringReportRequest event
+
+                                            try
+                                            {
+
+                                                OnNotifyMonitoringReportRequest?.Invoke(Timestamp.Now,
+                                                                                        this,
+                                                                                        request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyMonitoringReportRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            NotifyMonitoringReportResponse? response = null;
+
+                                            var responseTasks = OnNotifyMonitoringReport?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnNotifyMonitoringReportDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                      this,
+                                                                                                                                                      request,
+                                                                                                                                                      CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= NotifyMonitoringReportResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnNotifyMonitoringReportResponse event
+
+                                            try
+                                            {
+
+                                                OnNotifyMonitoringReportResponse?.Invoke(Timestamp.Now,
+                                                                                         this,
+                                                                                         request,
+                                                                                         response,
+                                                                                         response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyMonitoringReportResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'NotifyMonitoringReport' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'NotifyMonitoringReport' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnNotifyMonitoringReportWSResponse event
+
+                                    try
+                                    {
+
+                                        OnNotifyMonitoringReportWSResponse?.Invoke(Timestamp.Now,
+                                                                                   this,
+                                                                                   json,
+                                                                                   OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyMonitoringReportWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region LogStatusNotification
+
+                            case "LogStatusNotification":
+                                {
+
+                                    #region Send OnLogStatusNotificationWSRequest event
+
+                                    try
+                                    {
+
+                                        OnLogStatusNotificationWSRequest?.Invoke(Timestamp.Now,
+                                                                                 this,
+                                                                                 json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnLogStatusNotificationWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (LogStatusNotificationRequest.TryParse(requestData,
+                                                                                  requestId.Value,
+                                                                                  chargeBoxId.Value,
+                                                                                  out var request,
+                                                                                  out var errorResponse,
+                                                                                  CustomLogStatusNotificationRequestParser) && request is not null) {
+
+                                            #region Send OnLogStatusNotificationRequest event
+
+                                            try
+                                            {
+
+                                                OnLogStatusNotificationRequest?.Invoke(Timestamp.Now,
+                                                                                       this,
+                                                                                       request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnLogStatusNotificationRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            LogStatusNotificationResponse? response = null;
+
+                                            var responseTasks = OnLogStatusNotification?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnLogStatusNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                     this,
+                                                                                                                                                     request,
+                                                                                                                                                     CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= LogStatusNotificationResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnLogStatusNotificationResponse event
+
+                                            try
+                                            {
+
+                                                OnLogStatusNotificationResponse?.Invoke(Timestamp.Now,
+                                                                                        this,
+                                                                                        request,
+                                                                                        response,
+                                                                                        response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnLogStatusNotificationResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'LogStatusNotification' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'LogStatusNotification' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnLogStatusNotificationWSResponse event
+
+                                    try
+                                    {
+
+                                        OnLogStatusNotificationWSResponse?.Invoke(Timestamp.Now,
+                                                                                  this,
+                                                                                  json,
+                                                                                  OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnLogStatusNotificationWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region DataTransfer
+
+                            case "DataTransfer":
+                                {
+
+                                    #region Send OnIncomingDataTransferWSRequest event
+
+                                    try
+                                    {
+
+                                        OnIncomingDataTransferWSRequest?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingDataTransferWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (CS.DataTransferRequest.TryParse(requestData,
+                                                                            requestId.Value,
+                                                                            chargeBoxId.Value,
+                                                                            out var request,
+                                                                            out var errorResponse,
+                                                                            CustomDataTransferRequestParser) && request is not null) {
+
+                                            #region Send OnIncomingDataTransferRequest event
+
+                                            try
+                                            {
+
+                                                OnIncomingDataTransferRequest?.Invoke(Timestamp.Now,
+                                                                                      this,
+                                                                                      request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingDataTransferRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            DataTransferResponse? response = null;
+
+                                            var responseTasks = OnIncomingDataTransfer?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                    this,
+                                                                                                                                                    request,
+                                                                                                                                                    CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= DataTransferResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnIncomingDataTransferResponse event
+
+                                            try
+                                            {
+
+                                                OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
+                                                                                       this,
+                                                                                       request,
+                                                                                       response,
+                                                                                       response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingDataTransferResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'IncomingDataTransfer' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'IncomingDataTransfer' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnIncomingDataTransferWSResponse event
+
+                                    try
+                                    {
+
+                                        OnIncomingDataTransferWSResponse?.Invoke(Timestamp.Now,
+                                                                                 this,
+                                                                                 json,
+                                                                                 OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingDataTransferWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+
+                            #region SignCertificate
+
+                            case "SignCertificate":
+                                {
+
+                                    #region Send OnSignCertificateWSRequest event
+
+                                    try
+                                    {
+
+                                        OnSignCertificateWSRequest?.Invoke(Timestamp.Now,
+                                                                           this,
+                                                                           json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSignCertificateWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (SignCertificateRequest.TryParse(requestData,
+                                                                            requestId.Value,
+                                                                            chargeBoxId.Value,
+                                                                            out var request,
+                                                                            out var errorResponse,
+                                                                            CustomSignCertificateRequestParser) && request is not null) {
+
+                                            #region Send OnSignCertificateRequest event
+
+                                            try
+                                            {
+
+                                                OnSignCertificateRequest?.Invoke(Timestamp.Now,
+                                                                                 this,
+                                                                                 request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSignCertificateRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            SignCertificateResponse? response = null;
+
+                                            var responseTasks = OnSignCertificate?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnSignCertificateDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                               this,
+                                                                                                                                               request,
+                                                                                                                                               CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= SignCertificateResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnSignCertificateResponse event
+
+                                            try
+                                            {
+
+                                                OnSignCertificateResponse?.Invoke(Timestamp.Now,
+                                                                                  this,
+                                                                                  request,
+                                                                                  response,
+                                                                                  response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSignCertificateResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'SignCertificate' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'SignCertificate' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnSignCertificateWSResponse event
+
+                                    try
+                                    {
+
+                                        OnSignCertificateWSResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            json,
+                                                                            OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSignCertificateWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region Get15118EVCertificate
+
+                            case "Get15118EVCertificate":
+                                {
+
+                                    #region Send OnGet15118EVCertificateWSRequest event
+
+                                    try
+                                    {
+
+                                        OnGet15118EVCertificateWSRequest?.Invoke(Timestamp.Now,
+                                                                                 this,
+                                                                                 json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGet15118EVCertificateWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (Get15118EVCertificateRequest.TryParse(requestData,
+                                                                                  requestId.Value,
+                                                                                  chargeBoxId.Value,
+                                                                                  out var request,
+                                                                                  out var errorResponse,
+                                                                                  CustomGet15118EVCertificateRequestParser) && request is not null) {
+
+                                            #region Send OnGet15118EVCertificateRequest event
+
+                                            try
+                                            {
+
+                                                OnGet15118EVCertificateRequest?.Invoke(Timestamp.Now,
+                                                                                       this,
+                                                                                       request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGet15118EVCertificateRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            Get15118EVCertificateResponse? response = null;
+
+                                            var responseTasks = OnGet15118EVCertificate?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnGet15118EVCertificateDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                     this,
+                                                                                                                                                     request,
+                                                                                                                                                     CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= Get15118EVCertificateResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnGet15118EVCertificateResponse event
+
+                                            try
+                                            {
+
+                                                OnGet15118EVCertificateResponse?.Invoke(Timestamp.Now,
+                                                                                        this,
+                                                                                        request,
+                                                                                        response,
+                                                                                        response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGet15118EVCertificateResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'Get15118EVCertificate' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'Get15118EVCertificate' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnGet15118EVCertificateWSResponse event
+
+                                    try
+                                    {
+
+                                        OnGet15118EVCertificateWSResponse?.Invoke(Timestamp.Now,
+                                                                                  this,
+                                                                                  json,
+                                                                                  OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGet15118EVCertificateWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region GetCertificateStatus
+
+                            case "GetCertificateStatus":
+                                {
+
+                                    #region Send OnGetCertificateStatusWSRequest event
+
+                                    try
+                                    {
+
+                                        OnGetCertificateStatusWSRequest?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCertificateStatusWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (GetCertificateStatusRequest.TryParse(requestData,
+                                                                                 requestId.Value,
+                                                                                 chargeBoxId.Value,
+                                                                                 out var request,
+                                                                                 out var errorResponse,
+                                                                                 CustomGetCertificateStatusRequestParser) && request is not null) {
+
+                                            #region Send OnGetCertificateStatusRequest event
+
+                                            try
+                                            {
+
+                                                OnGetCertificateStatusRequest?.Invoke(Timestamp.Now,
+                                                                                      this,
+                                                                                      request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCertificateStatusRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            GetCertificateStatusResponse? response = null;
+
+                                            var responseTasks = OnGetCertificateStatus?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnGetCertificateStatusDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                    this,
+                                                                                                                                                    request,
+                                                                                                                                                    CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= GetCertificateStatusResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnGetCertificateStatusResponse event
+
+                                            try
+                                            {
+
+                                                OnGetCertificateStatusResponse?.Invoke(Timestamp.Now,
+                                                                                       this,
+                                                                                       request,
+                                                                                       response,
+                                                                                       response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCertificateStatusResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'GetCertificateStatus' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'GetCertificateStatus' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnGetCertificateStatusWSResponse event
+
+                                    try
+                                    {
+
+                                        OnGetCertificateStatusWSResponse?.Invoke(Timestamp.Now,
+                                                                                 this,
+                                                                                 json,
+                                                                                 OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCertificateStatusWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+
+                            #region ReservationStatusUpdate
+
+                            case "ReservationStatusUpdate":
+                                {
+
+                                    #region Send OnReservationStatusUpdateWSRequest event
+
+                                    try
+                                    {
+
+                                        OnReservationStatusUpdateWSRequest?.Invoke(Timestamp.Now,
+                                                                                   this,
+                                                                                   json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReservationStatusUpdateWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (ReservationStatusUpdateRequest.TryParse(requestData,
+                                                                                    requestId.Value,
+                                                                                    chargeBoxId.Value,
+                                                                                    out var request,
+                                                                                    out var errorResponse,
+                                                                                    CustomReservationStatusUpdateRequestParser) && request is not null) {
+
+                                            #region Send OnReservationStatusUpdateRequest event
+
+                                            try
+                                            {
+
+                                                OnReservationStatusUpdateRequest?.Invoke(Timestamp.Now,
+                                                                                         this,
+                                                                                         request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReservationStatusUpdateRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            ReservationStatusUpdateResponse? response = null;
+
+                                            var responseTasks = OnReservationStatusUpdate?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnReservationStatusUpdateDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                       this,
+                                                                                                                                                       request,
+                                                                                                                                                       CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= ReservationStatusUpdateResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnReservationStatusUpdateResponse event
+
+                                            try
+                                            {
+
+                                                OnReservationStatusUpdateResponse?.Invoke(Timestamp.Now,
+                                                                                          this,
+                                                                                          request,
+                                                                                          response,
+                                                                                          response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReservationStatusUpdateResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'ReservationStatusUpdate' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'ReservationStatusUpdate' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnReservationStatusUpdateWSResponse event
+
+                                    try
+                                    {
+
+                                        OnReservationStatusUpdateWSResponse?.Invoke(Timestamp.Now,
+                                                                                    this,
+                                                                                    json,
+                                                                                    OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReservationStatusUpdateWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
 
                             #region Authorize
 
@@ -1864,6 +4295,154 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                     catch (Exception e)
                                     {
                                         DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAuthorizeWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region NotifyEVChargingNeeds
+
+                            case "NotifyEVChargingNeeds":
+                                {
+
+                                    #region Send OnNotifyEVChargingNeedsWSRequest event
+
+                                    try
+                                    {
+
+                                        OnNotifyEVChargingNeedsWSRequest?.Invoke(Timestamp.Now,
+                                                                                 this,
+                                                                                 json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyEVChargingNeedsWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (NotifyEVChargingNeedsRequest.TryParse(requestData,
+                                                                                  requestId.Value,
+                                                                                  chargeBoxId.Value,
+                                                                                  out var request,
+                                                                                  out var errorResponse,
+                                                                                  CustomNotifyEVChargingNeedsRequestParser) && request is not null) {
+
+                                            #region Send OnNotifyEVChargingNeedsRequest event
+
+                                            try
+                                            {
+
+                                                OnNotifyEVChargingNeedsRequest?.Invoke(Timestamp.Now,
+                                                                                       this,
+                                                                                       request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyEVChargingNeedsRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            NotifyEVChargingNeedsResponse? response = null;
+
+                                            var responseTasks = OnNotifyEVChargingNeeds?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnNotifyEVChargingNeedsDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                     this,
+                                                                                                                                                     request,
+                                                                                                                                                     CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= NotifyEVChargingNeedsResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnNotifyEVChargingNeedsResponse event
+
+                                            try
+                                            {
+
+                                                OnNotifyEVChargingNeedsResponse?.Invoke(Timestamp.Now,
+                                                                                        this,
+                                                                                        request,
+                                                                                        response,
+                                                                                        response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyEVChargingNeedsResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'NotifyEVChargingNeeds' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'NotifyEVChargingNeeds' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnNotifyEVChargingNeedsWSResponse event
+
+                                    try
+                                    {
+
+                                        OnNotifyEVChargingNeedsWSResponse?.Invoke(Timestamp.Now,
+                                                                                  this,
+                                                                                  json,
+                                                                                  OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyEVChargingNeedsWSResponse));
                                     }
 
                                     #endregion
@@ -2317,25 +4896,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                             #endregion
 
+                            #region NotifyChargingLimit
 
-                            #region DataTransfer
-
-                            case "DataTransfer":
+                            case "NotifyChargingLimit":
                                 {
 
-                                    #region Send OnIncomingDataTransferWSRequest event
+                                    #region Send OnNotifyChargingLimitWSRequest event
 
                                     try
                                     {
 
-                                        OnIncomingDataTransferWSRequest?.Invoke(Timestamp.Now,
-                                                                                this,
-                                                                                json);
+                                        OnNotifyChargingLimitWSRequest?.Invoke(Timestamp.Now,
+                                                                               this,
+                                                                               json);
 
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingDataTransferWSRequest));
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyChargingLimitWSRequest));
                                     }
 
                                     #endregion
@@ -2343,37 +4921,185 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                     try
                                     {
 
-                                        if (CS.DataTransferRequest.TryParse(requestData,
-                                                                            requestId.Value,
-                                                                            chargeBoxId.Value,
-                                                                            out var request,
-                                                                            out var errorResponse,
-                                                                            CustomDataTransferRequestParser) && request is not null) {
+                                        if (NotifyChargingLimitRequest.TryParse(requestData,
+                                                                                requestId.Value,
+                                                                                chargeBoxId.Value,
+                                                                                out var request,
+                                                                                out var errorResponse,
+                                                                                CustomNotifyChargingLimitRequestParser) && request is not null) {
 
-                                            #region Send OnIncomingDataTransferRequest event
+                                            #region Send OnNotifyChargingLimitRequest event
 
                                             try
                                             {
 
-                                                OnIncomingDataTransferRequest?.Invoke(Timestamp.Now,
-                                                                                      this,
-                                                                                      request);
+                                                OnNotifyChargingLimitRequest?.Invoke(Timestamp.Now,
+                                                                                     this,
+                                                                                     request);
 
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingDataTransferRequest));
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyChargingLimitRequest));
                                             }
 
                                             #endregion
 
                                             #region Call async subscribers
 
-                                            DataTransferResponse? response = null;
+                                            NotifyChargingLimitResponse? response = null;
 
-                                            var responseTasks = OnIncomingDataTransfer?.
+                                            var responseTasks = OnNotifyChargingLimit?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                    SafeSelect(subscriber => (subscriber as OnNotifyChargingLimitDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                   this,
+                                                                                                                                                   request,
+                                                                                                                                                   CancellationToken)).
+                                                                    ToArray();
+
+                                            if (responseTasks?.Length > 0)
+                                            {
+                                                await Task.WhenAll(responseTasks!);
+                                                response = responseTasks.FirstOrDefault()?.Result;
+                                            }
+
+                                            response ??= NotifyChargingLimitResponse.Failed(request);
+
+                                            #endregion
+
+                                            #region Send OnNotifyChargingLimitResponse event
+
+                                            try
+                                            {
+
+                                                OnNotifyChargingLimitResponse?.Invoke(Timestamp.Now,
+                                                                                      this,
+                                                                                      request,
+                                                                                      response,
+                                                                                      response.Runtime);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyChargingLimitResponse));
+                                            }
+
+                                            #endregion
+
+                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                                                               requestId.Value,
+                                                               response.ToJSON()
+                                                           );
+
+                                        }
+
+                                        else
+                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                    requestId.Value,
+                                                                    ResultCodes.FormationViolation,
+                                                                    "The given 'NotifyChargingLimit' request could not be parsed!",
+                                                                    new JObject(
+                                                                        new JProperty("request",       OCPPTextMessage),
+                                                                        new JProperty("errorResponse", errorResponse)
+                                                                    )
+                                                                );
+
+                                    }
+                                    catch (Exception e)
+                                    {
+
+                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                                requestId.Value,
+                                                                ResultCodes.FormationViolation,
+                                                                "Processing the given 'NotifyChargingLimit' request led to an exception!",
+                                                                JSONObject.Create(
+                                                                    new JProperty("request",    OCPPTextMessage),
+                                                                    new JProperty("exception",  e.Message),
+                                                                    new JProperty("stacktrace", e.StackTrace)
+                                                                )
+                                                            );
+
+                                    }
+
+                                    #region Send OnNotifyChargingLimitWSResponse event
+
+                                    try
+                                    {
+
+                                        OnNotifyChargingLimitWSResponse?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                json,
+                                                                                OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyChargingLimitWSResponse));
+                                    }
+
+                                    #endregion
+
+                                }
+                                break;
+
+                            #endregion
+
+                            #region ClearedChargingLimit
+
+                            case "ClearedChargingLimit":
+                                {
+
+                                    #region Send OnClearedChargingLimitWSRequest event
+
+                                    try
+                                    {
+
+                                        OnClearedChargingLimitWSRequest?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                json);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearedChargingLimitWSRequest));
+                                    }
+
+                                    #endregion
+
+                                    try
+                                    {
+
+                                        if (ClearedChargingLimitRequest.TryParse(requestData,
+                                                                                 requestId.Value,
+                                                                                 chargeBoxId.Value,
+                                                                                 out var request,
+                                                                                 out var errorResponse,
+                                                                                 CustomClearedChargingLimitRequestParser) && request is not null) {
+
+                                            #region Send OnClearedChargingLimitRequest event
+
+                                            try
+                                            {
+
+                                                OnClearedChargingLimitRequest?.Invoke(Timestamp.Now,
+                                                                                      this,
+                                                                                      request);
+
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearedChargingLimitRequest));
+                                            }
+
+                                            #endregion
+
+                                            #region Call async subscribers
+
+                                            ClearedChargingLimitResponse? response = null;
+
+                                            var responseTasks = OnClearedChargingLimit?.
+                                                                    GetInvocationList()?.
+                                                                    SafeSelect(subscriber => (subscriber as OnClearedChargingLimitDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                                     this,
                                                                                                                                                     request,
                                                                                                                                                     CancellationToken)).
@@ -2385,16 +5111,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
-                                            response ??= DataTransferResponse.Failed(request);
+                                            response ??= ClearedChargingLimitResponse.Failed(request);
 
                                             #endregion
 
-                                            #region Send OnIncomingDataTransferResponse event
+                                            #region Send OnClearedChargingLimitResponse event
 
                                             try
                                             {
 
-                                                OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
+                                                OnClearedChargingLimitResponse?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        request,
                                                                                        response,
@@ -2403,7 +5129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingDataTransferResponse));
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearedChargingLimitResponse));
                                             }
 
                                             #endregion
@@ -2419,7 +5145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
                                                                     ResultCodes.FormationViolation,
-                                                                    "The given 'IncomingDataTransfer' request could not be parsed!",
+                                                                    "The given 'ClearedChargingLimit' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
                                                                         new JProperty("errorResponse", errorResponse)
@@ -2433,7 +5159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
                                                                 ResultCodes.FormationViolation,
-                                                                "Processing the given 'IncomingDataTransfer' request led to an exception!",
+                                                                "Processing the given 'ClearedChargingLimit' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
                                                                     new JProperty("exception",  e.Message),
@@ -2443,12 +5169,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                                     }
 
-                                    #region Send OnIncomingDataTransferWSResponse event
+                                    #region Send OnClearedChargingLimitWSResponse event
 
                                     try
                                     {
 
-                                        OnIncomingDataTransferWSResponse?.Invoke(Timestamp.Now,
+                                        OnClearedChargingLimitWSResponse?.Invoke(Timestamp.Now,
                                                                                  this,
                                                                                  json,
                                                                                  OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
@@ -2456,7 +5182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingDataTransferWSResponse));
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearedChargingLimitWSResponse));
                                     }
 
                                     #endregion
@@ -2466,24 +5192,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                             #endregion
 
-                            #region FirmwareStatusNotification
+                            #region ReportChargingProfiles
 
-                            case "FirmwareStatusNotification":
+                            case "ReportChargingProfiles":
                                 {
 
-                                    #region Send OnFirmwareStatusNotificationWSRequest event
+                                    #region Send OnReportChargingProfilesWSRequest event
 
                                     try
                                     {
 
-                                        OnFirmwareStatusNotificationWSRequest?.Invoke(Timestamp.Now,
-                                                                                      this,
-                                                                                      json);
+                                        OnReportChargingProfilesWSRequest?.Invoke(Timestamp.Now,
+                                                                                  this,
+                                                                                  json);
 
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationWSRequest));
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReportChargingProfilesWSRequest));
                                     }
 
                                     #endregion
@@ -2491,40 +5217,40 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                     try
                                     {
 
-                                        if (FirmwareStatusNotificationRequest.TryParse(requestData,
-                                                                                       requestId.Value,
-                                                                                       chargeBoxId.Value,
-                                                                                       out var request,
-                                                                                       out var errorResponse,
-                                                                                       CustomFirmwareStatusNotificationRequestParser) && request is not null) {
+                                        if (ReportChargingProfilesRequest.TryParse(requestData,
+                                                                                   requestId.Value,
+                                                                                   chargeBoxId.Value,
+                                                                                   out var request,
+                                                                                   out var errorResponse,
+                                                                                   CustomReportChargingProfilesRequestParser) && request is not null) {
 
-                                            #region Send OnFirmwareStatusNotificationRequest event
+                                            #region Send OnReportChargingProfilesRequest event
 
                                             try
                                             {
 
-                                                OnFirmwareStatusNotificationRequest?.Invoke(Timestamp.Now,
-                                                                                            this,
-                                                                                            request);
+                                                OnReportChargingProfilesRequest?.Invoke(Timestamp.Now,
+                                                                                        this,
+                                                                                        request);
 
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReportChargingProfilesRequest));
                                             }
 
                                             #endregion
 
                                             #region Call async subscribers
 
-                                            FirmwareStatusNotificationResponse? response = null;
+                                            ReportChargingProfilesResponse? response = null;
 
-                                            var responseTasks = OnFirmwareStatusNotification?.
+                                            var responseTasks = OnReportChargingProfiles?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                                          this,
-                                                                                                                                                          request,
-                                                                                                                                                          CancellationToken)).
+                                                                    SafeSelect(subscriber => (subscriber as OnReportChargingProfilesDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                                      this,
+                                                                                                                                                      request,
+                                                                                                                                                      CancellationToken)).
                                                                     ToArray();
 
                                             if (responseTasks?.Length > 0)
@@ -2533,25 +5259,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
-                                            response ??= FirmwareStatusNotificationResponse.Failed(request);
+                                            response ??= ReportChargingProfilesResponse.Failed(request);
 
                                             #endregion
 
-                                            #region Send OnFirmwareStatusNotificationResponse event
+                                            #region Send OnReportChargingProfilesResponse event
 
                                             try
                                             {
 
-                                                OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
-                                                                                             this,
-                                                                                             request,
-                                                                                             response,
-                                                                                             response.Runtime);
+                                                OnReportChargingProfilesResponse?.Invoke(Timestamp.Now,
+                                                                                         this,
+                                                                                         request,
+                                                                                         response,
+                                                                                         response.Runtime);
 
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReportChargingProfilesResponse));
                                             }
 
                                             #endregion
@@ -2567,7 +5293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
                                                                     ResultCodes.FormationViolation,
-                                                                    "The given 'FirmwareStatusNotification' request could not be parsed!",
+                                                                    "The given 'ReportChargingProfiles' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
                                                                         new JProperty("errorResponse", errorResponse)
@@ -2581,7 +5307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
                                                                 ResultCodes.FormationViolation,
-                                                                "Processing the given 'FirmwareStatusNotification' request led to an exception!",
+                                                                "Processing the given 'ReportChargingProfiles' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
                                                                     new JProperty("exception",  e.Message),
@@ -2591,20 +5317,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                                     }
 
-                                    #region Send OnFirmwareStatusNotificationWSResponse event
+                                    #region Send OnReportChargingProfilesWSResponse event
 
                                     try
                                     {
 
-                                        OnFirmwareStatusNotificationWSResponse?.Invoke(Timestamp.Now,
-                                                                                       this,
-                                                                                       json,
-                                                                                       OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+                                        OnReportChargingProfilesWSResponse?.Invoke(Timestamp.Now,
+                                                                                   this,
+                                                                                   json,
+                                                                                   OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
 
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationWSResponse));
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReportChargingProfilesWSResponse));
                                     }
 
                                     #endregion
@@ -2615,24 +5341,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                             #endregion
 
 
-                            #region LogStatusNotification
+                            #region NotifyDisplayMessages
 
-                            case "LogStatusNotification":
+                            case "NotifyDisplayMessages":
                                 {
 
-                                    #region Send OnLogStatusNotificationWSRequest event
+                                    #region Send OnNotifyDisplayMessagesWSRequest event
 
                                     try
                                     {
 
-                                        OnLogStatusNotificationWSRequest?.Invoke(Timestamp.Now,
+                                        OnNotifyDisplayMessagesWSRequest?.Invoke(Timestamp.Now,
                                                                                  this,
                                                                                  json);
 
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnLogStatusNotificationWSRequest));
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyDisplayMessagesWSRequest));
                                     }
 
                                     #endregion
@@ -2640,37 +5366,37 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                     try
                                     {
 
-                                        if (LogStatusNotificationRequest.TryParse(requestData,
+                                        if (NotifyDisplayMessagesRequest.TryParse(requestData,
                                                                                   requestId.Value,
                                                                                   chargeBoxId.Value,
                                                                                   out var request,
                                                                                   out var errorResponse,
-                                                                                  CustomLogStatusNotificationRequestParser) && request is not null) {
+                                                                                  CustomNotifyDisplayMessagesRequestParser) && request is not null) {
 
-                                            #region Send OnLogStatusNotificationRequest event
+                                            #region Send OnNotifyDisplayMessagesRequest event
 
                                             try
                                             {
 
-                                                OnLogStatusNotificationRequest?.Invoke(Timestamp.Now,
+                                                OnNotifyDisplayMessagesRequest?.Invoke(Timestamp.Now,
                                                                                        this,
                                                                                        request);
 
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnLogStatusNotificationRequest));
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyDisplayMessagesRequest));
                                             }
 
                                             #endregion
 
                                             #region Call async subscribers
 
-                                            LogStatusNotificationResponse? response = null;
+                                            NotifyDisplayMessagesResponse? response = null;
 
-                                            var responseTasks = OnLogStatusNotification?.
+                                            var responseTasks = OnNotifyDisplayMessages?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnLogStatusNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                    SafeSelect(subscriber => (subscriber as OnNotifyDisplayMessagesDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                                      this,
                                                                                                                                                      request,
                                                                                                                                                      CancellationToken)).
@@ -2682,16 +5408,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
-                                            response ??= LogStatusNotificationResponse.Failed(request);
+                                            response ??= NotifyDisplayMessagesResponse.Failed(request);
 
                                             #endregion
 
-                                            #region Send OnLogStatusNotificationResponse event
+                                            #region Send OnNotifyDisplayMessagesResponse event
 
                                             try
                                             {
 
-                                                OnLogStatusNotificationResponse?.Invoke(Timestamp.Now,
+                                                OnNotifyDisplayMessagesResponse?.Invoke(Timestamp.Now,
                                                                                         this,
                                                                                         request,
                                                                                         response,
@@ -2700,7 +5426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnLogStatusNotificationResponse));
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyDisplayMessagesResponse));
                                             }
 
                                             #endregion
@@ -2716,7 +5442,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
                                                                     ResultCodes.FormationViolation,
-                                                                    "The given 'LogStatusNotification' request could not be parsed!",
+                                                                    "The given 'NotifyDisplayMessages' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
                                                                         new JProperty("errorResponse", errorResponse)
@@ -2730,7 +5456,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
                                                                 ResultCodes.FormationViolation,
-                                                                "Processing the given 'LogStatusNotification' request led to an exception!",
+                                                                "Processing the given 'NotifyDisplayMessages' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
                                                                     new JProperty("exception",  e.Message),
@@ -2740,12 +5466,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                                     }
 
-                                    #region Send OnLogStatusNotificationWSResponse event
+                                    #region Send OnNotifyDisplayMessagesWSResponse event
 
                                     try
                                     {
 
-                                        OnLogStatusNotificationWSResponse?.Invoke(Timestamp.Now,
+                                        OnNotifyDisplayMessagesWSResponse?.Invoke(Timestamp.Now,
                                                                                   this,
                                                                                   json,
                                                                                   OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
@@ -2753,7 +5479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnLogStatusNotificationWSResponse));
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyDisplayMessagesWSResponse));
                                     }
 
                                     #endregion
@@ -2763,24 +5489,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                             #endregion
 
-                            #region SecurityEventNotification
+                            #region NotifyCustomerInformation
 
-                            case "SecurityEventNotification":
+                            case "NotifyCustomerInformation":
                                 {
 
-                                    #region Send OnSecurityEventNotificationWSRequest event
+                                    #region Send OnNotifyCustomerInformationWSRequest event
 
                                     try
                                     {
 
-                                        OnSecurityEventNotificationWSRequest?.Invoke(Timestamp.Now,
-                                                                           this,
-                                                                           json);
+                                        OnNotifyCustomerInformationWSRequest?.Invoke(Timestamp.Now,
+                                                                                     this,
+                                                                                     json);
 
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSecurityEventNotificationWSRequest));
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyCustomerInformationWSRequest));
                                     }
 
                                     #endregion
@@ -2788,37 +5514,37 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                     try
                                     {
 
-                                        if (SecurityEventNotificationRequest.TryParse(requestData,
+                                        if (NotifyCustomerInformationRequest.TryParse(requestData,
                                                                                       requestId.Value,
                                                                                       chargeBoxId.Value,
                                                                                       out var request,
                                                                                       out var errorResponse,
-                                                                                      CustomSecurityEventNotificationRequestParser) && request is not null) {
+                                                                                      CustomNotifyCustomerInformationRequestParser) && request is not null) {
 
-                                            #region Send OnSecurityEventNotificationRequest event
+                                            #region Send OnNotifyCustomerInformationRequest event
 
                                             try
                                             {
 
-                                                OnSecurityEventNotificationRequest?.Invoke(Timestamp.Now,
-                                                                                 this,
-                                                                                 request);
+                                                OnNotifyCustomerInformationRequest?.Invoke(Timestamp.Now,
+                                                                                           this,
+                                                                                           request);
 
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSecurityEventNotificationRequest));
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyCustomerInformationRequest));
                                             }
 
                                             #endregion
 
                                             #region Call async subscribers
 
-                                            SecurityEventNotificationResponse? response = null;
+                                            NotifyCustomerInformationResponse? response = null;
 
-                                            var responseTasks = OnSecurityEventNotification?.
+                                            var responseTasks = OnNotifyCustomerInformation?.
                                                                     GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnSecurityEventNotificationDelegate)?.Invoke(Timestamp.Now,
+                                                                    SafeSelect(subscriber => (subscriber as OnNotifyCustomerInformationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                                          this,
                                                                                                                                                          request,
                                                                                                                                                          CancellationToken)).
@@ -2830,25 +5556,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                 response = responseTasks.FirstOrDefault()?.Result;
                                             }
 
-                                            response ??= SecurityEventNotificationResponse.Failed(request);
+                                            response ??= NotifyCustomerInformationResponse.Failed(request);
 
                                             #endregion
 
-                                            #region Send OnSecurityEventNotificationResponse event
+                                            #region Send OnNotifyCustomerInformationResponse event
 
                                             try
                                             {
 
-                                                OnSecurityEventNotificationResponse?.Invoke(Timestamp.Now,
-                                                                                  this,
-                                                                                  request,
-                                                                                  response,
-                                                                                  response.Runtime);
+                                                OnNotifyCustomerInformationResponse?.Invoke(Timestamp.Now,
+                                                                                            this,
+                                                                                            request,
+                                                                                            response,
+                                                                                            response.Runtime);
 
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSecurityEventNotificationResponse));
+                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyCustomerInformationResponse));
                                             }
 
                                             #endregion
@@ -2864,7 +5590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
                                                                     ResultCodes.FormationViolation,
-                                                                    "The given 'SecurityEventNotification' request could not be parsed!",
+                                                                    "The given 'NotifyCustomerInformation' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
                                                                         new JProperty("errorResponse", errorResponse)
@@ -2878,7 +5604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
                                                                 ResultCodes.FormationViolation,
-                                                                "Processing the given 'SecurityEventNotification' request led to an exception!",
+                                                                "Processing the given 'NotifyCustomerInformation' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
                                                                     new JProperty("exception",  e.Message),
@@ -2888,168 +5614,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                                     }
 
-                                    #region Send OnSecurityEventNotificationWSResponse event
+                                    #region Send OnNotifyCustomerInformationWSResponse event
 
                                     try
                                     {
 
-                                        OnSecurityEventNotificationWSResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            json,
-                                                                            OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+                                        OnNotifyCustomerInformationWSResponse?.Invoke(Timestamp.Now,
+                                                                                      this,
+                                                                                      json,
+                                                                                      OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
 
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSecurityEventNotificationWSResponse));
-                                    }
-
-                                    #endregion
-
-                                }
-                                break;
-
-                            #endregion
-
-                            #region SignCertificate
-
-                            case "SignCertificate":
-                                {
-
-                                    #region Send OnSignCertificateWSRequest event
-
-                                    try
-                                    {
-
-                                        OnSignCertificateWSRequest?.Invoke(Timestamp.Now,
-                                                                           this,
-                                                                           json);
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSignCertificateWSRequest));
-                                    }
-
-                                    #endregion
-
-                                    try
-                                    {
-
-                                        if (SignCertificateRequest.TryParse(requestData,
-                                                                             requestId.Value,
-                                                                             chargeBoxId.Value,
-                                                                             out var request,
-                                                                             out var errorResponse,
-                                                                             CustomSignCertificateRequestParser) && request is not null) {
-
-                                            #region Send OnSignCertificateRequest event
-
-                                            try
-                                            {
-
-                                                OnSignCertificateRequest?.Invoke(Timestamp.Now,
-                                                                                 this,
-                                                                                 request);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSignCertificateRequest));
-                                            }
-
-                                            #endregion
-
-                                            #region Call async subscribers
-
-                                            SignCertificateResponse? response = null;
-
-                                            var responseTasks = OnSignCertificate?.
-                                                                    GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnSignCertificateDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                               this,
-                                                                                                                                               request,
-                                                                                                                                               CancellationToken)).
-                                                                    ToArray();
-
-                                            if (responseTasks?.Length > 0)
-                                            {
-                                                await Task.WhenAll(responseTasks!);
-                                                response = responseTasks.FirstOrDefault()?.Result;
-                                            }
-
-                                            response ??= SignCertificateResponse.Failed(request);
-
-                                            #endregion
-
-                                            #region Send OnSignCertificateResponse event
-
-                                            try
-                                            {
-
-                                                OnSignCertificateResponse?.Invoke(Timestamp.Now,
-                                                                                  this,
-                                                                                  request,
-                                                                                  response,
-                                                                                  response.Runtime);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSignCertificateResponse));
-                                            }
-
-                                            #endregion
-
-                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
-                                                               requestId.Value,
-                                                               response.ToJSON()
-                                                           );
-
-                                        }
-
-                                        else
-                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                    requestId.Value,
-                                                                    ResultCodes.FormationViolation,
-                                                                    "The given 'SignCertificate' request could not be parsed!",
-                                                                    new JObject(
-                                                                        new JProperty("request",       OCPPTextMessage),
-                                                                        new JProperty("errorResponse", errorResponse)
-                                                                    )
-                                                                );
-
-                                    }
-                                    catch (Exception e)
-                                    {
-
-                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                requestId.Value,
-                                                                ResultCodes.FormationViolation,
-                                                                "Processing the given 'SignCertificate' request led to an exception!",
-                                                                JSONObject.Create(
-                                                                    new JProperty("request",    OCPPTextMessage),
-                                                                    new JProperty("exception",  e.Message),
-                                                                    new JProperty("stacktrace", e.StackTrace)
-                                                                )
-                                                            );
-
-                                    }
-
-                                    #region Send OnSignCertificateWSResponse event
-
-                                    try
-                                    {
-
-                                        OnSignCertificateWSResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            json,
-                                                                            OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSignCertificateWSResponse));
+                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyCustomerInformationWSResponse));
                                     }
 
                                     #endregion
@@ -3440,7 +6018,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
 
-        #region Reset                 (Request)
+        #region Reset                     (Request)
 
         public async Task<ResetResponse> Reset(ResetRequest Request)
         {
@@ -3520,7 +6098,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
-        #region UpdateFirmware        (Request)
+        #region UpdateFirmware            (Request)
 
         public async Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
         {
@@ -3600,7 +6178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
-        #region PublishFirmware        (Request)
+        #region PublishFirmware           (Request)
 
         public async Task<PublishFirmwareResponse> PublishFirmware(PublishFirmwareRequest Request)
         {
@@ -3680,7 +6258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
-        #region UnpublishFirmware        (Request)
+        #region UnpublishFirmware         (Request)
 
         public async Task<UnpublishFirmwareResponse> UnpublishFirmware(UnpublishFirmwareRequest Request)
         {
@@ -3760,9 +6338,891 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
+        #region GetBaseReport             (Request)
+
+        public async Task<GetBaseReportResponse> GetBaseReport(GetBaseReportRequest Request)
+        {
+
+            #region Send OnGetBaseReportRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetBaseReportRequest?.Invoke(startTime,
+                                               this,
+                                               Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetBaseReportRequest));
+            }
+
+            #endregion
 
 
-        #region ChangeAvailability    (Request)
+            GetBaseReportResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomGetBaseReportRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (GetBaseReportResponse.TryParse(Request,
+                                                   sendRequestState.Response,
+                                                   out var resetResponse,
+                                                   out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new GetBaseReportResponse(Request,
+                                                         Result.Format(errorResponse));
+
+            }
+            else
+                response = new GetBaseReportResponse(Request,
+                                                     Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnGetBaseReportResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetBaseReportResponse?.Invoke(endTime,
+                                                this,
+                                                Request,
+                                                response,
+                                                endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetBaseReportResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetReport                 (Request)
+
+        public async Task<GetReportResponse> GetReport(GetReportRequest Request)
+        {
+
+            #region Send OnGetReportRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetReportRequest?.Invoke(startTime,
+                                           this,
+                                           Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetReportRequest));
+            }
+
+            #endregion
+
+
+            GetReportResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomGetReportRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (GetReportResponse.TryParse(Request,
+                                               sendRequestState.Response,
+                                               out var resetResponse,
+                                               out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new GetReportResponse(Request,
+                                                     Result.Format(errorResponse));
+
+            }
+            else
+                response = new GetReportResponse(Request,
+                                                 Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnGetReportResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetReportResponse?.Invoke(endTime,
+                                            this,
+                                            Request,
+                                            response,
+                                            endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetReportResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetLog                    (Request)
+
+        /// <summary>
+        /// Retrieve log files from the charging station.
+        /// </summary>
+        /// <param name="Request">A get log request.</param>
+        public async Task<GetLogResponse> GetLog(GetLogRequest Request)
+        {
+
+            #region Send OnGetLogRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetLogRequest?.Invoke(startTime,
+                                        this,
+                                        Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLogRequest));
+            }
+
+            #endregion
+
+
+            GetLogResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomGetLogRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (GetLogResponse.TryParse(Request,
+                                            sendRequestState.Response,
+                                            out var clearCacheResponse,
+                                            out var errorResponse))
+                {
+                    response = clearCacheResponse!;
+                }
+
+                else
+                    response = new GetLogResponse(Request,
+                                                  Result.Format(errorResponse));
+
+            }
+            else
+                response = new GetLogResponse(Request,
+                                              Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnGetLogResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetLogResponse?.Invoke(endTime,
+                                         this,
+                                         Request,
+                                         response,
+                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLogResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SetVariables              (Request)
+
+        public async Task<SetVariablesResponse> SetVariables(SetVariablesRequest Request)
+        {
+
+            #region Send OnSetVariablesRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetVariablesRequest?.Invoke(startTime,
+                                              this,
+                                              Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetVariablesRequest));
+            }
+
+            #endregion
+
+
+            SetVariablesResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomSetVariablesRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (SetVariablesResponse.TryParse(Request,
+                                                  sendRequestState.Response,
+                                                  out var resetResponse,
+                                                  out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new SetVariablesResponse(Request,
+                                                        Result.Format(errorResponse));
+
+            }
+            else
+                response = new SetVariablesResponse(Request,
+                                                    Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnSetVariablesResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetVariablesResponse?.Invoke(endTime,
+                                               this,
+                                               Request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetVariablesResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetVariables              (Request)
+
+        public async Task<GetVariablesResponse> GetVariables(GetVariablesRequest Request)
+        {
+
+            #region Send OnGetVariablesRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetVariablesRequest?.Invoke(startTime,
+                                              this,
+                                              Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetVariablesRequest));
+            }
+
+            #endregion
+
+
+            GetVariablesResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomGetVariablesRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (GetVariablesResponse.TryParse(Request,
+                                                  sendRequestState.Response,
+                                                  out var resetResponse,
+                                                  out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new GetVariablesResponse(Request,
+                                                        Result.Format(errorResponse));
+
+            }
+            else
+                response = new GetVariablesResponse(Request,
+                                                    Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnGetVariablesResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetVariablesResponse?.Invoke(endTime,
+                                               this,
+                                               Request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetVariablesResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SetMonitoringBase         (Request)
+
+        public async Task<SetMonitoringBaseResponse> SetMonitoringBase(SetMonitoringBaseRequest Request)
+        {
+
+            #region Send OnSetMonitoringBaseRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetMonitoringBaseRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetMonitoringBaseRequest));
+            }
+
+            #endregion
+
+
+            SetMonitoringBaseResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomSetMonitoringBaseRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (SetMonitoringBaseResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var resetResponse,
+                                                       out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new SetMonitoringBaseResponse(Request,
+                                                 Result.Format(errorResponse));
+
+            }
+            else
+                response = new SetMonitoringBaseResponse(Request,
+                                             Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnSetMonitoringBaseResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetMonitoringBaseResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetMonitoringBaseResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetMonitoringReport       (Request)
+
+        public async Task<GetMonitoringReportResponse> GetMonitoringReport(GetMonitoringReportRequest Request)
+        {
+
+            #region Send OnGetMonitoringReportRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetMonitoringReportRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetMonitoringReportRequest));
+            }
+
+            #endregion
+
+
+            GetMonitoringReportResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomGetMonitoringReportRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (GetMonitoringReportResponse.TryParse(Request,
+                                                         sendRequestState.Response,
+                                                         out var resetResponse,
+                                                         out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new GetMonitoringReportResponse(Request,
+                                                 Result.Format(errorResponse));
+
+            }
+            else
+                response = new GetMonitoringReportResponse(Request,
+                                             Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnGetMonitoringReportResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetMonitoringReportResponse?.Invoke(endTime,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetMonitoringReportResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SetMonitoringLevel        (Request)
+
+        public async Task<SetMonitoringLevelResponse> SetMonitoringLevel(SetMonitoringLevelRequest Request)
+        {
+
+            #region Send OnSetMonitoringLevelRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetMonitoringLevelRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetMonitoringLevelRequest));
+            }
+
+            #endregion
+
+
+            SetMonitoringLevelResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomSetMonitoringLevelRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (SetMonitoringLevelResponse.TryParse(Request,
+                                                        sendRequestState.Response,
+                                                        out var resetResponse,
+                                                        out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new SetMonitoringLevelResponse(Request,
+                                                 Result.Format(errorResponse));
+
+            }
+            else
+                response = new SetMonitoringLevelResponse(Request,
+                                             Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnSetMonitoringLevelResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetMonitoringLevelResponse?.Invoke(endTime,
+                                                     this,
+                                                     Request,
+                                                     response,
+                                                     endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetMonitoringLevelResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SetVariableMonitoring     (Request)
+
+        public async Task<SetVariableMonitoringResponse> SetVariableMonitoring(SetVariableMonitoringRequest Request)
+        {
+
+            #region Send OnSetVariableMonitoringRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetVariableMonitoringRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetVariableMonitoringRequest));
+            }
+
+            #endregion
+
+
+            SetVariableMonitoringResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomSetVariableMonitoringRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (SetVariableMonitoringResponse.TryParse(Request,
+                                                           sendRequestState.Response,
+                                                           out var resetResponse,
+                                                           out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new SetVariableMonitoringResponse(Request,
+                                                                 Result.Format(errorResponse));
+
+            }
+            else
+                response = new SetVariableMonitoringResponse(Request,
+                                                             Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnSetVariableMonitoringResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetVariableMonitoringResponse?.Invoke(endTime,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetVariableMonitoringResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region ClearVariableMonitoring   (Request)
+
+        public async Task<ClearVariableMonitoringResponse> ClearVariableMonitoring(ClearVariableMonitoringRequest Request)
+        {
+
+            #region Send OnClearVariableMonitoringRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearVariableMonitoringRequest?.Invoke(startTime,
+                                                         this,
+                                                         Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearVariableMonitoringRequest));
+            }
+
+            #endregion
+
+
+            ClearVariableMonitoringResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomClearVariableMonitoringRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (ClearVariableMonitoringResponse.TryParse(Request,
+                                                             sendRequestState.Response,
+                                                             out var resetResponse,
+                                                             out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new ClearVariableMonitoringResponse(Request,
+                                                                   Result.Format(errorResponse));
+
+            }
+            else
+                response = new ClearVariableMonitoringResponse(Request,
+                                                               Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnClearVariableMonitoringResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearVariableMonitoringResponse?.Invoke(endTime,
+                                                          this,
+                                                          Request,
+                                                          response,
+                                                          endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearVariableMonitoringResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SetNetworkProfile         (Request)
+
+        public async Task<SetNetworkProfileResponse> SetNetworkProfile(SetNetworkProfileRequest Request)
+        {
+
+            #region Send OnSetNetworkProfileRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetNetworkProfileRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetNetworkProfileRequest));
+            }
+
+            #endregion
+
+
+            SetNetworkProfileResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomSetNetworkProfileRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (SetNetworkProfileResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var resetResponse,
+                                                       out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new SetNetworkProfileResponse(Request,
+                                                             Result.Format(errorResponse));
+
+            }
+            else
+                response = new SetNetworkProfileResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnSetNetworkProfileResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetNetworkProfileResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetNetworkProfileResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region ChangeAvailability        (Request)
 
         public async Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request)
         {
@@ -3842,87 +7302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
-        #region DataTransfer          (Request)
-
-        public async Task<CS.DataTransferResponse> DataTransfer(DataTransferRequest Request)
-        {
-
-            #region Send OnDataTransferRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnDataTransferRequest?.Invoke(startTime,
-                                              this,
-                                              Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDataTransferRequest));
-            }
-
-            #endregion
-
-
-            CS.DataTransferResponse? response = null;
-
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomDataTransferRequestSerializer),
-                                                     Request.RequestTimeout);
-
-            if (sendRequestState.Response is not null)
-            {
-
-                if (CS.DataTransferResponse.TryParse(Request,
-                                                     sendRequestState.Response,
-                                                     out var dataTransferResponse,
-                                                     out var errorResponse))
-                {
-                    response = dataTransferResponse!;
-                }
-
-                else
-                    response = new CS.DataTransferResponse(Request,
-                                                           Result.Format(errorResponse));
-
-            }
-            else
-                response = new CS.DataTransferResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
-
-
-            #region Send OnDataTransferResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnDataTransferResponse?.Invoke(endTime,
-                                               this,
-                                               Request,
-                                               response,
-                                               endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDataTransferResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region TriggerMessage        (Request)
+        #region TriggerMessage            (Request)
 
         public async Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request)
         {
@@ -4002,721 +7382,76 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
+        #region TransferData              (Request)
 
-
-
-        #region ReserveNow            (Request)
-
-        public async Task<ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
+        public async Task<CS.DataTransferResponse> TransferData(DataTransferRequest Request)
         {
 
-            #region Send OnReserveNowRequest event
+            #region Send OnDataTransferRequest event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnReserveNowRequest?.Invoke(startTime,
-                                            this,
-                                            Request);
+                OnDataTransferRequest?.Invoke(startTime,
+                                              this,
+                                              Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReserveNowRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDataTransferRequest));
             }
 
             #endregion
 
 
-            ReserveNowResponse? response = null;
+            CS.DataTransferResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomReserveNowRequestSerializer),
+                                                     Request.ToJSON(CustomDataTransferRequestSerializer),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.Response is not null)
             {
 
-                if (ReserveNowResponse.TryParse(Request,
-                                                    sendRequestState.Response,
-                                                    out var reserveNowResponse,
-                                                    out var errorResponse))
-                {
-                    response = reserveNowResponse!;
-                }
-
-                else
-                    response = new ReserveNowResponse(Request,
-                                                      Result.Format(errorResponse));
-
-            }
-            else
-                response = new ReserveNowResponse(Request,
-                                                  Result.FromSendRequestState(sendRequestState));
-
-
-            #region Send OnReserveNowResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnReserveNowResponse?.Invoke(endTime,
-                                             this,
-                                             Request,
-                                             response,
-                                             endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReserveNowResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region CancelReservation     (Request)
-
-        public async Task<CancelReservationResponse> CancelReservation(CancelReservationRequest Request)
-        {
-
-            #region Send OnCancelReservationRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnCancelReservationRequest?.Invoke(startTime,
-                                                   this,
-                                                   Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCancelReservationRequest));
-            }
-
-            #endregion
-
-
-            CancelReservationResponse? response = null;
-
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomCancelReservationRequestSerializer),
-                                                     Request.RequestTimeout);
-
-            if (sendRequestState.Response is not null)
-            {
-
-                if (CancelReservationResponse.TryParse(Request,
-                                                       sendRequestState.Response,
-                                                       out var cancelReservationResponse,
-                                                       out var errorResponse))
-                {
-                    response = cancelReservationResponse!;
-                }
-
-                else
-                    response = new CancelReservationResponse(Request,
-                                                             Result.Format(errorResponse));
-
-            }
-            else
-                response = new CancelReservationResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
-
-
-            #region Send OnCancelReservationResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnCancelReservationResponse?.Invoke(endTime,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCancelReservationResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SetChargingProfile    (Request)
-
-        public async Task<SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request)
-        {
-
-            #region Send OnSetChargingProfileRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSetChargingProfileRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetChargingProfileRequest));
-            }
-
-            #endregion
-
-
-            SetChargingProfileResponse? response = null;
-
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomSetChargingProfileRequestSerializer),
-                                                     Request.RequestTimeout);
-
-            if (sendRequestState.Response is not null)
-            {
-
-                if (SetChargingProfileResponse.TryParse(Request,
-                                                        sendRequestState.Response,
-                                                        out var setChargingProfileResponse,
-                                                        out var errorResponse))
-                {
-                    response = setChargingProfileResponse!;
-                }
-
-                else
-                    response = new SetChargingProfileResponse(Request,
-                                                              Result.Format(errorResponse));
-
-            }
-            else
-                response = new SetChargingProfileResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
-
-
-            #region Send OnSetChargingProfileResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSetChargingProfileResponse?.Invoke(endTime,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetChargingProfileResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region ClearChargingProfile  (Request)
-
-        public async Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request)
-        {
-
-            #region Send OnClearChargingProfileRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnClearChargingProfileRequest?.Invoke(startTime,
-                                                      this,
-                                                      Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearChargingProfileRequest));
-            }
-
-            #endregion
-
-
-            ClearChargingProfileResponse? response = null;
-
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomClearChargingProfileRequestSerializer),
-                                                     Request.RequestTimeout);
-
-            if (sendRequestState.Response is not null)
-            {
-
-                if (ClearChargingProfileResponse.TryParse(Request,
-                                                          sendRequestState.Response,
-                                                          out var clearChargingProfileResponse,
-                                                          out var errorResponse))
-                {
-                    response = clearChargingProfileResponse!;
-                }
-
-                else
-                    response = new ClearChargingProfileResponse(Request,
-                                                                Result.Format(errorResponse));
-
-            }
-            else
-                response = new ClearChargingProfileResponse(Request,
-                                                            Result.FromSendRequestState(sendRequestState));
-
-
-            #region Send OnClearChargingProfileResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnClearChargingProfileResponse?.Invoke(endTime,
-                                                       this,
-                                                       Request,
-                                                       response,
-                                                       endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearChargingProfileResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region GetCompositeSchedule  (Request)
-
-
-        public async Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request)
-        {
-
-            #region Send OnGetCompositeScheduleRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetCompositeScheduleRequest?.Invoke(startTime,
-                                                      this,
-                                                      Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCompositeScheduleRequest));
-            }
-
-            #endregion
-
-
-            GetCompositeScheduleResponse? response = null;
-
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomGetCompositeScheduleRequestSerializer),
-                                                     Request.RequestTimeout);
-
-            if (sendRequestState.Response is not null)
-            {
-
-                if (GetCompositeScheduleResponse.TryParse(Request,
-                                                          sendRequestState.Response,
-                                                          out var getCompositeScheduleResponse,
-                                                          out var errorResponse))
-                {
-                    response = getCompositeScheduleResponse!;
-                }
-
-                else
-                    response = new GetCompositeScheduleResponse(Request,
-                                                                Result.Format(errorResponse));
-
-            }
-            else
-                response = new GetCompositeScheduleResponse(Request,
-                                                            Result.FromSendRequestState(sendRequestState));
-
-
-            #region Send OnGetCompositeScheduleResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetCompositeScheduleResponse?.Invoke(endTime,
-                                                       this,
-                                                       Request,
-                                                       response,
-                                                       endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCompositeScheduleResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region UnlockConnector       (Request)
-
-        public async Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request)
-        {
-
-            #region Send OnUnlockConnectorRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnUnlockConnectorRequest?.Invoke(startTime,
-                                                 this,
-                                                 Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnlockConnectorRequest));
-            }
-
-            #endregion
-
-
-            UnlockConnectorResponse? response = null;
-
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomUnlockConnectorRequestSerializer),
-                                                     Request.RequestTimeout);
-
-            if (sendRequestState.Response is not null)
-            {
-
-                if (UnlockConnectorResponse.TryParse(Request,
+                if (CS.DataTransferResponse.TryParse(Request,
                                                      sendRequestState.Response,
-                                                     out var unlockConnectorResponse,
+                                                     out var dataTransferResponse,
                                                      out var errorResponse))
                 {
-                    response = unlockConnectorResponse!;
+                    response = dataTransferResponse!;
                 }
 
                 else
-                    response = new UnlockConnectorResponse(Request,
+                    response = new CS.DataTransferResponse(Request,
                                                            Result.Format(errorResponse));
 
             }
             else
-                response = new UnlockConnectorResponse(Request,
+                response = new CS.DataTransferResponse(Request,
                                                        Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnUnlockConnectorResponse event
+            #region Send OnDataTransferResponse event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnUnlockConnectorResponse?.Invoke(endTime,
-                                                  this,
-                                                  Request,
-                                                  response,
-                                                  endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnlockConnectorResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-
-        #region GetLocalListVersion   (Request)
-
-        public async Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
-        {
-
-            #region Send OnGetLocalListVersionRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetLocalListVersionRequest?.Invoke(startTime,
-                                                     this,
-                                                     Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLocalListVersionRequest));
-            }
-
-            #endregion
-
-
-            GetLocalListVersionResponse? response = null;
-
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomGetLocalListVersionRequestSerializer),
-                                                     Request.RequestTimeout);
-
-            if (sendRequestState.Response is not null)
-            {
-
-                if (GetLocalListVersionResponse.TryParse(Request,
-                                                         sendRequestState.Response,
-                                                         out var getLocalListVersionResponse,
-                                                         out var errorResponse))
-                {
-                    response = getLocalListVersionResponse!;
-                }
-
-                else
-                    response = new GetLocalListVersionResponse(Request,
-                                                               Result.Format(errorResponse));
-
-            }
-            else
-                response = new GetLocalListVersionResponse(Request,
-                                                           Result.FromSendRequestState(sendRequestState));
-
-
-            #region Send OnGetLocalListVersionResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetLocalListVersionResponse?.Invoke(endTime,
-                                                      this,
-                                                      Request,
-                                                      response,
-                                                      endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLocalListVersionResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SendLocalList         (Request)
-
-        public async Task<SendLocalListResponse> SendLocalList(SendLocalListRequest Request)
-        {
-
-            #region Send OnSendLocalListRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSendLocalListRequest?.Invoke(startTime,
+                OnDataTransferResponse?.Invoke(endTime,
                                                this,
-                                               Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSendLocalListRequest));
-            }
-
-            #endregion
-
-
-            SendLocalListResponse? response = null;
-
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomSendLocalListRequestSerializer),
-                                                     Request.RequestTimeout);
-
-            if (sendRequestState.Response is not null)
-            {
-
-                if (SendLocalListResponse.TryParse(Request,
-                                                   sendRequestState.Response,
-                                                   out var sendLocalListResponse,
-                                                   out var errorResponse))
-                {
-                    response = sendLocalListResponse!;
-                }
-
-                else
-                    response = new SendLocalListResponse(Request,
-                                                         Result.Format(errorResponse));
-
-            }
-            else
-                response = new SendLocalListResponse(Request,
-                                                     Result.FromSendRequestState(sendRequestState));
-
-
-            #region Send OnSendLocalListResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSendLocalListResponse?.Invoke(endTime,
-                                                this,
-                                                Request,
-                                                response,
-                                                endTime - startTime);
+                                               Request,
+                                               response,
+                                               endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSendLocalListResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region ClearCache            (Request)
-
-        public async Task<ClearCacheResponse> ClearCache(ClearCacheRequest Request)
-        {
-
-            #region Send OnClearCacheRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnClearCacheRequest?.Invoke(startTime,
-                                            this,
-                                            Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearCacheRequest));
-            }
-
-            #endregion
-
-
-            ClearCacheResponse? response = null;
-
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomClearCacheRequestSerializer),
-                                                     Request.RequestTimeout);
-
-            if (sendRequestState.Response is not null)
-            {
-
-                if (ClearCacheResponse.TryParse(Request,
-                                                sendRequestState.Response,
-                                                out var clearCacheResponse,
-                                                out var errorResponse))
-                {
-                    response = clearCacheResponse!;
-                }
-
-                else
-                    response = new ClearCacheResponse(Request,
-                                                      Result.Format(errorResponse));
-
-            }
-            else
-                response = new ClearCacheResponse(Request,
-                                                  Result.FromSendRequestState(sendRequestState));
-
-
-            #region Send OnClearCacheResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnClearCacheResponse?.Invoke(endTime,
-                                             this,
-                                             Request,
-                                             response,
-                                             endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearCacheResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDataTransferResponse));
             }
 
             #endregion
@@ -4812,80 +7547,80 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
-        #region DeleteCertificate         (Request)
+        #region InstallCertificate        (Request)
 
         /// <summary>
-        /// Delete the given certificate on the charging station.
+        /// Install the given certificate within the charging station.
         /// </summary>
-        /// <param name="Request">A delete certificate request.</param>
-        public async Task<DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request)
+        /// <param name="Request">An install certificate request.</param>
+        public async Task<InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request)
         {
 
-            #region Send OnDeleteCertificateRequest event
+            #region Send OnInstallCertificateRequest event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnDeleteCertificateRequest?.Invoke(startTime,
-                                                   this,
-                                                   Request);
+                OnInstallCertificateRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDeleteCertificateRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnInstallCertificateRequest));
             }
 
             #endregion
 
 
-            DeleteCertificateResponse? response = null;
+            InstallCertificateResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomDeleteCertificateRequestSerializer),
+                                                     Request.ToJSON(CustomInstallCertificateRequestSerializer),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.Response is not null)
             {
 
-                if (DeleteCertificateResponse.TryParse(Request,
-                                                       sendRequestState.Response,
-                                                       out var clearCacheResponse,
-                                                       out var errorResponse))
+                if (InstallCertificateResponse.TryParse(Request,
+                                                        sendRequestState.Response,
+                                                        out var clearCacheResponse,
+                                                        out var errorResponse))
                 {
                     response = clearCacheResponse!;
                 }
 
                 else
-                    response = new DeleteCertificateResponse(Request,
-                                                             Result.Format(errorResponse));
+                    response = new InstallCertificateResponse(Request,
+                                                              Result.Format(errorResponse));
 
             }
             else
-                response = new DeleteCertificateResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+                response = new InstallCertificateResponse(Request,
+                                                          Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnDeleteCertificateResponse event
+            #region Send OnInstallCertificateResponse event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnDeleteCertificateResponse?.Invoke(endTime,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
+                OnInstallCertificateResponse?.Invoke(endTime,
+                                                     this,
+                                                     Request,
+                                                     response,
+                                                     endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDeleteCertificateResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnInstallCertificateResponse));
             }
 
             #endregion
@@ -4980,80 +7715,80 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
-        #region GetLog                    (Request)
+        #region DeleteCertificate         (Request)
 
         /// <summary>
-        /// Retrieve log files from the charging station.
+        /// Delete the given certificate on the charging station.
         /// </summary>
-        /// <param name="Request">A get log request.</param>
-        public async Task<GetLogResponse> GetLog(GetLogRequest Request)
+        /// <param name="Request">A delete certificate request.</param>
+        public async Task<DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request)
         {
 
-            #region Send OnGetLogRequest event
+            #region Send OnDeleteCertificateRequest event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnGetLogRequest?.Invoke(startTime,
-                                        this,
-                                        Request);
+                OnDeleteCertificateRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLogRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDeleteCertificateRequest));
             }
 
             #endregion
 
 
-            GetLogResponse? response = null;
+            DeleteCertificateResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomGetLogRequestSerializer),
+                                                     Request.ToJSON(CustomDeleteCertificateRequestSerializer),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.Response is not null)
             {
 
-                if (GetLogResponse.TryParse(Request,
-                                            sendRequestState.Response,
-                                            out var clearCacheResponse,
-                                            out var errorResponse))
+                if (DeleteCertificateResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var clearCacheResponse,
+                                                       out var errorResponse))
                 {
                     response = clearCacheResponse!;
                 }
 
                 else
-                    response = new GetLogResponse(Request,
-                                                  Result.Format(errorResponse));
+                    response = new DeleteCertificateResponse(Request,
+                                                             Result.Format(errorResponse));
 
             }
             else
-                response = new GetLogResponse(Request,
-                                              Result.FromSendRequestState(sendRequestState));
+                response = new DeleteCertificateResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnGetLogResponse event
+            #region Send OnDeleteCertificateResponse event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnGetLogResponse?.Invoke(endTime,
-                                         this,
-                                         Request,
-                                         response,
-                                         endTime - startTime);
+                OnDeleteCertificateResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLogResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDeleteCertificateResponse));
             }
 
             #endregion
@@ -5064,71 +7799,709 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
-        #region InstallCertificate        (Request)
 
-        /// <summary>
-        /// Install the given certificate within the charging station.
-        /// </summary>
-        /// <param name="Request">An install certificate request.</param>
-        public async Task<InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request)
+        #region GetLocalListVersion       (Request)
+
+        public async Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
         {
 
-            #region Send OnInstallCertificateRequest event
+            #region Send OnGetLocalListVersionRequest event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnInstallCertificateRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
+                OnGetLocalListVersionRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnInstallCertificateRequest));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLocalListVersionRequest));
             }
 
             #endregion
 
 
-            InstallCertificateResponse? response = null;
+            GetLocalListVersionResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomInstallCertificateRequestSerializer),
+                                                     Request.ToJSON(CustomGetLocalListVersionRequestSerializer),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.Response is not null)
             {
 
-                if (InstallCertificateResponse.TryParse(Request,
-                                                        sendRequestState.Response,
-                                                        out var clearCacheResponse,
-                                                        out var errorResponse))
+                if (GetLocalListVersionResponse.TryParse(Request,
+                                                         sendRequestState.Response,
+                                                         out var getLocalListVersionResponse,
+                                                         out var errorResponse))
                 {
-                    response = clearCacheResponse!;
+                    response = getLocalListVersionResponse!;
                 }
 
                 else
-                    response = new InstallCertificateResponse(Request,
-                                                              Result.Format(errorResponse));
+                    response = new GetLocalListVersionResponse(Request,
+                                                               Result.Format(errorResponse));
 
             }
             else
-                response = new InstallCertificateResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+                response = new GetLocalListVersionResponse(Request,
+                                                           Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnInstallCertificateResponse event
+            #region Send OnGetLocalListVersionResponse event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnInstallCertificateResponse?.Invoke(endTime,
+                OnGetLocalListVersionResponse?.Invoke(endTime,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetLocalListVersionResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendLocalList             (Request)
+
+        public async Task<SendLocalListResponse> SendLocalList(SendLocalListRequest Request)
+        {
+
+            #region Send OnSendLocalListRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSendLocalListRequest?.Invoke(startTime,
+                                               this,
+                                               Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSendLocalListRequest));
+            }
+
+            #endregion
+
+
+            SendLocalListResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomSendLocalListRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (SendLocalListResponse.TryParse(Request,
+                                                   sendRequestState.Response,
+                                                   out var sendLocalListResponse,
+                                                   out var errorResponse))
+                {
+                    response = sendLocalListResponse!;
+                }
+
+                else
+                    response = new SendLocalListResponse(Request,
+                                                         Result.Format(errorResponse));
+
+            }
+            else
+                response = new SendLocalListResponse(Request,
+                                                     Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnSendLocalListResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSendLocalListResponse?.Invoke(endTime,
+                                                this,
+                                                Request,
+                                                response,
+                                                endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSendLocalListResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region ClearCache                (Request)
+
+        public async Task<ClearCacheResponse> ClearCache(ClearCacheRequest Request)
+        {
+
+            #region Send OnClearCacheRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearCacheRequest?.Invoke(startTime,
+                                            this,
+                                            Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearCacheRequest));
+            }
+
+            #endregion
+
+
+            ClearCacheResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomClearCacheRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (ClearCacheResponse.TryParse(Request,
+                                                sendRequestState.Response,
+                                                out var clearCacheResponse,
+                                                out var errorResponse))
+                {
+                    response = clearCacheResponse!;
+                }
+
+                else
+                    response = new ClearCacheResponse(Request,
+                                                      Result.Format(errorResponse));
+
+            }
+            else
+                response = new ClearCacheResponse(Request,
+                                                  Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnClearCacheResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearCacheResponse?.Invoke(endTime,
+                                             this,
+                                             Request,
+                                             response,
+                                             endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearCacheResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        #region ReserveNow                (Request)
+
+        public async Task<ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
+        {
+
+            #region Send OnReserveNowRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnReserveNowRequest?.Invoke(startTime,
+                                            this,
+                                            Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReserveNowRequest));
+            }
+
+            #endregion
+
+
+            ReserveNowResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomReserveNowRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (ReserveNowResponse.TryParse(Request,
+                                                    sendRequestState.Response,
+                                                    out var reserveNowResponse,
+                                                    out var errorResponse))
+                {
+                    response = reserveNowResponse!;
+                }
+
+                else
+                    response = new ReserveNowResponse(Request,
+                                                      Result.Format(errorResponse));
+
+            }
+            else
+                response = new ReserveNowResponse(Request,
+                                                  Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnReserveNowResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnReserveNowResponse?.Invoke(endTime,
+                                             this,
+                                             Request,
+                                             response,
+                                             endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnReserveNowResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region CancelReservation         (Request)
+
+        public async Task<CancelReservationResponse> CancelReservation(CancelReservationRequest Request)
+        {
+
+            #region Send OnCancelReservationRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnCancelReservationRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCancelReservationRequest));
+            }
+
+            #endregion
+
+
+            CancelReservationResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomCancelReservationRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (CancelReservationResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var cancelReservationResponse,
+                                                       out var errorResponse))
+                {
+                    response = cancelReservationResponse!;
+                }
+
+                else
+                    response = new CancelReservationResponse(Request,
+                                                             Result.Format(errorResponse));
+
+            }
+            else
+                response = new CancelReservationResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnCancelReservationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnCancelReservationResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCancelReservationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region StartCharging             (Request)
+
+        public async Task<RequestStartTransactionResponse> StartCharging(RequestStartTransactionRequest Request)
+        {
+
+            #region Send OnRequestStartTransactionRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnRequestStartTransactionRequest?.Invoke(startTime,
+                                                         this,
+                                                         Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnRequestStartTransactionRequest));
+            }
+
+            #endregion
+
+
+            RequestStartTransactionResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomRequestStartTransactionRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (RequestStartTransactionResponse.TryParse(Request,
+                                                             sendRequestState.Response,
+                                                             out var resetResponse,
+                                                             out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new RequestStartTransactionResponse(Request,
+                                                                   Result.Format(errorResponse));
+
+            }
+            else
+                response = new RequestStartTransactionResponse(Request,
+                                                               Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnRequestStartTransactionResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnRequestStartTransactionResponse?.Invoke(endTime,
+                                                          this,
+                                                          Request,
+                                                          response,
+                                                          endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnRequestStartTransactionResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region StopCharging              (Request)
+
+        public async Task<RequestStopTransactionResponse> StopCharging(RequestStopTransactionRequest Request)
+        {
+
+            #region Send OnRequestStopTransactionRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnRequestStopTransactionRequest?.Invoke(startTime,
+                                                        this,
+                                                        Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnRequestStopTransactionRequest));
+            }
+
+            #endregion
+
+
+            RequestStopTransactionResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomRequestStopTransactionRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (RequestStopTransactionResponse.TryParse(Request,
+                                                            sendRequestState.Response,
+                                                            out var resetResponse,
+                                                            out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new RequestStopTransactionResponse(Request,
+                                                                  Result.Format(errorResponse));
+
+            }
+            else
+                response = new RequestStopTransactionResponse(Request,
+                                                              Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnRequestStopTransactionResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnRequestStopTransactionResponse?.Invoke(endTime,
+                                                         this,
+                                                         Request,
+                                                         response,
+                                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnRequestStopTransactionResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetTransactionStatus      (Request)
+
+        public async Task<GetTransactionStatusResponse> GetTransactionStatus(GetTransactionStatusRequest Request)
+        {
+
+            #region Send OnGetTransactionStatusRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetTransactionStatusRequest?.Invoke(startTime,
+                                                      this,
+                                                      Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetTransactionStatusRequest));
+            }
+
+            #endregion
+
+
+            GetTransactionStatusResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomGetTransactionStatusRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (GetTransactionStatusResponse.TryParse(Request,
+                                                          sendRequestState.Response,
+                                                          out var resetResponse,
+                                                          out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new GetTransactionStatusResponse(Request,
+                                                                Result.Format(errorResponse));
+
+            }
+            else
+                response = new GetTransactionStatusResponse(Request,
+                                                            Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnGetTransactionStatusResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetTransactionStatusResponse?.Invoke(endTime,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetTransactionStatusResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SetChargingProfile        (Request)
+
+        public async Task<SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request)
+        {
+
+            #region Send OnSetChargingProfileRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetChargingProfileRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetChargingProfileRequest));
+            }
+
+            #endregion
+
+
+            SetChargingProfileResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomSetChargingProfileRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (SetChargingProfileResponse.TryParse(Request,
+                                                        sendRequestState.Response,
+                                                        out var setChargingProfileResponse,
+                                                        out var errorResponse))
+                {
+                    response = setChargingProfileResponse!;
+                }
+
+                else
+                    response = new SetChargingProfileResponse(Request,
+                                                              Result.Format(errorResponse));
+
+            }
+            else
+                response = new SetChargingProfileResponse(Request,
+                                                          Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnSetChargingProfileResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetChargingProfileResponse?.Invoke(endTime,
                                                      this,
                                                      Request,
                                                      response,
@@ -5137,7 +8510,328 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnInstallCertificateResponse));
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetChargingProfileResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetChargingProfiles       (Request)
+
+        public async Task<GetChargingProfilesResponse> GetChargingProfiles(GetChargingProfilesRequest Request)
+        {
+
+            #region Send OnGetChargingProfilesRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetChargingProfilesRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetChargingProfilesRequest));
+            }
+
+            #endregion
+
+
+            GetChargingProfilesResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomGetChargingProfilesRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (GetChargingProfilesResponse.TryParse(Request,
+                                                         sendRequestState.Response,
+                                                         out var resetResponse,
+                                                         out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new GetChargingProfilesResponse(Request,
+                                                               Result.Format(errorResponse));
+
+            }
+            else
+                response = new GetChargingProfilesResponse(Request,
+                                                           Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnGetChargingProfilesResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetChargingProfilesResponse?.Invoke(endTime,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetChargingProfilesResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region ClearChargingProfile      (Request)
+
+        public async Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request)
+        {
+
+            #region Send OnClearChargingProfileRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearChargingProfileRequest?.Invoke(startTime,
+                                                      this,
+                                                      Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearChargingProfileRequest));
+            }
+
+            #endregion
+
+
+            ClearChargingProfileResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomClearChargingProfileRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (ClearChargingProfileResponse.TryParse(Request,
+                                                          sendRequestState.Response,
+                                                          out var clearChargingProfileResponse,
+                                                          out var errorResponse))
+                {
+                    response = clearChargingProfileResponse!;
+                }
+
+                else
+                    response = new ClearChargingProfileResponse(Request,
+                                                                Result.Format(errorResponse));
+
+            }
+            else
+                response = new ClearChargingProfileResponse(Request,
+                                                            Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnClearChargingProfileResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearChargingProfileResponse?.Invoke(endTime,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearChargingProfileResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetCompositeSchedule      (Request)
+
+
+        public async Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request)
+        {
+
+            #region Send OnGetCompositeScheduleRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetCompositeScheduleRequest?.Invoke(startTime,
+                                                      this,
+                                                      Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCompositeScheduleRequest));
+            }
+
+            #endregion
+
+
+            GetCompositeScheduleResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomGetCompositeScheduleRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (GetCompositeScheduleResponse.TryParse(Request,
+                                                          sendRequestState.Response,
+                                                          out var getCompositeScheduleResponse,
+                                                          out var errorResponse))
+                {
+                    response = getCompositeScheduleResponse!;
+                }
+
+                else
+                    response = new GetCompositeScheduleResponse(Request,
+                                                                Result.Format(errorResponse));
+
+            }
+            else
+                response = new GetCompositeScheduleResponse(Request,
+                                                            Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnGetCompositeScheduleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetCompositeScheduleResponse?.Invoke(endTime,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetCompositeScheduleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region UnlockConnector           (Request)
+
+        public async Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request)
+        {
+
+            #region Send OnUnlockConnectorRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUnlockConnectorRequest?.Invoke(startTime,
+                                                 this,
+                                                 Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnlockConnectorRequest));
+            }
+
+            #endregion
+
+
+            UnlockConnectorResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomUnlockConnectorRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (UnlockConnectorResponse.TryParse(Request,
+                                                     sendRequestState.Response,
+                                                     out var unlockConnectorResponse,
+                                                     out var errorResponse))
+                {
+                    response = unlockConnectorResponse!;
+                }
+
+                else
+                    response = new UnlockConnectorResponse(Request,
+                                                           Result.Format(errorResponse));
+
+            }
+            else
+                response = new UnlockConnectorResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnUnlockConnectorResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUnlockConnectorResponse?.Invoke(endTime,
+                                                  this,
+                                                  Request,
+                                                  response,
+                                                  endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnlockConnectorResponse));
             }
 
             #endregion
@@ -5149,107 +8843,405 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
 
+        #region SetDisplayMessage         (Request)
 
-
-        public Task<GetBaseReportResponse> GetBaseReport(GetBaseReportRequest Request)
+        public async Task<SetDisplayMessageResponse> SetDisplayMessage(SetDisplayMessageRequest Request)
         {
-            throw new NotImplementedException();
+
+            #region Send OnSetDisplayMessageRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetDisplayMessageRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetDisplayMessageRequest));
+            }
+
+            #endregion
+
+
+            SetDisplayMessageResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomSetDisplayMessageRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (SetDisplayMessageResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var resetResponse,
+                                                       out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new SetDisplayMessageResponse(Request,
+                                                             Result.Format(errorResponse));
+
+            }
+            else
+                response = new SetDisplayMessageResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnSetDisplayMessageResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetDisplayMessageResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetDisplayMessageResponse));
+            }
+
+            #endregion
+
+            return response;
+
         }
 
-        public Task<GetReportResponse> GetReport(GetReportRequest Request)
+        #endregion
+
+        #region GetDisplayMessages        (Request)
+
+        public async Task<GetDisplayMessagesResponse> GetDisplayMessages(GetDisplayMessagesRequest Request)
         {
-            throw new NotImplementedException();
+
+            #region Send OnGetDisplayMessagesRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetDisplayMessagesRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetDisplayMessagesRequest));
+            }
+
+            #endregion
+
+
+            GetDisplayMessagesResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomGetDisplayMessagesRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (GetDisplayMessagesResponse.TryParse(Request,
+                                                        sendRequestState.Response,
+                                                        out var resetResponse,
+                                                        out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new GetDisplayMessagesResponse(Request,
+                                                              Result.Format(errorResponse));
+
+            }
+            else
+                response = new GetDisplayMessagesResponse(Request,
+                                                          Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnGetDisplayMessagesResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetDisplayMessagesResponse?.Invoke(endTime,
+                                                     this,
+                                                     Request,
+                                                     response,
+                                                     endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetDisplayMessagesResponse));
+            }
+
+            #endregion
+
+            return response;
+
         }
 
-        public Task<SetVariablesResponse> SetVariables(SetVariablesRequest Request)
+        #endregion
+
+        #region ClearDisplayMessage       (Request)
+
+        public async Task<ClearDisplayMessageResponse> ClearDisplayMessage(ClearDisplayMessageRequest Request)
         {
-            throw new NotImplementedException();
+
+            #region Send OnClearDisplayMessageRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearDisplayMessageRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearDisplayMessageRequest));
+            }
+
+            #endregion
+
+
+            ClearDisplayMessageResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomClearDisplayMessageRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (ClearDisplayMessageResponse.TryParse(Request,
+                                                         sendRequestState.Response,
+                                                         out var resetResponse,
+                                                         out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new ClearDisplayMessageResponse(Request,
+                                                               Result.Format(errorResponse));
+
+            }
+            else
+                response = new ClearDisplayMessageResponse(Request,
+                                                           Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnClearDisplayMessageResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearDisplayMessageResponse?.Invoke(endTime,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnClearDisplayMessageResponse));
+            }
+
+            #endregion
+
+            return response;
+
         }
 
-        public Task<GetVariablesResponse> GetVariables(GetVariablesRequest Request)
+        #endregion
+
+        #region SendCostUpdated           (Request)
+
+        public async Task<CostUpdatedResponse> SendCostUpdated(CostUpdatedRequest Request)
         {
-            throw new NotImplementedException();
+
+            #region Send OnCostUpdatedRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnCostUpdatedRequest?.Invoke(startTime,
+                                             this,
+                                             Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCostUpdatedRequest));
+            }
+
+            #endregion
+
+
+            CostUpdatedResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomCostUpdatedRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (CostUpdatedResponse.TryParse(Request,
+                                                 sendRequestState.Response,
+                                                 out var resetResponse,
+                                                 out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new CostUpdatedResponse(Request,
+                                                       Result.Format(errorResponse));
+
+            }
+            else
+                response = new CostUpdatedResponse(Request,
+                                                   Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnCostUpdatedResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnCostUpdatedResponse?.Invoke(endTime,
+                                              this,
+                                              Request,
+                                              response,
+                                              endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCostUpdatedResponse));
+            }
+
+            #endregion
+
+            return response;
+
         }
 
-        public Task<SetMonitoringBaseResponse> SetMonitoringBase(SetMonitoringBaseRequest Request)
+        #endregion
+
+        #region RequestCustomerInformation(Request)
+
+        public async Task<CustomerInformationResponse> RequestCustomerInformation(CustomerInformationRequest Request)
         {
-            throw new NotImplementedException();
+
+            #region Send OnCustomerInformationRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnCustomerInformationRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCustomerInformationRequest));
+            }
+
+            #endregion
+
+
+            CustomerInformationResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomCustomerInformationRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (CustomerInformationResponse.TryParse(Request,
+                                                         sendRequestState.Response,
+                                                         out var resetResponse,
+                                                         out var errorResponse))
+                {
+                    response = resetResponse!;
+                }
+
+                else
+                    response = new CustomerInformationResponse(Request,
+                                                               Result.Format(errorResponse));
+
+            }
+            else
+                response = new CustomerInformationResponse(Request,
+                                                           Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnCustomerInformationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnCustomerInformationResponse?.Invoke(endTime,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCustomerInformationResponse));
+            }
+
+            #endregion
+
+            return response;
+
         }
 
-        public Task<GetMonitoringReportResponse> GetMonitoringReport(GetMonitoringReportRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<SetMonitoringLevelResponse> SetMonitoringLevel(SetMonitoringLevelRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<SetVariableMonitoringResponse> SetVariableMonitoring(SetVariableMonitoringRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ClearVariableMonitoringResponse> ClearVariableMonitoring(ClearVariableMonitoringRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<SetNetworkProfileResponse> SetNetworkProfile(SetNetworkProfileRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CS.DataTransferResponse> TransferData(DataTransferRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<RequestStartTransactionResponse> StartCharging(RequestStartTransactionRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<RequestStopTransactionResponse> StopCharging(RequestStopTransactionRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GetTransactionStatusResponse> GetTransactionStatus(GetTransactionStatusRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GetChargingProfilesResponse> GetChargingProfiles(GetChargingProfilesRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<SetDisplayMessageResponse> SetDisplayMessage(SetDisplayMessageRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GetDisplayMessagesResponse> GetDisplayMessages(GetDisplayMessagesRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ClearDisplayMessageResponse> ClearDisplayMessage(ClearDisplayMessageRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CostUpdatedResponse> SendCostUpdated(CostUpdatedRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CustomerInformationResponse> RequestCustomerInformation(CustomerInformationRequest Request)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
 
 
     }

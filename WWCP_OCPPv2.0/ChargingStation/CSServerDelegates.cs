@@ -372,9 +372,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnSetVariablesRequestDelegate(DateTime           Timestamp,
-                                      IEventSender       Sender,
-                                      GetReportRequest   Request);
+        OnSetVariablesRequestDelegate(DateTime              Timestamp,
+                                      IEventSender          Sender,
+                                      SetVariablesRequest   Request);
 
 
     /// <summary>
@@ -384,12 +384,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<GetReportResponse>
+    public delegate Task<SetVariablesResponse>
 
-        OnSetVariablesDelegate(DateTime            Timestamp,
-                               IEventSender        Sender,
-                               GetReportRequest    Request,
-                               CancellationToken   CancellationToken);
+        OnSetVariablesDelegate(DateTime              Timestamp,
+                               IEventSender          Sender,
+                               SetVariablesRequest   Request,
+                               CancellationToken     CancellationToken);
 
 
     /// <summary>
@@ -402,11 +402,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnSetVariablesResponseDelegate(DateTime            Timestamp,
-                                       IEventSender        Sender,
-                                       GetReportRequest    Request,
-                                       GetReportResponse   Response,
-                                       TimeSpan            Runtime);
+        OnSetVariablesResponseDelegate(DateTime               Timestamp,
+                                       IEventSender           Sender,
+                                       SetVariablesRequest    Request,
+                                       SetVariablesResponse   Response,
+                                       TimeSpan               Runtime);
 
     #endregion
 
@@ -420,9 +420,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnGetVariablesRequestDelegate(DateTime           Timestamp,
-                                      IEventSender       Sender,
-                                      GetReportRequest   Request);
+        OnGetVariablesRequestDelegate(DateTime              Timestamp,
+                                      IEventSender          Sender,
+                                      GetVariablesRequest   Request);
 
 
     /// <summary>
@@ -432,12 +432,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<GetReportResponse>
+    public delegate Task<GetVariablesResponse>
 
-        OnGetVariablesDelegate(DateTime            Timestamp,
-                               IEventSender        Sender,
-                               GetReportRequest    Request,
-                               CancellationToken   CancellationToken);
+        OnGetVariablesDelegate(DateTime              Timestamp,
+                               IEventSender          Sender,
+                               GetVariablesRequest   Request,
+                               CancellationToken     CancellationToken);
 
 
     /// <summary>
@@ -450,11 +450,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetVariablesResponseDelegate(DateTime            Timestamp,
-                                       IEventSender        Sender,
-                                       GetReportRequest    Request,
-                                       GetReportResponse   Response,
-                                       TimeSpan            Runtime);
+        OnGetVariablesResponseDelegate(DateTime               Timestamp,
+                                       IEventSender           Sender,
+                                       GetVariablesRequest    Request,
+                                       GetVariablesResponse   Response,
+                                       TimeSpan               Runtime);
 
     #endregion
 
@@ -468,9 +468,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnSetMonitoringBaseRequestDelegate(DateTime           Timestamp,
-                                           IEventSender       Sender,
-                                           GetReportRequest   Request);
+        OnSetMonitoringBaseRequestDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           SetMonitoringBaseRequest   Request);
 
 
     /// <summary>
@@ -480,12 +480,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<GetReportResponse>
+    public delegate Task<SetMonitoringBaseResponse>
 
-        OnSetMonitoringBaseDelegate(DateTime            Timestamp,
-                                    IEventSender        Sender,
-                                    GetReportRequest    Request,
-                                    CancellationToken   CancellationToken);
+        OnSetMonitoringBaseDelegate(DateTime                   Timestamp,
+                                    IEventSender               Sender,
+                                    SetMonitoringBaseRequest   Request,
+                                    CancellationToken          CancellationToken);
 
 
     /// <summary>
@@ -498,11 +498,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnSetMonitoringBaseResponseDelegate(DateTime            Timestamp,
-                                            IEventSender        Sender,
-                                            GetReportRequest    Request,
-                                            GetReportResponse   Response,
-                                            TimeSpan            Runtime);
+        OnSetMonitoringBaseResponseDelegate(DateTime                    Timestamp,
+                                            IEventSender                Sender,
+                                            SetMonitoringBaseRequest    Request,
+                                            SetMonitoringBaseResponse   Response,
+                                            TimeSpan                    Runtime);
 
     #endregion
 
@@ -516,9 +516,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnGetMonitoringReportRequestDelegate(DateTime           Timestamp,
-                                             IEventSender       Sender,
-                                             GetReportRequest   Request);
+        OnGetMonitoringReportRequestDelegate(DateTime                     Timestamp,
+                                             IEventSender                 Sender,
+                                             GetMonitoringReportRequest   Request);
 
 
     /// <summary>
@@ -528,12 +528,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<GetReportResponse>
+    public delegate Task<GetMonitoringReportResponse>
 
-        OnGetMonitoringReportDelegate(DateTime            Timestamp,
-                                      IEventSender        Sender,
-                                      GetReportRequest    Request,
-                                      CancellationToken   CancellationToken);
+        OnGetMonitoringReportDelegate(DateTime                     Timestamp,
+                                      IEventSender                 Sender,
+                                      GetMonitoringReportRequest   Request,
+                                      CancellationToken            CancellationToken);
 
 
     /// <summary>
@@ -546,11 +546,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetMonitoringReportResponseDelegate(DateTime            Timestamp,
-                                              IEventSender        Sender,
-                                              GetReportRequest    Request,
-                                              GetReportResponse   Response,
-                                              TimeSpan            Runtime);
+        OnGetMonitoringReportResponseDelegate(DateTime                      Timestamp,
+                                              IEventSender                  Sender,
+                                              GetMonitoringReportRequest    Request,
+                                              GetMonitoringReportResponse   Response,
+                                              TimeSpan                      Runtime);
 
     #endregion
 
@@ -564,9 +564,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnSetMonitoringLevelRequestDelegate(DateTime           Timestamp,
-                                            IEventSender       Sender,
-                                            GetReportRequest   Request);
+        OnSetMonitoringLevelRequestDelegate(DateTime                    Timestamp,
+                                            IEventSender                Sender,
+                                            SetMonitoringLevelRequest   Request);
 
 
     /// <summary>
@@ -576,12 +576,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<GetReportResponse>
+    public delegate Task<SetMonitoringLevelResponse>
 
-        OnSetMonitoringLevelDelegate(DateTime            Timestamp,
-                                     IEventSender        Sender,
-                                     GetReportRequest    Request,
-                                     CancellationToken   CancellationToken);
+        OnSetMonitoringLevelDelegate(DateTime                    Timestamp,
+                                     IEventSender                Sender,
+                                     SetMonitoringLevelRequest   Request,
+                                     CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -594,11 +594,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnSetMonitoringLevelResponseDelegate(DateTime            Timestamp,
-                                             IEventSender        Sender,
-                                             GetReportRequest    Request,
-                                             GetReportResponse   Response,
-                                             TimeSpan            Runtime);
+        OnSetMonitoringLevelResponseDelegate(DateTime                     Timestamp,
+                                             IEventSender                 Sender,
+                                             SetMonitoringLevelRequest    Request,
+                                             SetMonitoringLevelResponse   Response,
+                                             TimeSpan                     Runtime);
 
     #endregion
 
@@ -612,9 +612,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnSetVariableMonitoringRequestDelegate(DateTime           Timestamp,
-                                               IEventSender       Sender,
-                                               GetReportRequest   Request);
+        OnSetVariableMonitoringRequestDelegate(DateTime                       Timestamp,
+                                               IEventSender                   Sender,
+                                               SetVariableMonitoringRequest   Request);
 
 
     /// <summary>
@@ -624,12 +624,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<GetReportResponse>
+    public delegate Task<SetVariableMonitoringResponse>
 
-        OnSetVariableMonitoringDelegate(DateTime            Timestamp,
-                                        IEventSender        Sender,
-                                        GetReportRequest    Request,
-                                        CancellationToken   CancellationToken);
+        OnSetVariableMonitoringDelegate(DateTime                       Timestamp,
+                                        IEventSender                   Sender,
+                                        SetVariableMonitoringRequest   Request,
+                                        CancellationToken              CancellationToken);
 
 
     /// <summary>
@@ -642,11 +642,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnSetVariableMonitoringResponseDelegate(DateTime            Timestamp,
-                                                IEventSender        Sender,
-                                                GetReportRequest    Request,
-                                                GetReportResponse   Response,
-                                                TimeSpan            Runtime);
+        OnSetVariableMonitoringResponseDelegate(DateTime                        Timestamp,
+                                                IEventSender                    Sender,
+                                                SetVariableMonitoringRequest    Request,
+                                                SetVariableMonitoringResponse   Response,
+                                                TimeSpan                        Runtime);
 
     #endregion
 
@@ -660,9 +660,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnClearVariableMonitoringRequestDelegate(DateTime           Timestamp,
-                                                 IEventSender       Sender,
-                                                 GetReportRequest   Request);
+        OnClearVariableMonitoringRequestDelegate(DateTime                         Timestamp,
+                                                 IEventSender                     Sender,
+                                                 ClearVariableMonitoringRequest   Request);
 
 
     /// <summary>
@@ -672,12 +672,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<GetReportResponse>
+    public delegate Task<ClearVariableMonitoringResponse>
 
-        OnClearVariableMonitoringDelegate(DateTime            Timestamp,
-                                          IEventSender        Sender,
-                                          GetReportRequest    Request,
-                                          CancellationToken   CancellationToken);
+        OnClearVariableMonitoringDelegate(DateTime                         Timestamp,
+                                          IEventSender                     Sender,
+                                          ClearVariableMonitoringRequest   Request,
+                                          CancellationToken                CancellationToken);
 
 
     /// <summary>
@@ -690,11 +690,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnClearVariableMonitoringResponseDelegate(DateTime            Timestamp,
-                                                  IEventSender        Sender,
-                                                  GetReportRequest    Request,
-                                                  GetReportResponse   Response,
-                                                  TimeSpan            Runtime);
+        OnClearVariableMonitoringResponseDelegate(DateTime                          Timestamp,
+                                                  IEventSender                      Sender,
+                                                  ClearVariableMonitoringRequest    Request,
+                                                  ClearVariableMonitoringResponse   Response,
+                                                  TimeSpan                          Runtime);
 
     #endregion
 
@@ -708,9 +708,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnSetNetworkProfileRequestDelegate(DateTime           Timestamp,
-                                           IEventSender       Sender,
-                                           GetReportRequest   Request);
+        OnSetNetworkProfileRequestDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           SetNetworkProfileRequest   Request);
 
 
     /// <summary>
@@ -720,12 +720,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<GetReportResponse>
+    public delegate Task<SetNetworkProfileResponse>
 
-        OnSetNetworkProfileDelegate(DateTime            Timestamp,
-                                    IEventSender        Sender,
-                                    GetReportRequest    Request,
-                                    CancellationToken   CancellationToken);
+        OnSetNetworkProfileDelegate(DateTime                   Timestamp,
+                                    IEventSender               Sender,
+                                    SetNetworkProfileRequest   Request,
+                                    CancellationToken          CancellationToken);
 
 
     /// <summary>
@@ -738,11 +738,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnSetNetworkProfileResponseDelegate(DateTime            Timestamp,
-                                            IEventSender        Sender,
-                                            GetReportRequest    Request,
-                                            GetReportResponse   Response,
-                                            TimeSpan            Runtime);
+        OnSetNetworkProfileResponseDelegate(DateTime                    Timestamp,
+                                            IEventSender                Sender,
+                                            SetNetworkProfileRequest    Request,
+                                            SetNetworkProfileResponse   Response,
+                                            TimeSpan                    Runtime);
 
     #endregion
 
