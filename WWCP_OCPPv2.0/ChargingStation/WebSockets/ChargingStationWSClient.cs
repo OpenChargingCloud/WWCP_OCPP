@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #region Events
 
-        // Outgoing messages (to CSMS)
+        #region Outgoing messages to the CSMS
 
         #region OnBootNotificationRequest/-Response
 
@@ -252,151 +252,27 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-
-        #region OnAuthorizeRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever an authorize request will be sent to the CSMS.
-        /// </summary>
-        public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
+        #region OnNotifyEventRequest/-Response
 
         /// <summary>
-        /// An event fired whenever an authorize request will be sent to the CSMS.
+        /// An event fired whenever a notify event request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?      OnAuthorizeWSRequest;
+        public event OnNotifyEventRequestDelegate?     OnNotifyEventRequest;
 
         /// <summary>
-        /// An event fired whenever a response to an authorize request was received.
+        /// An event fired whenever a notify event request will be sent to the CSMS.
         /// </summary>
-        public event ClientResponseLogHandler?     OnAuthorizeWSResponse;
+        public event ClientRequestLogHandler?          OnNotifyEventWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to an authorize request was received.
+        /// An event fired whenever a response to a notify event request was received.
         /// </summary>
-        public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
-
-        #endregion
-
-        #region OnTransactionEventRequest/-Response
+        public event ClientResponseLogHandler?         OnNotifyEventWSResponse;
 
         /// <summary>
-        /// An event fired whenever an authorize request will be sent to the CSMS.
+        /// An event fired whenever a response to a notify event request was received.
         /// </summary>
-        public event OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
-
-        /// <summary>
-        /// An event fired whenever an authorize request will be sent to the CSMS.
-        /// </summary>
-        public event ClientRequestLogHandler?             OnTransactionEventWSRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an authorize request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?            OnTransactionEventWSResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to an authorize request was received.
-        /// </summary>
-        public event OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
-
-        #endregion
-
-        #region OnStatusNotificationRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a status notification request will be sent to the CSMS.
-        /// </summary>
-        public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
-
-        /// <summary>
-        /// An event fired whenever a status notification request will be sent to the CSMS.
-        /// </summary>
-        public event ClientRequestLogHandler?               OnStatusNotificationWSRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a status notification request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?              OnStatusNotificationWSResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a status notification request was received.
-        /// </summary>
-        public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
-
-        #endregion
-
-        #region OnMeterValuesRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a meter values request will be sent to the CSMS.
-        /// </summary>
-        public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
-
-        /// <summary>
-        /// An event fired whenever a meter values request will be sent to the CSMS.
-        /// </summary>
-        public event ClientRequestLogHandler?        OnMeterValuesWSRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a meter values request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?       OnMeterValuesWSResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a meter values request was received.
-        /// </summary>
-        public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
-
-        #endregion
-
-
-        #region OnDataTransferRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a data transfer request will be sent to the CSMS.
-        /// </summary>
-        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
-
-        /// <summary>
-        /// An event fired whenever a data transfer request will be sent to the CSMS.
-        /// </summary>
-        public event ClientRequestLogHandler?         OnDataTransferWSRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a data transfer request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?        OnDataTransferWSResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a data transfer request was received.
-        /// </summary>
-        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
-
-        #endregion
-
-
-
-        #region OnLogStatusNotificationRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a log status notification request will be sent to the CSMS.
-        /// </summary>
-        public event OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
-
-        /// <summary>
-        /// An event fired whenever a log status notification request will be sent to the CSMS.
-        /// </summary>
-        public event ClientRequestLogHandler?                  OnLogStatusNotificationWSRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a log status notification request was received.
-        /// </summary>
-        public event ClientResponseLogHandler?                 OnLogStatusNotificationWSResponse;
-
-        /// <summary>
-        /// An event fired whenever a response to a log status notification request was received.
-        /// </summary>
-        public event OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
+        public event OnNotifyEventResponseDelegate?    OnNotifyEventResponse;
 
         #endregion
 
@@ -405,81 +281,463 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <summary>
         /// An event fired whenever a security event notification request will be sent to the CSMS.
         /// </summary>
-        public event OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
+        public event OnSecurityEventNotificationRequestDelegate?     OnSecurityEventNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a security event notification request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                      OnSecurityEventNotificationWSRequest;
+        public event ClientRequestLogHandler?                        OnSecurityEventNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a security event notification request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                     OnSecurityEventNotificationWSResponse;
+        public event ClientResponseLogHandler?                       OnSecurityEventNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a security event notification request was received.
         /// </summary>
-        public event OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
+        public event OnSecurityEventNotificationResponseDelegate?    OnSecurityEventNotificationResponse;
 
         #endregion
+
+        #region OnNotifyReportRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a notify report request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyReportRequestDelegate?     OnNotifyReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a notify report request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?           OnNotifyReportWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a notify report request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?          OnNotifyReportWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a notify report request was received.
+        /// </summary>
+        public event OnNotifyReportResponseDelegate?    OnNotifyReportResponse;
+
+        #endregion
+
+        #region OnNotifyMonitoringReportRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a notify monitoring report request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyMonitoringReportRequestDelegate?     OnNotifyMonitoringReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a notify monitoring report request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                     OnNotifyMonitoringReportWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a notify monitoring report request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                    OnNotifyMonitoringReportWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a notify monitoring report request was received.
+        /// </summary>
+        public event OnNotifyMonitoringReportResponseDelegate?    OnNotifyMonitoringReportResponse;
+
+        #endregion
+
+        #region OnLogStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a log status notification request will be sent to the CSMS.
+        /// </summary>
+        public event OnLogStatusNotificationRequestDelegate?     OnLogStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a log status notification request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                    OnLogStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a log status notification request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                   OnLogStatusNotificationWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a log status notification request was received.
+        /// </summary>
+        public event OnLogStatusNotificationResponseDelegate?    OnLogStatusNotificationResponse;
+
+        #endregion
+
+        #region OnDataTransferRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a data transfer request will be sent to the CSMS.
+        /// </summary>
+        public event OnDataTransferRequestDelegate?     OnDataTransferRequest;
+
+        /// <summary>
+        /// An event fired whenever a data transfer request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?           OnDataTransferWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a data transfer request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?          OnDataTransferWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a data transfer request was received.
+        /// </summary>
+        public event OnDataTransferResponseDelegate?    OnDataTransferResponse;
+
+        #endregion
+
 
         #region OnSignCertificateRequest/-Response
 
         /// <summary>
         /// An event fired whenever a sign certificate request will be sent to the CSMS.
         /// </summary>
-        public event OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
+        public event OnSignCertificateRequestDelegate?     OnSignCertificateRequest;
 
         /// <summary>
         /// An event fired whenever a sign certificate request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?            OnSignCertificateWSRequest;
+        public event ClientRequestLogHandler?              OnSignCertificateWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a sign certificate request was received.
         /// </summary>
-        public event ClientResponseLogHandler?           OnSignCertificateWSResponse;
+        public event ClientResponseLogHandler?             OnSignCertificateWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a sign certificate request was received.
         /// </summary>
-        public event OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
+        public event OnSignCertificateResponseDelegate?    OnSignCertificateResponse;
+
+        #endregion
+
+        #region OnGet15118EVCertificateRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a get 15118 EV certificate request will be sent to the CSMS.
+        /// </summary>
+        public event OnGet15118EVCertificateRequestDelegate?     OnGet15118EVCertificateRequest;
+
+        /// <summary>
+        /// An event fired whenever a get 15118 EV certificate request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                    OnGet15118EVCertificateWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a get 15118 EV certificate request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                   OnGet15118EVCertificateWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a get 15118 EV certificate request was received.
+        /// </summary>
+        public event OnGet15118EVCertificateResponseDelegate?    OnGet15118EVCertificateResponse;
+
+        #endregion
+
+        #region OnGetCertificateStatusRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a get certificate status request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetCertificateStatusRequestDelegate?     OnGetCertificateStatusRequest;
+
+        /// <summary>
+        /// An event fired whenever a get certificate status request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                   OnGetCertificateStatusWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a get certificate status request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                  OnGetCertificateStatusWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a get certificate status request was received.
+        /// </summary>
+        public event OnGetCertificateStatusResponseDelegate?    OnGetCertificateStatusResponse;
 
         #endregion
 
 
+        #region OnReservationStatusUpdateRequest/-Response
 
-        public event OnNotifyEventRequestDelegate OnNotifyEventRequest;
-        public event OnNotifyEventResponseDelegate OnNotifyEventResponse;
-        public event OnNotifyReportRequestDelegate OnNotifyReportRequest;
-        public event OnNotifyReportResponseDelegate OnNotifyReportResponse;
-        public event OnNotifyMonitoringReportRequestDelegate OnNotifyMonitoringReportRequest;
-        public event OnNotifyMonitoringReportResponseDelegate OnNotifyMonitoringReportResponse;
-        public event OnGet15118EVCertificateRequestDelegate OnGet15118EVCertificateRequest;
-        public event OnGet15118EVCertificateResponseDelegate OnGet15118EVCertificateResponse;
-        public event OnGetCertificateStatusRequestDelegate OnGetCertificateStatusRequest;
-        public event OnGetCertificateStatusResponseDelegate OnGetCertificateStatusResponse;
-        public event OnReservationStatusUpdateRequestDelegate OnReservationStatusUpdateRequest;
-        public event OnReservationStatusUpdateResponseDelegate OnReservationStatusUpdateResponse;
-        public event OnNotifyEVChargingNeedsRequestDelegate OnNotifyEVChargingNeedsRequest;
-        public event OnNotifyEVChargingNeedsResponseDelegate OnNotifyEVChargingNeedsResponse;
-        public event OnNotifyChargingLimitRequestDelegate OnNotifyChargingLimitRequest;
-        public event OnNotifyChargingLimitResponseDelegate OnNotifyChargingLimitResponse;
-        public event OnClearedChargingLimitRequestDelegate OnClearedChargingLimitRequest;
-        public event OnClearedChargingLimitResponseDelegate OnClearedChargingLimitResponse;
-        public event OnReportChargingProfilesRequestDelegate OnReportChargingProfilesRequest;
-        public event OnReportChargingProfilesResponseDelegate OnReportChargingProfilesResponse;
-        public event OnNotifyDisplayMessagesRequestDelegate OnNotifyDisplayMessagesRequest;
-        public event OnNotifyDisplayMessagesResponseDelegate OnNotifyDisplayMessagesResponse;
-        public event OnNotifyCustomerInformationRequestDelegate OnNotifyCustomerInformationRequest;
-        public event OnNotifyCustomerInformationResponseDelegate OnNotifyCustomerInformationResponse;
-        // ---------------
+        /// <summary>
+        /// An event fired whenever a reservation status update request will be sent to the CSMS.
+        /// </summary>
+        public event OnReservationStatusUpdateRequestDelegate?     OnReservationStatusUpdateRequest;
+
+        /// <summary>
+        /// An event fired whenever a reservation status update request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                      OnReservationStatusUpdateWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a reservation status update request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                     OnReservationStatusUpdateWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a reservation status update request was received.
+        /// </summary>
+        public event OnReservationStatusUpdateResponseDelegate?    OnReservationStatusUpdateResponse;
+
+        #endregion
+
+        #region OnAuthorizeRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever an authorize request will be sent to the CSMS.
+        /// </summary>
+        public event OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
+
+        /// <summary>
+        /// An event fired whenever an authorize request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?        OnAuthorizeWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an authorize request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?       OnAuthorizeWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to an authorize request was received.
+        /// </summary>
+        public event OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
+
+        #endregion
+
+        #region OnNotifyEVChargingNeedsRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a notify EV charging needs request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyEVChargingNeedsRequestDelegate?     OnNotifyEVChargingNeedsRequest;
+
+        /// <summary>
+        /// An event fired whenever a notify EV charging needs request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                    OnNotifyEVChargingNeedsWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a notify EV charging needs request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                   OnNotifyEVChargingNeedsWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a notify EV charging needs request was received.
+        /// </summary>
+        public event OnNotifyEVChargingNeedsResponseDelegate?    OnNotifyEVChargingNeedsResponse;
+
+        #endregion
+
+        #region OnTransactionEventRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever an authorize request will be sent to the CSMS.
+        /// </summary>
+        public event OnTransactionEventRequestDelegate?     OnTransactionEventRequest;
+
+        /// <summary>
+        /// An event fired whenever an authorize request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?               OnTransactionEventWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an authorize request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?              OnTransactionEventWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to an authorize request was received.
+        /// </summary>
+        public event OnTransactionEventResponseDelegate?    OnTransactionEventResponse;
+
+        #endregion
+
+        #region OnStatusNotificationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a status notification request will be sent to the CSMS.
+        /// </summary>
+        public event OnStatusNotificationRequestDelegate?     OnStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a status notification request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                 OnStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a status notification request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                OnStatusNotificationWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a status notification request was received.
+        /// </summary>
+        public event OnStatusNotificationResponseDelegate?    OnStatusNotificationResponse;
+
+        #endregion
+
+        #region OnMeterValuesRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a meter values request will be sent to the CSMS.
+        /// </summary>
+        public event OnMeterValuesRequestDelegate?     OnMeterValuesRequest;
+
+        /// <summary>
+        /// An event fired whenever a meter values request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?          OnMeterValuesWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a meter values request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?         OnMeterValuesWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a meter values request was received.
+        /// </summary>
+        public event OnMeterValuesResponseDelegate?    OnMeterValuesResponse;
+
+        #endregion
+
+        #region OnNotifyChargingLimitRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a notify charging limit request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyChargingLimitRequestDelegate?     OnNotifyChargingLimitRequest;
+
+        /// <summary>
+        /// An event fired whenever a notify charging limit request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                  OnNotifyChargingLimitWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a notify charging limit request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                 OnNotifyChargingLimitWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a notify charging limit request was received.
+        /// </summary>
+        public event OnNotifyChargingLimitResponseDelegate?    OnNotifyChargingLimitResponse;
+
+        #endregion
+
+        #region OnClearedChargingLimitRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a cleared charging limit request will be sent to the CSMS.
+        /// </summary>
+        public event OnClearedChargingLimitRequestDelegate?     OnClearedChargingLimitRequest;
+
+        /// <summary>
+        /// An event fired whenever a cleared charging limit request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                   OnClearedChargingLimitWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a cleared charging limit request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                  OnClearedChargingLimitWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a cleared charging limit request was received.
+        /// </summary>
+        public event OnClearedChargingLimitResponseDelegate?    OnClearedChargingLimitResponse;
+
+        #endregion
+
+        #region OnReportChargingProfilesRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a report charging profiles request will be sent to the CSMS.
+        /// </summary>
+        public event OnReportChargingProfilesRequestDelegate?     OnReportChargingProfilesRequest;
+
+        /// <summary>
+        /// An event fired whenever a report charging profiles request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                     OnReportChargingProfilesWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a report charging profiles request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                    OnReportChargingProfilesWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a report charging profiles request was received.
+        /// </summary>
+        public event OnReportChargingProfilesResponseDelegate?    OnReportChargingProfilesResponse;
+
+        #endregion
 
 
+        #region OnNotifyDisplayMessagesRequest/-Response
 
+        /// <summary>
+        /// An event fired whenever a notify display messages request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyDisplayMessagesRequestDelegate?     OnNotifyDisplayMessagesRequest;
 
-        // Incoming messages (from CSMS)
+        /// <summary>
+        /// An event fired whenever a notify display messages request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                    OnNotifyDisplayMessagesWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a notify display messages request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                   OnNotifyDisplayMessagesWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a notify display messages request was received.
+        /// </summary>
+        public event OnNotifyDisplayMessagesResponseDelegate?    OnNotifyDisplayMessagesResponse;
+
+        #endregion
+
+        #region OnNotifyCustomerInformationRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a notify customer information request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyCustomerInformationRequestDelegate?     OnNotifyCustomerInformationRequest;
+
+        /// <summary>
+        /// An event fired whenever a notify customer information request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                        OnNotifyCustomerInformationWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a notify customer information request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                       OnNotifyCustomerInformationWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a notify customer information request was received.
+        /// </summary>
+        public event OnNotifyCustomerInformationResponseDelegate?    OnNotifyCustomerInformationResponse;
+
+        #endregion
+
+        #endregion
+
+        #region Incoming messages from the CSMS
 
         #region OnReset
 
@@ -597,34 +855,380 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
+        #region OnGetBaseReport
 
+        /// <summary>
+        /// An event sent whenever a get base report websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?          OnGetBaseReportWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a get base report request was received.
+        /// </summary>
+        public event OnGetBaseReportRequestDelegate?     OnGetBaseReportRequest;
+
+        /// <summary>
+        /// An event sent whenever a get base report request was received.
+        /// </summary>
+        public event OnGetBaseReportDelegate?            OnGetBaseReport;
+
+        /// <summary>
+        /// An event sent whenever a response to a get base report request was sent.
+        /// </summary>
+        public event OnGetBaseReportResponseDelegate?    OnGetBaseReportResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a get base report request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?         OnGetBaseReportWSResponse;
+
+        #endregion
+
+        #region OnGetReport
+
+        /// <summary>
+        /// An event sent whenever a get report websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?      OnGetReportWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a get report request was received.
+        /// </summary>
+        public event OnGetReportRequestDelegate?     OnGetReportRequest;
+
+        /// <summary>
+        /// An event sent whenever a get report request was received.
+        /// </summary>
+        public event OnGetReportDelegate?            OnGetReport;
+
+        /// <summary>
+        /// An event sent whenever a response to a get report request was sent.
+        /// </summary>
+        public event OnGetReportResponseDelegate?    OnGetReportResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a get report request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?     OnGetReportWSResponse;
+
+        #endregion
+
+        #region OnGetLog
+
+        /// <summary>
+        /// An event sent whenever a get log websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?     OnGetLogWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a get log request was received.
+        /// </summary>
+        public event OnGetLogRequestDelegate?       OnGetLogRequest;
+
+        /// <summary>
+        /// An event sent whenever a get log request was received.
+        /// </summary>
+        public event OnGetLogDelegate?              OnGetLog;
+
+        /// <summary>
+        /// An event sent whenever a response to a get log request was sent.
+        /// </summary>
+        public event OnGetLogResponseDelegate?      OnGetLogResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a get log request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?    OnGetLogWSResponse;
+
+        #endregion
+
+        #region OnSetVariables
+
+        /// <summary>
+        /// An event sent whenever a set variables websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?         OnSetVariablesWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a set variables request was received.
+        /// </summary>
+        public event OnSetVariablesRequestDelegate?     OnSetVariablesRequest;
+
+        /// <summary>
+        /// An event sent whenever a set variables request was received.
+        /// </summary>
+        public event OnSetVariablesDelegate?            OnSetVariables;
+
+        /// <summary>
+        /// An event sent whenever a response to a set variables request was sent.
+        /// </summary>
+        public event OnSetVariablesResponseDelegate?    OnSetVariablesResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a set variables request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?        OnSetVariablesWSResponse;
+
+        #endregion
+
+        #region OnGetVariables
+
+        /// <summary>
+        /// An event sent whenever a get variables websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?         OnGetVariablesWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a get variables request was received.
+        /// </summary>
+        public event OnGetVariablesRequestDelegate?     OnGetVariablesRequest;
+
+        /// <summary>
+        /// An event sent whenever a get variables request was received.
+        /// </summary>
+        public event OnGetVariablesDelegate?            OnGetVariables;
+
+        /// <summary>
+        /// An event sent whenever a response to a get variables request was sent.
+        /// </summary>
+        public event OnGetVariablesResponseDelegate?    OnGetVariablesResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a get variables request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?        OnGetVariablesWSResponse;
+
+        #endregion
+
+        #region OnSetMonitoringBase
+
+        /// <summary>
+        /// An event sent whenever a set monitoring base websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?              OnSetMonitoringBaseWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a set monitoring base request was received.
+        /// </summary>
+        public event OnSetMonitoringBaseRequestDelegate?     OnSetMonitoringBaseRequest;
+
+        /// <summary>
+        /// An event sent whenever a set monitoring base request was received.
+        /// </summary>
+        public event OnSetMonitoringBaseDelegate?            OnSetMonitoringBase;
+
+        /// <summary>
+        /// An event sent whenever a response to a set monitoring base request was sent.
+        /// </summary>
+        public event OnSetMonitoringBaseResponseDelegate?    OnSetMonitoringBaseResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a set monitoring base request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?             OnSetMonitoringBaseWSResponse;
+
+        #endregion
+
+        #region OnGetMonitoringReport
+
+        /// <summary>
+        /// An event sent whenever a get monitoring report websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                OnGetMonitoringReportWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a get monitoring report request was received.
+        /// </summary>
+        public event OnGetMonitoringReportRequestDelegate?     OnGetMonitoringReportRequest;
+
+        /// <summary>
+        /// An event sent whenever a get monitoring report request was received.
+        /// </summary>
+        public event OnGetMonitoringReportDelegate?            OnGetMonitoringReport;
+
+        /// <summary>
+        /// An event sent whenever a response to a get monitoring report request was sent.
+        /// </summary>
+        public event OnGetMonitoringReportResponseDelegate?    OnGetMonitoringReportResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a get monitoring report request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?               OnGetMonitoringReportWSResponse;
+
+        #endregion
+
+        #region OnSetMonitoringLevel
+
+        /// <summary>
+        /// An event sent whenever a set monitoring level websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?               OnSetMonitoringLevelWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a set monitoring level request was received.
+        /// </summary>
+        public event OnSetMonitoringLevelRequestDelegate?     OnSetMonitoringLevelRequest;
+
+        /// <summary>
+        /// An event sent whenever a set monitoring level request was received.
+        /// </summary>
+        public event OnSetMonitoringLevelDelegate?            OnSetMonitoringLevel;
+
+        /// <summary>
+        /// An event sent whenever a response to a set monitoring level request was sent.
+        /// </summary>
+        public event OnSetMonitoringLevelResponseDelegate?    OnSetMonitoringLevelResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a set monitoring level request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?              OnSetMonitoringLevelWSResponse;
+
+        #endregion
+
+        #region OnSetVariableMonitoring
+
+        /// <summary>
+        /// An event sent whenever a set variable monitoring websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                  OnSetVariableMonitoringWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a set variable monitoring request was received.
+        /// </summary>
+        public event OnSetVariableMonitoringRequestDelegate?     OnSetVariableMonitoringRequest;
+
+        /// <summary>
+        /// An event sent whenever a set variable monitoring request was received.
+        /// </summary>
+        public event OnSetVariableMonitoringDelegate?            OnSetVariableMonitoring;
+
+        /// <summary>
+        /// An event sent whenever a response to a set variable monitoring request was sent.
+        /// </summary>
+        public event OnSetVariableMonitoringResponseDelegate?    OnSetVariableMonitoringResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a set variable monitoring request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                 OnSetVariableMonitoringWSResponse;
+
+        #endregion
+
+        #region OnClearVariableMonitoring
+
+        /// <summary>
+        /// An event sent whenever a clear variable monitoring websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                    OnClearVariableMonitoringWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a clear variable monitoring request was received.
+        /// </summary>
+        public event OnClearVariableMonitoringRequestDelegate?     OnClearVariableMonitoringRequest;
+
+        /// <summary>
+        /// An event sent whenever a clear variable monitoring request was received.
+        /// </summary>
+        public event OnClearVariableMonitoringDelegate?            OnClearVariableMonitoring;
+
+        /// <summary>
+        /// An event sent whenever a response to a clear variable monitoring request was sent.
+        /// </summary>
+        public event OnClearVariableMonitoringResponseDelegate?    OnClearVariableMonitoringResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a clear variable monitoring request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                   OnClearVariableMonitoringWSResponse;
+
+        #endregion
+
+        #region OnSetNetworkProfile
+
+        /// <summary>
+        /// An event sent whenever a set network profile websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?              OnSetNetworkProfileWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a set network profile request was received.
+        /// </summary>
+        public event OnSetNetworkProfileRequestDelegate?     OnSetNetworkProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a set network profile request was received.
+        /// </summary>
+        public event OnSetNetworkProfileDelegate?            OnSetNetworkProfile;
+
+        /// <summary>
+        /// An event sent whenever a response to a set network profile request was sent.
+        /// </summary>
+        public event OnSetNetworkProfileResponseDelegate?    OnSetNetworkProfileResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a set network profile request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?             OnSetNetworkProfileWSResponse;
+
+        #endregion
 
         #region OnChangeAvailability
 
         /// <summary>
-        /// An event sent whenever a reset websocket request was received.
+        /// An event sent whenever a change availability websocket request was received.
         /// </summary>
         public event WSClientRequestLogHandler?               OnChangeAvailabilityWSRequest;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a change availability request was received.
         /// </summary>
         public event OnChangeAvailabilityRequestDelegate?     OnChangeAvailabilityRequest;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a change availability request was received.
         /// </summary>
         public event OnChangeAvailabilityDelegate?            OnChangeAvailability;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event sent whenever a response to a change availability request was sent.
         /// </summary>
         public event OnChangeAvailabilityResponseDelegate?    OnChangeAvailabilityResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a reset request was sent.
+        /// An event sent whenever a websocket response to a change availability request was sent.
         /// </summary>
         public event WSClientResponseLogHandler?              OnChangeAvailabilityWSResponse;
+
+        #endregion
+
+        #region OnTriggerMessage
+
+        /// <summary>
+        /// An event sent whenever a trigger message websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?           OnTriggerMessageWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a trigger message request was received.
+        /// </summary>
+        public event OnTriggerMessageRequestDelegate?     OnTriggerMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a trigger message request was received.
+        /// </summary>
+        public event OnTriggerMessageDelegate?            OnTriggerMessage;
+
+        /// <summary>
+        /// An event sent whenever a response to a trigger message request was sent.
+        /// </summary>
+        public event OnTriggerMessageResponseDelegate?    OnTriggerMessageResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a trigger message request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?          OnTriggerMessageWSResponse;
 
         #endregion
 
@@ -657,208 +1261,120 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region OnTriggerMessage
+
+        #region OnCertificateSigned
 
         /// <summary>
-        /// An event sent whenever a reset websocket request was received.
+        /// An event sent whenever a certificate signed websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?           OnTriggerMessageWSRequest;
+        public event WSClientRequestLogHandler?              OnCertificateSignedWSRequest;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a certificate signed request was received.
         /// </summary>
-        public event OnTriggerMessageRequestDelegate?     OnTriggerMessageRequest;
+        public event OnCertificateSignedRequestDelegate?     OnCertificateSignedRequest;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a certificate signed request was received.
         /// </summary>
-        public event OnTriggerMessageDelegate?            OnTriggerMessage;
+        public event OnCertificateSignedDelegate?            OnCertificateSigned;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event sent whenever a response to a certificate signed request was sent.
         /// </summary>
-        public event OnTriggerMessageResponseDelegate?    OnTriggerMessageResponse;
+        public event OnCertificateSignedResponseDelegate?    OnCertificateSignedResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a reset request was sent.
+        /// An event sent whenever a websocket response to a certificate signed request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?          OnTriggerMessageWSResponse;
+        public event WSClientResponseLogHandler?             OnCertificateSignedWSResponse;
 
         #endregion
 
-
-
-        #region OnReserveNow
+        #region OnInstallCertificate
 
         /// <summary>
-        /// An event sent whenever a reserve now websocket request was received.
+        /// An event sent whenever an install certificate websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?       OnReserveNowWSRequest;
+        public event WSClientRequestLogHandler?                  OnInstallCertificateWSRequest;
 
         /// <summary>
-        /// An event sent whenever a reserve now request was received.
+        /// An event sent whenever an install certificate request was received.
         /// </summary>
-        public event OnReserveNowRequestDelegate?     OnReserveNowRequest;
+        public event OnInstallCertificateRequestDelegate?        OnInstallCertificateRequest;
 
         /// <summary>
-        /// An event sent whenever a reserve now request was received.
+        /// An event sent whenever an install certificate request was received.
         /// </summary>
-        public event OnReserveNowDelegate?            OnReserveNow;
+        public event OnInstallCertificateDelegate?               OnInstallCertificate;
 
         /// <summary>
-        /// An event sent whenever a response to a reserve now request was sent.
+        /// An event sent whenever a response to an install certificate request was sent.
         /// </summary>
-        public event OnReserveNowResponseDelegate?    OnReserveNowResponse;
+        public event OnInstallCertificateResponseDelegate?       OnInstallCertificateResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a reserve now request was sent.
+        /// An event sent whenever a websocket response to an install certificate request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?      OnReserveNowWSResponse;
+        public event WSClientResponseLogHandler?                 OnInstallCertificateWSResponse;
 
         #endregion
 
-        #region OnCancelReservation
+        #region OnGetInstalledCertificateIds
 
         /// <summary>
-        /// An event sent whenever a cancel reservation websocket request was received.
+        /// An event sent whenever a get installed certificate ids websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?              OnCancelReservationWSRequest;
+        public event WSClientRequestLogHandler?                       OnGetInstalledCertificateIdsWSRequest;
 
         /// <summary>
-        /// An event sent whenever a cancel reservation request was received.
+        /// An event sent whenever a get installed certificate ids request was received.
         /// </summary>
-        public event OnCancelReservationRequestDelegate?     OnCancelReservationRequest;
+        public event OnGetInstalledCertificateIdsRequestDelegate?     OnGetInstalledCertificateIdsRequest;
 
         /// <summary>
-        /// An event sent whenever a cancel reservation request was received.
+        /// An event sent whenever a get installed certificate ids request was received.
         /// </summary>
-        public event OnCancelReservationDelegate?            OnCancelReservation;
+        public event OnGetInstalledCertificateIdsDelegate?            OnGetInstalledCertificateIds;
 
         /// <summary>
-        /// An event sent whenever a response to a cancel reservation request was sent.
+        /// An event sent whenever a response to a get installed certificate ids request was sent.
         /// </summary>
-        public event OnCancelReservationResponseDelegate?    OnCancelReservationResponse;
+        public event OnGetInstalledCertificateIdsResponseDelegate?    OnGetInstalledCertificateIdsResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a cancel reservation request was sent.
+        /// An event sent whenever a websocket response to a get installed certificate ids request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?             OnCancelReservationWSResponse;
+        public event WSClientResponseLogHandler?                      OnGetInstalledCertificateIdsWSResponse;
 
         #endregion
 
-        #region OnSetChargingProfile
+        #region OnDeleteCertificate
 
         /// <summary>
-        /// An event sent whenever a reset websocket request was received.
+        /// An event sent whenever a delete certificate websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?               OnSetChargingProfileWSRequest;
+        public event WSClientRequestLogHandler?              OnDeleteCertificateWSRequest;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a delete certificate request was received.
         /// </summary>
-        public event OnSetChargingProfileRequestDelegate?     OnSetChargingProfileRequest;
+        public event OnDeleteCertificateRequestDelegate?     OnDeleteCertificateRequest;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a delete certificate request was received.
         /// </summary>
-        public event OnSetChargingProfileDelegate?            OnSetChargingProfile;
+        public event OnDeleteCertificateDelegate?            OnDeleteCertificate;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event sent whenever a response to a delete certificate request was sent.
         /// </summary>
-        public event OnSetChargingProfileResponseDelegate?    OnSetChargingProfileResponse;
+        public event OnDeleteCertificateResponseDelegate?    OnDeleteCertificateResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a reset request was sent.
+        /// An event sent whenever a websocket response to a delete certificate request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?              OnSetChargingProfileWSResponse;
-
-        #endregion
-
-        #region OnClearChargingProfile
-
-        /// <summary>
-        /// An event sent whenever a reset websocket request was received.
-        /// </summary>
-        public event WSClientRequestLogHandler?                 OnClearChargingProfileWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnClearChargingProfileRequestDelegate?     OnClearChargingProfileRequest;
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnClearChargingProfileDelegate?            OnClearChargingProfile;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnClearChargingProfileResponseDelegate?    OnClearChargingProfileResponse;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a reset request was sent.
-        /// </summary>
-        public event WSClientResponseLogHandler?                OnClearChargingProfileWSResponse;
-
-        #endregion
-
-        #region OnGetCompositeSchedule
-
-        /// <summary>
-        /// An event sent whenever a reset websocket request was received.
-        /// </summary>
-        public event WSClientRequestLogHandler?                 OnGetCompositeScheduleWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnGetCompositeScheduleRequestDelegate?     OnGetCompositeScheduleRequest;
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnGetCompositeScheduleDelegate?            OnGetCompositeSchedule;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnGetCompositeScheduleResponseDelegate?    OnGetCompositeScheduleResponse;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a reset request was sent.
-        /// </summary>
-        public event WSClientResponseLogHandler?                OnGetCompositeScheduleWSResponse;
-
-        #endregion
-
-        #region OnUnlockConnector
-
-        /// <summary>
-        /// An event sent whenever a reset websocket request was received.
-        /// </summary>
-        public event WSClientRequestLogHandler?            OnUnlockConnectorWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnUnlockConnectorRequestDelegate?     OnUnlockConnectorRequest;
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnUnlockConnectorDelegate?            OnUnlockConnector;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnUnlockConnectorResponseDelegate?    OnUnlockConnectorResponse;
-
-        /// <summary>
-        /// An event sent whenever a websocket response to a reset request was sent.
-        /// </summary>
-        public event WSClientResponseLogHandler?           OnUnlockConnectorWSResponse;
+        public event WSClientResponseLogHandler?             OnDeleteCertificateWSResponse;
 
         #endregion
 
@@ -951,105 +1467,443 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #endregion
 
 
+        #region OnReserveNow
 
-        public event OnGetBaseReportRequestDelegate OnGetBaseReportRequest;
-        public event OnGetBaseReportDelegate OnGetBaseReport;
-        public event OnGetBaseReportResponseDelegate OnGetBaseReportResponse;
-        public event OnGetReportRequestDelegate OnGetReportRequest;
-        public event OnGetReportDelegate OnGetReport;
-        public event OnGetReportResponseDelegate OnGetReportResponse;
-        public event OnGetLogRequestDelegate OnGetLogRequest;
-        public event OnGetLogDelegate OnGetLog;
-        public event OnGetLogResponseDelegate OnGetLogResponse;
-        public event OnSetVariablesRequestDelegate OnSetVariablesRequest;
-        public event OnSetVariablesDelegate OnSetVariables;
-        public event OnSetVariablesResponseDelegate OnSetVariablesResponse;
-        public event OnGetVariablesRequestDelegate OnGetVariablesRequest;
-        public event OnGetVariablesDelegate OnGetVariables;
-        public event OnGetVariablesResponseDelegate OnGetVariablesResponse;
-        public event OnSetMonitoringBaseRequestDelegate OnSetMonitoringBaseRequest;
-        public event OnSetMonitoringBaseDelegate OnSetMonitoringBase;
-        public event OnSetMonitoringBaseResponseDelegate OnSetMonitoringBaseResponse;
-        public event OnGetMonitoringReportRequestDelegate OnGetMonitoringReportRequest;
-        public event OnGetMonitoringReportDelegate OnGetMonitoringReport;
-        public event OnGetMonitoringReportResponseDelegate OnGetMonitoringReportResponse;
-        public event OnSetMonitoringLevelRequestDelegate OnSetMonitoringLevelRequest;
-        public event OnSetMonitoringLevelDelegate OnSetMonitoringLevel;
-        public event OnSetMonitoringLevelResponseDelegate OnSetMonitoringLevelResponse;
-        public event OnSetVariableMonitoringRequestDelegate OnSetVariableMonitoringRequest;
-        public event OnSetVariableMonitoringDelegate OnSetVariableMonitoring;
-        public event OnSetVariableMonitoringResponseDelegate OnSetVariableMonitoringResponse;
-        public event OnClearVariableMonitoringRequestDelegate OnClearVariableMonitoringRequest;
-        public event OnClearVariableMonitoringDelegate OnClearVariableMonitoring;
-        public event OnClearVariableMonitoringResponseDelegate OnClearVariableMonitoringResponse;
-        public event OnSetNetworkProfileRequestDelegate OnSetNetworkProfileRequest;
-        public event OnSetNetworkProfileDelegate OnSetNetworkProfile;
-        public event OnSetNetworkProfileResponseDelegate OnSetNetworkProfileResponse;
-        public event OnCertificateSignedRequestDelegate OnCertificateSignedRequest;
-        public event OnCertificateSignedDelegate OnCertificateSigned;
-        public event OnCertificateSignedResponseDelegate OnCertificateSignedResponse;
-        public event OnInstallCertificateRequestDelegate OnInstallCertificateRequest;
-        public event OnInstallCertificateDelegate OnInstallCertificate;
-        public event OnInstallCertificateResponseDelegate OnInstallCertificateResponse;
-        public event OnGetInstalledCertificateIdsRequestDelegate OnGetInstalledCertificateIdsRequest;
-        public event OnGetInstalledCertificateIdsDelegate OnGetInstalledCertificateIds;
-        public event OnGetInstalledCertificateIdsResponseDelegate OnGetInstalledCertificateIdsResponse;
-        public event OnDeleteCertificateRequestDelegate OnDeleteCertificateRequest;
-        public event OnDeleteCertificateDelegate OnDeleteCertificate;
-        public event OnDeleteCertificateResponseDelegate OnDeleteCertificateResponse;
-        public event OnRequestStartTransactionRequestDelegate OnRequestStartTransactionRequest;
-        public event OnRequestStartTransactionDelegate OnRequestStartTransaction;
-        public event OnRequestStartTransactionResponseDelegate OnRequestStartTransactionResponse;
-        public event OnRequestStopTransactionRequestDelegate OnRequestStopTransactionRequest;
-        public event OnRequestStopTransactionDelegate OnRequestStopTransaction;
-        public event OnRequestStopTransactionResponseDelegate OnRequestStopTransactionResponse;
-        public event OnGetTransactionStatusRequestDelegate OnGetTransactionStatusRequest;
-        public event OnGetTransactionStatusDelegate OnGetTransactionStatus;
-        public event OnGetTransactionStatusResponseDelegate OnGetTransactionStatusResponse;
-        public event OnGetChargingProfilesRequestDelegate OnGetChargingProfilesRequest;
-        public event OnGetChargingProfilesDelegate OnGetChargingProfiles;
-        public event OnGetChargingProfilesResponseDelegate OnGetChargingProfilesResponse;
-        public event OnSetDisplayMessageRequestDelegate OnSetDisplayMessageRequest;
-        public event OnSetDisplayMessageDelegate OnSetDisplayMessage;
-        public event OnSetDisplayMessageResponseDelegate OnSetDisplayMessageResponse;
-        public event OnGetDisplayMessagesRequestDelegate OnGetDisplayMessagesRequest;
-        public event OnGetDisplayMessagesDelegate OnGetDisplayMessages;
-        public event OnGetDisplayMessagesResponseDelegate OnGetDisplayMessagesResponse;
-        public event OnClearDisplayMessageRequestDelegate OnClearDisplayMessageRequest;
-        public event OnClearDisplayMessageDelegate OnClearDisplayMessage;
-        public event OnClearDisplayMessageResponseDelegate OnClearDisplayMessageResponse;
-        public event OnCostUpdatedRequestDelegate OnCostUpdatedRequest;
-        public event OnCostUpdatedDelegate OnCostUpdated;
-        public event OnCostUpdatedResponseDelegate OnCostUpdatedResponse;
-        public event OnCustomerInformationRequestDelegate OnCustomerInformationRequest;
-        public event OnCustomerInformationDelegate OnCustomerInformation;
-        public event OnCustomerInformationResponseDelegate OnCustomerInformationResponse;
+        /// <summary>
+        /// An event sent whenever a reserve now websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?       OnReserveNowWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a reserve now request was received.
+        /// </summary>
+        public event OnReserveNowRequestDelegate?     OnReserveNowRequest;
+
+        /// <summary>
+        /// An event sent whenever a reserve now request was received.
+        /// </summary>
+        public event OnReserveNowDelegate?            OnReserveNow;
+
+        /// <summary>
+        /// An event sent whenever a response to a reserve now request was sent.
+        /// </summary>
+        public event OnReserveNowResponseDelegate?    OnReserveNowResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a reserve now request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?      OnReserveNowWSResponse;
+
+        #endregion
+
+        #region OnCancelReservation
+
+        /// <summary>
+        /// An event sent whenever a cancel reservation websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?              OnCancelReservationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a cancel reservation request was received.
+        /// </summary>
+        public event OnCancelReservationRequestDelegate?     OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event sent whenever a cancel reservation request was received.
+        /// </summary>
+        public event OnCancelReservationDelegate?            OnCancelReservation;
+
+        /// <summary>
+        /// An event sent whenever a response to a cancel reservation request was sent.
+        /// </summary>
+        public event OnCancelReservationResponseDelegate?    OnCancelReservationResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a cancel reservation request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?             OnCancelReservationWSResponse;
+
+        #endregion
+
+        #region OnRequestStartTransaction
+
+        /// <summary>
+        /// An event sent whenever a request start transaction websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                    OnRequestStartTransactionWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a request start transaction request was received.
+        /// </summary>
+        public event OnRequestStartTransactionRequestDelegate?     OnRequestStartTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a request start transaction request was received.
+        /// </summary>
+        public event OnRequestStartTransactionDelegate?            OnRequestStartTransaction;
+
+        /// <summary>
+        /// An event sent whenever a response to a request start transaction request was sent.
+        /// </summary>
+        public event OnRequestStartTransactionResponseDelegate?    OnRequestStartTransactionResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a request start transaction request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                   OnRequestStartTransactionWSResponse;
+
+        #endregion
+
+        #region OnRequestStopTransaction
+
+        /// <summary>
+        /// An event sent whenever a request stop transaction websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                   OnRequestStopTransactionWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a request stop transaction request was received.
+        /// </summary>
+        public event OnRequestStopTransactionRequestDelegate?     OnRequestStopTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a request stop transaction request was received.
+        /// </summary>
+        public event OnRequestStopTransactionDelegate?            OnRequestStopTransaction;
+
+        /// <summary>
+        /// An event sent whenever a response to a request stop transaction request was sent.
+        /// </summary>
+        public event OnRequestStopTransactionResponseDelegate?    OnRequestStopTransactionResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a request stop transaction request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                  OnRequestStopTransactionWSResponse;
+
+        #endregion
+
+        #region OnGetTransactionStatus
+
+        /// <summary>
+        /// An event sent whenever a get transaction status websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                 OnGetTransactionStatusWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a get transaction status request was received.
+        /// </summary>
+        public event OnGetTransactionStatusRequestDelegate?     OnGetTransactionStatusRequest;
+
+        /// <summary>
+        /// An event sent whenever a get transaction status request was received.
+        /// </summary>
+        public event OnGetTransactionStatusDelegate?            OnGetTransactionStatus;
+
+        /// <summary>
+        /// An event sent whenever a response to a get transaction status request was sent.
+        /// </summary>
+        public event OnGetTransactionStatusResponseDelegate?    OnGetTransactionStatusResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a get transaction status request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                OnGetTransactionStatusWSResponse;
+
+        #endregion
+
+        #region OnSetChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a set charging profile websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?               OnSetChargingProfileWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a set charging profile request was received.
+        /// </summary>
+        public event OnSetChargingProfileRequestDelegate?     OnSetChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a set charging profile request was received.
+        /// </summary>
+        public event OnSetChargingProfileDelegate?            OnSetChargingProfile;
+
+        /// <summary>
+        /// An event sent whenever a response to a set charging profile request was sent.
+        /// </summary>
+        public event OnSetChargingProfileResponseDelegate?    OnSetChargingProfileResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a set charging profile request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?              OnSetChargingProfileWSResponse;
+
+        #endregion
+
+        #region OnGetChargingProfiles
+
+        /// <summary>
+        /// An event sent whenever a get charging profiles websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                OnGetChargingProfilesWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a get charging profiles request was received.
+        /// </summary>
+        public event OnGetChargingProfilesRequestDelegate?     OnGetChargingProfilesRequest;
+
+        /// <summary>
+        /// An event sent whenever a get charging profiles request was received.
+        /// </summary>
+        public event OnGetChargingProfilesDelegate?            OnGetChargingProfiles;
+
+        /// <summary>
+        /// An event sent whenever a response to a get charging profiles request was sent.
+        /// </summary>
+        public event OnGetChargingProfilesResponseDelegate?    OnGetChargingProfilesResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a get charging profiles request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?               OnGetChargingProfilesWSResponse;
+
+        #endregion
+
+        #region OnClearChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a clear charging profile websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                 OnClearChargingProfileWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a clear charging profile request was received.
+        /// </summary>
+        public event OnClearChargingProfileRequestDelegate?     OnClearChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a clear charging profile request was received.
+        /// </summary>
+        public event OnClearChargingProfileDelegate?            OnClearChargingProfile;
+
+        /// <summary>
+        /// An event sent whenever a response to a clear charging profile request was sent.
+        /// </summary>
+        public event OnClearChargingProfileResponseDelegate?    OnClearChargingProfileResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a clear charging profile request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                OnClearChargingProfileWSResponse;
+
+        #endregion
+
+        #region OnGetCompositeSchedule
+
+        /// <summary>
+        /// An event sent whenever a get composite schedule websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                 OnGetCompositeScheduleWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a get composite schedule request was received.
+        /// </summary>
+        public event OnGetCompositeScheduleRequestDelegate?     OnGetCompositeScheduleRequest;
+
+        /// <summary>
+        /// An event sent whenever a get composite schedule request was received.
+        /// </summary>
+        public event OnGetCompositeScheduleDelegate?            OnGetCompositeSchedule;
+
+        /// <summary>
+        /// An event sent whenever a response to a get composite schedule request was sent.
+        /// </summary>
+        public event OnGetCompositeScheduleResponseDelegate?    OnGetCompositeScheduleResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a get composite schedule request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                OnGetCompositeScheduleWSResponse;
+
+        #endregion
+
+        #region OnUnlockConnector
+
+        /// <summary>
+        /// An event sent whenever an unlock connector websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?            OnUnlockConnectorWSRequest;
+
+        /// <summary>
+        /// An event sent whenever an unlock connector request was received.
+        /// </summary>
+        public event OnUnlockConnectorRequestDelegate?     OnUnlockConnectorRequest;
+
+        /// <summary>
+        /// An event sent whenever an unlock connector request was received.
+        /// </summary>
+        public event OnUnlockConnectorDelegate?            OnUnlockConnector;
+
+        /// <summary>
+        /// An event sent whenever a response to an unlock connector request was sent.
+        /// </summary>
+        public event OnUnlockConnectorResponseDelegate?    OnUnlockConnectorResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to an unlock connector request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?           OnUnlockConnectorWSResponse;
+
+        #endregion
 
 
-        public event ClientRequestLogHandler OnNotifyEventWSRequest;
-        public event ClientResponseLogHandler OnNotifyEventWSResponse;
-        public event ClientRequestLogHandler OnNotifyReportWSRequest;
-        public event ClientResponseLogHandler OnNotifyReportWSResponse;
-        public event ClientRequestLogHandler OnNotifyMonitoringReportWSRequest;
-        public event ClientResponseLogHandler OnNotifyMonitoringReportWSResponse;
-        public event ClientRequestLogHandler OnGet15118EVCertificateWSRequest;
-        public event ClientResponseLogHandler OnGet15118EVCertificateWSResponse;
-        public event ClientRequestLogHandler OnGetCertificateStatusWSRequest;
-        public event ClientResponseLogHandler OnGetCertificateStatusWSResponse;
-        public event ClientRequestLogHandler OnReservationStatusUpdateWSRequest;
-        public event ClientResponseLogHandler OnReservationStatusUpdateWSResponse;
-        public event ClientRequestLogHandler OnNotifyEVChargingNeedsWSRequest;
-        public event ClientResponseLogHandler OnNotifyEVChargingNeedsWSResponse;
-        public event ClientRequestLogHandler OnNotifyChargingLimitWSRequest;
-        public event ClientResponseLogHandler OnNotifyChargingLimitWSResponse;
-        public event ClientRequestLogHandler OnClearedChargingLimitWSRequest;
-        public event ClientResponseLogHandler OnClearedChargingLimitWSResponse;
-        public event ClientRequestLogHandler OnReportChargingProfilesWSRequest;
-        public event ClientResponseLogHandler OnReportChargingProfilesWSResponse;
-        public event ClientRequestLogHandler OnNotifyDisplayMessagesWSRequest;
-        public event ClientResponseLogHandler OnNotifyDisplayMessagesWSResponse;
-        public event ClientRequestLogHandler OnNotifyCustomerInformationWSRequest;
-        public event ClientResponseLogHandler OnNotifyCustomerInformationWSResponse;
+        #region OnSetDisplayMessage
+
+        /// <summary>
+        /// An event sent whenever a set display message websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?              OnSetDisplayMessageWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a set display message request was received.
+        /// </summary>
+        public event OnSetDisplayMessageRequestDelegate?     OnSetDisplayMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a set display message request was received.
+        /// </summary>
+        public event OnSetDisplayMessageDelegate?            OnSetDisplayMessage;
+
+        /// <summary>
+        /// An event sent whenever a response to a set display message request was sent.
+        /// </summary>
+        public event OnSetDisplayMessageResponseDelegate?    OnSetDisplayMessageResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a set display message request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?             OnSetDisplayMessageWSResponse;
+
+        #endregion
+
+        #region OnGetDisplayMessages
+
+        /// <summary>
+        /// An event sent whenever a get display messages websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?               OnGetDisplayMessagesWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a get display messages request was received.
+        /// </summary>
+        public event OnGetDisplayMessagesRequestDelegate?     OnGetDisplayMessagesRequest;
+
+        /// <summary>
+        /// An event sent whenever a get display messages request was received.
+        /// </summary>
+        public event OnGetDisplayMessagesDelegate?            OnGetDisplayMessages;
+
+        /// <summary>
+        /// An event sent whenever a response to a get display messages request was sent.
+        /// </summary>
+        public event OnGetDisplayMessagesResponseDelegate?    OnGetDisplayMessagesResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a get display messages request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?              OnGetDisplayMessagesWSResponse;
+
+        #endregion
+
+        #region OnClearDisplayMessage
+
+        /// <summary>
+        /// An event sent whenever a clear display message websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                OnClearDisplayMessageWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a clear display message request was received.
+        /// </summary>
+        public event OnClearDisplayMessageRequestDelegate?     OnClearDisplayMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a clear display message request was received.
+        /// </summary>
+        public event OnClearDisplayMessageDelegate?            OnClearDisplayMessage;
+
+        /// <summary>
+        /// An event sent whenever a response to a clear display message request was sent.
+        /// </summary>
+        public event OnClearDisplayMessageResponseDelegate?    OnClearDisplayMessageResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a clear display message request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?               OnClearDisplayMessageWSResponse;
+
+        #endregion
+
+        #region OnCostUpdated
+
+        /// <summary>
+        /// An event sent whenever a cost updated websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?        OnCostUpdatedWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a cost updated request was received.
+        /// </summary>
+        public event OnCostUpdatedRequestDelegate?     OnCostUpdatedRequest;
+
+        /// <summary>
+        /// An event sent whenever a cost updated request was received.
+        /// </summary>
+        public event OnCostUpdatedDelegate?            OnCostUpdated;
+
+        /// <summary>
+        /// An event sent whenever a response to a cost updated request was sent.
+        /// </summary>
+        public event OnCostUpdatedResponseDelegate?    OnCostUpdatedResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a cost updated request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?       OnCostUpdatedWSResponse;
+
+        #endregion
+
+        #region OnCustomerInformation
+
+        /// <summary>
+        /// An event sent whenever a customer information websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                OnCustomerInformationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a customer information request was received.
+        /// </summary>
+        public event OnCustomerInformationRequestDelegate?     OnCustomerInformationRequest;
+
+        /// <summary>
+        /// An event sent whenever a customer information request was received.
+        /// </summary>
+        public event OnCustomerInformationDelegate?            OnCustomerInformation;
+
+        /// <summary>
+        /// An event sent whenever a response to a customer information request was sent.
+        /// </summary>
+        public event OnCustomerInformationResponseDelegate?    OnCustomerInformationResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a customer information request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?               OnCustomerInformationWSResponse;
+
+        #endregion
+
+        #endregion
 
         #endregion
 
