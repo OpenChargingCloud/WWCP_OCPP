@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region ClearedChargingLimit
+        #region SendClearedChargingLimit
 
         /// <summary>
         /// An event fired whenever a notify charging limit request will be sent to the CSMS.
@@ -484,7 +484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Notify about charging limits.
         /// </summary>
         /// <param name="Request">A notify charging limit request.</param>
-        public Task<ClearedChargingLimitResponse> ClearedChargingLimit(ClearedChargingLimitRequest Request);
+        public Task<ClearedChargingLimitResponse> SendClearedChargingLimit(ClearedChargingLimitRequest Request);
 
         #endregion
 

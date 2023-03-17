@@ -886,7 +886,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
-        #region Custom JSON parser/serializer delegates
+        #region Custom JSON parser delegates
 
         /// <summary>
         /// A delegate to parse custom BootNotification requests.
@@ -946,27 +946,78 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public CustomJObjectParserDelegate<SignCertificateRequest>?                   CustomSignCertificateRequestParser                     { get; set; }
 
 
+        #endregion
+
+        #region Custom JSON serializer delegates
+
+        // Messages
+
         public CustomJObjectSerializerDelegate<ResetRequest>?                         CustomResetRequestSerializer                           { get; set; }
-
-        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?            CustomChangeAvailabilityRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<DataTransferRequest>?                  CustomDataTransferRequestSerializer                    { get; set; }
-
-        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                CustomTriggerMessageRequestSerializer                  { get; set; }
 
         public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?                CustomUpdateFirmwareRequestSerializer                  { get; set; }
 
+        public CustomJObjectSerializerDelegate<PublishFirmwareRequest>?               CustomPublishFirmwareRequestSerializer                 { get; set; }
+
+        public CustomJObjectSerializerDelegate<UnpublishFirmwareRequest>?             CustomUnpublishFirmwareRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetBaseReportRequest>?                 CustomGetBaseReportRequestSerializer                   { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetReportRequest>?                     CustomGetReportRequestSerializer                       { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetLogRequest>?                        CustomGetLogRequestSerializer                          { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetVariablesRequest>?                  CustomSetVariablesRequestSerializer                    { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetVariablesRequest>?                  CustomGetVariablesRequestSerializer                    { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetMonitoringBaseRequest>?             CustomSetMonitoringBaseRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetMonitoringReportRequest>?           CustomGetMonitoringReportRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetMonitoringLevelRequest>?            CustomSetMonitoringLevelRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetVariableMonitoringRequest>?         CustomSetVariableMonitoringRequestSerializer           { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearVariableMonitoringRequest>?       CustomClearVariableMonitoringRequestSerializer         { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetNetworkProfileRequest>?             CustomSetNetworkProfileRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?            CustomChangeAvailabilityRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                CustomTriggerMessageRequestSerializer                  { get; set; }
+
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?                  CustomDataTransferRequestSerializer                    { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?             CustomCertificateSignedRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?            CustomInstallCertificateRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?    CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
+
+        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?             CustomDeleteCertificateRequestSerializer               { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?           CustomGetLocalListVersionRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<SendLocalListRequest>?                 CustomSendLocalListRequestSerializer                   { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                    CustomClearCacheRequestSerializer                      { get; set; }
 
 
         public CustomJObjectSerializerDelegate<ReserveNowRequest>?                    CustomReserveNowRequestSerializer                      { get; set; }
 
         public CustomJObjectSerializerDelegate<CancelReservationRequest>?             CustomCancelReservationRequestSerializer               { get; set; }
 
-        public CustomJObjectSerializerDelegate<ChargingProfile>?                      CustomChargingProfileSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedule>?                     CustomChargingScheduleSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?               CustomChargingSchedulePeriodSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<RequestStartTransactionRequest>?       CustomRequestStartTransactionRequestSerializer         { get; set; }
+
+        public CustomJObjectSerializerDelegate<RequestStopTransactionRequest>?        CustomRequestStopTransactionRequestSerializer          { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetTransactionStatusRequest>?          CustomGetTransactionStatusRequestSerializer            { get; set; }
 
         public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?            CustomSetChargingProfileRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetChargingProfilesRequest>?           CustomGetChargingProfilesRequestSerializer             { get; set; }
 
         public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?          CustomClearChargingProfileRequestSerializer            { get; set; }
 
@@ -975,19 +1026,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?               CustomUnlockConnectorRequestSerializer                 { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?           CustomGetLocalListVersionRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<SetDisplayMessageRequest>?             CustomSetDisplayMessageRequestSerializer               { get; set; }
 
-        public CustomJObjectSerializerDelegate<SendLocalListRequest>?                 CustomSendLocalListRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<GetDisplayMessagesRequest>?            CustomGetDisplayMessagesRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearDisplayMessageRequest>?           CustomClearDisplayMessageRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<CostUpdatedRequest>?                   CustomCostUpdatedRequestSerializer                     { get; set; }
+
+        public CustomJObjectSerializerDelegate<CustomerInformationRequest>?           CustomCustomerInformationRequestSerializer             { get; set; }
+
+
+        // Data Structures
+        public CustomJObjectSerializerDelegate<ChargingProfile>?                      CustomChargingProfileSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedule>?                     CustomChargingScheduleSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?               CustomChargingSchedulePeriodSerializer                 { get; set; }
+
         public CustomJObjectSerializerDelegate<AuthorizationData>?                    CustomAuthorizationDataSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<IdTokenInfo>?                          CustomIdTokenInfoResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                    CustomClearCacheRequestSerializer                      { get; set; }
-
-
-        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?             CustomCertificateSignedRequestSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?             CustomDeleteCertificateRequestSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?    CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
-        public CustomJObjectSerializerDelegate<GetLogRequest>?                        CustomGetLogRequestSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?            CustomInstallCertificateRequestSerializer              { get; set; }
 
         #endregion
 
@@ -3464,6 +3520,248 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
+        #region UpdateFirmware        (Request)
+
+        public async Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
+        {
+
+            #region Send OnUpdateFirmwareRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateFirmwareRequest?.Invoke(startTime,
+                                                this,
+                                                Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateFirmwareRequest));
+            }
+
+            #endregion
+
+
+            UpdateFirmwareResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomUpdateFirmwareRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (UpdateFirmwareResponse.TryParse(Request,
+                                                    sendRequestState.Response,
+                                                    out var updateFirmwareResponse,
+                                                    out var errorResponse))
+                {
+                    response = updateFirmwareResponse!;
+                }
+
+                else
+                    response = new UpdateFirmwareResponse(Request,
+                                                          Result.Format(errorResponse));
+
+            }
+            else
+                response = new UpdateFirmwareResponse(Request,
+                                                      Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnUpdateFirmwareResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateFirmwareResponse?.Invoke(endTime,
+                                                 this,
+                                                 Request,
+                                                 response,
+                                                 endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateFirmwareResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region PublishFirmware        (Request)
+
+        public async Task<PublishFirmwareResponse> PublishFirmware(PublishFirmwareRequest Request)
+        {
+
+            #region Send OnPublishFirmwareRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnPublishFirmwareRequest?.Invoke(startTime,
+                                                 this,
+                                                 Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPublishFirmwareRequest));
+            }
+
+            #endregion
+
+
+            PublishFirmwareResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomPublishFirmwareRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (PublishFirmwareResponse.TryParse(Request,
+                                                     sendRequestState.Response,
+                                                     out var updateFirmwareResponse,
+                                                     out var errorResponse))
+                {
+                    response = updateFirmwareResponse!;
+                }
+
+                else
+                    response = new PublishFirmwareResponse(Request,
+                                                           Result.Format(errorResponse));
+
+            }
+            else
+                response = new PublishFirmwareResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnPublishFirmwareResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnPublishFirmwareResponse?.Invoke(endTime,
+                                                  this,
+                                                  Request,
+                                                  response,
+                                                  endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPublishFirmwareResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region UnpublishFirmware        (Request)
+
+        public async Task<UnpublishFirmwareResponse> UnpublishFirmware(UnpublishFirmwareRequest Request)
+        {
+
+            #region Send OnUnpublishFirmwareRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUnpublishFirmwareRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnpublishFirmwareRequest));
+            }
+
+            #endregion
+
+
+            UnpublishFirmwareResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomUnpublishFirmwareRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.Response is not null)
+            {
+
+                if (UnpublishFirmwareResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var updateFirmwareResponse,
+                                                       out var errorResponse))
+                {
+                    response = updateFirmwareResponse!;
+                }
+
+                else
+                    response = new UnpublishFirmwareResponse(Request,
+                                                             Result.Format(errorResponse));
+
+            }
+            else
+                response = new UnpublishFirmwareResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnUnpublishFirmwareResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUnpublishFirmwareResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnpublishFirmwareResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+
         #region ChangeAvailability    (Request)
 
         public async Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request)
@@ -3704,85 +4002,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
-        #region UpdateFirmware        (Request)
 
-        public async Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
-        {
-
-            #region Send OnUpdateFirmwareRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnUpdateFirmwareRequest?.Invoke(startTime,
-                                                this,
-                                                Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateFirmwareRequest));
-            }
-
-            #endregion
-
-
-            UpdateFirmwareResponse? response = null;
-
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomUpdateFirmwareRequestSerializer),
-                                                     Request.RequestTimeout);
-
-            if (sendRequestState.Response is not null)
-            {
-
-                if (UpdateFirmwareResponse.TryParse(Request,
-                                                    sendRequestState.Response,
-                                                    out var updateFirmwareResponse,
-                                                    out var errorResponse))
-                {
-                    response = updateFirmwareResponse!;
-                }
-
-                else
-                    response = new UpdateFirmwareResponse(Request,
-                                                          Result.Format(errorResponse));
-
-            }
-            else
-                response = new UpdateFirmwareResponse(Request,
-                                                      Result.FromSendRequestState(sendRequestState));
-
-
-            #region Send OnUpdateFirmwareResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnUpdateFirmwareResponse?.Invoke(endTime,
-                                                 this,
-                                                 Request,
-                                                 response,
-                                                 endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateFirmwareResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
 
 
         #region ReserveNow            (Request)
@@ -4929,15 +5149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
 
-        public Task<PublishFirmwareResponse> PublishFirmware(PublishFirmwareRequest Request)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<UnpublishFirmwareResponse> UnpublishFirmware(UnpublishFirmwareRequest Request)
-        {
-            throw new NotImplementedException();
-        }
 
         public Task<GetBaseReportResponse> GetBaseReport(GetBaseReportRequest Request)
         {

@@ -4093,7 +4093,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
 
 
-        #region SendBootNotification             (Request)
+        #region SendBootNotification                 (Request)
 
         /// <summary>
         /// Send a boot notification.
@@ -4169,7 +4169,159 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region SendHeartbeat                    (Request)
+        #region SendFirmwareStatusNotification       (Request)
+
+        /// <summary>
+        /// Send a firmware status notification.
+        /// </summary>
+        /// <param name="Request">A firmware status notification request.</param>
+        public async Task<FirmwareStatusNotificationResponse>
+
+            SendFirmwareStatusNotification(FirmwareStatusNotificationRequest Request)
+
+        {
+
+            #region Send OnFirmwareStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnFirmwareStatusNotificationRequest?.Invoke(startTime,
+                                                            this,
+                                                            Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnFirmwareStatusNotificationRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!FirmwareStatusNotificationResponse.TryParse(Request,
+                                                            (await WaitForResponse(requestId)) ?? new JObject(),
+                                                             out var response,
+                                                             out var errorResponse))
+            {
+                response = new FirmwareStatusNotificationResponse(Request,
+                                                                  Result.Format(errorResponse));
+            }
+
+            response ??= new FirmwareStatusNotificationResponse(Request,
+                                                                Result.GenericError());
+
+
+            #region Send OnFirmwareStatusNotificationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnFirmwareStatusNotificationResponse?.Invoke(endTime,
+                                                             this,
+                                                             Request,
+                                                             response,
+                                                             endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnFirmwareStatusNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendPublishFirmwareStatusNotification(Request)
+
+        /// <summary>
+        /// Send a publish firmware status notification.
+        /// </summary>
+        /// <param name="Request">A publish firmware status notification request.</param>
+        public async Task<PublishFirmwareStatusNotificationResponse>
+
+            SendPublishFirmwareStatusNotification(PublishFirmwareStatusNotificationRequest Request)
+
+        {
+
+            #region Send OnPublishFirmwareStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnPublishFirmwareStatusNotificationRequest?.Invoke(startTime,
+                                                                   this,
+                                                                   Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnPublishFirmwareStatusNotificationRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!PublishFirmwareStatusNotificationResponse.TryParse(Request,
+                                                                   (await WaitForResponse(requestId)) ?? new JObject(),
+                                                                    out var response,
+                                                                    out var errorResponse))
+            {
+                response = new PublishFirmwareStatusNotificationResponse(Request,
+                                                                         Result.Format(errorResponse));
+            }
+
+            response ??= new PublishFirmwareStatusNotificationResponse(Request,
+                                                                       Result.GenericError());
+
+
+            #region Send OnPublishFirmwareStatusNotificationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnPublishFirmwareStatusNotificationResponse?.Invoke(endTime,
+                                                                    this,
+                                                                    Request,
+                                                                    response,
+                                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnPublishFirmwareStatusNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendHeartbeat                        (Request)
 
         /// <summary>
         /// Send a heartbeat.
@@ -4245,8 +4397,769 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
+        #region NotifyEvent                          (Request)
 
-        #region Authorize                        (Request)
+        /// <summary>
+        /// Send a notify event.
+        /// </summary>
+        /// <param name="Request">A notify event request.</param>
+        public async Task<NotifyEventResponse>
+
+            NotifyEvent(NotifyEventRequest  Request)
+
+        {
+
+            #region Send OnNotifyEventRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEventRequest?.Invoke(startTime,
+                                             this,
+                                             Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyEventRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!NotifyEventResponse.TryParse(Request,
+                                             (await WaitForResponse(requestId)) ?? new JObject(),
+                                              out var response,
+                                              out var errorResponse))
+            {
+                response = new NotifyEventResponse(Request,
+                                                   Result.Format(errorResponse));
+            }
+
+            response ??= new NotifyEventResponse(Request,
+                                                 Result.GenericError());
+
+
+            #region Send OnNotifyEventResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEventResponse?.Invoke(endTime,
+                                              this,
+                                              Request,
+                                              response,
+                                              endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyEventResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendSecurityEventNotification        (Request)
+
+        /// <summary>
+        /// Send a security event notification.
+        /// </summary>
+        /// <param name="Request">A security event notification request.</param>
+        public async Task<SecurityEventNotificationResponse>
+
+            SendSecurityEventNotification(SecurityEventNotificationRequest  Request)
+
+        {
+
+            #region Send OnSecurityEventNotificationRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSecurityEventNotificationRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnSecurityEventNotificationRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!SecurityEventNotificationResponse.TryParse(Request,
+                                                           (await WaitForResponse(requestId)) ?? new JObject(),
+                                                            out var response,
+                                                            out var errorResponse))
+            {
+                response = new SecurityEventNotificationResponse(Request,
+                                                                 Result.Format(errorResponse));
+            }
+
+            response ??= new SecurityEventNotificationResponse(Request,
+                                                               Result.GenericError());
+
+
+            #region Send OnSecurityEventNotificationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSecurityEventNotificationResponse?.Invoke(endTime,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnSecurityEventNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyReport                         (Request)
+
+        /// <summary>
+        /// Send a notify report.
+        /// </summary>
+        /// <param name="Request">A notify report request.</param>
+        public async Task<NotifyReportResponse>
+
+            NotifyReport(NotifyReportRequest  Request)
+
+        {
+
+            #region Send OnNotifyReportRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyReportRequest?.Invoke(startTime,
+                                              this,
+                                              Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyReportRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!NotifyReportResponse.TryParse(Request,
+                                              (await WaitForResponse(requestId)) ?? new JObject(),
+                                               out var response,
+                                               out var errorResponse))
+            {
+                response = new NotifyReportResponse(Request,
+                                                    Result.Format(errorResponse));
+            }
+
+            response ??= new NotifyReportResponse(Request,
+                                                  Result.GenericError());
+
+
+            #region Send OnNotifyReportResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyReportResponse?.Invoke(endTime,
+                                               this,
+                                               Request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyReportResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyMonitoringReport               (Request)
+
+        /// <summary>
+        /// Send a notify monitoring report.
+        /// </summary>
+        /// <param name="Request">A notify monitoring report request.</param>
+        public async Task<NotifyMonitoringReportResponse>
+
+            NotifyMonitoringReport(NotifyMonitoringReportRequest  Request)
+
+        {
+
+            #region Send OnNotifyMonitoringReportRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyMonitoringReportRequest?.Invoke(startTime,
+                                                        this,
+                                                        Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyMonitoringReportRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!NotifyMonitoringReportResponse.TryParse(Request,
+                                                        (await WaitForResponse(requestId)) ?? new JObject(),
+                                                         out var response,
+                                                         out var errorResponse))
+            {
+                response = new NotifyMonitoringReportResponse(Request,
+                                                              Result.Format(errorResponse));
+            }
+
+            response ??= new NotifyMonitoringReportResponse(Request,
+                                                            Result.GenericError());
+
+
+            #region Send OnNotifyMonitoringReportResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyMonitoringReportResponse?.Invoke(endTime,
+                                                         this,
+                                                         Request,
+                                                         response,
+                                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyMonitoringReportResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region LogStatusNotification                (Request)
+
+        /// <summary>
+        /// Send a log status notification to the CSMS.
+        /// </summary>
+        /// <param name="Request">A log status notification request.</param>
+        public async Task<LogStatusNotificationResponse>
+
+            SendLogStatusNotification(LogStatusNotificationRequest  Request)
+
+        {
+
+            #region Send OnLogStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnLogStatusNotificationRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnLogStatusNotificationRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!LogStatusNotificationResponse.TryParse(Request,
+                                                       (await WaitForResponse(requestId)) ?? new JObject(),
+                                                        out var response,
+                                                        out var errorResponse))
+            {
+                response = new LogStatusNotificationResponse(Request,
+                                                             Result.Format(errorResponse));
+            }
+
+            response ??= new LogStatusNotificationResponse(Request,
+                                                           Result.GenericError());
+
+
+            #region Send OnLogStatusNotificationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnLogStatusNotificationResponse?.Invoke(endTime,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnLogStatusNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region TransferData                         (Request)
+
+        /// <summary>
+        /// Send the given vendor-specific data to the CSMS.
+        /// </summary>
+        /// <param name="Request">A data transfer request.</param>
+        public async Task<CSMS.DataTransferResponse>
+
+            TransferData(DataTransferRequest  Request)
+
+        {
+
+            #region Send OnDataTransferRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDataTransferRequest?.Invoke(startTime,
+                                              this,
+                                              Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDataTransferRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!CSMS.DataTransferResponse.TryParse(Request,
+                                                   (await WaitForResponse(requestId)) ?? new JObject(),
+                                                    out var response,
+                                                    out var errorResponse))
+            {
+                response = new CSMS.DataTransferResponse(Request,
+                                                         Result.Format(errorResponse));
+            }
+
+            response ??= new CSMS.DataTransferResponse(Request,
+                                                       Result.GenericError());
+
+
+            #region Send OnDataTransferResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDataTransferResponse?.Invoke(endTime,
+                                               this,
+                                               Request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDataTransferResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        #region SignCertificate                      (Request)
+
+        /// <summary>
+        /// Send a sign certificate request to the CSMS.
+        /// </summary>
+        /// <param name="Request">A sign certificate request.</param>
+        public async Task<SignCertificateResponse>
+
+            SignCertificate(SignCertificateRequest  Request)
+
+        {
+
+            #region Send OnSignCertificateRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSignCertificateRequest?.Invoke(startTime,
+                                                 this,
+                                                 Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnSignCertificateRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!SignCertificateResponse.TryParse(Request,
+                                                 (await WaitForResponse(requestId)) ?? new JObject(),
+                                                  out var response,
+                                                  out var errorResponse))
+            {
+                response = new SignCertificateResponse(Request,
+                                                       Result.Format(errorResponse));
+            }
+
+            response ??= new SignCertificateResponse(Request,
+                                                     Result.GenericError());
+
+
+            #region Send OnSignCertificateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSignCertificateResponse?.Invoke(endTime,
+                                                  this,
+                                                  Request,
+                                                  response,
+                                                  endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnSignCertificateResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region Get15118EVCertificate                (Request)
+
+        /// <summary>
+        /// Send a get 15118 EV certificate.
+        /// </summary>
+        /// <param name="Request">A get 15118 EV certificate request.</param>
+        public async Task<Get15118EVCertificateResponse>
+
+            Get15118EVCertificate(Get15118EVCertificateRequest  Request)
+
+        {
+
+            #region Send OnGet15118EVCertificateRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGet15118EVCertificateRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGet15118EVCertificateRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!Get15118EVCertificateResponse.TryParse(Request,
+                                                       (await WaitForResponse(requestId)) ?? new JObject(),
+                                                        out var response,
+                                                        out var errorResponse))
+            {
+                response = new Get15118EVCertificateResponse(Request,
+                                                             Result.Format(errorResponse));
+            }
+
+            response ??= new Get15118EVCertificateResponse(Request,
+                                                           Result.GenericError());
+
+
+            #region Send OnGet15118EVCertificateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGet15118EVCertificateResponse?.Invoke(endTime,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGet15118EVCertificateResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetCertificateStatus                 (Request)
+
+        /// <summary>
+        /// Send a get certificate status request.
+        /// </summary>
+        /// <param name="Request">A get certificate status request.</param>
+        public async Task<GetCertificateStatusResponse>
+
+            GetCertificateStatus(GetCertificateStatusRequest  Request)
+
+        {
+
+            #region Send OnGetCertificateStatusRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetCertificateStatusRequest?.Invoke(startTime,
+                                                      this,
+                                                      Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGetCertificateStatusRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!GetCertificateStatusResponse.TryParse(Request,
+                                                      (await WaitForResponse(requestId)) ?? new JObject(),
+                                                       out var response,
+                                                       out var errorResponse))
+            {
+                response = new GetCertificateStatusResponse(Request,
+                                                            Result.Format(errorResponse));
+            }
+
+            response ??= new GetCertificateStatusResponse(Request,
+                                                          Result.GenericError());
+
+
+            #region Send OnGetCertificateStatusResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetCertificateStatusResponse?.Invoke(endTime,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGetCertificateStatusResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        #region SendReservationStatusUpdate          (Request)
+
+        /// <summary>
+        /// Send a heartbeat.
+        /// </summary>
+        /// <param name="Request">A heartbeat request.</param>
+        public async Task<ReservationStatusUpdateResponse>
+
+            SendReservationStatusUpdate(ReservationStatusUpdateRequest  Request)
+
+        {
+
+            #region Send OnReservationStatusUpdateRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnReservationStatusUpdateRequest?.Invoke(startTime,
+                                                         this,
+                                                         Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnReservationStatusUpdateRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!ReservationStatusUpdateResponse.TryParse(Request,
+                                                         (await WaitForResponse(requestId)) ?? new JObject(),
+                                                          out var response,
+                                                          out var errorResponse))
+            {
+                response = new ReservationStatusUpdateResponse(Request,
+                                                               Result.Format(errorResponse));
+            }
+
+            response ??= new ReservationStatusUpdateResponse(Request,
+                                                             Result.GenericError());
+
+
+            #region Send OnReservationStatusUpdateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnReservationStatusUpdateResponse?.Invoke(endTime,
+                                                          this,
+                                                          Request,
+                                                          response,
+                                                          endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnReservationStatusUpdateResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region Authorize                            (Request)
 
         /// <summary>
         /// Authorize the given token.
@@ -4322,7 +5235,83 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region SendTransactionEvent             (Request)
+        #region NotifyEVChargingNeeds                (Request)
+
+        /// <summary>
+        /// Send a notify EV charging needs request.
+        /// </summary>
+        /// <param name="Request">A notify EV charging needs request.</param>
+        public async Task<NotifyEVChargingNeedsResponse>
+
+            NotifyEVChargingNeeds(NotifyEVChargingNeedsRequest  Request)
+
+        {
+
+            #region Send OnNotifyEVChargingNeedsRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEVChargingNeedsRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyEVChargingNeedsRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!NotifyEVChargingNeedsResponse.TryParse(Request,
+                                                       (await WaitForResponse(requestId)) ?? new JObject(),
+                                                        out var response,
+                                                        out var errorResponse))
+            {
+                response = new NotifyEVChargingNeedsResponse(Request,
+                                                             Result.Format(errorResponse));
+            }
+
+            response ??= new NotifyEVChargingNeedsResponse(Request,
+                                                           Result.GenericError());
+
+
+            #region Send OnNotifyEVChargingNeedsResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEVChargingNeedsResponse?.Invoke(endTime,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyEVChargingNeedsResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendTransactionEvent                 (Request)
 
         /// <summary>
         /// Sned a transaction event.
@@ -4398,7 +5387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region SendStatusNotification           (Request)
+        #region SendStatusNotification               (Request)
 
         /// <summary>
         /// Send a status notification for the given connector.
@@ -4474,7 +5463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region SendMeterValues                  (Request)
+        #region SendMeterValues                      (Request)
 
         /// <summary>
         /// Send a meter values for the given connector.
@@ -4550,33 +5539,33 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region TransferData                     (Request)
+        #region NotifyChargingLimit                  (Request)
 
         /// <summary>
-        /// Send the given vendor-specific data to the CSMS.
+        /// Send a notify charging limit request.
         /// </summary>
-        /// <param name="Request">A data transfer request.</param>
-        public async Task<CSMS.DataTransferResponse>
+        /// <param name="Request">A notify charging limit request.</param>
+        public async Task<NotifyChargingLimitResponse>
 
-            TransferData(DataTransferRequest  Request)
+            NotifyChargingLimit(NotifyChargingLimitRequest  Request)
 
         {
 
-            #region Send OnDataTransferRequest event
+            #region Send OnNotifyChargingLimitRequest event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnDataTransferRequest?.Invoke(startTime,
-                                              this,
-                                              Request);
+                OnNotifyChargingLimitRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDataTransferRequest));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyChargingLimitRequest));
             }
 
             #endregion
@@ -4586,36 +5575,36 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                               Request.RequestId,
                                               Request.ToJSON());
 
-            if (!CSMS.DataTransferResponse.TryParse(Request,
-                                                 (await WaitForResponse(requestId)) ?? new JObject(),
-                                                  out var response,
-                                                  out var errorResponse))
+            if (!NotifyChargingLimitResponse.TryParse(Request,
+                                                     (await WaitForResponse(requestId)) ?? new JObject(),
+                                                      out var response,
+                                                      out var errorResponse))
             {
-                response = new CSMS.DataTransferResponse(Request,
-                                                       Result.Format(errorResponse));
+                response = new NotifyChargingLimitResponse(Request,
+                                                           Result.Format(errorResponse));
             }
 
-            response ??= new CSMS.DataTransferResponse(Request,
-                                                     Result.GenericError());
+            response ??= new NotifyChargingLimitResponse(Request,
+                                                         Result.GenericError());
 
 
-            #region Send OnDataTransferResponse event
+            #region Send OnNotifyChargingLimitResponse event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnDataTransferResponse?.Invoke(endTime,
-                                               this,
-                                               Request,
-                                               response,
-                                               endTime - startTime);
+                OnNotifyChargingLimitResponse?.Invoke(endTime,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDataTransferResponse));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyChargingLimitResponse));
             }
 
             #endregion
@@ -4626,33 +5615,33 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region SendFirmwareStatusNotification   (Request)
+        #region SendClearedChargingLimit             (Request)
 
         /// <summary>
-        /// Send a firmware status notification to the CSMS.
+        /// Send a cleared charging limit request.
         /// </summary>
-        /// <param name="Request">A firmware status notification request.</param>
-        public async Task<FirmwareStatusNotificationResponse>
+        /// <param name="Request">A cleared charging limit request.</param>
+        public async Task<ClearedChargingLimitResponse>
 
-            SendFirmwareStatusNotification(FirmwareStatusNotificationRequest  Request)
+            SendClearedChargingLimit(ClearedChargingLimitRequest  Request)
 
         {
 
-            #region Send OnFirmwareStatusNotificationRequest event
+            #region Send OnClearedChargingLimitRequest event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnFirmwareStatusNotificationRequest?.Invoke(startTime,
-                                                            this,
-                                                            Request);
+                OnClearedChargingLimitRequest?.Invoke(startTime,
+                                                      this,
+                                                      Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnClearedChargingLimitRequest));
             }
 
             #endregion
@@ -4662,36 +5651,112 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                               Request.RequestId,
                                               Request.ToJSON());
 
-            if (!FirmwareStatusNotificationResponse.TryParse(Request,
-                                                            (await WaitForResponse(requestId)) ?? new JObject(),
-                                                             out var response,
-                                                             out var errorResponse))
+            if (!ClearedChargingLimitResponse.TryParse(Request,
+                                                      (await WaitForResponse(requestId)) ?? new JObject(),
+                                                       out var response,
+                                                       out var errorResponse))
             {
-                response = new FirmwareStatusNotificationResponse(Request,
-                                                                  Result.Format(errorResponse));
+                response = new ClearedChargingLimitResponse(Request,
+                                                            Result.Format(errorResponse));
             }
 
-            response ??= new FirmwareStatusNotificationResponse(Request,
-                                                                Result.GenericError());
+            response ??= new ClearedChargingLimitResponse(Request,
+                                                          Result.GenericError());
 
 
-            #region Send OnFirmwareStatusNotificationResponse event
+            #region Send OnClearedChargingLimitResponse event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnFirmwareStatusNotificationResponse?.Invoke(endTime,
-                                                             this,
-                                                             Request,
-                                                             response,
-                                                             endTime - startTime);
+                OnClearedChargingLimitResponse?.Invoke(endTime,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnClearedChargingLimitResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region ReportChargingProfiles               (Request)
+
+        /// <summary>
+        /// Send a report charging profiles.
+        /// </summary>
+        /// <param name="Request">A report charging profiles request.</param>
+        public async Task<ReportChargingProfilesResponse>
+
+            ReportChargingProfiles(ReportChargingProfilesRequest  Request)
+
+        {
+
+            #region Send OnReportChargingProfilesRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnReportChargingProfilesRequest?.Invoke(startTime,
+                                                        this,
+                                                        Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnReportChargingProfilesRequest));
+            }
+
+            #endregion
+
+
+            var requestId = await SendRequest(Request.Action,
+                                              Request.RequestId,
+                                              Request.ToJSON());
+
+            if (!ReportChargingProfilesResponse.TryParse(Request,
+                                                        (await WaitForResponse(requestId)) ?? new JObject(),
+                                                         out var response,
+                                                         out var errorResponse))
+            {
+                response = new ReportChargingProfilesResponse(Request,
+                                                              Result.Format(errorResponse));
+            }
+
+            response ??= new ReportChargingProfilesResponse(Request,
+                                                            Result.GenericError());
+
+
+            #region Send OnReportChargingProfilesResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnReportChargingProfilesResponse?.Invoke(endTime,
+                                                         this,
+                                                         Request,
+                                                         response,
+                                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnReportChargingProfilesResponse));
             }
 
             #endregion
@@ -4703,33 +5768,33 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #endregion
 
 
-        #region LogStatusNotification            (Request)
+        #region NotifyDisplayMessages                (Request)
 
         /// <summary>
-        /// Send a log status notification to the CSMS.
+        /// Send a notify display messages request.
         /// </summary>
-        /// <param name="Request">A start transaction request.</param>
-        public async Task<LogStatusNotificationResponse>
+        /// <param name="Request">A notify display messages request.</param>
+        public async Task<NotifyDisplayMessagesResponse>
 
-            SendLogStatusNotification(LogStatusNotificationRequest  Request)
+            NotifyDisplayMessages(NotifyDisplayMessagesRequest  Request)
 
         {
 
-            #region Send OnLogStatusNotificationRequest event
+            #region Send OnNotifyDisplayMessagesRequest event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnLogStatusNotificationRequest?.Invoke(startTime,
+                OnNotifyDisplayMessagesRequest?.Invoke(startTime,
                                                        this,
                                                        Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnLogStatusNotificationRequest));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyDisplayMessagesRequest));
             }
 
             #endregion
@@ -4739,27 +5804,27 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                               Request.RequestId,
                                               Request.ToJSON());
 
-            if (!LogStatusNotificationResponse.TryParse(Request,
+            if (!NotifyDisplayMessagesResponse.TryParse(Request,
                                                        (await WaitForResponse(requestId)) ?? new JObject(),
                                                         out var response,
                                                         out var errorResponse))
             {
-                response = new LogStatusNotificationResponse(Request,
+                response = new NotifyDisplayMessagesResponse(Request,
                                                              Result.Format(errorResponse));
             }
 
-            response ??= new LogStatusNotificationResponse(Request,
+            response ??= new NotifyDisplayMessagesResponse(Request,
                                                            Result.GenericError());
 
 
-            #region Send OnLogStatusNotificationResponse event
+            #region Send OnNotifyDisplayMessagesResponse event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnLogStatusNotificationResponse?.Invoke(endTime,
+                OnNotifyDisplayMessagesResponse?.Invoke(endTime,
                                                         this,
                                                         Request,
                                                         response,
@@ -4768,7 +5833,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnLogStatusNotificationResponse));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyDisplayMessagesResponse));
             }
 
             #endregion
@@ -4779,33 +5844,33 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region SecurityEventNotification        (Request)
+        #region NotifyCustomerInformation            (Request)
 
         /// <summary>
-        /// Stop a charging process at the given connector.
+        /// Send a notify customer information request.
         /// </summary>
-        /// <param name="Request">A stop transaction request.</param>
-        public async Task<SecurityEventNotificationResponse>
+        /// <param name="Request">A notify customer information request.</param>
+        public async Task<NotifyCustomerInformationResponse>
 
-            SendSecurityEventNotification(SecurityEventNotificationRequest  Request)
+            NotifyCustomerInformation(NotifyCustomerInformationRequest  Request)
 
         {
 
-            #region Send OnSecurityEventNotificationRequest event
+            #region Send OnNotifyCustomerInformationRequest event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnSecurityEventNotificationRequest?.Invoke(startTime,
+                OnNotifyCustomerInformationRequest?.Invoke(startTime,
                                                            this,
                                                            Request);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnSecurityEventNotificationRequest));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyCustomerInformationRequest));
             }
 
             #endregion
@@ -4815,27 +5880,27 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                               Request.RequestId,
                                               Request.ToJSON());
 
-            if (!SecurityEventNotificationResponse.TryParse(Request,
+            if (!NotifyCustomerInformationResponse.TryParse(Request,
                                                            (await WaitForResponse(requestId)) ?? new JObject(),
                                                             out var response,
                                                             out var errorResponse))
             {
-                response = new SecurityEventNotificationResponse(Request,
+                response = new NotifyCustomerInformationResponse(Request,
                                                                  Result.Format(errorResponse));
             }
 
-            response ??= new SecurityEventNotificationResponse(Request,
+            response ??= new NotifyCustomerInformationResponse(Request,
                                                                Result.GenericError());
 
 
-            #region Send OnSecurityEventNotificationResponse event
+            #region Send OnNotifyCustomerInformationResponse event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnSecurityEventNotificationResponse?.Invoke(endTime,
+                OnNotifyCustomerInformationResponse?.Invoke(endTime,
                                                             this,
                                                             Request,
                                                             response,
@@ -4844,7 +5909,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnSecurityEventNotificationResponse));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyCustomerInformationResponse));
             }
 
             #endregion
@@ -4854,147 +5919,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         }
 
         #endregion
-
-        #region SignCertificate                  (Request)
-
-        /// <summary>
-        /// Send certificate signing request to the CSMS.
-        /// </summary>
-        /// <param name="Request">A stop transaction request.</param>
-        public async Task<SignCertificateResponse>
-
-            SignCertificate(SignCertificateRequest  Request)
-
-        {
-
-            #region Send OnSignCertificateRequest event
-
-            var startTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSignCertificateRequest?.Invoke(startTime,
-                                                 this,
-                                                 Request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnSignCertificateRequest));
-            }
-
-            #endregion
-
-
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON());
-
-            if (!SignCertificateResponse.TryParse(Request,
-                                                 (await WaitForResponse(requestId)) ?? new JObject(),
-                                                  out var response,
-                                                  out var errorResponse))
-            {
-                response = new SignCertificateResponse(Request,
-                                                       Result.Format(errorResponse));
-            }
-
-            response ??= new SignCertificateResponse(Request,
-                                                     Result.GenericError());
-
-
-            #region Send OnSignCertificateResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSignCertificateResponse?.Invoke(endTime,
-                                                  this,
-                                                  Request,
-                                                  response,
-                                                  endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnSignCertificateResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        public Task<PublishFirmwareStatusNotificationResponse> SendPublishFirmwareStatusNotification(PublishFirmwareStatusNotificationRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<NotifyEventResponse> NotifyEvent(NotifyEventRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<NotifyReportResponse> NotifyReport(NotifyReportRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<NotifyMonitoringReportResponse> NotifyMonitoringReport(NotifyMonitoringReportRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Get15118EVCertificateResponse> Get15118EVCertificate(Get15118EVCertificateRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GetCertificateStatusResponse> GetCertificateStatus(GetCertificateStatusRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ReservationStatusUpdateResponse> SendReservationStatusUpdate(ReservationStatusUpdateRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<NotifyEVChargingNeedsResponse> NotifyEVChargingNeeds(NotifyEVChargingNeedsRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<NotifyChargingLimitResponse> NotifyChargingLimit(NotifyChargingLimitRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ClearedChargingLimitResponse> ClearedChargingLimit(ClearedChargingLimitRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ReportChargingProfilesResponse> ReportChargingProfiles(ReportChargingProfilesRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<NotifyDisplayMessagesResponse> NotifyDisplayMessages(NotifyDisplayMessagesRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<NotifyCustomerInformationResponse> NotifyCustomerInformation(NotifyCustomerInformationRequest Request)
-        {
-            throw new NotImplementedException();
-        }
 
 
     }
