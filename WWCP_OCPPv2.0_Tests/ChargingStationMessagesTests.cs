@@ -749,6 +749,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #endregion
 
+
         #region ChargingStation_SendFirmwareStatusNotification_Test()
 
         /// <summary>

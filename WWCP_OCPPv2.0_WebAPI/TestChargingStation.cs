@@ -1008,8 +1008,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                     DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid data transfer request for charge box '", Request.ChargeBoxId, "'!"));
 
-                    response = new DataTransferResponse(Request,
-                                                        DataTransferStatus.Rejected);
+                    response = new DataTransferResponse(
+                                   Request,
+                                   DataTransferStatus.Rejected
+                               );
 
                 }
                 else
@@ -1017,17 +1019,58 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                     DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming data transfer request: ", Request.VendorId, ".", Request.MessageId ?? "-", ": ", Request.Data ?? "-"));
 
-                    if (Request.VendorId.        ToLower() == "graphdefined" &&
-                        Request.MessageId?.      ToLower() == "hello"        &&
-                        Request.Data?.ToString().ToLower() == "world!")
+                    var responseData = Request.Data;
+
+                    if (Request.Data is not null)
                     {
-                        response = new DataTransferResponse(Request,
-                                                            DataTransferStatus.Accepted,
-                                                            "Hello World!");
+
+                        if      (Request.Data.Type == JTokenType.String)
+                            responseData = Request.Data.ToString().Reverse();
+
+                        else if (Request.Data.Type == JTokenType.Object) {
+
+                            var responseObject = new JObject();
+
+                            foreach (var property in (Request.Data as JObject)!)
+                            {
+                                if (property.Value?.Type == JTokenType.String)
+                                    responseObject.Add(property.Key,
+                                                       property.Value.ToString().Reverse());
+                            }
+
+                            responseData = responseObject;
+
+                        }
+
+                        else if (Request.Data.Type == JTokenType.Array) {
+
+                            var responseArray = new JArray();
+
+                            foreach (var element in (Request.Data as JArray)!)
+                            {
+                                if (element?.Type == JTokenType.String)
+                                    responseArray.Add(element.ToString().Reverse());
+                            }
+
+                            responseData = responseArray;
+
+                        }
+
+                    }
+
+                    if (Request.VendorId == "GraphDefined OEM")
+                    {
+                        response = new DataTransferResponse(
+                                       Request,
+                                       DataTransferStatus.Accepted,
+                                       responseData
+                                   );
                     }
                     else
-                        response = new DataTransferResponse(Request,
-                                                            DataTransferStatus.Rejected);
+                        response = new DataTransferResponse(
+                                       Request,
+                                       DataTransferStatus.Rejected
+                                   );
 
                 }
 

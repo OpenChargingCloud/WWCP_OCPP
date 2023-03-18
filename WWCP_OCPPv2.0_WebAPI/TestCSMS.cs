@@ -1431,11 +1431,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 }
 
-                var response      = new DataTransferResponse(
-                                        Request:  Request,
-                                        Status:   DataTransferStatus.Accepted,
-                                        Data:     responseData
-                                    );
+                var response =  Request.VendorId == "GraphDefined OEM"
+
+                                    ? new DataTransferResponse(
+                                          Request,
+                                          DataTransferStatus.Accepted,
+                                          responseData
+                                      )
+
+                                    : new DataTransferResponse(
+                                          Request,
+                                          DataTransferStatus.Rejected
+                                      );
 
 
                 #region Send OnIncomingDataResponse event
@@ -3668,7 +3675,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             TransferData(ChargeBox_Id        ChargeBoxId,
                          String              VendorId,
                          String?             MessageId           = null,
-                         String?             Data                = null,
+                         JToken?             Data                = null,
                          CustomData?         CustomData          = null,
 
                          DateTime?           RequestTimestamp    = null,
