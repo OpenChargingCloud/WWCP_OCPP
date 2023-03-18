@@ -39,7 +39,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A charging station for testing.
     /// </summary>
-    public class TestChargingStation : IEventSender
+    public class TestChargingStation : IChargingStationClientEvents,
+                                       IEventSender
     {
 
         /// <summary>
@@ -171,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The client connected to a CSMS.
         /// </summary>
-        public IChargingStationClient       CSClient                    { get; private set; }
+        public IChargingStationClient?      CSClient                    { get; private set; }
 
 
         /// <summary>
@@ -298,151 +299,586 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Events
 
-        // Outgoing messages (to CSMS)
+        #region Charging Station -> CSMS
 
-        #region OnBootNotificationRequest/-Response
+        #region SendBootNotification
 
         /// <summary>
-        /// An event fired whenever a boot notification request will be sent to the CSMS.
+        /// An event fired whenever a BootNotification request will be sent to the CSMS.
         /// </summary>
         public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a boot notification request was received.
+        /// An event fired whenever a response to a BootNotification request was received.
         /// </summary>
         public event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
 
         #endregion
 
-        #region OnHeartbeatRequest/-Response
+        #region SendFirmwareStatusNotification
 
         /// <summary>
-        /// An event fired whenever a heartbeat request will be sent to the CSMS.
-        /// </summary>
-        public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a heartbeat request was received.
-        /// </summary>
-        public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
-
-        #endregion
-
-
-        #region OnAuthorizeRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever an authorize request will be sent to the CSMS.
-        /// </summary>
-        public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an authorize request was received.
-        /// </summary>
-        public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
-
-        #endregion
-
-        #region OnTransactionEventRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a transaction event request will be sent to the CSMS.
-        /// </summary>
-        public event OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a transaction event request was received.
-        /// </summary>
-        public event OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
-
-        #endregion
-
-        #region OnStatusNotificationRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a status notification request will be sent to the CSMS.
-        /// </summary>
-        public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a status notification request was received.
-        /// </summary>
-        public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
-
-        #endregion
-
-        #region OnMeterValuesRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a meter values request will be sent to the CSMS.
-        /// </summary>
-        public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a meter values request was received.
-        /// </summary>
-        public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
-
-        #endregion
-
-
-        #region OnDataTransferRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a data transfer request will be sent to the CSMS.
-        /// </summary>
-        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a data transfer request was received.
-        /// </summary>
-        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
-
-        #endregion
-
-        #region OnFirmwareStatusNotificationRequest/-Response
-
-        /// <summary>
-        /// An event fired whenever a firmware status notification request will be sent to the CSMS.
+        /// An event fired whenever a FirmwareStatusNotification request will be sent to the CSMS.
         /// </summary>
         public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a firmware status notification request was received.
+        /// An event fired whenever a response to a FirmwareStatusNotification request was received.
         /// </summary>
         public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
 
         #endregion
 
-
-
-        // Incoming messages (from CSMS)
-
-        #region OnResetRequest/-Response
+        #region SendPublishFirmwareStatusNotification
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event fired whenever a PublishFirmwareStatusNotification request will be sent to the CSMS.
+        /// </summary>
+        public event OnPublishFirmwareStatusNotificationRequestDelegate?   OnPublishFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a PublishFirmwareStatusNotification request was received.
+        /// </summary>
+        public event OnPublishFirmwareStatusNotificationResponseDelegate?  OnPublishFirmwareStatusNotificationResponse;
+
+        #endregion
+
+        #region SendHeartbeat
+
+        /// <summary>
+        /// An event fired whenever a Heartbeat request will be sent to the CSMS.
+        /// </summary>
+        public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a Heartbeat request was received.
+        /// </summary>
+        public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
+
+        #endregion
+
+        #region NotifyEvent
+
+        /// <summary>
+        /// An event fired whenever a NotifyEvent request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyEventRequestDelegate?   OnNotifyEventRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEvent request was received.
+        /// </summary>
+        public event OnNotifyEventResponseDelegate?  OnNotifyEventResponse;
+
+        #endregion
+
+        #region SendSecurityEventNotification
+
+        /// <summary>
+        /// An event fired whenever a SecurityEventNotification request will be sent to the CSMS.
+        /// </summary>
+        public event OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SecurityEventNotification request was received.
+        /// </summary>
+        public event OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
+
+        #endregion
+
+        #region NotifyReport
+
+        /// <summary>
+        /// An event fired whenever a NotifyReport request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyReportRequestDelegate?   OnNotifyReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyReport request was received.
+        /// </summary>
+        public event OnNotifyReportResponseDelegate?  OnNotifyReportResponse;
+
+        #endregion
+
+        #region NotifyMonitoringReport
+
+        /// <summary>
+        /// An event fired whenever a NotifyMonitoringReport request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyMonitoringReportRequestDelegate?   OnNotifyMonitoringReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyMonitoringReport request was received.
+        /// </summary>
+        public event OnNotifyMonitoringReportResponseDelegate?  OnNotifyMonitoringReportResponse;
+
+        #endregion
+
+        #region SendLogStatusNotification
+
+        /// <summary>
+        /// An event fired whenever a LogStatusNotification request will be sent to the CSMS.
+        /// </summary>
+        public event OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a LogStatusNotification request was received.
+        /// </summary>
+        public event OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
+
+        #endregion
+
+        #region TransferData
+
+        /// <summary>
+        /// An event fired whenever a DataTransfer request will be sent to the CSMS.
+        /// </summary>
+        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a DataTransfer request was received.
+        /// </summary>
+        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
+
+        #endregion
+
+
+        #region SignCertificate
+
+        /// <summary>
+        /// An event fired whenever a SignCertificate request will be sent to the CSMS.
+        /// </summary>
+        public event OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SignCertificate request was received.
+        /// </summary>
+        public event OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
+
+        #endregion
+
+        #region Get15118EVCertificate
+
+        /// <summary>
+        /// An event fired whenever a Get15118EVCertificate request will be sent to the CSMS.
+        /// </summary>
+        public event OnGet15118EVCertificateRequestDelegate?   OnGet15118EVCertificateRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a Get15118EVCertificate request was received.
+        /// </summary>
+        public event OnGet15118EVCertificateResponseDelegate?  OnGet15118EVCertificateResponse;
+
+        #endregion
+
+        #region GetCertificateStatus
+
+        /// <summary>
+        /// An event fired whenever a GetCertificateStatus request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetCertificateStatusRequestDelegate?   OnGetCertificateStatusRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetCertificateStatus request was received.
+        /// </summary>
+        public event OnGetCertificateStatusResponseDelegate?  OnGetCertificateStatusResponse;
+
+        #endregion
+
+
+        #region SendReservationStatusUpdate
+
+        /// <summary>
+        /// An event fired whenever a ReservationStatusUpdate request will be sent to the CSMS.
+        /// </summary>
+        public event OnReservationStatusUpdateRequestDelegate?   OnReservationStatusUpdateRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ReservationStatusUpdate request was received.
+        /// </summary>
+        public event OnReservationStatusUpdateResponseDelegate?  OnReservationStatusUpdateResponse;
+
+        #endregion
+
+        #region Authorize
+
+        /// <summary>
+        /// An event fired whenever an Authorize request will be sent to the CSMS.
+        /// </summary>
+        public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an Authorize request was received.
+        /// </summary>
+        public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
+
+        #endregion
+
+        #region NotifyEVChargingNeeds
+
+        /// <summary>
+        /// An event fired whenever a NotifyEVChargingNeeds request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyEVChargingNeedsRequestDelegate?   OnNotifyEVChargingNeedsRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEVChargingNeeds request was received.
+        /// </summary>
+        public event OnNotifyEVChargingNeedsResponseDelegate?  OnNotifyEVChargingNeedsResponse;
+
+        #endregion
+
+        #region SendTransactionEvent
+
+        /// <summary>
+        /// An event fired whenever a TransactionEvent will be sent to the CSMS.
+        /// </summary>
+        public event OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a TransactionEvent request was received.
+        /// </summary>
+        public event OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
+
+        #endregion
+
+        #region SendStatusNotification
+
+        /// <summary>
+        /// An event fired whenever a StatusNotification request will be sent to the CSMS.
+        /// </summary>
+        public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a StatusNotification request was received.
+        /// </summary>
+        public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
+
+        #endregion
+
+        #region SendMeterValues
+
+        /// <summary>
+        /// An event fired whenever a MeterValues request will be sent to the CSMS.
+        /// </summary>
+        public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a MeterValues request was received.
+        /// </summary>
+        public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
+
+        #endregion
+
+        #region NotifyChargingLimit
+
+        /// <summary>
+        /// An event fired whenever a NotifyChargingLimit request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyChargingLimitRequestDelegate?   OnNotifyChargingLimitRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyChargingLimit request was received.
+        /// </summary>
+        public event OnNotifyChargingLimitResponseDelegate?  OnNotifyChargingLimitResponse;
+
+        #endregion
+
+        #region SendClearedChargingLimit
+
+        /// <summary>
+        /// An event fired whenever a ClearedChargingLimit request will be sent to the CSMS.
+        /// </summary>
+        public event OnClearedChargingLimitRequestDelegate?   OnClearedChargingLimitRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ClearedChargingLimit request was received.
+        /// </summary>
+        public event OnClearedChargingLimitResponseDelegate?  OnClearedChargingLimitResponse;
+
+        #endregion
+
+        #region ReportChargingProfiles
+
+        /// <summary>
+        /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
+        /// </summary>
+        public event OnReportChargingProfilesRequestDelegate?   OnReportChargingProfilesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ReportChargingProfiles request was received.
+        /// </summary>
+        public event OnReportChargingProfilesResponseDelegate?  OnReportChargingProfilesResponse;
+
+        #endregion
+
+
+        #region NotifyDisplayMessages
+
+        /// <summary>
+        /// An event fired whenever a NotifyDisplayMessages request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyDisplayMessagesRequestDelegate?   OnNotifyDisplayMessagesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyDisplayMessages request was received.
+        /// </summary>
+        public event OnNotifyDisplayMessagesResponseDelegate?  OnNotifyDisplayMessagesResponse;
+
+        #endregion
+
+        #region NotifyCustomerInformation
+
+        /// <summary>
+        /// An event fired whenever a NotifyCustomerInformation request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyCustomerInformationRequestDelegate?   OnNotifyCustomerInformationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyCustomerInformation request was received.
+        /// </summary>
+        public event OnNotifyCustomerInformationResponseDelegate?  OnNotifyCustomerInformationResponse;
+
+        #endregion
+
+        #endregion
+
+        #region Charging Station <- CSMS
+
+        #region Reset
+
+        /// <summary>
+        /// An event fired whenever a Reset request will be sent to the CSMS.
         /// </summary>
         public event OnResetRequestDelegate?   OnResetRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to a Reset request was received.
         /// </summary>
         public event OnResetResponseDelegate?  OnResetResponse;
 
         #endregion
 
-        #region ChangeAvailabilityRequest/-Response
+        #region UpdateFirmware
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event fired whenever an UpdateFirmware request will be sent to the CSMS.
+        /// </summary>
+        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an UpdateFirmware request was received.
+        /// </summary>
+        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+
+        #endregion
+
+        #region PublishFirmware
+
+        /// <summary>
+        /// An event fired whenever a PublishFirmware request will be sent to the CSMS.
+        /// </summary>
+        public event OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a PublishFirmware request was received.
+        /// </summary>
+        public event OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
+
+        #endregion
+
+        #region UnpublishFirmware
+
+        /// <summary>
+        /// An event fired whenever an UnpublishFirmware request will be sent to the CSMS.
+        /// </summary>
+        public event OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an UnpublishFirmware request was received.
+        /// </summary>
+        public event OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
+
+        #endregion
+
+        #region GetBaseReport
+
+        /// <summary>
+        /// An event fired whenever a GetBaseReport request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetBaseReport request was received.
+        /// </summary>
+        public event OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
+
+        #endregion
+
+        #region GetReport
+
+        /// <summary>
+        /// An event fired whenever a GetReport request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetReportRequestDelegate?   OnGetReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetReport request was received.
+        /// </summary>
+        public event OnGetReportResponseDelegate?  OnGetReportResponse;
+
+        #endregion
+
+        #region GetLog
+
+        /// <summary>
+        /// An event fired whenever a GetLog request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetLogRequestDelegate?   OnGetLogRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetLog request was received.
+        /// </summary>
+        public event OnGetLogResponseDelegate?  OnGetLogResponse;
+
+        #endregion
+
+        #region SetVariables
+
+        /// <summary>
+        /// An event fired whenever a SetVariables request will be sent to the CSMS.
+        /// </summary>
+        public event OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetVariables request was received.
+        /// </summary>
+        public event OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
+
+        #endregion
+
+        #region GetVariables
+
+        /// <summary>
+        /// An event fired whenever a GetVariables request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetVariables request was received.
+        /// </summary>
+        public event OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
+
+        #endregion
+
+        #region SetMonitoringBase
+
+        /// <summary>
+        /// An event fired whenever a SetMonitoringBase request will be sent to the CSMS.
+        /// </summary>
+        public event OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetMonitoringBase request was received.
+        /// </summary>
+        public event OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
+
+        #endregion
+
+        #region GetMonitoringReport
+
+        /// <summary>
+        /// An event fired whenever a GetMonitoringReport request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetMonitoringReport request was received.
+        /// </summary>
+        public event OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
+
+        #endregion
+
+        #region SetMonitoringLevel
+
+        /// <summary>
+        /// An event fired whenever a SetMonitoringLevel request will be sent to the CSMS.
+        /// </summary>
+        public event OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetMonitoringLevel request was received.
+        /// </summary>
+        public event OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
+
+        #endregion
+
+        #region SetVariableMonitoring
+
+        /// <summary>
+        /// An event fired whenever a SetVariableMonitoring request will be sent to the CSMS.
+        /// </summary>
+        public event OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetVariableMonitoring request was received.
+        /// </summary>
+        public event OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
+
+        #endregion
+
+        #region ClearVariableMonitoring
+
+        /// <summary>
+        /// An event fired whenever a ClearVariableMonitoring request will be sent to the CSMS.
+        /// </summary>
+        public event OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ClearVariableMonitoring request was received.
+        /// </summary>
+        public event OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
+
+        #endregion
+
+        #region SetNetworkProfile
+
+        /// <summary>
+        /// An event fired whenever a SetNetworkProfile request will be sent to the CSMS.
+        /// </summary>
+        public event OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetNetworkProfile request was received.
+        /// </summary>
+        public event OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
+
+        #endregion
+
+        #region ChangeAvailability
+
+        /// <summary>
+        /// An event fired whenever a ChangeAvailability request will be sent to the CSMS.
         /// </summary>
         public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to a ChangeAvailability request was received.
         /// </summary>
         public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+
+        #endregion
+
+        #region TriggerMessage
+
+        /// <summary>
+        /// An event fired whenever a TriggerMessage request will be sent to the CSMS.
+        /// </summary>
+        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a TriggerMessage request was received.
+        /// </summary>
+        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
         #endregion
 
@@ -460,174 +896,317 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TriggerMessageRequest/-Response
+
+        #region SendSignedCertificate
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event fired whenever a SignedCertificate request will be sent to the CSMS.
         /// </summary>
-        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+        public event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to a SignedCertificate request was received.
         /// </summary>
-        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+        public event OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
 
         #endregion
 
-        #region UpdateFirmwareRequest/-Response
+        #region InstallCertificate
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event fired whenever an InstallCertificate request will be sent to the CSMS.
         /// </summary>
-        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+        public event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to an InstallCertificate request was received.
         /// </summary>
-        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+        public event OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
 
         #endregion
 
-
-        #region OnReserveNowRequest/-Response
-
-        /// <summary>
-        /// An event sent whenever a reserve now request was received.
-        /// </summary>
-        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
+        #region GetInstalledCertificateIds
 
         /// <summary>
-        /// An event sent whenever a response to a reserve now request was sent.
+        /// An event fired whenever a GetInstalledCertificateIds request will be sent to the CSMS.
         /// </summary>
-        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
+        public event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetInstalledCertificateIds request was received.
+        /// </summary>
+        public event OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
 
         #endregion
 
-        #region OnCancelReservationRequest/-Response
+        #region DeleteCertificate
 
         /// <summary>
-        /// An event sent whenever a cancel reservation request was received.
+        /// An event fired whenever a DeleteCertificate request will be sent to the CSMS.
         /// </summary>
-        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+        public event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a cancel reservation request was sent.
+        /// An event fired whenever a response to a DeleteCertificate request was received.
         /// </summary>
-        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
-
-        #endregion
-
-        #region SetChargingProfileRequest/-Response
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
-
-        #endregion
-
-        #region ClearChargingProfileRequest/-Response
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
-
-        #endregion
-
-        #region GetCompositeScheduleRequest/-Response
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
-
-        #endregion
-
-        #region UnlockConnectorRequest/-Response
-
-        /// <summary>
-        /// An event sent whenever a reset request was received.
-        /// </summary>
-        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+        public event OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
 
         #endregion
 
 
-        #region GetLocalListVersionRequest/-Response
+        #region GetLocalListVersion
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event fired whenever a GetLocalListVersion request will be sent to the CSMS.
         /// </summary>
         public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to a GetLocalListVersion request was received.
         /// </summary>
         public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
         #endregion
 
-        #region SendLocalListRequest/-Response
+        #region SendLocalList
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event fired whenever a SendLocalList request will be sent to the CSMS.
         /// </summary>
         public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to a SendLocalList request was received.
         /// </summary>
         public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
 
         #endregion
 
-        #region ClearCacheRequest/-Response
+        #region ClearCache
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event fired whenever a ClearCache request will be sent to the CSMS.
         /// </summary>
         public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to a ClearCache request was received.
         /// </summary>
         public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
 
         #endregion
 
 
-        #region SetDisplayMessageRequest/-Response
+        #region ReserveNow
 
         /// <summary>
-        /// An event sent whenever a SetDisplayMessage request was received.
+        /// An event fired whenever a ReserveNow request will be sent to the CSMS.
+        /// </summary>
+        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ReserveNow request was received.
+        /// </summary>
+        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
+
+        #endregion
+
+        #region CancelReservation
+
+        /// <summary>
+        /// An event fired whenever a CancelReservation request will be sent to the CSMS.
+        /// </summary>
+        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a CancelReservation request was received.
+        /// </summary>
+        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+
+        #endregion
+
+        #region StartCharging
+
+        /// <summary>
+        /// An event fired whenever a RequestStartTransaction request will be sent to the CSMS.
+        /// </summary>
+        public event OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a RequestStartTransaction request was received.
+        /// </summary>
+        public event OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
+
+        #endregion
+
+        #region StopCharging
+
+        /// <summary>
+        /// An event fired whenever a RequestStopTransaction request will be sent to the CSMS.
+        /// </summary>
+        public event OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a RequestStopTransaction request was received.
+        /// </summary>
+        public event OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
+
+        #endregion
+
+        #region GetTransactionStatus
+
+        /// <summary>
+        /// An event fired whenever a GetTransactionStatus request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetTransactionStatus request was received.
+        /// </summary>
+        public event OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
+
+        #endregion
+
+        #region SetChargingProfile
+
+        /// <summary>
+        /// An event fired whenever a SetChargingProfile request will be sent to the CSMS.
+        /// </summary>
+        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetChargingProfile request was received.
+        /// </summary>
+        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+
+        #endregion
+
+        #region GetChargingProfiles
+
+        /// <summary>
+        /// An event fired whenever a GetChargingProfiles request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetChargingProfiles request was received.
+        /// </summary>
+        public event OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
+
+        #endregion
+
+        #region ClearChargingProfile
+
+        /// <summary>
+        /// An event fired whenever a ClearChargingProfile request will be sent to the CSMS.
+        /// </summary>
+        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ClearChargingProfile request was received.
+        /// </summary>
+        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+
+        #endregion
+
+        #region GetCompositeSchedule
+
+        /// <summary>
+        /// An event fired whenever a GetCompositeSchedule request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetCompositeSchedule request was received.
+        /// </summary>
+        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+
+        #endregion
+
+        #region UnlockConnector
+
+        /// <summary>
+        /// An event fired whenever an UnlockConnector request will be sent to the CSMS.
+        /// </summary>
+        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an UnlockConnector request was received.
+        /// </summary>
+        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+
+        #endregion
+
+
+        #region SetDisplayMessage
+
+        /// <summary>
+        /// An event fired whenever a SetDisplayMessage request will be sent to the CSMS.
         /// </summary>
         public event OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a SetDisplayMessage request was sent.
+        /// An event fired whenever a response to a SetDisplayMessage request was received.
         /// </summary>
         public event OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
+
+        #endregion
+
+        #region GetDisplayMessages
+
+        /// <summary>
+        /// An event fired whenever a GetDisplayMessages request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetDisplayMessages request was received.
+        /// </summary>
+        public event OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
+
+        #endregion
+
+        #region ClearDisplayMessage
+
+        /// <summary>
+        /// An event fired whenever a ClearDisplayMessage request will be sent to the CSMS.
+        /// </summary>
+        public event OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ClearDisplayMessage request was received.
+        /// </summary>
+        public event OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
+
+        #endregion
+
+        #region SendCostUpdated
+
+        /// <summary>
+        /// An event fired whenever a CostUpdated request will be sent to the CSMS.
+        /// </summary>
+        public event OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a CostUpdated request was received.
+        /// </summary>
+        public event OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
+
+        #endregion
+
+        #region RequestCustomerInformation
+
+        /// <summary>
+        /// An event fired whenever a CustomerInformation request will be sent to the CSMS.
+        /// </summary>
+        public event OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a CustomerInformation request was received.
+        /// </summary>
+        public event OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
+
+        #endregion
 
         #endregion
 
@@ -898,6 +1477,246 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
+            #region OnUpdateFirmware
+
+            CPServer.OnUpdateFirmware += async (LogTimestamp,
+                                                Sender,
+                                                Request,
+                                                CancellationToken) => {
+
+                #region Send OnUpdateFirmwareRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnUpdateFirmwareRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUpdateFirmwareRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                UpdateFirmwareResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid UpdateFirmware request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new UpdateFirmwareResponse(Request, UpdateFirmwareStatus.Rejected);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming UpdateFirmware request for '" + Request.Firmware.FirmwareURL + "'.");
+
+                    response = new UpdateFirmwareResponse(Request, UpdateFirmwareStatus.Accepted);
+
+                }
+
+
+                #region Send OnUpdateFirmwareResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnUpdateFirmwareResponse?.Invoke(responseTimestamp,
+                                                     this,
+                                                     Request,
+                                                     response,
+                                                     responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUpdateFirmwareResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnPublishFirmware
+
+            CPServer.OnPublishFirmware += async (LogTimestamp,
+                                                 Sender,
+                                                 Request,
+                                                 CancellationToken) => {
+
+                #region Send OnPublishFirmwareRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnPublishFirmwareRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnPublishFirmwareRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                PublishFirmwareResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid PublishFirmware request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new PublishFirmwareResponse(Request, GenericStatus.Rejected);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming PublishFirmware request for '" + Request.DownloadLocation + "'.");
+
+                    response = new PublishFirmwareResponse(Request, GenericStatus.Accepted);
+
+                }
+
+
+                #region Send OnPublishFirmwareResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnPublishFirmwareResponse?.Invoke(responseTimestamp,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnPublishFirmwareResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnUnpublishFirmware
+
+            CPServer.OnUnpublishFirmware += async (LogTimestamp,
+                                                   Sender,
+                                                   Request,
+                                                   CancellationToken) => {
+
+                #region Send OnUnpublishFirmwareRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnUnpublishFirmwareRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUnpublishFirmwareRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                UnpublishFirmwareResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid UnpublishFirmware request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new UnpublishFirmwareResponse(Request, Result.GenericError());
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming UnpublishFirmware request for '" + Request.MD5Checksum + "'.");
+
+                    response = new UnpublishFirmwareResponse(Request, UnpublishFirmwareStatus.Unpublished);
+
+                }
+
+
+                #region Send OnUnpublishFirmwareResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnUnpublishFirmwareResponse?.Invoke(responseTimestamp,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUnpublishFirmwareResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            // OnGetBaseReport
+            // OnGetReport
+            // OnGetLog
+            // OnSetVariables
+            // OnGetVariables
+            // OnSetMonitoringBase
+            // OnGetMonitoringReport
+            // OnSetMonitoringLevel
+            // OnSetVariableMonitoring
+            // OnClearVariableMonitoring
+            // OnSetNetworkProfile
+
             #region OnChangeAvailability
 
             CPServer.OnChangeAvailability += async (LogTimestamp,
@@ -975,6 +1794,84 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 catch (Exception e)
                 {
                     DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnChangeAvailabilityResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnTriggerMessage
+
+            CPServer.OnTriggerMessage += async (LogTimestamp,
+                                                Sender,
+                                                Request,
+                                                CancellationToken) => {
+
+                #region Send OnTriggerMessageRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnTriggerMessageRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnTriggerMessageRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                TriggerMessageResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid TriggerMessage request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new TriggerMessageResponse(Request,
+                                                          TriggerMessageStatus.Rejected);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming TriggerMessage request for '" + Request.RequestedMessage + "' at EVSE '" + Request.EVSEId + "'.");
+
+                    response = new TriggerMessageResponse(Request,
+                                                          TriggerMessageStatus.Rejected);
+
+                }
+
+
+                #region Send OnTriggerMessageResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnTriggerMessageResponse?.Invoke(responseTimestamp,
+                                                     this,
+                                                     Request,
+                                                     response,
+                                                     responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnTriggerMessageResponse));
                 }
 
                 #endregion
@@ -1115,588 +2012,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
-            #region OnTriggerMessage
 
-            CPServer.OnTriggerMessage += async (LogTimestamp,
-                                                Sender,
-                                                Request,
-                                                CancellationToken) => {
-
-                #region Send OnTriggerMessageRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnTriggerMessageRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnTriggerMessageRequest));
-                }
-
-                #endregion
-
-
-                await Task.Delay(10);
-
-
-                TriggerMessageResponse? response = null;
-
-                if (Request.ChargeBoxId != ChargeBoxId)
-                {
-
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid TriggerMessage request for charge box '" + Request.ChargeBoxId + "'!");
-
-                    response = new TriggerMessageResponse(Request,
-                                                          TriggerMessageStatus.Rejected);
-
-                }
-                else
-                {
-
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming TriggerMessage request for '" + Request.RequestedMessage + "' at EVSE '" + Request.EVSEId + "'.");
-
-                    response = new TriggerMessageResponse(Request,
-                                                          TriggerMessageStatus.Rejected);
-
-                }
-
-
-                #region Send OnTriggerMessageResponse event
-
-                try
-                {
-
-                    var responseTimestamp = Timestamp.Now;
-
-                    OnTriggerMessageResponse?.Invoke(responseTimestamp,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     responseTimestamp - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnTriggerMessageResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnUpdateFirmware
-
-            CPServer.OnUpdateFirmware += async (LogTimestamp,
-                                                Sender,
-                                                Request,
-                                                CancellationToken) => {
-
-                #region Send OnUpdateFirmwareRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnUpdateFirmwareRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUpdateFirmwareRequest));
-                }
-
-                #endregion
-
-
-                await Task.Delay(10);
-
-
-                UpdateFirmwareResponse? response = null;
-
-                if (Request.ChargeBoxId != ChargeBoxId)
-                {
-
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid UpdateFirmware request for charge box '" + Request.ChargeBoxId + "'!");
-
-                    response = new UpdateFirmwareResponse(Request, UpdateFirmwareStatus.Rejected);
-
-                }
-                else
-                {
-
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming UpdateFirmware request for '" + Request.Firmware.FirmwareURL + "'.");
-
-                    response = new UpdateFirmwareResponse(Request, UpdateFirmwareStatus.Accepted);
-
-                }
-
-
-                #region Send OnUpdateFirmwareResponse event
-
-                try
-                {
-
-                    var responseTimestamp = Timestamp.Now;
-
-                    OnUpdateFirmwareResponse?.Invoke(responseTimestamp,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     responseTimestamp - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUpdateFirmwareResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-
-            #region OnReserveNow
-
-            CPServer.OnReserveNow += async (LogTimestamp,
-                                            Sender,
-                                            Request,
-                                            CancellationToken) => {
-
-                #region Send OnReserveNowRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnReserveNowRequest?.Invoke(startTime,
-                                                this,
-                                                Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnReserveNowRequest));
-                }
-
-                #endregion
-
-                //transactionId1 = Request.ChargingProfile?.TransactionId;
-
-                var response = new ReserveNowResponse(Request,
-                                                      ReservationStatus.Accepted);
-
-                #region Send OnReserveNowResponse event
-
-                try
-                {
-
-                    var responseTimestamp = Timestamp.Now;
-
-                    OnReserveNowResponse?.Invoke(responseTimestamp,
-                                                 this,
-                                                 Request,
-                                                 response,
-                                                 responseTimestamp - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnReserveNowResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnCancelReservation
-
-            CPServer.OnCancelReservation += async (LogTimestamp,
-                                                   Sender,
-                                                   Request,
-                                                   CancellationToken) => {
-
-                #region Send OnCancelReservationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnCancelReservationRequest?.Invoke(startTime,
-                                                       this,
-                                                       Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCancelReservationRequest));
-                }
-
-                #endregion
-
-                //transactionId1 = Request.ChargingProfile?.TransactionId;
-
-                var response = new CancelReservationResponse(Request,
-                                                             CancelReservationStatus.Accepted);
-
-                #region Send OnCancelReservationResponse event
-
-                try
-                {
-
-                    var responseTimestamp = Timestamp.Now;
-
-                    OnCancelReservationResponse?.Invoke(responseTimestamp,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        responseTimestamp - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCancelReservationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnSetChargingProfile
-
-            CPServer.OnSetChargingProfile += async (LogTimestamp,
-                                                    Sender,
-                                                    Request,
-                                                    CancellationToken) => {
-
-                #region Send OnSetChargingProfileRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnSetChargingProfileRequest?.Invoke(startTime,
-                                                        this,
-                                                        Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetChargingProfileRequest));
-                }
-
-                #endregion
-
-
-                await Task.Delay(10);
-
-
-                SetChargingProfileResponse? response = null;
-
-                if (Request.ChargeBoxId != ChargeBoxId)
-                {
-
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid SetChargingProfile request for charge box '" + Request.ChargeBoxId + "'!");
-
-                    response = new SetChargingProfileResponse(Request,
-                                                              ChargingProfileStatus.Rejected);
-
-                }
-                else if (Request.ChargingProfile is null)
-                {
-
-                    response = new SetChargingProfileResponse(Request,
-                                                              ChargingProfileStatus.Rejected);
-
-                }
-                else
-                {
-
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming SetChargingProfile for '" + Request.EVSEId + "'.");
-
-                    // ToDo: lock(connectors)
-
-                    if (Request.EVSEId.ToString() == "0")
-                    {
-                        foreach (var conn in connectors.Values)
-                        {
-
-                            if (!Request.ChargingProfile.TransactionId.HasValue)
-                                conn.ChargingProfile = Request.ChargingProfile;
-
-                            else if (conn.TransactionId == Request.ChargingProfile.TransactionId.Value)
-                                conn.ChargingProfile = Request.ChargingProfile;
-
-                        }
-                    }
-                    //else if (connectors.ContainsKey(Request.EVSEId))
-                    //{
-
-                    //    connectors[Request.EVSEId].ChargingProfile = Request.ChargingProfile;
-
-                    //    response = new SetChargingProfileResponse(Request,
-                    //                                              ChargingProfileStatus.Accepted);
-
-                    //}
-                    else
-                        response = new SetChargingProfileResponse(Request,
-                                                                  ChargingProfileStatus.Rejected);
-
-                }
-
-
-                #region Send OnSetChargingProfileResponse event
-
-                try
-                {
-
-                    var responseTimestamp = Timestamp.Now;
-
-                    OnSetChargingProfileResponse?.Invoke(responseTimestamp,
-                                                         this,
-                                                         Request,
-                                                         response,
-                                                         responseTimestamp - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetChargingProfileResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnClearChargingProfile
-
-            CPServer.OnClearChargingProfile += async (LogTimestamp,
-                                                    Sender,
-                                                    Request,
-                                                    CancellationToken) => {
-
-                #region Send OnClearChargingProfileRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnClearChargingProfileRequest?.Invoke(startTime,
-                                           this,
-                                           Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearChargingProfileRequest));
-                }
-
-                #endregion
-
-
-                ClearChargingProfileResponse? response = null;
-
-
-
-                #region Send OnClearChargingProfileResponse event
-
-                try
-                {
-
-                    var responseTimestamp = Timestamp.Now;
-
-                    OnClearChargingProfileResponse?.Invoke(responseTimestamp,
-                                            this,
-                                            Request,
-                                            response,
-                                            responseTimestamp - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearChargingProfileResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnGetCompositeSchedule
-
-            CPServer.OnGetCompositeSchedule += async (LogTimestamp,
-                                                    Sender,
-                                                    Request,
-                                                    CancellationToken) => {
-
-                #region Send OnGetCompositeScheduleRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnGetCompositeScheduleRequest?.Invoke(startTime,
-                                           this,
-                                           Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetCompositeScheduleRequest));
-                }
-
-                #endregion
-
-
-                GetCompositeScheduleResponse? response = null;
-
-
-
-                #region Send OnGetCompositeScheduleResponse event
-
-                try
-                {
-
-                    var responseTimestamp = Timestamp.Now;
-
-                    OnGetCompositeScheduleResponse?.Invoke(responseTimestamp,
-                                            this,
-                                            Request,
-                                            response,
-                                            responseTimestamp - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetCompositeScheduleResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnUnlockConnector
-
-            CPServer.OnUnlockConnector += async (LogTimestamp,
-                                                 Sender,
-                                                 Request,
-                                                 CancellationToken) => {
-
-                #region Send OnUnlockConnectorRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnUnlockConnectorRequest?.Invoke(startTime,
-                                                     this,
-                                                     Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUnlockConnectorRequest));
-                }
-
-                #endregion
-
-
-                await Task.Delay(10);
-
-
-                UnlockConnectorResponse? response = null;
-
-                if (Request.ChargeBoxId != ChargeBoxId)
-                {
-
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid UnlockConnector request for charge box '" + Request.ChargeBoxId + "'!");
-
-                    response = new UnlockConnectorResponse(Request,
-                                                           UnlockStatus.UnlockFailed);
-
-                }
-                else
-                {
-
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming UnlockConnector for '" + Request.ConnectorId + "'.");
-
-                    // ToDo: lock(connectors)
-
-                    if (connectors.ContainsKey(Request.ConnectorId))
-                    {
-
-                        // What to do here?!
-
-                        response = new UnlockConnectorResponse(Request,
-                                                               UnlockStatus.Unlocked);
-
-                    }
-                    else
-                        response = new UnlockConnectorResponse(Request,
-                                                               UnlockStatus.UnlockFailed);
-
-                }
-
-
-                #region Send OnUnlockConnectorResponse event
-
-                try
-                {
-
-                    var responseTimestamp = Timestamp.Now;
-
-                    OnUnlockConnectorResponse?.Invoke(responseTimestamp,
-                                                      this,
-                                                      Request,
-                                                      response,
-                                                      responseTimestamp - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUnlockConnectorResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
+            // OnCertificateSigned
+            // OnInstallCertificate
+            // OnGetInstalledCertificateIds
+            // OnDeleteCertificate
 
 
             #region OnGetLocalListVersion
@@ -1934,6 +2254,441 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             #endregion
 
 
+            #region OnReserveNow
+
+            CPServer.OnReserveNow += async (LogTimestamp,
+                                            Sender,
+                                            Request,
+                                            CancellationToken) => {
+
+                #region Send OnReserveNowRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnReserveNowRequest?.Invoke(startTime,
+                                                this,
+                                                Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnReserveNowRequest));
+                }
+
+                #endregion
+
+                //transactionId1 = Request.ChargingProfile?.TransactionId;
+
+                var response = new ReserveNowResponse(Request,
+                                                      ReservationStatus.Accepted);
+
+                #region Send OnReserveNowResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnReserveNowResponse?.Invoke(responseTimestamp,
+                                                 this,
+                                                 Request,
+                                                 response,
+                                                 responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnReserveNowResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnCancelReservation
+
+            CPServer.OnCancelReservation += async (LogTimestamp,
+                                                   Sender,
+                                                   Request,
+                                                   CancellationToken) => {
+
+                #region Send OnCancelReservationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnCancelReservationRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCancelReservationRequest));
+                }
+
+                #endregion
+
+                //transactionId1 = Request.ChargingProfile?.TransactionId;
+
+                var response = new CancelReservationResponse(Request,
+                                                             CancelReservationStatus.Accepted);
+
+                #region Send OnCancelReservationResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnCancelReservationResponse?.Invoke(responseTimestamp,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCancelReservationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            // OnRequestStartTransaction
+            // OnRequestStopTransaction
+            // OnGetTransactionStatus
+
+            #region OnSetChargingProfile
+
+            CPServer.OnSetChargingProfile += async (LogTimestamp,
+                                                    Sender,
+                                                    Request,
+                                                    CancellationToken) => {
+
+                #region Send OnSetChargingProfileRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSetChargingProfileRequest?.Invoke(startTime,
+                                                        this,
+                                                        Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetChargingProfileRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                SetChargingProfileResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid SetChargingProfile request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new SetChargingProfileResponse(Request,
+                                                              ChargingProfileStatus.Rejected);
+
+                }
+                else if (Request.ChargingProfile is null)
+                {
+
+                    response = new SetChargingProfileResponse(Request,
+                                                              ChargingProfileStatus.Rejected);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming SetChargingProfile for '" + Request.EVSEId + "'.");
+
+                    // ToDo: lock(connectors)
+
+                    if (Request.EVSEId.ToString() == "0")
+                    {
+                        foreach (var conn in connectors.Values)
+                        {
+
+                            if (!Request.ChargingProfile.TransactionId.HasValue)
+                                conn.ChargingProfile = Request.ChargingProfile;
+
+                            else if (conn.TransactionId == Request.ChargingProfile.TransactionId.Value)
+                                conn.ChargingProfile = Request.ChargingProfile;
+
+                        }
+                    }
+                    //else if (connectors.ContainsKey(Request.EVSEId))
+                    //{
+
+                    //    connectors[Request.EVSEId].ChargingProfile = Request.ChargingProfile;
+
+                    //    response = new SetChargingProfileResponse(Request,
+                    //                                              ChargingProfileStatus.Accepted);
+
+                    //}
+                    else
+                        response = new SetChargingProfileResponse(Request,
+                                                                  ChargingProfileStatus.Rejected);
+
+                }
+
+
+                #region Send OnSetChargingProfileResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnSetChargingProfileResponse?.Invoke(responseTimestamp,
+                                                         this,
+                                                         Request,
+                                                         response,
+                                                         responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetChargingProfileResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            // OnGetChargingProfiles
+
+            #region OnClearChargingProfile
+
+            CPServer.OnClearChargingProfile += async (LogTimestamp,
+                                                    Sender,
+                                                    Request,
+                                                    CancellationToken) => {
+
+                #region Send OnClearChargingProfileRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnClearChargingProfileRequest?.Invoke(startTime,
+                                           this,
+                                           Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearChargingProfileRequest));
+                }
+
+                #endregion
+
+
+                ClearChargingProfileResponse? response = null;
+
+
+
+                #region Send OnClearChargingProfileResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnClearChargingProfileResponse?.Invoke(responseTimestamp,
+                                            this,
+                                            Request,
+                                            response,
+                                            responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearChargingProfileResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetCompositeSchedule
+
+            CPServer.OnGetCompositeSchedule += async (LogTimestamp,
+                                                    Sender,
+                                                    Request,
+                                                    CancellationToken) => {
+
+                #region Send OnGetCompositeScheduleRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetCompositeScheduleRequest?.Invoke(startTime,
+                                           this,
+                                           Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetCompositeScheduleRequest));
+                }
+
+                #endregion
+
+
+                GetCompositeScheduleResponse? response = null;
+
+
+
+                #region Send OnGetCompositeScheduleResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnGetCompositeScheduleResponse?.Invoke(responseTimestamp,
+                                            this,
+                                            Request,
+                                            response,
+                                            responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetCompositeScheduleResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnUnlockConnector
+
+            CPServer.OnUnlockConnector += async (LogTimestamp,
+                                                 Sender,
+                                                 Request,
+                                                 CancellationToken) => {
+
+                #region Send OnUnlockConnectorRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnUnlockConnectorRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUnlockConnectorRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                UnlockConnectorResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid UnlockConnector request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new UnlockConnectorResponse(Request,
+                                                           UnlockStatus.UnlockFailed);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming UnlockConnector for '" + Request.ConnectorId + "'.");
+
+                    // ToDo: lock(connectors)
+
+                    if (connectors.ContainsKey(Request.ConnectorId))
+                    {
+
+                        // What to do here?!
+
+                        response = new UnlockConnectorResponse(Request,
+                                                               UnlockStatus.Unlocked);
+
+                    }
+                    else
+                        response = new UnlockConnectorResponse(Request,
+                                                               UnlockStatus.UnlockFailed);
+
+                }
+
+
+                #region Send OnUnlockConnectorResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnUnlockConnectorResponse?.Invoke(responseTimestamp,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUnlockConnectorResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
             #region OnSetDisplayMessage
 
             CPServer.OnSetDisplayMessage += async (LogTimestamp,
@@ -2012,8 +2767,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
+            // OnGetDisplayMessages
+            // OnClearDisplayMessage
+            // OnCostUpdated
+            // OnCustomerInformation
 
-            //ToDo: Add security extensions
 
         }
 
@@ -2248,6 +3006,104 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+        #region SendFirmwareStatusNotification   (Status, ...)
+
+        /// <summary>
+        /// Send a firmware status notification to the CSMS.
+        /// </summary>
+        /// <param name="Status">The status of the firmware installation.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.FirmwareStatusNotificationResponse>
+
+            SendFirmwareStatusNotification(FirmwareStatus      Status,
+                                           CustomData?         CustomData          = null,
+
+                                           DateTime?           RequestTimestamp    = null,
+                                           TimeSpan?           RequestTimeout      = null,
+                                           EventTracking_Id?   EventTrackingId     = null,
+                                           CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new FirmwareStatusNotificationRequest(
+                                 ChargeBoxId,
+                                 Status,
+                                 0,
+                                 CustomData,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnFirmwareStatusNotificationRequest event
+
+            try
+            {
+
+                OnFirmwareStatusNotificationRequest?.Invoke(startTime,
+                                                            this,
+                                                            request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnFirmwareStatusNotificationRequest));
+            }
+
+            #endregion
+
+
+            CSMS.FirmwareStatusNotificationResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.SendFirmwareStatusNotification(request);
+
+            response ??= new CSMS.FirmwareStatusNotificationResponse(request,
+                                                                     Result.Server("Response is null!"));
+
+
+            #region Send OnFirmwareStatusNotificationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnFirmwareStatusNotificationResponse?.Invoke(endTime,
+                                                             this,
+                                                             request,
+                                                             response,
+                                                             endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnFirmwareStatusNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        // PublishFirmwareStatusNotification
+
         #region SendHeartbeat                    (...)
 
         /// <summary>
@@ -2344,6 +3200,118 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+        // NotifyEvent
+        // SendSecurityEventNotification
+        // NotifyReport
+        // NotifyMonitoringReport
+        // SendLogStatusNotification
+
+        #region TransferData                     (VendorId, MessageId = null, Data = null, ...)
+
+        /// <summary>
+        /// Send the given vendor-specific data to the CSMS.
+        /// </summary>
+        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+        /// <param name="MessageId">An optional message identification.</param>
+        /// <param name="Data">A vendor-specific JSON token.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.DataTransferResponse>
+
+            TransferData(String              VendorId,
+                         String?             MessageId           = null,
+                         JToken?             Data                = null,
+                         CustomData?         CustomData          = null,
+
+                         DateTime?           RequestTimestamp    = null,
+                         TimeSpan?           RequestTimeout      = null,
+                         EventTracking_Id?   EventTrackingId     = null,
+                         CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new DataTransferRequest(
+                                 ChargeBoxId,
+                                 VendorId,
+                                 MessageId,
+                                 Data,
+                                 CustomData,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnDataTransferRequest event
+
+            try
+            {
+
+                OnDataTransferRequest?.Invoke(startTime,
+                                              this,
+                                              request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDataTransferRequest));
+            }
+
+            #endregion
+
+
+            CSMS.DataTransferResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.TransferData(request);
+
+            response ??= new CSMS.DataTransferResponse(request,
+                                                       Result.Server("Response is null!"));
+
+
+            #region Send OnDataTransferResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDataTransferResponse?.Invoke(endTime,
+                                               this,
+                                               request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDataTransferResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        // SignCertificate
+        // Get15118EVCertificate
+        // GetCertificateStatus
+
+        // ReservationStatusUpdate
 
         #region Authorize                        (IdToken, Certificate = null, ISO15118CertificateHashData = null, ...)
 
@@ -2445,6 +3413,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         }
 
         #endregion
+
+        // NotifyEVChargingNeeds
 
         #region SendTransactionEvent             (EventType, Timestamp, TriggerReason, SequenceNumber, TransactionInfo, ...)
 
@@ -2780,203 +3750,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+        // NotifyChargingLimit
+        // SendClearedChargingLimit
+        // ReportChargingProfiles
 
-        #region TransferData                     (VendorId, MessageId = null, Data = null, ...)
-
-        /// <summary>
-        /// Send the given vendor-specific data to the CSMS.
-        /// </summary>
-        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">An optional message identification.</param>
-        /// <param name="Data">A vendor-specific JSON token.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CSMS.DataTransferResponse>
-
-            TransferData(String              VendorId,
-                         String?             MessageId           = null,
-                         JToken?             Data                = null,
-                         CustomData?         CustomData          = null,
-
-                         DateTime?           RequestTimestamp    = null,
-                         TimeSpan?           RequestTimeout      = null,
-                         EventTracking_Id?   EventTrackingId     = null,
-                         CancellationToken?  CancellationToken   = null)
-
-        {
-
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new DataTransferRequest(
-                                 ChargeBoxId,
-                                 VendorId,
-                                 MessageId,
-                                 Data,
-                                 CustomData,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
-            #region Send OnDataTransferRequest event
-
-            try
-            {
-
-                OnDataTransferRequest?.Invoke(startTime,
-                                              this,
-                                              request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDataTransferRequest));
-            }
-
-            #endregion
-
-
-            CSMS.DataTransferResponse? response = null;
-
-            if (CSClient is not null)
-                response = await CSClient.TransferData(request);
-
-            response ??= new CSMS.DataTransferResponse(request,
-                                                       Result.Server("Response is null!"));
-
-
-            #region Send OnDataTransferResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnDataTransferResponse?.Invoke(endTime,
-                                               this,
-                                               request,
-                                               response,
-                                               endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDataTransferResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SendFirmwareStatusNotification   (Status, ...)
-
-        /// <summary>
-        /// Send a firmware status notification to the CSMS.
-        /// </summary>
-        /// <param name="Status">The status of the firmware installation.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CSMS.FirmwareStatusNotificationResponse>
-
-            SendFirmwareStatusNotification(FirmwareStatus      Status,
-                                           CustomData?         CustomData          = null,
-
-                                           DateTime?           RequestTimestamp    = null,
-                                           TimeSpan?           RequestTimeout      = null,
-                                           EventTracking_Id?   EventTrackingId     = null,
-                                           CancellationToken?  CancellationToken   = null)
-
-        {
-
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new FirmwareStatusNotificationRequest(
-                                 ChargeBoxId,
-                                 Status,
-                                 0,
-                                 CustomData,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
-            #region Send OnFirmwareStatusNotificationRequest event
-
-            try
-            {
-
-                OnFirmwareStatusNotificationRequest?.Invoke(startTime,
-                                                            this,
-                                                            request);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnFirmwareStatusNotificationRequest));
-            }
-
-            #endregion
-
-
-            CSMS.FirmwareStatusNotificationResponse? response = null;
-
-            if (CSClient is not null)
-                response = await CSClient.SendFirmwareStatusNotification(request);
-
-            response ??= new CSMS.FirmwareStatusNotificationResponse(request,
-                                                                   Result.Server("Response is null!"));
-
-
-            #region Send OnFirmwareStatusNotificationResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnFirmwareStatusNotificationResponse?.Invoke(endTime,
-                                                             this,
-                                                             request,
-                                                             response,
-                                                             endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnFirmwareStatusNotificationResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
+        // NotifyDisplayMessages
+        // NotifyCustomerInformation
 
 
     }

@@ -19,8 +19,6 @@
 
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using cloud.charging.open.protocols.OCPPv2_0.CSMS;
-
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_0.CS

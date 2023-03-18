@@ -1761,7 +1761,581 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <summary>
     /// The common interface of all CSMS clients.
     /// </summary>
-    public interface ICSMSClient
+    public interface ICSMSClientEvents
+    {
+
+        #region Reset
+
+        /// <summary>
+        /// An event fired whenever a Reset request will be sent to the CSMS.
+        /// </summary>
+        event OnResetRequestDelegate?   OnResetRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a Reset request was received.
+        /// </summary>
+        event OnResetResponseDelegate?  OnResetResponse;
+
+        #endregion
+
+        #region UpdateFirmware
+
+        /// <summary>
+        /// An event fired whenever an UpdateFirmware request will be sent to the CSMS.
+        /// </summary>
+        event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an UpdateFirmware request was received.
+        /// </summary>
+        event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+
+        #endregion
+
+        #region PublishFirmware
+
+        /// <summary>
+        /// An event fired whenever a PublishFirmware request will be sent to the CSMS.
+        /// </summary>
+        event OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a PublishFirmware request was received.
+        /// </summary>
+        event OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
+
+        #endregion
+
+        #region UnpublishFirmware
+
+        /// <summary>
+        /// An event fired whenever an UnpublishFirmware request will be sent to the CSMS.
+        /// </summary>
+        event OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an UnpublishFirmware request was received.
+        /// </summary>
+        event OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
+
+        #endregion
+
+        #region GetBaseReport
+
+        /// <summary>
+        /// An event fired whenever a GetBaseReport request will be sent to the CSMS.
+        /// </summary>
+        event OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetBaseReport request was received.
+        /// </summary>
+        event OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
+
+        #endregion
+
+        #region GetReport
+
+        /// <summary>
+        /// An event fired whenever a GetReport request will be sent to the CSMS.
+        /// </summary>
+        event OnGetReportRequestDelegate?   OnGetReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetReport request was received.
+        /// </summary>
+        event OnGetReportResponseDelegate?  OnGetReportResponse;
+
+        #endregion
+
+        #region GetLog
+
+        /// <summary>
+        /// An event fired whenever a GetLog request will be sent to the CSMS.
+        /// </summary>
+        event OnGetLogRequestDelegate?   OnGetLogRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetLog request was received.
+        /// </summary>
+        event OnGetLogResponseDelegate?  OnGetLogResponse;
+
+        #endregion
+
+        #region SetVariables
+
+        /// <summary>
+        /// An event fired whenever a SetVariables request will be sent to the CSMS.
+        /// </summary>
+        event OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetVariables request was received.
+        /// </summary>
+        event OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
+
+        #endregion
+
+        #region GetVariables
+
+        /// <summary>
+        /// An event fired whenever a GetVariables request will be sent to the CSMS.
+        /// </summary>
+        event OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetVariables request was received.
+        /// </summary>
+        event OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
+
+        #endregion
+
+        #region SetMonitoringBase
+
+        /// <summary>
+        /// An event fired whenever a SetMonitoringBase request will be sent to the CSMS.
+        /// </summary>
+        event OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetMonitoringBase request was received.
+        /// </summary>
+        event OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
+
+        #endregion
+
+        #region GetMonitoringReport
+
+        /// <summary>
+        /// An event fired whenever a GetMonitoringReport request will be sent to the CSMS.
+        /// </summary>
+        event OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetMonitoringReport request was received.
+        /// </summary>
+        event OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
+
+        #endregion
+
+        #region SetMonitoringLevel
+
+        /// <summary>
+        /// An event fired whenever a SetMonitoringLevel request will be sent to the CSMS.
+        /// </summary>
+        event OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetMonitoringLevel request was received.
+        /// </summary>
+        event OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
+
+        #endregion
+
+        #region SetVariableMonitoring
+
+        /// <summary>
+        /// An event fired whenever a SetVariableMonitoring request will be sent to the CSMS.
+        /// </summary>
+        event OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetVariableMonitoring request was received.
+        /// </summary>
+        event OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
+
+        #endregion
+
+        #region ClearVariableMonitoring
+
+        /// <summary>
+        /// An event fired whenever a ClearVariableMonitoring request will be sent to the CSMS.
+        /// </summary>
+        event OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ClearVariableMonitoring request was received.
+        /// </summary>
+        event OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
+
+        #endregion
+
+        #region SetNetworkProfile
+
+        /// <summary>
+        /// An event fired whenever a SetNetworkProfile request will be sent to the CSMS.
+        /// </summary>
+        event OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetNetworkProfile request was received.
+        /// </summary>
+        event OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
+
+        #endregion
+
+        #region ChangeAvailability
+
+        /// <summary>
+        /// An event fired whenever a ChangeAvailability request will be sent to the CSMS.
+        /// </summary>
+        event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ChangeAvailability request was received.
+        /// </summary>
+        event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+
+        #endregion
+
+        #region TriggerMessage
+
+        /// <summary>
+        /// An event fired whenever a TriggerMessage request will be sent to the CSMS.
+        /// </summary>
+        event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a TriggerMessage request was received.
+        /// </summary>
+        event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+
+        #endregion
+
+        #region TransferData
+
+        /// <summary>
+        /// An event fired whenever a DataTransfer request will be sent to the CSMS.
+        /// </summary>
+        event OnDataTransferRequestDelegate?   OnDataTransferRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a DataTransfer request was received.
+        /// </summary>
+        event OnDataTransferResponseDelegate?  OnDataTransferResponse;
+
+        #endregion
+
+
+        #region SendSignedCertificate
+
+        /// <summary>
+        /// An event fired whenever a SignedCertificate request will be sent to the CSMS.
+        /// </summary>
+        event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SignedCertificate request was received.
+        /// </summary>
+        event OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+
+        #endregion
+
+        #region InstallCertificate
+
+        /// <summary>
+        /// An event fired whenever an InstallCertificate request will be sent to the CSMS.
+        /// </summary>
+        event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an InstallCertificate request was received.
+        /// </summary>
+        event OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+
+        #endregion
+
+        #region GetInstalledCertificateIds
+
+        /// <summary>
+        /// An event fired whenever a GetInstalledCertificateIds request will be sent to the CSMS.
+        /// </summary>
+        event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetInstalledCertificateIds request was received.
+        /// </summary>
+        event OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+
+        #endregion
+
+        #region DeleteCertificate
+
+        /// <summary>
+        /// An event fired whenever a DeleteCertificate request will be sent to the CSMS.
+        /// </summary>
+        event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a DeleteCertificate request was received.
+        /// </summary>
+        event OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+
+        #endregion
+
+
+        #region GetLocalListVersion
+
+        /// <summary>
+        /// An event fired whenever a GetLocalListVersion request will be sent to the CSMS.
+        /// </summary>
+        event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetLocalListVersion request was received.
+        /// </summary>
+        event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+
+        #endregion
+
+        #region SendLocalList
+
+        /// <summary>
+        /// An event fired whenever a SendLocalList request will be sent to the CSMS.
+        /// </summary>
+        event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SendLocalList request was received.
+        /// </summary>
+        event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+
+        #endregion
+
+        #region ClearCache
+
+        /// <summary>
+        /// An event fired whenever a ClearCache request will be sent to the CSMS.
+        /// </summary>
+        event OnClearCacheRequestDelegate?   OnClearCacheRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ClearCache request was received.
+        /// </summary>
+        event OnClearCacheResponseDelegate?  OnClearCacheResponse;
+
+        #endregion
+
+
+        #region ReserveNow
+
+        /// <summary>
+        /// An event fired whenever a ReserveNow request will be sent to the CSMS.
+        /// </summary>
+        event OnReserveNowRequestDelegate?   OnReserveNowRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ReserveNow request was received.
+        /// </summary>
+        event OnReserveNowResponseDelegate?  OnReserveNowResponse;
+
+        #endregion
+
+        #region CancelReservation
+
+        /// <summary>
+        /// An event fired whenever a CancelReservation request will be sent to the CSMS.
+        /// </summary>
+        event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a CancelReservation request was received.
+        /// </summary>
+        event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+
+        #endregion
+
+        #region StartCharging
+
+        /// <summary>
+        /// An event fired whenever a RequestStartTransaction request will be sent to the CSMS.
+        /// </summary>
+        event OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a RequestStartTransaction request was received.
+        /// </summary>
+        event OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
+
+        #endregion
+
+        #region StopCharging
+
+        /// <summary>
+        /// An event fired whenever a RequestStopTransaction request will be sent to the CSMS.
+        /// </summary>
+        event OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a RequestStopTransaction request was received.
+        /// </summary>
+        event OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
+
+        #endregion
+
+        #region GetTransactionStatus
+
+        /// <summary>
+        /// An event fired whenever a GetTransactionStatus request will be sent to the CSMS.
+        /// </summary>
+        event OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetTransactionStatus request was received.
+        /// </summary>
+        event OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
+
+        #endregion
+
+        #region SetChargingProfile
+
+        /// <summary>
+        /// An event fired whenever a SetChargingProfile request will be sent to the CSMS.
+        /// </summary>
+        event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetChargingProfile request was received.
+        /// </summary>
+        event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+
+        #endregion
+
+        #region GetChargingProfiles
+
+        /// <summary>
+        /// An event fired whenever a GetChargingProfiles request will be sent to the CSMS.
+        /// </summary>
+        event OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetChargingProfiles request was received.
+        /// </summary>
+        event OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
+
+        #endregion
+
+        #region ClearChargingProfile
+
+        /// <summary>
+        /// An event fired whenever a ClearChargingProfile request will be sent to the CSMS.
+        /// </summary>
+        event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ClearChargingProfile request was received.
+        /// </summary>
+        event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+
+        #endregion
+
+        #region GetCompositeSchedule
+
+        /// <summary>
+        /// An event fired whenever a GetCompositeSchedule request will be sent to the CSMS.
+        /// </summary>
+        event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetCompositeSchedule request was received.
+        /// </summary>
+        event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+
+        #endregion
+
+        #region UnlockConnector
+
+        /// <summary>
+        /// An event fired whenever an UnlockConnector request will be sent to the CSMS.
+        /// </summary>
+        event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an UnlockConnector request was received.
+        /// </summary>
+        event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+
+        #endregion
+
+
+        #region SetDisplayMessage
+
+        /// <summary>
+        /// An event fired whenever a SetDisplayMessage request will be sent to the CSMS.
+        /// </summary>
+        event OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetDisplayMessage request was received.
+        /// </summary>
+        event OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
+
+        #endregion
+
+        #region GetDisplayMessages
+
+        /// <summary>
+        /// An event fired whenever a GetDisplayMessages request will be sent to the CSMS.
+        /// </summary>
+        event OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetDisplayMessages request was received.
+        /// </summary>
+        event OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
+
+        #endregion
+
+        #region ClearDisplayMessage
+
+        /// <summary>
+        /// An event fired whenever a ClearDisplayMessage request will be sent to the CSMS.
+        /// </summary>
+        event OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ClearDisplayMessage request was received.
+        /// </summary>
+        event OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
+
+        #endregion
+
+        #region SendCostUpdated
+
+        /// <summary>
+        /// An event fired whenever a CostUpdated request will be sent to the CSMS.
+        /// </summary>
+        event OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a CostUpdated request was received.
+        /// </summary>
+        event OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
+
+        #endregion
+
+        #region RequestCustomerInformation
+
+        /// <summary>
+        /// An event fired whenever a CustomerInformation request will be sent to the CSMS.
+        /// </summary>
+        event OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a CustomerInformation request was received.
+        /// </summary>
+        event OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
+
+        #endregion
+
+
+    }
+
+
+    /// <summary>
+    /// The common interface of all CSMS clients.
+    /// </summary>
+    public interface ICSMSClient : ICSMSClientEvents
     {
 
         ChargeBox_Id                            ChargeBoxIdentity    { get; }
@@ -1774,17 +2348,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region Reset
 
         /// <summary>
-        /// An event fired whenever a reset request will be sent to the CSMS.
-        /// </summary>
-        event OnResetRequestDelegate?   OnResetRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a reset request was received.
-        /// </summary>
-        event OnResetResponseDelegate?  OnResetResponse;
-
-
-        /// <summary>
         /// Reset the given charge box.
         /// </summary>
         /// <param name="Request">A reset request.</param>
@@ -1793,17 +2356,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region UpdateFirmware
-
-        /// <summary>
-        /// An event fired whenever an update firmware request will be sent to the CSMS.
-        /// </summary>
-        event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an update firmware request was received.
-        /// </summary>
-        event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
-
 
         /// <summary>
         /// Initiate a firmware download from the given location at the given charge box.
@@ -1816,17 +2368,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region PublishFirmware
 
         /// <summary>
-        /// An event fired whenever a publish firmware request will be sent to the CSMS.
-        /// </summary>
-        event OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a publish firmware request was received.
-        /// </summary>
-        event OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
-
-
-        /// <summary>
         /// Publish a firmware.
         /// </summary>
         /// <param name="Request">A publish firmware request.</param>
@@ -1835,17 +2376,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region UnpublishFirmware
-
-        /// <summary>
-        /// An event fired whenever an unpublish firmware request will be sent to the CSMS.
-        /// </summary>
-        event OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an unpublish firmware request was received.
-        /// </summary>
-        event OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
-
 
         /// <summary>
         /// Unpublish a firmware.
@@ -1858,17 +2388,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region GetBaseReport
 
         /// <summary>
-        /// An event fired whenever a get base report request will be sent to the CSMS.
-        /// </summary>
-        event OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a get base report request was received.
-        /// </summary>
-        event OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
-
-
-        /// <summary>
         /// Get a base report.
         /// </summary>
         /// <param name="Request">A get base report request.</param>
@@ -1877,17 +2396,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region GetReport
-
-        /// <summary>
-        /// An event fired whenever a get report request will be sent to the CSMS.
-        /// </summary>
-        event OnGetReportRequestDelegate?   OnGetReportRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a get report request was received.
-        /// </summary>
-        event OnGetReportResponseDelegate?  OnGetReportResponse;
-
 
         /// <summary>
         /// Get a report.
@@ -1900,17 +2408,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region GetLog
 
         /// <summary>
-        /// An event fired whenever a get log request will be sent to the CSMS.
-        /// </summary>
-        event OnGetLogRequestDelegate?   OnGetLogRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a get log request was received.
-        /// </summary>
-        event OnGetLogResponseDelegate?  OnGetLogResponse;
-
-
-        /// <summary>
         /// Retrieve log files from the charging station.
         /// </summary>
         /// <param name="Request">A get log request.</param>
@@ -1919,17 +2416,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region SetVariables
-
-        /// <summary>
-        /// An event fired whenever a set variables request will be sent to the CSMS.
-        /// </summary>
-        event OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a set variables request was received.
-        /// </summary>
-        event OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
-
 
         /// <summary>
         /// Set variables.
@@ -1942,17 +2428,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region GetVariables
 
         /// <summary>
-        /// An event fired whenever a get variables request will be sent to the CSMS.
-        /// </summary>
-        event OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a get variables request was received.
-        /// </summary>
-        event OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
-
-
-        /// <summary>
         /// Get all variables.
         /// </summary>
         /// <param name="Request">A get variables request.</param>
@@ -1961,17 +2436,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region SetMonitoringBase
-
-        /// <summary>
-        /// An event fired whenever a set monitoring base request will be sent to the CSMS.
-        /// </summary>
-        event OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a set monitoring base request was received.
-        /// </summary>
-        event OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
-
 
         /// <summary>
         /// Set the monitoring base.
@@ -1984,17 +2448,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region GetMonitoringReport
 
         /// <summary>
-        /// An event fired whenever a get monitoring report request will be sent to the CSMS.
-        /// </summary>
-        event OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a get monitoring report request was received.
-        /// </summary>
-        event OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
-
-
-        /// <summary>
         /// Get a monitoring report.
         /// </summary>
         /// <param name="Request">A get monitoring report request.</param>
@@ -2003,17 +2456,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region SetMonitoringLevel
-
-        /// <summary>
-        /// An event fired whenever a set monitoring level request will be sent to the CSMS.
-        /// </summary>
-        event OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a set monitoring level request was received.
-        /// </summary>
-        event OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
-
 
         /// <summary>
         /// Set the monitoring level.
@@ -2026,17 +2468,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region SetVariableMonitoring
 
         /// <summary>
-        /// An event fired whenever a set variable monitoring request will be sent to the CSMS.
-        /// </summary>
-        event OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a set variable monitoring request was received.
-        /// </summary>
-        event OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
-
-
-        /// <summary>
         /// Set a variable monitoring.
         /// </summary>
         /// <param name="Request">A set variable monitoring request.</param>
@@ -2045,17 +2476,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region ClearVariableMonitoring
-
-        /// <summary>
-        /// An event fired whenever a clear variable monitoring request will be sent to the CSMS.
-        /// </summary>
-        event OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a clear variable monitoring request was received.
-        /// </summary>
-        event OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
-
 
         /// <summary>
         /// Remove the given variable monitoring.
@@ -2068,17 +2488,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region SetNetworkProfile
 
         /// <summary>
-        /// An event fired whenever a set network profile request will be sent to the CSMS.
-        /// </summary>
-        event OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a set network profile request was received.
-        /// </summary>
-        event OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
-
-
-        /// <summary>
         /// Set the network profile.
         /// </summary>
         /// <param name="Request">A set network profile request.</param>
@@ -2087,17 +2496,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region ChangeAvailability
-
-        /// <summary>
-        /// An event fired whenever a change availability request will be sent to the CSMS.
-        /// </summary>
-        event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a change availability request was received.
-        /// </summary>
-        event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
-
 
         /// <summary>
         /// Change the availability of the given charging station or EVSE.
@@ -2110,17 +2508,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region TriggerMessage
 
         /// <summary>
-        /// An event fired whenever a trigger message request will be sent to the CSMS.
-        /// </summary>
-        event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a trigger message request was received.
-        /// </summary>
-        event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
-
-
-        /// <summary>
         /// Create a trigger for the given message at the given charging station or EVSE.
         /// </summary>
         /// <param name="Request">A trigger message request.</param>
@@ -2129,17 +2516,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region TransferData
-
-        /// <summary>
-        /// An event fired whenever a data transfer request will be sent to the CSMS.
-        /// </summary>
-        event OnDataTransferRequestDelegate?   OnDataTransferRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a data transfer request was received.
-        /// </summary>
-        event OnDataTransferResponseDelegate?  OnDataTransferResponse;
-
 
         /// <summary>
         /// Send the given vendor-specific data.
@@ -2153,17 +2529,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region SendSignedCertificate
 
         /// <summary>
-        /// An event fired whenever a certificate signed request will be sent to the CSMS.
-        /// </summary>
-        event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a certificate signed request was received.
-        /// </summary>
-        event OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
-
-
-        /// <summary>
         /// Send the signed certificate to the charging station.
         /// </summary>
         /// <param name="Request">A certificate signed request.</param>
@@ -2172,17 +2537,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region InstallCertificate
-
-        /// <summary>
-        /// An event fired whenever an install certificate request will be sent to the CSMS.
-        /// </summary>
-        event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an install certificate request was received.
-        /// </summary>
-        event OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
-
 
         /// <summary>
         /// Install the given certificate within the charging station.
@@ -2195,17 +2549,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region GetInstalledCertificateIds
 
         /// <summary>
-        /// An event fired whenever a get installed certificate ids request will be sent to the CSMS.
-        /// </summary>
-        event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a get installed certificate ids request was received.
-        /// </summary>
-        event OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
-
-
-        /// <summary>
         /// Retrieve a list of all installed certificates within the charging station.
         /// </summary>
         /// <param name="Request">A get installed certificate ids request.</param>
@@ -2214,17 +2557,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region DeleteCertificate
-
-        /// <summary>
-        /// An event fired whenever a delete certificate request will be sent to the CSMS.
-        /// </summary>
-        event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a delete certificate request was received.
-        /// </summary>
-        event OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
-
 
         /// <summary>
         /// Remove the given certificate from the charging station.
@@ -2238,17 +2570,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region GetLocalListVersion
 
         /// <summary>
-        /// An event fired whenever a get local list version request will be sent to the CSMS.
-        /// </summary>
-        event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a get local list version request was received.
-        /// </summary>
-        event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
-
-
-        /// <summary>
         /// Return the local white list of the given charging station.
         /// </summary>
         /// <param name="Request">A get local list version request.</param>
@@ -2259,17 +2580,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region SendLocalList
 
         /// <summary>
-        /// An event fired whenever a send local list request will be sent to the CSMS.
-        /// </summary>
-        event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a send local list request was received.
-        /// </summary>
-        event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
-
-
-        /// <summary>
         /// Set the local white liste at the given charging station.
         /// </summary>
         /// <param name="Request">A send local list request.</param>
@@ -2278,17 +2588,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region ClearCache
-
-        /// <summary>
-        /// An event fired whenever a clear cache request will be sent to the CSMS.
-        /// </summary>
-        event OnClearCacheRequestDelegate?   OnClearCacheRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a clear cache request was received.
-        /// </summary>
-        event OnClearCacheResponseDelegate?  OnClearCacheResponse;
-
 
         /// <summary>
         /// Clear the local white liste cache of the given charging station.
@@ -2302,17 +2601,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region ReserveNow
 
         /// <summary>
-        /// An event fired whenever a reserve now request will be sent to the CSMS.
-        /// </summary>
-        event OnReserveNowRequestDelegate?   OnReserveNowRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a reserve now request was received.
-        /// </summary>
-        event OnReserveNowResponseDelegate?  OnReserveNowResponse;
-
-
-        /// <summary>
         /// Create a charging reservation at the given charging station.
         /// </summary>
         /// <param name="Request">A reserve now request.</param>
@@ -2321,17 +2609,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region CancelReservation
-
-        /// <summary>
-        /// An event fired whenever a cancel reservation request will be sent to the CSMS.
-        /// </summary>
-        event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a cancel reservation request was received.
-        /// </summary>
-        event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
-
 
         /// <summary>
         /// Cancel the given charging reservation.
@@ -2344,17 +2621,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region StartCharging
 
         /// <summary>
-        /// An event fired whenever a request start transaction request will be sent to the CSMS.
-        /// </summary>
-        event OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a request start transaction request was received.
-        /// </summary>
-        event OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
-
-
-        /// <summary>
         /// Start a charging process (transaction).
         /// </summary>
         /// <param name="Request">A request start transaction request.</param>
@@ -2363,17 +2629,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region StopCharging
-
-        /// <summary>
-        /// An event fired whenever a request stop transaction request will be sent to the CSMS.
-        /// </summary>
-        event OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a request stop transaction request was received.
-        /// </summary>
-        event OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
-
 
         /// <summary>
         /// Stop a charging process (transaction).
@@ -2386,17 +2641,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region GetTransactionStatus
 
         /// <summary>
-        /// An event fired whenever a get transaction status request will be sent to the CSMS.
-        /// </summary>
-        event OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a get transaction status request was received.
-        /// </summary>
-        event OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
-
-
-        /// <summary>
         /// Get the status of a charging process (transaction).
         /// </summary>
         /// <param name="Request">A get transaction status request.</param>
@@ -2405,17 +2649,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region SetChargingProfile
-
-        /// <summary>
-        /// An event fired whenever a set charging profile request will be sent to the CSMS.
-        /// </summary>
-        event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a set charging profile request was received.
-        /// </summary>
-        event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
-
 
         /// <summary>
         /// Set the charging profile of the given EVSE at the given charging station.
@@ -2428,17 +2661,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region GetChargingProfiles
 
         /// <summary>
-        /// An event fired whenever a get charging profiles request will be sent to the CSMS.
-        /// </summary>
-        event OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a get charging profiles request was received.
-        /// </summary>
-        event OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
-
-
-        /// <summary>
         /// Get all charging profiles from the given charging station.
         /// </summary>
         /// <param name="Request">A get charging profiles request.</param>
@@ -2447,17 +2669,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region ClearChargingProfile
-
-        /// <summary>
-        /// An event fired whenever a clear charging profile request will be sent to the CSMS.
-        /// </summary>
-        event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a clear charging profile request was received.
-        /// </summary>
-        event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
-
 
         /// <summary>
         /// Remove matching charging profiles from the given charging station.
@@ -2470,17 +2681,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region GetCompositeSchedule
 
         /// <summary>
-        /// An event fired whenever a get composite schedule request will be sent to the CSMS.
-        /// </summary>
-        event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a get composite schedule request was received.
-        /// </summary>
-        event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
-
-
-        /// <summary>
         /// Return the charging schedule at the given charging station and EVSE
         /// </summary>
         /// <param name="Request">A get composite schedule request.</param>
@@ -2489,17 +2689,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region UnlockConnector
-
-        /// <summary>
-        /// An event fired whenever an unlock connector request will be sent to the CSMS.
-        /// </summary>
-        event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to an unlock connector request was received.
-        /// </summary>
-        event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
-
 
         /// <summary>
         /// Unlock the given EVSE/connector at the given charging station.
@@ -2513,17 +2702,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region SetDisplayMessage
 
         /// <summary>
-        /// An event fired whenever a set display message request will be sent to the CSMS.
-        /// </summary>
-        event OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a set display message request was received.
-        /// </summary>
-        event OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
-
-
-        /// <summary>
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A set display message request.</param>
@@ -2532,17 +2710,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region GetDisplayMessages
-
-        /// <summary>
-        /// An event fired whenever a get display messages request will be sent to the CSMS.
-        /// </summary>
-        event OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a get display messages request was received.
-        /// </summary>
-        event OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
-
 
         /// <summary>
         /// Get all display messages.
@@ -2555,17 +2722,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region ClearDisplayMessage
 
         /// <summary>
-        /// An event fired whenever a clear display message request will be sent to the CSMS.
-        /// </summary>
-        event OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a clear display message request was received.
-        /// </summary>
-        event OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
-
-
-        /// <summary>
         /// Remove the given display message.
         /// </summary>
         /// <param name="Request">A clear display message request.</param>
@@ -2576,17 +2732,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region SendCostUpdated
 
         /// <summary>
-        /// An event fired whenever a cost updated request will be sent to the CSMS.
-        /// </summary>
-        event OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a cost updated request was received.
-        /// </summary>
-        event OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
-
-
-        /// <summary>
         /// Send updated cost(s).
         /// </summary>
         /// <param name="Request">A cost updated request.</param>
@@ -2595,17 +2740,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #endregion
 
         #region RequestCustomerInformation
-
-        /// <summary>
-        /// An event fired whenever a request customer information request will be sent to the CSMS.
-        /// </summary>
-        event OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a request customer information request was received.
-        /// </summary>
-        event OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
-
 
         /// <summary>
         /// Request customer information.

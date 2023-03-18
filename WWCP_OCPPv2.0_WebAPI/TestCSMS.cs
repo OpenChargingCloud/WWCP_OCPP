@@ -39,7 +39,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
     /// <summary>
     /// A central system for testing.
     /// </summary>
-    public class TestCSMS : IEventSender
+    public class TestCSMS : ICSMSClientEvents,
+                            IEventSender
     {
 
         #region Data
@@ -114,93 +115,133 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Events
 
-        // CP -> CS
+        #region CSMS <- Charging Station
 
-        #region OnBootNotification
+        #region SendBootNotification
 
         /// <summary>
-        /// An event sent whenever a boot notification request was received.
+        /// An event fired whenever a BootNotification request will be sent to the CSMS.
         /// </summary>
         public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a boot notification request was sent.
+        /// An event fired whenever a response to a BootNotification request was received.
         /// </summary>
         public event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
 
         #endregion
 
-        #region OnHeartbeat
+        #region SendFirmwareStatusNotification
 
         /// <summary>
-        /// An event sent whenever a heartbeat request was received.
+        /// An event fired whenever a FirmwareStatusNotification request will be sent to the CSMS.
+        /// </summary>
+        public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a FirmwareStatusNotification request was received.
+        /// </summary>
+        public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
+
+        #endregion
+
+        #region SendPublishFirmwareStatusNotification
+
+        /// <summary>
+        /// An event fired whenever a PublishFirmwareStatusNotification request will be sent to the CSMS.
+        /// </summary>
+        public event OnPublishFirmwareStatusNotificationRequestDelegate?   OnPublishFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a PublishFirmwareStatusNotification request was received.
+        /// </summary>
+        public event OnPublishFirmwareStatusNotificationResponseDelegate?  OnPublishFirmwareStatusNotificationResponse;
+
+        #endregion
+
+        #region SendHeartbeat
+
+        /// <summary>
+        /// An event fired whenever a Heartbeat request will be sent to the CSMS.
         /// </summary>
         public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a heartbeat request was sent.
+        /// An event fired whenever a response to a Heartbeat request was received.
         /// </summary>
         public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
 
         #endregion
 
-
-        #region OnAuthorize
-
-        /// <summary>
-        /// An event sent whenever an authorize request was received.
-        /// </summary>
-        public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
+        #region NotifyEvent
 
         /// <summary>
-        /// An event sent whenever a response to an authorize request was sent.
+        /// An event fired whenever a NotifyEvent request will be sent to the CSMS.
         /// </summary>
-        public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
+        public event OnNotifyEventRequestDelegate?   OnNotifyEventRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEvent request was received.
+        /// </summary>
+        public event OnNotifyEventResponseDelegate?  OnNotifyEventResponse;
 
         #endregion
 
-        #region OnTransactionEvent
+        #region SendSecurityEventNotification
 
         /// <summary>
-        /// An event sent whenever a transaction event request was received.
+        /// An event fired whenever a SecurityEventNotification request will be sent to the CSMS.
         /// </summary>
-        public event OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
+        public event OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a transaction event request was sent.
+        /// An event fired whenever a response to a SecurityEventNotification request was received.
         /// </summary>
-        public event OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
+        public event OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
 
         #endregion
 
-        #region OnStatusNotification
+        #region NotifyReport
 
         /// <summary>
-        /// An event sent whenever a StatusNotification request was received.
+        /// An event fired whenever a NotifyReport request will be sent to the CSMS.
         /// </summary>
-        public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
+        public event OnNotifyReportRequestDelegate?   OnNotifyReportRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a StatusNotification request was sent.
+        /// An event fired whenever a response to a NotifyReport request was received.
         /// </summary>
-        public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
+        public event OnNotifyReportResponseDelegate?  OnNotifyReportResponse;
 
         #endregion
 
-        #region OnMeterValues
+        #region NotifyMonitoringReport
 
         /// <summary>
-        /// An event sent whenever a MeterValues request was received.
+        /// An event fired whenever a NotifyMonitoringReport request will be sent to the CSMS.
         /// </summary>
-        public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
+        public event OnNotifyMonitoringReportRequestDelegate?   OnNotifyMonitoringReportRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a MeterValues request was sent.
+        /// An event fired whenever a response to a NotifyMonitoringReport request was received.
         /// </summary>
-        public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
+        public event OnNotifyMonitoringReportResponseDelegate?  OnNotifyMonitoringReportResponse;
 
         #endregion
 
+        #region SendLogStatusNotification
+
+        /// <summary>
+        /// An event fired whenever a LogStatusNotification request will be sent to the CSMS.
+        /// </summary>
+        public event OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a LogStatusNotification request was received.
+        /// </summary>
+        public event OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
+
+        #endregion
 
         #region OnIncomingDataTransfer
 
@@ -216,57 +257,444 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region OnFirmwareStatusNotification
+
+        #region SignCertificate
 
         /// <summary>
-        /// An event sent whenever a FirmwareStatusNotification request was received.
+        /// An event fired whenever a SignCertificate request will be sent to the CSMS.
         /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
+        public event OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
+        /// An event fired whenever a response to a SignCertificate request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
+        public event OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
+
+        #endregion
+
+        #region Get15118EVCertificate
+
+        /// <summary>
+        /// An event fired whenever a Get15118EVCertificate request will be sent to the CSMS.
+        /// </summary>
+        public event OnGet15118EVCertificateRequestDelegate?   OnGet15118EVCertificateRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a Get15118EVCertificate request was received.
+        /// </summary>
+        public event OnGet15118EVCertificateResponseDelegate?  OnGet15118EVCertificateResponse;
+
+        #endregion
+
+        #region GetCertificateStatus
+
+        /// <summary>
+        /// An event fired whenever a GetCertificateStatus request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetCertificateStatusRequestDelegate?   OnGetCertificateStatusRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetCertificateStatus request was received.
+        /// </summary>
+        public event OnGetCertificateStatusResponseDelegate?  OnGetCertificateStatusResponse;
 
         #endregion
 
 
-        //ToDo: Add security extensions
-
-        // LogStatusNotification
-        // SecurityEventNotification
-        // SignCertificate
-        // SignedFirmwareStatusNotification
-
-
-
-        // CS -> CP
-
-        #region OnReset
+        #region SendReservationStatusUpdate
 
         /// <summary>
-        /// An event sent whenever a reset request was sent.
+        /// An event fired whenever a ReservationStatusUpdate request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnResetRequestDelegate?   OnResetRequest;
+        public event OnReservationStatusUpdateRequestDelegate?   OnReservationStatusUpdateRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to a ReservationStatusUpdate request was received.
         /// </summary>
-        public event CS.OnResetResponseDelegate?  OnResetResponse;
+        public event OnReservationStatusUpdateResponseDelegate?  OnReservationStatusUpdateResponse;
 
         #endregion
 
-        #region OnChangeAvailability
+        #region Authorize
 
         /// <summary>
-        /// An event sent whenever a reset request was sent.
+        /// An event fired whenever an Authorize request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+        public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to an Authorize request was received.
         /// </summary>
-        public event CS.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+        public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
+
+        #endregion
+
+        #region NotifyEVChargingNeeds
+
+        /// <summary>
+        /// An event fired whenever a NotifyEVChargingNeeds request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyEVChargingNeedsRequestDelegate?   OnNotifyEVChargingNeedsRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEVChargingNeeds request was received.
+        /// </summary>
+        public event OnNotifyEVChargingNeedsResponseDelegate?  OnNotifyEVChargingNeedsResponse;
+
+        #endregion
+
+        #region SendTransactionEvent
+
+        /// <summary>
+        /// An event fired whenever a TransactionEvent will be sent to the CSMS.
+        /// </summary>
+        public event OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a TransactionEvent request was received.
+        /// </summary>
+        public event OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
+
+        #endregion
+
+        #region SendStatusNotification
+
+        /// <summary>
+        /// An event fired whenever a StatusNotification request will be sent to the CSMS.
+        /// </summary>
+        public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a StatusNotification request was received.
+        /// </summary>
+        public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
+
+        #endregion
+
+        #region SendMeterValues
+
+        /// <summary>
+        /// An event fired whenever a MeterValues request will be sent to the CSMS.
+        /// </summary>
+        public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a MeterValues request was received.
+        /// </summary>
+        public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
+
+        #endregion
+
+        #region NotifyChargingLimit
+
+        /// <summary>
+        /// An event fired whenever a NotifyChargingLimit request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyChargingLimitRequestDelegate?   OnNotifyChargingLimitRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyChargingLimit request was received.
+        /// </summary>
+        public event OnNotifyChargingLimitResponseDelegate?  OnNotifyChargingLimitResponse;
+
+        #endregion
+
+        #region SendClearedChargingLimit
+
+        /// <summary>
+        /// An event fired whenever a ClearedChargingLimit request will be sent to the CSMS.
+        /// </summary>
+        public event OnClearedChargingLimitRequestDelegate?   OnClearedChargingLimitRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ClearedChargingLimit request was received.
+        /// </summary>
+        public event OnClearedChargingLimitResponseDelegate?  OnClearedChargingLimitResponse;
+
+        #endregion
+
+        #region ReportChargingProfiles
+
+        /// <summary>
+        /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
+        /// </summary>
+        public event OnReportChargingProfilesRequestDelegate?   OnReportChargingProfilesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ReportChargingProfiles request was received.
+        /// </summary>
+        public event OnReportChargingProfilesResponseDelegate?  OnReportChargingProfilesResponse;
+
+        #endregion
+
+
+        #region NotifyDisplayMessages
+
+        /// <summary>
+        /// An event fired whenever a NotifyDisplayMessages request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyDisplayMessagesRequestDelegate?   OnNotifyDisplayMessagesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyDisplayMessages request was received.
+        /// </summary>
+        public event OnNotifyDisplayMessagesResponseDelegate?  OnNotifyDisplayMessagesResponse;
+
+        #endregion
+
+        #region NotifyCustomerInformation
+
+        /// <summary>
+        /// An event fired whenever a NotifyCustomerInformation request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyCustomerInformationRequestDelegate?   OnNotifyCustomerInformationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyCustomerInformation request was received.
+        /// </summary>
+        public event OnNotifyCustomerInformationResponseDelegate?  OnNotifyCustomerInformationResponse;
+
+        #endregion
+
+        #endregion
+
+        #region CSMS -> Charging Station
+
+        #region Reset
+
+        /// <summary>
+        /// An event fired whenever a Reset request will be sent to the CSMS.
+        /// </summary>
+        public event OnResetRequestDelegate?   OnResetRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a Reset request was received.
+        /// </summary>
+        public event OnResetResponseDelegate?  OnResetResponse;
+
+        #endregion
+
+        #region UpdateFirmware
+
+        /// <summary>
+        /// An event fired whenever an UpdateFirmware request will be sent to the CSMS.
+        /// </summary>
+        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an UpdateFirmware request was received.
+        /// </summary>
+        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+
+        #endregion
+
+        #region PublishFirmware
+
+        /// <summary>
+        /// An event fired whenever a PublishFirmware request will be sent to the CSMS.
+        /// </summary>
+        public event OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a PublishFirmware request was received.
+        /// </summary>
+        public event OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
+
+        #endregion
+
+        #region UnpublishFirmware
+
+        /// <summary>
+        /// An event fired whenever an UnpublishFirmware request will be sent to the CSMS.
+        /// </summary>
+        public event OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an UnpublishFirmware request was received.
+        /// </summary>
+        public event OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
+
+        #endregion
+
+        #region GetBaseReport
+
+        /// <summary>
+        /// An event fired whenever a GetBaseReport request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetBaseReport request was received.
+        /// </summary>
+        public event OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
+
+        #endregion
+
+        #region GetReport
+
+        /// <summary>
+        /// An event fired whenever a GetReport request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetReportRequestDelegate?   OnGetReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetReport request was received.
+        /// </summary>
+        public event OnGetReportResponseDelegate?  OnGetReportResponse;
+
+        #endregion
+
+        #region GetLog
+
+        /// <summary>
+        /// An event fired whenever a GetLog request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetLogRequestDelegate?   OnGetLogRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetLog request was received.
+        /// </summary>
+        public event OnGetLogResponseDelegate?  OnGetLogResponse;
+
+        #endregion
+
+        #region SetVariables
+
+        /// <summary>
+        /// An event fired whenever a SetVariables request will be sent to the CSMS.
+        /// </summary>
+        public event OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetVariables request was received.
+        /// </summary>
+        public event OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
+
+        #endregion
+
+        #region GetVariables
+
+        /// <summary>
+        /// An event fired whenever a GetVariables request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetVariables request was received.
+        /// </summary>
+        public event OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
+
+        #endregion
+
+        #region SetMonitoringBase
+
+        /// <summary>
+        /// An event fired whenever a SetMonitoringBase request will be sent to the CSMS.
+        /// </summary>
+        public event OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetMonitoringBase request was received.
+        /// </summary>
+        public event OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
+
+        #endregion
+
+        #region GetMonitoringReport
+
+        /// <summary>
+        /// An event fired whenever a GetMonitoringReport request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetMonitoringReport request was received.
+        /// </summary>
+        public event OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
+
+        #endregion
+
+        #region SetMonitoringLevel
+
+        /// <summary>
+        /// An event fired whenever a SetMonitoringLevel request will be sent to the CSMS.
+        /// </summary>
+        public event OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetMonitoringLevel request was received.
+        /// </summary>
+        public event OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
+
+        #endregion
+
+        #region SetVariableMonitoring
+
+        /// <summary>
+        /// An event fired whenever a SetVariableMonitoring request will be sent to the CSMS.
+        /// </summary>
+        public event OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetVariableMonitoring request was received.
+        /// </summary>
+        public event OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
+
+        #endregion
+
+        #region ClearVariableMonitoring
+
+        /// <summary>
+        /// An event fired whenever a ClearVariableMonitoring request will be sent to the CSMS.
+        /// </summary>
+        public event OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ClearVariableMonitoring request was received.
+        /// </summary>
+        public event OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
+
+        #endregion
+
+        #region SetNetworkProfile
+
+        /// <summary>
+        /// An event fired whenever a SetNetworkProfile request will be sent to the CSMS.
+        /// </summary>
+        public event OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetNetworkProfile request was received.
+        /// </summary>
+        public event OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
+
+        #endregion
+
+        #region ChangeAvailability
+
+        /// <summary>
+        /// An event fired whenever a ChangeAvailability request will be sent to the CSMS.
+        /// </summary>
+        public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ChangeAvailability request was received.
+        /// </summary>
+        public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+
+        #endregion
+
+        #region TriggerMessage
+
+        /// <summary>
+        /// An event fired whenever a TriggerMessage request will be sent to the CSMS.
+        /// </summary>
+        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a TriggerMessage request was received.
+        /// </summary>
+        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
         #endregion
 
@@ -275,244 +703,328 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event CS.OnIncomingDataTransferRequestDelegate?   OnDataTransferRequest;
+        public event CSMS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event CS.OnIncomingDataTransferResponseDelegate?  OnDataTransferResponse;
-
-        #endregion
-
-        #region OnTriggerMessage
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CS.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CS.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
-
-        #endregion
-
-        #region OnUpdateFirmware
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CS.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CS.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+        public event CSMS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 
 
-        #region OnReserveNow
+        #region SendSignedCertificate
 
         /// <summary>
-        /// An event sent whenever a reset request was sent.
+        /// An event fired whenever a SignedCertificate request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnReserveNowRequestDelegate?   OnReserveNowRequest;
+        public event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to a SignedCertificate request was received.
         /// </summary>
-        public event CS.OnReserveNowResponseDelegate?  OnReserveNowResponse;
+        public event OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
 
         #endregion
 
-        #region OnCancelReservation
+        #region InstallCertificate
 
         /// <summary>
-        /// An event sent whenever a reset request was sent.
+        /// An event fired whenever an InstallCertificate request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+        public event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to an InstallCertificate request was received.
         /// </summary>
-        public event CS.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+        public event OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
 
         #endregion
 
-        #region OnSetChargingProfile
+        #region GetInstalledCertificateIds
 
         /// <summary>
-        /// An event sent whenever a reset request was sent.
+        /// An event fired whenever a GetInstalledCertificateIds request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+        public event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to a GetInstalledCertificateIds request was received.
         /// </summary>
-        public event CS.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+        public event OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
 
         #endregion
 
-        #region OnClearChargingProfile
+        #region DeleteCertificate
 
         /// <summary>
-        /// An event sent whenever a reset request was sent.
+        /// An event fired whenever a DeleteCertificate request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+        public event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to a DeleteCertificate request was received.
         /// </summary>
-        public event CS.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
-
-        #endregion
-
-        #region OnGetCompositeSchedule
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CS.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CS.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
-
-        #endregion
-
-        #region OnUnlockConnector
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CS.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CS.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+        public event OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
 
         #endregion
 
 
-        #region OnGetLocalListVersion
+        #region GetLocalListVersion
 
         /// <summary>
-        /// An event sent whenever a reset request was sent.
+        /// An event fired whenever a GetLocalListVersion request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+        public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to a GetLocalListVersion request was received.
         /// </summary>
-        public event CS.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+        public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
         #endregion
 
-        #region OnSendLocalList
+        #region SendLocalList
 
         /// <summary>
-        /// An event sent whenever a reset request was sent.
+        /// An event fired whenever a SendLocalList request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+        public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to a SendLocalList request was received.
         /// </summary>
-        public event CS.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+        public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
 
         #endregion
 
-        #region OnClearCache
+        #region ClearCache
 
         /// <summary>
-        /// An event sent whenever a reset request was sent.
+        /// An event fired whenever a ClearCache request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnClearCacheRequestDelegate?   OnClearCacheRequest;
+        public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event fired whenever a response to a ClearCache request was received.
         /// </summary>
-        public event CS.OnClearCacheResponseDelegate?  OnClearCacheResponse;
+        public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
 
         #endregion
 
 
-        // Security extensions
-
-        #region OnCertificateSigned
+        #region ReserveNow
 
         /// <summary>
-        /// An event sent whenever a certificate signed request was sent.
+        /// An event fired whenever a ReserveNow request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a certificate signed request was sent.
+        /// An event fired whenever a response to a ReserveNow request was received.
         /// </summary>
-        public event CS.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
 
         #endregion
 
-        #region OnDeleteCertificate
+        #region CancelReservation
 
         /// <summary>
-        /// An event sent whenever a delete certificate request was sent.
+        /// An event fired whenever a CancelReservation request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a delete certificate request was sent.
+        /// An event fired whenever a response to a CancelReservation request was received.
         /// </summary>
-        public event CS.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
         #endregion
 
-        #region OnGetInstalledCertificateIds
+        #region StartCharging
 
         /// <summary>
-        /// An event sent whenever a get installed certificate ids request was sent.
+        /// An event fired whenever a RequestStartTransaction request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+        public event OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a get installed certificate ids request was sent.
+        /// An event fired whenever a response to a RequestStartTransaction request was received.
         /// </summary>
-        public event CS.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+        public event OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
 
         #endregion
 
-        #region OnGetLog
+        #region StopCharging
 
         /// <summary>
-        /// An event sent whenever a get log request was sent.
+        /// An event fired whenever a RequestStopTransaction request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnGetLogRequestDelegate?   OnGetLogRequest;
+        public event OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a get log request was sent.
+        /// An event fired whenever a response to a RequestStopTransaction request was received.
         /// </summary>
-        public event CS.OnGetLogResponseDelegate?  OnGetLogResponse;
+        public event OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
 
         #endregion
 
-        #region OnInstallCertificate
+        #region GetTransactionStatus
 
         /// <summary>
-        /// An event sent whenever an install certificate request was sent.
+        /// An event fired whenever a GetTransactionStatus request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+        public event OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
 
         /// <summary>
-        /// An event sent whenever a response to an install certificate request was sent.
+        /// An event fired whenever a response to a GetTransactionStatus request was received.
         /// </summary>
-        public event CS.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+        public event OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
 
         #endregion
 
+        #region SetChargingProfile
+
+        /// <summary>
+        /// An event fired whenever a SetChargingProfile request will be sent to the CSMS.
+        /// </summary>
+        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetChargingProfile request was received.
+        /// </summary>
+        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+
+        #endregion
+
+        #region GetChargingProfiles
+
+        /// <summary>
+        /// An event fired whenever a GetChargingProfiles request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetChargingProfiles request was received.
+        /// </summary>
+        public event OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
+
+        #endregion
+
+        #region ClearChargingProfile
+
+        /// <summary>
+        /// An event fired whenever a ClearChargingProfile request will be sent to the CSMS.
+        /// </summary>
+        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ClearChargingProfile request was received.
+        /// </summary>
+        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+
+        #endregion
+
+        #region GetCompositeSchedule
+
+        /// <summary>
+        /// An event fired whenever a GetCompositeSchedule request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetCompositeSchedule request was received.
+        /// </summary>
+        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+
+        #endregion
+
+        #region UnlockConnector
+
+        /// <summary>
+        /// An event fired whenever an UnlockConnector request will be sent to the CSMS.
+        /// </summary>
+        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an UnlockConnector request was received.
+        /// </summary>
+        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+
+        #endregion
+
+
+        #region SetDisplayMessage
+
+        /// <summary>
+        /// An event fired whenever a SetDisplayMessage request will be sent to the CSMS.
+        /// </summary>
+        public event OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetDisplayMessage request was received.
+        /// </summary>
+        public event OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
+
+        #endregion
+
+        #region GetDisplayMessages
+
+        /// <summary>
+        /// An event fired whenever a GetDisplayMessages request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetDisplayMessages request was received.
+        /// </summary>
+        public event OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
+
+        #endregion
+
+        #region ClearDisplayMessage
+
+        /// <summary>
+        /// An event fired whenever a ClearDisplayMessage request will be sent to the CSMS.
+        /// </summary>
+        public event OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a ClearDisplayMessage request was received.
+        /// </summary>
+        public event OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
+
+        #endregion
+
+        #region SendCostUpdated
+
+        /// <summary>
+        /// An event fired whenever a CostUpdated request will be sent to the CSMS.
+        /// </summary>
+        public event OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a CostUpdated request was received.
+        /// </summary>
+        public event OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
+
+        #endregion
+
+        #region RequestCustomerInformation
+
+        /// <summary>
+        /// An event fired whenever a CustomerInformation request will be sent to the CSMS.
+        /// </summary>
+        public event OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a CustomerInformation request was received.
+        /// </summary>
+        public event OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
+
+        #endregion
+
+        #endregion
 
 
         // WebSocket events
@@ -574,11 +1086,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="CSMSId">The unique identification of this central system.</param>
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
-        public TestCSMS(CSMS_Id  CSMSId,
-                                 Boolean           RequireAuthentication   = true,
-                                 TimeSpan?         DefaultRequestTimeout   = null,
-                                 IPPort?           HTTPUploadPort          = null,
-                                 DNSClient?        DNSClient               = null)
+        public TestCSMS(CSMS_Id     CSMSId,
+                        Boolean     RequireAuthentication   = true,
+                        TimeSpan?   DefaultRequestTimeout   = null,
+                        IPPort?     HTTPUploadPort          = null,
+                        DNSClient?  DNSClient               = null)
         {
 
             if (CSMSId.IsNullOrEmpty)
@@ -945,6 +1457,78 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
+            #region OnFirmwareStatusNotification
+
+            CSMSServer.OnFirmwareStatusNotification += async (LogTimestamp,
+                                                                       Sender,
+                                                                       Request,
+                                                                       CancellationToken) => {
+
+                #region Send OnFirmwareStatusNotificationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnFirmwareStatusNotificationRequest?.Invoke(startTime,
+                                                                this,
+                                                                Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnFirmwareStatus: " + Request.Status);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+                }
+                else
+                {
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+                }
+
+                await Task.Delay(100, CancellationToken);
+
+                var response = new FirmwareStatusNotificationResponse(Request);
+
+
+                #region Send OnFirmwareStatusResponse event
+
+                try
+                {
+
+                    OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
+                                                                 this,
+                                                                 Request,
+                                                                 response,
+                                                                 Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            // OnPublishFirmwareStatusNotification
+
             #region OnHeartbeat
 
             CSMSServer.OnHeartbeat += async (LogTimestamp,
@@ -1026,6 +1610,140 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
+            // OnNotifyEvent
+            // OnSecurityEventNotification
+            // OnNotifyReport
+            // OnNotifyMonitoringReport
+            // OnLogStatusNotification
+
+            #region OnIncomingDataTransfer
+
+            CSMSServer.OnIncomingDataTransfer += async (LogTimestamp,
+                                                                 Sender,
+                                                                 Request,
+                                                                 CancellationToken) => {
+
+                #region Send OnIncomingDataRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnIncomingDataTransferRequest?.Invoke(startTime,
+                                                          this,
+                                                          Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnIncomingDataTransferRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnIncomingDataTransfer: " + Request.VendorId  + ", " +
+                                                               Request.MessageId + ", " +
+                                                               Request.Data);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+                }
+                else
+                {
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+                }
+
+                await Task.Delay(100, CancellationToken);
+
+                var responseData = Request.Data;
+
+                if (Request.Data is not null)
+                {
+
+                    if      (Request.Data.Type == JTokenType.String)
+                        responseData = Request.Data.ToString().Reverse();
+
+                    else if (Request.Data.Type == JTokenType.Object) {
+
+                        var responseObject = new JObject();
+
+                        foreach (var property in (Request.Data as JObject)!)
+                        {
+                            if (property.Value?.Type == JTokenType.String)
+                                responseObject.Add(property.Key,
+                                                   property.Value.ToString().Reverse());
+                        }
+
+                        responseData = responseObject;
+
+                    }
+
+                    else if (Request.Data.Type == JTokenType.Array) {
+
+                        var responseArray = new JArray();
+
+                        foreach (var element in (Request.Data as JArray)!)
+                        {
+                            if (element?.Type == JTokenType.String)
+                                responseArray.Add(element.ToString().Reverse());
+                        }
+
+                        responseData = responseArray;
+
+                    }
+
+                }
+
+                var response =  Request.VendorId == "GraphDefined OEM"
+
+                                    ? new DataTransferResponse(
+                                          Request,
+                                          DataTransferStatus.Accepted,
+                                          responseData
+                                      )
+
+                                    : new DataTransferResponse(
+                                          Request,
+                                          DataTransferStatus.Rejected
+                                      );
+
+
+                #region Send OnIncomingDataResponse event
+
+                try
+                {
+
+                    OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnIncomingDataTransferResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            // OnSignCertificate
+            // OnGet15118EVCertificate
+            // OnGetCertificateStatus
+
+            // OnReservationStatusUpdate
 
             #region OnAuthorize
 
@@ -1111,6 +1829,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             };
 
             #endregion
+
+            // OnNotifyEVChargingNeeds
 
             #region OnTransactionEvent
 
@@ -1348,198 +2068,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
+            // OnNotifyChargingLimit
+            // OnClearedChargingLimit
+            // OnReportChargingProfiles
 
-            #region OnIncomingDataTransfer
+            // OnNotifyDisplayMessages
+            // OnNotifyCustomerInformation
 
-            CSMSServer.OnIncomingDataTransfer += async (LogTimestamp,
-                                                                 Sender,
-                                                                 Request,
-                                                                 CancellationToken) => {
-
-                #region Send OnIncomingDataRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnIncomingDataTransferRequest?.Invoke(startTime,
-                                                          this,
-                                                          Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnIncomingDataTransferRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnIncomingDataTransfer: " + Request.VendorId  + ", " +
-                                                               Request.MessageId + ", " +
-                                                               Request.Data);
-
-                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
-                {
-                    if (Sender is CSMSWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
-                }
-                else
-                {
-                    if (Sender is CSMSWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
-                }
-
-                await Task.Delay(100, CancellationToken);
-
-                var responseData = Request.Data;
-
-                if (Request.Data is not null)
-                {
-
-                    if      (Request.Data.Type == JTokenType.String)
-                        responseData = Request.Data.ToString().Reverse();
-
-                    else if (Request.Data.Type == JTokenType.Object) {
-
-                        var responseObject = new JObject();
-
-                        foreach (var property in (Request.Data as JObject)!)
-                        {
-                            if (property.Value?.Type == JTokenType.String)
-                                responseObject.Add(property.Key,
-                                                   property.Value.ToString().Reverse());
-                        }
-
-                        responseData = responseObject;
-
-                    }
-
-                    else if (Request.Data.Type == JTokenType.Array) {
-
-                        var responseArray = new JArray();
-
-                        foreach (var element in (Request.Data as JArray)!)
-                        {
-                            if (element?.Type == JTokenType.String)
-                                responseArray.Add(element.ToString().Reverse());
-                        }
-
-                        responseData = responseArray;
-
-                    }
-
-                }
-
-                var response =  Request.VendorId == "GraphDefined OEM"
-
-                                    ? new DataTransferResponse(
-                                          Request,
-                                          DataTransferStatus.Accepted,
-                                          responseData
-                                      )
-
-                                    : new DataTransferResponse(
-                                          Request,
-                                          DataTransferStatus.Rejected
-                                      );
-
-
-                #region Send OnIncomingDataResponse event
-
-                try
-                {
-
-                    OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
-                                                           this,
-                                                           Request,
-                                                           response,
-                                                           Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnIncomingDataTransferResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
-
-            #region OnFirmwareStatusNotification
-
-            CSMSServer.OnFirmwareStatusNotification += async (LogTimestamp,
-                                                                       Sender,
-                                                                       Request,
-                                                                       CancellationToken) => {
-
-                #region Send OnFirmwareStatusNotificationRequest event
-
-                var startTime = Timestamp.Now;
-
-                try
-                {
-
-                    OnFirmwareStatusNotificationRequest?.Invoke(startTime,
-                                                                this,
-                                                                Request);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnFirmwareStatusNotificationRequest));
-                }
-
-                #endregion
-
-
-                Console.WriteLine("OnFirmwareStatus: " + Request.Status);
-
-                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
-                {
-                    if (Sender is CSMSWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
-                }
-                else
-                {
-                    if (Sender is CSMSWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
-                }
-
-                await Task.Delay(100, CancellationToken);
-
-                var response = new FirmwareStatusNotificationResponse(Request);
-
-
-                #region Send OnFirmwareStatusResponse event
-
-                try
-                {
-
-                    OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
-                                                                 this,
-                                                                 Request,
-                                                                 response,
-                                                                 Timestamp.Now - startTime);
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnFirmwareStatusNotificationResponse));
-                }
-
-                #endregion
-
-                return response;
-
-            };
-
-            #endregion
 
         }
 
@@ -3559,6 +4094,230 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+        #region UpdateFirmware        (ChargeBoxId, FirmwareURL, RetrieveTimestamp, Retries = null, RetryInterval = null, ...)
+
+        /// <summary>
+        /// Initiate a firmware download from the given location at the given charge box.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="FirmwareURL">The URL where to download the firmware.</param>
+        /// <param name="RetrieveTimestamp">The timestamp after which the charging station must retrieve the firmware.</param>
+        /// <param name="Retries">The optional number of retries of a charging station for trying to download the firmware before giving up. If this field is not present, it is left to the charging station to decide how many times it wants to retry.</param>
+        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charging station to decide how long to wait between attempts.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.UpdateFirmwareResponse>
+
+            UpdateFirmware(ChargeBox_Id        ChargeBoxId,
+                           Firmware            Firmware,
+                           Byte?               Retries             = null,
+                           TimeSpan?           RetryInterval       = null,
+                           CustomData?         CustomData          = null,
+
+                           DateTime?           RequestTimestamp    = null,
+                           TimeSpan?           RequestTimeout      = null,
+                           EventTracking_Id?   EventTrackingId     = null,
+                           CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new UpdateFirmwareRequest(
+                                 ChargeBoxId,
+                                 Firmware,
+                                 0,
+                                 Retries,
+                                 RetryInterval,
+                                 CustomData,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnUpdateFirmwareRequest event
+
+            try
+            {
+
+                OnUpdateFirmwareRequest?.Invoke(startTime,
+                                                this,
+                                                request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUpdateFirmwareRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.UpdateFirmware(request)
+
+                               : new CS.UpdateFirmwareResponse(request,
+                                                               Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnUpdateFirmwareResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateFirmwareResponse?.Invoke(endTime,
+                                                 this,
+                                                 request,
+                                                 response,
+                                                 endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUpdateFirmwareResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        // PublishFirmware
+        // UnpublishFirmware
+        // GetBaseReport
+        // GetReport
+
+        #region GetLog                    (ChargeBoxId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
+
+        /// <summary>
+        /// Retrieve log files from the charging station.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="LogType">The type of the certificates requested.</param>
+        /// <param name="LogRequestId">The unique identification of this request.</param>
+        /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
+        /// <param name="Retries">This specifies how many times the Charge Point must try to upload the log before giving up. If this field is not present, it is left to Charge Point to decide how many times it wants to retry.</param>
+        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to Charge Point to decide how long to wait between attempts.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.GetLogResponse>
+
+            GetLog(ChargeBox_Id        ChargeBoxId,
+                   LogTypes            LogType,
+                   Int32               LogRequestId,
+                   LogParameters       Log,
+                   Byte?               Retries             = null,
+                   TimeSpan?           RetryInterval       = null,
+                   CustomData?         CustomData          = null,
+
+                   DateTime?           RequestTimestamp    = null,
+                   TimeSpan?           RequestTimeout      = null,
+                   EventTracking_Id?   EventTrackingId     = null,
+                   CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetLogRequest(
+                                 ChargeBoxId,
+                                 LogType,
+                                 LogRequestId,
+                                 Log,
+                                 Retries,
+                                 RetryInterval,
+                                 CustomData,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnGetLogRequest event
+
+            try
+            {
+
+                OnGetLogRequest?.Invoke(startTime,
+                                        this,
+                                        request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetLogRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.GetLog(request)
+
+                               : new CS.GetLogResponse(request,
+                                                       Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnGetLogResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetLogResponse?.Invoke(endTime,
+                                         this,
+                                         request,
+                                         response,
+                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetLogResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        // SetVariables
+        // GetVariables
+        // SetMonitoringBase
+        // GetMonitoringReport
+        // SetMonitoringLevel
+        // SetVariableMonitoring
+        // ClearVariableMonitoring
+        // SetNetworkProfile
+
         #region ChangeAvailability    (ChargeBoxId, ConnectorId, OperationalStatus, ...)
 
         /// <summary>
@@ -3647,6 +4406,104 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnChangeAvailabilityResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region TriggerMessage        (ChargeBoxId, RequestedMessage, ConnectorId = null,...)
+
+        /// <summary>
+        /// Create a trigger for the given message at the given charge box connector.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="RequestedMessage">The message to trigger.</param>
+        /// <param name="ConnectorId">Optional connector identification whenever the message applies to a specific connector.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.TriggerMessageResponse>
+
+            TriggerMessage(ChargeBox_Id        ChargeBoxId,
+                           MessageTriggers     RequestedMessage,
+                           EVSE_Id?            EVSEId              = null,
+                           CustomData?         CustomData          = null,
+
+                           DateTime?           RequestTimestamp    = null,
+                           TimeSpan?           RequestTimeout      = null,
+                           EventTracking_Id?   EventTrackingId     = null,
+                           CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new TriggerMessageRequest(
+                                 ChargeBoxId,
+                                 RequestedMessage,
+                                 EVSEId,
+                                 CustomData,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnTriggerMessageRequest event
+
+            try
+            {
+
+                OnTriggerMessageRequest?.Invoke(startTime,
+                                                this,
+                                                request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnTriggerMessageRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.TriggerMessage(request)
+
+                               : new CS.TriggerMessageResponse(request,
+                                                               Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnTriggerMessageResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnTriggerMessageResponse?.Invoke(endTime,
+                                                 this,
+                                                 request,
+                                                 response,
+                                                 endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnTriggerMessageResponse));
             }
 
             #endregion
@@ -3758,30 +4615,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TriggerMessage        (ChargeBoxId, RequestedMessage, ConnectorId = null,...)
+
+        #region CertificateSigned         (ChargeBoxId, CertificateChain, ...)
 
         /// <summary>
-        /// Create a trigger for the given message at the given charge box connector.
+        /// Clear the local white liste cache of the given charge box.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="RequestedMessage">The message to trigger.</param>
-        /// <param name="ConnectorId">Optional connector identification whenever the message applies to a specific connector.</param>
+        /// <param name="CertificateChain">The signed PEM encoded X.509 certificates. This can also contain the necessary sub CA certificates.</param>
         /// 
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.TriggerMessageResponse>
+        public async Task<CS.CertificateSignedResponse>
 
-            TriggerMessage(ChargeBox_Id        ChargeBoxId,
-                           MessageTriggers     RequestedMessage,
-                           EVSE_Id?            EVSEId              = null,
-                           CustomData?         CustomData          = null,
+            CertificateSigned(ChargeBox_Id            ChargeBoxId,
+                              CertificateChain        CertificateChain,
+                              CertificateSigningUse?  CertificateType     = null,
+                              CustomData?             CustomData          = null,
 
-                           DateTime?           RequestTimestamp    = null,
-                           TimeSpan?           RequestTimeout      = null,
-                           EventTracking_Id?   EventTrackingId     = null,
-                           CancellationToken?  CancellationToken   = null)
+                              DateTime?               RequestTimestamp    = null,
+                              TimeSpan?               RequestTimeout      = null,
+                              EventTracking_Id?       EventTrackingId     = null,
+                              CancellationToken?      CancellationToken   = null)
 
         {
 
@@ -3789,10 +4646,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var startTime  = Timestamp.Now;
 
-            var request    = new TriggerMessageRequest(
+            var request    = new CertificateSignedRequest(
                                  ChargeBoxId,
-                                 RequestedMessage,
-                                 EVSEId,
+                                 CertificateChain,
+                                 CertificateType,
                                  CustomData,
 
                                  NextRequestId,
@@ -3804,18 +4661,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
-            #region Send OnTriggerMessageRequest event
+            #region Send OnCertificateSignedRequest event
 
             try
             {
 
-                OnTriggerMessageRequest?.Invoke(startTime,
-                                                this,
-                                                request);
+                OnCertificateSignedRequest?.Invoke(startTime,
+                                                   this,
+                                                   request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnTriggerMessageRequest));
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCertificateSignedRequest));
             }
 
             #endregion
@@ -3823,29 +4680,29 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-                               ? await centralSystem.Item1.TriggerMessage(request)
+                               ? await centralSystem.Item1.SendSignedCertificate(request)
 
-                               : new CS.TriggerMessageResponse(request,
-                                                               Result.Server("Unknown or unreachable charge box!"));
+                               : new CS.CertificateSignedResponse(request,
+                                                           Result.Server("Unknown or unreachable charge box!"));
 
 
-            #region Send OnTriggerMessageResponse event
+            #region Send OnCertificateSignedResponse event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnTriggerMessageResponse?.Invoke(endTime,
-                                                 this,
-                                                 request,
-                                                 response,
-                                                 endTime - startTime);
+                OnCertificateSignedResponse?.Invoke(endTime,
+                                                    this,
+                                                    request,
+                                                    response,
+                                                    endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnTriggerMessageResponse));
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCertificateSignedResponse));
             }
 
             #endregion
@@ -3856,33 +4713,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region UpdateFirmware        (ChargeBoxId, FirmwareURL, RetrieveTimestamp, Retries = null, RetryInterval = null, ...)
+        #region InstallCertificate        (ChargeBoxId, CertificateType, Certificate, ...)
 
         /// <summary>
-        /// Initiate a firmware download from the given location at the given charge box.
+        /// Install the given certificate within the charging station.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="FirmwareURL">The URL where to download the firmware.</param>
-        /// <param name="RetrieveTimestamp">The timestamp after which the charging station must retrieve the firmware.</param>
-        /// <param name="Retries">The optional number of retries of a charging station for trying to download the firmware before giving up. If this field is not present, it is left to the charging station to decide how many times it wants to retry.</param>
-        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charging station to decide how long to wait between attempts.</param>
+        /// <param name="CertificateType">The type of the certificate.</param>
+        /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
         /// 
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.UpdateFirmwareResponse>
+        public async Task<CS.InstallCertificateResponse>
 
-            UpdateFirmware(ChargeBox_Id        ChargeBoxId,
-                           Firmware            Firmware,
-                           Byte?               Retries             = null,
-                           TimeSpan?           RetryInterval       = null,
-                           CustomData?         CustomData          = null,
+            InstallCertificate(ChargeBox_Id        ChargeBoxId,
+                               CertificateUse      CertificateType,
+                               Certificate         Certificate,
+                               CustomData?         CustomData          = null,
 
-                           DateTime?           RequestTimestamp    = null,
-                           TimeSpan?           RequestTimeout      = null,
-                           EventTracking_Id?   EventTrackingId     = null,
-                           CancellationToken?  CancellationToken   = null)
+                               DateTime?           RequestTimestamp    = null,
+                               TimeSpan?           RequestTimeout      = null,
+                               EventTracking_Id?   EventTrackingId     = null,
+                               CancellationToken?  CancellationToken   = null)
 
         {
 
@@ -3890,12 +4744,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var startTime  = Timestamp.Now;
 
-            var request    = new UpdateFirmwareRequest(
+            var request    = new InstallCertificateRequest(
                                  ChargeBoxId,
-                                 Firmware,
-                                 0,
-                                 Retries,
-                                 RetryInterval,
+                                 CertificateType,
+                                 Certificate,
                                  CustomData,
 
                                  NextRequestId,
@@ -3907,18 +4759,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
-            #region Send OnUpdateFirmwareRequest event
+            #region Send OnInstallCertificateRequest event
 
             try
             {
 
-                OnUpdateFirmwareRequest?.Invoke(startTime,
-                                                this,
-                                                request);
+                OnInstallCertificateRequest?.Invoke(startTime,
+                                                    this,
+                                                    request);
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUpdateFirmwareRequest));
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnInstallCertificateRequest));
             }
 
             #endregion
@@ -3926,29 +4778,505 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
 
-                               ? await centralSystem.Item1.UpdateFirmware(request)
+                               ? await centralSystem.Item1.InstallCertificate(request)
 
-                               : new CS.UpdateFirmwareResponse(request,
-                                                               Result.Server("Unknown or unreachable charge box!"));
+                               : new CS.InstallCertificateResponse(request,
+                                                                   Result.Server("Unknown or unreachable charge box!"));
 
 
-            #region Send OnUpdateFirmwareResponse event
+            #region Send OnInstallCertificateResponse event
 
             var endTime = Timestamp.Now;
 
             try
             {
 
-                OnUpdateFirmwareResponse?.Invoke(endTime,
-                                                 this,
-                                                 request,
-                                                 response,
-                                                 endTime - startTime);
+                OnInstallCertificateResponse?.Invoke(endTime,
+                                                     this,
+                                                     request,
+                                                     response,
+                                                     endTime - startTime);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUpdateFirmwareResponse));
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnInstallCertificateResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetInstalledCertificateIds(ChargeBoxId, CertificateType, ...)
+
+        /// <summary>
+        /// Retrieve a list of all installed certificates within the charging station.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CertificateType">The type of the certificates requested.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.GetInstalledCertificateIdsResponse>
+
+            GetInstalledCertificateIds(ChargeBox_Id        ChargeBoxId,
+                                       CertificateUse      CertificateType,
+                                       CustomData?         CustomData          = null,
+
+                                       DateTime?           RequestTimestamp    = null,
+                                       TimeSpan?           RequestTimeout      = null,
+                                       EventTracking_Id?   EventTrackingId     = null,
+                                       CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetInstalledCertificateIdsRequest(
+                                 ChargeBoxId,
+                                 CertificateType,
+                                 CustomData,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnGetInstalledCertificateIdsRequest event
+
+            try
+            {
+
+                OnGetInstalledCertificateIdsRequest?.Invoke(startTime,
+                                                            this,
+                                                            request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetInstalledCertificateIdsRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.GetInstalledCertificateIds(request)
+
+                               : new CS.GetInstalledCertificateIdsResponse(request,
+                                                                           Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnGetInstalledCertificateIdsResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetInstalledCertificateIdsResponse?.Invoke(endTime,
+                                                             this,
+                                                             request,
+                                                             response,
+                                                             endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetInstalledCertificateIdsResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region DeleteCertificate         (ChargeBoxId, CertificateHashData, ...)
+
+        /// <summary>
+        /// Delete the given certificate on the charging station.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CertificateHashData">Indicates the certificate which should be deleted.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.DeleteCertificateResponse>
+
+            DeleteCertificate(ChargeBox_Id         ChargeBoxId,
+                              CertificateHashData  CertificateHashData,
+                              CustomData?          CustomData          = null,
+
+                              DateTime?            RequestTimestamp    = null,
+                              TimeSpan?            RequestTimeout      = null,
+                              EventTracking_Id?    EventTrackingId     = null,
+                              CancellationToken?   CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new DeleteCertificateRequest(
+                                 ChargeBoxId,
+                                 CertificateHashData,
+                                 CustomData,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnDeleteCertificateRequest event
+
+            try
+            {
+
+                OnDeleteCertificateRequest?.Invoke(startTime,
+                                                   this,
+                                                   request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteCertificateRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.DeleteCertificate(request)
+
+                               : new CS.DeleteCertificateResponse(request,
+                                                                  Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnDeleteCertificateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteCertificateResponse?.Invoke(endTime,
+                                                    this,
+                                                    request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteCertificateResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        #region GetLocalListVersion   (ChargeBoxId, ...)
+
+        /// <summary>
+        /// Return the local white list of the given charge box.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.GetLocalListVersionResponse>
+
+            GetLocalListVersion(ChargeBox_Id        ChargeBoxId,
+                                CustomData?         CustomData          = null,
+
+                                DateTime?           RequestTimestamp    = null,
+                                TimeSpan?           RequestTimeout      = null,
+                                EventTracking_Id?   EventTrackingId     = null,
+                                CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetLocalListVersionRequest(
+                                 ChargeBoxId,
+                                 CustomData,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnGetLocalListVersionRequest event
+
+            try
+            {
+
+                OnGetLocalListVersionRequest?.Invoke(startTime,
+                                                     this,
+                                                     request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetLocalListVersionRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.GetLocalListVersion(request)
+
+                               : new CS.GetLocalListVersionResponse(request,
+                                                                    Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnGetLocalListVersionResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetLocalListVersionResponse?.Invoke(endTime,
+                                                      this,
+                                                      request,
+                                                      response,
+                                                      endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetLocalListVersionResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendLocalList         (ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
+
+        /// <summary>
+        /// Set the local white liste at the given charge box.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
+        /// <param name="UpdateType">The type of update (full or differential).</param>
+        /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charging station. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.SendLocalListResponse>
+
+            SendLocalList(ChargeBox_Id                     ChargeBoxId,
+                          UInt64                           ListVersion,
+                          UpdateTypes                      UpdateType,
+                          IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
+                          CustomData?                      CustomData               = null,
+
+                          DateTime?                        RequestTimestamp         = null,
+                          TimeSpan?                        RequestTimeout           = null,
+                          EventTracking_Id?                EventTrackingId          = null,
+                          CancellationToken?               CancellationToken        = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new SendLocalListRequest(
+                                 ChargeBoxId,
+                                 ListVersion,
+                                 UpdateType,
+                                 LocalAuthorizationList,
+                                 CustomData,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnSendLocalListRequest event
+
+            try
+            {
+
+                OnSendLocalListRequest?.Invoke(startTime,
+                                               this,
+                                               request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSendLocalListRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.SendLocalList(request)
+
+                               : new CS.SendLocalListResponse(request,
+                                                              Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnSendLocalListResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSendLocalListResponse?.Invoke(endTime,
+                                                this,
+                                                request,
+                                                response,
+                                                endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSendLocalListResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region ClearCache            (ChargeBoxId, ...)
+
+        /// <summary>
+        /// Clear the local white liste cache of the given charge box.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.ClearCacheResponse>
+
+            ClearCache(ChargeBox_Id        ChargeBoxId,
+                       CustomData?         CustomData          = null,
+
+                       DateTime?           RequestTimestamp    = null,
+                       TimeSpan?           RequestTimeout      = null,
+                       EventTracking_Id?   EventTrackingId     = null,
+                       CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new ClearCacheRequest(
+                                 ChargeBoxId,
+                                 CustomData,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnClearCacheRequest event
+
+            try
+            {
+
+                OnClearCacheRequest?.Invoke(startTime,
+                                            this,
+                                            request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearCacheRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.ClearCache(request)
+
+                               : new CS.ClearCacheResponse(request,
+                                                           Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnClearCacheResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearCacheResponse?.Invoke(endTime,
+                                             this,
+                                             request,
+                                             response,
+                                             endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearCacheResponse));
             }
 
             #endregion
@@ -4164,6 +5492,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         }
 
         #endregion
+
+        // StartCharging
+        // StopCharging
+        // GetTransactionStatus
 
         #region SetChargingProfile    (ChargeBoxId, ConnectorId, ChargingProfile, ...)
 
@@ -4562,786 +5894,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region GetLocalListVersion   (ChargeBoxId, ...)
-
-        /// <summary>
-        /// Return the local white list of the given charge box.
-        /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.GetLocalListVersionResponse>
-
-            GetLocalListVersion(ChargeBox_Id        ChargeBoxId,
-                                CustomData          CustomData          = null,
-
-                                DateTime?           RequestTimestamp    = null,
-                                TimeSpan?           RequestTimeout      = null,
-                                EventTracking_Id?   EventTrackingId     = null,
-                                CancellationToken?  CancellationToken   = null)
-
-        {
-
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new GetLocalListVersionRequest(
-                                 ChargeBoxId,
-                                 CustomData,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
-            #region Send OnGetLocalListVersionRequest event
-
-            try
-            {
-
-                OnGetLocalListVersionRequest?.Invoke(startTime,
-                                                     this,
-                                                     request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetLocalListVersionRequest));
-            }
-
-            #endregion
-
-
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
-
-                               ? await centralSystem.Item1.GetLocalListVersion(request)
-
-                               : new CS.GetLocalListVersionResponse(request,
-                                                                    Result.Server("Unknown or unreachable charge box!"));
-
-
-            #region Send OnGetLocalListVersionResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetLocalListVersionResponse?.Invoke(endTime,
-                                                      this,
-                                                      request,
-                                                      response,
-                                                      endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetLocalListVersionResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region SendLocalList         (ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
-
-        /// <summary>
-        /// Set the local white liste at the given charge box.
-        /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
-        /// <param name="UpdateType">The type of update (full or differential).</param>
-        /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charging station. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.SendLocalListResponse>
-
-            SendLocalList(ChargeBox_Id                     ChargeBoxId,
-                          UInt64                           ListVersion,
-                          UpdateTypes                      UpdateType,
-                          IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
-                          CustomData?                      CustomData               = null,
-
-                          DateTime?                        RequestTimestamp         = null,
-                          TimeSpan?                        RequestTimeout           = null,
-                          EventTracking_Id?                EventTrackingId          = null,
-                          CancellationToken?               CancellationToken        = null)
-
-        {
-
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new SendLocalListRequest(
-                                 ChargeBoxId,
-                                 ListVersion,
-                                 UpdateType,
-                                 LocalAuthorizationList,
-                                 CustomData,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
-            #region Send OnSendLocalListRequest event
-
-            try
-            {
-
-                OnSendLocalListRequest?.Invoke(startTime,
-                                               this,
-                                               request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSendLocalListRequest));
-            }
-
-            #endregion
-
-
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
-
-                               ? await centralSystem.Item1.SendLocalList(request)
-
-                               : new CS.SendLocalListResponse(request,
-                                                              Result.Server("Unknown or unreachable charge box!"));
-
-
-            #region Send OnSendLocalListResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnSendLocalListResponse?.Invoke(endTime,
-                                                this,
-                                                request,
-                                                response,
-                                                endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSendLocalListResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region ClearCache            (ChargeBoxId, ...)
-
-        /// <summary>
-        /// Clear the local white liste cache of the given charge box.
-        /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.ClearCacheResponse>
-
-            ClearCache(ChargeBox_Id        ChargeBoxId,
-                       CustomData?         CustomData          = null,
-
-                       DateTime?           RequestTimestamp    = null,
-                       TimeSpan?           RequestTimeout      = null,
-                       EventTracking_Id?   EventTrackingId     = null,
-                       CancellationToken?  CancellationToken   = null)
-
-        {
-
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new ClearCacheRequest(
-                                 ChargeBoxId,
-                                 CustomData,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
-            #region Send OnClearCacheRequest event
-
-            try
-            {
-
-                OnClearCacheRequest?.Invoke(startTime,
-                                            this,
-                                            request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearCacheRequest));
-            }
-
-            #endregion
-
-
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
-
-                               ? await centralSystem.Item1.ClearCache(request)
-
-                               : new CS.ClearCacheResponse(request,
-                                                           Result.Server("Unknown or unreachable charge box!"));
-
-
-            #region Send OnClearCacheResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnClearCacheResponse?.Invoke(endTime,
-                                             this,
-                                             request,
-                                             response,
-                                             endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearCacheResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-
-        #region CertificateSigned         (ChargeBoxId, CertificateChain, ...)
-
-        /// <summary>
-        /// Clear the local white liste cache of the given charge box.
-        /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CertificateChain">The signed PEM encoded X.509 certificates. This can also contain the necessary sub CA certificates.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.CertificateSignedResponse>
-
-            CertificateSigned(ChargeBox_Id            ChargeBoxId,
-                              CertificateChain        CertificateChain,
-                              CertificateSigningUse?  CertificateType     = null,
-                              CustomData?             CustomData          = null,
-
-                              DateTime?               RequestTimestamp    = null,
-                              TimeSpan?               RequestTimeout      = null,
-                              EventTracking_Id?       EventTrackingId     = null,
-                              CancellationToken?      CancellationToken   = null)
-
-        {
-
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new CertificateSignedRequest(
-                                 ChargeBoxId,
-                                 CertificateChain,
-                                 CertificateType,
-                                 CustomData,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
-            #region Send OnCertificateSignedRequest event
-
-            try
-            {
-
-                OnCertificateSignedRequest?.Invoke(startTime,
-                                                   this,
-                                                   request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCertificateSignedRequest));
-            }
-
-            #endregion
-
-
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
-
-                               ? await centralSystem.Item1.SendSignedCertificate(request)
-
-                               : new CS.CertificateSignedResponse(request,
-                                                           Result.Server("Unknown or unreachable charge box!"));
-
-
-            #region Send OnCertificateSignedResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnCertificateSignedResponse?.Invoke(endTime,
-                                                    this,
-                                                    request,
-                                                    response,
-                                                    endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCertificateSignedResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region DeleteCertificate         (ChargeBoxId, CertificateHashData, ...)
-
-        /// <summary>
-        /// Delete the given certificate on the charging station.
-        /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CertificateHashData">Indicates the certificate which should be deleted.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.DeleteCertificateResponse>
-
-            DeleteCertificate(ChargeBox_Id         ChargeBoxId,
-                              CertificateHashData  CertificateHashData,
-                              CustomData?          CustomData          = null,
-
-                              DateTime?            RequestTimestamp    = null,
-                              TimeSpan?            RequestTimeout      = null,
-                              EventTracking_Id?    EventTrackingId     = null,
-                              CancellationToken?   CancellationToken   = null)
-
-        {
-
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new DeleteCertificateRequest(
-                                 ChargeBoxId,
-                                 CertificateHashData,
-                                 CustomData,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
-            #region Send OnDeleteCertificateRequest event
-
-            try
-            {
-
-                OnDeleteCertificateRequest?.Invoke(startTime,
-                                                   this,
-                                                   request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteCertificateRequest));
-            }
-
-            #endregion
-
-
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
-
-                               ? await centralSystem.Item1.DeleteCertificate(request)
-
-                               : new CS.DeleteCertificateResponse(request,
-                                                                  Result.Server("Unknown or unreachable charge box!"));
-
-
-            #region Send OnDeleteCertificateResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnDeleteCertificateResponse?.Invoke(endTime,
-                                                    this,
-                                                    request,
-                                                    response,
-                                                    endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteCertificateResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region GetInstalledCertificateIds(ChargeBoxId, CertificateType, ...)
-
-        /// <summary>
-        /// Retrieve a list of all installed certificates within the charging station.
-        /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CertificateType">The type of the certificates requested.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.GetInstalledCertificateIdsResponse>
-
-            GetInstalledCertificateIds(ChargeBox_Id        ChargeBoxId,
-                                       CertificateUse      CertificateType,
-                                       CustomData?         CustomData          = null,
-
-                                       DateTime?           RequestTimestamp    = null,
-                                       TimeSpan?           RequestTimeout      = null,
-                                       EventTracking_Id?   EventTrackingId     = null,
-                                       CancellationToken?  CancellationToken   = null)
-
-        {
-
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new GetInstalledCertificateIdsRequest(
-                                 ChargeBoxId,
-                                 CertificateType,
-                                 CustomData,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
-            #region Send OnGetInstalledCertificateIdsRequest event
-
-            try
-            {
-
-                OnGetInstalledCertificateIdsRequest?.Invoke(startTime,
-                                                            this,
-                                                            request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetInstalledCertificateIdsRequest));
-            }
-
-            #endregion
-
-
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
-
-                               ? await centralSystem.Item1.GetInstalledCertificateIds(request)
-
-                               : new CS.GetInstalledCertificateIdsResponse(request,
-                                                                           Result.Server("Unknown or unreachable charge box!"));
-
-
-            #region Send OnGetInstalledCertificateIdsResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetInstalledCertificateIdsResponse?.Invoke(endTime,
-                                                             this,
-                                                             request,
-                                                             response,
-                                                             endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetInstalledCertificateIdsResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region GetLog                    (ChargeBoxId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
-
-        /// <summary>
-        /// Retrieve log files from the charging station.
-        /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="LogType">The type of the certificates requested.</param>
-        /// <param name="LogRequestId">The unique identification of this request.</param>
-        /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
-        /// <param name="Retries">This specifies how many times the Charge Point must try to upload the log before giving up. If this field is not present, it is left to Charge Point to decide how many times it wants to retry.</param>
-        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to Charge Point to decide how long to wait between attempts.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.GetLogResponse>
-
-            GetLog(ChargeBox_Id        ChargeBoxId,
-                   LogTypes            LogType,
-                   Int32               LogRequestId,
-                   LogParameters       Log,
-                   Byte?               Retries             = null,
-                   TimeSpan?           RetryInterval       = null,
-                   CustomData?         CustomData          = null,
-
-                   DateTime?           RequestTimestamp    = null,
-                   TimeSpan?           RequestTimeout      = null,
-                   EventTracking_Id?   EventTrackingId     = null,
-                   CancellationToken?  CancellationToken   = null)
-
-        {
-
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new GetLogRequest(
-                                 ChargeBoxId,
-                                 LogType,
-                                 LogRequestId,
-                                 Log,
-                                 Retries,
-                                 RetryInterval,
-                                 CustomData,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
-            #region Send OnGetLogRequest event
-
-            try
-            {
-
-                OnGetLogRequest?.Invoke(startTime,
-                                        this,
-                                        request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetLogRequest));
-            }
-
-            #endregion
-
-
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
-
-                               ? await centralSystem.Item1.GetLog(request)
-
-                               : new CS.GetLogResponse(request,
-                                                       Result.Server("Unknown or unreachable charge box!"));
-
-
-            #region Send OnGetLogResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnGetLogResponse?.Invoke(endTime,
-                                         this,
-                                         request,
-                                         response,
-                                         endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetLogResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-        #region InstallCertificate        (ChargeBoxId, CertificateType, Certificate, ...)
-
-        /// <summary>
-        /// Install the given certificate within the charging station.
-        /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CertificateType">The type of the certificate.</param>
-        /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.InstallCertificateResponse>
-
-            InstallCertificate(ChargeBox_Id        ChargeBoxId,
-                               CertificateUse      CertificateType,
-                               Certificate         Certificate,
-                               CustomData?         CustomData          = null,
-
-                               DateTime?           RequestTimestamp    = null,
-                               TimeSpan?           RequestTimeout      = null,
-                               EventTracking_Id?   EventTrackingId     = null,
-                               CancellationToken?  CancellationToken   = null)
-
-        {
-
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new InstallCertificateRequest(
-                                 ChargeBoxId,
-                                 CertificateType,
-                                 Certificate,
-                                 CustomData,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
-            #region Send OnInstallCertificateRequest event
-
-            try
-            {
-
-                OnInstallCertificateRequest?.Invoke(startTime,
-                                                    this,
-                                                    request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnInstallCertificateRequest));
-            }
-
-            #endregion
-
-
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
-
-                               ? await centralSystem.Item1.InstallCertificate(request)
-
-                               : new CS.InstallCertificateResponse(request,
-                                                                   Result.Server("Unknown or unreachable charge box!"));
-
-
-            #region Send OnInstallCertificateResponse event
-
-            var endTime = Timestamp.Now;
-
-            try
-            {
-
-                OnInstallCertificateResponse?.Invoke(endTime,
-                                                     this,
-                                                     request,
-                                                     response,
-                                                     endTime - startTime);
-
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnInstallCertificateResponse));
-            }
-
-            #endregion
-
-            return response;
-
-        }
-
-        #endregion
-
-
-
         #region SetDisplayMessage
 
         /// <summary>
@@ -5430,6 +5982,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         }
 
         #endregion
+
+        // GetDisplayMessages
+        // ClearDisplayMessage
+        // CostUpdated
+        // CustomerInformation
 
     }
 

@@ -219,58 +219,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         #endregion
 
 
-        #region CSMS_DataTransfer_OK_Test()
-
-        /// <summary>
-        /// A test for sending data to a charge point.
-        /// </summary>
-        [Test]
-        public async Task CSMS_DataTransfer_OK_Test()
-        {
-
-            Assert.IsNotNull(testCSMS01);
-            Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
-
-            if (testCSMS01     is not null &&
-                testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
-            {
-
-                var dataTransferRequests = new List<DataTransferRequest>();
-
-                chargingStation1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
-                    dataTransferRequests.Add(dataTransferRequest);
-                };
-
-                var vendorId   = "graphdefined";
-                var messageId  = "hello";
-                var data       = "world!";
-                var response1  = await testCSMS01.TransferData(chargingStation1.ChargeBoxId,
-                                                                        vendorId,
-                                                                        messageId,
-                                                                        data);
-
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(DataTransferStatus.Accepted,    response1.Status);
-
-                Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
-                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                Assert.AreEqual(data,                           dataTransferRequests.First().Data);
-
-            }
-
-        }
-
-        #endregion
-
-
         #region CSMS_TransferTextData_Test()
 
         /// <summary>
@@ -450,59 +398,56 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #endregion
 
+        #region CSMS_TransferTextData_Rejected_Test()
 
-        #region CSMS_DataTransfer_Rejected_Test()
+        /// <summary>
+        /// A test for sending data to a charge point.
+        /// </summary>
+        [Test]
+        public async Task CSMS_TransferTextData_Rejected_Test()
+        {
 
-        ///// <summary>
-        ///// A test for sending data to a charge point.
-        ///// </summary>
-        //[Test]
-        //public async Task CSMS_DataTransfer_Rejected_Test()
-        //{
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
 
-        //    Assert.IsNotNull(testCSMS01);
-        //    Assert.IsNotNull(testBackendWebSockets01);
-        //    Assert.IsNotNull(chargingStation1);
-        //    Assert.IsNotNull(chargingStation2);
-        //    Assert.IsNotNull(chargingStation3);
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
 
-        //    if (testCSMS01     is not null &&
-        //        testBackendWebSockets01 is not null &&
-        //        chargingStation1        is not null &&
-        //        chargingStation2        is not null &&
-        //        chargingStation3        is not null)
-        //    {
+                var dataTransferRequests = new List<DataTransferRequest>();
 
-        //        var dataTransferRequests = new List<DataTransferRequest>();
+                chargingStation1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                    dataTransferRequests.Add(dataTransferRequest);
+                };
 
-        //        chargingStation1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
-        //            dataTransferRequests.Add(dataTransferRequest);
-        //        };
+                var vendorId   = "ACME Inc.";
+                var messageId  = "hello";
+                var data       = "world!";
+                var response1  = await testCSMS01.TransferData(chargingStation1.ChargeBoxId,
+                                                               vendorId,
+                                                               messageId,
+                                                               data);
 
-        //        var vendorId   = "ACME Inc.";
-        //        var messageId  = "hello";
-        //        var data       = "world!";
-        //        var response1  = await testCSMS01.DataTransfer(chargingStation1.ChargeBoxId,
-        //                                                                vendorId,
-        //                                                                messageId,
-        //                                                                data);
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(DataTransferStatus.Rejected,    response1.Status);
 
-        //        Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-        //        Assert.AreEqual(DataTransferStatus.Rejected,    response1.Status);
+                Assert.AreEqual(1,                              dataTransferRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
+                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
+                Assert.AreEqual(data,                           dataTransferRequests.First().Data?.ToString());
 
-        //        Assert.AreEqual(1,                              dataTransferRequests.Count);
-        //        Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
-        //        Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-        //        Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-        //        Assert.AreEqual(data,                           dataTransferRequests.First().Data);
+            }
 
-        //    }
-
-        //}
+        }
 
         #endregion
-
-
 
 
         #region CSMS_SetDisplayMessage_Test()

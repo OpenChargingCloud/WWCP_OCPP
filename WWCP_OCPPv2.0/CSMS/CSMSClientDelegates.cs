@@ -17,6 +17,8 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Hermod;
+
 using cloud.charging.open.protocols.OCPPv2_0.CS;
 
 #endregion
@@ -33,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnResetRequestDelegate(DateTime       Timestamp,
-                                                ICSMSClient    Sender,
+                                                IEventSender   Sender,
                                                 ResetRequest   Request);
 
     /// <summary>
@@ -45,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnResetResponseDelegate(DateTime        Timestamp,
-                                                 ICSMSClient     Sender,
+                                                 IEventSender    Sender,
                                                  ResetRequest    Request,
                                                  ResetResponse   Response,
                                                  TimeSpan        Runtime);
@@ -61,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnUpdateFirmwareRequestDelegate(DateTime                Timestamp,
-                                                         ICSMSClient             Sender,
+                                                         IEventSender            Sender,
                                                          UpdateFirmwareRequest   Request);
 
     /// <summary>
@@ -73,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnUpdateFirmwareResponseDelegate(DateTime                 Timestamp,
-                                                          ICSMSClient              Sender,
+                                                          IEventSender             Sender,
                                                           UpdateFirmwareRequest    Request,
                                                           UpdateFirmwareResponse   Response,
                                                           TimeSpan                 Runtime);
@@ -89,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnPublishFirmwareRequestDelegate(DateTime                 Timestamp,
-                                                          ICSMSClient              Sender,
+                                                          IEventSender             Sender,
                                                           PublishFirmwareRequest   Request);
 
     /// <summary>
@@ -101,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnPublishFirmwareResponseDelegate(DateTime                  Timestamp,
-                                                           ICSMSClient               Sender,
+                                                           IEventSender              Sender,
                                                            PublishFirmwareRequest    Request,
                                                            PublishFirmwareResponse   Response,
                                                            TimeSpan                  Runtime);
@@ -117,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnUnpublishFirmwareRequestDelegate(DateTime                   Timestamp,
-                                                            ICSMSClient                Sender,
+                                                            IEventSender               Sender,
                                                             UnpublishFirmwareRequest   Request);
 
     /// <summary>
@@ -129,7 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnUnpublishFirmwareResponseDelegate(DateTime                    Timestamp,
-                                                             ICSMSClient                 Sender,
+                                                             IEventSender                Sender,
                                                              UnpublishFirmwareRequest    Request,
                                                              UnpublishFirmwareResponse   Response,
                                                              TimeSpan                    Runtime);
@@ -145,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetBaseReportRequestDelegate(DateTime               Timestamp,
-                                                        ICSMSClient            Sender,
+                                                        IEventSender           Sender,
                                                         GetBaseReportRequest   Request);
 
     /// <summary>
@@ -157,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetBaseReportResponseDelegate(DateTime                Timestamp,
-                                                         ICSMSClient             Sender,
+                                                         IEventSender            Sender,
                                                          GetBaseReportRequest    Request,
                                                          GetBaseReportResponse   Response,
                                                          TimeSpan                Runtime);
@@ -173,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetReportRequestDelegate(DateTime           Timestamp,
-                                                    ICSMSClient        Sender,
+                                                    IEventSender       Sender,
                                                     GetReportRequest   Request);
 
     /// <summary>
@@ -185,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetReportResponseDelegate(DateTime            Timestamp,
-                                                     ICSMSClient         Sender,
+                                                     IEventSender        Sender,
                                                      GetReportRequest    Request,
                                                      GetReportResponse   Response,
                                                      TimeSpan            Runtime);
@@ -201,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetLogRequestDelegate(DateTime        Timestamp,
-                                                 ICSMSClient     Sender,
+                                                 IEventSender    Sender,
                                                  GetLogRequest   Request);
 
     /// <summary>
@@ -213,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetLogResponseDelegate(DateTime         Timestamp,
-                                                  ICSMSClient      Sender,
+                                                  IEventSender     Sender,
                                                   GetLogRequest    Request,
                                                   GetLogResponse   Response,
                                                   TimeSpan         Runtime);
@@ -229,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnSetVariablesRequestDelegate(DateTime              Timestamp,
-                                                       ICSMSClient           Sender,
+                                                       IEventSender          Sender,
                                                        SetVariablesRequest   Request);
 
     /// <summary>
@@ -241,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnSetVariablesResponseDelegate(DateTime               Timestamp,
-                                                        ICSMSClient            Sender,
+                                                        IEventSender           Sender,
                                                         SetVariablesRequest    Request,
                                                         SetVariablesResponse   Response,
                                                         TimeSpan               Runtime);
@@ -257,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetVariablesRequestDelegate(DateTime              Timestamp,
-                                                       ICSMSClient           Sender,
+                                                       IEventSender          Sender,
                                                        GetVariablesRequest   Request);
 
     /// <summary>
@@ -269,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetVariablesResponseDelegate(DateTime               Timestamp,
-                                                        ICSMSClient            Sender,
+                                                        IEventSender           Sender,
                                                         GetVariablesRequest    Request,
                                                         GetVariablesResponse   Response,
                                                         TimeSpan               Runtime);
@@ -285,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnSetMonitoringBaseRequestDelegate(DateTime                   Timestamp,
-                                                            ICSMSClient                Sender,
+                                                            IEventSender               Sender,
                                                             SetMonitoringBaseRequest   Request);
 
     /// <summary>
@@ -297,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnSetMonitoringBaseResponseDelegate(DateTime                    Timestamp,
-                                                             ICSMSClient                 Sender,
+                                                             IEventSender                Sender,
                                                              SetMonitoringBaseRequest    Request,
                                                              SetMonitoringBaseResponse   Response,
                                                              TimeSpan                    Runtime);
@@ -313,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetMonitoringReportRequestDelegate(DateTime                     Timestamp,
-                                                              ICSMSClient                  Sender,
+                                                              IEventSender                 Sender,
                                                               GetMonitoringReportRequest   Request);
 
     /// <summary>
@@ -325,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetMonitoringReportResponseDelegate(DateTime                      Timestamp,
-                                                               ICSMSClient                   Sender,
+                                                               IEventSender                  Sender,
                                                                GetMonitoringReportRequest    Request,
                                                                GetMonitoringReportResponse   Response,
                                                                TimeSpan                      Runtime);
@@ -341,7 +343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnSetMonitoringLevelRequestDelegate(DateTime                    Timestamp,
-                                                             ICSMSClient                 Sender,
+                                                             IEventSender                Sender,
                                                              SetMonitoringLevelRequest   Request);
 
     /// <summary>
@@ -353,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnSetMonitoringLevelResponseDelegate(DateTime                     Timestamp,
-                                                              ICSMSClient                  Sender,
+                                                              IEventSender                 Sender,
                                                               SetMonitoringLevelRequest    Request,
                                                               SetMonitoringLevelResponse   Response,
                                                               TimeSpan                     Runtime);
@@ -369,7 +371,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnSetVariableMonitoringRequestDelegate(DateTime                       Timestamp,
-                                                                ICSMSClient                    Sender,
+                                                                IEventSender                   Sender,
                                                                 SetVariableMonitoringRequest   Request);
 
     /// <summary>
@@ -381,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnSetVariableMonitoringResponseDelegate(DateTime                        Timestamp,
-                                                                 ICSMSClient                     Sender,
+                                                                 IEventSender                    Sender,
                                                                  SetVariableMonitoringRequest    Request,
                                                                  SetVariableMonitoringResponse   Response,
                                                                  TimeSpan                        Runtime);
@@ -397,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnClearVariableMonitoringRequestDelegate(DateTime                         Timestamp,
-                                                                  ICSMSClient                      Sender,
+                                                                  IEventSender                     Sender,
                                                                   ClearVariableMonitoringRequest   Request);
 
     /// <summary>
@@ -409,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnClearVariableMonitoringResponseDelegate(DateTime                          Timestamp,
-                                                                   ICSMSClient                       Sender,
+                                                                   IEventSender                      Sender,
                                                                    ClearVariableMonitoringRequest    Request,
                                                                    ClearVariableMonitoringResponse   Response,
                                                                    TimeSpan                          Runtime);
@@ -425,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnSetNetworkProfileRequestDelegate(DateTime                   Timestamp,
-                                                            ICSMSClient                Sender,
+                                                            IEventSender               Sender,
                                                             SetNetworkProfileRequest   Request);
 
     /// <summary>
@@ -437,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnSetNetworkProfileResponseDelegate(DateTime                    Timestamp,
-                                                             ICSMSClient                 Sender,
+                                                             IEventSender                Sender,
                                                              SetNetworkProfileRequest    Request,
                                                              SetNetworkProfileResponse   Response,
                                                              TimeSpan                    Runtime);
@@ -453,7 +455,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnChangeAvailabilityRequestDelegate(DateTime                    Timestamp,
-                                                             ICSMSClient                 Sender,
+                                                             IEventSender                Sender,
                                                              ChangeAvailabilityRequest   Request);
 
     /// <summary>
@@ -465,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnChangeAvailabilityResponseDelegate(DateTime                     Timestamp,
-                                                              ICSMSClient                  Sender,
+                                                              IEventSender                 Sender,
                                                               ChangeAvailabilityRequest    Request,
                                                               ChangeAvailabilityResponse   Response,
                                                               TimeSpan                     Runtime);
@@ -481,7 +483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnTriggerMessageRequestDelegate(DateTime                Timestamp,
-                                                         ICSMSClient             Sender,
+                                                         IEventSender            Sender,
                                                          TriggerMessageRequest   Request);
 
     /// <summary>
@@ -493,7 +495,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnTriggerMessageResponseDelegate(DateTime                 Timestamp,
-                                                          ICSMSClient              Sender,
+                                                          IEventSender             Sender,
                                                           TriggerMessageRequest    Request,
                                                           TriggerMessageResponse   Response,
                                                           TimeSpan                 Runtime);
@@ -509,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnDataTransferRequestDelegate(DateTime              Timestamp,
-                                                       ICSMSClient           Sender,
+                                                       IEventSender          Sender,
                                                        DataTransferRequest   Request);
 
     /// <summary>
@@ -521,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnDataTransferResponseDelegate(DateTime                  Timestamp,
-                                                        ICSMSClient               Sender,
+                                                        IEventSender              Sender,
                                                         DataTransferRequest       Request,
                                                         CS.DataTransferResponse   Response,
                                                         TimeSpan                  Runtime);
@@ -538,7 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnCertificateSignedRequestDelegate(DateTime                   Timestamp,
-                                                            ICSMSClient                Sender,
+                                                            IEventSender               Sender,
                                                             CertificateSignedRequest   Request);
 
     /// <summary>
@@ -550,7 +552,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnCertificateSignedResponseDelegate(DateTime                    Timestamp,
-                                                             ICSMSClient                 Sender,
+                                                             IEventSender                Sender,
                                                              CertificateSignedRequest    Request,
                                                              CertificateSignedResponse   Response,
                                                              TimeSpan                    Runtime);
@@ -566,7 +568,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnInstallCertificateRequestDelegate(DateTime                    Timestamp,
-                                                             ICSMSClient                 Sender,
+                                                             IEventSender                Sender,
                                                              InstallCertificateRequest   Request);
 
     /// <summary>
@@ -578,7 +580,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnInstallCertificateResponseDelegate(DateTime                     Timestamp,
-                                                              ICSMSClient                  Sender,
+                                                              IEventSender                 Sender,
                                                               InstallCertificateRequest    Request,
                                                               InstallCertificateResponse   Response,
                                                               TimeSpan                     Runtime);
@@ -594,7 +596,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetInstalledCertificateIdsRequestDelegate(DateTime                            Timestamp,
-                                                                     ICSMSClient                         Sender,
+                                                                     IEventSender                        Sender,
                                                                      GetInstalledCertificateIdsRequest   Request);
 
     /// <summary>
@@ -606,7 +608,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetInstalledCertificateIdsResponseDelegate(DateTime                             Timestamp,
-                                                                      ICSMSClient                          Sender,
+                                                                      IEventSender                         Sender,
                                                                       GetInstalledCertificateIdsRequest    Request,
                                                                       GetInstalledCertificateIdsResponse   Response,
                                                                       TimeSpan                             Runtime);
@@ -622,7 +624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnDeleteCertificateRequestDelegate(DateTime                   Timestamp,
-                                                            ICSMSClient                Sender,
+                                                            IEventSender               Sender,
                                                             DeleteCertificateRequest   Request);
 
     /// <summary>
@@ -634,7 +636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnDeleteCertificateResponseDelegate(DateTime                    Timestamp,
-                                                             ICSMSClient                 Sender,
+                                                             IEventSender                Sender,
                                                              DeleteCertificateRequest    Request,
                                                              DeleteCertificateResponse   Response,
                                                              TimeSpan                    Runtime);
@@ -651,7 +653,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetLocalListVersionRequestDelegate(DateTime                     Timestamp,
-                                                              ICSMSClient                  Sender,
+                                                              IEventSender                 Sender,
                                                               GetLocalListVersionRequest   Request);
 
     /// <summary>
@@ -663,7 +665,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetLocalListVersionResponseDelegate(DateTime                      Timestamp,
-                                                               ICSMSClient                   Sender,
+                                                               IEventSender                  Sender,
                                                                GetLocalListVersionRequest    Request,
                                                                GetLocalListVersionResponse   Response,
                                                                TimeSpan                      Runtime);
@@ -679,7 +681,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnSendLocalListRequestDelegate(DateTime               Timestamp,
-                                                        ICSMSClient            Sender,
+                                                        IEventSender           Sender,
                                                         SendLocalListRequest   Request);
 
     /// <summary>
@@ -691,7 +693,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnSendLocalListResponseDelegate(DateTime                Timestamp,
-                                                         ICSMSClient             Sender,
+                                                         IEventSender            Sender,
                                                          SendLocalListRequest    Request,
                                                          SendLocalListResponse   Response,
                                                          TimeSpan                Runtime);
@@ -707,7 +709,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnClearCacheRequestDelegate(DateTime            Timestamp,
-                                                     ICSMSClient         Sender,
+                                                     IEventSender        Sender,
                                                      ClearCacheRequest   Request);
 
     /// <summary>
@@ -719,7 +721,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnClearCacheResponseDelegate(DateTime             Timestamp,
-                                                      ICSMSClient          Sender,
+                                                      IEventSender         Sender,
                                                       ClearCacheRequest    Request,
                                                       ClearCacheResponse   Response,
                                                       TimeSpan             Runtime);
@@ -736,7 +738,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnReserveNowRequestDelegate(DateTime            Timestamp,
-                                                     ICSMSClient         Sender,
+                                                     IEventSender        Sender,
                                                      ReserveNowRequest   Request);
 
     /// <summary>
@@ -748,7 +750,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnReserveNowResponseDelegate(DateTime             Timestamp,
-                                                      ICSMSClient          Sender,
+                                                      IEventSender         Sender,
                                                       ReserveNowRequest    Request,
                                                       ReserveNowResponse   Response,
                                                       TimeSpan             Runtime);
@@ -764,7 +766,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnCancelReservationRequestDelegate(DateTime                   Timestamp,
-                                                            ICSMSClient                Sender,
+                                                            IEventSender               Sender,
                                                             CancelReservationRequest   Request);
 
     /// <summary>
@@ -776,7 +778,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnCancelReservationResponseDelegate(DateTime                    Timestamp,
-                                                             ICSMSClient                 Sender,
+                                                             IEventSender                Sender,
                                                              CancelReservationRequest    Request,
                                                              CancelReservationResponse   Response,
                                                              TimeSpan                    Runtime);
@@ -792,7 +794,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnRequestStartTransactionRequestDelegate(DateTime                         Timestamp,
-                                                                  ICSMSClient                      Sender,
+                                                                  IEventSender                     Sender,
                                                                   RequestStartTransactionRequest   Request);
 
     /// <summary>
@@ -804,7 +806,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnRequestStartTransactionResponseDelegate(DateTime                          Timestamp,
-                                                                   ICSMSClient                       Sender,
+                                                                   IEventSender                      Sender,
                                                                    RequestStartTransactionRequest    Request,
                                                                    RequestStartTransactionResponse   Response,
                                                                    TimeSpan                          Runtime);
@@ -820,7 +822,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnRequestStopTransactionRequestDelegate(DateTime                        Timestamp,
-                                                                 ICSMSClient                     Sender,
+                                                                 IEventSender                    Sender,
                                                                  RequestStopTransactionRequest   Request);
 
     /// <summary>
@@ -832,7 +834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnRequestStopTransactionResponseDelegate(DateTime                         Timestamp,
-                                                                  ICSMSClient                      Sender,
+                                                                  IEventSender                     Sender,
                                                                   RequestStopTransactionRequest    Request,
                                                                   RequestStopTransactionResponse   Response,
                                                                   TimeSpan                         Runtime);
@@ -848,7 +850,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetTransactionStatusRequestDelegate(DateTime                      Timestamp,
-                                                               ICSMSClient                   Sender,
+                                                               IEventSender                  Sender,
                                                                GetTransactionStatusRequest   Request);
 
     /// <summary>
@@ -860,7 +862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetTransactionStatusResponseDelegate(DateTime                       Timestamp,
-                                                                ICSMSClient                    Sender,
+                                                                IEventSender                   Sender,
                                                                 GetTransactionStatusRequest    Request,
                                                                 GetTransactionStatusResponse   Response,
                                                                 TimeSpan                       Runtime);
@@ -876,7 +878,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnSetChargingProfileRequestDelegate(DateTime                    Timestamp,
-                                                             ICSMSClient                 Sender,
+                                                             IEventSender                Sender,
                                                              SetChargingProfileRequest   Request);
 
     /// <summary>
@@ -888,7 +890,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnSetChargingProfileResponseDelegate(DateTime                     Timestamp,
-                                                              ICSMSClient                  Sender,
+                                                              IEventSender                 Sender,
                                                               SetChargingProfileRequest    Request,
                                                               SetChargingProfileResponse   Response,
                                                               TimeSpan                     Runtime);
@@ -904,7 +906,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetChargingProfilesRequestDelegate(DateTime                     Timestamp,
-                                                              ICSMSClient                  Sender,
+                                                              IEventSender                 Sender,
                                                               GetChargingProfilesRequest   Request);
 
     /// <summary>
@@ -916,7 +918,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetChargingProfilesResponseDelegate(DateTime                      Timestamp,
-                                                               ICSMSClient                   Sender,
+                                                               IEventSender                  Sender,
                                                                GetChargingProfilesRequest    Request,
                                                                GetChargingProfilesResponse   Response,
                                                                TimeSpan                      Runtime);
@@ -932,7 +934,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnClearChargingProfileRequestDelegate(DateTime                      Timestamp,
-                                                               ICSMSClient                   Sender,
+                                                               IEventSender                  Sender,
                                                                ClearChargingProfileRequest   Request);
 
     /// <summary>
@@ -944,7 +946,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnClearChargingProfileResponseDelegate(DateTime                       Timestamp,
-                                                                ICSMSClient                    Sender,
+                                                                IEventSender                   Sender,
                                                                 ClearChargingProfileRequest    Request,
                                                                 ClearChargingProfileResponse   Response,
                                                                 TimeSpan                       Runtime);
@@ -960,7 +962,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetCompositeScheduleRequestDelegate(DateTime                      Timestamp,
-                                                               ICSMSClient                   Sender,
+                                                               IEventSender                  Sender,
                                                                GetCompositeScheduleRequest   Request);
 
     /// <summary>
@@ -972,7 +974,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetCompositeScheduleResponseDelegate(DateTime                       Timestamp,
-                                                                ICSMSClient                    Sender,
+                                                                IEventSender                   Sender,
                                                                 GetCompositeScheduleRequest    Request,
                                                                 GetCompositeScheduleResponse   Response,
                                                                 TimeSpan                       Runtime);
@@ -988,7 +990,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnUnlockConnectorRequestDelegate(DateTime                 Timestamp,
-                                                          ICSMSClient              Sender,
+                                                          IEventSender             Sender,
                                                           UnlockConnectorRequest   Request);
 
     /// <summary>
@@ -1000,7 +1002,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnUnlockConnectorResponseDelegate(DateTime                  Timestamp,
-                                                           ICSMSClient               Sender,
+                                                           IEventSender              Sender,
                                                            UnlockConnectorRequest    Request,
                                                            UnlockConnectorResponse   Response,
                                                            TimeSpan                  Runtime);
@@ -1017,7 +1019,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnSetDisplayMessageRequestDelegate(DateTime                   Timestamp,
-                                                            ICSMSClient                Sender,
+                                                            IEventSender               Sender,
                                                             SetDisplayMessageRequest   Request);
 
     /// <summary>
@@ -1029,7 +1031,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnSetDisplayMessageResponseDelegate(DateTime                    Timestamp,
-                                                             ICSMSClient                 Sender,
+                                                             IEventSender                Sender,
                                                              SetDisplayMessageRequest    Request,
                                                              SetDisplayMessageResponse   Response,
                                                              TimeSpan                    Runtime);
@@ -1045,7 +1047,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnGetDisplayMessagesRequestDelegate(DateTime                    Timestamp,
-                                                             ICSMSClient                 Sender,
+                                                             IEventSender                Sender,
                                                              GetDisplayMessagesRequest   Request);
 
     /// <summary>
@@ -1057,7 +1059,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnGetDisplayMessagesResponseDelegate(DateTime                     Timestamp,
-                                                              ICSMSClient                  Sender,
+                                                              IEventSender                 Sender,
                                                               GetDisplayMessagesRequest    Request,
                                                               GetDisplayMessagesResponse   Response,
                                                               TimeSpan                     Runtime);
@@ -1073,7 +1075,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnClearDisplayMessageRequestDelegate(DateTime                     Timestamp,
-                                                              ICSMSClient                  Sender,
+                                                              IEventSender                 Sender,
                                                               ClearDisplayMessageRequest   Request);
 
     /// <summary>
@@ -1085,7 +1087,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnClearDisplayMessageResponseDelegate(DateTime                      Timestamp,
-                                                               ICSMSClient                   Sender,
+                                                               IEventSender                  Sender,
                                                                ClearDisplayMessageRequest    Request,
                                                                ClearDisplayMessageResponse   Response,
                                                                TimeSpan                      Runtime);
@@ -1101,7 +1103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnCostUpdatedRequestDelegate(DateTime             Timestamp,
-                                                      ICSMSClient          Sender,
+                                                      IEventSender         Sender,
                                                       CostUpdatedRequest   Request);
 
     /// <summary>
@@ -1113,7 +1115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnCostUpdatedResponseDelegate(DateTime              Timestamp,
-                                                       ICSMSClient           Sender,
+                                                       IEventSender          Sender,
                                                        CostUpdatedRequest    Request,
                                                        CostUpdatedResponse   Response,
                                                        TimeSpan              Runtime);
@@ -1129,7 +1131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task OnCustomerInformationRequestDelegate(DateTime                     Timestamp,
-                                                              ICSMSClient                  Sender,
+                                                              IEventSender                 Sender,
                                                               CustomerInformationRequest   Request);
 
     /// <summary>
@@ -1141,7 +1143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnCustomerInformationResponseDelegate(DateTime                      Timestamp,
-                                                               ICSMSClient                   Sender,
+                                                               IEventSender                  Sender,
                                                                CustomerInformationRequest    Request,
                                                                CustomerInformationResponse   Response,
                                                                TimeSpan                      Runtime);
