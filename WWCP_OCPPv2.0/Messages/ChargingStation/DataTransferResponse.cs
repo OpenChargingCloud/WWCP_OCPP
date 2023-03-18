@@ -17,6 +17,7 @@
 
 #region Usings
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -45,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// Optional response data.
         /// </summary>
         [Optional]
-        public String?             Data          { get; }
+        public JToken?             Data          { get; }
 
         /// <summary>
         /// Optional detailed status information.
@@ -64,12 +65,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// </summary>
         /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="Status">The success or failure status of the data transfer.</param>
-        /// <param name="Data">Optional response data.</param>
+        /// <param name="JSONToken">A vendor-specific JSON token.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public DataTransferResponse(CS.DataTransferRequest  Request,
                                     DataTransferStatus      Status,
-                                    String?                 Data         = null,
+                                    JToken?                 Data         = null,
                                     StatusInfo?             StatusInfo   = null,
                                     CustomData?             CustomData   = null)
 
@@ -258,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 #region Data                  [optional]
 
-                var Data = JSON.GetString("data")?.Trim();
+                var Data = JSON["data"];
 
                 #endregion
 
@@ -330,19 +331,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
-                           Data.IsNotNullOrEmpty()
-                               ? new JProperty("data",        Data)
+                           Data is not null
+                               ? new JProperty("data",         Data)
                                : null,
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -483,10 +484,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Status,
-                             Data is not null
-                                 ? ", " + Data.SubstringMax(20)
-                                 : "");
+            => String.Concat(
+                   Status,
+                   Data is not null
+                       ? ", " + Data
+                       : ""
+               );
 
         #endregion
 

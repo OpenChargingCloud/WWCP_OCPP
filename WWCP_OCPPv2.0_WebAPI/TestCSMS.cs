@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using social.OpenData.UsersAPI;
 
 using cloud.charging.open.protocols.OCPPv2_0.CSMS;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -1391,9 +1392,50 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 await Task.Delay(100, CancellationToken);
 
-                var response = new DataTransferResponse(Request:  Request,
-                                                        Status:   DataTransferStatus.Accepted,
-                                                        Data:     Request.Data.Reverse());
+                var responseData = Request.Data;
+
+                if (Request.Data is not null)
+                {
+
+                    if      (Request.Data.Type == JTokenType.String)
+                        responseData = Request.Data.ToString().Reverse();
+
+                    else if (Request.Data.Type == JTokenType.Object) {
+
+                        var responseObject = new JObject();
+
+                        foreach (var property in (Request.Data as JObject)!)
+                        {
+                            if (property.Value?.Type == JTokenType.String)
+                                responseObject.Add(property.Key,
+                                                   property.Value.ToString().Reverse());
+                        }
+
+                        responseData = responseObject;
+
+                    }
+
+                    else if (Request.Data.Type == JTokenType.Array) {
+
+                        var responseArray = new JArray();
+
+                        foreach (var element in (Request.Data as JArray)!)
+                        {
+                            if (element?.Type == JTokenType.String)
+                                responseArray.Add(element.ToString().Reverse());
+                        }
+
+                        responseData = responseArray;
+
+                    }
+
+                }
+
+                var response      = new DataTransferResponse(
+                                        Request:  Request,
+                                        Status:   DataTransferStatus.Accepted,
+                                        Data:     responseData
+                                    );
 
 
                 #region Send OnIncomingDataResponse event

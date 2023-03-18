@@ -47,10 +47,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         public String?  MessageId    { get; }
 
         /// <summary>
-        /// Optional message data as text without specified length or format.
+        /// Optional message data without specified length or format.
         /// </summary>
         [Optional]
-        public String?  Data         { get; }
+        public JToken?  Data         { get; }
 
         #endregion
 
@@ -60,24 +60,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a new data transfer request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">An optional message identification field.</param>
-        /// <param name="Data">Optional message data as text without specified length or format.</param>
-        /// 
+        /// <param name="JSONToken">A vendor-specific JSON token.</param>
+        /// <param name="MessageId">An optional message identification.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public DataTransferRequest(ChargeBox_Id        ChargeBoxId,
-
                                    String              VendorId,
                                    String?             MessageId           = null,
-                                   String?             Data                = null,
-
+                                   JToken?             JSONToken           = null,
                                    CustomData?         CustomData          = null,
+
                                    Request_Id?         RequestId           = null,
                                    DateTime?           RequestTimestamp    = null,
                                    TimeSpan?           RequestTimeout      = null,
@@ -104,8 +102,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             #endregion
 
-            this.MessageId  = MessageId;
-            this.Data       = Data;
+            this.Data       = JSONToken;
+            this.MessageId  = MessageId?.Trim();
 
         }
 
@@ -261,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region Data            [optional]
 
-                var Data = JSON.GetString("data");
+                var Data = JSON["data"];
 
                 #endregion
 
@@ -343,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                ? new JProperty("messageId",   MessageId)
                                : null,
 
-                           Data.IsNotNullOrEmpty()
+                           Data is not null
                                ? new JProperty("data",        Data)
                                : null,
 
@@ -476,9 +474,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         public override String ToString()
 
             => String.Concat(
-                   VendorId,                      ", ",
-                   MessageId              ?? "-", ", ",
-                   Data?.SubstringMax(20) ?? ""
+                   VendorId,        ", ",
+                   MessageId ?? "", ", ",
+                   Data      ?? ""
                );
 
         #endregion

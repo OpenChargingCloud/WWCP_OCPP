@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// The data transfer request.
     /// </summary>
     public class DataTransferRequest : ARequest<DataTransferRequest>
-    {
+{
 
         #region Properties
 
@@ -47,10 +47,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public String?  MessageId    { get; }
 
         /// <summary>
-        /// Optional message data as text without specified length or format.
+        /// Optional message data without specified length or format.
         /// </summary>
         [Optional]
-        public String?  Data         { get; }
+        public JToken?  Data         { get; }
 
         #endregion
 
@@ -61,8 +61,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">An optional message identification field.</param>
-        /// <param name="Data">Optional message data as text without specified length or format.</param>
+        /// <param name="JSONToken">A vendor-specific JSON token.</param>
+        /// <param name="MessageId">An optional message identification.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public DataTransferRequest(ChargeBox_Id        ChargeBoxId,
                                    String              VendorId,
                                    String?             MessageId           = null,
-                                   String?             Data                = null,
+                                   JToken?             JSONToken           = null,
                                    CustomData?         CustomData          = null,
 
                                    Request_Id?         RequestId           = null,
@@ -93,9 +93,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         {
 
-            this.VendorId   = VendorId?. Trim() ?? throw new ArgumentNullException(nameof(VendorId), "The given vendor identification must not be null or empty!");
+            #region Initial checks
+
+            this.VendorId = VendorId.Trim();
+
+            if (this.VendorId.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(VendorId), "The given vendor identification must not be null or empty!");
+
+            #endregion
+
+            this.Data       = JSONToken;
             this.MessageId  = MessageId?.Trim();
-            this.Data       = Data?.     Trim();
 
         }
 
@@ -159,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomDataTransferRequestParser">A delegate to parse custom DataTransfer requests.</param>
+        /// <param name="CustomDataTransferRequestParser">A delegate to parse custom data transfer requests.</param>
         public static DataTransferRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
                                                 ChargeBox_Id                                       ChargeBoxId,
@@ -183,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out DataTransferRequest, out ErrorResponse, CustomDataTransferRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out DataTransferRequest, OnException = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -194,6 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                   JSON,
                                        Request_Id                RequestId,
                                        ChargeBox_Id              ChargeBoxId,
@@ -230,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 DataTransferRequest = null;
 
-                #region VendorId        [optional]
+                #region VendorId        [mandatory]
 
                 if (!JSON.ParseMandatoryText("vendorId",
                                              "vendor identification",
@@ -250,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 #region Data            [optional]
 
-                var Data = JSON.GetString("data");
+                var Data = JSON["data"];
 
                 #endregion
 
@@ -332,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                ? new JProperty("messageId",   MessageId)
                                : null,
 
-                           Data.IsNotNullOrEmpty()
+                           Data is not null
                                ? new JProperty("data",        Data)
                                : null,
 
@@ -419,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <param name="DataTransferRequest">A data transfer request to compare with.</param>
         public override Boolean Equals(DataTransferRequest? DataTransferRequest)
 
-            => DataTransferRequest is not null &&
+            => DataTransferRequest is not null               &&
 
                VendorId.Equals(DataTransferRequest.VendorId) &&
 
@@ -446,11 +455,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
             unchecked
             {
 
-                return VendorId.   GetHashCode()       * 7 ^
-                       (MessageId?.GetHashCode() ?? 0) * 5 ^
-                       (Data?.     GetHashCode() ?? 0) * 3 ^
+                return VendorId.  GetHashCode()       * 7 ^
+                      (MessageId?.GetHashCode() ?? 0) * 5 ^
+                      (Data?.     GetHashCode() ?? 0) * 3 ^
 
-                       base.       GetHashCode();
+                       base.      GetHashCode();
 
             }
         }
@@ -465,9 +474,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         public override String ToString()
 
             => String.Concat(
-                   VendorId,                      " / ",
-                   MessageId              ?? "-", " / ",
-                   Data?.SubstringMax(20) ?? "-"
+                   VendorId,        ", ",
+                   MessageId ?? "", ", ",
+                   Data      ?? ""
                );
 
         #endregion

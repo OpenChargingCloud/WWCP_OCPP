@@ -573,13 +573,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         #endregion
 
 
-        #region ChargingStation_TransferData_Test()
+        #region ChargingStation_TransferTextData_Test()
 
         /// <summary>
-        /// A test for transfering data to the CSMS.
+        /// A test for transfering text data to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_TransferData_Test()
+        public async Task ChargingStation_TransferTextData_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -614,13 +614,134 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(data.Reverse(),                 response1.Data);
+                Assert.AreEqual(data.Reverse(),                 response1.Data?.ToString());
 
                 Assert.AreEqual(1,                              dataTransferRequests.Count);
                 Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
                 Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                Assert.AreEqual(data,                           dataTransferRequests.First().Data);
+                Assert.AreEqual(data,                           dataTransferRequests.First().Data?.ToString());
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingStation_TransferJObjectData_Test()
+
+        /// <summary>
+        /// A test for transfering JObject data to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_TransferJObjectData_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var dataTransferRequests = new List<CS.DataTransferRequest>();
+
+                testCSMS01.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                    dataTransferRequests.Add(dataTransferRequest);
+                };
+
+                var vendorId   = "GraphDefined OEM";
+                var messageId  = RandomExtensions.RandomString(10);
+                var data       = new JObject(
+                                     new JProperty(
+                                         "key",
+                                         RandomExtensions.RandomString(40)
+                                     )
+                                 );
+
+                var response1  = await chargingStation1.TransferData(
+                                     VendorId:    vendorId,
+                                     MessageId:   messageId,
+                                     Data:        data,
+                                     CustomData:  null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(JTokenType.Object,              response1.Data?.Type);
+                Assert.AreEqual(data["key"]?.Value<String>(),   response1.Data?["key"]?.Value<String>()?.Reverse());
+
+                Assert.AreEqual(1,                              dataTransferRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
+                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
+                Assert.AreEqual(JTokenType.Object,              dataTransferRequests.First().Data?.Type);
+                Assert.AreEqual(data["key"]?.Value<String>(),   dataTransferRequests.First().Data?["key"]?.Value<String>());
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingStation_TransferJArrayData_Test()
+
+        /// <summary>
+        /// A test for transfering JArray data to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_TransferJArrayData_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var dataTransferRequests = new List<CS.DataTransferRequest>();
+
+                testCSMS01.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                    dataTransferRequests.Add(dataTransferRequest);
+                };
+
+                var vendorId   = "GraphDefined OEM";
+                var messageId  = RandomExtensions.RandomString(10);
+                var data       = new JArray(
+                                     RandomExtensions.RandomString(40)
+                                 );
+
+                var response1  = await chargingStation1.TransferData(
+                                     VendorId:    vendorId,
+                                     MessageId:   messageId,
+                                     Data:        data,
+                                     CustomData:  null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(JTokenType.Array,               response1.Data?.Type);
+                Assert.AreEqual(data[0]?.Value<String>(),       response1.Data?[0]?.Value<String>()?.Reverse());
+
+                Assert.AreEqual(1,                              dataTransferRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
+                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
+                Assert.AreEqual(JTokenType.Array,               dataTransferRequests.First().Data?.Type);
+                Assert.AreEqual(data[0]?.Value<String>(),       dataTransferRequests.First().Data?[0]?.Value<String>());
 
             }
 

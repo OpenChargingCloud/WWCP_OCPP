@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A data transfer response.
     /// </summary>
     public class DataTransferResponse : AResponse<CSMS.DataTransferRequest,
-                                                     DataTransferResponse>
+                                                  DataTransferResponse>
     {
 
         #region Properties
@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Optional response data.
         /// </summary>
         [Optional]
-        public String?             Data          { get; }
+        public JToken?             Data          { get; }
 
         /// <summary>
         /// Optional detailed status information.
@@ -64,14 +64,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// </summary>
         /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="Status">The success or failure status of the data transfer.</param>
-        /// <param name="Data">Optional response data.</param>
+        /// <param name="JSONToken">A vendor-specific JSON token.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public DataTransferResponse(CSMS.DataTransferRequest  Request,
-                                    DataTransferStatus      Status,
-                                    String?                 Data         = null,
-                                    StatusInfo?             StatusInfo   = null,
-                                    CustomData?             CustomData   = null)
+                                    DataTransferStatus        Status,
+                                    JToken?                   Data         = null,
+                                    StatusInfo?               StatusInfo   = null,
+                                    CustomData?               CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public DataTransferResponse(CSMS.DataTransferRequest  Request,
-                                    Result                  Result)
+                                    Result                    Result)
 
             : base(Request,
                    Result)
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The data transfer request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
-        public static DataTransferResponse Parse(CSMS.DataTransferRequest                              Request,
+        public static DataTransferResponse Parse(CSMS.DataTransferRequest                            Request,
                                                  JObject                                             JSON,
                                                  CustomJObjectParserDelegate<DataTransferResponse>?  CustomDataTransferResponseParser  = null)
         {
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="DataTransferResponse">The parsed data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomDataTransferResponseParser">A delegate to parse custom data transfer responses.</param>
-        public static Boolean TryParse(CSMS.DataTransferRequest                              Request,
+        public static Boolean TryParse(CSMS.DataTransferRequest                            Request,
                                        JObject                                             JSON,
                                        out DataTransferResponse?                           DataTransferResponse,
                                        out String?                                         ErrorResponse,
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region Data                  [optional]
 
-                var Data = JSON.GetString("data")?.Trim();
+                var Data = JSON["data"];
 
                 #endregion
 
@@ -330,19 +330,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
-                           Data.IsNotNullOrEmpty()
-                               ? new JProperty("data",        Data)
+                           Data is not null
+                               ? new JProperty("data",         Data)
                                : null,
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -484,13 +484,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         public override String ToString()
 
             => String.Concat(
-
-                   Status.AsText(),
-
+                   Status,
                    Data is not null
-                       ? ", " + Data.SubstringMax(20)
+                       ? ", " + Data
                        : ""
-
                );
 
         #endregion

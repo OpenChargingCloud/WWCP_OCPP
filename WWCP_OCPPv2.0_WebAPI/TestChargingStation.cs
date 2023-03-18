@@ -1017,9 +1017,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                     DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming data transfer request: ", Request.VendorId, ".", Request.MessageId ?? "-", ": ", Request.Data ?? "-"));
 
-                    if (Request.VendorId.  ToLower() == "graphdefined" &&
-                        Request.MessageId?.ToLower() == "hello"        &&
-                        Request.Data?.     ToLower() == "world!")
+                    if (Request.VendorId.        ToLower() == "graphdefined" &&
+                        Request.MessageId?.      ToLower() == "hello"        &&
+                        Request.Data?.ToString().ToLower() == "world!")
                     {
                         response = new DataTransferResponse(Request,
                                                             DataTransferStatus.Accepted,
@@ -2653,8 +2653,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Send the given vendor-specific data to the CSMS.
         /// </summary>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">The charging station model identification.</param>
-        /// <param name="Data">The serial number of the charging station.</param>
+        /// <param name="MessageId">An optional message identification.</param>
+        /// <param name="Data">A vendor-specific JSON token.</param>
         /// 
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
@@ -2664,7 +2664,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             TransferData(String              VendorId,
                          String?             MessageId           = null,
-                         String?             Data                = null,
+                         JToken?             Data                = null,
                          CustomData?         CustomData          = null,
 
                          DateTime?           RequestTimestamp    = null,
@@ -2718,7 +2718,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 response = await CSClient.TransferData(request);
 
             response ??= new CSMS.DataTransferResponse(request,
-                                                     Result.Server("Response is null!"));
+                                                       Result.Server("Response is null!"));
 
 
             #region Send OnDataTransferResponse event
