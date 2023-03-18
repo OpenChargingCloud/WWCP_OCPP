@@ -616,6 +616,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+
+        #region SetDisplayMessageRequest/-Response
+
+        /// <summary>
+        /// An event sent whenever a SetDisplayMessage request was received.
+        /// </summary>
+        public event OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SetDisplayMessage request was sent.
+        /// </summary>
+        public event OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -631,8 +646,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Description">An optional multi-language charge box description.</param>
         /// <param name="SerialNumber">An optional serial number of the charging station.</param>
         /// <param name="FirmwareVersion">An optional firmware version of the charging station.</param>
-        /// <param name="Iccid">An optional ICCID of the charging station's SIM card.</param>
-        /// <param name="IMSI">An optional IMSI of the charging station’s SIM card.</param>
         /// <param name="MeterType">An optional meter type of the main power meter of the charging station.</param>
         /// <param name="MeterSerialNumber">An optional serial number of the main power meter of the charging station.</param>
         /// <param name="MeterPublicKey">An optional public key of the main power meter of the charging station.</param>
@@ -1921,6 +1934,85 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             #endregion
 
 
+            #region OnSetDisplayMessage
+
+            CPServer.OnSetDisplayMessage += async (LogTimestamp,
+                                            Sender,
+                                            Request,
+                                            CancellationToken) => {
+
+                #region Send OnSetDisplayMessageRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSetDisplayMessageRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetDisplayMessageRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                SetDisplayMessageResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid SetDisplayMessage request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new SetDisplayMessageResponse(Request,
+                                                             Result.GenericError(""));
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming SetDisplayMessage request.");
+
+                    response = new SetDisplayMessageResponse(Request,
+                                                             DisplayMessageStatus.Accepted);
+
+                }
+
+
+                #region Send OnSetDisplayMessageResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnSetDisplayMessageResponse?.Invoke(responseTimestamp,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetDisplayMessageResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
             //ToDo: Add security extensions
 
         }
@@ -2687,7 +2779,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         }
 
         #endregion
-
 
 
         #region TransferData                     (VendorId, MessageId = null, Data = null, ...)

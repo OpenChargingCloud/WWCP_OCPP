@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A set display message response.
     /// </summary>
     public class SetDisplayMessageResponse : AResponse<CSMS.SetDisplayMessageRequest,
-                                                          SetDisplayMessageResponse>
+                                                       SetDisplayMessageResponse>
     {
 
         #region Properties
@@ -61,9 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public SetDisplayMessageResponse(CSMS.SetDisplayMessageRequest  Request,
-                                         DisplayMessageStatus         Status,
-                                         StatusInfo?                  StatusInfo   = null,
-                                         CustomData?                  CustomData   = null)
+                                         DisplayMessageStatus           Status,
+                                         StatusInfo?                    StatusInfo   = null,
+                                         CustomData?                    CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The set display message request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SetDisplayMessageResponse(CSMS.SetDisplayMessageRequest  Request,
-                                         Result                       Result)
+                                         Result                         Result)
 
             : base(Request,
                    Result)

@@ -22,6 +22,7 @@ using NUnit.Framework;
 using cloud.charging.open.protocols.OCPPv2_0.CSMS;
 using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
 
 #endregion
 
@@ -498,6 +499,75 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         //    }
 
         //}
+
+        #endregion
+
+
+
+
+        #region CSMS_SetDisplayMessage_Test()
+
+        /// <summary>
+        /// A test settingn the display message at the charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_SetDisplayMessage_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var setDisplayMessageRequests = new List<SetDisplayMessageRequest>();
+
+                chargingStation1.OnSetDisplayMessageRequest += async (timestamp, sender, setDisplayMessageRequest) => {
+                    setDisplayMessageRequests.Add(setDisplayMessageRequest);
+                };
+
+                var message    = RandomExtensions.RandomString(10);
+
+                var response1  = await testCSMS01.SetDisplayMessage(
+                                     ChargeBoxId:  chargingStation1.ChargeBoxId,
+                                     Message:      new MessageInfo(
+                                                       Id:               DisplayMessage_Id.NewRandom,
+                                                       Priority:         MessagePriorities.AlwaysFront,
+                                                       Message:          new MessageContent(
+                                                                             Content:  message,
+                                                                             Format:   MessageFormats.UTF8,
+                                                                             Language: Language_Id.Parse("de"),
+                                                                             CustomData:  null
+                                                                         ),
+                                                       State:            MessageStates.Charging,
+                                                       StartTimestamp:   Timestamp.Now,
+                                                       EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
+                                                       TransactionId:    null,
+                                                       CustomData:       null
+                                                   ),
+                                     CustomData:   null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                //Assert.AreEqual(data.Reverse(),                 response1.Data?.ToString());
+
+                Assert.AreEqual(1,                              setDisplayMessageRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   setDisplayMessageRequests.First().ChargeBoxId);
+                //Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
+                //Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
+                //Assert.AreEqual(data,                           dataTransferRequests.First().Data?.ToString());
+
+            }
+
+        }
 
         #endregion
 

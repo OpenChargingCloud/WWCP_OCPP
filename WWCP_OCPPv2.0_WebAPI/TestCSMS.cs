@@ -17,6 +17,8 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
@@ -28,7 +30,6 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using social.OpenData.UsersAPI;
 
 using cloud.charging.open.protocols.OCPPv2_0.CSMS;
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -5339,6 +5340,96 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+
+
+        #region SetDisplayMessage
+
+        /// <summary>
+        /// Set a display message.
+        /// </summary>
+        /// <param name="Request">A set display message request.</param>
+        public async Task<CS.SetDisplayMessageResponse>
+
+            SetDisplayMessage(ChargeBox_Id        ChargeBoxId,
+                              MessageInfo         Message,
+                              CustomData?         CustomData          = null,
+
+                              Request_Id?         RequestId           = null,
+                              DateTime?           RequestTimestamp    = null,
+                              TimeSpan?           RequestTimeout      = null,
+                              EventTracking_Id?   EventTrackingId     = null,
+                              CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new SetDisplayMessageRequest(
+                                 ChargeBoxId,
+                                 Message,
+                                 CustomData,
+
+                                 NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnSetDisplayMessageRequest event
+
+            //try
+            //{
+
+            //    OnSetDisplayMessageRequest?.Invoke(startTime,
+            //                                       this,
+            //                                       request);
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetDisplayMessageRequest));
+            //}
+
+            #endregion
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.SetDisplayMessage(request)
+
+                               : new CS.SetDisplayMessageResponse(request,
+                                                                  Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnSetDisplayMessageResponse event
+
+            //var endTime = Timestamp.Now;
+
+            //try
+            //{
+
+            //    OnSetDisplayMessageResponse?.Invoke(endTime,
+            //                                        this,
+            //                                        request,
+            //                                        response,
+            //                                        endTime - startTime);
+
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetDisplayMessageResponse));
+            //}
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
 
     }
 
