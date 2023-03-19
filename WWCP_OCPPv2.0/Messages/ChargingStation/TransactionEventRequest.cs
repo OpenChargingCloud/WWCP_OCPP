@@ -1012,15 +1012,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("eventType",           EventType.      AsText()),
-                                 new JProperty("timestamp",           Timestamp.      ToIso8601()),
-                                 new JProperty("triggerReason",       TriggerReason.  AsText()),
+                                 new JProperty("eventType",           EventType.               AsText()),
+                                 new JProperty("timestamp",           Timestamp.               ToIso8601()),
+                                 new JProperty("triggerReason",       TriggerReason.           AsText()),
                                  new JProperty("seqNo",               SequenceNumber),
-                                 new JProperty("transactionInfo",     TransactionInfo.ToJSON(CustomTransactionSerializer,
-                                                                                             CustomCustomDataSerializer)),
+                                 new JProperty("transactionInfo",     TransactionInfo.         ToJSON(CustomTransactionSerializer,
+                                                                                                      CustomCustomDataSerializer)),
 
                            Offline.HasValue
-                               ? new JProperty("offline",             Offline.Value)
+                               ? new JProperty("offline",             Offline.           Value)
                                : null,
 
                            NumberOfPhasesUsed.HasValue
@@ -1028,22 +1028,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null,
 
                            CableMaxCurrent.HasValue
-                               ? new JProperty("cableMaxCurrent",     CableMaxCurrent.Value)
+                               ? new JProperty("cableMaxCurrent",     CableMaxCurrent.   Value)
                                : null,
 
                            ReservationId.HasValue
-                               ? new JProperty("reservationId",       ReservationId.Value)
+                               ? new JProperty("reservationId",       ReservationId.     Value.ToString())
                                : null,
 
                            IdToken is not null
-                               ? new JProperty("idToken",             IdToken.   ToJSON(CustomIdTokenSerializer,
-                                                                                        CustomAdditionalInfoSerializer,
-                                                                                        CustomCustomDataSerializer))
+                               ? new JProperty("idToken",             IdToken.                 ToJSON(CustomIdTokenSerializer,
+                                                                                                      CustomAdditionalInfoSerializer,
+                                                                                                      CustomCustomDataSerializer))
                                : null,
 
                            EVSE is not null
-                               ? new JProperty("evse",                EVSE.      ToJSON(CustomEVSESerializer,
-                                                                                        CustomCustomDataSerializer))
+                               ? new JProperty("evse",                EVSE.                    ToJSON(CustomEVSESerializer,
+                                                                                                      CustomCustomDataSerializer))
                                : null,
 
                            MeterValues.Any()
