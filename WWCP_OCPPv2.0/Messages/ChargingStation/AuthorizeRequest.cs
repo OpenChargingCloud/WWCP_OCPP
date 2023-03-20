@@ -338,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region IdToken                        [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("idTag",
+                if (!JSON.ParseMandatoryJSON("idToken",
                                              "identification tag",
                                              OCPPv2_0.IdToken.TryParse,
                                              out IdToken? IdToken,

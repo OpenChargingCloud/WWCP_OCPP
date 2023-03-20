@@ -1010,7 +1010,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                               CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("eventType",           EventType.               AsText()),
                                  new JProperty("timestamp",           Timestamp.               ToIso8601()),
@@ -1019,48 +1019,48 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                  new JProperty("transactionInfo",     TransactionInfo.         ToJSON(CustomTransactionSerializer,
                                                                                                       CustomCustomDataSerializer)),
 
-                           Offline.HasValue
-                               ? new JProperty("offline",             Offline.           Value)
-                               : null,
+                           //Offline.HasValue
+                           //    ? new JProperty("offline",             Offline.           Value)
+                           //    : null,
 
-                           NumberOfPhasesUsed.HasValue
-                               ? new JProperty("numberOfPhasesUsed",  NumberOfPhasesUsed.Value)
-                               : null,
+                           //NumberOfPhasesUsed.HasValue
+                           //    ? new JProperty("numberOfPhasesUsed",  NumberOfPhasesUsed.Value)
+                           //    : null,
 
-                           CableMaxCurrent.HasValue
-                               ? new JProperty("cableMaxCurrent",     CableMaxCurrent.   Value)
-                               : null,
+                           //CableMaxCurrent.HasValue
+                           //    ? new JProperty("cableMaxCurrent",     CableMaxCurrent.   Value)
+                           //    : null,
 
-                           ReservationId.HasValue
-                               ? new JProperty("reservationId",       ReservationId.     Value.ToString())
-                               : null,
+                           ////ReservationId.HasValue
+                           ////    ? new JProperty("reservationId",       ReservationId.     Value.Value)
+                           ////    : null,
 
-                           IdToken is not null
-                               ? new JProperty("idToken",             IdToken.                 ToJSON(CustomIdTokenSerializer,
-                                                                                                      CustomAdditionalInfoSerializer,
-                                                                                                      CustomCustomDataSerializer))
-                               : null,
+                           //IdToken is not null
+                           //    ? new JProperty("idToken",             IdToken.                 ToJSON(CustomIdTokenSerializer,
+                           //                                                                           CustomAdditionalInfoSerializer,
+                           //                                                                           CustomCustomDataSerializer))
+                           //    : null,
 
-                           EVSE is not null
-                               ? new JProperty("evse",                EVSE.                    ToJSON(CustomEVSESerializer,
-                                                                                                      CustomCustomDataSerializer))
-                               : null,
+                           //EVSE is not null
+                           //    ? new JProperty("evse",                EVSE.                    ToJSON(CustomEVSESerializer,
+                           //                                                                           CustomCustomDataSerializer))
+                           //    : null,
 
-                           MeterValues.Any()
-                               ? new JProperty("meterValue",          new JArray(MeterValues.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
-                                                                                                                                    CustomSampledValueSerializer,
-                                                                                                                                    CustomSignedMeterValueSerializer,
-                                                                                                                                    CustomUnitsOfMeasureSerializer,
-                                                                                                                                    CustomCustomDataSerializer))))
-                               : null,
+                           //MeterValues.Any()
+                           //    ? new JProperty("meterValue",          new JArray(MeterValues.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
+                           //                                                                                                         CustomSampledValueSerializer,
+                           //                                                                                                         CustomSignedMeterValueSerializer,
+                           //                                                                                                         CustomUnitsOfMeasureSerializer,
+                           //                                                                                                         CustomCustomDataSerializer))))
+                           //    : null,
 
                            CustomData is not null
                                ? new JProperty("customData",          CustomData.ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomTransactionEventRequestSerializer is not null
-                       ? CustomTransactionEventRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomTransactionEventRequestSerializer(this, json)
+                       : json;
 
         }
 

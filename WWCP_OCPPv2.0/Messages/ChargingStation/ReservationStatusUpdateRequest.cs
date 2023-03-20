@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("reservationId",            ReservationId.          ToString()),
+                                 new JProperty("reservationId",            ReservationId.          Value),
                                  new JProperty("reservationUpdateStatus",  ReservationUpdateStatus.AsText()),
 
                            CustomData is not null

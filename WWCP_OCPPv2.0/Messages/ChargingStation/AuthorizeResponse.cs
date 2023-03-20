@@ -395,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 #region IdTokenInfo          [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("idTagInfo",
+                if (!JSON.ParseMandatoryJSON("idTokenInfo",
                                              "identification tag information",
                                              OCPPv2_0.IdTokenInfo.TryParse,
                                              out IdTokenInfo? IdTokenInfo,
@@ -482,18 +482,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("IdTokenInfo",        IdTokenInfo.ToJSON(CustomIdTokenInfoSerializer,
-                                                                                        CustomIdTokenSerializer,
-                                                                                        CustomAdditionalInfoSerializer,
-                                                                                        CustomMessageContentSerializer,
-                                                                                        CustomCustomDataSerializer)),
+                                 new JProperty("idTokenInfo",         IdTokenInfo.ToJSON(CustomIdTokenInfoSerializer,
+                                                                                         CustomIdTokenSerializer,
+                                                                                         CustomAdditionalInfoSerializer,
+                                                                                         CustomMessageContentSerializer,
+                                                                                         CustomCustomDataSerializer)),
 
                            CertificateStatus.HasValue
-                               ? new JProperty("certificateStatus",  CertificateStatus.Value.AsText())
+                               ? new JProperty("certificateStatus",   CertificateStatus.Value.AsText())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",         CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",          CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

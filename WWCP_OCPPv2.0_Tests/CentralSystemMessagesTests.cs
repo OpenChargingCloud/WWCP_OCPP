@@ -19,10 +19,11 @@
 
 using NUnit.Framework;
 
-using cloud.charging.open.protocols.OCPPv2_0.CSMS;
 using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.Mail;
+
+using cloud.charging.open.protocols.OCPPv2_0.CSMS;
 
 #endregion
 

@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region EVSEId             [mandatory]
 
-                if (!JSON.ParseMandatory("EVSEId",
+                if (!JSON.ParseMandatory("evseId",
                                          "EVSE identification",
                                          EVSE_Id.TryParse,
                                          out EVSE_Id EVSEId,
