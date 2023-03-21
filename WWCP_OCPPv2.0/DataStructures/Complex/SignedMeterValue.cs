@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region SigningMethod      [mandatory]
 
-                if (!JSON.ParseMandatoryText("SigningMethod",
+                if (!JSON.ParseMandatoryText("signingMethod",
                                              "signing method",
                                              out String SigningMethod,
                                              out ErrorResponse))

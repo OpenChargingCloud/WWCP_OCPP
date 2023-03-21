@@ -2072,7 +2072,80 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             // OnClearedChargingLimit
             // OnReportChargingProfiles
 
-            // OnNotifyDisplayMessages
+
+            #region OnNotifyDisplayMessages
+
+            CSMSServer.OnNotifyDisplayMessages += async (LogTimestamp,
+                                                         Sender,
+                                                         Request,
+                                                         CancellationToken) => {
+
+                #region Send OnNotifyDisplayMessagesRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyDisplayMessagesRequest?.Invoke(startTime,
+                                                      this,
+                                                      Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyDisplayMessagesRequest));
+                }
+
+                                                            #endregion
+
+
+                //Console.WriteLine("OnNotifyDisplayMessages: " + Request.EVSEId);
+
+                //Console.WriteLine(Request.NotifyDisplayMessages.SafeSelect(meterValue => meterValue.Timestamp.ToIso8601() +
+                //                          meterValue.SampledValues.SafeSelect(sampledValue => sampledValue.Context + ", " + sampledValue.Value + ", " + sampledValue.Value).AggregateWith("; ")).AggregateWith(Environment.NewLine));
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+                }
+                else
+                {
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+                }
+
+                await Task.Delay(100, CancellationToken);
+
+                var response = new NotifyDisplayMessagesResponse(Request);
+
+
+                #region Send OnNotifyDisplayMessagesResponse event
+
+                try
+                {
+
+                    OnNotifyDisplayMessagesResponse?.Invoke(Timestamp.Now,
+                                                       this,
+                                                       Request,
+                                                       response,
+                                                       Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyDisplayMessagesResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
             // OnNotifyCustomerInformation
 
 
@@ -4017,6 +4090,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                   ResetTypes          ResetType,
                   CustomData?         CustomData          = null,
 
+                  Request_Id?         RequestId           = null,
                   DateTime?           RequestTimestamp    = null,
                   TimeSpan?           RequestTimeout      = null,
                   EventTracking_Id?   EventTrackingId     = null,
@@ -4033,7 +4107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ResetType,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4117,6 +4191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                            TimeSpan?           RetryInterval       = null,
                            CustomData?         CustomData          = null,
 
+                           Request_Id?         RequestId           = null,
                            DateTime?           RequestTimestamp    = null,
                            TimeSpan?           RequestTimeout      = null,
                            EventTracking_Id?   EventTrackingId     = null,
@@ -4136,7 +4211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  RetryInterval,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4228,6 +4303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    TimeSpan?           RetryInterval       = null,
                    CustomData?         CustomData          = null,
 
+                   Request_Id?         RequestId           = null,
                    DateTime?           RequestTimestamp    = null,
                    TimeSpan?           RequestTimeout      = null,
                    EventTracking_Id?   EventTrackingId     = null,
@@ -4248,7 +4324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  RetryInterval,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4338,6 +4414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                EVSE?               EVSE,
                                CustomData?         CustomData          = null,
 
+                               Request_Id?         RequestId           = null,
                                DateTime?           RequestTimestamp    = null,
                                TimeSpan?           RequestTimeout      = null,
                                EventTracking_Id?   EventTrackingId     = null,
@@ -4355,7 +4432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  EVSE,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4436,6 +4513,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                            EVSE_Id?            EVSEId              = null,
                            CustomData?         CustomData          = null,
 
+                           Request_Id?         RequestId           = null,
                            DateTime?           RequestTimestamp    = null,
                            TimeSpan?           RequestTimeout      = null,
                            EventTracking_Id?   EventTrackingId     = null,
@@ -4453,7 +4531,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  EVSEId,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4536,6 +4614,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                          JToken?             Data                = null,
                          CustomData?         CustomData          = null,
 
+                         Request_Id?         RequestId           = null,
                          DateTime?           RequestTimestamp    = null,
                          TimeSpan?           RequestTimeout      = null,
                          EventTracking_Id?   EventTrackingId     = null,
@@ -4554,7 +4633,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  Data,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4635,6 +4714,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CertificateSigningUse?  CertificateType     = null,
                               CustomData?             CustomData          = null,
 
+                              Request_Id?             RequestId           = null,
                               DateTime?               RequestTimestamp    = null,
                               TimeSpan?               RequestTimeout      = null,
                               EventTracking_Id?       EventTrackingId     = null,
@@ -4652,7 +4732,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  CertificateType,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4733,6 +4813,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                Certificate         Certificate,
                                CustomData?         CustomData          = null,
 
+                               Request_Id?         RequestId           = null,
                                DateTime?           RequestTimestamp    = null,
                                TimeSpan?           RequestTimeout      = null,
                                EventTracking_Id?   EventTrackingId     = null,
@@ -4750,7 +4831,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  Certificate,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4829,6 +4910,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                        CertificateUse      CertificateType,
                                        CustomData?         CustomData          = null,
 
+                                       Request_Id?         RequestId           = null,
                                        DateTime?           RequestTimestamp    = null,
                                        TimeSpan?           RequestTimeout      = null,
                                        EventTracking_Id?   EventTrackingId     = null,
@@ -4845,7 +4927,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  CertificateType,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4924,6 +5006,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CertificateHashData  CertificateHashData,
                               CustomData?          CustomData          = null,
 
+                              Request_Id?          RequestId           = null,
                               DateTime?            RequestTimestamp    = null,
                               TimeSpan?            RequestTimeout      = null,
                               EventTracking_Id?    EventTrackingId     = null,
@@ -4940,7 +5023,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  CertificateHashData,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5018,6 +5101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             GetLocalListVersion(ChargeBox_Id        ChargeBoxId,
                                 CustomData?         CustomData          = null,
 
+                                Request_Id?         RequestId           = null,
                                 DateTime?           RequestTimestamp    = null,
                                 TimeSpan?           RequestTimeout      = null,
                                 EventTracking_Id?   EventTrackingId     = null,
@@ -5033,7 +5117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ChargeBoxId,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5116,6 +5200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                           IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
                           CustomData?                      CustomData               = null,
 
+                          Request_Id?                      RequestId                = null,
                           DateTime?                        RequestTimestamp         = null,
                           TimeSpan?                        RequestTimeout           = null,
                           EventTracking_Id?                EventTrackingId          = null,
@@ -5134,7 +5219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  LocalAuthorizationList,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5211,6 +5296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             ClearCache(ChargeBox_Id        ChargeBoxId,
                        CustomData?         CustomData          = null,
 
+                       Request_Id?         RequestId           = null,
                        DateTime?           RequestTimestamp    = null,
                        TimeSpan?           RequestTimeout      = null,
                        EventTracking_Id?   EventTrackingId     = null,
@@ -5226,7 +5312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ChargeBoxId,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5316,6 +5402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        IdToken?            GroupIdToken        = null,
                        CustomData?         CustomData          = null,
 
+                       Request_Id?         RequestId           = null,
                        DateTime?           RequestTimestamp    = null,
                        TimeSpan?           RequestTimeout      = null,
                        EventTracking_Id?   EventTrackingId     = null,
@@ -5337,7 +5424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  GroupIdToken,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5416,6 +5503,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               Reservation_Id      ReservationId,
                               CustomData?         CustomData          = null,
 
+                              Request_Id?         RequestId           = null,
                               DateTime?           RequestTimestamp    = null,
                               TimeSpan?           RequestTimeout      = null,
                               EventTracking_Id?   EventTrackingId     = null,
@@ -5432,7 +5520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ReservationId,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5517,6 +5605,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                ChargingProfile     ChargingProfile,
                                CustomData?         CustomData          = null,
 
+                               Request_Id?         RequestId           = null,
                                DateTime?           RequestTimestamp    = null,
                                TimeSpan?           RequestTimeout      = null,
                                EventTracking_Id?   EventTrackingId     = null,
@@ -5534,7 +5623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ChargingProfile,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5617,6 +5706,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ClearChargingProfile?  ChargingProfileCriteria   = null,
                                  CustomData?            CustomData                = null,
 
+                                 Request_Id?            RequestId                 = null,
                                  DateTime?              RequestTimestamp          = null,
                                  TimeSpan?              RequestTimeout            = null,
                                  EventTracking_Id?      EventTrackingId           = null,
@@ -5634,7 +5724,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ChargingProfileCriteria,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5717,6 +5807,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ChargingRateUnits?  ChargingRateUnit    = null,
                                  CustomData?         CustomData          = null,
 
+                                 Request_Id?         RequestId           = null,
                                  DateTime?           RequestTimestamp    = null,
                                  TimeSpan?           RequestTimeout      = null,
                                  EventTracking_Id?   EventTrackingId     = null,
@@ -5735,7 +5826,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ChargingRateUnit,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5815,6 +5906,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                             Connector_Id        ConnectorId,
                             CustomData?         CustomData          = null,
 
+                            Request_Id?         RequestId           = null,
                             DateTime?           RequestTimestamp    = null,
                             TimeSpan?           RequestTimeout      = null,
                             EventTracking_Id?   EventTrackingId     = null,
@@ -5832,7 +5924,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ConnectorId,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5899,7 +5991,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Set a display message.
         /// </summary>
-        /// <param name="Request">A set display message request.</param>
+        /// <param name="Message">A display message to be shown at the charging station.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.SetDisplayMessageResponse>
 
             SetDisplayMessage(ChargeBox_Id        ChargeBoxId,
@@ -5923,7 +6021,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  Message,
                                  CustomData,
 
-                                 NextRequestId,
+                                 RequestId ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5983,10 +6081,414 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        // GetDisplayMessages
-        // ClearDisplayMessage
-        // CostUpdated
-        // CustomerInformation
+        #region GetDisplayMessages
+
+        /// <summary>
+        /// Get all display messages.
+        /// </summary>
+        /// <param name="GetDisplayMessagesRequestId">The unique identification of this get display messages request.</param>
+        /// <param name="Ids">An optional filter on display message identifications. This field SHALL NOT contain more ids than set in NumberOfDisplayMessages.maxLimit.</param>
+        /// <param name="Priority">The optional filter on message priorities.</param>
+        /// <param name="State">The optional filter on message states.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.GetDisplayMessagesResponse>
+
+            GetDisplayMessages(ChargeBox_Id                     ChargeBoxId,
+                               Int32                            GetDisplayMessagesRequestId,
+                               IEnumerable<DisplayMessage_Id>?  Ids                 = null,
+                               MessagePriorities?               Priority            = null,
+                               MessageStates?                   State               = null,
+                               CustomData?                      CustomData          = null,
+
+                               Request_Id?                      RequestId           = null,
+                               DateTime?                        RequestTimestamp    = null,
+                               TimeSpan?                        RequestTimeout      = null,
+                               EventTracking_Id?                EventTrackingId     = null,
+                               CancellationToken?               CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetDisplayMessagesRequest(
+                                 ChargeBoxId,
+                                 GetDisplayMessagesRequestId,
+                                 Ids,
+                                 Priority,
+                                 State,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnGetDisplayMessagesRequest event
+
+            //try
+            //{
+
+            //    OnGetDisplayMessagesRequest?.Invoke(startTime,
+            //                                       this,
+            //                                       request);
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetDisplayMessagesRequest));
+            //}
+
+            #endregion
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.GetDisplayMessages(request)
+
+                               : new CS.GetDisplayMessagesResponse(request,
+                                                                  Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnGetDisplayMessagesResponse event
+
+            //var endTime = Timestamp.Now;
+
+            //try
+            //{
+
+            //    OnGetDisplayMessagesResponse?.Invoke(endTime,
+            //                                        this,
+            //                                        request,
+            //                                        response,
+            //                                        endTime - startTime);
+
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetDisplayMessagesResponse));
+            //}
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region ClearDisplayMessage
+
+        /// <summary>
+        /// Remove a display message.
+        /// </summary>
+        /// <param name="DisplayMessageId">The identification of the display message to be removed.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.ClearDisplayMessageResponse>
+
+            ClearDisplayMessage(ChargeBox_Id        ChargeBoxId,
+                                DisplayMessage_Id   DisplayMessageId,
+                                CustomData?         CustomData          = null,
+
+                                Request_Id?         RequestId           = null,
+                                DateTime?           RequestTimestamp    = null,
+                                TimeSpan?           RequestTimeout      = null,
+                                EventTracking_Id?   EventTrackingId     = null,
+                                CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new ClearDisplayMessageRequest(
+                                 ChargeBoxId,
+                                 DisplayMessageId,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnClearDisplayMessageRequest event
+
+            //try
+            //{
+
+            //    OnClearDisplayMessageRequest?.Invoke(startTime,
+            //                                       this,
+            //                                       request);
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearDisplayMessageRequest));
+            //}
+
+            #endregion
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.ClearDisplayMessage(request)
+
+                               : new CS.ClearDisplayMessageResponse(request,
+                                                                  Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnClearDisplayMessageResponse event
+
+            //var endTime = Timestamp.Now;
+
+            //try
+            //{
+
+            //    OnClearDisplayMessageResponse?.Invoke(endTime,
+            //                                        this,
+            //                                        request,
+            //                                        response,
+            //                                        endTime - startTime);
+
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearDisplayMessageResponse));
+            //}
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendCostUpdated
+
+        /// <summary>
+        /// Send updated costs.
+        /// </summary>
+        /// <param name="TotalCost">The current total cost, based on the information known by the CSMS, of the transaction including taxes. In the currency configured with the configuration Variable: [Currency]</param>
+        /// <param name="TransactionId">The unique transaction identification the costs are asked for.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.CostUpdatedResponse>
+
+            SendCostUpdated(ChargeBox_Id        ChargeBoxId,
+                            Decimal             TotalCost,
+                            Transaction_Id      TransactionId,
+                            CustomData?         CustomData          = null,
+
+                            Request_Id?         RequestId           = null,
+                            DateTime?           RequestTimestamp    = null,
+                            TimeSpan?           RequestTimeout      = null,
+                            EventTracking_Id?   EventTrackingId     = null,
+                            CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new CostUpdatedRequest(
+                                 ChargeBoxId,
+                                 TotalCost,
+                                 TransactionId,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnCostUpdatedRequest event
+
+            //try
+            //{
+
+            //    OnCostUpdatedRequest?.Invoke(startTime,
+            //                                       this,
+            //                                       request);
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCostUpdatedRequest));
+            //}
+
+            #endregion
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.SendCostUpdated(request)
+
+                               : new CS.CostUpdatedResponse(request,
+                                                                  Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnCostUpdatedResponse event
+
+            //var endTime = Timestamp.Now;
+
+            //try
+            //{
+
+            //    OnCostUpdatedResponse?.Invoke(endTime,
+            //                                        this,
+            //                                        request,
+            //                                        response,
+            //                                        endTime - startTime);
+
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCostUpdatedResponse));
+            //}
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region RequestCustomerInformation
+
+        /// <summary>
+        /// Request customer information.
+        /// </summary>
+        /// <param name="CustomerInformationRequestId">An unique identification of the customer information request.</param>
+        /// <param name="Report">Whether the charging station should return NotifyCustomerInformationRequest messages containing information about the customer referred to.</param>
+        /// <param name="Clear">Whether the charging station should clear all information about the customer referred to.</param>
+        /// <param name="CustomerIdentifier">An optional e.g. vendor specific identifier of the customer this request refers to. This field contains a custom identifier other than IdToken and Certificate.</param>
+        /// <param name="IdToken">An optional IdToken of the customer this request refers to.</param>
+        /// <param name="CustomerCertificate">An optional certificate of the customer this request refers to.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.CustomerInformationResponse>
+
+            RequestCustomerInformation(ChargeBox_Id          ChargeBoxId,
+                                       Int64                 CustomerInformationRequestId,
+                                       Boolean               Report,
+                                       Boolean               Clear,
+                                       CustomerIdentifier?   CustomerIdentifier    = null,
+                                       IdToken?              IdToken               = null,
+                                       CertificateHashData?  CustomerCertificate   = null,
+                                       CustomData?           CustomData            = null,
+
+                                       Request_Id?           RequestId             = null,
+                                       DateTime?             RequestTimestamp      = null,
+                                       TimeSpan?             RequestTimeout        = null,
+                                       EventTracking_Id?     EventTrackingId       = null,
+                                       CancellationToken?    CancellationToken     = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new CustomerInformationRequest(
+                                 ChargeBoxId,
+                                 CustomerInformationRequestId,
+                                 Report,
+                                 Clear,
+                                 CustomerIdentifier,
+                                 IdToken,
+                                 CustomerCertificate,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnCustomerInformationRequest event
+
+            //try
+            //{
+
+            //    OnCustomerInformationRequest?.Invoke(startTime,
+            //                                       this,
+            //                                       request);
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCustomerInformationRequest));
+            //}
+
+            #endregion
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.RequestCustomerInformation(request)
+
+                               : new CS.CustomerInformationResponse(request,
+                                                                  Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnCustomerInformationResponse event
+
+            //var endTime = Timestamp.Now;
+
+            //try
+            //{
+
+            //    OnCustomerInformationResponse?.Invoke(endTime,
+            //                                        this,
+            //                                        request,
+            //                                        response,
+            //                                        endTime - startTime);
+
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCustomerInformationResponse));
+            //}
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
 
     }
 

@@ -256,23 +256,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer         = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                           new JProperty("sampledValue",      new JArray(SampledValues.SafeSelect(sampledValue => sampledValue.ToJSON(CustomSampledValueSerializer,
-                                                                                                                                      CustomSignedMeterValueSerializer,
-                                                                                                                                      CustomUnitsOfMeasureSerializer,
-                                                                                                                                      CustomCustomDataSerializer)))),
-                           new JProperty("timestamp",         Timestamp.ToIso8601()),
+                           new JProperty("sampledValue",       new JArray(SampledValues.SafeSelect(sampledValue => sampledValue.ToJSON(CustomSampledValueSerializer,
+                                                                                                                                       CustomSignedMeterValueSerializer,
+                                                                                                                                       CustomUnitsOfMeasureSerializer,
+                                                                                                                                       CustomCustomDataSerializer)))),
+
+                           new JProperty("timestamp",          Timestamp. ToIso8601()),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomMeterValueSerializer is not null
-                       ? CustomMeterValueSerializer(this, JSON)
-                       : JSON;
+                       ? CustomMeterValueSerializer(this, json)
+                       : json;
 
         }
 

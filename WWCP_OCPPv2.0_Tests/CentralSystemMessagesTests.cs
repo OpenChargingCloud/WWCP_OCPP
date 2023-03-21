@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
             Assert.IsNotNull(chargingStation2);
             Assert.IsNotNull(chargingStation3);
 
-            if (testCSMS01     is not null &&
+            if (testCSMS01              is not null &&
                 testBackendWebSockets01 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
             Assert.IsNotNull(chargingStation2);
             Assert.IsNotNull(chargingStation3);
 
-            if (testCSMS01     is not null &&
+            if (testCSMS01              is not null &&
                 testBackendWebSockets01 is not null &&
                 chargingStation1        is not null &&
                 chargingStation2        is not null &&
@@ -454,7 +454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         #region CSMS_SetDisplayMessage_Test()
 
         /// <summary>
-        /// A test settingn the display message at the charging station.
+        /// A test setting the display message at a charging station.
         /// </summary>
         [Test]
         public async Task CSMS_SetDisplayMessage_Test()
@@ -482,23 +482,23 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 var message    = RandomExtensions.RandomString(10);
 
                 var response1  = await testCSMS01.SetDisplayMessage(
-                                     ChargeBoxId:  chargingStation1.ChargeBoxId,
-                                     Message:      new MessageInfo(
-                                                       Id:               DisplayMessage_Id.NewRandom,
-                                                       Priority:         MessagePriorities.AlwaysFront,
-                                                       Message:          new MessageContent(
-                                                                             Content:  message,
-                                                                             Format:   MessageFormats.UTF8,
-                                                                             Language: Language_Id.Parse("de"),
-                                                                             CustomData:  null
-                                                                         ),
-                                                       State:            MessageStates.Charging,
-                                                       StartTimestamp:   Timestamp.Now,
-                                                       EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
-                                                       TransactionId:    null,
-                                                       CustomData:       null
-                                                   ),
-                                     CustomData:   null
+                                     ChargeBoxId:   chargingStation1.ChargeBoxId,
+                                     Message:       new MessageInfo(
+                                                        Id:               DisplayMessage_Id.NewRandom,
+                                                        Priority:         MessagePriorities.AlwaysFront,
+                                                        Message:          new MessageContent(
+                                                                              Content:      message,
+                                                                              Format:       MessageFormats.UTF8,
+                                                                              Language:     Language_Id.Parse("de"),
+                                                                              CustomData:   null
+                                                                          ),
+                                                        State:            MessageStates.Charging,
+                                                        StartTimestamp:   Timestamp.Now,
+                                                        EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
+                                                        TransactionId:    null,
+                                                        CustomData:       null
+                                                    ),
+                                     CustomData:    null
                                  );
 
 
@@ -516,6 +516,321 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         }
 
         #endregion
+
+        #region CSMS_GetDisplayMessages_Test()
+
+        /// <summary>
+        /// A test getting the display messages from a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_GetDisplayMessages_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var setDisplayMessageRequests = new List<SetDisplayMessageRequest>();
+
+                chargingStation1.OnSetDisplayMessageRequest += async (timestamp, sender, setDisplayMessageRequest) => {
+                    setDisplayMessageRequests.Add(setDisplayMessageRequest);
+                };
+
+                var messageIds = new DisplayMessage_Id[] {
+                                     DisplayMessage_Id.NewRandom,
+                                     DisplayMessage_Id.NewRandom,
+                                     DisplayMessage_Id.NewRandom,
+                                     DisplayMessage_Id.NewRandom,
+                                     DisplayMessage_Id.NewRandom,
+                                     DisplayMessage_Id.NewRandom,
+                                     DisplayMessage_Id.NewRandom,
+                                     DisplayMessage_Id.NewRandom,
+                                     DisplayMessage_Id.NewRandom,
+                                     DisplayMessage_Id.NewRandom
+                                 };
+
+                for (int i = 1; i <= 10; i++) {
+
+                    var setMessage   = RandomExtensions.RandomString(10);
+
+                    var setResponse  = await testCSMS01.SetDisplayMessage(
+                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
+                                           Message:       new MessageInfo(
+                                                              Id:               messageIds[i-1],
+                                                              Priority:         i > 7 ? MessagePriorities.AlwaysFront : MessagePriorities.NormalCycle,
+                                                              Message:          new MessageContent(
+                                                                                    Content:      $"{i}:{setMessage}",
+                                                                                    Format:       MessageFormats.UTF8,
+                                                                                    Language:     Language_Id.Parse("de"),
+                                                                                    CustomData:   null
+                                                                                ),
+                                                              State:            i > 5 ? MessageStates.Charging : MessageStates.Idle,
+                                                              StartTimestamp:   Timestamp.Now,
+                                                              EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
+                                                              TransactionId:    null,
+                                                              CustomData:       null
+                                                          ),
+                                           CustomData:    null
+                                       );
+
+                    Assert.AreEqual(ResultCodes.OK,   setResponse.Result.ResultCode);
+                    Assert.AreEqual(i,                setDisplayMessageRequests.Count);
+
+                }
+
+
+
+
+                var getDisplayMessagesRequests = new List<GetDisplayMessagesRequest>();
+
+                chargingStation1.OnGetDisplayMessagesRequest += async (timestamp, sender, getDisplayMessagesRequest) => {
+                    getDisplayMessagesRequests.Add(getDisplayMessagesRequest);
+                };
+
+
+                var notifyDisplayMessagesRequests = new List<CS.NotifyDisplayMessagesRequest>();
+
+                testCSMS01.OnNotifyDisplayMessagesRequest += async (timestamp, sender, notifyDisplayMessagesRequest) => {
+                    notifyDisplayMessagesRequests.Add(notifyDisplayMessagesRequest);
+                };
+
+
+                var getResponse1  = await testCSMS01.GetDisplayMessages(
+                                              ChargeBoxId:                   chargingStation1.ChargeBoxId,
+                                              GetDisplayMessagesRequestId:   1,
+                                              Ids:                           null,
+                                              Priority:                      null,
+                                              State:                         null,
+                                              CustomData:                    null
+                                          );
+
+                Assert.AreEqual(ResultCodes.OK, getResponse1.Result.ResultCode);
+                Assert.AreEqual(1, getDisplayMessagesRequests.Count);
+
+
+                var getResponse2  = await testCSMS01.GetDisplayMessages(
+                                              ChargeBoxId:                   chargingStation1.ChargeBoxId,
+                                              GetDisplayMessagesRequestId:   2,
+                                              Ids:                           new DisplayMessage_Id[] {
+                                                                                 messageIds[0],
+                                                                                 messageIds[2],
+                                                                                 messageIds[4]
+                                                                             },
+                                              Priority:                      null,
+                                              State:                         null,
+                                              CustomData:                    null
+                                          );
+
+                Assert.AreEqual(ResultCodes.OK, getResponse2.Result.ResultCode);
+                Assert.AreEqual(2, getDisplayMessagesRequests.Count);
+
+
+                var getResponse3  = await testCSMS01.GetDisplayMessages(
+                                              ChargeBoxId:                   chargingStation1.ChargeBoxId,
+                                              GetDisplayMessagesRequestId:   3,
+                                              Ids:                           null,
+                                              Priority:                      null,
+                                              State:                         MessageStates.Charging,
+                                              CustomData:                    null
+                                          );
+
+                Assert.AreEqual(ResultCodes.OK, getResponse3.Result.ResultCode);
+                Assert.AreEqual(3, getDisplayMessagesRequests.Count);
+
+
+                var getResponse4  = await testCSMS01.GetDisplayMessages(
+                                              ChargeBoxId:                   chargingStation1.ChargeBoxId,
+                                              GetDisplayMessagesRequestId:   4,
+                                              Ids:                           null,
+                                              Priority:                      MessagePriorities.AlwaysFront,
+                                              State:                         null,
+                                              CustomData:                    null
+                                          );
+
+                Assert.AreEqual(ResultCodes.OK, getResponse4.Result.ResultCode);
+                Assert.AreEqual(4, getDisplayMessagesRequests.Count);
+
+
+                await Task.Delay(500);
+
+
+                Assert.AreEqual(4, notifyDisplayMessagesRequests.Count);
+
+                Assert.AreEqual(10, notifyDisplayMessagesRequests.ElementAt(0).MessageInfos.Count());
+                Assert.AreEqual( 3, notifyDisplayMessagesRequests.ElementAt(1).MessageInfos.Count());
+                Assert.AreEqual( 5, notifyDisplayMessagesRequests.ElementAt(2).MessageInfos.Count());
+                Assert.AreEqual( 3, notifyDisplayMessagesRequests.ElementAt(3).MessageInfos.Count());
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_ClearDisplayMessage_Test()
+
+        /// <summary>
+        /// A test removing a display message from a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_ClearDisplayMessage_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var setDisplayMessageRequests = new List<SetDisplayMessageRequest>();
+
+                chargingStation1.OnSetDisplayMessageRequest += async (timestamp, sender, setDisplayMessageRequest) => {
+                    setDisplayMessageRequests.Add(setDisplayMessageRequest);
+                };
+
+                var messageId1    = DisplayMessage_Id.NewRandom;
+                var message1      = RandomExtensions.RandomString(10);
+
+                var setResponse1  = await testCSMS01.SetDisplayMessage(
+                                        ChargeBoxId:   chargingStation1.ChargeBoxId,
+                                        Message:       new MessageInfo(
+                                                           Id:               messageId1,
+                                                           Priority:         MessagePriorities.AlwaysFront,
+                                                           Message:          new MessageContent(
+                                                                                 Content:      message1,
+                                                                                 Format:       MessageFormats.UTF8,
+                                                                                 Language:     Language_Id.Parse("de"),
+                                                                                 CustomData:   null
+                                                                             ),
+                                                           State:            MessageStates.Charging,
+                                                           StartTimestamp:   Timestamp.Now,
+                                                           EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
+                                                           TransactionId:    null,
+                                                           CustomData:       null
+                                                       ),
+                                        CustomData:    null
+                                    );
+
+                Assert.AreEqual(ResultCodes.OK,   setResponse1.Result.ResultCode);
+                Assert.AreEqual(1,                setDisplayMessageRequests.Count);
+
+
+                var messageId2    = DisplayMessage_Id.NewRandom;
+                var message2      = RandomExtensions.RandomString(10);
+
+                var setResponse2  = await testCSMS01.SetDisplayMessage(
+                                        ChargeBoxId:   chargingStation1.ChargeBoxId,
+                                        Message:       new MessageInfo(
+                                                           Id:               messageId2,
+                                                           Priority:         MessagePriorities.AlwaysFront,
+                                                           Message:          new MessageContent(
+                                                                                 Content:      message2,
+                                                                                 Format:       MessageFormats.UTF8,
+                                                                                 Language:     Language_Id.Parse("de"),
+                                                                                 CustomData:   null
+                                                                             ),
+                                                           State:            MessageStates.Charging,
+                                                           StartTimestamp:   Timestamp.Now,
+                                                           EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
+                                                           TransactionId:    null,
+                                                           CustomData:       null
+                                                       ),
+                                        CustomData:    null
+                                    );
+
+                Assert.AreEqual(ResultCodes.OK,   setResponse2.Result.ResultCode);
+                Assert.AreEqual(2,                setDisplayMessageRequests.Count);
+
+
+                // Get Messages BEFORE
+                var getDisplayMessagesRequests = new List<GetDisplayMessagesRequest>();
+
+                chargingStation1.OnGetDisplayMessagesRequest += async (timestamp, sender, getDisplayMessagesRequest) => {
+                    getDisplayMessagesRequests.Add(getDisplayMessagesRequest);
+                };
+
+
+                var notifyDisplayMessagesRequests = new List<CS.NotifyDisplayMessagesRequest>();
+
+                testCSMS01.OnNotifyDisplayMessagesRequest += async (timestamp, sender, notifyDisplayMessagesRequest) => {
+                    notifyDisplayMessagesRequests.Add(notifyDisplayMessagesRequest);
+                };
+
+
+                var getResponse1  = await testCSMS01.GetDisplayMessages(
+                                              ChargeBoxId:                   chargingStation1.ChargeBoxId,
+                                              GetDisplayMessagesRequestId:   1,
+                                              Ids:                           null,
+                                              Priority:                      null,
+                                              State:                         null,
+                                              CustomData:                    null
+                                          );
+
+                Assert.AreEqual(ResultCodes.OK,   getResponse1.Result.ResultCode);
+                Assert.AreEqual(1,                getDisplayMessagesRequests.Count);
+
+
+
+                // Delete message #1
+                var clearDisplayMessageRequests = new List<ClearDisplayMessageRequest>();
+
+                chargingStation1.OnClearDisplayMessageRequest += async (timestamp, sender, clearDisplayMessageRequest) => {
+                    clearDisplayMessageRequests.Add(clearDisplayMessageRequest);
+                };
+
+                var clearResponse  = await testCSMS01.ClearDisplayMessage(
+                                         ChargeBoxId:        chargingStation1.ChargeBoxId,
+                                         DisplayMessageId:   messageId1,
+                                         CustomData:         null
+                                     );
+
+                Assert.AreEqual(ResultCodes.OK,   clearResponse.Result.ResultCode);
+                Assert.AreEqual(1,                clearDisplayMessageRequests.Count);
+
+
+
+                // Get Messages AFTER
+                var getResponse2  = await testCSMS01.GetDisplayMessages(
+                                              ChargeBoxId:                   chargingStation1.ChargeBoxId,
+                                              GetDisplayMessagesRequestId:   2,
+                                              Ids:                           null,
+                                              Priority:                      null,
+                                              State:                         null,
+                                              CustomData:                    null
+                                          );
+
+                Assert.AreEqual(ResultCodes.OK,   getResponse2.Result.ResultCode);
+                Assert.AreEqual(2,                getDisplayMessagesRequests.Count);
+
+
+                await Task.Delay(500);
+
+
+                Assert.AreEqual(2,                notifyDisplayMessagesRequests.ElementAt(0).MessageInfos.Count());
+                Assert.AreEqual(1,                notifyDisplayMessagesRequests.ElementAt(1).MessageInfos.Count());
+
+            }
+
+        }
+
+        #endregion
+
 
     }
 

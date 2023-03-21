@@ -381,45 +381,45 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer         = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                           new JProperty("value",                   Value),
+                                 new JProperty("value",              Value),
 
                            Context.HasValue
-                               ? new JProperty("context",           Context.   Value.AsText())
+                               ? new JProperty("context",            Context.   Value.AsText())
                                : null,
 
                            Measurand.HasValue
-                               ? new JProperty("measurand",         Measurand. Value.AsText())
+                               ? new JProperty("measurand",          Measurand. Value.AsText())
                                : null,
 
                            Phase.HasValue
-                               ? new JProperty("phase",             Phase.     Value.AsText())
+                               ? new JProperty("phase",              Phase.     Value.AsText())
                                : null,
 
                            Location.HasValue
-                               ? new JProperty("location",          Location.  Value.AsText())
+                               ? new JProperty("location",           Location.  Value.AsText())
                                : null,
 
                            SignedMeterValue is not null
-                               ? new JProperty("signedMeterValue",  SignedMeterValue.ToJSON(CustomSignedMeterValueSerializer,
-                                                                                            CustomCustomDataSerializer))
+                               ? new JProperty("signedMeterValue",   SignedMeterValue.ToJSON(CustomSignedMeterValueSerializer,
+                                                                                             CustomCustomDataSerializer))
                                : null,
 
                            UnitOfMeasure is not null
-                               ? new JProperty("unitOfMeasure",     UnitOfMeasure.   ToJSON(CustomUnitsOfMeasureSerializer,
-                                                                                            CustomCustomDataSerializer))
+                               ? new JProperty("unitOfMeasure",      UnitOfMeasure.   ToJSON(CustomUnitsOfMeasureSerializer,
+                                                                                             CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.      ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",         CustomData.      ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomSampledValueSerializer is not null
-                       ? CustomSampledValueSerializer(this, JSON)
-                       : JSON;
+                       ? CustomSampledValueSerializer(this, json)
+                       : json;
 
         }
 

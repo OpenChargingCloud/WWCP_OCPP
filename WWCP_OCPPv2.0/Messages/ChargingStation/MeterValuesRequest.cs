@@ -534,15 +534,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                           new JProperty("evseId",            EVSEId.Value.ToString()),
+                                 new JProperty("evseId",       EVSEId.Value.ToString()),
 
                            MeterValues.SafeAny()
-                               ? new JProperty("meterValue",  new JArray(MeterValues.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
-                                                                                                                            CustomSampledValueSerializer))))
+                               ? new JProperty("meterValue",   new JArray(MeterValues.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
+                                                                                                                             CustomSampledValueSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.  ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.  ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

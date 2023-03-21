@@ -282,15 +282,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 #endregion
 
-                #region Ids                            [mandatory]
+                #region Ids                            [optional]
 
-                if (!JSON.ParseMandatoryHashSet("id",
-                                                "display message identifications",
-                                                DisplayMessage_Id.TryParse,
-                                                out HashSet<DisplayMessage_Id> Ids,
-                                                out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("id",
+                                              "display message identifications",
+                                              DisplayMessage_Id.TryParse,
+                                              out HashSet<DisplayMessage_Id> Ids,
+                                              out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -397,7 +398,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
             var json = JSONObject.Create(
 
                                  new JProperty("requestId",   GetDisplayMessagesRequestId),
-                                 new JProperty("id",          new JArray(Ids.Select(id => id.Value))),
+
+                           Ids.Any()
+                               ? new JProperty("id",          new JArray(Ids.Select(id => id.Value)))
+                               : null,
 
                            Priority.HasValue
                                ? new JProperty("priority",    Priority.Value.AsText())
