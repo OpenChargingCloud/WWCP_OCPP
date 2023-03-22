@@ -1921,9 +1921,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             #region OnStatusNotification
 
             CSMSServer.OnStatusNotification += async (LogTimestamp,
-                                                               Sender,
-                                                               Request,
-                                                               CancellationToken) => {
+                                                      Sender,
+                                                      Request,
+                                                      CancellationToken) => {
 
                 #region Send OnStatusNotificationRequest event
 
@@ -4072,14 +4072,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region Reset                 (ChargeBoxId, ResetType, ...)
+        #region Reset                     (ChargeBoxId, ResetType, ...)
 
         /// <summary>
-        /// Reset the given charge box.
+        /// Reset the given charging station.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ResetType">The type of reset that the charging station should perform.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -4107,7 +4109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ResetType,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4168,17 +4170,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region UpdateFirmware        (ChargeBoxId, FirmwareURL, RetrieveTimestamp, Retries = null, RetryInterval = null, ...)
+        #region UpdateFirmware            (ChargeBoxId, Firmware, UpdateFirmwareRequestId, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
-        /// Initiate a firmware download from the given location at the given charge box.
+        /// Initiate a firmware update of the given charging station.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="FirmwareURL">The URL where to download the firmware.</param>
-        /// <param name="RetrieveTimestamp">The timestamp after which the charging station must retrieve the firmware.</param>
-        /// <param name="Retries">The optional number of retries of a charging station for trying to download the firmware before giving up. If this field is not present, it is left to the charging station to decide how many times it wants to retry.</param>
-        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charging station to decide how long to wait between attempts.</param>
+        /// <param name="Firmware">The firmware image to be installed at the charging station.</param>
+        /// <param name="UpdateFirmwareRequestId">The update firmware request identification.</param>
+        /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
+        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -4187,6 +4191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             UpdateFirmware(ChargeBox_Id        ChargeBoxId,
                            Firmware            Firmware,
+                           Int32               UpdateFirmwareRequestId,
                            Byte?               Retries             = null,
                            TimeSpan?           RetryInterval       = null,
                            CustomData?         CustomData          = null,
@@ -4206,12 +4211,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             var request    = new UpdateFirmwareRequest(
                                  ChargeBoxId,
                                  Firmware,
-                                 0,
+                                 UpdateFirmwareRequestId,
                                  Retries,
                                  RetryInterval,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4272,10 +4277,418 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        // PublishFirmware
-        // UnpublishFirmware
-        // GetBaseReport
-        // GetReport
+        #region PublishFirmware           (ChargeBoxId, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
+
+        /// <summary>
+        /// Publish a firmware onto a local controller.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="PublishFirmwareRequestId">The unique identification of this publish firmware request</param>
+        /// <param name="DownloadLocation">An URL for downloading the firmware.onto the local controller.</param>
+        /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
+        /// <param name="Retries">The optional number of retries of a charging station for trying to download the firmware before giving up. If this field is not present, it is left to the charging station to decide how many times it wants to retry.</param>
+        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charging station to decide how long to wait between attempts.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.PublishFirmwareResponse>
+
+            PublishFirmware(ChargeBox_Id        ChargeBoxId,
+                            Int32               PublishFirmwareRequestId,
+                            URL                 DownloadLocation,
+                            String              MD5Checksum,
+                            Byte?               Retries             = null,
+                            TimeSpan?           RetryInterval       = null,
+                            CustomData?         CustomData          = null,
+
+                            Request_Id?         RequestId           = null,
+                            DateTime?           RequestTimestamp    = null,
+                            TimeSpan?           RequestTimeout      = null,
+                            EventTracking_Id?   EventTrackingId     = null,
+                            CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new PublishFirmwareRequest(
+                                 ChargeBoxId,
+                                 PublishFirmwareRequestId,
+                                 DownloadLocation,
+                                 MD5Checksum,
+                                 Retries,
+                                 RetryInterval,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnPublishFirmwareRequest event
+
+            try
+            {
+
+                OnPublishFirmwareRequest?.Invoke(startTime,
+                                                 this,
+                                                 request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnPublishFirmwareRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.PublishFirmware(request)
+
+                               : new CS.PublishFirmwareResponse(request,
+                                                                Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnPublishFirmwareResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnPublishFirmwareResponse?.Invoke(endTime,
+                                                  this,
+                                                  request,
+                                                  response,
+                                                  endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnPublishFirmwareResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region UnpublishFirmware         (ChargeBoxId, MD5Checksum, ...)
+
+        /// <summary>
+        /// Unpublish a firmware from a local controller.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.UnpublishFirmwareResponse>
+
+            UnpublishFirmware(ChargeBox_Id        ChargeBoxId,
+                              String              MD5Checksum,
+                              CustomData?         CustomData          = null,
+
+                              Request_Id?         RequestId           = null,
+                              DateTime?           RequestTimestamp    = null,
+                              TimeSpan?           RequestTimeout      = null,
+                              EventTracking_Id?   EventTrackingId     = null,
+                              CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new UnpublishFirmwareRequest(
+                                 ChargeBoxId,
+                                 MD5Checksum,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnUnpublishFirmwareRequest event
+
+            try
+            {
+
+                OnUnpublishFirmwareRequest?.Invoke(startTime,
+                                                   this,
+                                                   request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUnpublishFirmwareRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.UnpublishFirmware(request)
+
+                               : new CS.UnpublishFirmwareResponse(request,
+                                                                  Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnUnpublishFirmwareResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUnpublishFirmwareResponse?.Invoke(endTime,
+                                                    this,
+                                                    request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUnpublishFirmwareResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetBaseReport             (ChargeBoxId, GetBaseReportRequestId, ReportBase, ...)
+
+        /// <summary>
+        /// Retrieve the base report from the charging station.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="GetBaseReportRequestId">An unique identification of the get base report request.</param>
+        /// <param name="ReportBase">The requested reporting base.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.GetBaseReportResponse>
+
+            GetBaseReport(ChargeBox_Id        ChargeBoxId,
+                          Int64               GetBaseReportRequestId,
+                          ReportBases         ReportBase,
+                          CustomData?         CustomData          = null,
+
+                          Request_Id?         RequestId           = null,
+                          DateTime?           RequestTimestamp    = null,
+                          TimeSpan?           RequestTimeout      = null,
+                          EventTracking_Id?   EventTrackingId     = null,
+                          CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetBaseReportRequest(
+                                 ChargeBoxId,
+                                 GetBaseReportRequestId,
+                                 ReportBase,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnGetBaseReportRequest event
+
+            try
+            {
+
+                OnGetBaseReportRequest?.Invoke(startTime,
+                                               this,
+                                               request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetBaseReportRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.GetBaseReport(request)
+
+                               : new CS.GetBaseReportResponse(request,
+                                                              Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnGetBaseReportResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetBaseReportResponse?.Invoke(endTime,
+                                                this,
+                                                request,
+                                                response,
+                                                endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetBaseReportResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetReport                 (ChargeBoxId, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
+
+        /// <summary>
+        /// Retrieve reports from the charging station.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="GetReportRequestId">The charge box identification.</param>
+        /// <param name="ComponentCriteria">An optional enumeration of criteria for components for which a report is requested.</param>
+        /// <param name="ComponentVariables">An optional enumeration of components and variables for which a report is requested.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.GetReportResponse>
+
+            GetReport(ChargeBox_Id                    ChargeBoxId,
+                      Int32                           GetReportRequestId,
+                      IEnumerable<ComponentCriteria>  ComponentCriteria,
+                      IEnumerable<ComponentVariable>  ComponentVariables,
+                      CustomData?                     CustomData          = null,
+
+                      Request_Id?                     RequestId           = null,
+                      DateTime?                       RequestTimestamp    = null,
+                      TimeSpan?                       RequestTimeout      = null,
+                      EventTracking_Id?               EventTrackingId     = null,
+                      CancellationToken?              CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetReportRequest(
+                                 ChargeBoxId,
+                                 GetReportRequestId,
+                                 ComponentCriteria,
+                                 ComponentVariables,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnGetReportRequest event
+
+            try
+            {
+
+                OnGetReportRequest?.Invoke(startTime,
+                                           this,
+                                           request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetReportRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.GetReport(request)
+
+                               : new CS.GetReportResponse(request,
+                                                          Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnGetReportResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetReportResponse?.Invoke(endTime,
+                                            this,
+                                            request,
+                                            response,
+                                            endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetReportResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
 
         #region GetLog                    (ChargeBoxId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
 
@@ -4288,7 +4701,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
         /// <param name="Retries">This specifies how many times the Charge Point must try to upload the log before giving up. If this field is not present, it is left to Charge Point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to Charge Point to decide how long to wait between attempts.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -4324,7 +4739,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  RetryInterval,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4385,24 +4800,811 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        // SetVariables
-        // GetVariables
-        // SetMonitoringBase
-        // GetMonitoringReport
-        // SetMonitoringLevel
-        // SetVariableMonitoring
-        // ClearVariableMonitoring
-        // SetNetworkProfile
 
-        #region ChangeAvailability    (ChargeBoxId, ConnectorId, OperationalStatus, ...)
+        #region SetVariables              (ChargeBoxId, VariableData, ...)
+
+        /// <summary>
+        /// Set variable data on a charging station.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="VariableData">An enumeration of variable data to set/change.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.SetVariablesResponse>
+
+            SetVariables(ChargeBox_Id                  ChargeBoxId,
+                         IEnumerable<SetVariableData>  VariableData,
+                         CustomData?                   CustomData          = null,
+
+                         Request_Id?                   RequestId           = null,
+                         DateTime?                     RequestTimestamp    = null,
+                         TimeSpan?                     RequestTimeout      = null,
+                         EventTracking_Id?             EventTrackingId     = null,
+                         CancellationToken?            CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new SetVariablesRequest(
+                                 ChargeBoxId,
+                                 VariableData,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnSetVariablesRequest event
+
+            try
+            {
+
+                OnSetVariablesRequest?.Invoke(startTime,
+                                              this,
+                                              request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetVariablesRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.SetVariables(request)
+
+                               : new CS.SetVariablesResponse(request,
+                                                             Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnSetVariablesResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetVariablesResponse?.Invoke(endTime,
+                                               this,
+                                               request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetVariablesResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetVariables              (ChargeBoxId, VariableData, ...)
+
+        /// <summary>
+        /// Get variable data from a charging station.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="VariableData">An enumeration of requested variable data sets.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.GetVariablesResponse>
+
+            GetVariables(ChargeBox_Id                  ChargeBoxId,
+                         IEnumerable<GetVariableData>  VariableData,
+                         CustomData?                   CustomData          = null,
+
+                         Request_Id?                   RequestId           = null,
+                         DateTime?                     RequestTimestamp    = null,
+                         TimeSpan?                     RequestTimeout      = null,
+                         EventTracking_Id?             EventTrackingId     = null,
+                         CancellationToken?            CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetVariablesRequest(
+                                 ChargeBoxId,
+                                 VariableData,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnGetVariablesRequest event
+
+            try
+            {
+
+                OnGetVariablesRequest?.Invoke(startTime,
+                                              this,
+                                              request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetVariablesRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.GetVariables(request)
+
+                               : new CS.GetVariablesResponse(request,
+                                                             Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnGetVariablesResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetVariablesResponse?.Invoke(endTime,
+                                               this,
+                                               request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetVariablesResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SetMonitoringBase         (ChargeBoxId, MonitoringBase, ...)
+
+        /// <summary>
+        /// Set the monitoring base of a charging station.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="MonitoringBase">The monitoring base to be set.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.SetMonitoringBaseResponse>
+
+            SetMonitoringBase(ChargeBox_Id        ChargeBoxId,
+                              MonitoringBases     MonitoringBase,
+                              CustomData?         CustomData          = null,
+
+                              Request_Id?         RequestId           = null,
+                              DateTime?           RequestTimestamp    = null,
+                              TimeSpan?           RequestTimeout      = null,
+                              EventTracking_Id?   EventTrackingId     = null,
+                              CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new SetMonitoringBaseRequest(
+                                 ChargeBoxId,
+                                 MonitoringBase,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnSetMonitoringBaseRequest event
+
+            try
+            {
+
+                OnSetMonitoringBaseRequest?.Invoke(startTime,
+                                                   this,
+                                                   request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetMonitoringBaseRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.SetMonitoringBase(request)
+
+                               : new CS.SetMonitoringBaseResponse(request,
+                                                                  Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnSetMonitoringBaseResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetMonitoringBaseResponse?.Invoke(endTime,
+                                                    this,
+                                                    request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetMonitoringBaseResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetMonitoringReport       (ChargeBoxId, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
+
+        /// <summary>
+        /// Get monitoring report from a charging station.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="GetMonitoringReportRequestId">The charge box identification.</param>
+        /// <param name="MonitoringCriteria">An optional enumeration of criteria for components for which a monitoring report is requested.</param>
+        /// <param name="ComponentVariables">An optional enumeration of components and variables for which a monitoring report is requested.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.GetMonitoringReportResponse>
+
+            GetMonitoringReport(ChargeBox_Id                     ChargeBoxId,
+                                Int32                            GetMonitoringReportRequestId,
+                                IEnumerable<MonitoringCriteria>  MonitoringCriteria,
+                                IEnumerable<ComponentVariable>   ComponentVariables,
+                                CustomData?                      CustomData          = null,
+
+                                Request_Id?                      RequestId           = null,
+                                DateTime?                        RequestTimestamp    = null,
+                                TimeSpan?                        RequestTimeout      = null,
+                                EventTracking_Id?                EventTrackingId     = null,
+                                CancellationToken?               CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetMonitoringReportRequest(
+                                 ChargeBoxId,
+                                 GetMonitoringReportRequestId,
+                                 MonitoringCriteria,
+                                 ComponentVariables,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnGetMonitoringReportRequest event
+
+            try
+            {
+
+                OnGetMonitoringReportRequest?.Invoke(startTime,
+                                                     this,
+                                                     request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetMonitoringReportRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.GetMonitoringReport(request)
+
+                               : new CS.GetMonitoringReportResponse(request,
+                                                                    Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnGetMonitoringReportResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetMonitoringReportResponse?.Invoke(endTime,
+                                                      this,
+                                                      request,
+                                                      response,
+                                                      endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetMonitoringReportResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SetMonitoringLevel        (ChargeBoxId, Severity, ...)
+
+        /// <summary>
+        /// Set the monitoring level on a charging station.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="Severity">The charging station SHALL only report events with a severity number lower than or equal to this severity.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.SetMonitoringLevelResponse>
+
+            SetMonitoringLevel(ChargeBox_Id        ChargeBoxId,
+                               Severities          Severity,
+                               CustomData?         CustomData          = null,
+
+                               Request_Id?         RequestId           = null,
+                               DateTime?           RequestTimestamp    = null,
+                               TimeSpan?           RequestTimeout      = null,
+                               EventTracking_Id?   EventTrackingId     = null,
+                               CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new SetMonitoringLevelRequest(
+                                 ChargeBoxId,
+                                 Severity,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnSetMonitoringLevelRequest event
+
+            try
+            {
+
+                OnSetMonitoringLevelRequest?.Invoke(startTime,
+                                                    this,
+                                                    request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetMonitoringLevelRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.SetMonitoringLevel(request)
+
+                               : new CS.SetMonitoringLevelResponse(request,
+                                                                   Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnSetMonitoringLevelResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetMonitoringLevelResponse?.Invoke(endTime,
+                                                     this,
+                                                     request,
+                                                     response,
+                                                     endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetMonitoringLevelResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SetVariableMonitoring     (ChargeBoxId, MonitoringData, ...)
+
+        /// <summary>
+        /// Set a variable monitoring on a charging station.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="MonitoringData">An enumeration of monitoring data.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.SetVariableMonitoringResponse>
+
+            SetVariableMonitoring(ChargeBox_Id                    ChargeBoxId,
+                                  IEnumerable<SetMonitoringData>  MonitoringData,
+                                  CustomData?                     CustomData          = null,
+
+                                  Request_Id?                     RequestId           = null,
+                                  DateTime?                       RequestTimestamp    = null,
+                                  TimeSpan?                       RequestTimeout      = null,
+                                  EventTracking_Id?               EventTrackingId     = null,
+                                  CancellationToken?              CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new SetVariableMonitoringRequest(
+                                 ChargeBoxId,
+                                 MonitoringData,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnSetVariableMonitoringRequest event
+
+            try
+            {
+
+                OnSetVariableMonitoringRequest?.Invoke(startTime,
+                                                       this,
+                                                       request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetVariableMonitoringRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.SetVariableMonitoring(request)
+
+                               : new CS.SetVariableMonitoringResponse(request,
+                                                                      Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnSetVariableMonitoringResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetVariableMonitoringResponse?.Invoke(endTime,
+                                                        this,
+                                                        request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetVariableMonitoringResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region ClearVariableMonitoring   (ChargeBoxId, VariableMonitoringIds, ...)
+
+        /// <summary>
+        /// Delete a variable monitoring on a charging station.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="VariableMonitoringIds">An enumeration of variable monitoring identifications to clear.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.ClearVariableMonitoringResponse>
+
+            ClearVariableMonitoring(ChargeBox_Id                        ChargeBoxId,
+                                    IEnumerable<VariableMonitoring_Id>  VariableMonitoringIds,
+                                    CustomData?                         CustomData          = null,
+
+                                    Request_Id?                         RequestId           = null,
+                                    DateTime?                           RequestTimestamp    = null,
+                                    TimeSpan?                           RequestTimeout      = null,
+                                    EventTracking_Id?                   EventTrackingId     = null,
+                                    CancellationToken?                  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new ClearVariableMonitoringRequest(
+                                 ChargeBoxId,
+                                 VariableMonitoringIds,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnClearVariableMonitoringRequest event
+
+            try
+            {
+
+                OnClearVariableMonitoringRequest?.Invoke(startTime,
+                                                         this,
+                                                         request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearVariableMonitoringRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.ClearVariableMonitoring(request)
+
+                               : new CS.ClearVariableMonitoringResponse(request,
+                                                                        Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnClearVariableMonitoringResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearVariableMonitoringResponse?.Invoke(endTime,
+                                                          this,
+                                                          request,
+                                                          response,
+                                                          endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearVariableMonitoringResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SetNetworkProfile         (ChargeBoxId, ConfigurationSlot, NetworkConnectionProfile, ...)
+
+        /// <summary>
+        /// Set the network profile of a charging station.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ConfigurationSlot">The slot in which the configuration should be stored.</param>
+        /// <param name="NetworkConnectionProfile">The network connection configuration.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.SetNetworkProfileResponse>
+
+            SetNetworkProfile(ChargeBox_Id              ChargeBoxId,
+                              Int32                     ConfigurationSlot,
+                              NetworkConnectionProfile  NetworkConnectionProfile,
+                              CustomData?               CustomData          = null,
+
+                              Request_Id?               RequestId           = null,
+                              DateTime?                 RequestTimestamp    = null,
+                              TimeSpan?                 RequestTimeout      = null,
+                              EventTracking_Id?         EventTrackingId     = null,
+                              CancellationToken?        CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new SetNetworkProfileRequest(
+                                 ChargeBoxId,
+                                 ConfigurationSlot,
+                                 NetworkConnectionProfile,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnSetNetworkProfileRequest event
+
+            try
+            {
+
+                OnSetNetworkProfileRequest?.Invoke(startTime,
+                                                   this,
+                                                   request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetNetworkProfileRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.SetNetworkProfile(request)
+
+                               : new CS.SetNetworkProfileResponse(request,
+                                                                  Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnSetNetworkProfileResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetNetworkProfileResponse?.Invoke(endTime,
+                                                    this,
+                                                    request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetNetworkProfileResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region ChangeAvailability        (ChargeBoxId, OperationalStatus, EVSE, ...)
 
         /// <summary>
         /// Change the availability of the given charge box.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ConnectorId">The identification of the connector for which its availability should be changed. Id '0' (zero) is used if the availability of the entire charging station and all its connectors should be changed.</param>
-        /// <param name="OperationalStatus">The new availability of the charging station or charging station connector.</param>
+        /// <param name="OperationalStatus">A new operational status of the charging station or EVSE.</param>
+        /// <param name="EVSE">Optional identification of an EVSE/connector for which the operational status should be changed.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -4432,7 +5634,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  EVSE,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4493,15 +5695,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TriggerMessage        (ChargeBoxId, RequestedMessage, ConnectorId = null,...)
+        #region TriggerMessage            (ChargeBoxId, RequestedMessage, EVSEId = null,...)
 
         /// <summary>
         /// Create a trigger for the given message at the given charge box connector.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
-        /// <param name="ConnectorId">Optional connector identification whenever the message applies to a specific connector.</param>
+        /// <param name="EVSEId">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -4531,7 +5735,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  EVSEId,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4592,7 +5796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TransferData          (ChargeBoxId, VendorId, MessageId = null, Data = null, ...)
+        #region TransferData              (ChargeBoxId, VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Transfer the given data to the given charge box.
@@ -4601,7 +5805,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -4633,7 +5839,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  Data,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4695,14 +5901,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region CertificateSigned         (ChargeBoxId, CertificateChain, ...)
+        #region CertificateSigned         (ChargeBoxId, CertificateChain, CertificateType = null, ...)
 
         /// <summary>
         /// Clear the local white liste cache of the given charge box.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CertificateChain">The signed PEM encoded X.509 certificates. This can also contain the necessary sub CA certificates.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -4732,7 +5940,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  CertificateType,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4801,7 +6009,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CertificateType">The type of the certificate.</param>
         /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -4831,7 +6041,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  Certificate,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4899,7 +6109,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CertificateType">The type of the certificates requested.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -4927,7 +6139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  CertificateType,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -4995,7 +6207,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CertificateHashData">Indicates the certificate which should be deleted.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -5023,7 +6237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  CertificateHashData,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5085,13 +6299,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region GetLocalListVersion   (ChargeBoxId, ...)
+        #region GetLocalListVersion       (ChargeBoxId, ...)
 
         /// <summary>
         /// Return the local white list of the given charge box.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -5117,7 +6333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ChargeBoxId,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5178,7 +6394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region SendLocalList         (ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
+        #region SendLocalList             (ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
 
         /// <summary>
         /// Set the local white liste at the given charge box.
@@ -5187,7 +6403,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
         /// <param name="UpdateType">The type of update (full or differential).</param>
         /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charging station. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -5219,7 +6437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  LocalAuthorizationList,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5280,13 +6498,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ClearCache            (ChargeBoxId, ...)
+        #region ClearCache                (ChargeBoxId, ...)
 
         /// <summary>
         /// Clear the local white liste cache of the given charge box.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -5312,7 +6532,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ChargeBoxId,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5374,7 +6594,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region ReserveNow            (ChargeBoxId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
+        #region ReserveNow                (ChargeBoxId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
 
         /// <summary>
         /// Create a charging reservation of the given charge box connector.
@@ -5385,7 +6605,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
         /// <param name="IdToken">The identifier for which the charging station has to reserve a connector.</param>
         /// <param name="GroupIdToken">An optional ParentIdTag.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -5424,7 +6646,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  GroupIdToken,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5485,14 +6707,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region CancelReservation     (ChargeBoxId, ReservationId, ...)
+        #region CancelReservation         (ChargeBoxId, ReservationId, ...)
 
         /// <summary>
         /// Cancel the given charging reservation at the given charge box.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -5520,7 +6744,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ReservationId,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5581,19 +6805,323 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        // StartCharging
-        // StopCharging
-        // GetTransactionStatus
-
-        #region SetChargingProfile    (ChargeBoxId, ConnectorId, ChargingProfile, ...)
+        #region StartCharging             (ChargeBoxId, RequestStartTransactionRequestId, IdToken, EVSEId, ChargingProfile, GroupIdToken, ...)
 
         /// <summary>
         /// Set the charging profile of the given charge box connector.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ConnectorId">The connector to which the charging profile applies. If connectorId = 0, the message contains an overall limit for the charging station.</param>
-        /// <param name="ChargingProfile">The charging profile to be set.</param>
+        /// <param name="RequestStartTransactionRequestId">Request identification given by the server to this start request. The charging station might return this in the TransactionEventRequest, letting the server know which transaction was started for this request.</param>
+        /// <param name="IdToken">The identification token to start the charging transaction.</param>
+        /// <param name="EVSEId">An optional EVSE identification on which the charging transaction should be started (SHALL be > 0).</param>
+        /// <param name="ChargingProfile">An optional charging profile to be used by the charging station for the requested charging transaction.</param>
+        /// <param name="GroupIdToken">An optional group identifier.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.RequestStartTransactionResponse>
+
+            StartCharging(ChargeBox_Id        ChargeBoxId,
+                          RemoteStart_Id      RequestStartTransactionRequestId,
+                          IdToken             IdToken,
+                          EVSE_Id?            EVSEId              = null,
+                          ChargingProfile?    ChargingProfile     = null,
+                          IdToken?            GroupIdToken        = null,
+                          CustomData?         CustomData          = null,
+
+                          Request_Id?         RequestId           = null,
+                          DateTime?           RequestTimestamp    = null,
+                          TimeSpan?           RequestTimeout      = null,
+                          EventTracking_Id?   EventTrackingId     = null,
+                          CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new RequestStartTransactionRequest(
+                                 ChargeBoxId,
+                                 RequestStartTransactionRequestId,
+                                 IdToken,
+                                 EVSEId,
+                                 ChargingProfile,
+                                 GroupIdToken,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnRequestStartTransactionRequest event
+
+            try
+            {
+
+                OnRequestStartTransactionRequest?.Invoke(startTime,
+                                                         this,
+                                                         request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnRequestStartTransactionRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.StartCharging(request)
+
+                               : new CS.RequestStartTransactionResponse(request,
+                                                                        Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnRequestStartTransactionResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnRequestStartTransactionResponse?.Invoke(endTime,
+                                                          this,
+                                                          request,
+                                                          response,
+                                                          endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnRequestStartTransactionResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region StopCharging              (ChargeBoxId, TransactionId, ...)
+
+        /// <summary>
+        /// Set the charging profile of the given charge box connector.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="TransactionId">An optional transaction identification for which its status is requested.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.RequestStopTransactionResponse>
+
+            StopCharging(ChargeBox_Id        ChargeBoxId,
+                         Transaction_Id      TransactionId,
+                         CustomData?         CustomData          = null,
+
+                         Request_Id?         RequestId           = null,
+                         DateTime?           RequestTimestamp    = null,
+                         TimeSpan?           RequestTimeout      = null,
+                         EventTracking_Id?   EventTrackingId     = null,
+                         CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new RequestStopTransactionRequest(
+                                 ChargeBoxId,
+                                 TransactionId,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnRequestStopTransactionRequest event
+
+            try
+            {
+
+                OnRequestStopTransactionRequest?.Invoke(startTime,
+                                                        this,
+                                                        request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnRequestStopTransactionRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.StopCharging(request)
+
+                               : new CS.RequestStopTransactionResponse(request,
+                                                                       Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnRequestStopTransactionResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnRequestStopTransactionResponse?.Invoke(endTime,
+                                                         this,
+                                                         request,
+                                                         response,
+                                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnRequestStopTransactionResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetTransactionStatus      (ChargeBoxId, ConnectorId, ChargingProfile, ...)
+
+        /// <summary>
+        /// Set the charging profile of the given charge box connector.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="TransactionId">An optional transaction identification for which its status is requested.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.GetTransactionStatusResponse>
+
+            GetTransactionStatus(ChargeBox_Id        ChargeBoxId,
+                                 Transaction_Id?     TransactionId       = null,
+                                 CustomData?         CustomData          = null,
+
+                                 Request_Id?         RequestId           = null,
+                                 DateTime?           RequestTimestamp    = null,
+                                 TimeSpan?           RequestTimeout      = null,
+                                 EventTracking_Id?   EventTrackingId     = null,
+                                 CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetTransactionStatusRequest(
+                                 ChargeBoxId,
+                                 TransactionId,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnGetTransactionStatusRequest event
+
+            try
+            {
+
+                OnGetTransactionStatusRequest?.Invoke(startTime,
+                                                    this,
+                                                    request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetTransactionStatusRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.GetTransactionStatus(request)
+
+                               : new CS.GetTransactionStatusResponse(request,
+                                                                   Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnGetTransactionStatusResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetTransactionStatusResponse?.Invoke(endTime,
+                                                     this,
+                                                     request,
+                                                     response,
+                                                     endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetTransactionStatusResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SetChargingProfile        (ChargeBoxId, EVSEId, ChargingProfile, ...)
+
+        /// <summary>
+        /// Set the charging profile of the given charge box connector.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="EVSEId">The EVSE identification to which the charging profile applies.</param>
+        /// <param name="ChargingProfile">The charging profile to be set.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -5623,7 +7151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ChargingProfile,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5684,17 +7212,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ClearChargingProfile  (ChargeBoxId, ChargingProfileId, ConnectorId, ChargingProfilePurpose, StackLevel, ...)
+        #region ClearChargingProfile      (ChargeBoxId, ChargingProfileId, ChargingProfileCriteria, ...)
 
         /// <summary>
         /// Remove the charging profile at the given charge box connector.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ChargingProfileId">The optional identification of the charging profile to clear.</param>
-        /// <param name="ConnectorId">The optional connector for which to clear the charging profiles. Connector identification 0 specifies the charging profile for the overall charging station. Absence of this parameter means the clearing applies to all charging profiles that match the other criteria in the request.</param>
-        /// <param name="ChargingProfilePurpose">The optional purpose of the charging profiles that will be cleared, if they meet the other criteria in the request.</param>
-        /// <param name="StackLevel">The optional stack level for which charging profiles will be cleared, if they meet the other criteria in the request.</param>
+        /// <param name="ChargingProfileId">An optional identification of the charging profile to clear.</param>
+        /// <param name="ChargingProfileCriteria">An optional specification of the charging profile to clear.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -5724,7 +7252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ChargingProfileCriteria,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5785,16 +7313,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region GetCompositeSchedule  (ChargeBoxId, ConnectorId, Duration, ChargingRateUnit = null, ...)
+        #region GetCompositeSchedule      (ChargeBoxId, Duration, EVSEId, ChargingRateUnit = null, ...)
 
         /// <summary>
         /// Return the charging schedule of the given charge box connector.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ConnectorId">The connector identification for which the schedule is requested. Connector identification 0 will calculate the expected consumption for the grid connection.</param>
         /// <param name="Duration">The length of requested schedule.</param>
+        /// <param name="EVSEId">The EVSE identification for which the schedule is requested. EVSE identification is 0, the charging station will calculate the expected consumption for the grid connection.</param>
         /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -5826,7 +7356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ChargingRateUnit,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5887,14 +7417,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region UnlockConnector       (ChargeBoxId, ConnectorId, ...)
+        #region UnlockConnector           (ChargeBoxId, EVSEId, ConnectorId, ...)
 
         /// <summary>
         /// Unlock the given charge box connector.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -5924,7 +7456,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  ConnectorId,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -5986,7 +7518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region SetDisplayMessage
+        #region SetDisplayMessage         (ChargeBoxId, Message, ...)
 
         /// <summary>
         /// Set a display message.
@@ -5994,6 +7526,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Message">A display message to be shown at the charging station.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -6021,7 +7554,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  Message,
                                  CustomData,
 
-                                 RequestId ?? NextRequestId,
+                                 RequestId        ?? NextRequestId,
                                  RequestTimestamp ?? startTime,
                                  RequestTimeout   ?? DefaultRequestTimeout,
                                  EventTrackingId,
@@ -6081,7 +7614,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region GetDisplayMessages
+        #region GetDisplayMessages        (ChargeBoxId, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null, ...)
 
         /// <summary>
         /// Get all display messages.
@@ -6092,6 +7625,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="State">The optional filter on message states.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -6185,7 +7719,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region ClearDisplayMessage
+        #region ClearDisplayMessage       (ChargeBoxId, DisplayMessageId, ...)
 
         /// <summary>
         /// Remove a display message.
@@ -6193,6 +7727,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="DisplayMessageId">The identification of the display message to be removed.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -6280,15 +7815,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region SendCostUpdated
+        #region SendCostUpdated           (ChargeBoxId, TotalCost, TransactionId, ...)
 
         /// <summary>
-        /// Send updated costs.
+        /// Send updated total costs.
         /// </summary>
         /// <param name="TotalCost">The current total cost, based on the information known by the CSMS, of the transaction including taxes. In the currency configured with the configuration Variable: [Currency]</param>
         /// <param name="TransactionId">The unique transaction identification the costs are asked for.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -6378,7 +7914,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region RequestCustomerInformation
+        #region RequestCustomerInformation(ChargeBoxId, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
 
         /// <summary>
         /// Request customer information.
@@ -6459,7 +7995,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                ? await centralSystem.Item1.RequestCustomerInformation(request)
 
                                : new CS.CustomerInformationResponse(request,
-                                                                  Result.Server("Unknown or unreachable charge box!"));
+                                                                    Result.Server("Unknown or unreachable charge box!"));
 
 
             #region Send OnCustomerInformationResponse event

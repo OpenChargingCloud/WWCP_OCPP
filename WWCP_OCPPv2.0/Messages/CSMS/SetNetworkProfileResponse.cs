@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A set network profile response.
     /// </summary>
     public class SetNetworkProfileResponse : AResponse<CSMS.SetNetworkProfileRequest,
-                                                          SetNetworkProfileResponse>
+                                                       SetNetworkProfileResponse>
     {
 
         #region Properties
@@ -61,9 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public SetNetworkProfileResponse(CSMS.SetNetworkProfileRequest  Request,
-                                         SetNetworkProfileStatus      Status,
-                                         StatusInfo?                  StatusInfo   = null,
-                                         CustomData?                  CustomData   = null)
+                                         SetNetworkProfileStatus        Status,
+                                         StatusInfo?                    StatusInfo   = null,
+                                         CustomData?                    CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The set network profile request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SetNetworkProfileResponse(CSMS.SetNetworkProfileRequest  Request,
-                                         Result                       Result)
+                                         Result                         Result)
 
             : base(Request,
                    Result)
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The set network profile request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomSetNetworkProfileResponseParser">A delegate to parse custom set network profile responses.</param>
-        public static SetNetworkProfileResponse Parse(CSMS.SetNetworkProfileRequest                              Request,
+        public static SetNetworkProfileResponse Parse(CSMS.SetNetworkProfileRequest                            Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<SetNetworkProfileResponse>?  CustomSetNetworkProfileResponseParser   = null)
         {
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="SetNetworkProfileResponse">The parsed set network profile response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetNetworkProfileResponseParser">A delegate to parse custom set network profile responses.</param>
-        public static Boolean TryParse(CSMS.SetNetworkProfileRequest                              Request,
+        public static Boolean TryParse(CSMS.SetNetworkProfileRequest                            Request,
                                        JObject                                                  JSON,
                                        out SetNetworkProfileResponse?                           SetNetworkProfileResponse,
                                        out String?                                              ErrorResponse,
@@ -306,15 +306,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

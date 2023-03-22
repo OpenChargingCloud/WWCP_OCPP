@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A delete certificate response.
     /// </summary>
     public class DeleteCertificateResponse : AResponse<CSMS.DeleteCertificateRequest,
-                                                          DeleteCertificateResponse>
+                                                       DeleteCertificateResponse>
     {
 
         #region Properties
@@ -61,9 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public DeleteCertificateResponse(CSMS.DeleteCertificateRequest  Request,
-                                         DeleteCertificateStatus      Status,
-                                         StatusInfo?                  StatusInfo   = null,
-                                         CustomData?                  CustomData   = null)
+                                         DeleteCertificateStatus        Status,
+                                         StatusInfo?                    StatusInfo   = null,
+                                         CustomData?                    CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The delete certificate request leading to this response.</param>
         /// <param name="Result">A result.</param>
         public DeleteCertificateResponse(CSMS.DeleteCertificateRequest  Request,
-                                         Result                       Result)
+                                         Result                         Result)
 
             : base(Request,
                    Result)
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The delete certificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomDeleteCertificateResponseParser">A delegate to parse custom delete certificate responses.</param>
-        public static DeleteCertificateResponse Parse(CSMS.DeleteCertificateRequest                              Request,
+        public static DeleteCertificateResponse Parse(CSMS.DeleteCertificateRequest                            Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<DeleteCertificateResponse>?  CustomDeleteCertificateResponseParser   = null)
         {
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="DeleteCertificateResponse">The parsed delete certificate response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomDeleteCertificateResponseParser">A delegate to parse custom delete certificate responses.</param>
-        public static Boolean TryParse(CSMS.DeleteCertificateRequest                              Request,
+        public static Boolean TryParse(CSMS.DeleteCertificateRequest                            Request,
                                        JObject                                                  JSON,
                                        out DeleteCertificateResponse?                           DeleteCertificateResponse,
                                        out String?                                              ErrorResponse,
@@ -306,15 +306,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

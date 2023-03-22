@@ -287,11 +287,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
             var json = JSONObject.Create(
 
                            TransactionId.HasValue
-                               ? new JProperty("transactionId",  TransactionId.Value.ToString())
+                               ? new JProperty("transactionId",   TransactionId.Value.ToString())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.         ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

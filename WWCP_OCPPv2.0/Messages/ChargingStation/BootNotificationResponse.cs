@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// A boot notification response.
     /// </summary>
     public class BootNotificationResponse : AResponse<CS.BootNotificationRequest,
-                                                         BootNotificationResponse>
+                                                      BootNotificationResponse>
     {
 
         #region Properties
@@ -378,17 +378,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("status",            Status.           AsText()),
-                           new JProperty("currentTime",       CurrentTime.      ToIso8601()),
-                           new JProperty("interval",          (UInt32) Interval.TotalSeconds),
+                           new JProperty("status",             Status.           AsText()),
+                           new JProperty("currentTime",        CurrentTime.      ToIso8601()),
+                           new JProperty("interval",           (UInt32) Interval.TotalSeconds),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.       ToJSON(CustomStatusInfoSerializer,
-                                                                                       CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.       ToJSON(CustomStatusInfoSerializer,
+                                                                                        CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.       ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.       ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

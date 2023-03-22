@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A get composite schedule response.
     /// </summary>
     public class GetCompositeScheduleResponse : AResponse<CSMS.GetCompositeScheduleRequest,
-                                                             GetCompositeScheduleResponse>
+                                                          GetCompositeScheduleResponse>
     {
 
         #region Properties
@@ -69,10 +69,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetCompositeScheduleResponse(CSMS.GetCompositeScheduleRequest  Request,
-                                            GenericStatus                   Status,
-                                            CompositeSchedule?              Schedule     = null,
-                                            StatusInfo?                     StatusInfo   = null,
-                                            CustomData?                     CustomData   = null)
+                                            GenericStatus                     Status,
+                                            CompositeSchedule?                Schedule     = null,
+                                            StatusInfo?                       StatusInfo   = null,
+                                            CustomData?                       CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The get composite schedule request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetCompositeScheduleResponse(CSMS.GetCompositeScheduleRequest  Request,
-                                            Result                          Result)
+                                            Result                            Result)
 
             : base(Request,
                    Result)
@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The get composite schedule request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomGetCompositeScheduleResponseParser">A delegate to parse custom get composite schedule responses.</param>
-        public static GetCompositeScheduleResponse Parse(CSMS.GetCompositeScheduleRequest                              Request,
+        public static GetCompositeScheduleResponse Parse(CSMS.GetCompositeScheduleRequest                            Request,
                                                          JObject                                                     JSON,
                                                          CustomJObjectParserDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseParser   = null)
         {
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="GetCompositeScheduleResponse">The parsed get composite schedule response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetCompositeScheduleResponseParser">A delegate to parse custom get composite schedule responses.</param>
-        public static Boolean TryParse(CSMS.GetCompositeScheduleRequest                              Request,
+        public static Boolean TryParse(CSMS.GetCompositeScheduleRequest                            Request,
                                        JObject                                                     JSON,
                                        out GetCompositeScheduleResponse?                           GetCompositeScheduleResponse,
                                        out String?                                                 ErrorResponse,
@@ -420,21 +420,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            Schedule is not null
-                               ? new JProperty("schedule",    Schedule.  ToJSON(CustomCompositeScheduleSerializer,
-                                                                                CustomChargingSchedulePeriodSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("schedule",     Schedule.  ToJSON(CustomCompositeScheduleSerializer,
+                                                                                 CustomChargingSchedulePeriodSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

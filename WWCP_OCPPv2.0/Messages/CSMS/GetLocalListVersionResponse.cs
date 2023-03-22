@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A get local list version response.
     /// </summary>
     public class GetLocalListVersionResponse : AResponse<CSMS.GetLocalListVersionRequest,
-                                                            GetLocalListVersionResponse>
+                                                         GetLocalListVersionResponse>
     {
 
         #region Properties
@@ -54,8 +54,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="VersionNumber">The current version number of the local authorization list within the charging station.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetLocalListVersionResponse(CSMS.GetLocalListVersionRequest  Request,
-                                           UInt64                         VersionNumber,
-                                           CustomData?                    CustomData   = null)
+                                           UInt64                           VersionNumber,
+                                           CustomData?                      CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The get local list version request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetLocalListVersionResponse(CSMS.GetLocalListVersionRequest  Request,
-                                           Result                         Result)
+                                           Result                           Result)
 
             : base(Request,
                    Result)
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The get local list version request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomGetLocalListVersionResponseParser">A delegate to parse custom get local list version responses.</param>
-        public static GetLocalListVersionResponse Parse(CSMS.GetLocalListVersionRequest                              Request,
+        public static GetLocalListVersionResponse Parse(CSMS.GetLocalListVersionRequest                            Request,
                                                         JObject                                                    JSON,
                                                         CustomJObjectParserDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseParser   = null)
         {
@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="GetLocalListVersionResponse">The parsed get local list version response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetLocalListVersionResponseParser">A delegate to parse custom get local list version responses.</param>
-        public static Boolean TryParse(CSMS.GetLocalListVersionRequest                              Request,
+        public static Boolean TryParse(CSMS.GetLocalListVersionRequest                            Request,
                                        JObject                                                    JSON,
                                        out GetLocalListVersionResponse?                           GetLocalListVersionResponse,
                                        out String?                                                ErrorResponse,
@@ -242,10 +242,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("versionNumber",  VersionNumber),
+                                 new JProperty("versionNumber",   VersionNumber),
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

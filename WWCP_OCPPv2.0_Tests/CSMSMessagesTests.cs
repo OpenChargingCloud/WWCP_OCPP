@@ -451,6 +451,188 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         #endregion
 
 
+
+
+        #region CSMS_RequestStartStopTransaction_Test()
+
+        /// <summary>
+        /// A test starting and stopping a charging session/transaction.
+        /// </summary>
+        [Test]
+        public async Task CSMS_RequestStartStopTransaction_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var requestStartTransactionRequests  = new List<RequestStartTransactionRequest>();
+                var requestStopTransactionRequests   = new List<RequestStopTransactionRequest>();
+
+                chargingStation1.OnRequestStartTransactionRequest += async (timestamp, sender, requestStartTransactionRequest) => {
+                    requestStartTransactionRequests.Add(requestStartTransactionRequest);
+                };
+
+                chargingStation1.OnRequestStopTransactionRequest  += async (timestamp, sender, requestStopTransactionRequest) => {
+                    requestStopTransactionRequests. Add(requestStopTransactionRequest);
+                };
+
+                var startResponse  = await testCSMS01.StartCharging(
+                                           ChargeBoxId:                        chargingStation1.ChargeBoxId,
+                                           RequestStartTransactionRequestId:   RemoteStart_Id.NewRandom,
+                                           IdToken:                            new IdToken(
+                                                                                   Value:             "aabbccdd",
+                                                                                   Type:              IdTokenTypes.ISO14443,
+                                                                                   AdditionalInfos:   null,
+                                                                                   CustomData:        null
+                                                                               ),
+                                           EVSEId:                             EVSE_Id.Parse(1),
+                                           ChargingProfile:                    null,
+                                           GroupIdToken:                       null,
+                                           CustomData:                         null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 startResponse.Result.ResultCode);
+                Assert.IsTrue  (startResponse.TransactionId.HasValue);
+
+                Assert.AreEqual(1,                              requestStartTransactionRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   requestStartTransactionRequests.First().ChargeBoxId);
+
+
+                if (startResponse.TransactionId.HasValue)
+                {
+
+                    var stopResponse  = await testCSMS01.StopCharging(
+                                                  ChargeBoxId:     chargingStation1.ChargeBoxId,
+                                                  TransactionId:   startResponse.TransactionId.Value,
+                                                  CustomData:      null
+                                              );
+
+
+                    Assert.AreEqual(ResultCodes.OK,                 stopResponse.Result.ResultCode);
+                    //Assert.AreEqual(UnlockStatus.Unlocked,          response1.Status);
+
+                    Assert.AreEqual(1,                              requestStopTransactionRequests.Count);
+                    Assert.AreEqual(chargingStation1.ChargeBoxId,   requestStopTransactionRequests.First().ChargeBoxId);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+
+
+        #region CSMS_GetTransactionStatus_Test()
+
+        /// <summary>
+        /// A test gettig the current status of a charging session/transaction.
+        /// </summary>
+        [Test]
+        public async Task CSMS_GetTransactionStatus_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var unlockConnectorRequests = new List<GetTransactionStatusRequest>();
+
+                chargingStation1.OnGetTransactionStatusRequest += async (timestamp, sender, unlockConnectorRequest) => {
+                    unlockConnectorRequests.Add(unlockConnectorRequest);
+                };
+
+                var response1  = await testCSMS01.GetTransactionStatus(
+                                     ChargeBoxId:     chargingStation1.ChargeBoxId,
+                                     TransactionId:   null,
+                                     CustomData:      null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                //Assert.AreEqual(UnlockStatus.Unlocked,          response1.Status);
+
+                Assert.AreEqual(1,                              unlockConnectorRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   unlockConnectorRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region CSMS_UnlockConnector_Test()
+
+        /// <summary>
+        /// A test unlocking an EVSE/connector at a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_UnlockConnector_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var unlockConnectorRequests = new List<UnlockConnectorRequest>();
+
+                chargingStation1.OnUnlockConnectorRequest += async (timestamp, sender, unlockConnectorRequest) => {
+                    unlockConnectorRequests.Add(unlockConnectorRequest);
+                };
+
+                var response1  = await testCSMS01.UnlockConnector(
+                                     ChargeBoxId:   chargingStation1.ChargeBoxId,
+                                     EVSEId:        chargingStation1.EVSEs.First().Id,
+                                     ConnectorId:   chargingStation1.EVSEs.First().Connectors.First().Id,
+                                     CustomData:    null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(UnlockStatus.Unlocked,          response1.Status);
+
+                Assert.AreEqual(1,                              unlockConnectorRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   unlockConnectorRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+
+
         #region CSMS_SetDisplayMessage_Test()
 
         /// <summary>
@@ -824,6 +1006,60 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
                 Assert.AreEqual(2,                notifyDisplayMessagesRequests.ElementAt(0).MessageInfos.Count());
                 Assert.AreEqual(1,                notifyDisplayMessagesRequests.ElementAt(1).MessageInfos.Count());
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region CSMS_SendCostUpdate_Test()
+
+        /// <summary>
+        /// A test sending updated total costs.
+        /// </summary>
+        [Test]
+        public async Task CSMS_SendCostUpdate_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var costUpdatedRequests = new List<CostUpdatedRequest>();
+
+                chargingStation1.OnCostUpdatedRequest += async (timestamp, sender, costUpdatedRequest) => {
+                    costUpdatedRequests.Add(costUpdatedRequest);
+                };
+
+                var message    = RandomExtensions.RandomString(10);
+
+                var response1  = await testCSMS01.SendCostUpdated(
+                                     ChargeBoxId:     chargingStation1.ChargeBoxId,
+                                     TotalCost:       1.02M,
+                                     TransactionId:   Transaction_Id.Parse(123),
+                                     CustomData:      null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                //Assert.AreEqual(data.Reverse(),                 response1.Data?.ToString());
+
+                Assert.AreEqual(1,                              costUpdatedRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   costUpdatedRequests.First().ChargeBoxId);
+                //Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
+                //Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
+                //Assert.AreEqual(data,                           dataTransferRequests.First().Data?.ToString());
 
             }
 

@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A get charging profiles response.
     /// </summary>
     public class GetChargingProfilesResponse : AResponse<CSMS.GetChargingProfilesRequest,
-                                                            GetChargingProfilesResponse>
+                                                         GetChargingProfilesResponse>
     {
 
         #region Properties
@@ -61,9 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public GetChargingProfilesResponse(CSMS.GetChargingProfilesRequest   Request,
-                                           GetChargingProfileStatus        Status,
-                                           StatusInfo?                     StatusInfo   = null,
-                                           CustomData?                     CustomData   = null)
+                                           GetChargingProfileStatus          Status,
+                                           StatusInfo?                       StatusInfo   = null,
+                                           CustomData?                       CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The get charging profiles request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetChargingProfilesResponse(CSMS.GetChargingProfilesRequest  Request,
-                                           Result                         Result)
+                                           Result                           Result)
 
             : base(Request,
                    Result)
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The get charging profiles request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static GetChargingProfilesResponse Parse(CSMS.GetChargingProfilesRequest                              Request,
+        public static GetChargingProfilesResponse Parse(CSMS.GetChargingProfilesRequest                            Request,
                                                         JObject                                                    JSON,
                                                         CustomJObjectParserDelegate<GetChargingProfilesResponse>?  CustomGetChargingProfilesResponseParser   = null)
         {
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="GetChargingProfilesResponse">The parsed get charging profiles response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetChargingProfilesResponseParser">A delegate to parse custom get charging profiles responses.</param>
-        public static Boolean TryParse(CSMS.GetChargingProfilesRequest                              Request,
+        public static Boolean TryParse(CSMS.GetChargingProfilesRequest                            Request,
                                        JObject                                                    JSON,
                                        out GetChargingProfilesResponse?                           GetChargingProfilesResponse,
                                        out String?                                                ErrorResponse,
@@ -305,15 +305,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

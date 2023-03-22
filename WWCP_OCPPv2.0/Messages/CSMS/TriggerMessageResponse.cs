@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A trigger message response.
     /// </summary>
     public class TriggerMessageResponse : AResponse<CSMS.TriggerMessageRequest,
-                                                       TriggerMessageResponse>
+                                                    TriggerMessageResponse>
     {
 
         #region Properties
@@ -59,9 +59,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The trigger message request leading to this response.</param>
         /// <param name="Status">The success or failure of the trigger message command.</param>
         public TriggerMessageResponse(CSMS.TriggerMessageRequest  Request,
-                                      TriggerMessageStatus      Status,
-                                      StatusInfo?               StatusInfo   = null,
-                                      CustomData?               CustomData   = null)
+                                      TriggerMessageStatus        Status,
+                                      StatusInfo?                 StatusInfo   = null,
+                                      CustomData?                 CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The trigger message request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public TriggerMessageResponse(CSMS.TriggerMessageRequest  Request,
-                                      Result                    Result)
+                                      Result                      Result)
 
             : base(Request,
                    Result)
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The trigger message request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomTriggerMessageResponseParser">A delegate to parse custom trigger message responses.</param>
-        public static TriggerMessageResponse Parse(CSMS.TriggerMessageRequest                              Request,
+        public static TriggerMessageResponse Parse(CSMS.TriggerMessageRequest                            Request,
                                                    JObject                                               JSON,
                                                    CustomJObjectParserDelegate<TriggerMessageResponse>?  CustomTriggerMessageResponseParser   = null)
         {
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="TriggerMessageResponse">The parsed trigger message response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomTriggerMessageResponseParser">A delegate to parse custom trigger message responses.</param>
-        public static Boolean TryParse(CSMS.TriggerMessageRequest                              Request,
+        public static Boolean TryParse(CSMS.TriggerMessageRequest                            Request,
                                        JObject                                               JSON,
                                        out TriggerMessageResponse?                           TriggerMessageResponse,
                                        out String?                                           ErrorResponse,
@@ -304,15 +304,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

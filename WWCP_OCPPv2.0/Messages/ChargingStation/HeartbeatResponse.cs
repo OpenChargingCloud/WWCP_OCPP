@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// A heartbeat response.
     /// </summary>
     public class HeartbeatResponse : AResponse<CS.HeartbeatRequest,
-                                                  HeartbeatResponse>
+                                               HeartbeatResponse>
     {
 
         #region Properties
@@ -246,11 +246,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var JSON = JSONObject.Create(
 
-                           CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
-                               : null,
+                                 new JProperty("currentTime",   CurrentTime.ToIso8601()),
 
-                           new JProperty("currentTime",       CurrentTime.ToIso8601())
+                           CustomData is not null
+                               ? new JProperty("customData",    CustomData.ToJSON(CustomCustomDataSerializer))
+                               : null
 
                        );
 

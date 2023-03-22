@@ -335,18 +335,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("vendorId",    VendorId),
+                                 new JProperty("vendorId",     VendorId),
 
                            MessageId.IsNotNullOrEmpty()
-                               ? new JProperty("messageId",   MessageId)
+                               ? new JProperty("messageId",    MessageId)
                                : null,
 
                            Data is not null
-                               ? new JProperty("data",        Data)
+                               ? new JProperty("data",         Data)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

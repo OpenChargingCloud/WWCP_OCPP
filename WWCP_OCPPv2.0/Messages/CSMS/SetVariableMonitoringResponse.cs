@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A set variable monitoring response.
     /// </summary>
     public class SetVariableMonitoringResponse : AResponse<CSMS.SetVariableMonitoringRequest,
-                                                              SetVariableMonitoringResponse>
+                                                           SetVariableMonitoringResponse>
     {
 
         #region Properties
@@ -54,8 +54,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="SetMonitoringResults">An enumeration of set variable monitoring result status per monitor.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public SetVariableMonitoringResponse(CSMS.SetVariableMonitoringRequest   Request,
-                                             IEnumerable<SetMonitoringResult>  SetMonitoringResults,
-                                             CustomData?                       CustomData   = null)
+                                             IEnumerable<SetMonitoringResult>    SetMonitoringResults,
+                                             CustomData?                         CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The set variable monitoring request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SetVariableMonitoringResponse(CSMS.SetVariableMonitoringRequest  Request,
-                                             Result                           Result)
+                                             Result                             Result)
 
             : base(Request,
                    Result)
@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The set variable monitoring request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomSetVariableMonitoringResponseParser">A delegate to parse custom set variable monitoring responses.</param>
-        public static SetVariableMonitoringResponse Parse(CSMS.SetVariableMonitoringRequest                              Request,
+        public static SetVariableMonitoringResponse Parse(CSMS.SetVariableMonitoringRequest                            Request,
                                                           JObject                                                      JSON,
                                                           CustomJObjectParserDelegate<SetVariableMonitoringResponse>?  CustomSetVariableMonitoringResponseParser   = null)
         {
@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="SetVariableMonitoringResponse">The parsed set variable monitoring response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetVariableMonitoringResponseParser">A delegate to parse custom set variable monitoring responses.</param>
-        public static Boolean TryParse(CSMS.SetVariableMonitoringRequest                              Request,
+        public static Boolean TryParse(CSMS.SetVariableMonitoringRequest                            Request,
                                        JObject                                                      JSON,
                                        out SetVariableMonitoringResponse?                           SetVariableMonitoringResponse,
                                        out String?                                                  ErrorResponse,
@@ -426,15 +426,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("setVariableResult",  new JArray(SetMonitoringResults.Select(setMonitoringResult => setMonitoringResult.ToJSON(CustomSetMonitoringResultSerializer,
-                                                                                                                                                              CustomComponentSerializer,
-                                                                                                                                                              CustomEVSESerializer,
-                                                                                                                                                              CustomVariableSerializer,
-                                                                                                                                                              CustomStatusInfoSerializer,
-                                                                                                                                                              CustomCustomDataSerializer)))),
+                                 new JProperty("setVariableResult",   new JArray(SetMonitoringResults.Select(setMonitoringResult => setMonitoringResult.ToJSON(CustomSetMonitoringResultSerializer,
+                                                                                                                                                               CustomComponentSerializer,
+                                                                                                                                                               CustomEVSESerializer,
+                                                                                                                                                               CustomVariableSerializer,
+                                                                                                                                                               CustomStatusInfoSerializer,
+                                                                                                                                                               CustomCustomDataSerializer)))),
 
                            CustomData is not null
-                               ? new JProperty("customData",         CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",          CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

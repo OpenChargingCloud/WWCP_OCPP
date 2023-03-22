@@ -27,7 +27,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 {
 
     /// <summary>
-    /// The customer information request.
+    /// The customer information request to retrieve raw customer information from a
+    /// charging station to be compliant e.g. with local privacy laws.
     /// </summary>
     public class CustomerInformationRequest : ARequest<CustomerInformationRequest>
     {
@@ -87,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a customer information request.
+        /// Create a new customer information request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CustomerInformationRequestId">An unique identification of the customer information request.</param>

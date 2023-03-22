@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// The unique identification of the notify customer information request.
         /// </summary>
         [Mandatory]
-        public Int32     NotifyCustomerInformationRequestId    { get; }
+        public Int64     NotifyCustomerInformationRequestId    { get; }
 
         /// <summary>
         /// The requested data or a part of the requested data.
@@ -76,28 +76,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a notify customer information request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="NotifyCustomerInformationRequestId">The unique identification of the notify customer information request.</param>
         /// <param name="Data">The requested data or a part of the requested data. No format specified in which the data is returned.</param>
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
         /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
         /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public NotifyCustomerInformationRequest(ChargeBox_Id        ChargeBoxId,
-
-                                                Int32               NotifyCustomerInformationRequestId,
+                                                Int64               NotifyCustomerInformationRequestId,
                                                 String              Data,
                                                 UInt32              SequenceNumber,
                                                 DateTime            GeneratedAt,
                                                 Boolean?            ToBeContinued       = null,
-
                                                 CustomData?         CustomData          = null,
+
                                                 Request_Id?         RequestId           = null,
                                                 DateTime?           RequestTimestamp    = null,
                                                 TimeSpan?           RequestTimeout      = null,
@@ -377,24 +375,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                               CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                         = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("requestId",    NotifyCustomerInformationRequestId),
-                                 new JProperty("data",         Data),
-                                 new JProperty("seqNo",        SequenceNumber),
-                                 new JProperty("generatedAt",  GeneratedAt.ToIso8601()),
+                                 new JProperty("requestId",     NotifyCustomerInformationRequestId),
+                                 new JProperty("data",          Data),
+                                 new JProperty("seqNo",         SequenceNumber),
+                                 new JProperty("generatedAt",   GeneratedAt.ToIso8601()),
 
                            ToBeContinued.HasValue
-                               ? new JProperty("tbc",          ToBeContinued)
+                               ? new JProperty("tbc",           ToBeContinued)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData. ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",    CustomData. ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyCustomerInformationRequestSerializer is not null
-                       ? CustomNotifyCustomerInformationRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomNotifyCustomerInformationRequestSerializer(this, json)
+                       : json;
 
         }
 

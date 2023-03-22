@@ -38,65 +38,112 @@ using System.Linq;
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
+
+    public class ChargingStationConnector
+    {
+
+        public Connector_Id       Id              { get; }
+
+
+        public ChargingStationConnector(Connector_Id Id)
+        {
+            this.Id = Id;
+        }
+
+    }
+
+
+    /// <summary>
+    /// A charging station connector.
+    /// </summary>
+    public class ChargingStationEVSE
+    {
+
+        public EVSE_Id            Id                       { get; }
+
+        public Reservation_Id?    ReservationId            { get; set; }
+
+        public OperationalStatus  Status                   { get; set; }
+
+
+        public String?            MeterType                { get; set; }
+        public String?            MeterSerialNumber        { get; set; }
+        public String?            MeterPublicKey           { get; set; }
+
+
+        public Boolean            IsReserved               { get; set; }
+
+        public Boolean            IsCharging               { get; set; }
+
+        public IdToken?           IdToken                  { get; set; }
+
+        public IdToken?           GroupIdToken             { get; set; }
+
+        public Transaction_Id?    TransactionId            { get; set; }
+
+        public RemoteStart_Id?    RemoteStartId            { get; set; }
+
+        public ChargingProfile?   ChargingProfile          { get; set; }
+
+
+        public DateTime?          StartTimestamp           { get; set; }
+
+        public Decimal?           MeterStartValue          { get; set; }
+
+        public String?            SignedStartMeterValue    { get; set; }
+
+        public DateTime?          StopTimestamp            { get; set; }
+
+        public Decimal?           MeterStopValue           { get; set; }
+
+        public String?            SignedStopMeterValue     { get; set; }
+
+
+        public ChargingStationEVSE(EVSE_Id                                 Id,
+                                   OperationalStatus                       Status,
+                                   String?                                 MeterType           = null,
+                                   String?                                 MeterSerialNumber   = null,
+                                   String?                                 MeterPublicKey      = null,
+                                   IEnumerable<ChargingStationConnector>?  Connectors          = null)
+        {
+
+            this.Id                 = Id;
+            this.Status             = Status;
+            this.MeterType          = MeterType;
+            this.MeterSerialNumber  = MeterSerialNumber;
+            this.MeterPublicKey     = MeterPublicKey;
+            this.connectors         = Connectors is not null && Connectors.Any()
+                                          ? new HashSet<ChargingStationConnector>(Connectors)
+                                          : new HashSet<ChargingStationConnector>();
+
+        }
+
+
+        private HashSet<ChargingStationConnector>  connectors;
+
+        public IEnumerable<ChargingStationConnector> Connectors
+            => connectors;
+
+        public Boolean TryGetConnector(Connector_Id ConnectorId, out ChargingStationConnector? Connector)
+        {
+
+            Connector = connectors.FirstOrDefault(connector => connector.Id == ConnectorId);
+
+            return Connector is not null;
+
+        }
+
+
+    }
+
+
+
     /// <summary>
     /// A charging station for testing.
     /// </summary>
     public class TestChargingStation : IChargingStationClientEvents,
                                        IEventSender
     {
-
-        /// <summary>
-        /// A charging station connector.
-        /// </summary>
-        public class ChargingStationConnector
-        {
-
-            public Connector_Id       Id                       { get; }
-
-            public OperationalStatus  OperationalStatus        { get; set; }
-
-
-            public Boolean            IsReserved               { get; set; }
-
-            public Boolean            IsCharging               { get; set; }
-
-            public IdToken            IdToken                  { get; set; }
-
-            //public IdTagInfo          IdTagInfo                { get; set; }
-
-            public Transaction_Id     TransactionId            { get; set; }
-
-            public ChargingProfile    ChargingProfile          { get; set; }
-
-
-            public DateTime           StartTimestamp           { get; set; }
-
-            public UInt64             MeterStartValue          { get; set; }
-
-            public String             SignedStartMeterValue    { get; set; }
-
-
-            public DateTime           StopTimestamp            { get; set; }
-
-            public UInt64             MeterStopValue           { get; set; }
-
-            public String             SignedStopMeterValue     { get; set; }
-
-
-            public ChargingStationConnector(Connector_Id       Id,
-                                            OperationalStatus  OperationalStatus)
-            {
-
-                this.Id                 = Id;
-                this.OperationalStatus  = OperationalStatus;
-
-            }
-
-
-        }
-
-
-
 
         public class EnquedRequest
         {
@@ -194,13 +241,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// The charging station vendor identification.
         /// </summary>
         [Mandatory]
-        public String                   VendorName           { get; }
+        public String                   VendorName                  { get; }
 
         /// <summary>
         ///  The charging station model identification.
         /// </summary>
         [Mandatory]
-        public String                   Model            { get; }
+        public String                   Model                       { get; }
 
 
         /// <summary>
@@ -213,13 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// The optional serial number of the charging station.
         /// </summary>
         [Optional]
-        public String?                  SerialNumber     { get; }
-
-        ///// <summary>
-        ///// The optional serial number of the charging station.
-        ///// </summary>
-        //[Optional]
-        //public String?                  ChargeBoxSerialNumber       { get; }
+        public String?                  SerialNumber                { get; }
 
         /// <summary>
         /// The optional firmware version of the charging station.
@@ -292,10 +333,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         // Controlled by the CSMS!
 
-        private readonly Dictionary<Connector_Id, ChargingStationConnector> connectors;
+        private readonly Dictionary<EVSE_Id, ChargingStationEVSE> evses;
 
-        public IEnumerable<ChargingStationConnector> Connectors
-            => connectors.Values;
+        public IEnumerable<ChargingStationEVSE> EVSEs
+            => evses.Values;
 
         #endregion
 
@@ -1220,7 +1261,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Create a new charging station for testing.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="NumberOfConnectors">Number of available connectors.</param>
         /// <param name="VendorName">The charging station vendor identification.</param>
         /// <param name="Model">The charging station model identification.</param>
         /// 
@@ -1234,28 +1274,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="SendHeartbeatEvery">The time span between heartbeat requests.</param>
         /// 
         /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
-        public TestChargingStation(ChargeBox_Id            ChargeBoxId,
-                                   Byte                    NumberOfConnectors,
-                                   String                  VendorName,
-                                   String                  Model,
+        public TestChargingStation(ChargeBox_Id                       ChargeBoxId,
+                                   String                             VendorName,
+                                   String                             Model,
 
-                                   I18NString?             Description               = null,
-                                   String?                 SerialNumber              = null,
-                                   String?                 FirmwareVersion           = null,
-                                   Modem?                  Modem                     = null,
-                                   String?                 MeterType                 = null,
-                                   String?                 MeterSerialNumber         = null,
-                                   String?                 MeterPublicKey            = null,
+                                   I18NString?                        Description               = null,
+                                   String?                            SerialNumber              = null,
+                                   String?                            FirmwareVersion           = null,
+                                   Modem?                             Modem                     = null,
 
-                                   Boolean                 DisableSendHeartbeats     = false,
-                                   TimeSpan?               SendHeartbeatEvery        = null,
+                                   IEnumerable<ChargingStationEVSE>?  EVSEs                     = null,
 
-                                   Boolean                 DisableMaintenanceTasks   = false,
-                                   TimeSpan?               MaintenanceEvery          = null,
+                                   String?                            MeterType                 = null,
+                                   String?                            MeterSerialNumber         = null,
+                                   String?                            MeterPublicKey            = null,
 
-                                   TimeSpan?               DefaultRequestTimeout     = null,
-                                   Tuple<String, String>?  HTTPBasicAuth             = null,
-                                   DNSClient?              DNSClient                 = null)
+                                   Boolean                            DisableSendHeartbeats     = false,
+                                   TimeSpan?                          SendHeartbeatEvery        = null,
+
+                                   Boolean                            DisableMaintenanceTasks   = false,
+                                   TimeSpan?                          MaintenanceEvery          = null,
+
+                                   TimeSpan?                          DefaultRequestTimeout     = null,
+                                   Tuple<String, String>?             HTTPBasicAuth             = null,
+                                   DNSClient?                         DNSClient                 = null)
 
         {
 
@@ -1271,13 +1313,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             this.ChargeBoxId              = ChargeBoxId;
 
-            this.connectors               = new Dictionary<Connector_Id, ChargingStationConnector>();
-            //for (var i = 1; i <= NumberOfConnectors; i++)
-            //{
-            //    this.connectors.Add(Connector_Id.Parse(i.ToString()),
-            //                        new ChargePointConnector(Connector_Id.Parse(i.ToString()),
-            //                                                 Availabilities.Inoperative));
-            //}
+            this.evses                    = EVSEs is not null && EVSEs.Any()
+                                                ? EVSEs.ToDictionary(evse => evse.Id, evse => evse)
+                                                : new Dictionary<EVSE_Id, ChargingStationEVSE>();
 
             //this.Configuration = new Dictionary<String, ConfigurationData> {
             //    { "hello",          new ConfigurationData("world",    AccessRights.ReadOnly,  false) },
@@ -1319,6 +1357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         }
 
         #endregion
+
 
 
         #region ConnectWebSocket(...)
@@ -1405,7 +1444,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region WireEvents(CPServer)
 
 
-        private ConcurrentDictionary<DisplayMessage_Id, MessageInfo> displayMessages = new ();
+        private ConcurrentDictionary<DisplayMessage_Id, MessageInfo> displayMessages  = new ();
+        private ConcurrentDictionary<Transaction_Id,    Transaction> transactions     = new ();
+        private ConcurrentDictionary<Transaction_Id,    Decimal>     totalCosts       = new ();
 
         public void WireEvents(IChargingStationServer CPServer)
         {
@@ -2373,9 +2414,419 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
-            // OnRequestStartTransaction
-            // OnRequestStopTransaction
-            // OnGetTransactionStatus
+            #region OnRequestStartTransaction
+
+            CPServer.OnRequestStartTransaction += async (LogTimestamp,
+                                                         Sender,
+                                                         Request,
+                                                         CancellationToken) => {
+
+                #region Send OnRequestStartTransactionRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnRequestStartTransactionRequest?.Invoke(startTime,
+                                                             this,
+                                                             Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnRequestStartTransactionRequest));
+                }
+
+                #endregion
+
+
+                RequestStartTransactionResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid RequestStartTransaction request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new RequestStartTransactionResponse(Request,
+                                                                   RequestStartStopStatus.Rejected);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming RequestStartTransaction for '" + (Request.EVSEId?.ToString() ?? "-") + "'.");
+
+                    // ToDo: lock(evses)
+
+                    if (Request.EVSEId.HasValue &&
+                        evses.TryGetValue(Request.EVSEId.Value, out var evse) &&
+                        !evse.IsCharging)
+                    {
+
+                        evse.IsCharging              = true;
+                        evse.TransactionId           = Transaction_Id.NewRandom;
+                        evse.RemoteStartId           = Request.RequestStartTransactionRequestId;
+
+                        evse.StartTimestamp          = Timestamp.Now;
+                        evse.MeterStartValue         = 0;
+                        evse.SignedStartMeterValue   = "0";
+
+                        evse.StopTimestamp           = null;
+                        evse.MeterStopValue          = null;
+                        evse.SignedStopMeterValue    = null;
+
+                        evse.IdToken                 = Request.IdToken;
+                        evse.GroupIdToken            = Request.GroupIdToken;
+                        evse.ChargingProfile         = Request.ChargingProfile;
+
+                        _ = Task.Run(async () => {
+
+                            await SendTransactionEvent(
+
+                                      EventType:            TransactionEvents.Started,
+                                      Timestamp:            evse.StartTimestamp.Value,
+                                      TriggerReason:        TriggerReasons.RemoteStart,
+                                      SequenceNumber:       1,
+                                      TransactionInfo:      new Transaction(
+                                                                TransactionId:       evse.TransactionId.Value,
+                                                                ChargingState:       ChargingStates.Charging,
+                                                                TimeSpentCharging:   TimeSpan.Zero,
+                                                                StoppedReason:       null,
+                                                                RemoteStartId:       Request.RequestStartTransactionRequestId,
+                                                                CustomData:          null
+                                                            ),
+
+                                      Offline:              false,
+                                      NumberOfPhasesUsed:   3,
+                                      CableMaxCurrent:      32,
+                                      ReservationId:        evse.ReservationId,
+                                      IdToken:              evse.IdToken,
+                                      EVSE:                 new EVSE(
+                                                                Id:            evse.Id,
+                                                                ConnectorId:   evse.Connectors.First().Id,
+                                                                CustomData:    null
+                                                            ),
+                                      MeterValues:          new MeterValue[] {
+                                                                new MeterValue(
+                                                                    Timestamp:       evse.StartTimestamp.Value,
+                                                                    SampledValues:   new SampledValue[] {
+                                                                                         new SampledValue(
+                                                                                             Value:              evse.MeterStartValue.Value,
+                                                                                             Context:            ReadingContexts.TransactionBegin,
+                                                                                             Measurand:          Measurands.Current_Export,
+                                                                                             Phase:              null,
+                                                                                             Location:           MeasurementLocations.Outlet,
+                                                                                             SignedMeterValue:   new SignedMeterValue(
+                                                                                                                     SignedMeterData:   evse.SignedStartMeterValue,
+                                                                                                                     SigningMethod:     "secp256r1",
+                                                                                                                     EncodingMethod:    "base64",
+                                                                                                                     PublicKey:         "04cafebabe",
+                                                                                                                     CustomData:        null
+                                                                                                                 ),
+                                                                                             UnitOfMeasure:      null,
+                                                                                             CustomData:         null
+                                                                                         )
+                                                                                     }
+                                                                )
+                                                            },
+                                      CustomData:           null
+
+                                  );
+
+                        },
+                        CancellationToken.None);
+
+                        response = new RequestStartTransactionResponse(Request,
+                                                                       RequestStartStopStatus.Accepted);
+
+                    }
+                    else
+                        response = new RequestStartTransactionResponse(Request,
+                                                                       RequestStartStopStatus.Rejected);
+
+                }
+
+
+                #region Send OnRequestStartTransactionResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnRequestStartTransactionResponse?.Invoke(responseTimestamp,
+                                                              this,
+                                                              Request,
+                                                              response,
+                                                              responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnRequestStartTransactionResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnRequestStopTransaction
+
+            CPServer.OnRequestStopTransaction += async (LogTimestamp,
+                                                        Sender,
+                                                        Request,
+                                                        CancellationToken) => {
+
+                #region Send OnRequestStopTransactionRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnRequestStopTransactionRequest?.Invoke(startTime,
+                                                            this,
+                                                            Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnRequestStopTransactionRequest));
+                }
+
+                #endregion
+
+
+                RequestStopTransactionResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid RequestStopTransaction request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new RequestStopTransactionResponse(Request,
+                                                                   RequestStartStopStatus.Rejected);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming RequestStopTransaction for '" + Request.TransactionId + "'.");
+
+                    // ToDo: lock(evses)
+                    var evse = evses.Values.FirstOrDefault(evse => Request.TransactionId == evse.TransactionId);
+
+                    if (evse is not null)
+                    {
+
+                        evse.IsCharging              = false;
+
+                        evse.StopTimestamp           = Timestamp.Now;
+                        evse.MeterStopValue          = 123;
+                        evse.SignedStopMeterValue    = "123";
+
+                        _ = Task.Run(async () => {
+
+                            await SendTransactionEvent(
+
+                                      EventType:            TransactionEvents.Ended,
+                                      Timestamp:            evse.StopTimestamp.Value,
+                                      TriggerReason:        TriggerReasons.RemoteStop,
+                                      SequenceNumber:       2,
+                                      TransactionInfo:      new Transaction(
+                                                                TransactionId:       evse.TransactionId!.Value,
+                                                                ChargingState:       ChargingStates.Idle,
+                                                                TimeSpentCharging:   evse.StopTimestamp - evse.StartTimestamp,
+                                                                StoppedReason:       Reasons.Remote,
+                                                                RemoteStartId:       evse.RemoteStartId,
+                                                                CustomData:          null
+                                                            ),
+
+                                      Offline:              false,
+                                      NumberOfPhasesUsed:   3,
+                                      CableMaxCurrent:      32,
+                                      ReservationId:        evse.ReservationId,
+                                      IdToken:              evse.IdToken,
+                                      EVSE:                 new EVSE(
+                                                                Id:            evse.Id,
+                                                                ConnectorId:   evse.Connectors.First().Id,
+                                                                CustomData:    null
+                                                            ),
+                                      MeterValues:          new MeterValue[] {
+                                                                new MeterValue(
+                                                                    Timestamp:       evse.StopTimestamp.Value,
+                                                                    SampledValues:   new SampledValue[] {
+                                                                                         new SampledValue(
+                                                                                             Value:              evse.MeterStopValue.Value,
+                                                                                             Context:            ReadingContexts.TransactionEnd,
+                                                                                             Measurand:          Measurands.Current_Export,
+                                                                                             Phase:              null,
+                                                                                             Location:           MeasurementLocations.Outlet,
+                                                                                             SignedMeterValue:   new SignedMeterValue(
+                                                                                                                     SignedMeterData:   evse.SignedStopMeterValue,
+                                                                                                                     SigningMethod:     "secp256r1",
+                                                                                                                     EncodingMethod:    "base64",
+                                                                                                                     PublicKey:         "04cafebabe",
+                                                                                                                     CustomData:        null
+                                                                                                                 ),
+                                                                                             UnitOfMeasure:      null,
+                                                                                             CustomData:         null
+                                                                                         )
+                                                                                     }
+                                                                )
+                                                            },
+                                      CustomData:           null
+
+                                  );
+
+                        },
+                        CancellationToken.None);
+
+                        response = new RequestStopTransactionResponse(Request,
+                                                                      RequestStartStopStatus.Accepted);
+
+                    }
+                    else
+                        response = new RequestStopTransactionResponse(Request,
+                                                                      RequestStartStopStatus.Rejected);
+
+                }
+
+
+                #region Send OnRequestStopTransactionResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnRequestStopTransactionResponse?.Invoke(responseTimestamp,
+                                                             this,
+                                                             Request,
+                                                             response,
+                                                             responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnRequestStopTransactionResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetTransactionStatus
+
+            CPServer.OnGetTransactionStatus += async (LogTimestamp,
+                                                      Sender,
+                                                      Request,
+                                                      CancellationToken) => {
+
+                #region Send OnGetTransactionStatusRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetTransactionStatusRequest?.Invoke(startTime,
+                                                          this,
+                                                          Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetTransactionStatusRequest));
+                }
+
+                                                          #endregion
+
+
+                GetTransactionStatusResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid GetTransactionStatus request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new GetTransactionStatusResponse(Request,
+                                                                MessagesInQueue:    false,
+                                                                OngoingIndicator:   true);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming GetTransactionStatus for '" + Request.TransactionId + "'.");
+
+                    if (Request.TransactionId.HasValue)
+                    {
+
+                        var foundEVSE =  evses.Values.FirstOrDefault(evse => Request.TransactionId == evse.TransactionId);
+
+                        if (foundEVSE is not null)
+                        {
+
+                            response = new GetTransactionStatusResponse(Request,
+                                                                        MessagesInQueue:    false,
+                                                                        OngoingIndicator:   true);
+
+                        }
+                        else
+                        {
+
+                            response = new GetTransactionStatusResponse(Request,
+                                                                        MessagesInQueue:    false,
+                                                                        OngoingIndicator:   true);
+
+                        }
+
+                    }
+                    else
+                    {
+
+                        response = new GetTransactionStatusResponse(Request,
+                                                                    MessagesInQueue:    false,
+                                                                    OngoingIndicator:   true);
+
+                    }
+
+                }
+
+
+                #region Send OnGetTransactionStatusResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnGetTransactionStatusResponse?.Invoke(responseTimestamp,
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetTransactionStatusResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
             #region OnSetChargingProfile
 
@@ -2403,9 +2854,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 #endregion
 
 
-                await Task.Delay(10);
-
-
                 SetChargingProfileResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
@@ -2431,28 +2879,33 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                     // ToDo: lock(connectors)
 
-                    if (Request.EVSEId.ToString() == "0")
+                    if (Request.EVSEId.Value == 0)
                     {
-                        foreach (var conn in connectors.Values)
+
+                        foreach (var evse in evses.Values)
                         {
 
                             if (!Request.ChargingProfile.TransactionId.HasValue)
-                                conn.ChargingProfile = Request.ChargingProfile;
+                                evse.ChargingProfile = Request.ChargingProfile;
 
-                            else if (conn.TransactionId == Request.ChargingProfile.TransactionId.Value)
-                                conn.ChargingProfile = Request.ChargingProfile;
+                            else if (evse.TransactionId == Request.ChargingProfile.TransactionId.Value)
+                                evse.ChargingProfile = Request.ChargingProfile;
 
                         }
+
+                        response = new SetChargingProfileResponse(Request,
+                                                                  ChargingProfileStatus.Accepted);
+
                     }
-                    //else if (connectors.ContainsKey(Request.EVSEId))
-                    //{
+                    else if (evses.ContainsKey(Request.EVSEId))
+                    {
 
-                    //    connectors[Request.EVSEId].ChargingProfile = Request.ChargingProfile;
+                        evses[Request.EVSEId].ChargingProfile = Request.ChargingProfile;
 
-                    //    response = new SetChargingProfileResponse(Request,
-                    //                                              ChargingProfileStatus.Accepted);
+                        response = new SetChargingProfileResponse(Request,
+                                                                  ChargingProfileStatus.Accepted);
 
-                    //}
+                    }
                     else
                         response = new SetChargingProfileResponse(Request,
                                                                   ChargingProfileStatus.Rejected);
@@ -2487,14 +2940,92 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
-            // OnGetChargingProfiles
+            #region OnGetChargingProfiles
+
+            CPServer.OnGetChargingProfiles += async (LogTimestamp,
+                                                     Sender,
+                                                     Request,
+                                                     CancellationToken) => {
+
+                #region Send OnGetChargingProfilesRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetChargingProfilesRequest?.Invoke(startTime,
+                                                         this,
+                                                         Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetChargingProfilesRequest));
+                }
+
+                #endregion
+
+                // GetChargingProfilesRequestId
+                // ChargingProfile
+                // EVSEId
+
+                GetChargingProfilesResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid GetChargingProfiles request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new GetChargingProfilesResponse(Request,
+                                                               GetChargingProfileStatus.Unknown);
+
+                }
+                else if (Request.EVSEId.HasValue && evses.ContainsKey(Request.EVSEId.Value))
+                {
+
+                    //evses[Request.EVSEId.Value].ChargingProfile = Request.ChargingProfile;
+
+                    response = new GetChargingProfilesResponse(Request,
+                                                               GetChargingProfileStatus.Accepted);
+
+                }
+                else
+                   response = new GetChargingProfilesResponse(Request,
+                                                              GetChargingProfileStatus.Unknown);
+
+                #region Send OnGetChargingProfilesResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnGetChargingProfilesResponse?.Invoke(responseTimestamp,
+                                                          this,
+                                                          Request,
+                                                          response,
+                                                          responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetChargingProfilesResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
             #region OnClearChargingProfile
 
             CPServer.OnClearChargingProfile += async (LogTimestamp,
-                                                    Sender,
-                                                    Request,
-                                                    CancellationToken) => {
+                                                      Sender,
+                                                      Request,
+                                                      CancellationToken) => {
 
                 #region Send OnClearChargingProfileRequest event
 
@@ -2504,8 +3035,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 {
 
                     OnClearChargingProfileRequest?.Invoke(startTime,
-                                           this,
-                                           Request);
+                                                          this,
+                                                          Request);
                 }
                 catch (Exception e)
                 {
@@ -2514,10 +3045,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
+                // ChargingProfileId
+                // ChargingProfileCriteria
 
-                ClearChargingProfileResponse? response = null;
-
-
+                var response = new ClearChargingProfileResponse(Request,
+                                                                ClearChargingProfileStatus.Accepted);
 
                 #region Send OnClearChargingProfileResponse event
 
@@ -2527,10 +3059,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                     var responseTimestamp = Timestamp.Now;
 
                     OnClearChargingProfileResponse?.Invoke(responseTimestamp,
-                                            this,
-                                            Request,
-                                            response,
-                                            responseTimestamp - startTime);
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           responseTimestamp - startTime);
 
                 }
                 catch (Exception e)
@@ -2549,9 +3081,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             #region OnGetCompositeSchedule
 
             CPServer.OnGetCompositeSchedule += async (LogTimestamp,
-                                                    Sender,
-                                                    Request,
-                                                    CancellationToken) => {
+                                                      Sender,
+                                                      Request,
+                                                      CancellationToken) => {
 
                 #region Send OnGetCompositeScheduleRequest event
 
@@ -2561,8 +3093,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 {
 
                     OnGetCompositeScheduleRequest?.Invoke(startTime,
-                                           this,
-                                           Request);
+                                                          this,
+                                                          Request);
                 }
                 catch (Exception e)
                 {
@@ -2571,10 +3103,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
+                // Status
+                // Schedule
+                // StatusInfo
 
-                GetCompositeScheduleResponse? response = null;
-
-
+                var response = new GetCompositeScheduleResponse(Request,
+                                                                Status:     GenericStatus.Accepted,
+                                                                Schedule:   null);
 
                 #region Send OnGetCompositeScheduleResponse event
 
@@ -2584,10 +3119,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                     var responseTimestamp = Timestamp.Now;
 
                     OnGetCompositeScheduleResponse?.Invoke(responseTimestamp,
-                                            this,
-                                            Request,
-                                            response,
-                                            responseTimestamp - startTime);
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           responseTimestamp - startTime);
 
                 }
                 catch (Exception e)
@@ -2629,9 +3164,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 #endregion
 
 
-                await Task.Delay(10);
-
-
                 UnlockConnectorResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
@@ -2650,7 +3182,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                     // ToDo: lock(connectors)
 
-                    if (connectors.ContainsKey(Request.ConnectorId))
+                    if (evses.TryGetValue    (Request.EVSEId,      out var evse) &&
+                        evse. TryGetConnector(Request.ConnectorId, out var connector))
                     {
 
                         // What to do here?!
@@ -2965,9 +3498,194 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
-            // OnCostUpdated
-            // OnCustomerInformation
+            #region OnCostUpdated
 
+            CPServer.OnCostUpdated += async (LogTimestamp,
+                                             Sender,
+                                             Request,
+                                             CancellationToken) => {
+
+                #region Send OnCostUpdatedRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnCostUpdatedRequest?.Invoke(startTime,
+                                                 this,
+                                                 Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCostUpdatedRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                CostUpdatedResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid CostUpdated request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new CostUpdatedResponse(Request,
+                                                       Result.GenericError(""));
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming CostUpdated request.");
+
+
+                    if (transactions.ContainsKey(Request.TransactionId)) {
+
+                        totalCosts.AddOrUpdate(Request.TransactionId,
+                                               Request.TotalCost,
+                                               (transactionId, totalCost) => Request.TotalCost);
+
+                        response = new CostUpdatedResponse(Request);
+
+                    }
+
+                    else
+                        response = new CostUpdatedResponse(Request,
+                                                           Result.GenericError($"Unknown transaction identification '{Request.TransactionId}'!"));
+
+                }
+
+
+                #region Send OnCostUpdatedResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnCostUpdatedResponse?.Invoke(responseTimestamp,
+                                                  this,
+                                                  Request,
+                                                  response,
+                                                  responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCostUpdatedResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnCustomerInformation
+
+            CPServer.OnCustomerInformation += async (LogTimestamp,
+                                                     Sender,
+                                                     Request,
+                                                     CancellationToken) => {
+
+                #region Send OnCustomerInformationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnCustomerInformationRequest?.Invoke(startTime,
+                                                         this,
+                                                         Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCustomerInformationRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                CustomerInformationResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid CustomerInformation request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new CustomerInformationResponse(Request,
+                                                               Result.GenericError(""));
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming CustomerInformation request.");
+
+
+                    _ = Task.Run(async () => {
+
+                        //var filteredDisplayMessages = displayMessages.Values.
+                        //                                  Where(displayMessage => Request.Ids is null || !Request.Ids.Any() || Request.Ids.Contains(displayMessage.Id)).
+                        //                                  Where(displayMessage => !Request.State.   HasValue || (displayMessage.State.HasValue && displayMessage.State.Value == Request.State.Value)).
+                        //                                  Where(displayMessage => !Request.Priority.HasValue || displayMessage.Priority == Request.Priority.Value).
+                        //                                  ToArray();
+
+                        await NotifyCustomerInformation(
+                                  NotifyCustomerInformationRequestId:   Request.CustomerInformationRequestId,
+                                  Data:                                 "",
+                                  SequenceNumber:                       1,
+                                  GeneratedAt:                          Timestamp.Now,
+                                  ToBeContinued:                        false,
+                                  CustomData:                           null
+                              );
+
+                    },
+                    CancellationToken.None);
+
+                    response = new CustomerInformationResponse(Request,
+                                                               CustomerInformationStatus.Accepted);
+
+                }
+
+
+                #region Send OnCustomerInformationResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnCustomerInformationResponse?.Invoke(responseTimestamp,
+                                                          this,
+                                                          Request,
+                                                          response,
+                                                          responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCustomerInformationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
         }
 
@@ -3075,11 +3793,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region SendBootNotification             (...)
+        #region SendBootNotification                 (BootReason, ...)
 
         /// <summary>
         /// Send a boot notification.
         /// </summary>
+        /// <param name="BootReason">The the reason for sending this boot notification to the CSMS.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -3203,13 +3925,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region SendFirmwareStatusNotification   (Status, ...)
+        #region SendFirmwareStatusNotification       (Status, ...)
 
         /// <summary>
         /// Send a firmware status notification to the CSMS.
         /// </summary>
         /// <param name="Status">The status of the firmware installation.</param>
+        /// <param name="UpdateFirmwareRequestId">The (optional) request id that was provided in the UpdateFirmwareRequest that started this firmware update.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -3217,13 +3942,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public async Task<CSMS.FirmwareStatusNotificationResponse>
 
             SendFirmwareStatusNotification(FirmwareStatus      Status,
-                                           CustomData?         CustomData          = null,
+                                           Int64?              UpdateFirmwareRequestId   = null,
+                                           CustomData?         CustomData                = null,
 
-                                           Request_Id?         RequestId           = null,
-                                           DateTime?           RequestTimestamp    = null,
-                                           TimeSpan?           RequestTimeout      = null,
-                                           EventTracking_Id?   EventTrackingId     = null,
-                                           CancellationToken?  CancellationToken   = null)
+                                           Request_Id?         RequestId                 = null,
+                                           DateTime?           RequestTimestamp          = null,
+                                           TimeSpan?           RequestTimeout            = null,
+                                           EventTracking_Id?   EventTrackingId           = null,
+                                           CancellationToken?  CancellationToken         = null)
 
         {
 
@@ -3234,7 +3960,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             var request    = new FirmwareStatusNotificationRequest(
                                  ChargeBoxId,
                                  Status,
-                                 0,
+                                 UpdateFirmwareRequestId,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -3300,13 +4026,118 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        // PublishFirmwareStatusNotification
+        #region SendPublishFirmwareStatusNotification(Status, PublishFirmwareStatusNotificationRequestId, DownloadLocations, ...)
 
-        #region SendHeartbeat                    (...)
+        /// <summary>
+        /// Send a publish firmware status notification to the CSMS.
+        /// </summary>
+        /// <param name="Status">The progress status of the publish firmware request.</param>
+        /// <param name="PublishFirmwareStatusNotificationRequestId">The optional unique identification of the publish firmware status notification request.</param>
+        /// <param name="DownloadLocations">The optional enumeration of downstream firmware download locations for all attached charging stations.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.PublishFirmwareStatusNotificationResponse>
+
+            SendPublishFirmwareStatusNotification(PublishFirmwareStatus  Status,
+                                                  Int32?                 PublishFirmwareStatusNotificationRequestId,
+                                                  IEnumerable<URL>?      DownloadLocations,
+                                                  CustomData?            CustomData          = null,
+
+                                                  Request_Id?            RequestId           = null,
+                                                  DateTime?              RequestTimestamp    = null,
+                                                  TimeSpan?              RequestTimeout      = null,
+                                                  EventTracking_Id?      EventTrackingId     = null,
+                                                  CancellationToken?     CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new PublishFirmwareStatusNotificationRequest(
+                                 ChargeBoxId,
+                                 Status,
+                                 PublishFirmwareStatusNotificationRequestId,
+                                 DownloadLocations,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnPublishFirmwareStatusNotificationRequest event
+
+            try
+            {
+
+                OnPublishFirmwareStatusNotificationRequest?.Invoke(startTime,
+                                                                   this,
+                                                                   request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnPublishFirmwareStatusNotificationRequest));
+            }
+
+            #endregion
+
+
+            CSMS.PublishFirmwareStatusNotificationResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.SendPublishFirmwareStatusNotification(request);
+
+            response ??= new CSMS.PublishFirmwareStatusNotificationResponse(request,
+                                                                            Result.Server("Response is null!"));
+
+
+            #region Send OnPublishFirmwareStatusNotificationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnPublishFirmwareStatusNotificationResponse?.Invoke(endTime,
+                                                                    this,
+                                                                    request,
+                                                                    response,
+                                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnPublishFirmwareStatusNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendHeartbeat                        (...)
 
         /// <summary>
         /// Send a heartbeat.
         /// </summary>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -3369,7 +4200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             }
 
             response ??= new CSMS.HeartbeatResponse(request,
-                                                  Result.Server("Response is null!"));
+                                                    Result.Server("Response is null!"));
 
 
             #region Send OnHeartbeatResponse event
@@ -3399,13 +4230,561 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        // NotifyEvent
-        // SendSecurityEventNotification
-        // NotifyReport
-        // NotifyMonitoringReport
-        // SendLogStatusNotification
+        #region NotifyEvent                          (GeneratedAt, SequenceNumber, EventData, ToBeContinued = null, ...)
 
-        #region TransferData                     (VendorId, MessageId = null, Data = null, ...)
+        /// <summary>
+        /// Notify about an event.
+        /// </summary>
+        /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
+        /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
+        /// <param name="EventData">The enumeration of event data.</param>
+        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.NotifyEventResponse>
+
+            NotifyEvent(DateTime                GeneratedAt,
+                        UInt32                  SequenceNumber,
+                        IEnumerable<EventData>  EventData,
+                        Boolean?                ToBeContinued       = null,
+                        CustomData?             CustomData          = null,
+
+                        Request_Id?             RequestId           = null,
+                        DateTime?               RequestTimestamp    = null,
+                        TimeSpan?               RequestTimeout      = null,
+                        EventTracking_Id?       EventTrackingId     = null,
+                        CancellationToken?      CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new NotifyEventRequest(
+                                 ChargeBoxId,
+                                 GeneratedAt,
+                                 SequenceNumber,
+                                 EventData,
+                                 ToBeContinued,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnNotifyEventRequest event
+
+            try
+            {
+
+                OnNotifyEventRequest?.Invoke(startTime,
+                                             this,
+                                             request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyEventRequest));
+            }
+
+            #endregion
+
+
+            CSMS.NotifyEventResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.NotifyEvent(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.NotifyEventResponse(request,
+                                                      Result.Server("Response is null!"));
+
+
+            #region Send OnNotifyEventResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEventResponse?.Invoke(endTime,
+                                              this,
+                                              request,
+                                              response,
+                                              endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyEventResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendSecurityEventNotification        (Type, Timestamp, TechInfo = null, TechInfo = null, ...)
+
+        /// <summary>
+        /// Send a security event notification.
+        /// </summary>
+        /// <param name="Type">Type of the security event.</param>
+        /// <param name="Timestamp">The timestamp of the security event.</param>
+        /// <param name="TechInfo">Optional additional information about the occurred security event.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.SecurityEventNotificationResponse>
+
+            SendSecurityEventNotification(SecurityEvent       Type,
+                                          DateTime            Timestamp,
+                                          String?             TechInfo            = null,
+                                          CustomData?         CustomData          = null,
+
+                                          Request_Id?         RequestId           = null,
+                                          DateTime?           RequestTimestamp    = null,
+                                          TimeSpan?           RequestTimeout      = null,
+                                          EventTracking_Id?   EventTrackingId     = null,
+                                          CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+
+            var request    = new SecurityEventNotificationRequest(
+                                 ChargeBoxId,
+                                 Type,
+                                 Timestamp,
+                                 TechInfo,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnSecurityEventNotificationRequest event
+
+            try
+            {
+
+                OnSecurityEventNotificationRequest?.Invoke(startTime,
+                                                           this,
+                                                           request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSecurityEventNotificationRequest));
+            }
+
+            #endregion
+
+
+            CSMS.SecurityEventNotificationResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.SendSecurityEventNotification(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.SecurityEventNotificationResponse(request,
+                                                                    Result.Server("Response is null!"));
+
+
+            #region Send OnSecurityEventNotificationResponse event
+
+            var endTime = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+
+            try
+            {
+
+                OnSecurityEventNotificationResponse?.Invoke(endTime,
+                                                            this,
+                                                            request,
+                                                            response,
+                                                            endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSecurityEventNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyReport                         (SequenceNumber, GeneratedAt, ReportData, ...)
+
+        /// <summary>
+        /// Notify about a report.
+        /// </summary>
+        /// <param name="NotifyReportRequestId">The unique identification of the notify report request.</param>
+        /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
+        /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
+        /// <param name="ReportData">The enumeration of report data. A single report data element contains only the component, variable and variable report data that caused the event.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.NotifyReportResponse>
+
+            NotifyReport(Int32                    NotifyReportRequestId,
+                         UInt32                   SequenceNumber,
+                         DateTime                 GeneratedAt,
+                         IEnumerable<ReportData>  ReportData,
+                         CustomData?              CustomData          = null,
+
+                         Request_Id?              RequestId           = null,
+                         DateTime?                RequestTimestamp    = null,
+                         TimeSpan?                RequestTimeout      = null,
+                         EventTracking_Id?        EventTrackingId     = null,
+                         CancellationToken?       CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new NotifyReportRequest(
+                                 ChargeBoxId,
+                                 NotifyReportRequestId,
+                                 SequenceNumber,
+                                 GeneratedAt,
+                                 ReportData,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnNotifyReportRequest event
+
+            try
+            {
+
+                OnNotifyReportRequest?.Invoke(startTime,
+                                              this,
+                                              request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyReportRequest));
+            }
+
+            #endregion
+
+
+            CSMS.NotifyReportResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.NotifyReport(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.NotifyReportResponse(request,
+                                                       Result.Server("Response is null!"));
+
+
+            #region Send OnNotifyReportResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyReportResponse?.Invoke(endTime,
+                                               this,
+                                               request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyReportResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyMonitoringReport               (NotifyMonitoringReportRequestId, SequenceNumber, GeneratedAt, MonitoringData, ToBeContinued = null, ...)
+
+        /// <summary>
+        /// Notify about a monitoring report.
+        /// </summary>
+        /// <param name="NotifyMonitoringReportRequestId">The unique identification of the notify monitoring report request.</param>
+        /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
+        /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
+        /// <param name="MonitoringData">The enumeration of event data. A single event data element contains only the component, variable and variable monitoring data that caused the event.</param>
+        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.NotifyMonitoringReportResponse>
+
+            NotifyMonitoringReport(Int32                        NotifyMonitoringReportRequestId,
+                                   UInt32                       SequenceNumber,
+                                   DateTime                     GeneratedAt,
+                                   IEnumerable<MonitoringData>  MonitoringData,
+                                   Boolean?                     ToBeContinued       = null,
+                                   CustomData?                  CustomData          = null,
+
+                                   Request_Id?                  RequestId           = null,
+                                   DateTime?                    RequestTimestamp    = null,
+                                   TimeSpan?                    RequestTimeout      = null,
+                                   EventTracking_Id?            EventTrackingId     = null,
+                                   CancellationToken?           CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new NotifyMonitoringReportRequest(
+                                 ChargeBoxId,
+                                 NotifyMonitoringReportRequestId,
+                                 SequenceNumber,
+                                 GeneratedAt,
+                                 MonitoringData,
+                                 ToBeContinued,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnNotifyMonitoringReportRequest event
+
+            try
+            {
+
+                OnNotifyMonitoringReportRequest?.Invoke(startTime,
+                                                        this,
+                                                        request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyMonitoringReportRequest));
+            }
+
+            #endregion
+
+
+            CSMS.NotifyMonitoringReportResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.NotifyMonitoringReport(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.NotifyMonitoringReportResponse(request,
+                                                                 Result.Server("Response is null!"));
+
+
+            #region Send OnNotifyMonitoringReportResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyMonitoringReportResponse?.Invoke(endTime,
+                                                         this,
+                                                         request,
+                                                         response,
+                                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyMonitoringReportResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendLogStatusNotification            (Status, LogRquestId = null, ...)
+
+        /// <summary>
+        /// Send a log status notification.
+        /// </summary>
+        /// <param name="Status">The status of the log upload.</param>
+        /// <param name="LogRquestId">The optional request id that was provided in the GetLog request that started this log upload.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.LogStatusNotificationResponse>
+
+            SendLogStatusNotification(UploadLogStatus     Status,
+                                      Int32?              LogRquestId         = null,
+                                      CustomData?         CustomData          = null,
+
+                                      Request_Id?         RequestId           = null,
+                                      DateTime?           RequestTimestamp    = null,
+                                      TimeSpan?           RequestTimeout      = null,
+                                      EventTracking_Id?   EventTrackingId     = null,
+                                      CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new LogStatusNotificationRequest(
+                                 ChargeBoxId,
+                                 Status,
+                                 LogRquestId,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnLogStatusNotificationRequest event
+
+            try
+            {
+
+                OnLogStatusNotificationRequest?.Invoke(startTime,
+                                                       this,
+                                                       request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnLogStatusNotificationRequest));
+            }
+
+            #endregion
+
+
+            CSMS.LogStatusNotificationResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.SendLogStatusNotification(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.LogStatusNotificationResponse(request,
+                                                                    Result.Server("Response is null!"));
+
+
+            #region Send OnLogStatusNotificationResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnLogStatusNotificationResponse?.Invoke(endTime,
+                                                        this,
+                                                        request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnLogStatusNotificationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region TransferData                         (VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Send the given vendor-specific data to the CSMS.
@@ -3413,7 +4792,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification.</param>
         /// <param name="Data">A vendor-specific JSON token.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -3507,9 +4888,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+
         // SignCertificate
         // Get15118EVCertificate
         // GetCertificateStatus
+
 
         // ReservationStatusUpdate
 
@@ -3521,7 +4904,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="IdToken">The identifier that needs to be authorized.</param>
         /// <param name="Certificate">An optional X.509 certificated presented by the electric vehicle/user (PEM format).</param>
         /// <param name="ISO15118CertificateHashData">Optional information to verify the electric vehicle/user contract certificate via OCSP.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -3635,7 +5020,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="IdToken">An optional identification token for which a transaction has to be/was started.</param>
         /// <param name="EVSE">An optional indication of the EVSE (and connector) used.</param>
         /// <param name="MeterValues">An optional enumeration of meter values.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -3759,7 +5146,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="ConnectorId">The identification of the connector within the EVSE for which the status is reported.</param>
         /// <param name="Timestamp">The time for which the status is reported.</param>
         /// <param name="Status">The current status of the connector.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -3862,7 +5251,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="EVSEId">The EVSE identification at the charging station.</param>
         /// <param name="MeterValues">The sampled meter values with timestamps.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -3969,6 +5360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyDisplayMessagesRequest message. Default value when omitted is false.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
+        /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
@@ -4062,12 +5454,115 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+        #region NotifyCustomerInformation         (NotifyCustomerInformationRequestId, Data, SequenceNumber, GeneratedAt, ToBeContinued = null, ...)
+
+        /// <summary>
+        /// NotifyCustomerInformation the given token.
+        /// </summary>
+        /// <param name="NotifyCustomerInformationRequestId">The unique identification of the notify customer information request.</param>
+        /// <param name="Data">The requested data or a part of the requested data. No format specified in which the data is returned.</param>
+        /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
+        /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
+        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.NotifyCustomerInformationResponse>
+
+            NotifyCustomerInformation(Int64               NotifyCustomerInformationRequestId,
+                                      String              Data,
+                                      UInt32              SequenceNumber,
+                                      DateTime            GeneratedAt,
+                                      Boolean?            ToBeContinued       = null,
+                                      CustomData?         CustomData          = null,
+
+                                      Request_Id?         RequestId           = null,
+                                      DateTime?           RequestTimestamp    = null,
+                                      TimeSpan?           RequestTimeout      = null,
+                                      EventTracking_Id?   EventTrackingId     = null,
+                                      CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new NotifyCustomerInformationRequest(
+                                 ChargeBoxId,
+                                 NotifyCustomerInformationRequestId,
+                                 Data,
+                                 SequenceNumber,
+                                 GeneratedAt,
+                                 ToBeContinued,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnNotifyCustomerInformationRequest event
+
+            try
+            {
+
+                OnNotifyCustomerInformationRequest?.Invoke(startTime,
+                                                           this,
+                                                           request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyCustomerInformationRequest));
+            }
+
+            #endregion
 
 
-        // NotifyCustomerInformation
+            CSMS.NotifyCustomerInformationResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.NotifyCustomerInformation(request);
+
+            response ??= new CSMS.NotifyCustomerInformationResponse(request,
+                                                                    Result.Server("Response is null!"));
 
 
+            #region Send OnNotifyCustomerInformationResponse event
 
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyCustomerInformationResponse?.Invoke(endTime,
+                                                            this,
+                                                            request,
+                                                            response,
+                                                            endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyCustomerInformationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
 
 
     }

@@ -411,15 +411,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestId",        GetChargingProfilesRequestId.ToString()),
-                                 new JProperty("chargingProfile",  ChargingProfile.             ToJSON(CustomChargingProfileCriterionSerializer)),
+                                 new JProperty("requestId",         GetChargingProfilesRequestId.ToString()),
+                                 new JProperty("chargingProfile",   ChargingProfile.             ToJSON(CustomChargingProfileCriterionSerializer)),
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",           EVSEId.                      ToString())
+                               ? new JProperty("evseId",            EVSEId.                      ToString())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.                  ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.                  ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

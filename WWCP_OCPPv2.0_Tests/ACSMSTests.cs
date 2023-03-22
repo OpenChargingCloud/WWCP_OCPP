@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             testBackendWebSockets01?.Shutdown();
 
-            testCSMS01      = null;
+            testCSMS01               = null;
             testBackendWebSockets01  = null;
 
         }

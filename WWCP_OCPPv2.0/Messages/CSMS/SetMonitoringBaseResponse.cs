@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A set monitoring base response.
     /// </summary>
     public class SetMonitoringBaseResponse : AResponse<CSMS.SetMonitoringBaseRequest,
-                                                          SetMonitoringBaseResponse>
+                                                       SetMonitoringBaseResponse>
     {
 
         #region Properties
@@ -61,9 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public SetMonitoringBaseResponse(CSMS.SetMonitoringBaseRequest  Request,
-                                         GenericDeviceModelStatus     Status,
-                                         StatusInfo?                  StatusInfo   = null,
-                                         CustomData?                  CustomData   = null)
+                                         GenericDeviceModelStatus       Status,
+                                         StatusInfo?                    StatusInfo   = null,
+                                         CustomData?                    CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The set monitoring base request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SetMonitoringBaseResponse(CSMS.SetMonitoringBaseRequest  Request,
-                                         Result                       Result)
+                                         Result                         Result)
 
             : base(Request,
                    Result)
@@ -184,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The set monitoring base request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomSetMonitoringBaseResponseParser">A delegate to parse custom set monitoring base responses.</param>
-        public static SetMonitoringBaseResponse Parse(CSMS.SetMonitoringBaseRequest                              Request,
+        public static SetMonitoringBaseResponse Parse(CSMS.SetMonitoringBaseRequest                            Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<SetMonitoringBaseResponse>?  CustomSetMonitoringBaseResponseParser   = null)
         {
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="SetMonitoringBaseResponse">The parsed set monitoring base response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetMonitoringBaseResponseParser">A delegate to parse custom set monitoring base responses.</param>
-        public static Boolean TryParse(CSMS.SetMonitoringBaseRequest                              Request,
+        public static Boolean TryParse(CSMS.SetMonitoringBaseRequest                            Request,
                                        JObject                                                  JSON,
                                        out SetMonitoringBaseResponse?                           SetMonitoringBaseResponse,
                                        out String?                                              ErrorResponse,
@@ -307,15 +307,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

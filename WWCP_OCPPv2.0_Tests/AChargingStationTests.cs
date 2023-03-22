@@ -54,8 +54,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                     ChargeBoxId:              ChargeBox_Id.Parse("GD001"),
                                     VendorName:               "GraphDefined OEM #1",
                                     Model:                    "VCP.1",
-                                    NumberOfConnectors:       2,
-
                                     Description:              I18NString.Create(Languages.en, "Our first virtual charging station!"),
                                     SerialNumber:             "SN-CS0001",
                                     FirmwareVersion:          "v0.1",
@@ -63,6 +61,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                                                   ICCID:   "0000",
                                                                   IMSI:    "1111"
                                                               ),
+                                    EVSEs:                    new ChargingStationEVSE[] {
+                                                                  new ChargingStationEVSE(
+                                                                      Id:                  EVSE_Id.Parse(1),
+                                                                      Status:              OperationalStatus.Operative,
+                                                                      MeterType:           "MT1",
+                                                                      MeterSerialNumber:   "MSN1",
+                                                                      MeterPublicKey:      "MPK1",
+                                                                      Connectors:          new ChargingStationConnector[] {
+                                                                                               new ChargingStationConnector(
+                                                                                                   Id:    Connector_Id.Parse(1)
+                                                                                               )
+                                                                                           }
+                                                                  )
+                                                              },
                                     MeterType:                "Virtual Energy Meter",
                                     MeterSerialNumber:        "SN-EN0001",
                                     MeterPublicKey:           "0xcafebabe",
@@ -78,8 +90,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                     ChargeBoxId:              ChargeBox_Id.Parse("CP002"),
                                     VendorName:               "GraphDefined OEM #2",
                                     Model:                    "VCP.2",
-                                    NumberOfConnectors:       2,
-
                                     Description:              I18NString.Create(Languages.en, "Our 2nd virtual charging station!"),
                                     SerialNumber:             "SN-CS0002",
                                     FirmwareVersion:          "v0.2",
@@ -87,6 +97,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                                                   ICCID:   "3333",
                                                                   IMSI:    "4444"
                                                               ),
+                                    EVSEs:                    new ChargingStationEVSE[] {
+                                                                  new ChargingStationEVSE(
+                                                                      Id:                  EVSE_Id.Parse(1),
+                                                                      Status:              OperationalStatus.Operative,
+                                                                      MeterType:           "MT2",
+                                                                      MeterSerialNumber:   "MSN2",
+                                                                      MeterPublicKey:      "MPK2",
+                                                                      Connectors:          new ChargingStationConnector[] {
+                                                                                               new ChargingStationConnector(
+                                                                                                   Id:    Connector_Id.Parse(1)
+                                                                                               )
+                                                                                           }
+                                                                  )
+                                                              },
                                     MeterType:                "Virtual Energy Meter",
                                     MeterSerialNumber:        "SN-EN0002",
                                     MeterPublicKey:           "0xbabecafe",
@@ -100,8 +124,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                     ChargeBoxId:              ChargeBox_Id.Parse("CP003"),
                                     VendorName:               "GraphDefined OEM #3",
                                     Model:                    "VCP.3",
-                                    NumberOfConnectors:       4,
-
                                     Description:              I18NString.Create(Languages.en, "Our 3rd virtual charging station!"),
                                     SerialNumber:             "SN-CS0003",
                                     FirmwareVersion:          "v0.3",
@@ -109,6 +131,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                                                   ICCID:   "5555",
                                                                   IMSI:    "6666"
                                                               ),
+                                    EVSEs:                    new ChargingStationEVSE[] {
+                                                                  new ChargingStationEVSE(
+                                                                      Id:                  EVSE_Id.Parse(1),
+                                                                      Status:              OperationalStatus.Operative,
+                                                                      MeterType:           "MT3",
+                                                                      MeterSerialNumber:   "MSN3",
+                                                                      MeterPublicKey:      "MPK3",
+                                                                      Connectors:          new ChargingStationConnector[] {
+                                                                                               new ChargingStationConnector(
+                                                                                                   Id:    Connector_Id.Parse(1)
+                                                                                               )
+                                                                                           }
+                                                                  )
+                                                              },
                                     MeterType:                "Virtual Energy Meter",
                                     MeterSerialNumber:        "SN-EN0003",
                                     MeterPublicKey:           "0xbacafebe",

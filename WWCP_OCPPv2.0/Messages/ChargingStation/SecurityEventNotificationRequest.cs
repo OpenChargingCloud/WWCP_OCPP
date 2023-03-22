@@ -60,12 +60,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a new security event notification request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="Type">Type of the security event.</param>
         /// <param name="Timestamp">The timestamp of the security event.</param>
         /// <param name="TechInfo">Optional additional information about the occurred security event.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
@@ -75,8 +74,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                                 SecurityEvent       Type,
                                                 DateTime            Timestamp,
                                                 String?             TechInfo                  = null,
-
                                                 CustomData?         CustomData                = null,
+
                                                 Request_Id?         RequestId                 = null,
                                                 DateTime?           RequestTimestamp          = null,
                                                 TimeSpan?           RequestTimeout            = null,
@@ -338,16 +337,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                           new JProperty("type",              Type.      ToString()),
+                           new JProperty("type",               Type.      ToString()),
 
-                           new JProperty("timestamp",         Timestamp. ToIso8601()),
+                           new JProperty("timestamp",          Timestamp. ToIso8601()),
 
                            TechInfo is not null
-                               ? new JProperty("techInfo",    TechInfo)
+                               ? new JProperty("techInfo",     TechInfo)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

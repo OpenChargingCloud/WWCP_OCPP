@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// A log status notification response.
     /// </summary>
     public class LogStatusNotificationResponse : AResponse<CS.LogStatusNotificationRequest,
-                                                              LogStatusNotificationResponse>
+                                                           LogStatusNotificationResponse>
     {
 
         #region Constructor(s)
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
             var json = JSONObject.Create(
 
                            CustomData is not null
-                               ? new JProperty("customData", CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -820,17 +820,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                           new JProperty("remoteStartId",  RequestStartTransactionRequestId.Value),
-                           new JProperty("idToken",        IdToken.                         ToJSON(CustomIdTokenSerializer,
-                                                                                                   CustomAdditionalInfoSerializer,
-                                                                                                   CustomCustomDataSerializer)),
+                                    new JProperty("remoteStartId",   RequestStartTransactionRequestId.Value),
+                                    new JProperty("idToken",         IdToken.        ToJSON(CustomIdTokenSerializer,
+                                                                                            CustomAdditionalInfoSerializer,
+                                                                                            CustomCustomDataSerializer)),
 
                            EVSEId.HasValue
-                                  ? new JProperty("connectorId",   EVSEId.Value.Value)
+                                  ? new JProperty("connectorId",     EVSEId.Value.Value)
                                   : null,
 
                            ChargingProfile is not null
-                               ? new JProperty("chargingProfile",  ChargingProfile.  ToJSON(CustomChargingProfileSerializer,
+                               ? new JProperty("chargingProfile",    ChargingProfile.ToJSON(CustomChargingProfileSerializer,
                                                                                             CustomChargingScheduleSerializer,
                                                                                             CustomChargingSchedulePeriodSerializer))
                                : null

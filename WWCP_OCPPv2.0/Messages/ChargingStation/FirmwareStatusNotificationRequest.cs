@@ -55,22 +55,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a new firmware status notification request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="Status">The status of the firmware installation.</param>
         /// <param name="UpdateFirmwareRequestId">The (optional) request id that was provided in the UpdateFirmwareRequest that started this firmware update.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public FirmwareStatusNotificationRequest(ChargeBox_Id        ChargeBoxId,
-
                                                  FirmwareStatus      Status,
                                                  Int64?              UpdateFirmwareRequestId   = null,
-
                                                  CustomData?         CustomData                = null,
+
                                                  Request_Id?         RequestId                 = null,
                                                  DateTime?           RequestTimestamp          = null,
                                                  TimeSpan?           RequestTimeout            = null,
@@ -338,14 +336,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            UpdateFirmwareRequestId.HasValue
-                               ? new JProperty("requestId",   UpdateFirmwareRequestId.Value)
+                               ? new JProperty("requestId",    UpdateFirmwareRequestId.Value)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

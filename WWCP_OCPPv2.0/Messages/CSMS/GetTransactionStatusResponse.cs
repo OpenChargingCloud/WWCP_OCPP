@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A get transaction status response.
     /// </summary>
     public class GetTransactionStatusResponse : AResponse<CSMS.GetTransactionStatusRequest,
-                                                             GetTransactionStatusResponse>
+                                                          GetTransactionStatusResponse>
     {
 
         #region Properties
@@ -61,9 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="OngoingIndicator">An optional indication whether the transaction is still ongoing.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public GetTransactionStatusResponse(CSMS.GetTransactionStatusRequest  Request,
-                                            Boolean                         MessagesInQueue,
-                                            Boolean?                        OngoingIndicator   = null,
-                                            CustomData?                     CustomData         = null)
+                                            Boolean                           MessagesInQueue,
+                                            Boolean?                          OngoingIndicator   = null,
+                                            CustomData?                       CustomData         = null)
 
             : base(Request,
                    Result.OK(),
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetTransactionStatusResponse(CSMS.GetTransactionStatusRequest  Request,
-                                            Result                          Result)
+                                            Result                            Result)
 
             : base(Request,
                    Result)
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomGetTransactionStatusResponseParser">A delegate to parse custom get transaction status responses.</param>
-        public static GetTransactionStatusResponse Parse(CSMS.GetTransactionStatusRequest                              Request,
+        public static GetTransactionStatusResponse Parse(CSMS.GetTransactionStatusRequest                            Request,
                                                          JObject                                                     JSON,
                                                          CustomJObjectParserDelegate<GetTransactionStatusResponse>?  CustomGetTransactionStatusResponseParser   = null)
         {
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="GetTransactionStatusResponse">The parsed get transaction status response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetTransactionStatusResponseParser">A delegate to parse custom get transaction status responses.</param>
-        public static Boolean TryParse(CSMS.GetTransactionStatusRequest                              Request,
+        public static Boolean TryParse(CSMS.GetTransactionStatusRequest                            Request,
                                        JObject                                                     JSON,
                                        out GetTransactionStatusResponse?                           GetTransactionStatusResponse,
                                        out String?                                                 ErrorResponse,
@@ -269,14 +269,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("messagesInQueue",   MessagesInQueue),
+                                 new JProperty("messagesInQueue",    MessagesInQueue),
 
                            OngoingIndicator is not null
-                               ? new JProperty("ongoingIndicator",  OngoingIndicator)
+                               ? new JProperty("ongoingIndicator",   OngoingIndicator)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",         CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A request start transaction response.
     /// </summary>
     public class RequestStartTransactionResponse : AResponse<CSMS.RequestStartTransactionRequest,
-                                                                RequestStartTransactionResponse>
+                                                             RequestStartTransactionResponse>
     {
 
         #region Properties
@@ -72,10 +72,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public RequestStartTransactionResponse(CSMS.RequestStartTransactionRequest  Request,
-                                               RequestStartStopStatus             Status,
-                                               Transaction_Id?                    TransactionId,
-                                               StatusInfo?                        StatusInfo   = null,
-                                               CustomData?                        CustomData   = null)
+                                               RequestStartStopStatus               Status,
+                                               Transaction_Id?                      TransactionId   = null,
+                                               StatusInfo?                          StatusInfo      = null,
+                                               CustomData?                          CustomData      = null)
 
             : base(Request,
                    Result.OK(),
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The request start transaction request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public RequestStartTransactionResponse(CSMS.RequestStartTransactionRequest  Request,
-                                               Result                             Result)
+                                               Result                               Result)
 
             : base(Request,
                    Result)
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The request start transaction request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomRequestStartTransactionResponseParser">A delegate to parse custom request start transaction responses.</param>
-        public static RequestStartTransactionResponse Parse(CSMS.RequestStartTransactionRequest                              Request,
+        public static RequestStartTransactionResponse Parse(CSMS.RequestStartTransactionRequest                            Request,
                                                             JObject                                                        JSON,
                                                             CustomJObjectParserDelegate<RequestStartTransactionResponse>?  CustomRequestStartTransactionResponseParser   = null)
         {
@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="RequestStartTransactionResponse">The parsed request start transaction response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomRequestStartTransactionResponseParser">A delegate to parse custom request start transaction responses.</param>
-        public static Boolean TryParse(CSMS.RequestStartTransactionRequest                              Request,
+        public static Boolean TryParse(CSMS.RequestStartTransactionRequest                            Request,
                                        JObject                                                        JSON,
                                        out RequestStartTransactionResponse?                           RequestStartTransactionResponse,
                                        out String?                                                    ErrorResponse,
@@ -338,19 +338,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",         Status.       AsText()),
+                                 new JProperty("status",          Status.       AsText()),
 
                            TransactionId.HasValue
-                               ? new JProperty("transactionId",  TransactionId.ToString())
+                               ? new JProperty("transactionId",   TransactionId.ToString())
                                : null,
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",     StatusInfo.   ToJSON(CustomStatusInfoSerializer,
-                                                                                       CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",      StatusInfo.   ToJSON(CustomStatusInfoSerializer,
+                                                                                        CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.   ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData.   ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

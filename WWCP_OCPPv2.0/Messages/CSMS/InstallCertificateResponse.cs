@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// An install certificate response.
     /// </summary>
     public class InstallCertificateResponse : AResponse<CSMS.InstallCertificateRequest,
-                                                           InstallCertificateResponse>
+                                                        InstallCertificateResponse>
     {
 
         #region Properties
@@ -61,9 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public InstallCertificateResponse(CSMS.InstallCertificateRequest  Request,
-                                          CertificateStatus             Status,
-                                          StatusInfo?                   StatusInfo   = null,
-                                          CustomData?                   CustomData   = null)
+                                          CertificateStatus               Status,
+                                          StatusInfo?                     StatusInfo   = null,
+                                          CustomData?                     CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The install certificate request leading to this response.</param>
         /// <param name="Result">A result.</param>
         public InstallCertificateResponse(CSMS.InstallCertificateRequest  Request,
-                                          Result                        Result)
+                                          Result                          Result)
 
             : base(Request,
                    Result)
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The install certificate request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
-        public static InstallCertificateResponse Parse(CSMS.InstallCertificateRequest                              Request,
+        public static InstallCertificateResponse Parse(CSMS.InstallCertificateRequest                            Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<InstallCertificateResponse>?  CustomInstallCertificateResponseParser   = null)
         {
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="InstallCertificateResponse">The parsed install certificate response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomInstallCertificateResponseParser">A delegate to parse custom install certificate responses.</param>
-        public static Boolean TryParse(CSMS.InstallCertificateRequest                              Request,
+        public static Boolean TryParse(CSMS.InstallCertificateRequest                            Request,
                                        JObject                                                   JSON,
                                        out InstallCertificateResponse?                           InstallCertificateResponse,
                                        out String?                                               ErrorResponse,
@@ -306,15 +306,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

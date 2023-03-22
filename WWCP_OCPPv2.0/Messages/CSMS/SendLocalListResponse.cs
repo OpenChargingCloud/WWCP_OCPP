@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A send local list response.
     /// </summary>
     public class SendLocalListResponse : AResponse<CSMS.SendLocalListRequest,
-                                                      SendLocalListResponse>
+                                                   SendLocalListResponse>
     {
 
         #region Properties
@@ -61,9 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public SendLocalListResponse(CSMS.SendLocalListRequest  Request,
-                                     UpdateStatus             Status,
-                                     StatusInfo?              StatusInfo   = null,
-                                     CustomData?              CustomData   = null)
+                                     UpdateStatus               Status,
+                                     StatusInfo?                StatusInfo   = null,
+                                     CustomData?                CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The send local list request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SendLocalListResponse(CSMS.SendLocalListRequest  Request,
-                                     Result                   Result)
+                                     Result                     Result)
 
             : base(Request,
                    Result)
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The send local list request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom send local list responses.</param>
-        public static SendLocalListResponse Parse(CSMS.SendLocalListRequest                              Request,
+        public static SendLocalListResponse Parse(CSMS.SendLocalListRequest                            Request,
                                                   JObject                                              JSON,
                                                   CustomJObjectParserDelegate<SendLocalListResponse>?  CustomSendLocalListResponseParser   = null)
         {
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="SendLocalListResponse">The parsed send local list response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSendLocalListResponseParser">A delegate to parse custom send local list responses.</param>
-        public static Boolean TryParse(CSMS.SendLocalListRequest                              Request,
+        public static Boolean TryParse(CSMS.SendLocalListRequest                            Request,
                                        JObject                                              JSON,
                                        out SendLocalListResponse?                           SendLocalListResponse,
                                        out String?                                          ErrorResponse,
@@ -306,15 +306,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    ToString()),
+                                 new JProperty("status",       Status.    ToString()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

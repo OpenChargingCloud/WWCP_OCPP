@@ -77,28 +77,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a notify monitoring report request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="NotifyMonitoringReportRequestId">The unique identification of the notify monitoring report request.</param>
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
         /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
         /// <param name="MonitoringData">The enumeration of event data. A single event data element contains only the component, variable and variable monitoring data that caused the event.</param>
         /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public NotifyMonitoringReportRequest(ChargeBox_Id                 ChargeBoxId,
-
                                              Int32                        NotifyMonitoringReportRequestId,
                                              UInt32                       SequenceNumber,
                                              DateTime                     GeneratedAt,
                                              IEnumerable<MonitoringData>  MonitoringData,
                                              Boolean?                     ToBeContinued       = null,
-
                                              CustomData?                  CustomData          = null,
+
                                              Request_Id?                  RequestId           = null,
                                              DateTime?                    RequestTimestamp    = null,
                                              TimeSpan?                    RequestTimeout      = null,
@@ -548,22 +546,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("requestId",    NotifyMonitoringReportRequestId.ToString()),
-                                 new JProperty("seqNo",        SequenceNumber),
-                                 new JProperty("generatedAt",  GeneratedAt.                    ToIso8601()),
+                                 new JProperty("requestId",     NotifyMonitoringReportRequestId.ToString()),
+                                 new JProperty("seqNo",         SequenceNumber),
+                                 new JProperty("generatedAt",   GeneratedAt.                    ToIso8601()),
 
-                                 new JProperty("eventData",    new JArray(MonitoringData.Select(monitoringData => monitoringData.ToJSON(CustomMonitoringDataSerializer,
-                                                                                                                                        CustomComponentSerializer,
-                                                                                                                                        CustomEVSESerializer,
-                                                                                                                                        CustomVariableSerializer,
-                                                                                                                                        CustomCustomDataSerializer)))),
+                                 new JProperty("eventData",     new JArray(MonitoringData.Select(monitoringData => monitoringData.ToJSON(CustomMonitoringDataSerializer,
+                                                                                                                                         CustomComponentSerializer,
+                                                                                                                                         CustomEVSESerializer,
+                                                                                                                                         CustomVariableSerializer,
+                                                                                                                                         CustomCustomDataSerializer)))),
 
                            ToBeContinued.HasValue
-                               ? new JProperty("tbc",          ToBeContinued.Value)
+                               ? new JProperty("tbc",           ToBeContinued.Value)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.                     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",    CustomData.                     ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyMonitoringReportRequestSerializer is not null

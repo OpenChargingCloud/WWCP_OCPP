@@ -54,22 +54,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a new log status notification request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="Status">The status of the log upload.</param>
-        /// <param name="LogRquestId">The request id that was provided in the GetLog.req that started this log upload.</param>
-        /// 
+        /// <param name="LogRquestId">The optional request id that was provided in the GetLog request that started this log upload.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public LogStatusNotificationRequest(ChargeBox_Id        ChargeBoxId,
-
                                             UploadLogStatus     Status,
                                             Int32?              LogRquestId               = null,
-
                                             CustomData?         CustomData                = null,
+
                                             Request_Id?         RequestId                 = null,
                                             DateTime?           RequestTimestamp          = null,
                                             TimeSpan?           RequestTimeout            = null,
@@ -330,14 +328,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                           new JProperty("status",           Status.     AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            LogRequestId.HasValue
-                               ? new JProperty("requestId",  LogRequestId.Value)
+                               ? new JProperty("requestId",    LogRequestId.Value)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

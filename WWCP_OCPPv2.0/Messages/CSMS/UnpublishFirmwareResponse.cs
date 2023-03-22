@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// An unpublish firmware response.
     /// </summary>
     public class UnpublishFirmwareResponse : AResponse<CSMS.UnpublishFirmwareRequest,
-                                                          UnpublishFirmwareResponse>
+                                                       UnpublishFirmwareResponse>
     {
 
         #region Properties
@@ -53,8 +53,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Status">The success or failure of the unpublish firmware request.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public UnpublishFirmwareResponse(CSMS.UnpublishFirmwareRequest  Request,
-                                         UnpublishFirmwareStatus      Status,
-                                         CustomData?                  CustomData   = null)
+                                         UnpublishFirmwareStatus        Status,
+                                         CustomData?                    CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The unpublish firmware request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public UnpublishFirmwareResponse(CSMS.UnpublishFirmwareRequest  Request,
-                                         Result                       Result)
+                                         Result                         Result)
 
             : base(Request,
                    Result)
@@ -146,7 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The unpublish firmware request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomUnpublishFirmwareResponseParser">A delegate to parse custom unpublish firmware responses.</param>
-        public static UnpublishFirmwareResponse Parse(CSMS.UnpublishFirmwareRequest                              Request,
+        public static UnpublishFirmwareResponse Parse(CSMS.UnpublishFirmwareRequest                            Request,
                                                       JObject                                                  JSON,
                                                       CustomJObjectParserDelegate<UnpublishFirmwareResponse>?  CustomUnpublishFirmwareResponseParser   = null)
         {
@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="UnpublishFirmwareResponse">The parsed unpublish firmware response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomUnpublishFirmwareResponseParser">A delegate to parse custom unpublish firmware responses.</param>
-        public static Boolean TryParse(CSMS.UnpublishFirmwareRequest                              Request,
+        public static Boolean TryParse(CSMS.UnpublishFirmwareRequest                            Request,
                                        JObject                                                  JSON,
                                        out UnpublishFirmwareResponse?                           UnpublishFirmwareResponse,
                                        out String?                                              ErrorResponse,
@@ -252,10 +252,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

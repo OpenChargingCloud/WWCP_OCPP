@@ -302,22 +302,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataSerializer         = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                           new JProperty("signedMeterData",   SignedMeterData),
-                           new JProperty("signingMethod",     SigningMethod),
-                           new JProperty("encodingMethod",    EncodingMethod),
-                           new JProperty("publicKey",         PublicKey),
+                                 new JProperty("signedMeterData",   SignedMeterData),
+                                 new JProperty("signingMethod",     SigningMethod),
+                                 new JProperty("encodingMethod",    EncodingMethod),
+                                 new JProperty("publicKey",         PublicKey),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomSignedMeterValueSerializer is not null
-                       ? CustomSignedMeterValueSerializer(this, JSON)
-                       : JSON;
+                       ? CustomSignedMeterValueSerializer(this, json)
+                       : json;
 
         }
 

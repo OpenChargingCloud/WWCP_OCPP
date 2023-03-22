@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A get report response.
     /// </summary>
     public class GetReportResponse : AResponse<CSMS.GetReportRequest,
-                                                  GetReportResponse>
+                                               GetReportResponse>
     {
 
         #region Properties
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Filename">The name of the log file that will be uploaded. This field is not present when no logging information is available.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
-        public GetReportResponse(CSMS.GetReportRequest       Request,
+        public GetReportResponse(CSMS.GetReportRequest     Request,
                                  GenericDeviceModelStatus  Status,
                                  StatusInfo?               StatusInfo   = null,
                                  CustomData?               CustomData   = null)
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetReportResponse(CSMS.GetReportRequest  Request,
-                                 Result               Result)
+                                 Result                 Result)
 
             : base(Request,
                    Result)
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomGetReportResponseParser">A delegate to parse custom get report responses.</param>
-        public static GetReportResponse Parse(CSMS.GetReportRequest                              Request,
+        public static GetReportResponse Parse(CSMS.GetReportRequest                            Request,
                                               JObject                                          JSON,
                                               CustomJObjectParserDelegate<GetReportResponse>?  CustomGetReportResponseParser   = null)
         {
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="GetReportResponse">The parsed get report response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetReportResponseParser">A delegate to parse custom get report responses.</param>
-        public static Boolean TryParse(CSMS.GetReportRequest                              Request,
+        public static Boolean TryParse(CSMS.GetReportRequest                            Request,
                                        JObject                                          JSON,
                                        out GetReportResponse?                           GetReportResponse,
                                        out String?                                      ErrorResponse,
@@ -308,15 +308,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

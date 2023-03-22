@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// An unlock connector response.
     /// </summary>
     public class UnlockConnectorResponse : AResponse<CSMS.UnlockConnectorRequest,
-                                                        UnlockConnectorResponse>
+                                                     UnlockConnectorResponse>
     {
 
         #region Properties
@@ -60,9 +60,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public UnlockConnectorResponse(CSMS.UnlockConnectorRequest  Request,
-                                       UnlockStatus               Status,
-                                       StatusInfo?                StatusInfo   = null,
-                                       CustomData?                CustomData   = null)
+                                       UnlockStatus                 Status,
+                                       StatusInfo?                  StatusInfo   = null,
+                                       CustomData?                  CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The unlock connector request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public UnlockConnectorResponse(CSMS.UnlockConnectorRequest  Request,
-                                       Result                     Result)
+                                       Result                       Result)
 
             : base(Request,
                    Result)
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The unlock connector request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom unlock connector responses.</param>
-        public static UnlockConnectorResponse Parse(CSMS.UnlockConnectorRequest                              Request,
+        public static UnlockConnectorResponse Parse(CSMS.UnlockConnectorRequest                            Request,
                                                     JObject                                                JSON,
                                                     CustomJObjectParserDelegate<UnlockConnectorResponse>?  CustomUnlockConnectorResponseParser   = null)
         {
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="UnlockConnectorResponse">The parsed unlock connector response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomUnlockConnectorResponseParser">A delegate to parse custom unlock connector responses.</param>
-        public static Boolean TryParse(CSMS.UnlockConnectorRequest                              Request,
+        public static Boolean TryParse(CSMS.UnlockConnectorRequest                            Request,
                                        JObject                                                JSON,
                                        out UnlockConnectorResponse?                           UnlockConnectorResponse,
                                        out String?                                            ErrorResponse,
@@ -306,15 +306,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -71,26 +71,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a notify event request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
         /// <param name="EventData">The enumeration of event data.</param>
         /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyCustomerInformationRequest message. Default value when omitted is false.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public NotifyEventRequest(ChargeBox_Id            ChargeBoxId,
-
                                   DateTime                GeneratedAt,
                                   UInt32                  SequenceNumber,
                                   IEnumerable<EventData>  EventData,
                                   Boolean?                ToBeContinued       = null,
-
                                   CustomData?             CustomData          = null,
+
                                   Request_Id?             RequestId           = null,
                                   DateTime?               RequestTimestamp    = null,
                                   TimeSpan?               RequestTimeout      = null,
@@ -538,22 +536,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("generatedAt",  GeneratedAt.ToIso8601()),
+                                 new JProperty("generatedAt",   GeneratedAt.ToIso8601()),
 
-                                 new JProperty("seqNo",        SequenceNumber),
+                                 new JProperty("seqNo",         SequenceNumber),
 
-                                 new JProperty("eventData",    new JArray(EventData.Select(eventData => eventData.ToJSON(CustomEventDataSerializer,
-                                                                                                                         CustomComponentSerializer,
-                                                                                                                         CustomEVSESerializer,
-                                                                                                                         CustomVariableSerializer,
-                                                                                                                         CustomCustomDataSerializer)))),
+                                 new JProperty("eventData",     new JArray(EventData.Select(eventData => eventData.ToJSON(CustomEventDataSerializer,
+                                                                                                                          CustomComponentSerializer,
+                                                                                                                          CustomEVSESerializer,
+                                                                                                                          CustomVariableSerializer,
+                                                                                                                          CustomCustomDataSerializer)))),
 
                            ToBeContinued.HasValue
-                               ? new JProperty("tbc",          ToBeContinued.Value)
+                               ? new JProperty("tbc",           ToBeContinued.Value)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",    CustomData.ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyEventRequestSerializer is not null

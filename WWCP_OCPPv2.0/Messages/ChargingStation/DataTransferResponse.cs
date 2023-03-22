@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// A data transfer response.
     /// </summary>
     public class DataTransferResponse : AResponse<CS.DataTransferRequest,
-                                                     DataTransferResponse>
+                                                  DataTransferResponse>
     {
 
         #region Properties

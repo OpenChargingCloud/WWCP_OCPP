@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A clear cache response.
     /// </summary>
     public class ClearCacheResponse : AResponse<CSMS.ClearCacheRequest,
-                                                   ClearCacheResponse>
+                                                ClearCacheResponse>
     {
 
         #region Properties
@@ -61,9 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public ClearCacheResponse(CSMS.ClearCacheRequest  Request,
-                                  ClearCacheStatus      Status,
-                                  StatusInfo?           StatusInfo   = null,
-                                  CustomData?           CustomData   = null)
+                                  ClearCacheStatus        Status,
+                                  StatusInfo?             StatusInfo   = null,
+                                  CustomData?             CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The clear cache request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ClearCacheResponse(CSMS.ClearCacheRequest  Request,
-                                  Result                Result)
+                                  Result                  Result)
 
             : base(Request,
                    Result)
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The clear cache request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
-        public static ClearCacheResponse Parse(CSMS.ClearCacheRequest                              Request,
+        public static ClearCacheResponse Parse(CSMS.ClearCacheRequest                            Request,
                                                JObject                                           JSON,
                                                CustomJObjectParserDelegate<ClearCacheResponse>?  CustomClearCacheResponseParser   = null)
         {
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="ClearCacheResponse">The parsed clear cache response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomClearCacheResponseParser">A delegate to parse custom clear cache responses.</param>
-        public static Boolean TryParse(CSMS.ClearCacheRequest                              Request,
+        public static Boolean TryParse(CSMS.ClearCacheRequest                            Request,
                                        JObject                                           JSON,
                                        out ClearCacheResponse?                           ClearCacheResponse,
                                        out String?                                       ErrorResponse,
@@ -305,15 +305,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

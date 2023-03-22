@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 #region EVSEId         [mandatory]
 
-                if (!JSON.ParseMandatory("EVSEId",
+                if (!JSON.ParseMandatory("evseId",
                                          "EVSE identification",
                                          EVSE_Id.TryParse,
                                          out EVSE_Id EVSEId,
@@ -315,12 +315,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("EVSEId",       EVSEId.     Value),
+                                 new JProperty("evseId",        EVSEId.     Value),
 
-                                 new JProperty("ConnectorId",  ConnectorId.Value),
+                                 new JProperty("connectorId",   ConnectorId.Value),
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData. ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",    CustomData. ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

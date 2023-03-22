@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A cost updated response.
     /// </summary>
     public class CostUpdatedResponse : AResponse<CSMS.CostUpdatedRequest,
-                                                    CostUpdatedResponse>
+                                                 CostUpdatedResponse>
     {
 
         #region Constructor(s)
@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The cost updated request leading to this response.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public CostUpdatedResponse(CSMS.CostUpdatedRequest  Request,
-                                   CustomData?            CustomData   = null)
+                                   CustomData?              CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The cost updated request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public CostUpdatedResponse(CSMS.CostUpdatedRequest  Request,
-                                   Result                 Result)
+                                   Result                   Result)
 
             : base(Request,
                    Result)
@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The cost updated request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomCostUpdatedResponseParser">A delegate to parse custom cost updated responses.</param>
-        public static CostUpdatedResponse Parse(CSMS.CostUpdatedRequest                              Request,
+        public static CostUpdatedResponse Parse(CSMS.CostUpdatedRequest                            Request,
                                                 JObject                                            JSON,
                                                 CustomJObjectParserDelegate<CostUpdatedResponse>?  CustomCostUpdatedResponseParser   = null)
         {
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="CostUpdatedResponse">The parsed cost updated response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomCostUpdatedResponseParser">A delegate to parse custom cost updated responses.</param>
-        public static Boolean TryParse(CSMS.CostUpdatedRequest                              Request,
+        public static Boolean TryParse(CSMS.CostUpdatedRequest                            Request,
                                        JObject                                            JSON,
                                        out CostUpdatedResponse?                           CostUpdatedResponse,
                                        out String?                                        ErrorResponse,
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             var json = JSONObject.Create(
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

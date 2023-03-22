@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// Create a new set variables request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="VariableData">An enumeration of set variable data.</param>
+        /// <param name="VariableData">An enumeration of variable data to set/change.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>

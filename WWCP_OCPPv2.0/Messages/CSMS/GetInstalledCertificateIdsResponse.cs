@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A get installed certificate ids response.
     /// </summary>
     public class GetInstalledCertificateIdsResponse : AResponse<CSMS.GetInstalledCertificateIdsRequest,
-                                                                   GetInstalledCertificateIdsResponse>
+                                                                GetInstalledCertificateIdsResponse>
     {
 
         #region Properties
@@ -68,10 +68,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public GetInstalledCertificateIdsResponse(CSMS.GetInstalledCertificateIdsRequest  Request,
-                                                  GetInstalledCertificateStatus         Status,
-                                                  IEnumerable<CertificateHashData>      CertificateHashDataChain,
-                                                  StatusInfo?                           StatusInfo                 = null,
-                                                  CustomData?                           CustomData                 = null)
+                                                  GetInstalledCertificateStatus           Status,
+                                                  IEnumerable<CertificateHashData>        CertificateHashDataChain,
+                                                  StatusInfo?                             StatusInfo                 = null,
+                                                  CustomData?                             CustomData                 = null)
 
             : base(Request,
                    Result.OK(),
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The get installed certificate ids request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public GetInstalledCertificateIdsResponse(CSMS.GetInstalledCertificateIdsRequest  Request,
-                                                  Result                                Result)
+                                                  Result                                  Result)
 
             : base(Request,
                    Result)
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The get installed certificate ids request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomGetInstalledCertificateIdsResponseParser">A delegate to parse custom get installed certificate ids responses.</param>
-        public static GetInstalledCertificateIdsResponse Parse(CSMS.GetInstalledCertificateIdsRequest                              Request,
+        public static GetInstalledCertificateIdsResponse Parse(CSMS.GetInstalledCertificateIdsRequest                            Request,
                                                                JObject                                                           JSON,
                                                                CustomJObjectParserDelegate<GetInstalledCertificateIdsResponse>?  CustomGetInstalledCertificateIdsResponseParser   = null)
         {
@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="GetInstalledCertificateIdsResponse">The parsed get installed certificate ids response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetInstalledCertificateIdsResponseParser">A delegate to parse custom get installed certificate ids responses.</param>
-        public static Boolean TryParse(CSMS.GetInstalledCertificateIdsRequest                              Request,
+        public static Boolean TryParse(CSMS.GetInstalledCertificateIdsRequest                            Request,
                                        JObject                                                           JSON,
                                        out GetInstalledCertificateIdsResponse?                           GetInstalledCertificateIdsResponse,
                                        out String?                                                       ErrorResponse,
@@ -438,16 +438,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",                    Status.    AsText()),
-                                 new JProperty("certificateHashDataChain",  new JArray(CertificateHashDataChain.Select(certificateHashData => certificateHashData.ToJSON(CustomCertificateHashDataSerializer)))),
+                                 new JProperty("status",                     Status.    AsText()),
+                                 new JProperty("certificateHashDataChain",   new JArray(CertificateHashDataChain.Select(certificateHashData => certificateHashData.ToJSON(CustomCertificateHashDataSerializer)))),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",                StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                              CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",                 StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                               CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",                CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",                 CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

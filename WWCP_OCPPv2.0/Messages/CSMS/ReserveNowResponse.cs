@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A reserve now response.
     /// </summary>
     public class ReserveNowResponse : AResponse<CSMS.ReserveNowRequest,
-                                                   ReserveNowResponse>
+                                                ReserveNowResponse>
     {
 
         #region Properties
@@ -61,9 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public ReserveNowResponse(CSMS.ReserveNowRequest  Request,
-                                  ReservationStatus     Status,
-                                  StatusInfo?           StatusInfo   = null,
-                                  CustomData?           CustomData   = null)
+                                  ReservationStatus       Status,
+                                  StatusInfo?             StatusInfo   = null,
+                                  CustomData?             CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The reserve now request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ReserveNowResponse(CSMS.ReserveNowRequest  Request,
-                                  Result                Result)
+                                  Result                  Result)
 
             : base(Request,
                    Result)
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The reserve now request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomReserveNowResponseParser">A delegate to parse custom reserve now responses.</param>
-        public static ReserveNowResponse Parse(CSMS.ReserveNowRequest                              Request,
+        public static ReserveNowResponse Parse(CSMS.ReserveNowRequest                            Request,
                                                JObject                                           JSON,
                                                CustomJObjectParserDelegate<ReserveNowResponse>?  CustomReserveNowResponseParser   = null)
         {
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="ReserveNowResponse">The parsed reserve now response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomReserveNowResponseParser">A delegate to parse custom reserve now responses.</param>
-        public static Boolean TryParse(CSMS.ReserveNowRequest                              Request,
+        public static Boolean TryParse(CSMS.ReserveNowRequest                            Request,
                                        JObject                                           JSON,
                                        out ReserveNowResponse?                           ReserveNowResponse,
                                        out String?                                       ErrorResponse,
@@ -308,15 +308,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

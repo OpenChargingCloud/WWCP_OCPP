@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A clear display message response.
     /// </summary>
     public class ClearDisplayMessageResponse : AResponse<CSMS.ClearDisplayMessageRequest,
-                                                            ClearDisplayMessageResponse>
+                                                         ClearDisplayMessageResponse>
     {
 
         #region Properties
@@ -61,9 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public ClearDisplayMessageResponse(CSMS.ClearDisplayMessageRequest  Request,
-                                           ClearMessageStatus             Status,
-                                           StatusInfo?                    StatusInfo   = null,
-                                           CustomData?                    CustomData   = null)
+                                           ClearMessageStatus               Status,
+                                           StatusInfo?                      StatusInfo   = null,
+                                           CustomData?                      CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The clear display message request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ClearDisplayMessageResponse(CSMS.ClearDisplayMessageRequest  Request,
-                                           Result                         Result)
+                                           Result                           Result)
 
             : base(Request,
                    Result)
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The clear display message request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomClearDisplayMessageResponseParser">A delegate to parse custom clear display message responses.</param>
-        public static ClearDisplayMessageResponse Parse(CSMS.ClearDisplayMessageRequest                              Request,
+        public static ClearDisplayMessageResponse Parse(CSMS.ClearDisplayMessageRequest                            Request,
                                                         JObject                                                    JSON,
                                                         CustomJObjectParserDelegate<ClearDisplayMessageResponse>?  CustomClearDisplayMessageResponseParser   = null)
         {
@@ -213,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="ClearDisplayMessageResponse">The parsed clear display message response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomClearDisplayMessageResponseParser">A delegate to parse custom clear display message responses.</param>
-        public static Boolean TryParse(CSMS.ClearDisplayMessageRequest                              Request,
+        public static Boolean TryParse(CSMS.ClearDisplayMessageRequest                            Request,
                                        JObject                                                    JSON,
                                        out ClearDisplayMessageResponse?                           ClearDisplayMessageResponse,
                                        out String?                                                ErrorResponse,
@@ -305,15 +305,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A set variables response.
     /// </summary>
     public class SetVariablesResponse : AResponse<CSMS.SetVariablesRequest,
-                                                     SetVariablesResponse>
+                                                  SetVariablesResponse>
     {
 
         #region Properties
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The set variables request leading to this response.</param>
         /// <param name="SetVariableResults">An enumeration of set variable result status per component and variable.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public SetVariablesResponse(CSMS.SetVariablesRequest          Request,
+        public SetVariablesResponse(CSMS.SetVariablesRequest        Request,
                                     IEnumerable<SetVariableResult>  SetVariableResults,
                                     CustomData?                     CustomData   = null)
 
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The set variables request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public SetVariablesResponse(CSMS.SetVariablesRequest  Request,
-                                    Result                  Result)
+                                    Result                    Result)
 
             : base(Request,
                    Result)
@@ -299,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The set variables request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom set variables responses.</param>
-        public static SetVariablesResponse Parse(CSMS.SetVariablesRequest                              Request,
+        public static SetVariablesResponse Parse(CSMS.SetVariablesRequest                            Request,
                                                  JObject                                             JSON,
                                                  CustomJObjectParserDelegate<SetVariablesResponse>?  CustomSetVariablesResponseParser   = null)
         {
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="SetVariablesResponse">The parsed set variables response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetVariablesResponseParser">A delegate to parse custom set variables responses.</param>
-        public static Boolean TryParse(CSMS.SetVariablesRequest                              Request,
+        public static Boolean TryParse(CSMS.SetVariablesRequest                            Request,
                                        JObject                                             JSON,
                                        out SetVariablesResponse?                           SetVariablesResponse,
                                        out String?                                         ErrorResponse,
@@ -415,15 +415,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("setVariableResult",  new JArray(SetVariableResults.Select(setVariableResult => setVariableResult.ToJSON(CustomSetVariableResultSerializer,
-                                                                                                                                                        CustomComponentSerializer,
-                                                                                                                                                        CustomEVSESerializer,
-                                                                                                                                                        CustomVariableSerializer,
-                                                                                                                                                        CustomStatusInfoSerializer,
-                                                                                                                                                        CustomCustomDataSerializer)))),
+                                 new JProperty("setVariableResult",   new JArray(SetVariableResults.Select(setVariableResult => setVariableResult.ToJSON(CustomSetVariableResultSerializer,
+                                                                                                                                                         CustomComponentSerializer,
+                                                                                                                                                         CustomEVSESerializer,
+                                                                                                                                                         CustomVariableSerializer,
+                                                                                                                                                         CustomStatusInfoSerializer,
+                                                                                                                                                         CustomCustomDataSerializer)))),
 
                            CustomData is not null
-                               ? new JProperty("customData",         CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",          CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

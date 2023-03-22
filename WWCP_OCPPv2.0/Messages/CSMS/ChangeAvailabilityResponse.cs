@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// A change availability response.
     /// </summary>
     public class ChangeAvailabilityResponse : AResponse<CSMS.ChangeAvailabilityRequest,
-                                                           ChangeAvailabilityResponse>
+                                                        ChangeAvailabilityResponse>
     {
 
         #region Properties
@@ -61,9 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public ChangeAvailabilityResponse(CSMS.ChangeAvailabilityRequest  Request,
-                                          ChangeAvailabilityStatus      Status,
-                                          StatusInfo?                   StatusInfo   = null,
-                                          CustomData?                   CustomData   = null)
+                                          ChangeAvailabilityStatus        Status,
+                                          StatusInfo?                     StatusInfo   = null,
+                                          CustomData?                     CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The change availability request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ChangeAvailabilityResponse(CSMS.ChangeAvailabilityRequest  Request,
-                                          Result                        Result)
+                                          Result                          Result)
 
             : base(Request,
                    Result)
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The change availability request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomChangeAvailabilityResponseParser">A delegate to parse custom change availability responses.</param>
-        public static ChangeAvailabilityResponse Parse(CSMS.ChangeAvailabilityRequest                              Request,
+        public static ChangeAvailabilityResponse Parse(CSMS.ChangeAvailabilityRequest                            Request,
                                                        JObject                                                   JSON,
                                                        CustomJObjectParserDelegate<ChangeAvailabilityResponse>?  CustomChangeAvailabilityResponseParser   = null)
         {
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="ChangeAvailabilityResponse">The parsed change availability response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChangeAvailabilityResponseParser">A delegate to parse custom change availability responses.</param>
-        public static Boolean TryParse(CSMS.ChangeAvailabilityRequest                              Request,
+        public static Boolean TryParse(CSMS.ChangeAvailabilityRequest                            Request,
                                        JObject                                                   JSON,
                                        out ChangeAvailabilityResponse?                           ChangeAvailabilityResponse,
                                        out String?                                               ErrorResponse,
@@ -306,15 +306,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

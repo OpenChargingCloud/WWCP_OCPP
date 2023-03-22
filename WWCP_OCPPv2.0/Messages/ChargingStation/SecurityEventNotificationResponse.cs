@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// A security event notification response.
     /// </summary>
     public class SecurityEventNotificationResponse : AResponse<CS.SecurityEventNotificationRequest,
-                                                                  SecurityEventNotificationResponse>
+                                                               SecurityEventNotificationResponse>
     {
 
         #region Constructor(s)
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
             var json = JSONObject.Create(
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

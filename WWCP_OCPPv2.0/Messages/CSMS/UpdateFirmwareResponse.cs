@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
     /// An update firmware response.
     /// </summary>
     public class UpdateFirmwareResponse : AResponse<CSMS.UpdateFirmwareRequest,
-                                                       UpdateFirmwareResponse>
+                                                    UpdateFirmwareResponse>
     {
 
         #region Properties
@@ -61,9 +61,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public UpdateFirmwareResponse(CSMS.UpdateFirmwareRequest  Request,
-                                      UpdateFirmwareStatus      Status,
-                                      StatusInfo?               StatusInfo   = null,
-                                      CustomData?               CustomData   = null)
+                                      UpdateFirmwareStatus        Status,
+                                      StatusInfo?                 StatusInfo   = null,
+                                      CustomData?                 CustomData   = null)
 
             : base(Request,
                    Result.OK(),
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The update firmware request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public UpdateFirmwareResponse(CSMS.UpdateFirmwareRequest  Request,
-                                      Result                    Result)
+                                      Result                      Result)
 
             : base(Request,
                    Result)
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">The update firmware request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomUpdateFirmwareResponseParser">A delegate to parse custom update firmware responses.</param>
-        public static UpdateFirmwareResponse Parse(CSMS.UpdateFirmwareRequest                              Request,
+        public static UpdateFirmwareResponse Parse(CSMS.UpdateFirmwareRequest                            Request,
                                                    JObject                                               JSON,
                                                    CustomJObjectParserDelegate<UpdateFirmwareResponse>?  CustomUpdateFirmwareResponseParser   = null)
         {
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="UpdateFirmwareResponse">The parsed update firmware response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomUpdateFirmwareResponseParser">A delegate to parse custom update firmware responses.</param>
-        public static Boolean TryParse(CSMS.UpdateFirmwareRequest                              Request,
+        public static Boolean TryParse(CSMS.UpdateFirmwareRequest                            Request,
                                        JObject                                               JSON,
                                        out UpdateFirmwareResponse?                           UpdateFirmwareResponse,
                                        out String?                                           ErrorResponse,
@@ -309,15 +309,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
