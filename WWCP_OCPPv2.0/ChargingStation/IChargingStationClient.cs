@@ -496,13 +496,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #endregion
 
 
-        #region SignCertificate
+        #region SendCertificateSigningRequest
 
         /// <summary>
-        /// Send certificate signing request.
+        /// Send a certificate signing request.
         /// </summary>
         /// <param name="Request">A sign certificate request.</param>
-        public Task<SignCertificateResponse> SignCertificate(SignCertificateRequest Request);
+        public Task<SignCertificateResponse> SendCertificateSigningRequest(SignCertificateRequest Request);
 
         #endregion
 

@@ -185,6 +185,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
+        #region Static Definitions
+
+        /// <summary>
+        /// Empty EXI data.
+        /// </summary>
+        public static EXIData Empty
+
+            => new (String.Empty);
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (EXIData1, EXIData2)

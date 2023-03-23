@@ -60,24 +60,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a notify charging limit request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="ChargingLimit">The charging limit, its source and whether it is grid critical.</param>
         /// <param name="ChargingSchedules">Limits for the available power or current over time, as set by the external source.</param>
         /// <param name="EVSEId">An optional EVSE identification, when the charging schedule contained in this notification applies to an EVSE.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public NotifyChargingLimitRequest(ChargeBox_Id                   ChargeBoxId,
-
                                           ChargingLimit                  ChargingLimit,
                                           IEnumerable<ChargingSchedule>  ChargingSchedules,
                                           EVSE_Id?                       EVSEId              = null,
-
                                           CustomData?                    CustomData          = null,
+
                                           Request_Id?                    RequestId           = null,
                                           DateTime?                      RequestTimestamp    = null,
                                           TimeSpan?                      RequestTimeout      = null,
@@ -615,25 +613,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("chargingLimit",     ChargingLimit.ToJSON()),
+                                 new JProperty("chargingLimit",      ChargingLimit.ToJSON()),
 
                            ChargingSchedules.Any()
-                               ? new JProperty("chargingSchedule",  new JArray(ChargingSchedules.Select(chargingSchedule => chargingSchedule.ToJSON(CustomChargingScheduleSerializer,
-                                                                                                                                                    CustomChargingSchedulePeriodSerializer,
-                                                                                                                                                    CustomSalesTariffSerializer,
-                                                                                                                                                    CustomSalesTariffEntrySerializer,
-                                                                                                                                                    CustomRelativeTimeIntervalSerializer,
-                                                                                                                                                    CustomConsumptionCostSerializer,
-                                                                                                                                                    CustomCostSerializer,
-                                                                                                                                                    CustomCustomDataSerializer))))
+                               ? new JProperty("chargingSchedule",   new JArray(ChargingSchedules.Select(chargingSchedule => chargingSchedule.ToJSON(CustomChargingScheduleSerializer,
+                                                                                                                                                     CustomChargingSchedulePeriodSerializer,
+                                                                                                                                                     CustomSalesTariffSerializer,
+                                                                                                                                                     CustomSalesTariffEntrySerializer,
+                                                                                                                                                     CustomRelativeTimeIntervalSerializer,
+                                                                                                                                                     CustomConsumptionCostSerializer,
+                                                                                                                                                     CustomCostSerializer,
+                                                                                                                                                     CustomCustomDataSerializer))))
                                : null,
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",            EVSEId.       ToString())
+                               ? new JProperty("evseId",             EVSEId.       ToString())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.   ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",         CustomData.   ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyChargingLimitRequestSerializer is not null

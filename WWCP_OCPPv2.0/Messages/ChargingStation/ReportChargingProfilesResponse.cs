@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// A report charging profiles response.
     /// </summary>
     public class ReportChargingProfilesResponse : AResponse<CS.ReportChargingProfilesRequest,
-                                                               ReportChargingProfilesResponse>
+                                                            ReportChargingProfilesResponse>
     {
 
         #region Constructor(s)
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
             var json = JSONObject.Create(
 
                            CustomData is not null
-                               ? new JProperty("customData", CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

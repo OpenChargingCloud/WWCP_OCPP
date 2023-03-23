@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// An authorize response.
     /// </summary>
     public class AuthorizeResponse : AResponse<CS.AuthorizeRequest,
-                                                  AuthorizeResponse>
+                                               AuthorizeResponse>
     {
 
         #region Properties

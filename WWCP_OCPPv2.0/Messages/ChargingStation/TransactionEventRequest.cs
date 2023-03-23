@@ -117,7 +117,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a transaction event request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="EventType">The type of this transaction event. The first event of a transaction SHALL be of type "started", the last of type "ended". All others should be of type "updated".</param>
         /// <param name="Timestamp">The timestamp at which this transaction event occurred.</param>
         /// <param name="TriggerReason">The reason the charging station sends this message.</param>
@@ -131,15 +130,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="IdToken">An optional identification token for which a transaction has to be/was started.</param>
         /// <param name="EVSE">An optional indication of the EVSE (and connector) used.</param>
         /// <param name="MeterValues">An optional enumeration of meter values.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public TransactionEventRequest(ChargeBox_Id              ChargeBoxId,
-
                                        TransactionEvents         EventType,
                                        DateTime                  Timestamp,
                                        TriggerReasons            TriggerReason,
@@ -153,8 +151,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                        IdToken?                  IdToken              = null,
                                        EVSE?                     EVSE                 = null,
                                        IEnumerable<MeterValue>?  MeterValues          = null,
-
                                        CustomData?               CustomData           = null,
+
                                        Request_Id?               RequestId            = null,
                                        DateTime?                 RequestTimestamp     = null,
                                        TimeSpan?                 RequestTimeout       = null,
@@ -1012,50 +1010,50 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("eventType",           EventType.               AsText()),
-                                 new JProperty("timestamp",           Timestamp.               ToIso8601()),
-                                 new JProperty("triggerReason",       TriggerReason.           AsText()),
-                                 new JProperty("seqNo",               SequenceNumber),
-                                 new JProperty("transactionInfo",     TransactionInfo.         ToJSON(CustomTransactionSerializer,
-                                                                                                      CustomCustomDataSerializer)),
+                                 new JProperty("eventType",            EventType.      AsText()),
+                                 new JProperty("timestamp",            Timestamp.      ToIso8601()),
+                                 new JProperty("triggerReason",        TriggerReason.  AsText()),
+                                 new JProperty("seqNo",                SequenceNumber),
+                                 new JProperty("transactionInfo",      TransactionInfo.ToJSON(CustomTransactionSerializer,
+                                                                                              CustomCustomDataSerializer)),
 
-                           //Offline.HasValue
-                           //    ? new JProperty("offline",             Offline.           Value)
-                           //    : null,
+                           Offline.HasValue
+                               ? new JProperty("offline",              Offline.           Value)
+                               : null,
 
-                           //NumberOfPhasesUsed.HasValue
-                           //    ? new JProperty("numberOfPhasesUsed",  NumberOfPhasesUsed.Value)
-                           //    : null,
+                           NumberOfPhasesUsed.HasValue
+                               ? new JProperty("numberOfPhasesUsed",   NumberOfPhasesUsed.Value)
+                               : null,
 
-                           //CableMaxCurrent.HasValue
-                           //    ? new JProperty("cableMaxCurrent",     CableMaxCurrent.   Value)
-                           //    : null,
+                           CableMaxCurrent.HasValue
+                               ? new JProperty("cableMaxCurrent",      CableMaxCurrent.   Value)
+                               : null,
 
-                           ////ReservationId.HasValue
-                           ////    ? new JProperty("reservationId",       ReservationId.     Value.Value)
-                           ////    : null,
+                           ReservationId.HasValue
+                               ? new JProperty("reservationId",        ReservationId.     Value.Value)
+                               : null,
 
-                           //IdToken is not null
-                           //    ? new JProperty("idToken",             IdToken.                 ToJSON(CustomIdTokenSerializer,
-                           //                                                                           CustomAdditionalInfoSerializer,
-                           //                                                                           CustomCustomDataSerializer))
-                           //    : null,
+                           IdToken is not null
+                               ? new JProperty("idToken",              IdToken.        ToJSON(CustomIdTokenSerializer,
+                                                                                              CustomAdditionalInfoSerializer,
+                                                                                              CustomCustomDataSerializer))
+                               : null,
 
-                           //EVSE is not null
-                           //    ? new JProperty("evse",                EVSE.                    ToJSON(CustomEVSESerializer,
-                           //                                                                           CustomCustomDataSerializer))
-                           //    : null,
+                           EVSE is not null
+                               ? new JProperty("evse",                 EVSE.           ToJSON(CustomEVSESerializer,
+                                                                                              CustomCustomDataSerializer))
+                               : null,
 
-                           //MeterValues.Any()
-                           //    ? new JProperty("meterValue",          new JArray(MeterValues.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
-                           //                                                                                                         CustomSampledValueSerializer,
-                           //                                                                                                         CustomSignedMeterValueSerializer,
-                           //                                                                                                         CustomUnitsOfMeasureSerializer,
-                           //                                                                                                         CustomCustomDataSerializer))))
-                           //    : null,
+                           MeterValues.Any()
+                               ? new JProperty("meterValue",           new JArray(MeterValues.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
+                                                                                                                                     CustomSampledValueSerializer,
+                                                                                                                                     CustomSignedMeterValueSerializer,
+                                                                                                                                     CustomUnitsOfMeasureSerializer,
+                                                                                                                                     CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",          CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",           CustomData.     ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomTransactionEventRequestSerializer is not null

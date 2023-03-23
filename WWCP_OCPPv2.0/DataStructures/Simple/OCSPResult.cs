@@ -185,6 +185,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
+        #region Static Definitions
+
+        /// <summary>
+        /// An empty OCSP result.
+        /// </summary>
+        public static OCSPResult Empty
+
+            => new (String.Empty);
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (OCSPResult1, OCSPResult2)

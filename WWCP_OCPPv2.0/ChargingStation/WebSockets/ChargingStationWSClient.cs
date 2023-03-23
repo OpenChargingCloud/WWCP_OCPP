@@ -8297,7 +8297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #endregion
 
 
-        #region SignCertificate                      (Request)
+        #region SendCertificateSigningRequest        (Request)
 
         /// <summary>
         /// Send a sign certificate request.
@@ -8305,7 +8305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="Request">A SignCertificate request.</param>
         public async Task<SignCertificateResponse>
 
-            SignCertificate(SignCertificateRequest  Request)
+            SendCertificateSigningRequest(SignCertificateRequest  Request)
 
         {
 

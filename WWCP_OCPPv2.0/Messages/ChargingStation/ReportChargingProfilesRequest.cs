@@ -75,28 +75,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a report charging profiles request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="ReportChargingProfilesRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting ReportChargingProfilesRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
         /// <param name="ChargingLimitSource">The source that has installed this charging profile.</param>
         /// <param name="EVSEId">The evse to which the charging profile applies. If evseId = 0, the message contains an overall limit for the charging station.</param>
         /// <param name="ChargingProfiles">The enumeration of charging profiles.</param>
         /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the charging profiles follows. Default value when omitted is false.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ReportChargingProfilesRequest(ChargeBox_Id                  ChargeBoxId,
-
                                              Int32                         ReportChargingProfilesRequestId,
                                              ChargingLimitSources          ChargingLimitSource,
                                              EVSE_Id                       EVSEId,
                                              IEnumerable<ChargingProfile>  ChargingProfiles,
                                              Boolean?                      ToBeContinued       = null,
-
                                              CustomData?                   CustomData          = null,
+
                                              Request_Id?                   RequestId           = null,
                                              DateTime?                     RequestTimestamp    = null,
                                              TimeSpan?                     RequestTimeout      = null,
@@ -740,20 +738,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("requestId",            ReportChargingProfilesRequestId),
-                                 new JProperty("chargingLimitSource",  ChargingLimitSource),
-                                 new JProperty("evseId",               EVSEId.ToString()),
+                                 new JProperty("requestId",             ReportChargingProfilesRequestId),
+                                 new JProperty("chargingLimitSource",   ChargingLimitSource),
+                                 new JProperty("evseId",                EVSEId.ToString()),
 
-                                 new JProperty("chargingProfile",      new JArray(ChargingProfiles.Select(chargingProfile => chargingProfile.ToJSON(CustomChargingProfileSerializer,
-                                                                                                                                                    CustomChargingScheduleSerializer,
-                                                                                                                                                    CustomChargingSchedulePeriodSerializer)))),
+                                 new JProperty("chargingProfile",       new JArray(ChargingProfiles.Select(chargingProfile => chargingProfile.ToJSON(CustomChargingProfileSerializer,
+                                                                                                                                                     CustomChargingScheduleSerializer,
+                                                                                                                                                     CustomChargingSchedulePeriodSerializer)))),
 
                            ToBeContinued.HasValue
-                               ? new JProperty("tbc",                  ToBeContinued.Value)
+                               ? new JProperty("tbc",                   ToBeContinued.Value)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",            CustomData.ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomReportChargingProfilesRequestSerializer is not null

@@ -66,26 +66,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a status notification request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="Timestamp">The time for which the status is reported.</param>
         /// <param name="ConnectorStatus">The current status of the connector.</param>
         /// <param name="EVSEId">The identification of the EVSE to which the connector belongs for which the the status is reported.</param>
         /// <param name="ConnectorId">The identification of the connector within the EVSE for which the status is reported.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public StatusNotificationRequest(ChargeBox_Id        ChargeBoxId,
-
                                          DateTime            Timestamp,
                                          ConnectorStatus     ConnectorStatus,
                                          EVSE_Id             EVSEId,
                                          Connector_Id        ConnectorId,
-
                                          CustomData?         CustomData          = null,
+
                                          Request_Id?         RequestId           = null,
                                          DateTime?           RequestTimestamp    = null,
                                          TimeSpan?           RequestTimeout      = null,
@@ -363,13 +361,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("timestamp",        Timestamp.      ToIso8601()),
-                                 new JProperty("connectorStatus",  ConnectorStatus.AsText()),
-                                 new JProperty("evseId",           EVSEId.         ToString()),
-                                 new JProperty("connectorId",      ConnectorId.    ToString()),
+                                 new JProperty("timestamp",         Timestamp.      ToIso8601()),
+                                 new JProperty("connectorStatus",   ConnectorStatus.AsText()),
+                                 new JProperty("evseId",            EVSEId.         ToString()),
+                                 new JProperty("connectorId",       ConnectorId.    ToString()),
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.     ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomStatusNotificationRequestSerializer is not null

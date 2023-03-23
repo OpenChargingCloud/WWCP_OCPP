@@ -1352,7 +1352,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             }
 
 
-            // Wire events...
+            // React on incoming messages...
 
             #region OnBootNotification
 
@@ -1426,10 +1426,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 await Task.Delay(100, CancellationToken);
 
 
-                var response = new BootNotificationResponse(Request:      Request,
-                                                            Status:       RegistrationStatus.Accepted,
-                                                            CurrentTime:  Timestamp.Now,
-                                                            Interval:     TimeSpan.FromMinutes(5));
+                var response = new BootNotificationResponse(Request:       Request,
+                                                            Status:        RegistrationStatus.Accepted,
+                                                            CurrentTime:   Timestamp.Now,
+                                                            Interval:      TimeSpan.FromMinutes(5),
+                                                            StatusInfo:    null,
+                                                            CustomData:    null);
 
 
                 #region Send OnBootNotificationResponse event
@@ -1499,7 +1501,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 await Task.Delay(100, CancellationToken);
 
-                var response = new FirmwareStatusNotificationResponse(Request);
+                var response = new FirmwareStatusNotificationResponse(Request:      Request,
+                                                                      CustomData:   null);
 
 
                 #region Send OnFirmwareStatusResponse event
@@ -1527,7 +1530,82 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
-            // OnPublishFirmwareStatusNotification
+            #region OnPublishFirmwareStatusNotification
+
+            CSMSServer.OnPublishFirmwareStatusNotification += async (LogTimestamp,
+                                                                     Sender,
+                                                                     Request,
+                                                                     CancellationToken) => {
+
+                #region Send OnPublishFirmwareStatusNotificationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnPublishFirmwareStatusNotificationRequest?.Invoke(startTime,
+                                                                       this,
+                                                                       Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnPublishFirmwareStatusNotificationRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnPublishFirmwareStatusNotification: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new PublishFirmwareStatusNotificationResponse(Request:      Request,
+                                                                             CustomData:   null);
+
+
+                #region Send OnPublishFirmwareStatusNotificationResponse event
+
+                try
+                {
+
+                    OnPublishFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        Request,
+                                                                        response,
+                                                                        Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnPublishFirmwareStatusNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
             #region OnHeartbeat
 
@@ -1564,8 +1642,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                     if (Sender is CSMSWSServer centralSystemWSServer)
                         reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
 
-                    //if (Sender is CSMSSOAPServer centralSystemSOAPServer)
-
                 }
                 else
                 {
@@ -1573,16 +1649,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                     if (Sender is CSMSWSServer centralSystemWSServer)
                         reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
 
-                    //if (Sender is CSMSSOAPServer centralSystemSOAPServer)
-
                 }
 
 
                 await Task.Delay(100, CancellationToken);
 
 
-                var response = new HeartbeatResponse(Request:      Request,
-                                                     CurrentTime:  Timestamp.Now);
+                var response = new HeartbeatResponse(Request:       Request,
+                                                     CurrentTime:   Timestamp.Now,
+                                                     CustomData:    null);
 
 
                 #region Send OnHeartbeatResponse event
@@ -1610,11 +1685,390 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
-            // OnNotifyEvent
-            // OnSecurityEventNotification
-            // OnNotifyReport
-            // OnNotifyMonitoringReport
-            // OnLogStatusNotification
+            #region OnNotifyEvent
+
+            CSMSServer.OnNotifyEvent += async (LogTimestamp,
+                                               Sender,
+                                               Request,
+                                               CancellationToken) => {
+
+                #region Send OnNotifyEventRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyEventRequest?.Invoke(startTime,
+                                                 this,
+                                                 Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyEventRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnNotifyEvent: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new NotifyEventResponse(Request:      Request,
+                                                       CustomData:   null);
+
+
+                #region Send OnNotifyEventResponse event
+
+                try
+                {
+
+                    OnNotifyEventResponse?.Invoke(Timestamp.Now,
+                                                  this,
+                                                  Request,
+                                                  response,
+                                                  Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyEventResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnSecurityEventNotification
+
+            CSMSServer.OnSecurityEventNotification += async (LogTimestamp,
+                                                             Sender,
+                                                             Request,
+                                                             CancellationToken) => {
+
+                #region Send OnSecurityEventNotificationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSecurityEventNotificationRequest?.Invoke(startTime,
+                                                               this,
+                                                               Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnSecurityEventNotificationRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnSecurityEventNotification: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new SecurityEventNotificationResponse(Request:      Request,
+                                                                     CustomData:   null);
+
+
+                #region Send OnSecurityEventNotificationResponse event
+
+                try
+                {
+
+                    OnSecurityEventNotificationResponse?.Invoke(Timestamp.Now,
+                                                                this,
+                                                                Request,
+                                                                response,
+                                                                Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnSecurityEventNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnNotifyReport
+
+            CSMSServer.OnNotifyReport += async (LogTimestamp,
+                                                Sender,
+                                                Request,
+                                                CancellationToken) => {
+
+                #region Send OnNotifyReportRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyReportRequest?.Invoke(startTime,
+                                                  this,
+                                                  Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyReportRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnNotifyReport: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new NotifyReportResponse(Request:      Request,
+                                                        CustomData:   null);
+
+
+                #region Send OnNotifyReportResponse event
+
+                try
+                {
+
+                    OnNotifyReportResponse?.Invoke(Timestamp.Now,
+                                                   this,
+                                                   Request,
+                                                   response,
+                                                   Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyReportResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnNotifyMonitoringReport
+
+            CSMSServer.OnNotifyMonitoringReport += async (LogTimestamp,
+                                                          Sender,
+                                                          Request,
+                                                          CancellationToken) => {
+
+                #region Send OnNotifyMonitoringReportRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyMonitoringReportRequest?.Invoke(startTime,
+                                                            this,
+                                                            Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyMonitoringReportRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnNotifyMonitoringReport: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new NotifyMonitoringReportResponse(Request:      Request,
+                                                                  CustomData:   null);
+
+
+                #region Send OnNotifyMonitoringReportResponse event
+
+                try
+                {
+
+                    OnNotifyMonitoringReportResponse?.Invoke(Timestamp.Now,
+                                                             this,
+                                                             Request,
+                                                             response,
+                                                             Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyMonitoringReportResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnLogStatusNotification
+
+            CSMSServer.OnLogStatusNotification += async (LogTimestamp,
+                                                         Sender,
+                                                         Request,
+                                                         CancellationToken) => {
+
+                #region Send OnLogStatusNotificationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnLogStatusNotificationRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnLogStatusNotificationRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnLogStatusNotification: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new LogStatusNotificationResponse(Request:      Request,
+                                                                 CustomData:   null);
+
+
+                #region Send OnLogStatusNotificationResponse event
+
+                try
+                {
+
+                    OnLogStatusNotificationResponse?.Invoke(Timestamp.Now,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnLogStatusNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
             #region OnIncomingDataTransfer
 
@@ -1702,14 +2156,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 var response =  Request.VendorId == "GraphDefined OEM"
 
                                     ? new DataTransferResponse(
-                                          Request,
-                                          DataTransferStatus.Accepted,
-                                          responseData
+                                          Request:      Request,
+                                          Status:       DataTransferStatus.Accepted,
+                                          Data:         responseData,
+                                          StatusInfo:   null,
+                                          CustomData:   null
                                       )
 
                                     : new DataTransferResponse(
-                                          Request,
-                                          DataTransferStatus.Rejected
+                                          Request:      Request,
+                                          Status:       DataTransferStatus.Rejected,
+                                          Data:         null,
+                                          StatusInfo:   null,
+                                          CustomData:   null
                                       );
 
 
@@ -1739,11 +2198,321 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             #endregion
 
 
-            // OnSignCertificate
-            // OnGet15118EVCertificate
-            // OnGetCertificateStatus
+            #region OnSignCertificate
 
-            // OnReservationStatusUpdate
+            CSMSServer.OnSignCertificate += async (LogTimestamp,
+                                                   Sender,
+                                                   Request,
+                                                   CancellationToken) => {
+
+                #region Send OnSignCertificateRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSignCertificateRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnSignCertificateRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnSignCertificate: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new SignCertificateResponse(Request:      Request,
+                                                           Status:       GenericStatus.Accepted,
+                                                           CustomData:   null);
+
+
+                #region Send OnSignCertificateResponse event
+
+                try
+                {
+
+                    OnSignCertificateResponse?.Invoke(Timestamp.Now,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnSignCertificateResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGet15118EVCertificate
+
+            CSMSServer.OnGet15118EVCertificate += async (LogTimestamp,
+                                                         Sender,
+                                                         Request,
+                                                         CancellationToken) => {
+
+                #region Send OnGet15118EVCertificateRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGet15118EVCertificateRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnGet15118EVCertificateRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnGet15118EVCertificate: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new Get15118EVCertificateResponse(Request:       Request,
+                                                                 Status:        ISO15118EVCertificateStatus.Accepted,
+                                                                 EXIResponse:   EXIData.Empty,
+                                                                 StatusInfo:    null,
+                                                                 CustomData:    null);
+
+
+                #region Send OnGet15118EVCertificateResponse event
+
+                try
+                {
+
+                    OnGet15118EVCertificateResponse?.Invoke(Timestamp.Now,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnGet15118EVCertificateResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetCertificateStatus
+
+            CSMSServer.OnGetCertificateStatus += async (LogTimestamp,
+                                                        Sender,
+                                                        Request,
+                                                        CancellationToken) => {
+
+                #region Send OnGetCertificateStatusRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetCertificateStatusRequest?.Invoke(startTime,
+                                                          this,
+                                                          Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnGetCertificateStatusRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnGetCertificateStatus: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new GetCertificateStatusResponse(Request:      Request,
+                                                                Status:       GetCertificateStatus.Accepted,
+                                                                OCSPResult:   OCSPResult.Empty,
+                                                                StatusInfo:   null,
+                                                                CustomData:   null);
+
+
+                #region Send OnGetCertificateStatusResponse event
+
+                try
+                {
+
+                    OnGetCertificateStatusResponse?.Invoke(Timestamp.Now,
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnGetCertificateStatusResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            #region OnReservationStatusUpdate
+
+            CSMSServer.OnReservationStatusUpdate += async (LogTimestamp,
+                                                           Sender,
+                                                           Request,
+                                                           CancellationToken) => {
+
+                #region Send OnReservationStatusUpdateRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnReservationStatusUpdateRequest?.Invoke(startTime,
+                                                             this,
+                                                             Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnReservationStatusUpdateRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnReservationStatusUpdate: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new ReservationStatusUpdateResponse(Request:      Request,
+                                                                   CustomData:   null);
+
+
+                #region Send OnReservationStatusUpdateResponse event
+
+                try
+                {
+
+                    OnReservationStatusUpdateResponse?.Invoke(Timestamp.Now,
+                                                              this,
+                                                              Request,
+                                                              response,
+                                                              Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnReservationStatusUpdateResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
             #region OnAuthorize
 
@@ -1797,11 +2566,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 await Task.Delay(100, CancellationToken);
 
                 var response = new AuthorizeResponse(
-                                   Request:      Request,
-                                   IdTokenInfo:  new IdTokenInfo(
-                                                     Status:               AuthorizationStatus.Accepted,
-                                                     CacheExpiryDateTime:  Timestamp.Now.AddDays(3)
-                                                 )
+                                   Request:       Request,
+                                   IdTokenInfo:   new IdTokenInfo(
+                                                      Status:               AuthorizationStatus.Accepted,
+                                                      CacheExpiryDateTime:  Timestamp.Now.AddDays(3)
+                                                  ),
+                                   CustomData:    null
                                );
 
 
@@ -1830,7 +2600,84 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
-            // OnNotifyEVChargingNeeds
+            #region OnNotifyEVChargingNeeds
+
+            CSMSServer.OnNotifyEVChargingNeeds += async (LogTimestamp,
+                                                         Sender,
+                                                         Request,
+                                                         CancellationToken) => {
+
+                #region Send OnNotifyEVChargingNeedsRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyEVChargingNeedsRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyEVChargingNeedsRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnNotifyEVChargingNeeds: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new NotifyEVChargingNeedsResponse(Request:      Request,
+                                                                 Status:       NotifyEVChargingNeedsStatus.Accepted,
+                                                                 StatusInfo:   null,
+                                                                 CustomData:   null);
+
+
+                #region Send OnNotifyEVChargingNeedsResponse event
+
+                try
+                {
+
+                    OnNotifyEVChargingNeedsResponse?.Invoke(Timestamp.Now,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyEVChargingNeedsResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
             #region OnTransactionEvent
 
@@ -1884,12 +2731,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 await Task.Delay(100, CancellationToken);
 
                 var response = new TransactionEventResponse(
-                                   Request:                 Request,
-                                   TotalCost:               null,
-                                   ChargingPriority:        null,
-                                   IdTokenInfo:             null,
-                                   UpdatedPersonalMessage:  null,
-                                   CustomData:              null
+                                   Request:                  Request,
+                                   TotalCost:                null,
+                                   ChargingPriority:         null,
+                                   IdTokenInfo:              null,
+                                   UpdatedPersonalMessage:   null,
+                                   CustomData:               null
                                );
 
 
@@ -1967,7 +2814,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 await Task.Delay(100, CancellationToken);
 
-                var response = new StatusNotificationResponse(Request);
+                var response = new StatusNotificationResponse(Request:      Request,
+                                                              CustomData:   null);
 
 
                 #region Send OnStatusNotificationResponse event
@@ -2040,7 +2888,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 await Task.Delay(100, CancellationToken);
 
-                var response = new MeterValuesResponse(Request);
+                var response = new MeterValuesResponse(Request:      Request,
+                                                       CustomData:   null);
 
 
                 #region Send OnMeterValuesResponse event
@@ -2068,9 +2917,236 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
-            // OnNotifyChargingLimit
-            // OnClearedChargingLimit
-            // OnReportChargingProfiles
+            #region OnNotifyChargingLimit
+
+            CSMSServer.OnNotifyChargingLimit += async (LogTimestamp,
+                                                       Sender,
+                                                       Request,
+                                                       CancellationToken) => {
+
+                #region Send OnNotifyChargingLimitRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyChargingLimitRequest?.Invoke(startTime,
+                                                         this,
+                                                         Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyChargingLimitRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnNotifyChargingLimit: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new NotifyChargingLimitResponse(Request:      Request,
+                                                               CustomData:   null);
+
+
+                #region Send OnNotifyChargingLimitResponse event
+
+                try
+                {
+
+                    OnNotifyChargingLimitResponse?.Invoke(Timestamp.Now,
+                                                          this,
+                                                          Request,
+                                                          response,
+                                                          Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyChargingLimitResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnClearedChargingLimit
+
+            CSMSServer.OnClearedChargingLimit += async (LogTimestamp,
+                                                        Sender,
+                                                        Request,
+                                                        CancellationToken) => {
+
+                #region Send OnClearedChargingLimitRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnClearedChargingLimitRequest?.Invoke(startTime,
+                                                          this,
+                                                          Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnClearedChargingLimitRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnClearedChargingLimit: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new ClearedChargingLimitResponse(Request:      Request,
+                                                                CustomData:   null);
+
+
+                #region Send OnClearedChargingLimitResponse event
+
+                try
+                {
+
+                    OnClearedChargingLimitResponse?.Invoke(Timestamp.Now,
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnClearedChargingLimitResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnReportChargingProfiles
+
+            CSMSServer.OnReportChargingProfiles += async (LogTimestamp,
+                                                          Sender,
+                                                          Request,
+                                                          CancellationToken) => {
+
+                #region Send OnReportChargingProfilesRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnReportChargingProfilesRequest?.Invoke(startTime,
+                                                            this,
+                                                            Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnReportChargingProfilesRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnReportChargingProfiles: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new ReportChargingProfilesResponse(Request:      Request,
+                                                                  CustomData:   null);
+
+
+                #region Send OnReportChargingProfilesResponse event
+
+                try
+                {
+
+                    OnReportChargingProfilesResponse?.Invoke(Timestamp.Now,
+                                                             this,
+                                                             Request,
+                                                             response,
+                                                             Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnReportChargingProfilesResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
 
             #region OnNotifyDisplayMessages
@@ -2118,7 +3194,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 await Task.Delay(100, CancellationToken);
 
-                var response = new NotifyDisplayMessagesResponse(Request);
+                var response = new NotifyDisplayMessagesResponse(Request:      Request,
+                                                                 CustomData:   null);
 
 
                 #region Send OnNotifyDisplayMessagesResponse event
@@ -2146,7 +3223,82 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
-            // OnNotifyCustomerInformation
+            #region OnNotifyCustomerInformation
+
+            CSMSServer.OnNotifyCustomerInformation += async (LogTimestamp,
+                                                             Sender,
+                                                             Request,
+                                                             CancellationToken) => {
+
+                #region Send OnNotifyCustomerInformationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyCustomerInformationRequest?.Invoke(startTime,
+                                                               this,
+                                                               Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyCustomerInformationRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnNotifyCustomerInformation: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new NotifyCustomerInformationResponse(Request:      Request,
+                                                                     CustomData:   null);
+
+
+                #region Send OnNotifyCustomerInformationResponse event
+
+                try
+                {
+
+                    OnNotifyCustomerInformationResponse?.Invoke(Timestamp.Now,
+                                                                this,
+                                                                Request,
+                                                                response,
+                                                                Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyCustomerInformationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
 
         }

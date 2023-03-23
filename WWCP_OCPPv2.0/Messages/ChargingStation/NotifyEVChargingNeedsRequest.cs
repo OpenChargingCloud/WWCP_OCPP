@@ -60,24 +60,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a notify EV charging needs request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="EVSEId">The EVSE and connector to which the EV is connected to.</param>
         /// <param name="ChargingNeeds">The characteristics of the energy delivery required.</param>
         /// <param name="MaxScheduleTuples">The optional maximum schedule tuples the car supports per schedule.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public NotifyEVChargingNeedsRequest(ChargeBox_Id        ChargeBoxId,
-
                                             EVSE_Id             EVSEId,
                                             ChargingNeeds       ChargingNeeds,
                                             UInt16?             MaxScheduleTuples   = null,
-
                                             CustomData?         CustomData          = null,
+
                                             Request_Id?         RequestId           = null,
                                             DateTime?           RequestTimestamp    = null,
                                             TimeSpan?           RequestTimeout      = null,
@@ -454,19 +452,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("evseId",             EVSEId.       ToString()),
+                                 new JProperty("evseId",              EVSEId.       ToString()),
 
-                                 new JProperty("chargingNeeds",      ChargingNeeds.ToJSON(CustomChargingNeedsSerializer,
-                                                                                          CustomACChargingParametersSerializer,
-                                                                                          CustomDCChargingParametersSerializer,
-                                                                                          CustomCustomDataSerializer)),
+                                 new JProperty("chargingNeeds",       ChargingNeeds.ToJSON(CustomChargingNeedsSerializer,
+                                                                                           CustomACChargingParametersSerializer,
+                                                                                           CustomDCChargingParametersSerializer,
+                                                                                           CustomCustomDataSerializer)),
 
                            MaxScheduleTuples.HasValue
-                               ? new JProperty("maxScheduleTuples",  MaxScheduleTuples.Value)
+                               ? new JProperty("maxScheduleTuples",   MaxScheduleTuples.Value)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",         CustomData.   ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",          CustomData.   ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyEVChargingNeedsRequestSerializer is not null

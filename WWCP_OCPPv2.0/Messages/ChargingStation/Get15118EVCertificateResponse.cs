@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// The get 15118 EV certificate response.
     /// </summary>
     public class Get15118EVCertificateResponse : AResponse<CS.Get15118EVCertificateRequest,
-                                                              Get15118EVCertificateResponse>
+                                                           Get15118EVCertificateResponse>
     {
 
         #region Properties
@@ -335,17 +335,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("status",       Status.     AsText()),
-                                 new JProperty("exiResponse",  EXIResponse.ToString()),
+                                 new JProperty("status",        Status.     AsText()),
+                                 new JProperty("exiResponse",   EXIResponse.ToString()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",   StatusInfo. ToJSON(CustomStatusInfoSerializer,
-                                                                                  CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",    StatusInfo. ToJSON(CustomStatusInfoSerializer,
+                                                                                   CustomCustomDataSerializer))
                                : null,
 
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData. ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",    CustomData. ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// The get certificate status response.
     /// </summary>
     public class GetCertificateStatusResponse : AResponse<CS.GetCertificateStatusRequest,
-                                                             GetCertificateStatusResponse>
+                                                          GetCertificateStatusResponse>
     {
 
         #region Properties
@@ -334,17 +334,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("status",      Status.     AsText()),
-                                 new JProperty("ocspResult",  OCSPResult. ToString()),
+                                 new JProperty("status",       Status.     AsText()),
+                                 new JProperty("ocspResult",   OCSPResult. ToString()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo. ToJSON(CustomStatusInfoSerializer,
-                                                                                 CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo. ToJSON(CustomStatusInfoSerializer,
+                                                                                  CustomCustomDataSerializer))
                                : null,
 
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData. ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData. ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

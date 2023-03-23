@@ -58,8 +58,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CSR">The PEM encoded RFC 2986 certificate signing request (CSR) [max 5500].</param>
         /// <param name="CertificateType">Whether the certificate is to be used for both the 15118 connection (if implemented) and the charging station to central system (CSMS) connection.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
@@ -68,8 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         public SignCertificateRequest(ChargeBox_Id            ChargeBoxId,
                                       String                  CSR,
                                       CertificateSigningUse?  CertificateType     = null,
-
                                       CustomData?             CustomData          = null,
+
                                       Request_Id?             RequestId           = null,
                                       DateTime?               RequestTimestamp    = null,
                                       TimeSpan?               RequestTimeout      = null,

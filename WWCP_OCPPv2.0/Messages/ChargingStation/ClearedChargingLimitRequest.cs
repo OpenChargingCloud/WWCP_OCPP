@@ -54,22 +54,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a cleared charging limit request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="ChargingLimitSource">A source of the charging limit.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ClearedChargingLimitRequest(ChargeBox_Id          ChargeBoxId,
-
                                            ChargingLimitSources  ChargingLimitSource,
                                            EVSE_Id?              EVSEId,
-
                                            CustomData?           CustomData          = null,
+
                                            Request_Id?           RequestId           = null,
                                            DateTime?             RequestTimestamp    = null,
                                            TimeSpan?             RequestTimeout      = null,
@@ -305,14 +303,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("chargingLimitSource",  ChargingLimitSource.AsText()),
+                                 new JProperty("chargingLimitSource",   ChargingLimitSource.AsText()),
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",               EVSEId.             ToString())
+                               ? new JProperty("evseId",                EVSEId.             ToString())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.         ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",            CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomClearedChargingLimitRequestSerializer is not null

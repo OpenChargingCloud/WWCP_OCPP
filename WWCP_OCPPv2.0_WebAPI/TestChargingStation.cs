@@ -31,7 +31,6 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv2_0.CS;
-using System.Linq;
 
 #endregion
 
@@ -1444,9 +1443,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region WireEvents(CPServer)
 
 
-        private ConcurrentDictionary<DisplayMessage_Id, MessageInfo> displayMessages  = new ();
-        private ConcurrentDictionary<Transaction_Id,    Transaction> transactions     = new ();
-        private ConcurrentDictionary<Transaction_Id,    Decimal>     totalCosts       = new ();
+        private ConcurrentDictionary<DisplayMessage_Id, MessageInfo>  displayMessages   = new ();
+        private ConcurrentDictionary<Transaction_Id,    Transaction>  transactions      = new ();
+        private ConcurrentDictionary<Transaction_Id,    Decimal>      totalCosts        = new ();
 
         public void WireEvents(IChargingStationServer CPServer)
         {
@@ -1485,14 +1484,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
                     DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid reset request for charge box '", Request.ChargeBoxId, "'!"));
-                    response = new ResetResponse(Request,
-                                                 ResetStatus.Rejected);
+                    response = new ResetResponse(Request:      Request,
+                                                 Status:       ResetStatus.Rejected,
+                                                 StatusInfo:   null,
+                                                 CustomData:   null);
                 }
                 else
                 {
                     DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming '", Request.ResetType, "' reset request accepted."));
-                    response = new ResetResponse(Request,
-                                                 ResetStatus.Accepted);
+                    response = new ResetResponse(Request:      Request,
+                                                 Status:       ResetStatus.Accepted,
+                                                 StatusInfo:   null,
+                                                 CustomData:   null);
                 }
 
 
@@ -1559,7 +1562,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                     DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid UpdateFirmware request for charge box '" + Request.ChargeBoxId + "'!");
 
-                    response = new UpdateFirmwareResponse(Request, UpdateFirmwareStatus.Rejected);
+                    response = new UpdateFirmwareResponse(Request:      Request,
+                                                          Status:       UpdateFirmwareStatus.Rejected,
+                                                          StatusInfo:   null,
+                                                          CustomData:   null);
 
                 }
                 else
@@ -1567,7 +1573,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                     DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming UpdateFirmware request for '" + Request.Firmware.FirmwareURL + "'.");
 
-                    response = new UpdateFirmwareResponse(Request, UpdateFirmwareStatus.Accepted);
+                    response = new UpdateFirmwareResponse(Request:      Request,
+                                                          Status:       UpdateFirmwareStatus.Accepted,
+                                                          StatusInfo:   null,
+                                                          CustomData:   null);
 
                 }
 
@@ -1635,7 +1644,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                     DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid PublishFirmware request for charge box '" + Request.ChargeBoxId + "'!");
 
-                    response = new PublishFirmwareResponse(Request, GenericStatus.Rejected);
+                    response = new PublishFirmwareResponse(Request:      Request,
+                                                           Status:       GenericStatus.Rejected,
+                                                           StatusInfo:   null,
+                                                           CustomData:   null);
 
                 }
                 else
@@ -1643,7 +1655,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                     DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming PublishFirmware request for '" + Request.DownloadLocation + "'.");
 
-                    response = new PublishFirmwareResponse(Request, GenericStatus.Accepted);
+                    response = new PublishFirmwareResponse(Request:      Request,
+                                                           Status:       GenericStatus.Accepted,
+                                                           StatusInfo:   null,
+                                                           CustomData:   null);
 
                 }
 
@@ -1711,7 +1726,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                     DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid UnpublishFirmware request for charge box '" + Request.ChargeBoxId + "'!");
 
-                    response = new UnpublishFirmwareResponse(Request, Result.GenericError());
+                    response = new UnpublishFirmwareResponse(Request:      Request,
+                                                             Status:       UnpublishFirmwareStatus.Unknown,
+                                                             CustomData:   null);
 
                 }
                 else
@@ -1719,7 +1736,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                     DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming UnpublishFirmware request for '" + Request.MD5Checksum + "'.");
 
-                    response = new UnpublishFirmwareResponse(Request, UnpublishFirmwareStatus.Unpublished);
+                    response = new UnpublishFirmwareResponse(Request:      Request,
+                                                             Status:       UnpublishFirmwareStatus.Unpublished,
+                                                             CustomData:   null);
 
                 }
 
@@ -1751,17 +1770,928 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             #endregion
 
-            // OnGetBaseReport
-            // OnGetReport
-            // OnGetLog
-            // OnSetVariables
-            // OnGetVariables
-            // OnSetMonitoringBase
-            // OnGetMonitoringReport
-            // OnSetMonitoringLevel
-            // OnSetVariableMonitoring
-            // OnClearVariableMonitoring
-            // OnSetNetworkProfile
+            #region OnGetBaseReport
+
+            CPServer.OnGetBaseReport += async (LogTimestamp,
+                                               Sender,
+                                               Request,
+                                               CancellationToken) => {
+
+                #region Send OnGetBaseReportRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetBaseReportRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetBaseReportRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                GetBaseReportResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid GetBaseReport request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new GetBaseReportResponse(Request:      Request,
+                                                         Status:       GenericDeviceModelStatus.Rejected,
+                                                         StatusInfo:   null,
+                                                         CustomData:   null);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming GetBaseReport request accepted.");
+
+                    response = new GetBaseReportResponse(Request:      Request,
+                                                         Status:       GenericDeviceModelStatus.Accepted,
+                                                         StatusInfo:   null,
+                                                         CustomData:   null);
+
+                }
+
+
+                #region Send OnGetBaseReportResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnGetBaseReportResponse?.Invoke(responseTimestamp,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetBaseReportResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetReport
+
+            CPServer.OnGetReport += async (LogTimestamp,
+                                           Sender,
+                                           Request,
+                                           CancellationToken) => {
+
+                #region Send OnGetReportRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetReportRequest?.Invoke(startTime,
+                                               this,
+                                               Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetReportRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                GetReportResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid GetReport request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new GetReportResponse(Request:      Request,
+                                                     Status:       GenericDeviceModelStatus.Rejected,
+                                                     StatusInfo:   null,
+                                                     CustomData:   null);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming GetReport request accepted.");
+
+                    response = new GetReportResponse(Request:      Request,
+                                                     Status:       GenericDeviceModelStatus.Accepted,
+                                                     StatusInfo:   null,
+                                                     CustomData:   null);
+
+                }
+
+
+                #region Send OnGetReportResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnGetReportResponse?.Invoke(responseTimestamp,
+                                                this,
+                                                Request,
+                                                response,
+                                                responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetReportResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetLog
+
+            CPServer.OnGetLog += async (LogTimestamp,
+                                        Sender,
+                                        Request,
+                                        CancellationToken) => {
+
+                #region Send OnGetLogRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetLogRequest?.Invoke(startTime,
+                                            this,
+                                            Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetLogRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                GetLogResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid GetLog request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new GetLogResponse(Request:      Request,
+                                                  Status:       LogStatus.Rejected,
+                                                  StatusInfo:   null,
+                                                  CustomData:   null);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming GetLog request accepted.");
+
+                    response = new GetLogResponse(Request:      Request,
+                                                  Status:       LogStatus.Accepted,
+                                                  StatusInfo:   null,
+                                                  CustomData:   null);
+
+                }
+
+
+                #region Send OnGetLogResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnGetLogResponse?.Invoke(responseTimestamp,
+                                             this,
+                                             Request,
+                                             response,
+                                             responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetLogResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnSetVariables
+
+            CPServer.OnSetVariables += async (LogTimestamp,
+                                              Sender,
+                                              Request,
+                                              CancellationToken) => {
+
+                #region Send OnSetVariablesRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSetVariablesRequest?.Invoke(startTime,
+                                                  this,
+                                                  Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetVariablesRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                SetVariablesResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid SetVariables request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new SetVariablesResponse(Request:              Request,
+                                                        SetVariableResults:   Array.Empty<SetVariableResult>(),
+                                                        CustomData:           null);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming SetVariables request accepted.");
+
+                    response = new SetVariablesResponse(Request:              Request,
+                                                        SetVariableResults:   Request.VariableData.Select(variableData => new SetVariableResult(
+                                                                                                                              Status:                SetVariableStatus.Accepted,
+                                                                                                                              Component:             variableData.Component,
+                                                                                                                              Variable:              variableData.Variable,
+                                                                                                                              AttributeType:         variableData.AttributeType,
+                                                                                                                              AttributeStatusInfo:   null,
+                                                                                                                              CustomData:            null
+                                                                                                                          )),
+                                                        CustomData:           null);
+
+                }
+
+
+                #region Send OnSetVariablesResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnSetVariablesResponse?.Invoke(responseTimestamp,
+                                                   this,
+                                                   Request,
+                                                   response,
+                                                   responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetVariablesResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetVariables
+
+            CPServer.OnGetVariables += async (LogTimestamp,
+                                              Sender,
+                                              Request,
+                                              CancellationToken) => {
+
+                #region Send OnGetVariablesRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetVariablesRequest?.Invoke(startTime,
+                                                  this,
+                                                  Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetVariablesRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                GetVariablesResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid GetVariables request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new GetVariablesResponse(Request:      Request,
+                                                        Results:      Array.Empty<GetVariableResult>(),
+                                                        CustomData:   null);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming GetVariables request accepted.");
+
+                    response = new GetVariablesResponse(Request:      Request,
+                                                        Results:      Request.VariableData.Select(variableData => new GetVariableResult(
+                                                                                                                      AttributeStatus:       GetVariableStatus.Accepted,
+                                                                                                                      Component:             variableData.Component,
+                                                                                                                      Variable:              variableData.Variable,
+                                                                                                                      AttributeValue:        "",
+                                                                                                                      AttributeType:         variableData.AttributeType,
+                                                                                                                      AttributeStatusInfo:   null,
+                                                                                                                      CustomData:            null
+                                                                                                                  )),
+                                                        CustomData:   null);
+
+                }
+
+
+                #region Send OnGetVariablesResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnGetVariablesResponse?.Invoke(responseTimestamp,
+                                                   this,
+                                                   Request,
+                                                   response,
+                                                   responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetVariablesResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnSetMonitoringBase
+
+            CPServer.OnSetMonitoringBase += async (LogTimestamp,
+                                                   Sender,
+                                                   Request,
+                                                   CancellationToken) => {
+
+                #region Send OnSetMonitoringBaseRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSetMonitoringBaseRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetMonitoringBaseRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                SetMonitoringBaseResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid SetMonitoringBase request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new SetMonitoringBaseResponse(Request:      Request,
+                                                             Status:       GenericDeviceModelStatus.Rejected,
+                                                             StatusInfo:   null,
+                                                             CustomData:   null);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming SetMonitoringBase request accepted.");
+
+                    response = new SetMonitoringBaseResponse(Request:      Request,
+                                                             Status:       GenericDeviceModelStatus.Accepted,
+                                                             StatusInfo:   null,
+                                                             CustomData:   null);
+
+                }
+
+
+                #region Send OnSetMonitoringBaseResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnSetMonitoringBaseResponse?.Invoke(responseTimestamp,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetMonitoringBaseResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetMonitoringReport
+
+            CPServer.OnGetMonitoringReport += async (LogTimestamp,
+                                                     Sender,
+                                                     Request,
+                                                     CancellationToken) => {
+
+                #region Send OnGetMonitoringReportRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetMonitoringReportRequest?.Invoke(startTime,
+                                                         this,
+                                                         Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetMonitoringReportRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                GetMonitoringReportResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid GetMonitoringReport request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new GetMonitoringReportResponse(Request:      Request,
+                                                               Status:       GenericDeviceModelStatus.Rejected,
+                                                               StatusInfo:   null,
+                                                               CustomData:   null);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming GetMonitoringReport request accepted.");
+
+                    response = new GetMonitoringReportResponse(Request:      Request,
+                                                               Status:       GenericDeviceModelStatus.Accepted,
+                                                               StatusInfo:   null,
+                                                               CustomData:   null);
+
+                }
+
+
+                #region Send OnGetMonitoringReportResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnGetMonitoringReportResponse?.Invoke(responseTimestamp,
+                                                          this,
+                                                          Request,
+                                                          response,
+                                                          responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetMonitoringReportResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnSetMonitoringLevel
+
+            CPServer.OnSetMonitoringLevel += async (LogTimestamp,
+                                                    Sender,
+                                                    Request,
+                                                    CancellationToken) => {
+
+                #region Send OnSetMonitoringLevelRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSetMonitoringLevelRequest?.Invoke(startTime,
+                                                        this,
+                                                        Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetMonitoringLevelRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                SetMonitoringLevelResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid SetMonitoringLevel request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new SetMonitoringLevelResponse(Request:      Request,
+                                                              Status:       GenericStatus.Rejected,
+                                                              StatusInfo:   null,
+                                                              CustomData:   null);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming SetMonitoringLevel request accepted.");
+
+                    response = new SetMonitoringLevelResponse(Request:      Request,
+                                                              Status:       GenericStatus.Accepted,
+                                                              StatusInfo:   null,
+                                                              CustomData:   null);
+
+                }
+
+
+                #region Send OnSetMonitoringLevelResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnSetMonitoringLevelResponse?.Invoke(responseTimestamp,
+                                                         this,
+                                                         Request,
+                                                         response,
+                                                         responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetMonitoringLevelResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnSetVariableMonitoring
+
+            CPServer.OnSetVariableMonitoring += async (LogTimestamp,
+                                                       Sender,
+                                                       Request,
+                                                       CancellationToken) => {
+
+                #region Send OnSetVariableMonitoringRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSetVariableMonitoringRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetVariableMonitoringRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                SetVariableMonitoringResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid SetVariableMonitoring request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new SetVariableMonitoringResponse(Request:                Request,
+                                                                 SetMonitoringResults:   Array.Empty<SetMonitoringResult>(),
+                                                                 CustomData:             null);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming SetVariableMonitoring request accepted.");
+
+                    response = new SetVariableMonitoringResponse(Request:                Request,
+                                                                 SetMonitoringResults:   Request.MonitoringData.Select(setMonitoringData => new SetMonitoringResult(
+                                                                                                                                                Status:                 SetMonitoringStatus.Accepted,
+                                                                                                                                                MonitorType:            setMonitoringData.MonitorType,
+                                                                                                                                                Severity:               setMonitoringData.Severity,
+                                                                                                                                                Component:              setMonitoringData.Component,
+                                                                                                                                                Variable:               setMonitoringData.Variable,
+                                                                                                                                                VariableMonitoringId:   setMonitoringData.VariableMonitoringId,
+                                                                                                                                                StatusInfo:             null,
+                                                                                                                                                CustomData:             null
+                                                                                                                                            )),
+                                                                 CustomData:             null);
+
+                }
+
+
+                #region Send OnSetVariableMonitoringResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnSetVariableMonitoringResponse?.Invoke(responseTimestamp,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetVariableMonitoringResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnClearVariableMonitoring
+
+            CPServer.OnClearVariableMonitoring += async (LogTimestamp,
+                                                         Sender,
+                                                         Request,
+                                                         CancellationToken) => {
+
+                #region Send OnClearVariableMonitoringRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnClearVariableMonitoringRequest?.Invoke(startTime,
+                                                             this,
+                                                             Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearVariableMonitoringRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                ClearVariableMonitoringResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid ClearVariableMonitoring request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new ClearVariableMonitoringResponse(Request:                  Request,
+                                                                   ClearMonitoringResults:   Array.Empty<ClearMonitoringResult>(),
+                                                                   CustomData:               null);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming ClearVariableMonitoring request accepted.");
+
+                    response = new ClearVariableMonitoringResponse(Request:                  Request,
+                                                                   ClearMonitoringResults:   Request.VariableMonitoringIds.Select(variableMonitoringId => new ClearMonitoringResult(
+                                                                                                                                                              Status:       ClearMonitoringStatus.Accepted,
+                                                                                                                                                              Id:           variableMonitoringId,
+                                                                                                                                                              StatusInfo:   null,
+                                                                                                                                                              CustomData:   null
+                                                                                                                                                          )),
+                                                                   CustomData:               null);
+
+                }
+
+
+                #region Send OnClearVariableMonitoringResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnClearVariableMonitoringResponse?.Invoke(responseTimestamp,
+                                                              this,
+                                                              Request,
+                                                              response,
+                                                              responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearVariableMonitoringResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnSetNetworkProfile
+
+            CPServer.OnSetNetworkProfile += async (LogTimestamp,
+                                                   Sender,
+                                                   Request,
+                                                   CancellationToken) => {
+
+                #region Send OnSetNetworkProfileRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSetNetworkProfileRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetNetworkProfileRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                SetNetworkProfileResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid SetNetworkProfile request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new SetNetworkProfileResponse(Request:      Request,
+                                                             Status:       SetNetworkProfileStatus.Rejected,
+                                                             StatusInfo:   null,
+                                                             CustomData:   null);
+
+                }
+                else
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming SetNetworkProfile request accepted.");
+
+                    response = new SetNetworkProfileResponse(Request:      Request,
+                                                             Status:       SetNetworkProfileStatus.Accepted,
+                                                             StatusInfo:   null,
+                                                             CustomData:   null);
+
+                }
+
+
+                #region Send OnSetNetworkProfileResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnSetNetworkProfileResponse?.Invoke(responseTimestamp,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetNetworkProfileResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
             #region OnChangeAvailability
 
@@ -2059,10 +2989,311 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             #endregion
 
 
-            // OnCertificateSigned
-            // OnInstallCertificate
-            // OnGetInstalledCertificateIds
-            // OnDeleteCertificate
+            #region OnCertificateSigned
+
+            CPServer.OnCertificateSigned += async (LogTimestamp,
+                                                   Sender,
+                                                   Request,
+                                                   CancellationToken) => {
+
+                #region Send OnCertificateSignedRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnCertificateSignedRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCertificateSignedRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                CertificateSignedResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid CertificateSigned request for charge box '", Request.ChargeBoxId, "'!"));
+                    response = new CertificateSignedResponse(Request:      Request,
+                                                             Status:       CertificateSignedStatus.Rejected,
+                                                             StatusInfo:   null,
+                                                             CustomData:   null);
+                }
+                else
+                {
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming CertificateSigned request accepted."));
+                    response = new CertificateSignedResponse(Request:      Request,
+                                                             Status:       CertificateSignedStatus.Rejected,
+                                                             StatusInfo:   null,
+                                                             CustomData:   null);
+                }
+
+
+                #region Send OnCertificateSignedResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnCertificateSignedResponse?.Invoke(responseTimestamp,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCertificateSignedResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnInstallCertificate
+
+            CPServer.OnInstallCertificate += async (LogTimestamp,
+                                                    Sender,
+                                                    Request,
+                                                    CancellationToken) => {
+
+                #region Send OnInstallCertificateRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnInstallCertificateRequest?.Invoke(startTime,
+                                                        this,
+                                                        Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnInstallCertificateRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                InstallCertificateResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid InstallCertificate request for charge box '", Request.ChargeBoxId, "'!"));
+                    response = new InstallCertificateResponse(Request:      Request,
+                                                              Status:       CertificateStatus.Rejected,
+                                                              StatusInfo:   null,
+                                                              CustomData:   null);
+                }
+                else
+                {
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming InstallCertificate request accepted."));
+                    response = new InstallCertificateResponse(Request:      Request,
+                                                              Status:       CertificateStatus.Accepted,
+                                                              StatusInfo:   null,
+                                                              CustomData:   null);
+                }
+
+
+                #region Send OnInstallCertificateResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnInstallCertificateResponse?.Invoke(responseTimestamp,
+                                                         this,
+                                                         Request,
+                                                         response,
+                                                         responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnInstallCertificateResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetInstalledCertificateIds
+
+            CPServer.OnGetInstalledCertificateIds += async (LogTimestamp,
+                                                            Sender,
+                                                            Request,
+                                                            CancellationToken) => {
+
+                #region Send OnGetInstalledCertificateIdsRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetInstalledCertificateIdsRequest?.Invoke(startTime,
+                                                                this,
+                                                                Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetInstalledCertificateIdsRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                GetInstalledCertificateIdsResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid GetInstalledCertificateIds request for charge box '", Request.ChargeBoxId, "'!"));
+                    response = new GetInstalledCertificateIdsResponse(Request:                    Request,
+                                                                      Status:                     GetInstalledCertificateStatus.NotFound,
+                                                                      CertificateHashDataChain:   Array.Empty<CertificateHashData>(),
+                                                                      StatusInfo:                 null,
+                                                                      CustomData:                 null);
+                }
+                else
+                {
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming GetInstalledCertificateIds request accepted."));
+                    response = new GetInstalledCertificateIdsResponse(Request:                    Request,
+                                                                      Status:                     GetInstalledCertificateStatus.Accepted,
+                                                                      CertificateHashDataChain:   new CertificateHashData[0],
+                                                                      StatusInfo:                 null,
+                                                                      CustomData:                 null);
+                }
+
+
+                #region Send OnGetInstalledCertificateIdsResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnGetInstalledCertificateIdsResponse?.Invoke(responseTimestamp,
+                                                                 this,
+                                                                 Request,
+                                                                 response,
+                                                                 responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetInstalledCertificateIdsResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnDeleteCertificate
+
+            CPServer.OnDeleteCertificate += async (LogTimestamp,
+                                                   Sender,
+                                                   Request,
+                                                   CancellationToken) => {
+
+                #region Send OnDeleteCertificateRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnDeleteCertificateRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteCertificateRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10);
+
+
+                DeleteCertificateResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid DeleteCertificate request for charge box '", Request.ChargeBoxId, "'!"));
+                    response = new DeleteCertificateResponse(Request:      Request,
+                                                             Status:       DeleteCertificateStatus.Failed,
+                                                             StatusInfo:   null,
+                                                             CustomData:   null);
+                }
+                else
+                {
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming DeleteCertificate request accepted."));
+                    response = new DeleteCertificateResponse(Request:      Request,
+                                                             Status:       DeleteCertificateStatus.Accepted,
+                                                             StatusInfo:   null,
+                                                             CustomData:   null);
+                }
+
+
+                #region Send OnDeleteCertificateResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnDeleteCertificateResponse?.Invoke(responseTimestamp,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteCertificateResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
 
             #region OnGetLocalListVersion
@@ -4889,14 +6120,432 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        // SignCertificate
-        // Get15118EVCertificate
-        // GetCertificateStatus
+        #region SendCertificateSigningRequest      (CSR, CertificateType = null, ...)
+
+        /// <summary>
+        /// Send a heartbeat.
+        /// </summary>
+        /// <param name="CSR">The PEM encoded RFC 2986 certificate signing request (CSR) [max 5500].</param>
+        /// <param name="CertificateType">Whether the certificate is to be used for both the 15118 connection (if implemented) and the charging station to central system (CSMS) connection.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.SignCertificateResponse>
+
+            SendCertificateSigningRequest(String                  CSR,
+                                          CertificateSigningUse?  CertificateType     = null,
+                                          CustomData?             CustomData          = null,
+
+                                          Request_Id?             RequestId           = null,
+                                          DateTime?               RequestTimestamp    = null,
+                                          TimeSpan?               RequestTimeout      = null,
+                                          EventTracking_Id?       EventTrackingId     = null,
+                                          CancellationToken?      CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new SignCertificateRequest(
+                                 ChargeBoxId,
+                                 CSR,
+                                 CertificateType,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnSignCertificateRequest event
+
+            try
+            {
+
+                OnSignCertificateRequest?.Invoke(startTime,
+                                                 this,
+                                                 request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSignCertificateRequest));
+            }
+
+            #endregion
 
 
-        // ReservationStatusUpdate
+            CSMS.SignCertificateResponse? response = null;
 
-        #region Authorize                        (IdToken, Certificate = null, ISO15118CertificateHashData = null, ...)
+            if (CSClient is not null)
+                response = await CSClient.SendCertificateSigningRequest(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.SignCertificateResponse(request,
+                                                          Result.Server("Response is null!"));
+
+
+            #region Send OnSignCertificateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSignCertificateResponse?.Invoke(endTime,
+                                                  this,
+                                                  request,
+                                                  response,
+                                                  endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSignCertificateResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region Get15118EVCertificate                (ISO15118SchemaVersion, CertificateAction, EXIRequest, ...)
+
+        /// <summary>
+        /// Get an ISO 15118 contract certificate.
+        /// </summary>
+        /// <param name="ISO15118SchemaVersion">ISO/IEC 15118 schema version used for the session between charging station and electric vehicle. Required for parsing the EXI data stream within the central system.</param>
+        /// <param name="CertificateAction">Whether certificate needs to be installed or updated.</param>
+        /// <param name="EXIRequest">Base64 encoded certificate installation request from the electric vehicle. [max 5600]</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.Get15118EVCertificateResponse>
+
+            Get15118EVCertificate(ISO15118SchemaVersion  ISO15118SchemaVersion,
+                                  CertificateAction      CertificateAction,
+                                  EXIData                EXIRequest,
+                                  CustomData?            CustomData          = null,
+
+                                  Request_Id?            RequestId           = null,
+                                  DateTime?              RequestTimestamp    = null,
+                                  TimeSpan?              RequestTimeout      = null,
+                                  EventTracking_Id?      EventTrackingId     = null,
+                                  CancellationToken?     CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new Get15118EVCertificateRequest(
+                                 ChargeBoxId,
+                                 ISO15118SchemaVersion,
+                                 CertificateAction,
+                                 EXIRequest,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnGet15118EVCertificateRequest event
+
+            try
+            {
+
+                OnGet15118EVCertificateRequest?.Invoke(startTime,
+                                                       this,
+                                                       request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGet15118EVCertificateRequest));
+            }
+
+            #endregion
+
+
+            CSMS.Get15118EVCertificateResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.Get15118EVCertificate(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.Get15118EVCertificateResponse(request,
+                                                                Result.Server("Response is null!"));
+
+
+            #region Send OnGet15118EVCertificateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGet15118EVCertificateResponse?.Invoke(endTime,
+                                                        this,
+                                                        request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGet15118EVCertificateResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetCertificateStatus                 (OCSPRequestData, ...)
+
+        /// <summary>
+        /// Get the status of a certificate.
+        /// </summary>
+        /// <param name="OCSPRequestData">The certificate of which the status is requested.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.GetCertificateStatusResponse>
+
+            GetCertificateStatus(OCSPRequestData     OCSPRequestData,
+                                 CustomData?         CustomData          = null,
+
+                                 Request_Id?         RequestId           = null,
+                                 DateTime?           RequestTimestamp    = null,
+                                 TimeSpan?           RequestTimeout      = null,
+                                 EventTracking_Id?   EventTrackingId     = null,
+                                 CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetCertificateStatusRequest(
+                                 ChargeBoxId,
+                                 OCSPRequestData,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnGetCertificateStatusRequest event
+
+            try
+            {
+
+                OnGetCertificateStatusRequest?.Invoke(startTime,
+                                                      this,
+                                                      request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetCertificateStatusRequest));
+            }
+
+            #endregion
+
+
+            CSMS.GetCertificateStatusResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.GetCertificateStatus(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.GetCertificateStatusResponse(request,
+                                                               Result.Server("Response is null!"));
+
+
+            #region Send OnGetCertificateStatusResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetCertificateStatusResponse?.Invoke(endTime,
+                                                       this,
+                                                       request,
+                                                       response,
+                                                       endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetCertificateStatusResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        #region SendReservationStatusUpdate          (ReservationId, ReservationUpdateStatus, ...)
+
+        /// <summary>
+        /// Send a reservation status update.
+        /// </summary>
+        /// <param name="ReservationId">The unique identification of the transaction to update.</param>
+        /// <param name="ReservationUpdateStatus">The updated reservation status.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.ReservationStatusUpdateResponse>
+
+            SendReservationStatusUpdate(Reservation_Id           ReservationId,
+                                        ReservationUpdateStatus  ReservationUpdateStatus,
+                                        CustomData?              CustomData          = null,
+
+                                        Request_Id?              RequestId           = null,
+                                        DateTime?                RequestTimestamp    = null,
+                                        TimeSpan?                RequestTimeout      = null,
+                                        EventTracking_Id?        EventTrackingId     = null,
+                                        CancellationToken?       CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new ReservationStatusUpdateRequest(
+                                 ChargeBoxId,
+                                 ReservationId,
+                                 ReservationUpdateStatus,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnReservationStatusUpdateRequest event
+
+            try
+            {
+
+                OnReservationStatusUpdateRequest?.Invoke(startTime,
+                                                         this,
+                                                         request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnReservationStatusUpdateRequest));
+            }
+
+            #endregion
+
+
+            CSMS.ReservationStatusUpdateResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.SendReservationStatusUpdate(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.ReservationStatusUpdateResponse(request,
+                                                                  Result.Server("Response is null!"));
+
+
+            #region Send OnReservationStatusUpdateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnReservationStatusUpdateResponse?.Invoke(endTime,
+                                                          this,
+                                                          request,
+                                                          response,
+                                                          endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnReservationStatusUpdateResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region Authorize                            (IdToken, Certificate = null, ISO15118CertificateHashData = null, ...)
 
         /// <summary>
         /// Authorize the given token.
@@ -4970,7 +6619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 response = await CSClient.Authorize(request);
 
             response ??= new CSMS.AuthorizeResponse(request,
-                                                  Result.Server("Response is null!"));
+                                                    Result.Server("Response is null!"));
 
 
             #region Send OnAuthorizeResponse event
@@ -5000,12 +6649,119 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        // NotifyEVChargingNeeds
-
-        #region SendTransactionEvent             (EventType, Timestamp, TriggerReason, SequenceNumber, TransactionInfo, ...)
+        #region NotifyEVChargingNeeds                (EVSEId, ChargingNeeds, MaxScheduleTuples = null, ...)
 
         /// <summary>
-        /// TransactionEvent the given token.
+        /// Notify about EV charging needs.
+        /// </summary>
+        /// <param name="EVSEId">The EVSE and connector to which the EV is connected to.</param>
+        /// <param name="ChargingNeeds">The characteristics of the energy delivery required.</param>
+        /// <param name="MaxScheduleTuples">The optional maximum schedule tuples the car supports per schedule.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.NotifyEVChargingNeedsResponse>
+
+            NotifyEVChargingNeeds(EVSE_Id             EVSEId,
+                                  ChargingNeeds       ChargingNeeds,
+                                  UInt16?             MaxScheduleTuples   = null,
+                                  CustomData?         CustomData          = null,
+
+                                  Request_Id?         RequestId           = null,
+                                  DateTime?           RequestTimestamp    = null,
+                                  TimeSpan?           RequestTimeout      = null,
+                                  EventTracking_Id?   EventTrackingId     = null,
+                                  CancellationToken?  CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new NotifyEVChargingNeedsRequest(
+                                 ChargeBoxId,
+                                 EVSEId,
+                                 ChargingNeeds,
+                                 MaxScheduleTuples,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnNotifyEVChargingNeedsRequest event
+
+            try
+            {
+
+                OnNotifyEVChargingNeedsRequest?.Invoke(startTime,
+                                                       this,
+                                                       request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyEVChargingNeedsRequest));
+            }
+
+            #endregion
+
+
+            CSMS.NotifyEVChargingNeedsResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.NotifyEVChargingNeeds(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.NotifyEVChargingNeedsResponse(request,
+                                                                Result.Server("Response is null!"));
+
+
+            #region Send OnNotifyEVChargingNeedsResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEVChargingNeedsResponse?.Invoke(endTime,
+                                                        this,
+                                                        request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyEVChargingNeedsResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendTransactionEvent                 (EventType, Timestamp, TriggerReason, SequenceNumber, TransactionInfo, ...)
+
+        /// <summary>
+        /// Send a transaction event.
         /// </summary>
         /// <param name="EventType">The type of this transaction event. The first event of a transaction SHALL be of type "started", the last of type "ended". All others should be of type "updated".</param>
         /// <param name="Timestamp">The timestamp at which this transaction event occurred.</param>
@@ -5137,7 +6893,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region SendStatusNotification           (EVSEId, ConnectorId, Timestamp, Status, ...)
+        #region SendStatusNotification               (EVSEId, ConnectorId, Timestamp, Status, ...)
 
         /// <summary>
         /// Send a status notification for the given connector.
@@ -5214,7 +6970,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 response = await CSClient.SendStatusNotification(request);
 
             response ??= new CSMS.StatusNotificationResponse(request,
-                                                           Result.Server("Response is null!"));
+                                                             Result.Server("Response is null!"));
 
 
             #region Send OnStatusNotificationResponse event
@@ -5244,7 +7000,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region SendMeterValues                  (EVSEId, MeterValues, ...)
+        #region SendMeterValues                      (EVSEId, MeterValues, ...)
 
         /// <summary>
         /// Send a meter values for the given connector.
@@ -5315,7 +7071,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 response = await CSClient.SendMeterValues(request);
 
             response ??= new CSMS.MeterValuesResponse(request,
-                                                    Result.Server("Response is null!"));
+                                                      Result.Server("Response is null!"));
 
 
             #region Send OnMeterValuesResponse event
@@ -5345,12 +7101,338 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        // NotifyChargingLimit
-        // SendClearedChargingLimit
-        // ReportChargingProfiles
+        #region NotifyChargingLimit                  (ChargingLimit, ChargingSchedules, EVSEId = null, ...)
+
+        /// <summary>
+        /// Notify about a charging limit.
+        /// </summary>
+        /// <param name="ChargingLimit">The charging limit, its source and whether it is grid critical.</param>
+        /// <param name="ChargingSchedules">Limits for the available power or current over time, as set by the external source.</param>
+        /// <param name="EVSEId">An optional EVSE identification, when the charging schedule contained in this notification applies to an EVSE.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.NotifyChargingLimitResponse>
+
+            NotifyChargingLimit(ChargingLimit                  ChargingLimit,
+                                IEnumerable<ChargingSchedule>  ChargingSchedules,
+                                EVSE_Id?                       EVSEId              = null,
+                                CustomData?                    CustomData          = null,
+
+                                Request_Id?                    RequestId           = null,
+                                DateTime?                      RequestTimestamp    = null,
+                                TimeSpan?                      RequestTimeout      = null,
+                                EventTracking_Id?              EventTrackingId     = null,
+                                CancellationToken?             CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new NotifyChargingLimitRequest(
+                                 ChargeBoxId,
+                                 ChargingLimit,
+                                 ChargingSchedules,
+                                 EVSEId,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnNotifyChargingLimitRequest event
+
+            try
+            {
+
+                OnNotifyChargingLimitRequest?.Invoke(startTime,
+                                                     this,
+                                                     request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyChargingLimitRequest));
+            }
+
+            #endregion
 
 
-        #region NotifyDisplayMessages             (NotifyDisplayMessagesRequestId, MessageInfos, ToBeContinued, ...)
+            CSMS.NotifyChargingLimitResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.NotifyChargingLimit(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.NotifyChargingLimitResponse(request,
+                                                              Result.Server("Response is null!"));
+
+
+            #region Send OnNotifyChargingLimitResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyChargingLimitResponse?.Invoke(endTime,
+                                                      this,
+                                                      request,
+                                                      response,
+                                                      endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyChargingLimitResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendClearedChargingLimit             (ChargingLimitSource, EVSEId, ...)
+
+        /// <summary>
+        /// Send a heartbeat.
+        /// </summary>
+        /// <param name="ChargingLimitSource">A source of the charging limit.</param>
+        /// <param name="EVSEId">An optional EVSE identification.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.ClearedChargingLimitResponse>
+
+            SendClearedChargingLimit(ChargingLimitSources  ChargingLimitSource,
+                                     EVSE_Id?              EVSEId,
+                                     CustomData?           CustomData          = null,
+
+                                     Request_Id?           RequestId           = null,
+                                     DateTime?             RequestTimestamp    = null,
+                                     TimeSpan?             RequestTimeout      = null,
+                                     EventTracking_Id?     EventTrackingId     = null,
+                                     CancellationToken?    CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new ClearedChargingLimitRequest(
+                                 ChargeBoxId,
+                                 ChargingLimitSource,
+                                 EVSEId,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnClearedChargingLimitRequest event
+
+            try
+            {
+
+                OnClearedChargingLimitRequest?.Invoke(startTime,
+                                                      this,
+                                                      request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearedChargingLimitRequest));
+            }
+
+            #endregion
+
+
+            CSMS.ClearedChargingLimitResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.SendClearedChargingLimit(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.ClearedChargingLimitResponse(request,
+                                                               Result.Server("Response is null!"));
+
+
+            #region Send OnClearedChargingLimitResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnClearedChargingLimitResponse?.Invoke(endTime,
+                                                       this,
+                                                       request,
+                                                       response,
+                                                       endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearedChargingLimitResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendReportChargingProfiles           (ReportChargingProfilesRequestId, ChargingLimitSource, EVSEId, ChargingProfiles, ToBeContinued = null, ...)
+
+        /// <summary>
+        /// Send a heartbeat.
+        /// </summary>
+        /// <param name="ReportChargingProfilesRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting ReportChargingProfilesRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
+        /// <param name="ChargingLimitSource">The source that has installed this charging profile.</param>
+        /// <param name="EVSEId">The evse to which the charging profile applies. If evseId = 0, the message contains an overall limit for the charging station.</param>
+        /// <param name="ChargingProfiles">The enumeration of charging profiles.</param>
+        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the charging profiles follows. Default value when omitted is false.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.ReportChargingProfilesResponse>
+
+            SendReportChargingProfiles(Int32                         ReportChargingProfilesRequestId,
+                                       ChargingLimitSources          ChargingLimitSource,
+                                       EVSE_Id                       EVSEId,
+                                       IEnumerable<ChargingProfile>  ChargingProfiles,
+                                       Boolean?                      ToBeContinued       = null,
+                                       CustomData?                   CustomData          = null,
+
+                                       Request_Id?                   RequestId           = null,
+                                       DateTime?                     RequestTimestamp    = null,
+                                       TimeSpan?                     RequestTimeout      = null,
+                                       EventTracking_Id?             EventTrackingId     = null,
+                                       CancellationToken?            CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new ReportChargingProfilesRequest(
+                                 ChargeBoxId,
+                                 ReportChargingProfilesRequestId,
+                                 ChargingLimitSource,
+                                 EVSEId,
+                                 ChargingProfiles,
+                                 ToBeContinued,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnReportChargingProfilesRequest event
+
+            try
+            {
+
+                OnReportChargingProfilesRequest?.Invoke(startTime,
+                                                        this,
+                                                        request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnReportChargingProfilesRequest));
+            }
+
+            #endregion
+
+
+            CSMS.ReportChargingProfilesResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.ReportChargingProfiles(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.ReportChargingProfilesResponse(request,
+                                                                 Result.Server("Response is null!"));
+
+
+            #region Send OnReportChargingProfilesResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnReportChargingProfilesResponse?.Invoke(endTime,
+                                                         this,
+                                                         request,
+                                                         response,
+                                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnReportChargingProfilesResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        #region NotifyDisplayMessages                (NotifyDisplayMessagesRequestId, MessageInfos, ToBeContinued, ...)
 
         /// <summary>
         /// NotifyDisplayMessages the given token.
@@ -5424,7 +7506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 response = await CSClient.NotifyDisplayMessages(request);
 
             response ??= new CSMS.NotifyDisplayMessagesResponse(request,
-                                                           Result.Server("Response is null!"));
+                                                                Result.Server("Response is null!"));
 
 
             #region Send OnNotifyDisplayMessagesResponse event
@@ -5454,7 +7536,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region NotifyCustomerInformation         (NotifyCustomerInformationRequestId, Data, SequenceNumber, GeneratedAt, ToBeContinued = null, ...)
+        #region NotifyCustomerInformation            (NotifyCustomerInformationRequestId, Data, SequenceNumber, GeneratedAt, ToBeContinued = null, ...)
 
         /// <summary>
         /// NotifyCustomerInformation the given token.

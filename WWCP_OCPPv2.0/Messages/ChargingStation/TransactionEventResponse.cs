@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
     /// A transaction event response.
     /// </summary>
     public class TransactionEventResponse : AResponse<CS.TransactionEventRequest,
-                                                         TransactionEventResponse>
+                                                      TransactionEventResponse>
     {
 
         #region Properties
@@ -522,28 +522,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
             var json = JSONObject.Create(
 
                            TotalCost.HasValue
-                               ? new JProperty("totalCost",               TotalCost)
+                               ? new JProperty("totalCost",                TotalCost)
                                : null,
 
                            ChargingPriority.HasValue
-                               ? new JProperty("chargingPriority",        ChargingPriority)
+                               ? new JProperty("chargingPriority",         ChargingPriority)
                                : null,
 
                            IdTokenInfo is not null
-                               ? new JProperty("idTokenInfo",             IdTokenInfo.           ToJSON(CustomIdTokenInfoSerializer,
-                                                                                                        CustomIdTokenSerializer,
-                                                                                                        CustomAdditionalInfoSerializer,
-                                                                                                        CustomMessageContentSerializer,
-                                                                                                        CustomCustomDataSerializer))
+                               ? new JProperty("idTokenInfo",              IdTokenInfo.           ToJSON(CustomIdTokenInfoSerializer,
+                                                                                                         CustomIdTokenSerializer,
+                                                                                                         CustomAdditionalInfoSerializer,
+                                                                                                         CustomMessageContentSerializer,
+                                                                                                         CustomCustomDataSerializer))
                                : null,
 
                            UpdatedPersonalMessage is not null
-                               ? new JProperty("updatedPersonalMessage",  UpdatedPersonalMessage.ToJSON(CustomMessageContentSerializer,
-                                                                                                        CustomCustomDataSerializer))
+                               ? new JProperty("updatedPersonalMessage",   UpdatedPersonalMessage.ToJSON(CustomMessageContentSerializer,
+                                                                                                         CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",              CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",               CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

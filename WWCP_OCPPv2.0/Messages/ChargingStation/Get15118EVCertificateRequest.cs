@@ -62,24 +62,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// Create a new get 15118 EV certificate request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
         /// <param name="ISO15118SchemaVersion">ISO/IEC 15118 schema version used for the session between charging station and electric vehicle. Required for parsing the EXI data stream within the central system.</param>
         /// <param name="CertificateAction">Whether certificate needs to be installed or updated.</param>
         /// <param name="EXIRequest">Base64 encoded certificate installation request from the electric vehicle. [max 5600]</param>
-        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public Get15118EVCertificateRequest(ChargeBox_Id           ChargeBoxId,
-
                                             ISO15118SchemaVersion  ISO15118SchemaVersion,
                                             CertificateAction      CertificateAction,
                                             EXIData                EXIRequest,
-
                                             CustomData?            CustomData          = null,
+
                                             Request_Id?            RequestId           = null,
                                             DateTime?              RequestTimestamp    = null,
                                             TimeSpan?              RequestTimeout      = null,
