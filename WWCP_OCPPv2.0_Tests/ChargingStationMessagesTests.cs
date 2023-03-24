@@ -170,9 +170,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 var status     = FirmwareStatus.Installed;
 
                 var response1  = await chargingStation1.SendFirmwareStatusNotification(
-                                     Status:       status,
-                                     CustomData:   null
-                                 );
+                                           Status:       status,
+                                           CustomData:   null
+                                       );
 
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
@@ -219,11 +219,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 var url1       = URL.Parse("https://example.org/firmware.bin");
 
                 var response1  = await chargingStation1.SendPublishFirmwareStatusNotification(
-                                     Status:                                       status,
-                                     PublishFirmwareStatusNotificationRequestId:   0,
-                                     DownloadLocations:                            new[] { url1 },
-                                     CustomData:                                   null
-                                 );
+                                           Status:                                       status,
+                                           PublishFirmwareStatusNotificationRequestId:   0,
+                                           DownloadLocations:                            new[] { url1 },
+                                           CustomData:                                   null
+                                       );
 
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
@@ -311,42 +311,42 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 };
 
                 var response1  = await chargingStation1.NotifyEvent(
-                                     GeneratedAt:      Timestamp.Now,
-                                     SequenceNumber:   1,
-                                     EventData:        new[] {
-                                                           new EventData(
-                                                               EventId:                 Event_Id.NewRandom,
-                                                               Timestamp:               Timestamp.Now,
-                                                               Trigger:                 EventTriggers.Alerting,
-                                                               ActualValue:             "ALERTA!",
-                                                               EventNotificationType:   EventNotificationTypes.HardWiredMonitor,
-                                                               Component:               new Component(
-                                                                                            Name:         "Alert System!",
-                                                                                            Instance:     "Alert System #1",
-                                                                                            EVSE:         new EVSE(
-                                                                                                              Id:            EVSE_Id.Parse(1),
-                                                                                                              ConnectorId:   Connector_Id.Parse(1),
-                                                                                                              CustomData:    null
-                                                                                                          ),
-                                                                                            CustomData:   null
-                                                                                        ),
-                                                               Variable:                new Variable(
-                                                                                            Name:         "Temperature Sensors",
-                                                                                            Instance:     "Temperature Sensor #1",
-                                                                                            CustomData:   null
-                                                                                        ),
-                                                               Cause:                   Event_Id.NewRandom,
-                                                               TechCode:                "Tech Code #1",
-                                                               TechInfo:                "Tech Info #1",
-                                                               Cleared:                 false,
-                                                               TransactionId:           Transaction_Id.       NewRandom,
-                                                               VariableMonitoringId:    VariableMonitoring_Id.NewRandom,
-                                                               CustomData:              null
-                                                           )
-                                                       },
-                                     ToBeContinued:    false,
-                                     CustomData:       null
-                                 );
+                                           GeneratedAt:      Timestamp.Now,
+                                           SequenceNumber:   1,
+                                           EventData:        new[] {
+                                                                 new EventData(
+                                                                     EventId:                 Event_Id.NewRandom,
+                                                                     Timestamp:               Timestamp.Now,
+                                                                     Trigger:                 EventTriggers.Alerting,
+                                                                     ActualValue:             "ALERTA!",
+                                                                     EventNotificationType:   EventNotificationTypes.HardWiredMonitor,
+                                                                     Component:               new Component(
+                                                                                                  Name:         "Alert System!",
+                                                                                                  Instance:     "Alert System #1",
+                                                                                                  EVSE:         new EVSE(
+                                                                                                                    Id:            EVSE_Id.Parse(1),
+                                                                                                                    ConnectorId:   Connector_Id.Parse(1),
+                                                                                                                    CustomData:    null
+                                                                                                                ),
+                                                                                                  CustomData:   null
+                                                                                              ),
+                                                                     Variable:                new Variable(
+                                                                                                  Name:         "Temperature Sensors",
+                                                                                                  Instance:     "Temperature Sensor #1",
+                                                                                                  CustomData:   null
+                                                                                              ),
+                                                                     Cause:                   Event_Id.NewRandom,
+                                                                     TechCode:                "Tech Code #1",
+                                                                     TechInfo:                "Tech Info #1",
+                                                                     Cleared:                 false,
+                                                                     TransactionId:           Transaction_Id.       NewRandom,
+                                                                     VariableMonitoringId:    VariableMonitoring_Id.NewRandom,
+                                                                     CustomData:              null
+                                                                 )
+                                                             },
+                                           ToBeContinued:    false,
+                                           CustomData:       null
+                                       );
 
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
@@ -389,11 +389,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 };
 
                 var response1  = await chargingStation1.SendSecurityEventNotification(
-                                     Type:         SecurityEvent.MemoryExhaustion,
-                                     Timestamp:    Timestamp.Now,
-                                     TechInfo:     "Too many open TCP sockets!",
-                                     CustomData:   null
-                                 );
+                                           Type:         SecurityEvent.MemoryExhaustion,
+                                           Timestamp:    Timestamp.Now,
+                                           TechInfo:     "Too many open TCP sockets!",
+                                           CustomData:   null
+                                       );
 
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
@@ -436,53 +436,53 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 };
 
                 var response1  = await chargingStation1.NotifyReport(
-                                     NotifyReportRequestId:   1,
-                                     SequenceNumber:          1,
-                                     GeneratedAt:             Timestamp.Now,
-                                     ReportData:              new[] {
-                                                                  new ReportData(
-                                                                      Component:                new Component(
-                                                                                                     Name:                 "Alert System!",
-                                                                                                     Instance:             "Alert System #1",
-                                                                                                     EVSE:                 new EVSE(
-                                                                                                                               Id:            EVSE_Id.Parse(1),
-                                                                                                                               ConnectorId:   Connector_Id.Parse(1),
-                                                                                                                               CustomData:    null
-                                                                                                                           ),
-                                                                                                     CustomData:           null
-                                                                                                 ),
-                                                                       Variable:                 new Variable(
-                                                                                                     Name:                 "Temperature Sensors",
-                                                                                                     Instance:             "Temperature Sensor #1",
-                                                                                                     CustomData:           null
-                                                                                                 ),
-                                                                      VariableAttributes:        new[] {
-                                                                                                     new VariableAttribute(
-                                                                                                         Type:             AttributeTypes.Actual,
-                                                                                                         Value:            "123",
-                                                                                                         Mutability:       MutabilityTypes.ReadWrite,
-                                                                                                         Persistent:       true,
-                                                                                                         Constant:         false,
-                                                                                                         CustomData:       null
-                                                                                                     )
-                                                                                                 },
-                                                                      VariableCharacteristics:   new VariableCharacteristics(
-                                                                                                     DataType:             DataTypes.Decimal,
-                                                                                                     SupportsMonitoring:   true,
-                                                                                                     Unit:                 UnitsOfMeasure.Celsius(
-                                                                                                                               Multiplier:   1,
-                                                                                                                               CustomData:   null
-                                                                                                                           ),
-                                                                                                     MinLimit:             0.1M,
-                                                                                                     MaxLimit:             9.9M,
-                                                                                                     ValuesList:           new[] { "" },
-                                                                                                     CustomData:           null
-                                                                                                 ),
-                                                                      CustomData:                null
-                                                                  )
-                                                              },
-                                     CustomData:              null
-                                 );
+                                           NotifyReportRequestId:   1,
+                                           SequenceNumber:          1,
+                                           GeneratedAt:             Timestamp.Now,
+                                           ReportData:              new[] {
+                                                                        new ReportData(
+                                                                            Component:                new Component(
+                                                                                                           Name:                 "Alert System!",
+                                                                                                           Instance:             "Alert System #1",
+                                                                                                           EVSE:                 new EVSE(
+                                                                                                                                     Id:            EVSE_Id.Parse(1),
+                                                                                                                                     ConnectorId:   Connector_Id.Parse(1),
+                                                                                                                                     CustomData:    null
+                                                                                                                                 ),
+                                                                                                           CustomData:           null
+                                                                                                       ),
+                                                                             Variable:                 new Variable(
+                                                                                                           Name:                 "Temperature Sensors",
+                                                                                                           Instance:             "Temperature Sensor #1",
+                                                                                                           CustomData:           null
+                                                                                                       ),
+                                                                            VariableAttributes:        new[] {
+                                                                                                           new VariableAttribute(
+                                                                                                               Type:             AttributeTypes.Actual,
+                                                                                                               Value:            "123",
+                                                                                                               Mutability:       MutabilityTypes.ReadWrite,
+                                                                                                               Persistent:       true,
+                                                                                                               Constant:         false,
+                                                                                                               CustomData:       null
+                                                                                                           )
+                                                                                                       },
+                                                                            VariableCharacteristics:   new VariableCharacteristics(
+                                                                                                           DataType:             DataTypes.Decimal,
+                                                                                                           SupportsMonitoring:   true,
+                                                                                                           Unit:                 UnitsOfMeasure.Celsius(
+                                                                                                                                     Multiplier:   1,
+                                                                                                                                     CustomData:   null
+                                                                                                                                 ),
+                                                                                                           MinLimit:             0.1M,
+                                                                                                           MaxLimit:             9.9M,
+                                                                                                           ValuesList:           new[] { "" },
+                                                                                                           CustomData:           null
+                                                                                                       ),
+                                                                            CustomData:                null
+                                                                        )
+                                                                    },
+                                           CustomData:              null
+                                       );
 
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
@@ -525,42 +525,42 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 };
 
                 var response1  = await chargingStation1.NotifyMonitoringReport(
-                                     NotifyMonitoringReportRequestId:   1,
-                                     SequenceNumber:                    1,
-                                     GeneratedAt:                       Timestamp.Now,
-                                     MonitoringData:                    new[] {
-                                                                            new MonitoringData(
-                                                                                Component:              new Component(
-                                                                                                            Name:             "Alert System!",
-                                                                                                            Instance:         "Alert System #1",
-                                                                                                            EVSE:             new EVSE(
-                                                                                                                                  Id:            EVSE_Id.Parse(1),
-                                                                                                                                  ConnectorId:   Connector_Id.Parse(1),
-                                                                                                                                  CustomData:    null
-                                                                                                                              ),
-                                                                                                            CustomData:       null
-                                                                                                        ),
-                                                                                Variable:               new Variable(
-                                                                                                            Name:             "Temperature Sensors",
-                                                                                                            Instance:         "Temperature Sensor #1",
-                                                                                                            CustomData:       null
-                                                                                                        ),
-                                                                                VariableMonitorings:   new[] {
-                                                                                                           new VariableMonitoring(
-                                                                                                               Id:            VariableMonitoring_Id.NewRandom,
-                                                                                                               Transaction:   true,
-                                                                                                               Value:         1.01M,
-                                                                                                               Type:          MonitorTypes.Periodic,
-                                                                                                               Severity:      Severities.Warning,
-                                                                                                               CustomData:    null
-                                                                                                           )
-                                                                                                       },
-                                                                                CustomData:            null
-                                                                            )
-                                                                        },
-                                     ToBeContinued:                     false,
-                                     CustomData:                        null
-                                 );
+                                           NotifyMonitoringReportRequestId:   1,
+                                           SequenceNumber:                    1,
+                                           GeneratedAt:                       Timestamp.Now,
+                                           MonitoringData:                    new[] {
+                                                                                  new MonitoringData(
+                                                                                      Component:              new Component(
+                                                                                                                  Name:             "Alert System!",
+                                                                                                                  Instance:         "Alert System #1",
+                                                                                                                  EVSE:             new EVSE(
+                                                                                                                                        Id:            EVSE_Id.Parse(1),
+                                                                                                                                        ConnectorId:   Connector_Id.Parse(1),
+                                                                                                                                        CustomData:    null
+                                                                                                                                    ),
+                                                                                                                  CustomData:       null
+                                                                                                              ),
+                                                                                      Variable:               new Variable(
+                                                                                                                  Name:             "Temperature Sensors",
+                                                                                                                  Instance:         "Temperature Sensor #1",
+                                                                                                                  CustomData:       null
+                                                                                                              ),
+                                                                                      VariableMonitorings:   new[] {
+                                                                                                                 new VariableMonitoring(
+                                                                                                                     Id:            VariableMonitoring_Id.NewRandom,
+                                                                                                                     Transaction:   true,
+                                                                                                                     Value:         1.01M,
+                                                                                                                     Type:          MonitorTypes.Periodic,
+                                                                                                                     Severity:      Severities.Warning,
+                                                                                                                     CustomData:    null
+                                                                                                                 )
+                                                                                                             },
+                                                                                      CustomData:            null
+                                                                                  )
+                                                                              },
+                                           ToBeContinued:                     false,
+                                           CustomData:                        null
+                                       );
 
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
@@ -573,6 +573,53 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         }
 
         #endregion
+
+        #region ChargingStation_SendLogStatusNotification_Test()
+
+        /// <summary>
+        /// A test for sending log status notifications to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_SendLogStatusNotification_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var securityEventNotificationRequests = new List<CS.LogStatusNotificationRequest>();
+
+                testCSMS01.OnLogStatusNotificationRequest += async (timestamp, sender, securityEventNotificationRequest) => {
+                    securityEventNotificationRequests.Add(securityEventNotificationRequest);
+                };
+
+                var response1  = await chargingStation1.SendLogStatusNotification(
+                                            Status:       UploadLogStatus.Uploaded,
+                                            LogRquestId:  1,
+                                            CustomData:   null
+                                        );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              securityEventNotificationRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   securityEventNotificationRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
 
 
 

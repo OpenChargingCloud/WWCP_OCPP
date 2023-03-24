@@ -5909,13 +5909,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region SendLogStatusNotification            (Status, LogRquestId = null, ...)
+        #region SendLogStatusNotification            (Status, LogRequestId = null, ...)
 
         /// <summary>
         /// Send a log status notification.
         /// </summary>
         /// <param name="Status">The status of the log upload.</param>
-        /// <param name="LogRquestId">The optional request id that was provided in the GetLog request that started this log upload.</param>
+        /// <param name="LogRequestId">The optional request id that was provided in the GetLog request that started this log upload.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -5926,7 +5926,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public async Task<CSMS.LogStatusNotificationResponse>
 
             SendLogStatusNotification(UploadLogStatus     Status,
-                                      Int32?              LogRquestId         = null,
+                                      Int32?              LogRequestId        = null,
                                       CustomData?         CustomData          = null,
 
                                       Request_Id?         RequestId           = null,
@@ -5944,7 +5944,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             var request    = new LogStatusNotificationRequest(
                                  ChargeBoxId,
                                  Status,
-                                 LogRquestId,
+                                 LogRequestId,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
