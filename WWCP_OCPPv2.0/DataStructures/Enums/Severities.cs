@@ -42,6 +42,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+        #region Parse   (Number)
+
+        /// <summary>
+        /// Parse the given number as a severity.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a severity.</param>
+        public static Severities Number(Byte Number)
+        {
+
+            if (TryParse(Number, out var severity))
+                return severity;
+
+            return Severities.Unknown;
+
+        }
+
+        #endregion
+
         #region TryParse(Text)
 
         /// <summary>
@@ -60,7 +78,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out Severity)
+        #region TryParse(Number)
+
+        /// <summary>
+        /// Try to parse the given number as a severity.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a severity.</param>
+        public static Severities? TryParse(Byte Number)
+        {
+
+            if (TryParse(Number, out var severity))
+                return severity;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text,   out Severity)
 
         /// <summary>
         /// Try to parse the given text as a severity.
@@ -121,8 +157,69 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+        #region TryParse(Number, out Severity)
 
-        #region AsText(this Severity)
+        /// <summary>
+        /// Try to parse the given number as a severity.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a severity.</param>
+        /// <param name="Severity">The parsed severity.</param>
+        public static Boolean TryParse(Byte Number, out Severities Severity)
+        {
+            switch (Number)
+            {
+
+                case 0:
+                    Severity = Severities.Danger;
+                    return true;
+
+                case 1:
+                    Severity = Severities.HardwareFailure;
+                    return true;
+
+                case 2:
+                    Severity = Severities.SystemFailure;
+                    return true;
+
+                case 3:
+                    Severity = Severities.Critical;
+                    return true;
+
+                case 4:
+                    Severity = Severities.Error;
+                    return true;
+
+                case 5:
+                    Severity = Severities.Alert;
+                    return true;
+
+                case 6:
+                    Severity = Severities.Warning;
+                    return true;
+
+                case 7:
+                    Severity = Severities.Notice;
+                    return true;
+
+                case 8:
+                    Severity = Severities.Informational;
+                    return true;
+
+                case 9:
+                    Severity = Severities.Debug;
+                    return true;
+
+                default:
+                    Severity = Severities.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+
+        #region AsText  (this Severity)
 
         public static String AsText(this Severities Severity)
 
@@ -142,7 +239,47 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+        #region AsNumber(this Severity)
+
+        public static Byte AsNumber(this Severities Severity)
+
+            => Severity switch {
+                   Severities.Danger           => 0,
+                   Severities.HardwareFailure  => 1,
+                   Severities.SystemFailure    => 2,
+                   Severities.Critical         => 3,
+                   Severities.Error            => 4,
+                   Severities.Alert            => 5,
+                   Severities.Warning          => 6,
+                   Severities.Notice           => 7,
+                   Severities.Informational    => 8,
+                   Severities.Debug            => 9,
+                   _                           => 0
+               };
+
+        #endregion
+
     }
+
+
+    #region Documentation
+
+    // The severity that will be assigned to an event that is triggered by this monitor.
+    // The severity range is 0-9, with 0 as the highest and 9 as the lowest severity level.
+    // 
+    // The severity levels have the following meaning:
+    //   *0-Danger*             Indicates lives are potentially in danger. Urgent attention is needed and action should be taken immediately.
+    //   *1-Hardware Failure*   Indicates that the Charging Station is unable to continue regular operations due to Hardware issues. Action is required.
+    //   *2-System Failure*     Indicates that the Charging Station is unable to continue regular operations due to software or minor hardware issues. Action is required.
+    //   *3-Critical*           Indicates a critical error. Action is required.
+    //   *4-Error*              Indicates a non-urgent error. Action is required.
+    //   *5-Alert*              Indicates an alert event. Default severity for any type of monitoring event.
+    //   *6-Warning*            Indicates a warning event. Action may be required.
+    //   *7-Notice*             Indicates an unusual event. No immediate action is required.
+    //   *8-Informational*      Indicates a regular operational event. May be used for reporting, measuring throughput, etc. No action is required.
+    //   *9-Debug*              Indicates information useful to developers for debugging, not useful during operations.
+
+    #endregion
 
 
     /// <summary>

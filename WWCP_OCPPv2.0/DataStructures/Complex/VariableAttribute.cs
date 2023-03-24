@@ -185,7 +185,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out VariableAttribute,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -317,26 +318,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            Type.HasValue
-                               ? new JProperty("customData",  Type.      Value.AsText())
+                               ? new JProperty("type",         Type.      Value.AsText())
                                : null,
 
                            Value is not null
-                               ? new JProperty("customData",  Value)
+                               ? new JProperty("value",        Value)
                                : null,
 
                            Mutability.HasValue
-                               ? new JProperty("mutability",  Mutability.Value.AsText())
+                               ? new JProperty("mutability",   Mutability.Value.AsText())
                                : null,
 
                            Persistent.HasValue
-                               ? new JProperty("persistent",  Persistent.Value)
+                               ? new JProperty("persistent",   Persistent.Value)
                                : null,
 
                            Constant.HasValue
-                               ? new JProperty("constant",    Constant.  Value)
+                               ? new JProperty("constant",     Constant.  Value)
                                : null,
 
                            CustomData is not null
@@ -346,8 +347,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        );
 
             return CustomVariableAttributeSerializer is not null
-                       ? CustomVariableAttributeSerializer(this, JSON)
-                       : JSON;
+                       ? CustomVariableAttributeSerializer(this, json)
+                       : json;
 
         }
 

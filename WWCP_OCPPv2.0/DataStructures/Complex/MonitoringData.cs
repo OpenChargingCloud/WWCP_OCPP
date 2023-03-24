@@ -163,7 +163,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out MonitoringData,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -190,13 +191,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                              "component",
                                              OCPPv2_0.Component.TryParse,
                                              out Component? Component,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     Component is null)
                 {
                     return false;
                 }
-
-                if (Component is null)
-                    return false;
 
                 #endregion
 
@@ -206,20 +205,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                              "variable",
                                              OCPPv2_0.Variable.TryParse,
                                              out Variable? Variable,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     Variable is null)
                 {
                     return false;
                 }
-
-                if (Variable is null)
-                    return false;
 
                 #endregion
 
                 #region VariableMonitorings    [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("variable",
-                                                "variable",
+                if (!JSON.ParseMandatoryHashSet("variableMonitoring",
+                                                "variable monitorings",
                                                 VariableMonitoring.TryParse,
                                                 out HashSet<VariableMonitoring> VariableMonitorings,
                                                 out ErrorResponse))
@@ -276,34 +273,37 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="CustomComponentSerializer">A delegate to serialize custom component objects.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomVariableSerializer">A delegate to serialize custom variable objects.</param>
+        /// <param name="CustomVariableMonitoringSerializer">A delegate to serialize custom variable monitoring objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<MonitoringData>?  CustomMonitoringDataSerializer   = null,
-                              CustomJObjectSerializerDelegate<Component>?       CustomComponentSerializer        = null,
-                              CustomJObjectSerializerDelegate<EVSE>?            CustomEVSESerializer             = null,
-                              CustomJObjectSerializerDelegate<Variable>?        CustomVariableSerializer         = null,
-                              CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<MonitoringData>?      CustomMonitoringDataSerializer       = null,
+                              CustomJObjectSerializerDelegate<Component>?           CustomComponentSerializer            = null,
+                              CustomJObjectSerializerDelegate<EVSE>?                CustomEVSESerializer                 = null,
+                              CustomJObjectSerializerDelegate<Variable>?            CustomVariableSerializer             = null,
+                              CustomJObjectSerializerDelegate<VariableMonitoring>?  CustomVariableMonitoringSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("component",   Component. ToJSON(CustomComponentSerializer,
-                                                                                CustomEVSESerializer,
-                                                                                CustomCustomDataSerializer)),
+                                 new JProperty("component",            Component. ToJSON(CustomComponentSerializer,
+                                                                                         CustomEVSESerializer,
+                                                                                         CustomCustomDataSerializer)),
 
-                           Variable is not null
-                               ? new JProperty("variable",    Variable.  ToJSON(CustomVariableSerializer,
-                                                                                CustomCustomDataSerializer))
-                               : null,
+                                 new JProperty("variable",             Variable.  ToJSON(CustomVariableSerializer,
+                                                                                         CustomCustomDataSerializer)),
+
+                                 new JProperty("variableMonitoring",   new JArray(VariableMonitorings.Select(variableMonitoring => variableMonitoring.ToJSON(CustomVariableMonitoringSerializer,
+                                                                                                                                                             CustomCustomDataSerializer)))),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",           CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomMonitoringDataSerializer is not null
-                       ? CustomMonitoringDataSerializer(this, JSON)
-                       : JSON;
+                       ? CustomMonitoringDataSerializer(this, json)
+                       : json;
 
         }
 

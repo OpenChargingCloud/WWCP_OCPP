@@ -240,6 +240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         public CustomJObjectSerializerDelegate<Component>?                                 CustomComponentSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<EVSE>?                                      CustomEVSESerializer                                        { get; set; }
         public CustomJObjectSerializerDelegate<Variable>?                                  CustomVariableSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<VariableMonitoring>?                        CustomVariableMonitoringSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<ReportData>?                                CustomReportDataSerializer                                  { get; set; }
         public CustomJObjectSerializerDelegate<VariableAttribute>?                         CustomVariableAttributeSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<VariableCharacteristics>?                   CustomVariableCharacteristicsSerializer                     { get; set; }
@@ -8100,6 +8101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                                              CustomComponentSerializer,
                                                              CustomEVSESerializer,
                                                              CustomVariableSerializer,
+                                                             CustomVariableMonitoringSerializer,
                                                              CustomCustomDataSerializer));
 
             if (!NotifyMonitoringReportResponse.TryParse(Request,

@@ -19,10 +19,8 @@
 
 using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Styx;
-using System.Collections.Generic;
-using System.Drawing;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -56,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// When the transmitted value has a unit, this field SHALL be included.
         /// </summary>
         [Optional]
-        public String?              Unit                  { get; }
+        public UnitsOfMeasure?      Unit                  { get; }
 
         /// <summary>
         /// The optional minimal value of this variable.
@@ -99,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public VariableCharacteristics(DataTypes             DataType,
                                        Boolean               SupportsMonitoring,
-                                       String?               Unit,
+                                       UnitsOfMeasure?       Unit,
                                        Decimal?              MinLimit,
                                        Decimal?              MaxLimit,
                                        IEnumerable<String>?  ValuesList,
@@ -208,7 +206,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out VariableCharacteristics,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -256,7 +255,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region Unit                  [optional]
 
-                var Unit = JSON.GetString("unit");
+                var unit  = JSON.GetString("unit");
+
+                var Unit  = unit is not null && unit.IsNotNullOrEmpty()
+                                ? new UnitsOfMeasure(unit, 1)
+                                : null;
 
                 #endregion
 
@@ -352,36 +355,36 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("dataType",            DataType.  AsText()),
-                                 new JProperty("supportsMonitoring",  SupportsMonitoring),
+                                 new JProperty("dataType",             DataType.  AsText()),
+                                 new JProperty("supportsMonitoring",   SupportsMonitoring),
 
-                           Unit is not null && Unit.IsNotNullOrEmpty()
-                               ? new JProperty("unit",                Unit)
+                           Unit is not null
+                               ? new JProperty("unit",                 Unit.Unit)
                                : null,
 
                            MinLimit.HasValue
-                               ? new JProperty("minLimit",            MinLimit.Value)
+                               ? new JProperty("minLimit",             MinLimit.Value)
                                : null,
 
                            MaxLimit.HasValue
-                               ? new JProperty("maxLimit",            MaxLimit.Value)
+                               ? new JProperty("maxLimit",             MaxLimit.Value)
                                : null,
 
                            ValuesList.Any()
-                               ? new JProperty("valuesList",          ValuesList.AggregateWith(','))
+                               ? new JProperty("valuesList",           ValuesList.AggregateWith(','))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",          CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",           CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomVariableCharacteristicsSerializer is not null
-                       ? CustomVariableCharacteristicsSerializer(this, JSON)
-                       : JSON;
+                       ? CustomVariableCharacteristicsSerializer(this, json)
+                       : json;
 
         }
 
@@ -461,7 +464,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                DataType.          Equals(VariableCharacteristics.DataType)           &&
                SupportsMonitoring.Equals(VariableCharacteristics.SupportsMonitoring) &&
 
-               String.            Equals(Unit, VariableCharacteristics.Unit, StringComparison.Ordinal) &&
+             ((Unit is null      &&  VariableCharacteristics.Unit is null) ||
+               Unit is not null  &&  VariableCharacteristics.Unit is not null  && Unit.          Equals(VariableCharacteristics.Unit))           &&
 
             ((!MinLimit.HasValue && !VariableCharacteristics.MinLimit.HasValue) ||
                MinLimit.HasValue &&  VariableCharacteristics.MinLimit.HasValue && MinLimit.Value.Equals(VariableCharacteristics.MinLimit.Value)) &&

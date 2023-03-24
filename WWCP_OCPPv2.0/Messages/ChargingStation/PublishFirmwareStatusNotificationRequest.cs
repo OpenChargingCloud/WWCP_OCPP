@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var JSON = JSONObject.Create(
 
-                                 new JProperty("Status",       Status.                                    AsText()),
+                                 new JProperty("status",       Status.                                    AsText()),
 
                            PublishFirmwareStatusNotificationRequestId.HasValue
                                ? new JProperty("requestId",    PublishFirmwareStatusNotificationRequestId.ToString())

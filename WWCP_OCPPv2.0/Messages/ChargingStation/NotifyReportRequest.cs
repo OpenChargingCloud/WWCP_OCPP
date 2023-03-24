@@ -590,13 +590,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                               CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("requestId",     NotifyReportRequestId.ToString()),
                                  new JProperty("seqNo",         SequenceNumber),
                                  new JProperty("generatedAt",   GeneratedAt.          ToIso8601()),
 
-                                 new JProperty("ReportData",    new JArray(ReportData.Select(monitoringData => monitoringData.ToJSON(CustomReportDataSerializer,
+                                 new JProperty("reportData",    new JArray(ReportData.Select(monitoringData => monitoringData.ToJSON(CustomReportDataSerializer,
                                                                                                                                      CustomComponentSerializer,
                                                                                                                                      CustomEVSESerializer,
                                                                                                                                      CustomVariableSerializer,
@@ -609,8 +609,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null);
 
             return CustomNotifyReportRequestSerializer is not null
-                       ? CustomNotifyReportRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomNotifyReportRequestSerializer(this, json)
+                       : json;
 
         }
 

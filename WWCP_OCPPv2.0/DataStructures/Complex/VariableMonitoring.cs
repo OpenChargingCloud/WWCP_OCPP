@@ -185,7 +185,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out VariableMonitoring,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -245,8 +246,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region Type           [mandatory]
 
-                if (!JSON.ParseMandatory("component",
-                                         "component",
+                if (!JSON.ParseMandatory("type",
+                                         "monitor type",
                                          MonitorTypesExtensions.TryParse,
                                          out MonitorTypes Type,
                                          out ErrorResponse))
@@ -258,13 +259,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region Severity       [mandatory]
 
+                Severities? Severity = null;
+
                 if (!JSON.ParseMandatory("severity",
                                          "severity",
-                                         SeveritiesExtensions.TryParse,
-                                         out Severities Severity,
+                                         out Byte severityByte,
                                          out ErrorResponse))
                 {
-                    return false;
+
+                    Severity = SeveritiesExtensions.TryParse(severityByte);
+
+                    if (!Severity.HasValue)
+                        return false;
+
                 }
 
                 #endregion
@@ -288,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                             Transaction,
                                                             Value,
                                                             Type,
-                                                            Severity,
+                                                            Severity!.Value,
                                                             CustomData);
 
                 if (CustomVariableMonitoringParser is not null)
@@ -320,23 +327,23 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("id",           Id.       ToString()),
-                                 new JProperty("transaction",  Transaction),
-                                 new JProperty("value",        Value),
-                                 new JProperty("type",         Type.     AsText()),
-                                 new JProperty("severity",     (Byte) Severity),
+                                 new JProperty("id",            Id.        ToString()),
+                                 new JProperty("transaction",   Transaction),
+                                 new JProperty("value",         Value),
+                                 new JProperty("type",          Type.      AsText()),
+                                 new JProperty("severity",      Severity.  AsNumber()),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",    CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomVariableMonitoringSerializer is not null
-                       ? CustomVariableMonitoringSerializer(this, JSON)
-                       : JSON;
+                       ? CustomVariableMonitoringSerializer(this, json)
+                       : json;
 
         }
 

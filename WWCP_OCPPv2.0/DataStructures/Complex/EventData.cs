@@ -296,7 +296,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out EventData,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -386,13 +387,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                              "component",
                                              OCPPv2_0.Component.TryParse,
                                              out Component? Component,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     Component is null)
                 {
                     return false;
                 }
-
-                if (Component is null)
-                    return false;
 
                 #endregion
 
@@ -402,13 +401,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                              "variable",
                                              OCPPv2_0.Variable.TryParse,
                                              out Variable? Variable,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     Variable is null)
                 {
                     return false;
                 }
-
-                if (Variable is null)
-                    return false;
 
                 #endregion
 

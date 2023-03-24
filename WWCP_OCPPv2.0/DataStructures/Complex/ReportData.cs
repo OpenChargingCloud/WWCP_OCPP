@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Optional fixed read-only parameters of a variable.
         /// </summary>
         [Optional]
-        public VariableCharacteristics         VariableCharacteristics    { get; }
+        public VariableCharacteristics?        VariableCharacteristics    { get; }
 
         #endregion
 
@@ -73,8 +73,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public ReportData(Component                       Component,
                           Variable                        Variable,
                           IEnumerable<VariableAttribute>  VariableAttributes,
-                          VariableCharacteristics         VariableCharacteristics,
-                          CustomData?                     CustomData   = null)
+                          VariableCharacteristics?        VariableCharacteristics   = null,
+                          CustomData?                     CustomData                = null)
 
             : base(CustomData)
 
@@ -175,7 +175,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out ReportData,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -202,13 +203,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                              "component",
                                              OCPPv2_0.Component.TryParse,
                                              out Component? Component,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     Component is null)
                 {
                     return false;
                 }
-
-                if (Component is null)
-                    return false;
 
                 #endregion
 
@@ -218,13 +217,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                              "variable",
                                              OCPPv2_0.Variable.TryParse,
                                              out Variable? Variable,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     Variable is null)
                 {
                     return false;
                 }
-
-                if (Variable is null)
-                    return false;
 
                 #endregion
 
@@ -243,17 +240,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region VariableCharacteristics    [optional]
 
-                if (JSON.ParseOptionalJSON("variableCharacteristics",
-                                           "variable characteristics",
-                                           OCPPv2_0.VariableCharacteristics.TryParse,
-                                           out VariableCharacteristics? VariableCharacteristics,
-                                           out ErrorResponse))
+                if (JSON.ParseMandatoryJSON("variableCharacteristics",
+                                            "variable characteristics",
+                                            OCPPv2_0.VariableCharacteristics.TryParse,
+                                            out VariableCharacteristics? VariableCharacteristics,
+                                            out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
-
-                if (VariableCharacteristics is null)
-                    return false;
 
                 #endregion
 
@@ -317,32 +312,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("component",                Component.              ToJSON(CustomComponentSerializer,
-                                                                                                          CustomEVSESerializer,
-                                                                                                          CustomCustomDataSerializer)),
+                                 new JProperty("component",                 Component.              ToJSON(CustomComponentSerializer,
+                                                                                                           CustomEVSESerializer,
+                                                                                                           CustomCustomDataSerializer)),
 
-                                 new JProperty("variable",                 Variable.               ToJSON(CustomVariableSerializer,
-                                                                                                          CustomCustomDataSerializer)),
+                                 new JProperty("variable",                  Variable.               ToJSON(CustomVariableSerializer,
+                                                                                                           CustomCustomDataSerializer)),
 
-                                 new JProperty("variableAttribute",        new JArray(VariableAttributes.Select(variableAttribute => variableAttribute.ToJSON(CustomVariableAttributeSerializer,
-                                                                                                                                                              CustomCustomDataSerializer)))),
+                                 new JProperty("variableAttribute",         new JArray(VariableAttributes.Select(variableAttribute => variableAttribute.ToJSON(CustomVariableAttributeSerializer,
+                                                                                                                                                               CustomCustomDataSerializer)))),
 
                            VariableCharacteristics is not null
-                               ? new JProperty("variableCharacteristics",  VariableCharacteristics.ToJSON(CustomVariableCharacteristicsSerializer,
-                                                                                                          CustomCustomDataSerializer))
+                               ? new JProperty("variableCharacteristics",   VariableCharacteristics.ToJSON(CustomVariableCharacteristicsSerializer,
+                                                                                                           CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",               CustomData.             ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",                CustomData.             ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomReportDataSerializer is not null
-                       ? CustomReportDataSerializer(this, JSON)
-                       : JSON;
+                       ? CustomReportDataSerializer(this, json)
+                       : json;
 
         }
 

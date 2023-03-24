@@ -129,6 +129,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #endregion
 
 
+        //WTF: monitor is optional, but minItems == 1?
+
         #region Documentation
 
         // {
@@ -535,12 +537,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomVariableSerializer">A delegate to serialize custom variables.</param>
+        /// <param name="CustomVariableMonitoringSerializer">A delegate to serialize custom variable monitoring objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyMonitoringReportRequest>?  CustomNotifyMonitoringReportRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<MonitoringData>?                 CustomMonitoringDataSerializer                  = null,
                               CustomJObjectSerializerDelegate<Component>?                      CustomComponentSerializer                       = null,
                               CustomJObjectSerializerDelegate<EVSE>?                           CustomEVSESerializer                            = null,
                               CustomJObjectSerializerDelegate<Variable>?                       CustomVariableSerializer                        = null,
+                              CustomJObjectSerializerDelegate<VariableMonitoring>?             CustomVariableMonitoringSerializer              = null,
                               CustomJObjectSerializerDelegate<CustomData>?                     CustomCustomDataSerializer                      = null)
         {
 
@@ -550,10 +554,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                  new JProperty("seqNo",         SequenceNumber),
                                  new JProperty("generatedAt",   GeneratedAt.                    ToIso8601()),
 
-                                 new JProperty("eventData",     new JArray(MonitoringData.Select(monitoringData => monitoringData.ToJSON(CustomMonitoringDataSerializer,
+                                 new JProperty("monitor",       new JArray(MonitoringData.Select(monitoringData => monitoringData.ToJSON(CustomMonitoringDataSerializer,
                                                                                                                                          CustomComponentSerializer,
                                                                                                                                          CustomEVSESerializer,
                                                                                                                                          CustomVariableSerializer,
+                                                                                                                                         CustomVariableMonitoringSerializer,
                                                                                                                                          CustomCustomDataSerializer)))),
 
                            ToBeContinued.HasValue
