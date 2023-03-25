@@ -35,10 +35,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         #region Properties
 
         /// <summary>
-        /// The type of the certificates requested.
+        /// The optional enumeration of certificate types requested.
         /// </summary>
         [Mandatory]
-        public CertificateUse  CertificateType    { get; }
+        public IEnumerable<CertificateUse>  CertificateTypes    { get; }
 
         #endregion
 
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// Create a new get installed certificate ids request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CertificateType">The type of the certificates requested.</param>
+        /// <param name="CertificateTypes">An optional enumeration of certificate types requested.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -56,15 +56,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetInstalledCertificateIdsRequest(ChargeBox_Id        ChargeBoxId,
-                                                 CertificateUse      CertificateType,
-                                                 CustomData?         CustomData          = null,
+        public GetInstalledCertificateIdsRequest(ChargeBox_Id                  ChargeBoxId,
+                                                 IEnumerable<CertificateUse>?  CertificateTypes    = null,
+                                                 CustomData?                   CustomData          = null,
 
-                                                 Request_Id?         RequestId           = null,
-                                                 DateTime?           RequestTimestamp    = null,
-                                                 TimeSpan?           RequestTimeout      = null,
-                                                 EventTracking_Id?   EventTrackingId     = null,
-                                                 CancellationToken?  CancellationToken   = null)
+                                                 Request_Id?                   RequestId           = null,
+                                                 DateTime?                     RequestTimestamp    = null,
+                                                 TimeSpan?                     RequestTimeout      = null,
+                                                 EventTracking_Id?             EventTrackingId     = null,
+                                                 CancellationToken?            CancellationToken   = null)
 
             : base(ChargeBoxId,
                    "GetInstalledCertificateIds",
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         {
 
-            this.CertificateType = CertificateType;
+            this.CertificateTypes  = CertificateTypes?.Distinct() ?? Array.Empty<CertificateUse>();
 
         }
 
@@ -218,20 +218,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 GetInstalledCertificateIdsRequest = null;
 
-                #region CertificateType    [mandatory]
+                #region CertificateTypes    [optional]
 
-                if (!JSON.ParseMandatory("certificateType",
-                                         "certificate type",
-                                         CertificateUseExtensions.TryParse,
-                                         out CertificateUse CertificateType,
-                                         out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("certificateType",
+                                              "certificate type",
+                                              CertificateUseExtensions.TryParse,
+                                              out HashSet<CertificateUse> CertificateTypes,
+                                              out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
-                #region CustomData         [optional]
+                #region CustomData          [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -245,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 #endregion
 
-                #region ChargeBoxId        [optional, OCPP_CSE]
+                #region ChargeBoxId         [optional, OCPP_CSE]
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
@@ -266,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
                 GetInstalledCertificateIdsRequest = new GetInstalledCertificateIdsRequest(ChargeBoxId,
-                                                                                          CertificateType,
+                                                                                          CertificateTypes,
                                                                                           CustomData,
                                                                                           RequestId);
 
@@ -301,10 +302,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("certificateType",  CertificateType.AsText()),
+                           CertificateTypes.Any()
+                               ? new JProperty("certificateType",   new JArray(CertificateTypes.Select(certificateType => certificateType.AsText())))
+                               : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -388,7 +391,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             => GetInstalledCertificateIdsRequest is not null &&
 
-               CertificateType.Equals(GetInstalledCertificateIdsRequest.CertificateType) &&
+               CertificateTypes.Count().Equals(GetInstalledCertificateIdsRequest.CertificateTypes.Count()) &&
+               CertificateTypes.All(entry => GetInstalledCertificateIdsRequest.CertificateTypes.Contains(entry)) &&
 
                base.    GenericEquals(GetInstalledCertificateIdsRequest);
 
@@ -407,8 +411,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
             unchecked
             {
 
-                return CertificateType.GetHashCode() * 3 ^
-                       base.           GetHashCode();
+                return CertificateTypes.CalcHashCode() * 3 ^
+                       base.            GetHashCode();
 
             }
         }
@@ -422,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// </summary>
         public override String ToString()
 
-            => CertificateType.AsText();
+            => CertificateTypes.AggregateWith(", ");
 
         #endregion
 

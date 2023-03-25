@@ -256,13 +256,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 if (!OCPPv2_0.CertificateChain.TryParse(certificateChainText,
                                                         out var CertificateChain,
-                                                        out ErrorResponse))
+                                                        out ErrorResponse) ||
+                     CertificateChain is null)
                 {
                     return false;
                 }
-
-                if (CertificateChain is null)
-                    return false;
 
                 #endregion
 

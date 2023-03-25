@@ -296,13 +296,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var json = JSONObject.Create(
 
-                                 new JProperty("hashAlgorithm",   HashAlgorithm),
-                                 new JProperty("issuerNameHash",  IssuerNameHash),
-                                 new JProperty("issuerKeyHash",   IssuerPublicKeyHash),
-                                 new JProperty("serialNumber",    SerialNumber),
+                                 new JProperty("hashAlgorithm",    HashAlgorithm.AsText()),
+                                 new JProperty("issuerNameHash",   IssuerNameHash),
+                                 new JProperty("issuerKeyHash",    IssuerPublicKeyHash),
+                                 new JProperty("serialNumber",     SerialNumber),
 
                            CustomData is not null
-                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",       CustomData.   ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

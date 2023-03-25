@@ -18,13 +18,14 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Collections;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
-    public class CertificateChain
+    public class CertificateChain : IEnumerable<Certificate>
     {
 
         #region Properties
@@ -255,6 +256,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         }
 
         #endregion
+
+
+
+        public IEnumerator<Certificate> GetEnumerator()
+            => Certificates.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+            => Certificates.GetEnumerator();
 
 
         #region (override) ToString()

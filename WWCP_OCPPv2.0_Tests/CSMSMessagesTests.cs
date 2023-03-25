@@ -22,14 +22,13 @@ using NUnit.Framework;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPPv2_0.CSMS;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using System.Net.NetworkInformation;
-using org.GraphDefined.Vanaheimr.Hermod.Modbus;
-using org.GraphDefined.Vanaheimr.Illias.ConsoleLog;
-using social.OpenData.UsersAPI;
+using NUnit.Framework.Constraints;
+using static System.Net.Mime.MediaTypeNames;
+using com.GraphDefined.SMSApi.API.Action;
+using System.Drawing;
 
 #endregion
 
@@ -1268,7 +1267,633 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         #endregion
 
 
+        #region CSMS_CertificateSigned_Test()
 
+        /// <summary>
+        /// A test for triggering a message at a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_CertificateSigned_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var certificateSignedRequests = new List<CertificateSignedRequest>();
+
+                chargingStation1.OnCertificateSignedRequest += async (timestamp, sender, certificateSignedRequest) => {
+                    certificateSignedRequests.Add(certificateSignedRequest);
+                };
+
+
+                var response1  = await testCSMS01.CertificateSigned(
+                                           ChargeBoxId:        chargingStation1.ChargeBoxId,
+                                           CertificateChain:   new CertificateChain(
+                                                                   Certificates:   new[] {
+                                                                                       Certificate.Parse(
+                                                                                           String.Concat(
+                                                                                               "-----BEGIN CERTIFICATE-----\n",
+                                                                                               "MIIFfDCCBGSgAwIBAgISAxm1F16JrzgdEDxpDfnyG2xaMA0GCSqGSIb3DQEBCwUA\n",
+                                                                                               "MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\n",
+                                                                                               "EwJSMzAeFw0yMzAxMDYwNDAwMjZaFw0yMzA0MDYwNDAwMjVaMCIxIDAeBgNVBAMT\n",
+                                                                                               "F2phYmJlci5ncmFwaGRlZmluZWQuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n",
+                                                                                               "MIIBCgKCAQEAtucIqzk30QB90mZxCNO+XP2kiY9QMFIsTfupU5IYrqGcQ1Zn+mYa\n",
+                                                                                               "7yMW9UDZdJeMpi0Ls3bOOY6HbktNTglIETUD3/hUxtLlSIQXgPV/r7qPmx5+rNgT\n",
+                                                                                               "H1uoCJ81Mk/vtGr0hWj/bbEv/FGRLo8KKr10ZZ/PNOs5JA/2SKolGGqst6Xd3Eh5\n",
+                                                                                               "JPqSwOeCPv/2D6rWvdEJwsbHBBgXBvdtb4NzGibz/y4VyiPcDZbw1P+F4MucvVEg\n",
+                                                                                               "cvFxCoupsolLcX/f49uq3FRgYGloPOAjCkHbbi8HCt0VfL0OKL4ooLtzAtm2VOJA\n",
+                                                                                               "ZueprlXzEVES9RR9jfkB5OpE1PMFc4oSEQIDAQABo4ICmjCCApYwDgYDVR0PAQH/\n",
+                                                                                               "BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAMBgNVHRMBAf8E\n",
+                                                                                               "AjAAMB0GA1UdDgQWBBTRSR2BPdSRXb+ifMhxcHkS+Dn9uTAfBgNVHSMEGDAWgBQU\n",
+                                                                                               "LrMXt1hWy65QCUDmH6+dixTCxjBVBggrBgEFBQcBAQRJMEcwIQYIKwYBBQUHMAGG\n",
+                                                                                               "FWh0dHA6Ly9yMy5vLmxlbmNyLm9yZzAiBggrBgEFBQcwAoYWaHR0cDovL3IzLmku\n",
+                                                                                               "bGVuY3Iub3JnLzBqBgNVHREEYzBhghtjb25mZXJlbmNlLmdyYXBoZGVmaW5lZC5j\n",
+                                                                                               "b22CEGdyYXBoZGVmaW5lZC5jb22CF2phYmJlci5ncmFwaGRlZmluZWQuY29tghdw\n",
+                                                                                               "dWJzdWIuZ3JhcGhkZWZpbmVkLmNvbTBMBgNVHSAERTBDMAgGBmeBDAECATA3Bgsr\n",
+                                                                                               "BgEEAYLfEwEBATAoMCYGCCsGAQUFBwIBFhpodHRwOi8vY3BzLmxldHNlbmNyeXB0\n",
+                                                                                               "Lm9yZzCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2AHoyjFTYty22IOo44FIe6YQW\n",
+                                                                                               "cDIThU070ivBOlejUutSAAABhYVzpcAAAAQDAEcwRQIhAJCxbUKgpq153bfWcnMv\n",
+                                                                                               "4yrKTyqtYBttKHxtw+nWMPQ5AiAmwa2yn/7794mQS3dh2hI79p/hC8p8XKn4jx6j\n",
+                                                                                               "ZscOngB2AOg+0No+9QY1MudXKLyJa8kD08vREWvs62nhd31tBr1uAAABhYVzpaAA\n",
+                                                                                               "AAQDAEcwRQIhAORY8NM3uxbxTSECXlWNazCywl3Q0G7iAHBOXIqTzJ2iAiAgEkJ4\n",
+                                                                                               "14UlG3TnHRgITx3wRXQsY0A95z7wa7YR3nkdWTANBgkqhkiG9w0BAQsFAAOCAQEA\n",
+                                                                                               "bwnRFC0EiAs/32J48Ifnt6/hDjqmd5ATo1pCdhy4YIf72EKoPAnZ/kOtaNP5hD8U\n",
+                                                                                               "CHVPQqYTaPE6bAPKs4JJOVIRdUJOTBHeYEHSD6iJHL93zWEKP3nB4ZYx5zOibtS0\n",
+                                                                                               "dN/EqKU7djyvnwM6fTO5gs07cDu1uToV8lBjhH9EHJu8KJJ4vPXFNgyK30XPx1Fd\n",
+                                                                                               "itTVGQId1kGwkuBmBBwbTd5uJiLFBwiJs5Vl/sUj1OHB6fp0pqzJ1M+WlNR3sYM2\n",
+                                                                                               "i68/S4sQsqy8ui74d60lNkuFrZzYpB7NRVVKesHOSdGQeYqchGn6c33kI67fvF5a\n",
+                                                                                               "Ra0DThYgIhij18nkpwaYHg==\n",
+                                                                                               "-----END CERTIFICATE-----\n\n"
+                                                                                           )
+                                                                                       )
+                                                                                   }
+                                                               ),
+                                           CertificateType:    CertificateSigningUse.ChargingStationCertificate,
+                                           CustomData:         null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                     response1.Result.ResultCode);
+                Assert.AreEqual(CertificateSignedStatus.Accepted,   response1.Status);
+
+                Assert.AreEqual(1,                                  certificateSignedRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,       certificateSignedRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_InstallCertificate_Test()
+
+        /// <summary>
+        /// A test for triggering a message at a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_InstallCertificate_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var installCertificateRequests = new List<InstallCertificateRequest>();
+
+                chargingStation1.OnInstallCertificateRequest += async (timestamp, sender, installCertificateRequest) => {
+                    installCertificateRequests.Add(installCertificateRequest);
+                };
+
+
+                var response1  = await testCSMS01.InstallCertificate(
+                                           ChargeBoxId:       chargingStation1.ChargeBoxId,
+                                           CertificateType:   CertificateUse.V2GRootCertificate,
+                                           Certificate:       Certificate.Parse(
+                                                                  String.Concat(
+                                                                      "-----BEGIN CERTIFICATE-----\n",
+                                                                      "MIIFfDCCBGSgAwIBAgISAxm1F16JrzgdEDxpDfnyG2xaMA0GCSqGSIb3DQEBCwUA\n",
+                                                                      "MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\n",
+                                                                      "EwJSMzAeFw0yMzAxMDYwNDAwMjZaFw0yMzA0MDYwNDAwMjVaMCIxIDAeBgNVBAMT\n",
+                                                                      "F2phYmJlci5ncmFwaGRlZmluZWQuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n",
+                                                                      "MIIBCgKCAQEAtucIqzk30QB90mZxCNO+XP2kiY9QMFIsTfupU5IYrqGcQ1Zn+mYa\n",
+                                                                      "7yMW9UDZdJeMpi0Ls3bOOY6HbktNTglIETUD3/hUxtLlSIQXgPV/r7qPmx5+rNgT\n",
+                                                                      "H1uoCJ81Mk/vtGr0hWj/bbEv/FGRLo8KKr10ZZ/PNOs5JA/2SKolGGqst6Xd3Eh5\n",
+                                                                      "JPqSwOeCPv/2D6rWvdEJwsbHBBgXBvdtb4NzGibz/y4VyiPcDZbw1P+F4MucvVEg\n",
+                                                                      "cvFxCoupsolLcX/f49uq3FRgYGloPOAjCkHbbi8HCt0VfL0OKL4ooLtzAtm2VOJA\n",
+                                                                      "ZueprlXzEVES9RR9jfkB5OpE1PMFc4oSEQIDAQABo4ICmjCCApYwDgYDVR0PAQH/\n",
+                                                                      "BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAMBgNVHRMBAf8E\n",
+                                                                      "AjAAMB0GA1UdDgQWBBTRSR2BPdSRXb+ifMhxcHkS+Dn9uTAfBgNVHSMEGDAWgBQU\n",
+                                                                      "LrMXt1hWy65QCUDmH6+dixTCxjBVBggrBgEFBQcBAQRJMEcwIQYIKwYBBQUHMAGG\n",
+                                                                      "FWh0dHA6Ly9yMy5vLmxlbmNyLm9yZzAiBggrBgEFBQcwAoYWaHR0cDovL3IzLmku\n",
+                                                                      "bGVuY3Iub3JnLzBqBgNVHREEYzBhghtjb25mZXJlbmNlLmdyYXBoZGVmaW5lZC5j\n",
+                                                                      "b22CEGdyYXBoZGVmaW5lZC5jb22CF2phYmJlci5ncmFwaGRlZmluZWQuY29tghdw\n",
+                                                                      "dWJzdWIuZ3JhcGhkZWZpbmVkLmNvbTBMBgNVHSAERTBDMAgGBmeBDAECATA3Bgsr\n",
+                                                                      "BgEEAYLfEwEBATAoMCYGCCsGAQUFBwIBFhpodHRwOi8vY3BzLmxldHNlbmNyeXB0\n",
+                                                                      "Lm9yZzCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2AHoyjFTYty22IOo44FIe6YQW\n",
+                                                                      "cDIThU070ivBOlejUutSAAABhYVzpcAAAAQDAEcwRQIhAJCxbUKgpq153bfWcnMv\n",
+                                                                      "4yrKTyqtYBttKHxtw+nWMPQ5AiAmwa2yn/7794mQS3dh2hI79p/hC8p8XKn4jx6j\n",
+                                                                      "ZscOngB2AOg+0No+9QY1MudXKLyJa8kD08vREWvs62nhd31tBr1uAAABhYVzpaAA\n",
+                                                                      "AAQDAEcwRQIhAORY8NM3uxbxTSECXlWNazCywl3Q0G7iAHBOXIqTzJ2iAiAgEkJ4\n",
+                                                                      "14UlG3TnHRgITx3wRXQsY0A95z7wa7YR3nkdWTANBgkqhkiG9w0BAQsFAAOCAQEA\n",
+                                                                      "bwnRFC0EiAs/32J48Ifnt6/hDjqmd5ATo1pCdhy4YIf72EKoPAnZ/kOtaNP5hD8U\n",
+                                                                      "CHVPQqYTaPE6bAPKs4JJOVIRdUJOTBHeYEHSD6iJHL93zWEKP3nB4ZYx5zOibtS0\n",
+                                                                      "dN/EqKU7djyvnwM6fTO5gs07cDu1uToV8lBjhH9EHJu8KJJ4vPXFNgyK30XPx1Fd\n",
+                                                                      "itTVGQId1kGwkuBmBBwbTd5uJiLFBwiJs5Vl/sUj1OHB6fp0pqzJ1M+WlNR3sYM2\n",
+                                                                      "i68/S4sQsqy8ui74d60lNkuFrZzYpB7NRVVKesHOSdGQeYqchGn6c33kI67fvF5a\n",
+                                                                      "Ra0DThYgIhij18nkpwaYHg==\n",
+                                                                      "-----END CERTIFICATE-----\n\n"
+                                                                  )
+                                                              ),
+                                           CustomData:        null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(CertificateStatus.Accepted,     response1.Status);
+
+                Assert.AreEqual(1,                              installCertificateRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   installCertificateRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_GetInstalledCertificateIds_Test()
+
+        /// <summary>
+        /// A test for triggering a message at a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_GetInstalledCertificateIds_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var installCertificateRequests = new List<InstallCertificateRequest>();
+
+                chargingStation1.OnInstallCertificateRequest += async (timestamp, sender, installCertificateRequest) => {
+                    installCertificateRequests.Add(installCertificateRequest);
+                };
+
+                var response1  = await testCSMS01.InstallCertificate(
+                                           ChargeBoxId:       chargingStation1.ChargeBoxId,
+                                           CertificateType:   CertificateUse.V2GRootCertificate,
+                                           Certificate:       Certificate.Parse(
+                                                                  String.Concat(
+                                                                      "-----BEGIN CERTIFICATE-----\n",
+                                                                      "MIIFfDCCBGSgAwIBAgISAxm1F16JrzgdEDxpDfnyG2xaMA0GCSqGSIb3DQEBCwUA\n",
+                                                                      "MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\n",
+                                                                      "EwJSMzAeFw0yMzAxMDYwNDAwMjZaFw0yMzA0MDYwNDAwMjVaMCIxIDAeBgNVBAMT\n",
+                                                                      "F2phYmJlci5ncmFwaGRlZmluZWQuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n",
+                                                                      "MIIBCgKCAQEAtucIqzk30QB90mZxCNO+XP2kiY9QMFIsTfupU5IYrqGcQ1Zn+mYa\n",
+                                                                      "7yMW9UDZdJeMpi0Ls3bOOY6HbktNTglIETUD3/hUxtLlSIQXgPV/r7qPmx5+rNgT\n",
+                                                                      "H1uoCJ81Mk/vtGr0hWj/bbEv/FGRLo8KKr10ZZ/PNOs5JA/2SKolGGqst6Xd3Eh5\n",
+                                                                      "JPqSwOeCPv/2D6rWvdEJwsbHBBgXBvdtb4NzGibz/y4VyiPcDZbw1P+F4MucvVEg\n",
+                                                                      "cvFxCoupsolLcX/f49uq3FRgYGloPOAjCkHbbi8HCt0VfL0OKL4ooLtzAtm2VOJA\n",
+                                                                      "ZueprlXzEVES9RR9jfkB5OpE1PMFc4oSEQIDAQABo4ICmjCCApYwDgYDVR0PAQH/\n",
+                                                                      "BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAMBgNVHRMBAf8E\n",
+                                                                      "AjAAMB0GA1UdDgQWBBTRSR2BPdSRXb+ifMhxcHkS+Dn9uTAfBgNVHSMEGDAWgBQU\n",
+                                                                      "LrMXt1hWy65QCUDmH6+dixTCxjBVBggrBgEFBQcBAQRJMEcwIQYIKwYBBQUHMAGG\n",
+                                                                      "FWh0dHA6Ly9yMy5vLmxlbmNyLm9yZzAiBggrBgEFBQcwAoYWaHR0cDovL3IzLmku\n",
+                                                                      "bGVuY3Iub3JnLzBqBgNVHREEYzBhghtjb25mZXJlbmNlLmdyYXBoZGVmaW5lZC5j\n",
+                                                                      "b22CEGdyYXBoZGVmaW5lZC5jb22CF2phYmJlci5ncmFwaGRlZmluZWQuY29tghdw\n",
+                                                                      "dWJzdWIuZ3JhcGhkZWZpbmVkLmNvbTBMBgNVHSAERTBDMAgGBmeBDAECATA3Bgsr\n",
+                                                                      "BgEEAYLfEwEBATAoMCYGCCsGAQUFBwIBFhpodHRwOi8vY3BzLmxldHNlbmNyeXB0\n",
+                                                                      "Lm9yZzCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2AHoyjFTYty22IOo44FIe6YQW\n",
+                                                                      "cDIThU070ivBOlejUutSAAABhYVzpcAAAAQDAEcwRQIhAJCxbUKgpq153bfWcnMv\n",
+                                                                      "4yrKTyqtYBttKHxtw+nWMPQ5AiAmwa2yn/7794mQS3dh2hI79p/hC8p8XKn4jx6j\n",
+                                                                      "ZscOngB2AOg+0No+9QY1MudXKLyJa8kD08vREWvs62nhd31tBr1uAAABhYVzpaAA\n",
+                                                                      "AAQDAEcwRQIhAORY8NM3uxbxTSECXlWNazCywl3Q0G7iAHBOXIqTzJ2iAiAgEkJ4\n",
+                                                                      "14UlG3TnHRgITx3wRXQsY0A95z7wa7YR3nkdWTANBgkqhkiG9w0BAQsFAAOCAQEA\n",
+                                                                      "bwnRFC0EiAs/32J48Ifnt6/hDjqmd5ATo1pCdhy4YIf72EKoPAnZ/kOtaNP5hD8U\n",
+                                                                      "CHVPQqYTaPE6bAPKs4JJOVIRdUJOTBHeYEHSD6iJHL93zWEKP3nB4ZYx5zOibtS0\n",
+                                                                      "dN/EqKU7djyvnwM6fTO5gs07cDu1uToV8lBjhH9EHJu8KJJ4vPXFNgyK30XPx1Fd\n",
+                                                                      "itTVGQId1kGwkuBmBBwbTd5uJiLFBwiJs5Vl/sUj1OHB6fp0pqzJ1M+WlNR3sYM2\n",
+                                                                      "i68/S4sQsqy8ui74d60lNkuFrZzYpB7NRVVKesHOSdGQeYqchGn6c33kI67fvF5a\n",
+                                                                      "Ra0DThYgIhij18nkpwaYHg==\n",
+                                                                      "-----END CERTIFICATE-----\n\n"
+                                                                  )
+                                                              ),
+                                           CustomData:        null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(CertificateStatus.Accepted,     response1.Status);
+
+                Assert.AreEqual(1,                              installCertificateRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   installCertificateRequests.First().ChargeBoxId);
+
+
+                await Task.Delay(500);
+
+
+                var getInstalledCertificateIdsRequests = new List<GetInstalledCertificateIdsRequest>();
+
+                chargingStation1.OnGetInstalledCertificateIdsRequest += async (timestamp, sender, getInstalledCertificateIdsRequest) => {
+                    getInstalledCertificateIdsRequests.Add(getInstalledCertificateIdsRequest);
+                };
+
+                var response2  = await testCSMS01.GetInstalledCertificateIds(
+                                           ChargeBoxId:        chargingStation1.ChargeBoxId,
+                                           CertificateTypes:   new[] {
+                                                                   CertificateUse.V2GRootCertificate
+                                                               },
+                                           CustomData:         null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                           response2.Result.ResultCode);
+                Assert.AreEqual(GetInstalledCertificateStatus.Accepted,   response2.Status);
+
+                Assert.AreEqual(1,                                        getInstalledCertificateIdsRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,             getInstalledCertificateIdsRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_DeleteCertificate_Test()
+
+        /// <summary>
+        /// A test for triggering a message at a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_DeleteCertificate_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var installCertificateRequests = new List<InstallCertificateRequest>();
+
+                chargingStation1.OnInstallCertificateRequest += async (timestamp, sender, installCertificateRequest) => {
+                    installCertificateRequests.Add(installCertificateRequest);
+                };
+
+                var response1  = await testCSMS01.InstallCertificate(
+                                           ChargeBoxId:       chargingStation1.ChargeBoxId,
+                                           CertificateType:   CertificateUse.V2GRootCertificate,
+                                           Certificate:       Certificate.Parse(
+                                                                  String.Concat(
+                                                                      "-----BEGIN CERTIFICATE-----\n",
+                                                                      "MIIFfDCCBGSgAwIBAgISAxm1F16JrzgdEDxpDfnyG2xaMA0GCSqGSIb3DQEBCwUA\n",
+                                                                      "MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\n",
+                                                                      "EwJSMzAeFw0yMzAxMDYwNDAwMjZaFw0yMzA0MDYwNDAwMjVaMCIxIDAeBgNVBAMT\n",
+                                                                      "F2phYmJlci5ncmFwaGRlZmluZWQuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n",
+                                                                      "MIIBCgKCAQEAtucIqzk30QB90mZxCNO+XP2kiY9QMFIsTfupU5IYrqGcQ1Zn+mYa\n",
+                                                                      "7yMW9UDZdJeMpi0Ls3bOOY6HbktNTglIETUD3/hUxtLlSIQXgPV/r7qPmx5+rNgT\n",
+                                                                      "H1uoCJ81Mk/vtGr0hWj/bbEv/FGRLo8KKr10ZZ/PNOs5JA/2SKolGGqst6Xd3Eh5\n",
+                                                                      "JPqSwOeCPv/2D6rWvdEJwsbHBBgXBvdtb4NzGibz/y4VyiPcDZbw1P+F4MucvVEg\n",
+                                                                      "cvFxCoupsolLcX/f49uq3FRgYGloPOAjCkHbbi8HCt0VfL0OKL4ooLtzAtm2VOJA\n",
+                                                                      "ZueprlXzEVES9RR9jfkB5OpE1PMFc4oSEQIDAQABo4ICmjCCApYwDgYDVR0PAQH/\n",
+                                                                      "BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAMBgNVHRMBAf8E\n",
+                                                                      "AjAAMB0GA1UdDgQWBBTRSR2BPdSRXb+ifMhxcHkS+Dn9uTAfBgNVHSMEGDAWgBQU\n",
+                                                                      "LrMXt1hWy65QCUDmH6+dixTCxjBVBggrBgEFBQcBAQRJMEcwIQYIKwYBBQUHMAGG\n",
+                                                                      "FWh0dHA6Ly9yMy5vLmxlbmNyLm9yZzAiBggrBgEFBQcwAoYWaHR0cDovL3IzLmku\n",
+                                                                      "bGVuY3Iub3JnLzBqBgNVHREEYzBhghtjb25mZXJlbmNlLmdyYXBoZGVmaW5lZC5j\n",
+                                                                      "b22CEGdyYXBoZGVmaW5lZC5jb22CF2phYmJlci5ncmFwaGRlZmluZWQuY29tghdw\n",
+                                                                      "dWJzdWIuZ3JhcGhkZWZpbmVkLmNvbTBMBgNVHSAERTBDMAgGBmeBDAECATA3Bgsr\n",
+                                                                      "BgEEAYLfEwEBATAoMCYGCCsGAQUFBwIBFhpodHRwOi8vY3BzLmxldHNlbmNyeXB0\n",
+                                                                      "Lm9yZzCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2AHoyjFTYty22IOo44FIe6YQW\n",
+                                                                      "cDIThU070ivBOlejUutSAAABhYVzpcAAAAQDAEcwRQIhAJCxbUKgpq153bfWcnMv\n",
+                                                                      "4yrKTyqtYBttKHxtw+nWMPQ5AiAmwa2yn/7794mQS3dh2hI79p/hC8p8XKn4jx6j\n",
+                                                                      "ZscOngB2AOg+0No+9QY1MudXKLyJa8kD08vREWvs62nhd31tBr1uAAABhYVzpaAA\n",
+                                                                      "AAQDAEcwRQIhAORY8NM3uxbxTSECXlWNazCywl3Q0G7iAHBOXIqTzJ2iAiAgEkJ4\n",
+                                                                      "14UlG3TnHRgITx3wRXQsY0A95z7wa7YR3nkdWTANBgkqhkiG9w0BAQsFAAOCAQEA\n",
+                                                                      "bwnRFC0EiAs/32J48Ifnt6/hDjqmd5ATo1pCdhy4YIf72EKoPAnZ/kOtaNP5hD8U\n",
+                                                                      "CHVPQqYTaPE6bAPKs4JJOVIRdUJOTBHeYEHSD6iJHL93zWEKP3nB4ZYx5zOibtS0\n",
+                                                                      "dN/EqKU7djyvnwM6fTO5gs07cDu1uToV8lBjhH9EHJu8KJJ4vPXFNgyK30XPx1Fd\n",
+                                                                      "itTVGQId1kGwkuBmBBwbTd5uJiLFBwiJs5Vl/sUj1OHB6fp0pqzJ1M+WlNR3sYM2\n",
+                                                                      "i68/S4sQsqy8ui74d60lNkuFrZzYpB7NRVVKesHOSdGQeYqchGn6c33kI67fvF5a\n",
+                                                                      "Ra0DThYgIhij18nkpwaYHg==\n",
+                                                                      "-----END CERTIFICATE-----\n\n"
+                                                                  )
+                                                              ),
+                                           CustomData:        null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(CertificateStatus.Accepted,     response1.Status);
+
+                Assert.AreEqual(1,                              installCertificateRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   installCertificateRequests.First().ChargeBoxId);
+
+
+                await Task.Delay(500);
+
+
+                var getInstalledCertificateIdsRequests = new List<GetInstalledCertificateIdsRequest>();
+
+                chargingStation1.OnGetInstalledCertificateIdsRequest += async (timestamp, sender, getInstalledCertificateIdsRequest) => {
+                    getInstalledCertificateIdsRequests.Add(getInstalledCertificateIdsRequest);
+                };
+
+                var response2  = await testCSMS01.GetInstalledCertificateIds(
+                                           ChargeBoxId:        chargingStation1.ChargeBoxId,
+                                           CertificateTypes:   new[] {
+                                                                   CertificateUse.V2GRootCertificate
+                                                               },
+                                           CustomData:         null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                           response2.Result.ResultCode);
+                Assert.AreEqual(GetInstalledCertificateStatus.Accepted,   response2.Status);
+                Assert.AreEqual(1,                                        response2.CertificateHashDataChain.Count());
+
+                Assert.AreEqual(1,                                        getInstalledCertificateIdsRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,             getInstalledCertificateIdsRequests.First().ChargeBoxId);
+
+
+                await Task.Delay(500);
+
+
+                var deleteCertificateRequests = new List<DeleteCertificateRequest>();
+
+                chargingStation1.OnDeleteCertificateRequest += async (timestamp, sender, deleteCertificateRequest) => {
+                    deleteCertificateRequests.Add(deleteCertificateRequest);
+                };
+
+                var response3  = await testCSMS01.DeleteCertificate(
+                                           ChargeBoxId:           chargingStation1.ChargeBoxId,
+                                           CertificateHashData:   response2.CertificateHashDataChain.First(),
+                                           CustomData:            null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                     response3.Result.ResultCode);
+                Assert.AreEqual(DeleteCertificateStatus.Accepted,   response3.Status);
+
+                Assert.AreEqual(1,                                  deleteCertificateRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,       deleteCertificateRequests.First().ChargeBoxId);
+
+
+                // Verification
+                getInstalledCertificateIdsRequests.Clear();
+
+                var response4  = await testCSMS01.GetInstalledCertificateIds(
+                                           ChargeBoxId:        chargingStation1.ChargeBoxId,
+                                           CertificateTypes:   new[] {
+                                                                   CertificateUse.V2GRootCertificate
+                                                               },
+                                           CustomData:         null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                           response4.Result.ResultCode);
+                Assert.AreEqual(GetInstalledCertificateStatus.Accepted,   response4.Status);
+                Assert.AreEqual(0,                                        response4.CertificateHashDataChain.Count());
+
+                Assert.AreEqual(1,                                        getInstalledCertificateIdsRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,             getInstalledCertificateIdsRequests.First().ChargeBoxId);
+
+
+                await Task.Delay(500);
+
+
+            }
+
+        }
+
+        #endregion
+
+
+        // GetLocalListVersion
+        // SendLocalList
+        // ClearCache
+
+
+        #region CSMS_ReserveNow_Test()
+
+        /// <summary>
+        /// A test for creating a reservation at a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_ReserveNow_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var reserveNowRequests = new List<ReserveNowRequest>();
+
+                chargingStation1.OnReserveNowRequest += async (timestamp, sender, reserveNowRequest) => {
+                    reserveNowRequests.Add(reserveNowRequest);
+                };
+
+
+                var reservationId   = Reservation_Id.NewRandom;
+                var evseId          = EVSE_Id.       Parse(1);
+                var connectorId     = Connector_Id.  Parse(1);
+                var connectorType   = ConnectorTypes.sType2;
+
+                var response1       = await testCSMS01.ReserveNow(
+                                                ChargeBoxId:     chargingStation1.ChargeBoxId,
+                                                ConnectorId:     connectorId,
+                                                ReservationId:   reservationId,
+                                                ExpiryDate:      Timestamp.Now + TimeSpan.FromHours(2),
+                                                IdToken:         new IdToken(
+                                                                     Value:             "22334455",
+                                                                     Type:              IdTokenTypes.ISO14443,
+                                                                     AdditionalInfos:   new[] {
+                                                                                            new AdditionalInfo(
+                                                                                                AdditionalIdToken:   "123",
+                                                                                                Type:                "typetype",
+                                                                                                CustomData:          null
+                                                                                            )
+                                                                                        },
+                                                                     CustomData:        null
+                                                                 ),
+                                                ConnectorType:   connectorType,
+                                                EVSEId:          evseId,
+                                                GroupIdToken:    new IdToken(
+                                                                     Value:             "55667788",
+                                                                     Type:              IdTokenTypes.ISO14443,
+                                                                     AdditionalInfos:   new[] {
+                                                                                            new AdditionalInfo(
+                                                                                                AdditionalIdToken:   "567",
+                                                                                                Type:                "type2type2",
+                                                                                                CustomData:          null
+                                                                                            )
+                                                                                        },
+                                                                     CustomData:        null
+                                                                 ),
+                                                CustomData:      null
+                                            );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ReservationStatus.Accepted,     response1.Status);
+
+                Assert.AreEqual(1,                              reserveNowRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   reserveNowRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_CancelReservation_Test()
+
+        /// <summary>
+        /// A test for creating and deleting a reservation at a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_CancelReservation_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var reserveNowRequests = new List<ReserveNowRequest>();
+
+                chargingStation1.OnReserveNowRequest += async (timestamp, sender, reserveNowRequest) => {
+                    reserveNowRequests.Add(reserveNowRequest);
+                };
+
+
+                var reservationId   = Reservation_Id.NewRandom;
+                var evseId          = EVSE_Id.       Parse(1);
+                var connectorId     = Connector_Id.  Parse(1);
+                var connectorType   = ConnectorTypes.sType2;
+
+                var response1       = await testCSMS01.ReserveNow(
+                                                ChargeBoxId:     chargingStation1.ChargeBoxId,
+                                                ConnectorId:     connectorId,
+                                                ReservationId:   reservationId,
+                                                ExpiryDate:      Timestamp.Now + TimeSpan.FromHours(2),
+                                                IdToken:         new IdToken(
+                                                                     Value:             "22334455",
+                                                                     Type:              IdTokenTypes.ISO14443,
+                                                                     AdditionalInfos:   new[] {
+                                                                                            new AdditionalInfo(
+                                                                                                AdditionalIdToken:   "123",
+                                                                                                Type:                "typetype",
+                                                                                                CustomData:          null
+                                                                                            )
+                                                                                        },
+                                                                     CustomData:        null
+                                                                 ),
+                                                ConnectorType:   connectorType,
+                                                EVSEId:          evseId,
+                                                GroupIdToken:    new IdToken(
+                                                                     Value:             "55667788",
+                                                                     Type:              IdTokenTypes.ISO14443,
+                                                                     AdditionalInfos:   new[] {
+                                                                                            new AdditionalInfo(
+                                                                                                AdditionalIdToken:   "567",
+                                                                                                Type:                "type2type2",
+                                                                                                CustomData:          null
+                                                                                            )
+                                                                                        },
+                                                                     CustomData:        null
+                                                                 ),
+                                                CustomData:      null
+                                            );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ReservationStatus.Accepted,     response1.Status);
+
+                Assert.AreEqual(1,                              reserveNowRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   reserveNowRequests.First().ChargeBoxId);
+
+
+                await Task.Delay(500);
+
+
+                var cancelReservationRequests = new List<CancelReservationRequest>();
+
+                chargingStation1.OnCancelReservationRequest += async (timestamp, sender, cancelReservationRequest) => {
+                    cancelReservationRequests.Add(cancelReservationRequest);
+                };
+
+                var response2       = await testCSMS01.CancelReservation(
+                                                ChargeBoxId:     chargingStation1.ChargeBoxId,
+                                                ReservationId:   reservationId,
+                                                CustomData:      null
+                                            );
+
+
+                Assert.AreEqual(ResultCodes.OK,                     response2.Result.ResultCode);
+                Assert.AreEqual(CancelReservationStatus.Accepted,   response2.Status);
+
+                Assert.AreEqual(1,                                  cancelReservationRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,       cancelReservationRequests.First().ChargeBoxId);
+
+
+            }
+
+        }
+
+        #endregion
 
         #region CSMS_RequestStartStopTransaction_Test()
 
@@ -1355,8 +1980,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #endregion
 
-
-
         #region CSMS_GetTransactionStatus_Test()
 
         /// <summary>
@@ -1404,6 +2027,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #endregion
 
+        // OnSetChargingProfile
+        // OnGetChargingProfiles
+        // ClearChargingProfile
+        // GetCompositeSchedule
 
         #region CSMS_UnlockConnector_Test()
 
@@ -1889,6 +2516,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         }
 
         #endregion
+
+        // CustomerInformation
 
 
     }

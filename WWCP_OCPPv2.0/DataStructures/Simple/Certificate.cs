@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Security.Cryptography.X509Certificates;
+
 using Org.BouncyCastle.X509;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -45,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #region Properties
 
-        public X509Certificate?  Parsed    { get; }
+        public X509Certificate2?  Parsed    { get; }
 
 
         /// <summary>
@@ -75,12 +77,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         /// <param name="Text">The text representation of the PEM encoded X.509 certificate.</param>
         /// <param name="ParsedCertificate">The parsed X.509 certificate.</param>
-        private Certificate(String            Text,
-                            X509Certificate?  ParsedCertificate   = null)
+        private Certificate(String             Text,
+                            X509Certificate2?  ParsedCertificate   = null)
         {
 
             this.InternalText  = Text;
-            this.Parsed          = ParsedCertificate;
+            this.Parsed        = ParsedCertificate;
 
         }
 
@@ -324,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                    Where        (line => line is not null).
                                                    AggregateWith("\n") + "\n\n";
 
-                    var parsedCertificate  = new X509CertificateParser().ReadCertificate(lines.ToUTF8Bytes());
+                    var parsedCertificate  = X509Certificate2.CreateFromPem(lines);
 
                     var certificate        = new Certificate(lines,
                                                              parsedCertificate);

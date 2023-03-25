@@ -404,13 +404,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                              "identification token",
                                              OCPPv2_0.IdToken.TryParse,
                                              out IdToken? IdToken,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     IdToken is null)
                 {
                     return false;
                 }
-
-                if (IdToken is null)
-                    return false;
 
                 #endregion
 
@@ -518,37 +516,45 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
         #endregion
 
-        #region ToJSON(CustomReserveNowRequestSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomReserveNowRequestSerializer = null, CustomIdTokenSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomReserveNowRequestSerializer">A delegate to serialize custom reserve now requests.</param>
+        /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
+        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowRequest>?  CustomReserveNowRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<IdToken>?            CustomIdTokenSerializer             = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?     CustomAdditionalInfoSerializer      = null,
                               CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("reservationId",  ReservationId.Value),
-                                 new JProperty("expiryDate",     ExpiryDate.         ToIso8601()),
-                                 new JProperty("idToken",        IdToken.            ToString()),
+                                 new JProperty("reservationId",   ReservationId.Value),
+                                 new JProperty("expiryDate",      ExpiryDate.         ToIso8601()),
+                                 new JProperty("idToken",         IdToken.            ToJSON(CustomIdTokenSerializer,
+                                                                                             CustomAdditionalInfoSerializer,
+                                                                                             CustomCustomDataSerializer)),
 
                            ConnectorType.HasValue
-                               ? new JProperty("connectorType",  ConnectorType.Value.AsText())
+                               ? new JProperty("connectorType",   ConnectorType.Value.AsText())
                                : null,
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",         EVSEId.       Value.ToString())
+                               ? new JProperty("evseId",          EVSEId.       Value.ToString())
                                : null,
 
                            GroupIdToken is not null
-                               ? new JProperty("groupIdToken",   GroupIdToken.Value. ToString())
+                               ? new JProperty("groupIdToken",    GroupIdToken.       ToJSON(CustomIdTokenSerializer,
+                                                                                             CustomAdditionalInfoSerializer,
+                                                                                             CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.         ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

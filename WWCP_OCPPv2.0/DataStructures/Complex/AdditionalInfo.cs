@@ -153,7 +153,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out AdditionalInfo,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -248,11 +249,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var json = JSONObject.Create(
 
-                                 new JProperty("additionalIdToken",  AdditionalIdToken),
-                                 new JProperty("type",               Type),
+                                 new JProperty("additionalIdToken",   AdditionalIdToken),
+                                 new JProperty("type",                Type),
 
                            CustomData is not null
-                               ? new JProperty("customData",         CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",          CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

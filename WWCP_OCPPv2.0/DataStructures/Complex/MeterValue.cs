@@ -350,8 +350,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => MeterValue is not null &&
 
-               //ToDo: Compare SampledValues!
                Timestamp.Equals(MeterValue.Timestamp) &&
+
+               SampledValues.Count().Equals(MeterValue.SampledValues.Count()) &&
+               SampledValues.All(entry => MeterValue.SampledValues.Contains(entry)) &&
 
                base.     Equals(MeterValue);
 
@@ -370,9 +372,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Timestamp.    GetHashCode()   * 5 ^
-                       SampledValues.CalcHashCode( ) * 3 ^
-
+                return Timestamp.    GetHashCode()  * 5 ^
+                       SampledValues.CalcHashCode() * 3 ^
                        base.         GetHashCode();
 
             }

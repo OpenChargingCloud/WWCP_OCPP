@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public GetInstalledCertificateIdsResponse(CSMS.GetInstalledCertificateIdsRequest  Request,
                                                   GetInstalledCertificateStatus           Status,
-                                                  IEnumerable<CertificateHashData>        CertificateHashDataChain,
+                                                  IEnumerable<CertificateHashData>?       CertificateHashDataChain   = null,
                                                   StatusInfo?                             StatusInfo                 = null,
                                                   CustomData?                             CustomData                 = null)
 
@@ -79,12 +79,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         {
 
-            if (!CertificateHashDataChain.Any())
-                throw new ArgumentException("The given enumeration of information about available certificates must not be empty!",
-                                            nameof(CertificateHashDataChain));
-
             this.Status                    = Status;
-            this.CertificateHashDataChain  = CertificateHashDataChain.Distinct();
+            this.CertificateHashDataChain  = CertificateHashDataChain?.Distinct() ?? Array.Empty<CertificateHashData>();
             this.StatusInfo                = StatusInfo;
 
         }
@@ -358,13 +354,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                              "certificate hash data chain",
                                              CertificateHashData.TryParse,
                                              out IEnumerable<CertificateHashData> CertificateHashDataChain,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     CertificateHashDataChain is null)
                 {
                     return false;
                 }
-
-                if (CertificateHashDataChain is null)
-                    return false;
 
                 #endregion
 

@@ -1445,9 +1445,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #region WireEvents(CPServer)
 
 
-        private ConcurrentDictionary<DisplayMessage_Id, MessageInfo>  displayMessages   = new ();
-        private ConcurrentDictionary<Transaction_Id,    Transaction>  transactions      = new ();
-        private ConcurrentDictionary<Transaction_Id,    Decimal>      totalCosts        = new ();
+        private ConcurrentDictionary<DisplayMessage_Id, MessageInfo>     displayMessages   = new ();
+        private ConcurrentDictionary<Reservation_Id,    Reservation_Id>  reservations      = new ();
+        private ConcurrentDictionary<Transaction_Id,    Transaction>     transactions      = new ();
+        private ConcurrentDictionary<Transaction_Id,    Decimal>         totalCosts        = new ();
+        private ConcurrentDictionary<CertificateUse,    Certificate>     certificates      = new ();
 
         public void WireEvents(IChargingStationServer CPServer)
         {
@@ -3086,19 +3088,31 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
+
                     DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid CertificateSigned request for charge box '", Request.ChargeBoxId, "'!"));
-                    response = new CertificateSignedResponse(Request:      Request,
-                                                             Status:       CertificateSignedStatus.Rejected,
-                                                             StatusInfo:   null,
-                                                             CustomData:   null);
+
+                    response = new CertificateSignedResponse(
+                                   Request:      Request,
+                                   Status:       CertificateSignedStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
                 }
                 else
                 {
+
                     DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming CertificateSigned request accepted."));
-                    response = new CertificateSignedResponse(Request:      Request,
-                                                             Status:       CertificateSignedStatus.Rejected,
-                                                             StatusInfo:   null,
-                                                             CustomData:   null);
+
+                    response = new CertificateSignedResponse(
+                                   Request:      Request,
+                                   Status:       Request.CertificateChain.FirstOrDefault()?.Parsed is not null
+                                                     ? CertificateSignedStatus.Accepted
+                                                     : CertificateSignedStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
                 }
 
 
@@ -3162,19 +3176,35 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
+
                     DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid InstallCertificate request for charge box '", Request.ChargeBoxId, "'!"));
-                    response = new InstallCertificateResponse(Request:      Request,
-                                                              Status:       CertificateStatus.Rejected,
-                                                              StatusInfo:   null,
-                                                              CustomData:   null);
+
+                    response = new InstallCertificateResponse(
+                                   Request:      Request,
+                                   Status:       CertificateStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
                 }
                 else
                 {
+
                     DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming InstallCertificate request accepted."));
-                    response = new InstallCertificateResponse(Request:      Request,
-                                                              Status:       CertificateStatus.Accepted,
-                                                              StatusInfo:   null,
-                                                              CustomData:   null);
+
+                    var success = certificates.AddOrUpdate(Request.CertificateType,
+                                                           a     => Request.Certificate,
+                                                           (b,c) => Request.Certificate);
+
+                    response = new InstallCertificateResponse(
+                                   Request:      Request,
+                                   Status:       Request.Certificate?.Parsed is not null
+                                                     ? CertificateStatus.Accepted
+                                                     : CertificateStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
                 }
 
 
@@ -3247,12 +3277,31 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 }
                 else
                 {
+
                     DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming GetInstalledCertificateIds request accepted."));
+
+                    var certs = new List<CertificateHashData>();
+
+                    foreach (var certificateType in Request.CertificateTypes)
+                    {
+
+                        if (certificates.TryGetValue(certificateType, out var cert))
+                            certs.Add(new CertificateHashData(
+                                          HashAlgorithm:         HashAlgorithms.SHA256,
+                                          IssuerNameHash:        cert.Parsed?.Issuer               ?? "-",
+                                          IssuerPublicKeyHash:   cert.Parsed?.GetPublicKeyString() ?? "-",
+                                          SerialNumber:          cert.Parsed?.SerialNumber         ?? "-",
+                                          CustomData:            null
+                                      ));
+
+                    }
+
                     response = new GetInstalledCertificateIdsResponse(Request:                    Request,
                                                                       Status:                     GetInstalledCertificateStatus.Accepted,
-                                                                      CertificateHashDataChain:   new CertificateHashData[0],
+                                                                      CertificateHashDataChain:   certs,
                                                                       StatusInfo:                 null,
                                                                       CustomData:                 null);
+
                 }
 
 
@@ -3324,11 +3373,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 }
                 else
                 {
+
                     DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming DeleteCertificate request accepted."));
-                    response = new DeleteCertificateResponse(Request:      Request,
-                                                             Status:       DeleteCertificateStatus.Accepted,
-                                                             StatusInfo:   null,
-                                                             CustomData:   null);
+
+                    var certKV  = certificates.FirstOrDefault(certificateKV => Request.CertificateHashData.SerialNumber == certificateKV.Value.Parsed?.SerialNumber);
+
+                    var success = certificates.TryRemove(certKV);
+
+                    response = new DeleteCertificateResponse(
+                                   Request:      Request,
+                                   Status:       success
+                                                     ? DeleteCertificateStatus.Accepted
+                                                     : DeleteCertificateStatus.NotFound,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
                 }
 
 
@@ -3620,10 +3680,39 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                //transactionId1 = Request.ChargingProfile?.TransactionId;
 
-                var response = new ReserveNowResponse(Request,
-                                                      ReservationStatus.Accepted);
+                ReserveNowResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid ReserveNow request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new ReserveNowResponse(Request:      Request,
+                                                      Status:       ReservationStatus.Rejected,
+                                                      StatusInfo:   null,
+                                                      CustomData:   null);
+
+                }
+                else
+                {
+
+                    var success = reservations.TryAdd(Request.ReservationId,
+                                                      Request.ReservationId);
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming ReserveNow request " + (success
+                                                                                                    ? "accepted"
+                                                                                                    : "rejected") + ".");
+
+                    response = new ReserveNowResponse(Request:      Request,
+                                                      Status:       success
+                                                                        ? ReservationStatus.Accepted
+                                                                        : ReservationStatus.Rejected,
+                                                      StatusInfo:   null,
+                                                      CustomData:   null);
+
+                }
+
 
                 #region Send OnReserveNowResponse event
 
@@ -3677,10 +3766,38 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
-                //transactionId1 = Request.ChargingProfile?.TransactionId;
 
-                var response = new CancelReservationResponse(Request,
-                                                             CancelReservationStatus.Accepted);
+                CancelReservationResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid CancelReservation request for charge box '" + Request.ChargeBoxId + "'!");
+
+                    response = new CancelReservationResponse(Request:      Request,
+                                                             Status:       CancelReservationStatus.Rejected,
+                                                             StatusInfo:   null,
+                                                             CustomData:   null);
+
+                }
+                else
+                {
+
+                    var success = reservations.TryRemove(Request.ReservationId, out _);
+
+                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming CancelReservation request " + (success
+                                                                                                           ? "accepted"
+                                                                                                           : "rejected") + ".");
+
+                    response = new CancelReservationResponse(Request:      Request,
+                                                             Status:       success
+                                                                               ? CancelReservationStatus.Accepted
+                                                                               : CancelReservationStatus.Rejected,
+                                                             StatusInfo:   null,
+                                                             CustomData:   null);
+
+                }
+
 
                 #region Send OnCancelReservationResponse event
 

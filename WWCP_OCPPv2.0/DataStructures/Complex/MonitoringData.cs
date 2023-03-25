@@ -385,6 +385,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
              ((Variable is     null && MonitoringData.Variable is     null) ||
               (Variable is not null && MonitoringData.Variable is not null && Variable.Equals(MonitoringData.Variable))) &&
 
+               VariableMonitorings.Count().Equals(MonitoringData.VariableMonitorings.Count()) &&
+               VariableMonitorings.All(entry => MonitoringData.VariableMonitorings.Contains(entry)) &&
+
                base.     Equals(MonitoringData);
 
         #endregion
@@ -402,8 +405,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return Component.GetHashCode()       * 5 ^
-                      (Variable?.GetHashCode() ?? 0) * 3 ^
+                return Component.          GetHashCode()       * 7 ^
+                      (Variable?.          GetHashCode() ?? 0) * 5 ^
+                       VariableMonitorings.CalcHashCode()      * 3 ^
 
                        base.     GetHashCode();
 
