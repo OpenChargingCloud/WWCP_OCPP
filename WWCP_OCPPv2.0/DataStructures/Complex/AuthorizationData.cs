@@ -168,31 +168,27 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 #region IdToken        [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("idToken",
-                                             "identification tag",
+                                             "identification token",
                                              OCPPv2_0.IdToken.TryParse,
                                              out IdToken? IdToken,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     IdToken is null)
                 {
                     return false;
                 }
-
-                if (IdToken is null)
-                    return false;
 
                 #endregion
 
                 #region IdTokenInfo    [optional]
 
-                if (JSON.ParseOptionalJSON("idTagInfo",
-                                           "identification tag information",
+                if (JSON.ParseOptionalJSON("idTokenInfo",
+                                           "identification token information",
                                            OCPPv2_0.IdTokenInfo.TryParse,
                                            out IdTokenInfo? IdTokenInfo,
                                            out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -255,20 +251,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var json = JSONObject.Create(
 
-                                 new JProperty("idTag",       IdToken.    ToJSON(CustomIdTokenSerializer,
-                                                                                 CustomAdditionalInfoSerializer,
-                                                                                 CustomCustomDataSerializer)),
+                                 new JProperty("idToken",       IdToken.    ToJSON(CustomIdTokenSerializer,
+                                                                                   CustomAdditionalInfoSerializer,
+                                                                                   CustomCustomDataSerializer)),
 
                            IdTokenInfo is not null
-                               ? new JProperty("idTagInfo",   IdTokenInfo.ToJSON(CustomIdTokenInfoSerializer,
-                                                                                 CustomIdTokenSerializer,
-                                                                                 CustomAdditionalInfoSerializer,
-                                                                                 CustomMessageContentSerializer,
-                                                                                 CustomCustomDataSerializer))
+                               ? new JProperty("idTokenInfo",   IdTokenInfo.ToJSON(CustomIdTokenInfoSerializer,
+                                                                                   CustomIdTokenSerializer,
+                                                                                   CustomAdditionalInfoSerializer,
+                                                                                   CustomMessageContentSerializer,
+                                                                                   CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData. ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",    CustomData. ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

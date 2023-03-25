@@ -412,41 +412,41 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var json = JSONObject.Create(
 
-                           new JProperty("status",                     Status.ToString()),
+                                 new JProperty("status",                Status.                   ToString()),
 
                            ChargingPriority != 0
-                               ? new JProperty("chargingPriority",     ChargingPriority)
+                               ? new JProperty("chargingPriority",      ChargingPriority)
                                : null,
 
                            CacheExpiryDateTime.HasValue
-                               ? new JProperty("cacheExpiryDateTime",  CacheExpiryDateTime.Value.ToIso8601())
+                               ? new JProperty("cacheExpiryDateTime",   CacheExpiryDateTime.Value.ToIso8601())
                                : null,
 
                            ValidEVSEIds.Any()
-                               ? new JProperty("evseId",               new JArray(ValidEVSEIds))
+                               ? new JProperty("evseId",                new JArray(ValidEVSEIds.Select(evseId => evseId.ToString())))
                                : null,
 
                            GroupIdToken is not null
-                               ? new JProperty("groupIdToken",         GroupIdToken.   ToJSON(CustomIdTokenSerializer,
-                                                                                              CustomAdditionalInfoSerializer,
-                                                                                              CustomCustomDataSerializer))
+                               ? new JProperty("groupIdToken",          GroupIdToken.             ToJSON(CustomIdTokenSerializer,
+                                                                                                         CustomAdditionalInfoSerializer,
+                                                                                                         CustomCustomDataSerializer))
                                : null,
 
                            Language1.HasValue
-                               ? new JProperty("language1",            Language1.Value.ToString())
+                               ? new JProperty("language1",             Language1.          Value.ToString())
                                : null,
 
                            Language2.HasValue
-                               ? new JProperty("language2",            Language2.Value.ToString())
+                               ? new JProperty("language2",             Language2.          Value.ToString())
                                : null,
 
                            PersonalMessage is not null
-                               ? new JProperty("personalMessage",      PersonalMessage.ToJSON(CustomMessageContentSerializer,
-                                                                                              CustomCustomDataSerializer))
+                               ? new JProperty("personalMessage",       PersonalMessage.          ToJSON(CustomMessageContentSerializer,
+                                                                                                         CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",            CustomData.               ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -5276,7 +5276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                                     }
 
-                                    response = SendLocalListResponse.Failed(request);
+                                    response ??= SendLocalListResponse.Failed(request);
 
                                     #endregion
 

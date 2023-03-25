@@ -572,20 +572,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                           new JProperty("listVersion",                   VersionNumber),
-                           new JProperty("updateType",                    UpdateType.AsText()),
+                                 new JProperty("versionNumber",            VersionNumber),
+                                 new JProperty("updateType",               UpdateType.AsText()),
 
                            LocalAuthorizationList.IsNeitherNullNorEmpty()
-                               ? new JProperty("localAuthorizationList",  new JArray(LocalAuthorizationList.Select(item => item.ToJSON(CustomAuthorizationDataSerializer,
-                                                                                                                                       CustomIdTokenSerializer,
-                                                                                                                                       CustomAdditionalInfoSerializer,
-                                                                                                                                       CustomIdTokenInfoSerializer,
-                                                                                                                                       CustomMessageContentSerializer,
-                                                                                                                                       CustomCustomDataSerializer))))
+                               ? new JProperty("localAuthorizationList",   new JArray(LocalAuthorizationList.Select(item => item.ToJSON(CustomAuthorizationDataSerializer,
+                                                                                                                                        CustomIdTokenSerializer,
+                                                                                                                                        CustomAdditionalInfoSerializer,
+                                                                                                                                        CustomIdTokenInfoSerializer,
+                                                                                                                                        CustomMessageContentSerializer,
+                                                                                                                                        CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",              CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",               CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -710,10 +710,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(UpdateType.AsText(),
-                             " of ",
-                             VersionNumber,
-                             LocalAuthorizationList.Count(), " authorization list entries");
+            => String.Concat(
+                   UpdateType.AsText(),
+                   " of ",
+                   LocalAuthorizationList.Count(),
+                   LocalAuthorizationList.Count(), " authorization list entries [version " + VersionNumber + "]"
+               );
 
         #endregion
 

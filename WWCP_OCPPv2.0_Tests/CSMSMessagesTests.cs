@@ -1700,9 +1700,191 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         #endregion
 
 
-        // GetLocalListVersion
-        // SendLocalList
-        // ClearCache
+        #region CSMS_GetLocalListVersion_Test()
+
+        /// <summary>
+        /// A test for getting the local list of a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_GetLocalListVersion_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getLocalListVersionRequests = new List<GetLocalListVersionRequest>();
+
+                chargingStation1.OnGetLocalListVersionRequest += async (timestamp, sender, getLocalListVersionRequest) => {
+                    getLocalListVersionRequests.Add(getLocalListVersionRequest);
+                };
+
+
+                var response1  = await testCSMS01.GetLocalListVersion(
+                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
+                                           CustomData:    null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              getLocalListVersionRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLocalListVersionRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_SendLocalList_Test()
+
+        /// <summary>
+        /// A test for sending a local list to a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_SendLocalList_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var sendLocalListRequests = new List<SendLocalListRequest>();
+
+                chargingStation1.OnSendLocalListRequest += async (timestamp, sender, sendLocalListRequest) => {
+                    sendLocalListRequests.Add(sendLocalListRequest);
+                };
+
+
+                var response1  = await testCSMS01.SendLocalList(
+                                           ChargeBoxId:              chargingStation1.ChargeBoxId,
+                                           ListVersion:              1,
+                                           UpdateType:               UpdateTypes.Full,
+                                           LocalAuthorizationList:   new[] {
+                                                                         new AuthorizationData(
+                                                                             IdToken:       new IdToken(
+                                                                                                Value:                 "aabbccdd",
+                                                                                                Type:                  IdTokenTypes.ISO14443,
+                                                                                                AdditionalInfos:       new[] {
+                                                                                                                           new AdditionalInfo(
+                                                                                                                               AdditionalIdToken:   "1234",
+                                                                                                                               Type:                "PIN",
+                                                                                                                               CustomData:          null
+                                                                                                                           )
+                                                                                                                       },
+                                                                                                CustomData:            null
+                                                                                            ),
+                                                                             IdTokenInfo:   new IdTokenInfo(
+                                                                                                Status:                AuthorizationStatus.Accepted,
+                                                                                                ChargingPriority:      8,
+                                                                                                CacheExpiryDateTime:   Timestamp.Now + TimeSpan.FromDays(3),
+                                                                                                ValidEVSEIds:          new[] {
+                                                                                                                           EVSE_Id.Parse(1)
+                                                                                                                       },
+                                                                                                GroupIdToken:          new IdToken(
+                                                                                                                           Value:                 "55667788",
+                                                                                                                           Type:                  IdTokenTypes.ISO14443,
+                                                                                                                           AdditionalInfos:       new[] {
+                                                                                                                                                      new AdditionalInfo(
+                                                                                                                                                          AdditionalIdToken:   "1234",
+                                                                                                                                                          Type:                "PIN",
+                                                                                                                                                          CustomData:          null
+                                                                                                                                                      )
+                                                                                                                                                  },
+                                                                                                                           CustomData:            null
+                                                                                                                       ),
+                                                                                                Language1:             Language_Id.Parse("de"),
+                                                                                                Language2:             Language_Id.Parse("en"),
+                                                                                                PersonalMessage:       new MessageContent(
+                                                                                                                           Content:      "Hello world!",
+                                                                                                                           Format:       MessageFormats.UTF8,
+                                                                                                                           Language:     Language_Id.Parse("en"),
+                                                                                                                           CustomData:   null
+                                                                                                                       ),
+                                                                                                CustomData:            null
+                                                                                            ),
+                                                                             CustomData:    null
+                                                                         )
+                                                                     },
+                                           CustomData:               null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              sendLocalListRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   sendLocalListRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_ClearCache_Test()
+
+        /// <summary>
+        /// A test for clearing the authorization cache of a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_ClearCache_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var clearCacheRequests = new List<ClearCacheRequest>();
+
+                chargingStation1.OnClearCacheRequest += async (timestamp, sender, clearCacheRequest) => {
+                    clearCacheRequests.Add(clearCacheRequest);
+                };
+
+
+                var response1  = await testCSMS01.ClearCache(
+                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
+                                           CustomData:    null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              clearCacheRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   clearCacheRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
 
 
         #region CSMS_ReserveNow_Test()
@@ -2513,7 +2695,87 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #endregion
 
-        // CustomerInformation
+        #region CSMS_RequestCustomerInformation_Test()
+
+        /// <summary>
+        /// A test for requesting customer information from a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_RequestCustomerInformation_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var clearCacheRequests = new List<CustomerInformationRequest>();
+
+                chargingStation1.OnCustomerInformationRequest += async (timestamp, sender, clearCacheRequest) => {
+                    clearCacheRequests.Add(clearCacheRequest);
+                };
+
+                var notifyCustomerInformationRequests = new List<CS.NotifyCustomerInformationRequest>();
+
+                testCSMS01.OnNotifyCustomerInformationRequest += async (timestamp, sender, notifyCustomerInformationRequest) => {
+                    notifyCustomerInformationRequests.Add(notifyCustomerInformationRequest);
+                };
+
+
+                var response1  = await testCSMS01.RequestCustomerInformation(
+                                           ChargeBoxId:                    chargingStation1.ChargeBoxId,
+                                           CustomerInformationRequestId:   1,
+                                           Report:                         true,
+                                           Clear:                          false,
+                                           CustomerIdentifier:             CustomerIdentifier.Parse("123"),
+                                           IdToken:                        new IdToken(
+                                                                               Value:                 "aabbccdd",
+                                                                               Type:                  IdTokenTypes.ISO14443,
+                                                                               AdditionalInfos:       new[] {
+                                                                                                          new AdditionalInfo(
+                                                                                                              AdditionalIdToken:   "1234",
+                                                                                                              Type:                "PIN",
+                                                                                                              CustomData:          null
+                                                                                                          )
+                                                                                                      },
+                                                                               CustomData:            null
+                                                                           ),
+                                           CustomerCertificate:            new CertificateHashData(
+                                                                               HashAlgorithm:         HashAlgorithms.SHA256,
+                                                                               IssuerNameHash:        "-",
+                                                                               IssuerPublicKeyHash:   "-",
+                                                                               SerialNumber:          "-",
+                                                                               CustomData:            null
+                                                                           ),
+                                           CustomData:                     null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              clearCacheRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   clearCacheRequests.First().ChargeBoxId);
+
+
+                await Task.Delay(500);
+
+
+                Assert.AreEqual(1,                              notifyCustomerInformationRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyCustomerInformationRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
 
 
     }

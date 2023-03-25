@@ -3366,10 +3366,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
                     DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid DeleteCertificate request for charge box '", Request.ChargeBoxId, "'!"));
-                    response = new DeleteCertificateResponse(Request:      Request,
-                                                             Status:       DeleteCertificateStatus.Failed,
-                                                             StatusInfo:   null,
-                                                             CustomData:   null);
+                    response = new DeleteCertificateResponse(
+                                   Request:      Request,
+                                   Status:       DeleteCertificateStatus.Failed,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
                 }
                 else
                 {
@@ -3535,7 +3537,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                     DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid SendLocalList request for charge box '" + Request.ChargeBoxId + "'!");
 
                     response = new SendLocalListResponse(Request,
-                                                         UpdateStatus.NotSupported);
+                                                         SendLocalListStatus.NotSupported);
 
                 }
                 else
@@ -3544,7 +3546,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                     DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming SendLocalList request: '" + Request.UpdateType + "' version '" + Request.VersionNumber + "'.");
 
                     response = new SendLocalListResponse(Request,
-                                                         UpdateStatus.NotSupported);
+                                                         SendLocalListStatus.Accepted);
 
                 }
 
@@ -3622,7 +3624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                     DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming ClearCache request.");
 
                     response = new ClearCacheResponse(Request,
-                                                      ClearCacheStatus.Rejected);
+                                                      ClearCacheStatus.Accepted);
 
                 }
 

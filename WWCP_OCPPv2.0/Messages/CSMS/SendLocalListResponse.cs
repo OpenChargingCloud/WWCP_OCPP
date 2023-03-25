@@ -39,13 +39,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// The success or failure of the send local list command.
         /// </summary>
         [Mandatory]
-        public UpdateStatus  Status        { get; }
+        public SendLocalListStatus  Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?   StatusInfo    { get; }
+        public StatusInfo?          StatusInfo    { get; }
 
         #endregion
 
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public SendLocalListResponse(CSMS.SendLocalListRequest  Request,
-                                     UpdateStatus               Status,
+                                     SendLocalListStatus        Status,
                                      StatusInfo?                StatusInfo   = null,
                                      CustomData?                CustomData   = null)
 
@@ -226,12 +226,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 SendLocalListResponse = null;
 
-                #region UpdateStatus    [mandatory]
+                #region SendLocalListStatus    [mandatory]
 
                 if (!JSON.ParseMandatory("status",
                                          "update status",
-                                         UpdateStatusExtensions.TryParse,
-                                         out UpdateStatus UpdateStatus,
+                                         SendLocalListStatusExtensions.TryParse,
+                                         out SendLocalListStatus SendLocalListStatus,
                                          out ErrorResponse))
                 {
                     return false;
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #endregion
 
-                #region StatusInfo      [optional]
+                #region StatusInfo             [optional]
 
                 if (JSON.ParseOptionalJSON("statusInfo",
                                            "detailed status info",
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #endregion
 
-                #region CustomData      [optional]
+                #region CustomData             [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
 
                 SendLocalListResponse = new SendLocalListResponse(Request,
-                                                                  UpdateStatus,
+                                                                  SendLocalListStatus,
                                                                   StatusInfo,
                                                                   CustomData);
 
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",       Status.    ToString()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
                                ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,

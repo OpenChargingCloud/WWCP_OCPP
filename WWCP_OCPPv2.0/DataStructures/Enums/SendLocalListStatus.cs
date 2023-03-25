@@ -19,9 +19,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 {
 
     /// <summary>
-    /// Extensions methods for update status.
+    /// Extensions methods for send local list status.
     /// </summary>
-    public static class UpdateStatusExtensions
+    public static class SendLocalListStatusExtensions
     {
 
         #region Parse   (Text)
@@ -30,13 +30,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Parse the given text as an update status.
         /// </summary>
         /// <param name="Text">A text representation of an update status.</param>
-        public static UpdateStatus Parse(String Text)
+        public static SendLocalListStatus Parse(String Text)
         {
 
             if (TryParse(Text, out var status))
                 return status;
 
-            return UpdateStatus.Unknown;
+            return SendLocalListStatus.Unknown;
 
         }
 
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Try to parse the given text as an update status.
         /// </summary>
         /// <param name="Text">A text representation of an update status.</param>
-        public static UpdateStatus? TryParse(String Text)
+        public static SendLocalListStatus? TryParse(String Text)
         {
 
             if (TryParse(Text, out var status))
@@ -60,36 +60,36 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out UpdateStatus)
+        #region TryParse(Text, out SendLocalListStatus)
 
         /// <summary>
         /// Try to parse the given text as an update status.
         /// </summary>
         /// <param name="Text">A text representation of an update status.</param>
-        /// <param name="UpdateStatus">The parsed update status.</param>
-        public static Boolean TryParse(String Text, out UpdateStatus UpdateStatus)
+        /// <param name="SendLocalListStatus">The parsed update status.</param>
+        public static Boolean TryParse(String Text, out SendLocalListStatus SendLocalListStatus)
         {
             switch (Text.Trim())
             {
 
                 case "Accepted":
-                    UpdateStatus = UpdateStatus.Accepted;
+                    SendLocalListStatus = SendLocalListStatus.Accepted;
                     return true;
 
                 case "Failed":
-                    UpdateStatus = UpdateStatus.Failed;
+                    SendLocalListStatus = SendLocalListStatus.Failed;
                     return true;
 
                 case "NotSupported":
-                    UpdateStatus = UpdateStatus.NotSupported;
+                    SendLocalListStatus = SendLocalListStatus.NotSupported;
                     return true;
 
                 case "VersionMismatch":
-                    UpdateStatus = UpdateStatus.VersionMismatch;
+                    SendLocalListStatus = SendLocalListStatus.VersionMismatch;
                     return true;
 
                 default:
-                    UpdateStatus = UpdateStatus.Unknown;
+                    SendLocalListStatus = SendLocalListStatus.Unknown;
                     return false;
 
             }
@@ -98,15 +98,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region AsText(this UpdateStatus)
+        #region AsText(this SendLocalListStatus)
 
-        public static String AsText(this UpdateStatus UpdateStatus)
+        public static String AsText(this SendLocalListStatus SendLocalListStatus)
 
-            => UpdateStatus switch {
-                   UpdateStatus.Accepted         => "Accepted",
-                   UpdateStatus.Failed           => "Failed",
-                   UpdateStatus.NotSupported     => "NotSupported",
-                   UpdateStatus.VersionMismatch  => "VersionMismatch",
+            => SendLocalListStatus switch {
+                   SendLocalListStatus.Accepted         => "Accepted",
+                   SendLocalListStatus.Failed           => "Failed",
+                   SendLocalListStatus.NotSupported     => "NotSupported",
+                   SendLocalListStatus.VersionMismatch  => "VersionMismatch",
                    _                             => "Unknown"
                };
 
@@ -116,9 +116,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
     /// <summary>
-    /// Update status.
+    /// Send local list status.
     /// </summary>
-    public enum UpdateStatus
+    public enum SendLocalListStatus
     {
 
         /// <summary>
