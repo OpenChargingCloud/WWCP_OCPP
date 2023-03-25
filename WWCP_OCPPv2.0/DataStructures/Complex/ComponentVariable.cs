@@ -140,7 +140,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out ComponentVariable,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -245,26 +246,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("component",   Component. ToJSON(CustomComponentSerializer,
-                                                                                CustomEVSESerializer,
-                                                                                CustomCustomDataSerializer)),
+                                 new JProperty("component",    Component. ToJSON(CustomComponentSerializer,
+                                                                                 CustomEVSESerializer,
+                                                                                 CustomCustomDataSerializer)),
 
                            Variable is not null
-                               ? new JProperty("variable",    Variable.  ToJSON(CustomVariableSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("variable",     Variable.  ToJSON(CustomVariableSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomComponentVariableSerializer is not null
-                       ? CustomComponentVariableSerializer(this, JSON)
-                       : JSON;
+                       ? CustomComponentVariableSerializer(this, json)
+                       : json;
 
         }
 

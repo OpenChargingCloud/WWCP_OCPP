@@ -237,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("id",           Id.               ToString()),
 
@@ -252,8 +252,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        );
 
             return CustomEVSESerializer is not null
-                       ? CustomEVSESerializer(this, JSON)
-                       : JSON;
+                       ? CustomEVSESerializer(this, json)
+                       : json;
 
         }
 

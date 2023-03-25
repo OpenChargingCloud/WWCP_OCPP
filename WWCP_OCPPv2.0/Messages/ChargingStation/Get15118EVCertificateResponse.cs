@@ -256,8 +256,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 #region EXIRequest    [mandatory]
 
-                if (!JSON.ParseMandatory("vendorId",
-                                         "vendor identification",
+                if (!JSON.ParseMandatory("exiResponse",
+                                         "EXI response",
                                          EXIData.TryParse,
                                          out EXIData EXIRequest,
                                          out ErrorResponse))
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                               CustomJObjectSerializerDelegate<CustomData>?                     CustomCustomDataSerializer                      = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("status",        Status.     AsText()),
                                  new JProperty("exiResponse",   EXIResponse.ToString()),
@@ -351,8 +351,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                        );
 
             return CustomGet15118EVCertificateResponseSerializer is not null
-                       ? CustomGet15118EVCertificateResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomGet15118EVCertificateResponseSerializer(this, json)
+                       : json;
 
         }
 

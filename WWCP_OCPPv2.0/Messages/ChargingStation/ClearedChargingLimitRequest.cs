@@ -206,8 +206,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region ChargingLimitSource    [mandatory]
 
-                if (!JSON.ParseMandatory("connectorStatus",
-                                         "connector status",
+                if (!JSON.ParseMandatory("chargingLimitSource",
+                                         "charging limit source",
                                          ChargingLimitSourcesExtensions.TryParse,
                                          out ChargingLimitSources ChargingLimitSource,
                                          out ErrorResponse))
@@ -219,13 +219,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region EVSEId                 [optional]
 
-                if (JSON.ParseOptional("EVSEId",
+                if (JSON.ParseOptional("evseId",
                                        "EVSE identification",
                                        EVSE_Id.TryParse,
                                        out EVSE_Id? EVSEId,
                                        out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -301,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                               CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataSerializer                    = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("chargingLimitSource",   ChargingLimitSource.AsText()),
 
@@ -314,8 +315,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null);
 
             return CustomClearedChargingLimitRequestSerializer is not null
-                       ? CustomClearedChargingLimitRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomClearedChargingLimitRequestSerializer(this, json)
+                       : json;
 
         }
 

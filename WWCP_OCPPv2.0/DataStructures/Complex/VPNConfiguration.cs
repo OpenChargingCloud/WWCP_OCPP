@@ -203,7 +203,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out VPNConfiguration,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -275,8 +276,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region Protocol        [mandatory]
 
-                if (!JSON.ParseMandatory("name",
-                                         "VPN configuration name",
+                if (!JSON.ParseMandatory("type",
+                                         "VPN protocol type/name",
                                          VPNProtocolsExtensions.TryParse,
                                          out VPNProtocols Protocol,
                                          out ErrorResponse))
@@ -344,27 +345,27 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataSerializer         = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("server",      ServerURL. ToString()),
-                                 new JProperty("user",        Login),
-                                 new JProperty("password",    Password),
-                                 new JProperty("key",         SharedSecret),
-                                 new JProperty("type",        Protocol.  AsText()),
+                                 new JProperty("server",       ServerURL. ToString()),
+                                 new JProperty("user",         Login),
+                                 new JProperty("password",     Password),
+                                 new JProperty("key",          SharedSecret),
+                                 new JProperty("type",         Protocol.  AsText()),
 
                            AccessGroup is not null
-                               ? new JProperty("group",       AccessGroup)
+                               ? new JProperty("group",        AccessGroup)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomVPNConfigurationSerializer is not null
-                       ? CustomVPNConfigurationSerializer(this, JSON)
-                       : JSON;
+                       ? CustomVPNConfigurationSerializer(this, json)
+                       : json;
 
         }
 

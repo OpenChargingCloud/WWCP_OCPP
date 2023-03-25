@@ -147,26 +147,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.WebSockets
             try
             {
 
-                var JSON = JArray.Parse(Text);
+                var json = JArray.Parse(Text);
 
-                if (JSON.Count != 4)
+                if (json.Count != 4)
                     return false;
 
-                if (!Byte.TryParse(JSON[0].Value<String>(), out Byte messageTypeByte))
+                if (!Byte.TryParse(json[0].Value<String>(), out Byte messageTypeByte))
                     return false;
 
                 var messageType = OCPP_WebSocket_MessageTypesExtensions.ParseMessageType(messageTypeByte);
                 if (messageType == OCPP_WebSocket_MessageTypes.Undefined)
                     return false;
 
-                if (!Request_Id.TryParse(JSON[1]?.Value<String>() ?? "", out var requestId))
+                if (!Request_Id.TryParse(json[1]?.Value<String>() ?? "", out var requestId))
                     return false;
 
-                var action = JSON[2]?.Value<String>();
+                var action = json[2]?.Value<String>();
                 if (action is null)
                     return false;
 
-                if (JSON[3] is not JObject jsonMessage)
+                if (json[3] is not JObject jsonMessage)
                     return false;
 
                 RequestMessage = new OCPP_WebSocket_RequestMessage(requestId,

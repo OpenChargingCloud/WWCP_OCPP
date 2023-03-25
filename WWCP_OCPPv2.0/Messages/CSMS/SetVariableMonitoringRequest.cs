@@ -346,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 if (!JSON.ParseMandatoryHashSet("setMonitoringData",
                                                 "variable monitoring data",
-                                                OCPPv2_0.SetMonitoringData.TryParse,
+                                                SetMonitoringData.TryParse,
                                                 out HashSet<SetMonitoringData> MonitoringData,
                                                 out ErrorResponse))
                 {

@@ -208,13 +208,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                 #region Severity       [mandatory]
 
                 if (!JSON.ParseMandatory("severity",
-                                         "monitoring level severity",
-                                         Severities.TryParse,
-                                         out Severities Severity,
+                                         "severity",
+                                         out Byte severity,
                                          out ErrorResponse))
                 {
                     return false;
                 }
+
+                var Severity = SeveritiesExtensions.TryParse(severity);
+
+                if (!Severity.HasValue)
+                    return false;
 
                 #endregion
 
@@ -253,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
 
                 SetMonitoringLevelRequest = new SetMonitoringLevelRequest(ChargeBoxId,
-                                                                          Severity,
+                                                                          Severity.Value,
                                                                           CustomData,
                                                                           RequestId);
 
@@ -288,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("severity",    Severity.  AsText()),
+                                 new JProperty("severity",    Severity.  AsNumber()),
 
                            CustomData is not null
                                ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))

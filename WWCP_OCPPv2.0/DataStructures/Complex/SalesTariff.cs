@@ -306,33 +306,33 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("id",                      Id.ToString()),
+                                 new JProperty("id",                       Id.ToString()),
 
-                                 new JProperty("salesTariffEntry",        new JArray(SalesTariffEntries.Select(salesTariffEntry => salesTariffEntry.ToJSON(CustomSalesTariffEntrySerializer,
-                                                                                                                                                           CustomRelativeTimeIntervalSerializer,
-                                                                                                                                                           CustomConsumptionCostSerializer,
-                                                                                                                                                           CustomCostSerializer,
-                                                                                                                                                           CustomCustomDataSerializer)))),
+                                 new JProperty("salesTariffEntry",         new JArray(SalesTariffEntries.Select(salesTariffEntry => salesTariffEntry.ToJSON(CustomSalesTariffEntrySerializer,
+                                                                                                                                                            CustomRelativeTimeIntervalSerializer,
+                                                                                                                                                            CustomConsumptionCostSerializer,
+                                                                                                                                                            CustomCostSerializer,
+                                                                                                                                                            CustomCustomDataSerializer)))),
 
                            Description is not null
-                               ? new JProperty("salesTariffDescription",  Description)
+                               ? new JProperty("salesTariffDescription",   Description)
                                : null,
 
                            NumEPriceLevels.HasValue
-                               ? new JProperty("numEPriceLevels",         NumEPriceLevels.Value)
+                               ? new JProperty("numEPriceLevels",          NumEPriceLevels.Value)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",              CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",               CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomSalesTariffSerializer is not null
-                       ? CustomSalesTariffSerializer(this, JSON)
-                       : JSON;
+                       ? CustomSalesTariffSerializer(this, json)
+                       : json;
 
         }
 

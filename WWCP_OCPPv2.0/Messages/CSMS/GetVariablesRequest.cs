@@ -324,8 +324,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 #region VariableData    [optional]
 
-                if (!JSON.ParseMandatoryJSON("customData",
-                                             "custom data",
+                if (!JSON.ParseMandatoryJSON("getVariableData",
+                                             "get variable data",
                                              GetVariableData.TryParse,
                                              out IEnumerable<GetVariableData> VariableData,
                                              out ErrorResponse))
@@ -413,14 +413,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                           new JProperty("transactionId",  new JArray(VariableData.Select(data => data.ToJSON(CustomGetVariableDataSerializer,
-                                                                                                              CustomComponentSerializer,
-                                                                                                              CustomEVSESerializer,
-                                                                                                              CustomVariableSerializer,
-                                                                                                              CustomCustomDataSerializer)))),
+                                 new JProperty("getVariableData",   new JArray(VariableData.Select(data => data.ToJSON(CustomGetVariableDataSerializer,
+                                                                                                                       CustomComponentSerializer,
+                                                                                                                       CustomEVSESerializer,
+                                                                                                                       CustomVariableSerializer,
+                                                                                                                       CustomCustomDataSerializer)))),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

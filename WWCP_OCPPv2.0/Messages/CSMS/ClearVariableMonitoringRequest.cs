@@ -215,11 +215,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 #region VariableMonitoringIds    [mandatory]
 
-                if (!JSON.ParseMandatoryHashSet("id",
-                                                "variable monitoring identification",
-                                                VariableMonitoring_Id.TryParse,
-                                                out HashSet<VariableMonitoring_Id> VariableMonitoringIds,
-                                                out ErrorResponse))
+                if (!JSON.ParseMandatoryNumericHashSet("id",
+                                                       "variable monitoring identification",
+                                                       VariableMonitoring_Id.TryParse,
+                                                       out HashSet<VariableMonitoring_Id> VariableMonitoringIds,
+                                                       out ErrorResponse))
                 {
                     return false;
                 }
@@ -296,10 +296,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("id",          new JArray(VariableMonitoringIds.Select(id => id.Value))),
+                                 new JProperty("id",           new JArray(VariableMonitoringIds.Select(id => id.Value))),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

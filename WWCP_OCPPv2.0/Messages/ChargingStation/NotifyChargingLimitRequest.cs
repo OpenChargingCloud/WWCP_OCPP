@@ -496,20 +496,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                              "charging limit",
                                              OCPPv2_0.ChargingLimit.TryParse,
                                              out ChargingLimit? ChargingLimit,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     ChargingLimit is null)
                 {
                     return false;
                 }
-
-                if (ChargingLimit is null)
-                    return false;
 
                 #endregion
 
                 #region ChargingSchedules    [optional]
 
-                if (JSON.ParseOptionalHashSet("customData",
-                                              "custom data",
+                if (JSON.ParseOptionalHashSet("chargingSchedule",
+                                              "charging schedule",
                                               ChargingSchedule.TryParse,
                                               out HashSet<ChargingSchedule> ChargingSchedules,
                                               out ErrorResponse))
@@ -522,8 +520,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region EVSEId               [optional]
 
-                if (JSON.ParseOptional("customData",
-                                       "custom data",
+                if (JSON.ParseOptional("evseId",
+                                       "EVSE identification",
                                        EVSE_Id.TryParse,
                                        out EVSE_Id EVSEId,
                                        out ErrorResponse))
@@ -611,7 +609,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                               CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("chargingLimit",      ChargingLimit.ToJSON()),
 
@@ -635,8 +633,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null);
 
             return CustomNotifyChargingLimitRequestSerializer is not null
-                       ? CustomNotifyChargingLimitRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomNotifyChargingLimitRequestSerializer(this, json)
+                       : json;
 
         }
 

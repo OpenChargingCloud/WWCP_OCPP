@@ -359,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("timestamp",         Timestamp.      ToIso8601()),
                                  new JProperty("connectorStatus",   ConnectorStatus.AsText()),
@@ -371,8 +371,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null);
 
             return CustomStatusNotificationRequestSerializer is not null
-                       ? CustomStatusNotificationRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomStatusNotificationRequestSerializer(this, json)
+                       : json;
 
         }
 

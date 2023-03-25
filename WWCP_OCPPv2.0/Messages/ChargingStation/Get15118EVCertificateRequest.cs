@@ -273,8 +273,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region EXIRequest               [mandatory]
 
-                if (!JSON.ParseMandatory("vendorId",
-                                         "vendor identification",
+                if (!JSON.ParseMandatory("exiRequest",
+                                         "EXI request",
                                          EXIData.TryParse,
                                          out EXIData EXIRequest,
                                          out ErrorResponse))

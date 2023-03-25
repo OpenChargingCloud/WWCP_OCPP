@@ -114,6 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="RecurrencyKind">An optional indication of the start point of a recurrence.</param>
         /// <param name="ValidFrom">An optional timestamp at which the profile starts to be valid. If absent, the profile is valid as soon as it is received by the charging station. Not allowed to be used when ChargingProfilePurpose is TxProfile.</param>
         /// <param name="ValidTo">An optional timestamp at which the profile stops to be valid. If absent, the profile is valid until it is replaced by another profile. Not allowed to be used when ChargingProfilePurpose is TxProfile.</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public ChargingProfile(ChargingProfile_Id             ChargingProfileId,
                                UInt32                         StackLevel,
                                ChargingProfilePurposes        ChargingProfilePurpose,
@@ -123,7 +124,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                Transaction_Id?                TransactionId    = null,
                                RecurrencyKinds?               RecurrencyKind   = null,
                                DateTime?                      ValidFrom        = null,
-                               DateTime?                      ValidTo          = null)
+                               DateTime?                      ValidTo          = null,
+                               CustomData?                    CustomData       = null)
+
+            : base(CustomData)
 
         {
 
@@ -393,6 +397,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #endregion
 
+                #region CustomData                [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_0.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 ChargingProfile = new ChargingProfile(ChargingProfileId,
                                                       StackLevel,
@@ -402,7 +420,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                       TransactionId,
                                                       RecurrencyKind,
                                                       ValidFrom,
-                                                      ValidTo);
+                                                      ValidTo,
+                                                      CustomData);
 
                 if (CustomChargingProfileParser is not null)
                     ChargingProfile = CustomChargingProfileParser(JSON,
@@ -449,36 +468,40 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var json = JSONObject.Create(
 
-                           new JProperty("chargingProfileId",       ChargingProfileId.Value),
+                                 new JProperty("chargingProfileId",        ChargingProfileId.Value),
 
                            TransactionId is not null
-                               ? new JProperty("transactionId",     TransactionId.    Value.Value)
+                               ? new JProperty("transactionId",            TransactionId.    Value.Value)
                                : null,
 
-                           new JProperty("stackLevel",              StackLevel),
-                           new JProperty("chargingProfilePurpose",  ChargingProfilePurpose. AsText()),
-                           new JProperty("chargingProfileKind",     ChargingProfileKind.    AsText()),
+                                 new JProperty("stackLevel",               StackLevel),
+                                 new JProperty("chargingProfilePurpose",   ChargingProfilePurpose. AsText()),
+                                 new JProperty("chargingProfileKind",      ChargingProfileKind.    AsText()),
 
                            ValidFrom.HasValue
-                               ? new JProperty("validFrom",         ValidFrom.        Value.ToIso8601())
+                               ? new JProperty("validFrom",                ValidFrom.        Value.ToIso8601())
                                : null,
 
                            ValidTo.HasValue
-                               ? new JProperty("validTo",           ValidTo.          Value.ToIso8601())
+                               ? new JProperty("validTo",                  ValidTo.          Value.ToIso8601())
                                : null,
 
                            RecurrencyKind.HasValue
-                               ? new JProperty("recurrencyKind",    RecurrencyKind.   Value.AsText())
+                               ? new JProperty("recurrencyKind",           RecurrencyKind.   Value.AsText())
                                : null,
 
-                           new JProperty("chargingSchedule",        new JArray(ChargingSchedules.Select(chargingSchedule => chargingSchedule.ToJSON(CustomChargingScheduleSerializer,
-                                                                                                                                                    CustomChargingSchedulePeriodSerializer,
-                                                                                                                                                    CustomSalesTariffSerializer,
-                                                                                                                                                    CustomSalesTariffEntrySerializer,
-                                                                                                                                                    CustomRelativeTimeIntervalSerializer,
-                                                                                                                                                    CustomConsumptionCostSerializer,
-                                                                                                                                                    CustomCostSerializer,
-                                                                                                                                                    CustomCustomDataSerializer))))
+                                 new JProperty("chargingSchedule",         new JArray(ChargingSchedules.Select(chargingSchedule => chargingSchedule.ToJSON(CustomChargingScheduleSerializer,
+                                                                                                                                                           CustomChargingSchedulePeriodSerializer,
+                                                                                                                                                           CustomSalesTariffSerializer,
+                                                                                                                                                           CustomSalesTariffEntrySerializer,
+                                                                                                                                                           CustomRelativeTimeIntervalSerializer,
+                                                                                                                                                           CustomConsumptionCostSerializer,
+                                                                                                                                                           CustomCostSerializer,
+                                                                                                                                                           CustomCustomDataSerializer)))),
+
+                           CustomData is not null
+                               ? new JProperty("customData",               CustomData.             ToJSON(CustomCustomDataSerializer))
+                               : null
 
                        );
 
@@ -579,7 +602,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                  (ValidFrom.     HasValue &&  ChargingProfile.ValidFrom.     HasValue && ValidFrom.     Value.Equals(ChargingProfile.ValidFrom.     Value))) &&
 
                ((!ValidTo.       HasValue && !ChargingProfile.ValidTo.       HasValue) ||
-                 (ValidTo.       HasValue &&  ChargingProfile.ValidTo.       HasValue && ValidTo.       Value.Equals(ChargingProfile.ValidTo.       Value)));
+                 (ValidTo.       HasValue &&  ChargingProfile.ValidTo.       HasValue && ValidTo.       Value.Equals(ChargingProfile.ValidTo.       Value))) &&
+
+               base.Equals(ChargingProfile);
 
         #endregion
 
@@ -596,16 +621,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             unchecked
             {
 
-                return ChargingProfileId     .GetHashCode()       * 23 ^
-                       StackLevel            .GetHashCode()       * 19 ^
-                       ChargingProfilePurpose.GetHashCode()       * 17 ^
-                       ChargingProfileKind   .GetHashCode()       * 13 ^
-                       ChargingSchedules.     CalcHashCode()      * 11 ^
+                return ChargingProfileId     .GetHashCode()       * 27 ^
+                       StackLevel            .GetHashCode()       * 23 ^
+                       ChargingProfilePurpose.GetHashCode()       * 19 ^
+                       ChargingProfileKind   .GetHashCode()       * 17 ^
+                       ChargingSchedules.     CalcHashCode()      * 13 ^
 
-                       (TransactionId?.       GetHashCode() ?? 0) *  7 ^
-                       (RecurrencyKind?.      GetHashCode() ?? 0) *  5 ^
-                       (ValidFrom?.           GetHashCode() ?? 0) *  3 ^
-                       (ValidTo?.             GetHashCode() ?? 0);
+                       (TransactionId?.       GetHashCode() ?? 0) * 11 ^
+                       (RecurrencyKind?.      GetHashCode() ?? 0) *  7 ^
+                       (ValidFrom?.           GetHashCode() ?? 0) *  5 ^
+                       (ValidTo?.             GetHashCode() ?? 0) *  3 ^
+
+                       base.GetHashCode();
 
             }
         }
@@ -619,9 +646,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public override String ToString()
 
-            => String.Concat(ChargingProfileId,
-                             " / ",
-                             StackLevel);
+            => String.Concat(
+                   ChargingProfileId,
+                   " / ",
+                   StackLevel
+               );
 
         #endregion
 

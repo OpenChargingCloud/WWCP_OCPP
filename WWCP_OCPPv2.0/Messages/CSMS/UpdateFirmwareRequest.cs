@@ -295,13 +295,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                              "firmware",
                                              OCPPv2_0.Firmware.TryParse,
                                              out Firmware? Firmware,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     Firmware is null)
                 {
                     return false;
                 }
-
-                if (Firmware is null)
-                    return false;
 
                 #endregion
 
@@ -418,21 +416,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("firmware",       Firmware.ToJSON(CustomFirmwareSerializer,
-                                                                                 CustomCustomDataSerializer)),
+                                 new JProperty("firmware",        Firmware.ToJSON(CustomFirmwareSerializer,
+                                                                                  CustomCustomDataSerializer)),
 
-                                 new JProperty("requestId",      UpdateFirmwareRequestId),
+                                 new JProperty("requestId",       UpdateFirmwareRequestId),
 
                            Retries.HasValue
-                               ? new JProperty("retries",        Retries.Value)
+                               ? new JProperty("retries",         Retries.Value)
                                : null,
 
                            RetryInterval.HasValue
-                               ? new JProperty("retryInterval",  (UInt64) RetryInterval.Value.TotalSeconds)
+                               ? new JProperty("retryInterval",   (UInt64) RetryInterval.Value.TotalSeconds)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData. ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData. ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

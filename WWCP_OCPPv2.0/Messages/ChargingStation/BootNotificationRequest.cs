@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                               CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("chargingStation",   ChargingStation.ToJSON(CustomChargingStationSerializer)),
                                  new JProperty("reason",            Reason.         AsText()),
@@ -366,8 +366,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                        );
 
             return CustomBootNotificationRequestSerializer is not null
-                       ? CustomBootNotificationRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomBootNotificationRequestSerializer(this, json)
+                       : json;
 
         }
 

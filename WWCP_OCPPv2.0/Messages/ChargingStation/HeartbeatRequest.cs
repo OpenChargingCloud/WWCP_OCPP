@@ -224,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                               CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataSerializer         = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
@@ -233,8 +233,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                        );
 
             return CustomHeartbeatRequestSerializer is not null
-                       ? CustomHeartbeatRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomHeartbeatRequestSerializer(this, json)
+                       : json;
 
         }
 

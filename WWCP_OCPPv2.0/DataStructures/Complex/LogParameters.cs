@@ -271,18 +271,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var json = JSONObject.Create(
 
-                           new JProperty("remoteLocation",         RemoteLocation.       ToString()),
+                                 new JProperty("remoteLocation",    RemoteLocation.       ToString()),
 
                            OldestTimestamp.HasValue
-                               ? new JProperty("remoteLocation",   OldestTimestamp.Value.ToIso8601())
+                               ? new JProperty("oldestTimestamp",   OldestTimestamp.Value.ToIso8601())
                                : null,
 
                            LatestTimestamp.HasValue
-                               ? new JProperty("latestTimestamp",  LatestTimestamp.Value.ToIso8601())
+                               ? new JProperty("latestTimestamp",   LatestTimestamp.Value.ToIso8601())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.           ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.           ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

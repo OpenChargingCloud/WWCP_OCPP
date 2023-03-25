@@ -287,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
             var json = JSONObject.Create(
 
                            TransactionId.HasValue
-                               ? new JProperty("transactionId",   TransactionId.Value.ToString())
+                               ? new JProperty("transactionId",   TransactionId.Value.Value)
                                : null,
 
                            CustomData is not null

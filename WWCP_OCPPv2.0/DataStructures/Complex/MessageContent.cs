@@ -272,24 +272,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("content",     Content),
-                                 new JProperty("format",      Format.    AsText()),
+                                 new JProperty("content",      Content),
+                                 new JProperty("format",       Format.    AsText()),
 
                            Language.HasValue
-                               ? new JProperty("language",    Language.  ToString())
+                               ? new JProperty("language",     Language.  ToString())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomMessageContentSerializer is not null
-                       ? CustomMessageContentSerializer(this, JSON)
-                       : JSON;
+                       ? CustomMessageContentSerializer(this, json)
+                       : json;
 
         }
 

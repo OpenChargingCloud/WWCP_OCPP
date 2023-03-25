@@ -680,17 +680,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 #region IdToken                             [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("idTag",
-                                             "identification tag",
+                if (!JSON.ParseMandatoryJSON("idToken",
+                                             "identification token",
                                              OCPPv2_0.IdToken.TryParse,
                                              out IdToken? IdToken,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     IdToken is null)
                 {
                     return false;
                 }
-
-                if (IdToken is null)
-                    return false;
 
                 #endregion
 
@@ -724,8 +722,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 #region GroupIdToken                        [optional]
 
-                if (JSON.ParseOptionalJSON("evseId",
-                                           "EVSE identification",
+                if (JSON.ParseOptionalJSON("groupIdToken",
+                                           "group identification token",
                                            OCPPv2_0.IdToken.TryParse,
                                            out IdToken? GroupIdToken,
                                            out ErrorResponse))
@@ -820,19 +818,29 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                    new JProperty("remoteStartId",   RequestStartTransactionRequestId.Value),
-                                    new JProperty("idToken",         IdToken.        ToJSON(CustomIdTokenSerializer,
-                                                                                            CustomAdditionalInfoSerializer,
-                                                                                            CustomCustomDataSerializer)),
+                                 new JProperty("remoteStartId",     RequestStartTransactionRequestId.Value),
+                                 new JProperty("idToken",           IdToken.        ToJSON(CustomIdTokenSerializer,
+                                                                                           CustomAdditionalInfoSerializer,
+                                                                                           CustomCustomDataSerializer)),
 
                            EVSEId.HasValue
-                                  ? new JProperty("connectorId",     EVSEId.Value.Value)
-                                  : null,
+                               ? new JProperty("evseId",            EVSEId.Value.Value)
+                               : null,
 
                            ChargingProfile is not null
-                               ? new JProperty("chargingProfile",    ChargingProfile.ToJSON(CustomChargingProfileSerializer,
-                                                                                            CustomChargingScheduleSerializer,
-                                                                                            CustomChargingSchedulePeriodSerializer))
+                               ? new JProperty("chargingProfile",   ChargingProfile.ToJSON(CustomChargingProfileSerializer,
+                                                                                           CustomChargingScheduleSerializer,
+                                                                                           CustomChargingSchedulePeriodSerializer))
+                               : null,
+
+                           GroupIdToken is not null
+                               ? new JProperty("groupIdToken",      GroupIdToken.   ToJSON(CustomIdTokenSerializer,
+                                                                                           CustomAdditionalInfoSerializer,
+                                                                                           CustomCustomDataSerializer))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",        CustomData.     ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

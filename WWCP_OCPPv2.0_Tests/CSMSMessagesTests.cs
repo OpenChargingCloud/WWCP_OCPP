@@ -24,6 +24,12 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPPv2_0.CSMS;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using System.Net.NetworkInformation;
+using org.GraphDefined.Vanaheimr.Hermod.Modbus;
+using org.GraphDefined.Vanaheimr.Illias.ConsoleLog;
+using social.OpenData.UsersAPI;
 
 #endregion
 
@@ -31,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 {
 
     /// <summary>
-    /// Unit tests for a central system sending messages to charge points.
+    /// Unit tests for a central system sending messages to charging stations.
     /// </summary>
     [TestFixture]
     public class CSMSMessagesTests : AChargingStationTests
@@ -40,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         #region CSMS_Reset_Test()
 
         /// <summary>
-        /// A test for sending a reset message to a charge point.
+        /// A test for sending a reset message to a charging station.
         /// </summary>
         [Test]
         public async Task CSMS_Reset_Test()
@@ -66,7 +72,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 };
 
                 var resetType  = ResetTypes.Immediate;
-                var response1  = await testCSMS01.Reset(chargingStation1.ChargeBoxId, resetType);
+                var response1  = await testCSMS01.Reset(
+                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
+                                           ResetType:     resetType,
+                                           CustomData:    null
+                                       );
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
                 Assert.AreEqual(ResetStatus.Accepted,           response1.Status);
@@ -84,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         #region CSMS_Reset_UnknownChargeBox_Test()
 
         /// <summary>
-        /// A test for sending a reset message to a charge point.
+        /// A test for sending a reset message to a charging station.
         /// </summary>
         [Test]
         public async Task CSMS_Reset_UnknownChargeBox_Test()
@@ -125,97 +135,904 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         #endregion
 
 
-        #region CSMS_ChangeAvailability_Test()
+        #region CSMS_UpdateFirmware_Test()
 
-        ///// <summary>
-        ///// A test for sending a change availability message to a charge point.
-        ///// </summary>
-        //[Test]
-        //public async Task CSMS_ChangeAvailability_Test()
-        //{
+        /// <summary>
+        /// A test for updating the firmware of a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_UpdateFirmware_Test()
+        {
 
-        //    Assert.IsNotNull(testCSMS01);
-        //    Assert.IsNotNull(testBackendWebSockets01);
-        //    Assert.IsNotNull(chargingStation1);
-        //    Assert.IsNotNull(chargingStation2);
-        //    Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
 
-        //    if (testCSMS01     is not null &&
-        //        testBackendWebSockets01 is not null &&
-        //        chargingStation1        is not null &&
-        //        chargingStation2        is not null &&
-        //        chargingStation3        is not null)
-        //    {
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
 
-        //        var changeAvailabilityRequests = new List<ChangeAvailabilityRequest>();
+                var updateFirmwareRequests = new List<UpdateFirmwareRequest>();
 
-        //        chargingStation1.OnChangeAvailabilityRequest += async (timestamp, sender, changeAvailabilityRequest) => {
-        //            changeAvailabilityRequests.Add(changeAvailabilityRequest);
-        //        };
+                chargingStation1.OnUpdateFirmwareRequest += async (timestamp, sender, updateFirmwareRequest) => {
+                    updateFirmwareRequests.Add(updateFirmwareRequest);
+                };
 
-        //        var connectorId   = Connector_Id.Parse(1);
-        //        var availability  = OperationalStatus.Operative;
-        //        var response1     = await testCSMS01.ChangeAvailability(chargingStation1.ChargeBoxId,
-        //                                                                         connectorId,
-        //                                                                         availability);
+                var response1  = await testCSMS01.UpdateFirmware(
+                                           ChargeBoxId:               chargingStation1.ChargeBoxId,
+                                           Firmware:                  new Firmware(
+                                                                          FirmwareURL:          URL.Parse("https://example.org/fw0001.bin"),
+                                                                          RetrieveTimestamp:    Timestamp.Now,
+                                                                          InstallTimestamp:     Timestamp.Now,
+                                                                          SigningCertificate:   "0x1234",
+                                                                          Signature:            "0x5678",
+                                                                          CustomData:           null
+                                                                      ),
+                                           UpdateFirmwareRequestId:   1,
+                                           Retries:                   5,
+                                           RetryInterval:             TimeSpan.FromMinutes(5),
+                                           CustomData:                null
+                                       );
 
-        //        Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-        //        Assert.AreEqual(AvailabilityStatus.Accepted,    response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
 
-        //        Assert.AreEqual(1,                              changeAvailabilityRequests.Count);
-        //        Assert.AreEqual(chargingStation1.ChargeBoxId,   changeAvailabilityRequests.First().ChargeBoxId);
-        //        Assert.AreEqual(connectorId,                    changeAvailabilityRequests.First().ConnectorId);
-        //        Assert.AreEqual(availability,                   changeAvailabilityRequests.First().Availability);
+                Assert.AreEqual(1,                              updateFirmwareRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   updateFirmwareRequests.First().ChargeBoxId);
 
-        //    }
+            }
 
-        //}
+        }
 
         #endregion
 
-        #region CSMS_ChangeAvailability_UnknownChargeBox_Test()
+        #region CSMS_PublishFirmware_Test()
 
-        ///// <summary>
-        ///// A test for sending a change availability message to a charge point.
-        ///// </summary>
-        //[Test]
-        //public async Task CSMS_ChangeAvailability_UnknownChargeBox_Test()
-        //{
+        /// <summary>
+        /// A test for publishing a firmware update onto a charging station/local controller.
+        /// </summary>
+        [Test]
+        public async Task CSMS_PublishFirmware_Test()
+        {
 
-        //    Assert.IsNotNull(testCSMS01);
-        //    Assert.IsNotNull(testBackendWebSockets01);
-        //    Assert.IsNotNull(chargingStation1);
-        //    Assert.IsNotNull(chargingStation2);
-        //    Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
 
-        //    if (testCSMS01     is not null &&
-        //        testBackendWebSockets01 is not null &&
-        //        chargingStation1        is not null &&
-        //        chargingStation2        is not null &&
-        //        chargingStation3        is not null)
-        //    {
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
 
-        //        var changeAvailabilityRequests = new List<ChangeAvailabilityRequest>();
+                var publishFirmwareRequests = new List<PublishFirmwareRequest>();
 
-        //        chargingStation2.OnChangeAvailabilityRequest += async (timestamp, sender, changeAvailabilityRequest) => {
-        //            changeAvailabilityRequests.Add(changeAvailabilityRequest);
-        //        };
+                chargingStation1.OnPublishFirmwareRequest += async (timestamp, sender, publishFirmwareRequest) => {
+                    publishFirmwareRequests.Add(publishFirmwareRequest);
+                };
 
-        //        var connectorId   = Connector_Id.Parse(1);
-        //        var availability  = Availabilities.Operative;
-        //        var response1     = await testCSMS01.ChangeAvailability(chargingStation2.ChargeBoxId,
-        //                                                                         connectorId,
-        //                                                                         availability);
+                var response1  = await testCSMS01.PublishFirmware(
+                                           ChargeBoxId:                chargingStation1.ChargeBoxId,
+                                           PublishFirmwareRequestId:   1,
+                                           DownloadLocation:           URL.Parse("https://example.org/fw0001.bin"),
+                                           MD5Checksum:                "0x1234",
+                                           Retries:                    5,
+                                           RetryInterval:              TimeSpan.FromMinutes(5),
+                                           CustomData:                 null
+                                       );
 
-        //        Assert.AreEqual  (ResultCodes.NetworkError,     response1.Result.ResultCode);
-        //        Assert.IsNotEmpty(                              response1.Result.Description);
-        //        Assert.AreEqual  (AvailabilityStatus.Unknown,   response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
 
-        //        Assert.AreEqual  (0,                            changeAvailabilityRequests.Count);
+                Assert.AreEqual(1,                              publishFirmwareRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   publishFirmwareRequests.First().ChargeBoxId);
 
-        //    }
+            }
 
-        //}
+        }
+
+        #endregion
+
+        #region CSMS_UnpublishFirmware_Test()
+
+        /// <summary>
+        /// A test for unpublishing a firmware update from a charging station/local controller.
+        /// </summary>
+        [Test]
+        public async Task CSMS_UnpublishFirmware_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var unpublishFirmwareRequests = new List<UnpublishFirmwareRequest>();
+
+                chargingStation1.OnUnpublishFirmwareRequest += async (timestamp, sender, unpublishFirmwareRequest) => {
+                    unpublishFirmwareRequests.Add(unpublishFirmwareRequest);
+                };
+
+                var response1  = await testCSMS01.UnpublishFirmware(
+                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
+                                           MD5Checksum:   "0x1234",
+                                           CustomData:    null
+                                       );
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              unpublishFirmwareRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   unpublishFirmwareRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_GetBaseReport_Test()
+
+        /// <summary>
+        /// A test for getting a base report from a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_GetBaseReport_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getBaseReportRequests = new List<GetBaseReportRequest>();
+
+                chargingStation1.OnGetBaseReportRequest += async (timestamp, sender, getBaseReportRequest) => {
+                    getBaseReportRequests.Add(getBaseReportRequest);
+                };
+
+                var response1  = await testCSMS01.GetBaseReport(
+                                           ChargeBoxId:              chargingStation1.ChargeBoxId,
+                                           GetBaseReportRequestId:   1,
+                                           ReportBase:               ReportBases.FullInventory,
+                                           CustomData:               null
+                                       );
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              getBaseReportRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getBaseReportRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_GetReport_Test()
+
+        /// <summary>
+        /// A test for getting a report from a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_GetReport_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getReportRequests = new List<GetReportRequest>();
+
+                chargingStation1.OnGetReportRequest += async (timestamp, sender, getReportRequest) => {
+                    getReportRequests.Add(getReportRequest);
+                };
+
+                var response1  = await testCSMS01.GetReport(
+                                           ChargeBoxId:          chargingStation1.ChargeBoxId,
+                                           GetReportRequestId:   1,
+                                           ComponentCriteria:    new[] {
+                                                                     ComponentCriteria.Available
+                                                                 },
+                                           ComponentVariables:   new[] {
+                                                                     new ComponentVariable(
+                                                                         Component:    new Component(
+                                                                                           Name:         "Alert System!",
+                                                                                           Instance:     "Alert System #1",
+                                                                                           EVSE:         new EVSE(
+                                                                                                             Id:            EVSE_Id.     Parse(1),
+                                                                                                             ConnectorId:   Connector_Id.Parse(1),
+                                                                                                             CustomData:    null
+                                                                                                         ),
+                                                                                           CustomData:   null
+                                                                                       ),
+                                                                         Variable:     new Variable(
+                                                                                           Name:         "Temperature Sensors",
+                                                                                           Instance:     "Temperature Sensor #1",
+                                                                                           CustomData:   null
+                                                                                       ),
+                                                                         CustomData:   null
+                                                                     )
+                                                                 },
+                                           CustomData:           null
+                                       );
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              getReportRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getReportRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_GetLog_Test()
+
+        /// <summary>
+        /// A test for getting a log file from a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_GetLog_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getLogRequests = new List<GetLogRequest>();
+
+                chargingStation1.OnGetLogRequest += async (timestamp, sender, getLogRequest) => {
+                    getLogRequests.Add(getLogRequest);
+                };
+
+                var response1  = await testCSMS01.GetLog(
+                                           ChargeBoxId:    chargingStation1.ChargeBoxId,
+                                           LogType:        LogTypes.DiagnosticsLog,
+                                           LogRequestId:   1,
+                                           Log:            new LogParameters(
+                                                               RemoteLocation:    URL.Parse("https://example.org/log0001.log"),
+                                                               OldestTimestamp:   Timestamp.Now - TimeSpan.FromDays(2),
+                                                               LatestTimestamp:   Timestamp.Now,
+                                                               CustomData:        null
+                                                           ),
+                                           CustomData:     null
+                                       );
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_SetVariables_Test()
+
+        /// <summary>
+        /// A test for setting variables of a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_SetVariables_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getLogRequests = new List<SetVariablesRequest>();
+
+                chargingStation1.OnSetVariablesRequest += async (timestamp, sender, getLogRequest) => {
+                    getLogRequests.Add(getLogRequest);
+                };
+
+                var response1  = await testCSMS01.SetVariables(
+                                           ChargeBoxId:    chargingStation1.ChargeBoxId,
+                                           VariableData:   new[] {
+                                                               new SetVariableData(
+                                                                   AttributeValue:   "123",
+                                                                   Component:        new Component(
+                                                                                         Name:         "Alert System!",
+                                                                                         Instance:     "Alert System #1",
+                                                                                         EVSE:         new EVSE(
+                                                                                                           Id:            EVSE_Id.     Parse(1),
+                                                                                                           ConnectorId:   Connector_Id.Parse(1),
+                                                                                                           CustomData:    null
+                                                                                                       ),
+                                                                                         CustomData:   null
+                                                                                     ),
+                                                                   Variable:         new Variable(
+                                                                                         Name:         "Temperature Sensors",
+                                                                                         Instance:     "Temperature Sensor #1",
+                                                                                         CustomData:   null
+                                                                                     ),
+                                                                   AttributeType:    AttributeTypes.Actual,
+                                                                   CustomData:       null
+                                                               )
+                                                           },
+                                           CustomData:     null
+                                       );
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_GetVariables_Test()
+
+        /// <summary>
+        /// A test for getting variables of a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_GetVariables_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getLogRequests = new List<GetVariablesRequest>();
+
+                chargingStation1.OnGetVariablesRequest += async (timestamp, sender, getLogRequest) => {
+                    getLogRequests.Add(getLogRequest);
+                };
+
+                var response1  = await testCSMS01.GetVariables(
+                                           ChargeBoxId:    chargingStation1.ChargeBoxId,
+                                           VariableData:   new[] {
+                                                               new GetVariableData(
+                                                                   Component:       new Component(
+                                                                                        Name:         "Alert System!",
+                                                                                        Instance:     "Alert System #1",
+                                                                                        EVSE:         new EVSE(
+                                                                                                          Id:            EVSE_Id.     Parse(1),
+                                                                                                          ConnectorId:   Connector_Id.Parse(1),
+                                                                                                          CustomData:    null
+                                                                                                      ),
+                                                                                        CustomData:   null
+                                                                                    ),
+                                                                   Variable:        new Variable(
+                                                                                        Name:         "Temperature Sensors",
+                                                                                        Instance:     "Temperature Sensor #1",
+                                                                                        CustomData:   null
+                                                                                    ),
+                                                                   AttributeType:   AttributeTypes.Actual,
+                                                                   CustomData:      null
+                                                               )
+                                                           },
+                                           CustomData:     null
+                                       );
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_SetMonitoringBase_Test()
+
+        /// <summary>
+        /// A test for setting the monitoring base of a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_SetMonitoringBase_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getLogRequests = new List<SetMonitoringBaseRequest>();
+
+                chargingStation1.OnSetMonitoringBaseRequest += async (timestamp, sender, getLogRequest) => {
+                    getLogRequests.Add(getLogRequest);
+                };
+
+                var response1  = await testCSMS01.SetMonitoringBase(
+                                           ChargeBoxId:      chargingStation1.ChargeBoxId,
+                                           MonitoringBase:   MonitoringBases.All,
+                                           CustomData:       null
+                                       );
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_GetMonitoringReport_Test()
+
+        /// <summary>
+        /// A test for setting the monitoring base of a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_GetMonitoringReport_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getLogRequests = new List<GetMonitoringReportRequest>();
+
+                chargingStation1.OnGetMonitoringReportRequest += async (timestamp, sender, getLogRequest) => {
+                    getLogRequests.Add(getLogRequest);
+                };
+
+                var response1  = await testCSMS01.GetMonitoringReport(
+                                           ChargeBoxId:                    chargingStation1.ChargeBoxId,
+                                           GetMonitoringReportRequestId:   1,
+                                           MonitoringCriteria:             new[] {
+                                                                               MonitoringCriteria.PeriodicMonitoring
+                                                                           },
+                                           ComponentVariables:             new[] {
+                                                                               new ComponentVariable(
+                                                                                   Component:        new Component(
+                                                                                                         Name:         "Alert System!",
+                                                                                                         Instance:     "Alert System #1",
+                                                                                                         EVSE:         new EVSE(
+                                                                                                                           Id:            EVSE_Id.     Parse(1),
+                                                                                                                           ConnectorId:   Connector_Id.Parse(1),
+                                                                                                                           CustomData:    null
+                                                                                                                       ),
+                                                                                                         CustomData:   null
+                                                                                                     ),
+                                                                                   Variable:         new Variable(
+                                                                                                         Name:         "Temperature Sensors",
+                                                                                                         Instance:     "Temperature Sensor #1",
+                                                                                                         CustomData:   null
+                                                                                                     )
+                                                                               )
+                                                                           },
+                                           CustomData:                     null
+                                       );
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_SetMonitoringLevel_Test()
+
+        /// <summary>
+        /// A test for setting the monitoring level of a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_SetMonitoringLevel_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getLogRequests = new List<SetMonitoringLevelRequest>();
+
+                chargingStation1.OnSetMonitoringLevelRequest += async (timestamp, sender, getLogRequest) => {
+                    getLogRequests.Add(getLogRequest);
+                };
+
+                var response1  = await testCSMS01.SetMonitoringLevel(
+                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
+                                           Severity:      Severities.Informational,
+                                           CustomData:    null
+                                       );
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_SetVariableMonitoring_Test()
+
+        /// <summary>
+        /// A test for creating a variable monitoring at a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_SetVariableMonitoring_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getLogRequests = new List<SetVariableMonitoringRequest>();
+
+                chargingStation1.OnSetVariableMonitoringRequest += async (timestamp, sender, getLogRequest) => {
+                    getLogRequests.Add(getLogRequest);
+                };
+
+                var response1  = await testCSMS01.SetVariableMonitoring(
+                                           ChargeBoxId:      chargingStation1.ChargeBoxId,
+                                           MonitoringData:   new[] {
+                                                                 new SetMonitoringData(
+                                                                     Value:                  23.2M,
+                                                                     MonitorType:            MonitorTypes.Delta,
+                                                                     Severity:               Severities.Critical,
+                                                                     Component:              new Component(
+                                                                                                 Name:         "Alert System!",
+                                                                                                 Instance:     "Alert System #1",
+                                                                                                 EVSE:         new EVSE(
+                                                                                                                   Id:            EVSE_Id.     Parse(1),
+                                                                                                                   ConnectorId:   Connector_Id.Parse(1),
+                                                                                                                   CustomData:    null
+                                                                                                               ),
+                                                                                                 CustomData:   null
+                                                                                             ),
+                                                                     Variable:               new Variable(
+                                                                                                 Name:         "Temperature Sensors",
+                                                                                                 Instance:     "Temperature Sensor #1",
+                                                                                                 CustomData:   null
+                                                                                             ),
+                                                                     VariableMonitoringId:   VariableMonitoring_Id.NewRandom,
+                                                                     Transaction:            true,
+                                                                     CustomData:             null
+                                                                 )
+                                                             },
+                                           CustomData:       null
+                                       );
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_ClearVariableMonitoring_Test()
+
+        /// <summary>
+        /// A test for deleting a variable monitoring from a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_ClearVariableMonitoring_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getLogRequests = new List<ClearVariableMonitoringRequest>();
+
+                chargingStation1.OnClearVariableMonitoringRequest += async (timestamp, sender, getLogRequest) => {
+                    getLogRequests.Add(getLogRequest);
+                };
+
+                var response1  = await testCSMS01.ClearVariableMonitoring(
+                                           ChargeBoxId:             chargingStation1.ChargeBoxId,
+                                           VariableMonitoringIds:   new[] {
+                                                                        VariableMonitoring_Id.NewRandom
+                                                                    },
+                                           CustomData:              null
+                                       );
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_SetNetworkProfile_Test()
+
+        /// <summary>
+        /// A test for setting the network profile of a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_SetNetworkProfile_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var setNetworkProfileRequests = new List<SetNetworkProfileRequest>();
+
+                chargingStation1.OnSetNetworkProfileRequest += async (timestamp, sender, setNetworkProfileRequest) => {
+                    setNetworkProfileRequests.Add(setNetworkProfileRequest);
+                };
+
+                var response1  = await testCSMS01.SetNetworkProfile(
+                                           ChargeBoxId:                chargingStation1.ChargeBoxId,
+                                           ConfigurationSlot:          1,
+                                           NetworkConnectionProfile:   new NetworkConnectionProfile(
+                                                                           Version:             OCPPVersions.OCPP20,
+                                                                           Transport:           TransportProtocols.JSON,
+                                                                           CentralServiceURL:   URL.Parse("https://example.com/OCPPv2.0/"),
+                                                                           MessageTimeout:      TimeSpan.FromSeconds(30),
+                                                                           SecurityProfile:     SecurityProfiles.SecurityProfile3,
+                                                                           NetworkInterface:    NetworkInterfaces.Wireless1,
+                                                                           VPNConfiguration:    new VPNConfiguration(
+                                                                                                    ServerURL:              URL.Parse("https://example.com/OCPPv2.0/"),
+                                                                                                    Login:                  "vpn",
+                                                                                                    Password:               "pw123",
+                                                                                                    SharedSecret:           "secret123",
+                                                                                                    Protocol:               VPNProtocols.IPSec,
+                                                                                                    AccessGroup:            "group1",
+                                                                                                    CustomData:             null
+                                                                                                ),
+                                                                           APNConfiguration:    new APNConfiguration(
+                                                                                                    AccessPointName:        "apn1",
+                                                                                                    AuthenticationMethod:   APNAuthenticationMethods.PAP,
+                                                                                                    Username:               "root",
+                                                                                                    Password:               "pw234",
+                                                                                                    SIMPINCode:             "7873",
+                                                                                                    PreferredNetwork:       "Vanaheimr Wireless",
+                                                                                                    OnlyPreferredNetwork:   false,
+                                                                                                    CustomData:             null
+                                                                                                ),
+                                                                           CustomData:          null
+                                                                       ),
+                                           CustomData:                 null
+                                       );
+
+                Assert.AreEqual(ResultCodes.OK,                     response1.Result.ResultCode);
+                Assert.AreEqual(SetNetworkProfileStatus.Accepted,   response1.Status);
+
+                Assert.AreEqual(1,                                  setNetworkProfileRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,       setNetworkProfileRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_ChangeAvailability_Test()
+
+        /// <summary>
+        /// A test for sending a change availability message to a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_ChangeAvailability_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var changeAvailabilityRequests = new List<ChangeAvailabilityRequest>();
+
+                chargingStation1.OnChangeAvailabilityRequest += async (timestamp, sender, changeAvailabilityRequest) => {
+                    changeAvailabilityRequests.Add(changeAvailabilityRequest);
+                };
+
+                var evseId             = EVSE_Id.     Parse(1);
+                var connectorId        = Connector_Id.Parse(1);
+                var operationalStatus  = OperationalStatus.Operative;
+
+                var response1     = await testCSMS01.ChangeAvailability(
+                                              ChargeBoxId:         chargingStation1.ChargeBoxId,
+                                              OperationalStatus:   operationalStatus,
+                                              EVSE:                new EVSE(
+                                                                       Id:            evseId,
+                                                                       ConnectorId:   connectorId,
+                                                                       CustomData:    null
+                                                                   ),
+                                              CustomData:          null
+                                          );
+
+                Assert.AreEqual(ResultCodes.OK,                      response1.Result.ResultCode);
+                Assert.AreEqual(ChangeAvailabilityStatus.Accepted,   response1.Status);
+
+                Assert.AreEqual(1,                                   changeAvailabilityRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,        changeAvailabilityRequests.First().ChargeBoxId);
+                Assert.AreEqual(evseId,                              changeAvailabilityRequests.First().EVSE!.Id);
+                Assert.AreEqual(connectorId,                         changeAvailabilityRequests.First().EVSE!.ConnectorId);
+                Assert.AreEqual(operationalStatus,                   changeAvailabilityRequests.First().OperationalStatus);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_TriggerMessage_Test()
+
+        /// <summary>
+        /// A test for triggering a message at a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_TriggerMessage_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var triggerMessageRequests = new List<TriggerMessageRequest>();
+
+                chargingStation1.OnTriggerMessageRequest += async (timestamp, sender, triggerMessageRequest) => {
+                    triggerMessageRequests.Add(triggerMessageRequest);
+                };
+
+                var evseId          = EVSE_Id.Parse(1);
+                var messageTrigger  = MessageTriggers.StatusNotification;
+
+                var response1       = await testCSMS01.TriggerMessage(
+                                                ChargeBoxId:        chargingStation1.ChargeBoxId,
+                                                RequestedMessage:   messageTrigger,
+                                                EVSEId:             evseId,
+                                                CustomData:         null
+                                            );
+
+                Assert.AreEqual(ResultCodes.OK,                  response1.Result.ResultCode);
+                Assert.AreEqual(TriggerMessageStatus.Accepted,   response1.Status);
+
+                Assert.AreEqual(1,                               triggerMessageRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,    triggerMessageRequests.First().ChargeBoxId);
+
+            }
+
+        }
 
         #endregion
 
@@ -402,7 +1219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         #region CSMS_TransferTextData_Rejected_Test()
 
         /// <summary>
-        /// A test for sending data to a charge point.
+        /// A test for sending data to a charging station.
         /// </summary>
         [Test]
         public async Task CSMS_TransferTextData_Rejected_Test()
@@ -497,7 +1314,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                                                                ),
                                            EVSEId:                             EVSE_Id.Parse(1),
                                            ChargingProfile:                    null,
-                                           GroupIdToken:                       null,
+                                           GroupIdToken:                       new IdToken(
+                                                                                   Value:             "cafebabe",
+                                                                                   Type:              IdTokenTypes.ISO14443,
+                                                                                   AdditionalInfos:   null,
+                                                                                   CustomData:        null
+                                                                               ),
                                            CustomData:                         null
                                        );
 
@@ -770,6 +1592,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 }
 
 
+                await Task.Delay(500);
 
 
                 var getDisplayMessagesRequests = new List<GetDisplayMessagesRequest>();
@@ -1047,7 +1870,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 var response1  = await testCSMS01.SendCostUpdated(
                                      ChargeBoxId:     chargingStation1.ChargeBoxId,
                                      TotalCost:       1.02M,
-                                     TransactionId:   Transaction_Id.Parse(123),
+                                     TransactionId:   Transaction_Id.NewRandom,
                                      CustomData:      null
                                  );
 

@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                               CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
@@ -213,8 +213,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                        );
 
             return CustomStatusNotificationResponseSerializer is not null
-                       ? CustomStatusNotificationResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomStatusNotificationResponseSerializer(this, json)
+                       : json;
 
         }
 

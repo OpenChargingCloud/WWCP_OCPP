@@ -62,7 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         public Reservation_Id?    ReservationId            { get; set; }
 
-        public OperationalStatus  Status                   { get; set; }
+        public OperationalStatus  AdminStatus              { get; set; }
+
+        public ConnectorStatus    Status                   { get; set; }
 
 
         public String?            MeterType                { get; set; }
@@ -107,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         {
 
             this.Id                 = Id;
-            this.Status             = Status;
+            this.AdminStatus             = Status;
             this.MeterType          = MeterType;
             this.MeterSerialNumber  = MeterSerialNumber;
             this.MeterPublicKey     = MeterPublicKey;
@@ -2738,16 +2740,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                     DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming ChangeAvailability '", Request.OperationalStatus, "' request for EVSE '", Request.EVSE?.Id.ToString() ?? "?", "'."));
 
-                    //if (connectors.ContainsKey(Request.ConnectorId))
-                    //{
+                    if (Request.EVSE is not null &&
+                        evses.ContainsKey(Request.EVSE.Id))
+                    {
 
-                    //    connectors[Request.RequestId .ConnectorId].Availability = Request.Availability;
+                        evses[Request.EVSE.Id].AdminStatus = Request.OperationalStatus;
 
-                    //    response = new ChangeAvailabilityResponse(Request,
-                    //                                              ChangeAvailabilityStatus.Accepted);
+                        response = new ChangeAvailabilityResponse(
+                                       Request:      Request,
+                                       Status:       ChangeAvailabilityStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
 
-                    //}
-                    //else
+                    }
+                    else
                         response = new ChangeAvailabilityResponse(Request,
                                                                   ChangeAvailabilityStatus.Rejected);
                 }
@@ -2825,9 +2832,66 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                     DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming TriggerMessage request for '" + Request.RequestedMessage + "' at EVSE '" + Request.EVSEId + "'.");
 
-                    response = new TriggerMessageResponse(Request,
-                                                          TriggerMessageStatus.Rejected);
+                    _ = Task.Run(async () => {
 
+                        switch (Request.RequestedMessage) {
+
+                            case MessageTriggers.BootNotification:
+                                await SendBootNotification(
+                                          BootReason:   BootReasons.Triggered,
+                                          CustomData:   null
+                                      );
+                                break;
+
+                            case MessageTriggers.Heartbeat:
+                                await SendHeartbeat(
+                                          CustomData:   null
+                                      );
+                                break;
+
+                            case MessageTriggers.StatusNotification:
+                                if (!Request.EVSEId.HasValue)
+                                    await SendStatusNotification(
+                                              EVSEId:        Request.EVSEId!.Value,
+                                              ConnectorId:   Connector_Id.Parse(1),
+                                              Timestamp:     Timestamp.Now,
+                                              Status:        evses[Request.EVSEId!.Value].Status,
+                                              CustomData:    null
+                                          );
+                                break;
+
+                        }
+
+                    },
+                    CancellationToken.None);
+
+
+
+                    response = Request.RequestedMessage switch {
+
+                                   MessageTriggers.BootNotification              or
+                                   MessageTriggers.LogStatusNotification         or
+                                   MessageTriggers.DiagnosticsStatusNotification or
+                                   MessageTriggers.FirmwareStatusNotification    or
+                                   MessageTriggers.Heartbeat                     or
+                                   MessageTriggers.SignChargePointCertificate
+
+                                       => new TriggerMessageResponse(Request,
+                                                                     TriggerMessageStatus.Accepted),
+
+
+                                   MessageTriggers.MeterValues or
+                                   MessageTriggers.StatusNotification
+
+                                       => Request.EVSEId.HasValue
+                                              ? new TriggerMessageResponse(Request, TriggerMessageStatus.Accepted)
+                                              : new TriggerMessageResponse(Request, TriggerMessageStatus.Rejected),
+
+
+                                   _   => new TriggerMessageResponse(Request,
+                                                                     TriggerMessageStatus.Rejected),
+
+                               };
                 }
 
 
@@ -3767,8 +3831,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                         },
                         CancellationToken.None);
 
-                        response = new RequestStartTransactionResponse(Request,
-                                                                       RequestStartStopStatus.Accepted);
+                        response = new RequestStartTransactionResponse(
+                                       Request:         Request,
+                                       Status:          RequestStartStopStatus.Accepted,
+                                       TransactionId:   evse.TransactionId,
+                                       StatusInfo:      null,
+                                       CustomData:      null);
 
                     }
                     else
@@ -6120,7 +6188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region SendCertificateSigningRequest      (CSR, CertificateType = null, ...)
+        #region SendCertificateSigningRequest        (CSR, CertificateType = null, ...)
 
         /// <summary>
         /// Send a heartbeat.
@@ -7316,10 +7384,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region SendReportChargingProfiles           (ReportChargingProfilesRequestId, ChargingLimitSource, EVSEId, ChargingProfiles, ToBeContinued = null, ...)
+        #region ReportChargingProfiles               (ReportChargingProfilesRequestId, ChargingLimitSource, EVSEId, ChargingProfiles, ToBeContinued = null, ...)
 
         /// <summary>
-        /// Send a heartbeat.
+        /// Report about all charging profiles.
         /// </summary>
         /// <param name="ReportChargingProfilesRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting ReportChargingProfilesRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
         /// <param name="ChargingLimitSource">The source that has installed this charging profile.</param>
@@ -7335,18 +7403,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.ReportChargingProfilesResponse>
 
-            SendReportChargingProfiles(Int32                         ReportChargingProfilesRequestId,
-                                       ChargingLimitSources          ChargingLimitSource,
-                                       EVSE_Id                       EVSEId,
-                                       IEnumerable<ChargingProfile>  ChargingProfiles,
-                                       Boolean?                      ToBeContinued       = null,
-                                       CustomData?                   CustomData          = null,
+            ReportChargingProfiles(Int32                         ReportChargingProfilesRequestId,
+                                   ChargingLimitSources          ChargingLimitSource,
+                                   EVSE_Id                       EVSEId,
+                                   IEnumerable<ChargingProfile>  ChargingProfiles,
+                                   Boolean?                      ToBeContinued       = null,
+                                   CustomData?                   CustomData          = null,
 
-                                       Request_Id?                   RequestId           = null,
-                                       DateTime?                     RequestTimestamp    = null,
-                                       TimeSpan?                     RequestTimeout      = null,
-                                       EventTracking_Id?             EventTrackingId     = null,
-                                       CancellationToken?            CancellationToken   = null)
+                                   Request_Id?                   RequestId           = null,
+                                   DateTime?                     RequestTimestamp    = null,
+                                   TimeSpan?                     RequestTimeout      = null,
+                                   EventTracking_Id?             EventTrackingId     = null,
+                                   CancellationToken?            CancellationToken   = null)
 
         {
 

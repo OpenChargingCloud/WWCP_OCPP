@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            ChargingProfilePurpose.HasValue
                                ? new JProperty("chargingProfilePurpose",  ChargingProfilePurpose.Value.ToString())
@@ -359,8 +359,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        );
 
             return CustomChargingProfileCriterionSerializer is not null
-                       ? CustomChargingProfileCriterionSerializer(this, JSON)
-                       : JSON;
+                       ? CustomChargingProfileCriterionSerializer(this, json)
+                       : json;
 
         }
 

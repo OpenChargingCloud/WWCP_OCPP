@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                               CustomJObjectSerializerDelegate<CustomData>?                      CustomCustomDataSerializer                       = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("reservationId",            ReservationId.          Value),
                                  new JProperty("reservationUpdateStatus",  ReservationUpdateStatus.AsText()),
@@ -308,8 +308,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null);
 
             return CustomReservationStatusUpdateRequestSerializer is not null
-                       ? CustomReservationStatusUpdateRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomReservationStatusUpdateRequestSerializer(this, json)
+                       : json;
 
         }
 

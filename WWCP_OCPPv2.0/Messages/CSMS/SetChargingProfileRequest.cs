@@ -661,13 +661,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("connectorId",         EVSEId.    Value),
-                                 new JProperty("csChargingProfiles",  ChargingProfile.ToJSON(CustomChargingProfileSerializer,
-                                                                                             CustomChargingScheduleSerializer,
-                                                                                             CustomChargingSchedulePeriodSerializer)),
+                                 new JProperty("connectorId",          EVSEId.Value),
+                                 new JProperty("csChargingProfiles",   ChargingProfile.ToJSON(CustomChargingProfileSerializer,
+                                                                                              CustomChargingScheduleSerializer,
+                                                                                              CustomChargingSchedulePeriodSerializer)),
 
                            CustomData is not null
-                               ? new JProperty("customData",          CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",           CustomData.     ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

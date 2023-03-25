@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// The nummeric value of the transaction identification.
         /// </summary>
-        public readonly UInt64 Value;
+        public readonly String Value;
 
         #endregion
 
@@ -70,31 +70,31 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Indicates whether this identification is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
-            => Value == 0;
+            => Value.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
         public Boolean IsNotNullOrEmpty
-            => Value != 0;
+            => Value.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the transaction identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) Value.ToString().Length;
+            => (UInt64) Value.Length;
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new transaction identification based on the given number.
+        /// Create a new transaction identification based on the given text.
         /// </summary>
-        /// <param name="Number">A numeric representation of a transaction identification.</param>
-        private Transaction_Id(UInt64 Number)
+        /// <param name="Text">A text representation of a transaction identification.</param>
+        private Transaction_Id(String Text)
         {
-            this.Value = Number;
+            this.Value = Text;
         }
 
         #endregion
@@ -107,9 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// </summary>
         public static Transaction_Id NewRandom
 
-#pragma warning disable SCS0005 // Weak random number generator.
-            => new ((UInt64) Random.Shared.Next(Int32.MaxValue));
-#pragma warning restore SCS0005 // Weak random number generator.
+            => new (RandomExtensions.RandomString(36));
 
         #endregion
 
@@ -132,17 +130,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (Integer)
-
-        /// <summary>
-        /// Parse the given number as a transaction identification.
-        /// </summary>
-        public static Transaction_Id Parse(UInt64 Integer)
-
-            => new (Integer);
-
-        #endregion
-
         #region (static) TryParse(Text)
 
         /// <summary>
@@ -153,24 +140,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         {
 
             if (TryParse(Text, out var transactionId))
-                return transactionId;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Number)
-
-        /// <summary>
-        /// Try to parse the given number as a transaction identification.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a transaction identification.</param>
-        public static Transaction_Id? TryParse(UInt64 Number)
-        {
-
-            if (TryParse(Number, out var transactionId))
                 return transactionId;
 
             return null;
@@ -191,33 +160,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             Text = Text.Trim();
 
-            if (Text.IsNotNullOrEmpty() &&
-                UInt64.TryParse(Text, out var number))
+            if (Text.IsNotNullOrEmpty())
             {
-                TransactionId = new Transaction_Id(number);
+                TransactionId = new Transaction_Id(Text);
                 return true;
             }
 
             TransactionId = default;
             return false;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Number, out TransactionId)
-
-        /// <summary>
-        /// Try to parse the given number as a transaction identification.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a transaction identification.</param>
-        /// <param name="TransactionId">The parsed transaction identification.</param>
-        public static Boolean TryParse(UInt64 Number, out Transaction_Id TransactionId)
-        {
-
-            TransactionId = new Transaction_Id(Number);
-
-            return true;
 
         }
 
@@ -354,7 +304,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="TransactionId">A transaction identification to compare with.</param>
         public Int32 CompareTo(Transaction_Id TransactionId)
 
-            => Value.CompareTo(TransactionId.Value);
+            => String.Compare(Value,
+                              TransactionId.Value,
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -383,7 +335,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="TransactionId">A transaction identification to compare with.</param>
         public Boolean Equals(Transaction_Id TransactionId)
 
-            => Value.Equals(TransactionId.Value);
+            => String.Equals(Value,
+                             TransactionId.Value,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 

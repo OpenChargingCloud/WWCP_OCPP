@@ -24,10 +24,6 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Styx;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using NUnit.Framework.Internal.Execution;
-using System.Globalization;
-using cloud.charging.open.protocols.OCPPv2_0.CS;
-using System.ComponentModel.DataAnnotations;
 
 #endregion
 
@@ -603,9 +599,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 };
 
                 var response1  = await chargingStation1.SendLogStatusNotification(
-                                            Status:       UploadLogStatus.Uploaded,
-                                            LogRquestId:  1,
-                                            CustomData:   null
+                                            Status:         UploadLogStatus.Uploaded,
+                                            LogRequestId:   1,
+                                            CustomData:     null
                                         );
 
 
@@ -621,7 +617,374 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         #endregion
 
 
+        #region ChargingStation_TransferTextData_Test()
 
+        /// <summary>
+        /// A test for transfering text data to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_TransferTextData_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var dataTransferRequests = new List<CS.DataTransferRequest>();
+
+                testCSMS01.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                    dataTransferRequests.Add(dataTransferRequest);
+                };
+
+                var vendorId   = "GraphDefined OEM";
+                var messageId  = RandomExtensions.RandomString(10);
+                var data       = RandomExtensions.RandomString(40);
+
+                var response1  = await chargingStation1.TransferData(
+                                     VendorId:    vendorId,
+                                     MessageId:   messageId,
+                                     Data:        data,
+                                     CustomData:  null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(data.Reverse(),                 response1.Data?.ToString());
+
+                Assert.AreEqual(1,                              dataTransferRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
+                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
+                Assert.AreEqual(data,                           dataTransferRequests.First().Data?.ToString());
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingStation_TransferJObjectData_Test()
+
+        /// <summary>
+        /// A test for transfering JObject data to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_TransferJObjectData_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var dataTransferRequests = new List<CS.DataTransferRequest>();
+
+                testCSMS01.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                    dataTransferRequests.Add(dataTransferRequest);
+                };
+
+                var vendorId   = "GraphDefined OEM";
+                var messageId  = RandomExtensions.RandomString(10);
+                var data       = new JObject(
+                                     new JProperty(
+                                         "key",
+                                         RandomExtensions.RandomString(40)
+                                     )
+                                 );
+
+                var response1  = await chargingStation1.TransferData(
+                                     VendorId:    vendorId,
+                                     MessageId:   messageId,
+                                     Data:        data,
+                                     CustomData:  null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(JTokenType.Object,              response1.Data?.Type);
+                Assert.AreEqual(data["key"]?.Value<String>(),   response1.Data?["key"]?.Value<String>()?.Reverse());
+
+                Assert.AreEqual(1,                              dataTransferRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
+                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
+                Assert.AreEqual(JTokenType.Object,              dataTransferRequests.First().Data?.Type);
+                Assert.AreEqual(data["key"]?.Value<String>(),   dataTransferRequests.First().Data?["key"]?.Value<String>());
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingStation_TransferJArrayData_Test()
+
+        /// <summary>
+        /// A test for transfering JArray data to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_TransferJArrayData_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var dataTransferRequests = new List<CS.DataTransferRequest>();
+
+                testCSMS01.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                    dataTransferRequests.Add(dataTransferRequest);
+                };
+
+                var vendorId   = "GraphDefined OEM";
+                var messageId  = RandomExtensions.RandomString(10);
+                var data       = new JArray(
+                                     RandomExtensions.RandomString(40)
+                                 );
+
+                var response1  = await chargingStation1.TransferData(
+                                     VendorId:    vendorId,
+                                     MessageId:   messageId,
+                                     Data:        data,
+                                     CustomData:  null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(JTokenType.Array,               response1.Data?.Type);
+                Assert.AreEqual(data[0]?.Value<String>(),       response1.Data?[0]?.Value<String>()?.Reverse());
+
+                Assert.AreEqual(1,                              dataTransferRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
+                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
+                Assert.AreEqual(JTokenType.Array,               dataTransferRequests.First().Data?.Type);
+                Assert.AreEqual(data[0]?.Value<String>(),       dataTransferRequests.First().Data?[0]?.Value<String>());
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region ChargingStation_SendCertificateSigningRequest_Test()
+
+        /// <summary>
+        /// A test for sending a certificate signing request to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_SendCertificateSigningRequest_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var notifyReportRequests = new List<CS.SignCertificateRequest>();
+
+                testCSMS01.OnSignCertificateRequest += async (timestamp, sender, notifyReportRequest) => {
+                    notifyReportRequests.Add(notifyReportRequest);
+                };
+
+                var response1  = await chargingStation1.SendCertificateSigningRequest(
+                                           CSR:               "0x1234",
+                                           CertificateType:   CertificateSigningUse.ChargingStationCertificate,
+                                           CustomData:        null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              notifyReportRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyReportRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingStation_Get15118EVCertificate_Test()
+
+        /// <summary>
+        /// A test for receiving a 15118 EV contract certificate from the CSMS.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_Get15118EVCertificate_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var notifyReportRequests = new List<CS.Get15118EVCertificateRequest>();
+
+                testCSMS01.OnGet15118EVCertificateRequest += async (timestamp, sender, notifyReportRequest) => {
+                    notifyReportRequests.Add(notifyReportRequest);
+                };
+
+                var response1  = await chargingStation1.Get15118EVCertificate(
+                                           ISO15118SchemaVersion:   ISO15118SchemaVersion.Parse("15118-20:BastelBrothers"),
+                                           CertificateAction:       CertificateAction.Install,
+                                           EXIRequest:              EXIData.Parse("0x1234"),
+                                           CustomData:              null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              notifyReportRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyReportRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingStation_GetCertificateStatus_Test()
+
+        /// <summary>
+        /// A test for notifying the CSMS about reports.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_GetCertificateStatus_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var notifyReportRequests = new List<CS.GetCertificateStatusRequest>();
+
+                testCSMS01.OnGetCertificateStatusRequest += async (timestamp, sender, notifyReportRequest) => {
+                    notifyReportRequests.Add(notifyReportRequest);
+                };
+
+                var response1  = await chargingStation1.GetCertificateStatus(
+                                           OCSPRequestData:   new OCSPRequestData(
+                                                                  HashAlgorithm:    HashAlgorithms.SHA256,
+                                                                  IssuerNameHash:   "0x1234",
+                                                                  IssuerKeyHash:    "0x5678",
+                                                                  SerialNumber:     "12345678",
+                                                                  ResponderURL:     URL.Parse("https://example.org/12345678"),
+                                                                  CustomData:       null
+                                                              ),
+                                           CustomData:        null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              notifyReportRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyReportRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region ChargingStation_SendReservationStatusUpdate_Test()
+
+        /// <summary>
+        /// A test for sending reservation status updates to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_SendReservationStatusUpdate_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var securityEventNotificationRequests = new List<CS.ReservationStatusUpdateRequest>();
+
+                testCSMS01.OnReservationStatusUpdateRequest += async (timestamp, sender, securityEventNotificationRequest) => {
+                    securityEventNotificationRequests.Add(securityEventNotificationRequest);
+                };
+
+                var response1  = await chargingStation1.SendReservationStatusUpdate(
+                                           ReservationId:             Reservation_Id.NewRandom,
+                                           ReservationUpdateStatus:   ReservationUpdateStatus.Expired,
+                                           CustomData:                null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              securityEventNotificationRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   securityEventNotificationRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
 
         #region ChargingStation_Authorize_Test()
 
@@ -668,13 +1031,82 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #endregion
 
-        #region ChargingStation_TransactionEvent_Test()
+        #region ChargingStation_NotifyEVChargingNeeds_Test()
+
+        /// <summary>
+        /// A test for notifying the CSMS about EV charging needs.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_NotifyEVChargingNeeds_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var notifyEVChargingNeedsRequests = new List<CS.NotifyEVChargingNeedsRequest>();
+
+                testCSMS01.OnNotifyEVChargingNeedsRequest += async (timestamp, sender, notifyEVChargingNeedsRequest) => {
+                    notifyEVChargingNeedsRequests.Add(notifyEVChargingNeedsRequest);
+                };
+
+                var response1  = await chargingStation1.NotifyEVChargingNeeds(
+                                           EVSEId:              EVSE_Id.Parse(1),
+                                           ChargingNeeds:       new ChargingNeeds(
+                                                                    RequestedEnergyTransfer:   EnergyTransferModes.AC_ThreePhases,
+                                                                    DepartureTime:             Timestamp.Now + TimeSpan.FromHours(3),
+                                                                    ACChargingParameters:      new ACChargingParameters(
+                                                                                                   EnergyAmount:         20,
+                                                                                                   EVMinCurrent:          6,
+                                                                                                   EVMaxCurrent:         32,
+                                                                                                   EVMaxVoltage:        230,
+                                                                                                   CustomData:         null
+                                                                                               ),
+                                                                    DCChargingParameters:      new DCChargingParameters(
+                                                                                                   EVMaxCurrent:         20,
+                                                                                                   EVMaxVoltage:        900,
+                                                                                                   EnergyAmount:        300,
+                                                                                                   EVMaxPower:           60,
+                                                                                                   StateOfCharge:        23,
+                                                                                                   EVEnergyCapacity:    250,
+                                                                                                   FullSoC:              95,
+                                                                                                   BulkSoC:              80,
+                                                                                                   CustomData:         null
+                                                                                               ),
+                                                                    CustomData:                null
+                                                                ),
+                                           MaxScheduleTuples:   16,
+                                           CustomData:          null
+                                       );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+
+                Assert.AreEqual(1,                              notifyEVChargingNeedsRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyEVChargingNeedsRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingStation_SendTransactionEvent_Test()
 
         /// <summary>
         /// A test for sending a transaction event to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_TransactionEvent_Test()
+        public async Task ChargingStation_SendTransactionEvent_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -780,13 +1212,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #endregion
 
-        #region ChargingStation_StatusNotification_Test()
+        #region ChargingStation_SendStatusNotification_Test()
 
         /// <summary>
         /// A test for sending status notifications to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_StatusNotification_Test()
+        public async Task ChargingStation_SendStatusNotification_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1016,14 +1448,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #endregion
 
-
-        #region ChargingStation_TransferTextData_Test()
+        #region ChargingStation_NotifyChargingLimit_Test()
 
         /// <summary>
-        /// A test for transfering text data to the CSMS.
+        /// A test for notifying the CSMS about charging limits.
         /// </summary>
         [Test]
-        public async Task ChargingStation_TransferTextData_Test()
+        public async Task ChargingStation_NotifyChargingLimit_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1039,32 +1470,77 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new List<CS.DataTransferRequest>();
+                var notifyChargingLimitRequests = new List<CS.NotifyChargingLimitRequest>();
 
-                testCSMS01.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
-                    dataTransferRequests.Add(dataTransferRequest);
+                testCSMS01.OnNotifyChargingLimitRequest += async (timestamp, sender, notifyChargingLimitRequest) => {
+                    notifyChargingLimitRequests.Add(notifyChargingLimitRequest);
                 };
 
-                var vendorId   = "GraphDefined OEM";
-                var messageId  = RandomExtensions.RandomString(10);
-                var data       = RandomExtensions.RandomString(40);
-
-                var response1  = await chargingStation1.TransferData(
-                                     VendorId:    vendorId,
-                                     MessageId:   messageId,
-                                     Data:        data,
-                                     CustomData:  null
-                                 );
+                var response1  = await chargingStation1.NotifyChargingLimit(
+                                           ChargingLimit:       new ChargingLimit(
+                                                                    ChargingLimitSource:   ChargingLimitSources.SO,
+                                                                    IsGridCritical:        true,
+                                                                    CustomData:            null
+                                                                ),
+                                           ChargingSchedules:   new[] {
+                                                                    new ChargingSchedule(
+                                                                        Id:                        ChargingSchedule_Id.NewRandom(),
+                                                                        ChargingRateUnit:          ChargingRateUnits.Watts,
+                                                                        ChargingSchedulePeriods:   new[] {
+                                                                                                       new ChargingSchedulePeriod(
+                                                                                                           StartPeriod:      TimeSpan.Zero,
+                                                                                                           Limit:            20,
+                                                                                                           NumberOfPhases:   3,
+                                                                                                           PhaseToUse:       PhasesToUse.Three,
+                                                                                                           CustomData:       null
+                                                                                                       )
+                                                                                                   },
+                                                                        StartSchedule:             Timestamp.Now,
+                                                                        Duration:                  TimeSpan.FromMinutes(30),
+                                                                        MinChargingRate:           6,
+                                                                        SalesTariff:               new SalesTariff(
+                                                                                                       Id:                   SalesTariff_Id.NewRandom,
+                                                                                                       SalesTariffEntries:   new[] {
+                                                                                                                                 new SalesTariffEntry(
+                                                                                                                                     RelativeTimeInterval:   new RelativeTimeInterval(
+                                                                                                                                                                 Start:        TimeSpan.Zero,
+                                                                                                                                                                 Duration:     TimeSpan.FromMinutes(30),
+                                                                                                                                                                 CustomData:   null
+                                                                                                                                                             ),
+                                                                                                                                     EPriceLevel:            1,
+                                                                                                                                     ConsumptionCosts:       new[] {
+                                                                                                                                                                 new ConsumptionCost(
+                                                                                                                                                                     StartValue:   1,
+                                                                                                                                                                     Costs:        new[] {
+                                                                                                                                                                                       new Cost(
+                                                                                                                                                                                           CostKind:           CostKinds.CarbonDioxideEmission,
+                                                                                                                                                                                           Amount:             200,
+                                                                                                                                                                                           AmountMultiplier:   23,
+                                                                                                                                                                                           CustomData:         null
+                                                                                                                                                                                       )
+                                                                                                                                                                                   },
+                                                                                                                                                                     CustomData:   null
+                                                                                                                                                                 )
+                                                                                                                                                             },
+                                                                                                                                     CustomData:             null
+                                                                                                                                 )
+                                                                                                                             },
+                                                                                                       Description:          "Green Charging ++",
+                                                                                                       NumEPriceLevels:      1,
+                                                                                                       CustomData:           null
+                                                                                                   ),
+                                                                        CustomData:                null
+                                                                    )
+                                                                },
+                                           EVSEId:              EVSE_Id.Parse("1"),
+                                           CustomData:          null
+                                       );
 
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(data.Reverse(),                 response1.Data?.ToString());
 
-                Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
-                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                Assert.AreEqual(data,                           dataTransferRequests.First().Data?.ToString());
+                Assert.AreEqual(1,                              notifyChargingLimitRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyChargingLimitRequests.First().ChargeBoxId);
 
             }
 
@@ -1072,13 +1548,167 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #endregion
 
-        #region ChargingStation_TransferJObjectData_Test()
+        #region ChargingStation_SendClearedChargingLimit_Test()
 
         /// <summary>
-        /// A test for transfering JObject data to the CSMS.
+        /// A test for indicating a cleared charging limit to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_TransferJObjectData_Test()
+        public async Task ChargingStation_SendClearedChargingLimit_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var transactionEventRequests = new List<CS.ClearedChargingLimitRequest>();
+
+                testCSMS01.OnClearedChargingLimitRequest += async (timestamp, sender, transactionEventRequest) => {
+                    transactionEventRequests.Add(transactionEventRequest);
+                };
+
+                var response  = await chargingStation1.SendClearedChargingLimit(
+                                    ChargingLimitSource:   ChargingLimitSources.SO,
+                                    EVSEId:                EVSE_Id.Parse("1"),
+                                    CustomData:            null
+                                );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
+
+                Assert.AreEqual(1,                              transactionEventRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   transactionEventRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingStation_ReportChargingProfiles_Test()
+
+        /// <summary>
+        /// A test for reporting charging profiles to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_ReportChargingProfiles_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var transactionEventRequests = new List<CS.ReportChargingProfilesRequest>();
+
+                testCSMS01.OnReportChargingProfilesRequest += async (timestamp, sender, transactionEventRequest) => {
+                    transactionEventRequests.Add(transactionEventRequest);
+                };
+
+                var response  = await chargingStation1.ReportChargingProfiles(
+                                    ReportChargingProfilesRequestId:   1,
+                                    ChargingLimitSource:               ChargingLimitSources.SO,
+                                    EVSEId:                            EVSE_Id.Parse("1"),
+                                    ChargingProfiles:                  new[] {
+                                                                           new ChargingProfile(
+                                                                               ChargingProfileId:        ChargingProfile_Id.NewRandom,
+                                                                               StackLevel:               1,
+                                                                               ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
+                                                                               ChargingProfileKind:      ChargingProfileKinds.   Absolute,
+                                                                               ChargingSchedules:        new[] {
+                                                                                                             new ChargingSchedule(
+                                                                                                                 Id:                        ChargingSchedule_Id.NewRandom(),
+                                                                                                                 ChargingRateUnit:          ChargingRateUnits.Watts,
+                                                                                                                 ChargingSchedulePeriods:   new[] {
+                                                                                                                                                new ChargingSchedulePeriod(
+                                                                                                                                                    StartPeriod:      TimeSpan.Zero,
+                                                                                                                                                    Limit:            20,
+                                                                                                                                                    NumberOfPhases:   3,
+                                                                                                                                                    PhaseToUse:       PhasesToUse.Three,
+                                                                                                                                                    CustomData:       null
+                                                                                                                                                )
+                                                                                                                                            },
+                                                                                                                 StartSchedule:             Timestamp.Now,
+                                                                                                                 Duration:                  TimeSpan.FromMinutes(30),
+                                                                                                                 MinChargingRate:           6,
+                                                                                                                 SalesTariff:               new SalesTariff(
+                                                                                                                                                Id:                   SalesTariff_Id.NewRandom,
+                                                                                                                                                SalesTariffEntries:   new[] {
+                                                                                                                                                                          new SalesTariffEntry(
+                                                                                                                                                                              RelativeTimeInterval:   new RelativeTimeInterval(
+                                                                                                                                                                                                          Start:        TimeSpan.Zero,
+                                                                                                                                                                                                          Duration:     TimeSpan.FromMinutes(30),
+                                                                                                                                                                                                          CustomData:   null
+                                                                                                                                                                                                      ),
+                                                                                                                                                                              EPriceLevel:            1,
+                                                                                                                                                                              ConsumptionCosts:       new[] {
+                                                                                                                                                                                                          new ConsumptionCost(
+                                                                                                                                                                                                              StartValue:   1,
+                                                                                                                                                                                                              Costs:        new[] {
+                                                                                                                                                                                                                                new Cost(
+                                                                                                                                                                                                                                    CostKind:           CostKinds.CarbonDioxideEmission,
+                                                                                                                                                                                                                                    Amount:             200,
+                                                                                                                                                                                                                                    AmountMultiplier:   23,
+                                                                                                                                                                                                                                    CustomData:         null
+                                                                                                                                                                                                                                )
+                                                                                                                                                                                                                            },
+                                                                                                                                                                                                              CustomData:   null
+                                                                                                                                                                                                          )
+                                                                                                                                                                                                      },
+                                                                                                                                                                              CustomData:             null
+                                                                                                                                                                          )
+                                                                                                                                                                      },
+                                                                                                                                                Description:          "Green Charging ++",
+                                                                                                                                                NumEPriceLevels:      1,
+                                                                                                                                                CustomData:           null
+                                                                                                                                            ),
+                                                                                                                 CustomData:                null
+                                                                                                             )
+                                                                                                         },
+                                                                               CustomData:               null
+                                                                           )
+                                                                       },
+                                    ToBeContinued:                     false,
+                                    CustomData:                        null
+                                );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
+
+                Assert.AreEqual(1,                              transactionEventRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   transactionEventRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region ChargingStation_NotifyDisplayMessages_Test()
+
+        /// <summary>
+        /// A test for notifying the CSMS about display messages.
+        /// </summary>
+        [Test]
+        public async Task ChargingStation_NotifyDisplayMessages_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1094,39 +1724,49 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new List<CS.DataTransferRequest>();
+                var notifyDisplayMessagesRequests = new List<CS.NotifyDisplayMessagesRequest>();
 
-                testCSMS01.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
-                    dataTransferRequests.Add(dataTransferRequest);
+                testCSMS01.OnNotifyDisplayMessagesRequest += async (timestamp, sender, notifyDisplayMessagesRequest) => {
+                    notifyDisplayMessagesRequests.Add(notifyDisplayMessagesRequest);
                 };
 
-                var vendorId   = "GraphDefined OEM";
-                var messageId  = RandomExtensions.RandomString(10);
-                var data       = new JObject(
-                                     new JProperty(
-                                         "key",
-                                         RandomExtensions.RandomString(40)
-                                     )
-                                 );
-
-                var response1  = await chargingStation1.TransferData(
-                                     VendorId:    vendorId,
-                                     MessageId:   messageId,
-                                     Data:        data,
-                                     CustomData:  null
-                                 );
+                var response1  = await chargingStation1.NotifyDisplayMessages(
+                                           NotifyDisplayMessagesRequestId:   1,
+                                           MessageInfos:                     new[] {
+                                                                                 new MessageInfo(
+                                                                                     Id:               DisplayMessage_Id.NewRandom,
+                                                                                     Priority:         MessagePriorities.InFront,
+                                                                                     Message:          new MessageContent(
+                                                                                                           Content:      "Hello World!",
+                                                                                                           Format:       MessageFormats.UTF8,
+                                                                                                           Language:     Language_Id.Parse("EN"),
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                     State:            MessageStates.Charging,
+                                                                                     StartTimestamp:   Timestamp.Now,
+                                                                                     EndTimestamp:     Timestamp.Now + TimeSpan.FromHours(3),
+                                                                                     TransactionId:    Transaction_Id.NewRandom,
+                                                                                     Display:          new Component(
+                                                                                                           Name:         "Big Displays",
+                                                                                                           Instance:     "Big Display #1",
+                                                                                                           EVSE:         new EVSE(
+                                                                                                                             Id:            EVSE_Id.     Parse(1),
+                                                                                                                             ConnectorId:   Connector_Id.Parse(1),
+                                                                                                                             CustomData:    null
+                                                                                                                         ),
+                                                                                                           CustomData:   null
+                                                                                                       ),
+                                                                                     CustomData:       null
+                                                                                 )
+                                                                             },
+                                           CustomData:                       null
+                                       );
 
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(JTokenType.Object,              response1.Data?.Type);
-                Assert.AreEqual(data["key"]?.Value<String>(),   response1.Data?["key"]?.Value<String>()?.Reverse());
 
-                Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
-                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                Assert.AreEqual(JTokenType.Object,              dataTransferRequests.First().Data?.Type);
-                Assert.AreEqual(data["key"]?.Value<String>(),   dataTransferRequests.First().Data?["key"]?.Value<String>());
+                Assert.AreEqual(1,                              notifyDisplayMessagesRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyDisplayMessagesRequests.First().ChargeBoxId);
 
             }
 
@@ -1134,13 +1774,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #endregion
 
-        #region ChargingStation_TransferJArrayData_Test()
+        #region ChargingStation_NotifyCustomerInformation_Test()
 
         /// <summary>
-        /// A test for transfering JArray data to the CSMS.
+        /// A test for notifying the CSMS about customer information.
         /// </summary>
         [Test]
-        public async Task ChargingStation_TransferJArrayData_Test()
+        public async Task ChargingStation_NotifyCustomerInformation_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1156,44 +1796,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new List<CS.DataTransferRequest>();
+                var notifyCustomerInformationRequests = new List<CS.NotifyCustomerInformationRequest>();
 
-                testCSMS01.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
-                    dataTransferRequests.Add(dataTransferRequest);
+                testCSMS01.OnNotifyCustomerInformationRequest += async (timestamp, sender, notifyCustomerInformationRequest) => {
+                    notifyCustomerInformationRequests.Add(notifyCustomerInformationRequest);
                 };
 
-                var vendorId   = "GraphDefined OEM";
-                var messageId  = RandomExtensions.RandomString(10);
-                var data       = new JArray(
-                                     RandomExtensions.RandomString(40)
-                                 );
-
-                var response1  = await chargingStation1.TransferData(
-                                     VendorId:    vendorId,
-                                     MessageId:   messageId,
-                                     Data:        data,
-                                     CustomData:  null
-                                 );
+                var response1  = await chargingStation1.NotifyCustomerInformation(
+                                           NotifyCustomerInformationRequestId:   1,
+                                           Data:                                 "Hello World!",
+                                           SequenceNumber:                       1,
+                                           GeneratedAt:                          Timestamp.Now,
+                                           ToBeContinued:                        false,
+                                           CustomData:                           null
+                                       );
 
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(JTokenType.Array,               response1.Data?.Type);
-                Assert.AreEqual(data[0]?.Value<String>(),       response1.Data?[0]?.Value<String>()?.Reverse());
 
-                Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
-                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                Assert.AreEqual(JTokenType.Array,               dataTransferRequests.First().Data?.Type);
-                Assert.AreEqual(data[0]?.Value<String>(),       dataTransferRequests.First().Data?[0]?.Value<String>());
+                Assert.AreEqual(1,                              notifyCustomerInformationRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyCustomerInformationRequests.First().ChargeBoxId);
 
             }
 
         }
 
         #endregion
-
-
 
 
     }

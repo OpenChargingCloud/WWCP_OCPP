@@ -259,21 +259,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region Severity       [mandatory]
 
-                Severities? Severity = null;
-
-                if (JSON.ParseMandatory("severity",
-                                        "severity",
-                                        out Byte severityByte,
-                                        out ErrorResponse))
+                if (!JSON.ParseMandatory("severity",
+                                         "severity",
+                                         out Byte severity,
+                                         out ErrorResponse))
                 {
-
-                    Severity = SeveritiesExtensions.TryParse(severityByte);
-
-                    if (!Severity.HasValue)
-                        return false;
-
+                    return false;
                 }
-                else
+
+                var Severity = SeveritiesExtensions.TryParse(severity);
+
+                if (!Severity.HasValue)
                     return false;
 
                 #endregion

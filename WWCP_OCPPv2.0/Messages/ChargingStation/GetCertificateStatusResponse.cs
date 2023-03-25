@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                               CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("status",       Status.     AsText()),
                                  new JProperty("ocspResult",   OCSPResult. ToString()),
@@ -350,8 +350,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                        );
 
             return CustomGetCertificateStatusResponseSerializer is not null
-                       ? CustomGetCertificateStatusResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomGetCertificateStatusResponseSerializer(this, json)
+                       : json;
 
         }
 

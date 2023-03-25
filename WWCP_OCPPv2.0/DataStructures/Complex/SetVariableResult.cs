@@ -189,7 +189,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out SetVariableResult,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -212,8 +213,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region Status                 [mandatory]
 
-                if (!JSON.ParseMandatory("attributeStatus",
-                                         "attribute status",
+                if (!JSON.ParseMandatory("status",
+                                         "status",
                                          SetVariableStatusExtensions.TryParse,
                                          out SetVariableStatus Status,
                                          out ErrorResponse))
@@ -342,35 +343,35 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("status",               Status.             AsText()),
+                                 new JProperty("status",                Status.             AsText()),
 
-                                 new JProperty("component",            Component.          ToJSON(CustomComponentSerializer,
-                                                                                                  CustomEVSESerializer,
-                                                                                                  CustomCustomDataSerializer)),
+                                 new JProperty("component",             Component.          ToJSON(CustomComponentSerializer,
+                                                                                                   CustomEVSESerializer,
+                                                                                                   CustomCustomDataSerializer)),
 
-                                 new JProperty("variable",             Variable.           ToJSON(CustomVariableSerializer,
-                                                                                                  CustomCustomDataSerializer)),
+                                 new JProperty("variable",              Variable.           ToJSON(CustomVariableSerializer,
+                                                                                                   CustomCustomDataSerializer)),
 
                            AttributeType.HasValue
-                               ? new JProperty("attributeType",        AttributeType.Value.AsText())
+                               ? new JProperty("attributeType",         AttributeType.Value.AsText())
                                : null,
 
                            AttributeStatusInfo is not null
-                               ? new JProperty("attributeStatusInfo",  AttributeStatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                                  CustomCustomDataSerializer))
+                               ? new JProperty("attributeStatusInfo",   AttributeStatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                                   CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.         ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",            CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomSetVariableResultSerializer is not null
-                       ? CustomSetVariableResultSerializer(this, JSON)
-                       : JSON;
+                       ? CustomSetVariableResultSerializer(this, json)
+                       : json;
 
         }
 

@@ -168,7 +168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out VariableData,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -207,13 +208,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                              "component",
                                              OCPPv2_0.Component.TryParse,
                                              out Component? Component,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     Component is null)
                 {
                     return false;
                 }
-
-                if (Component is null)
-                    return false;
 
                 #endregion
 
@@ -223,13 +222,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                              "variable",
                                              OCPPv2_0.Variable.TryParse,
                                              out Variable? Variable,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     Variable is null)
                 {
                     return false;
                 }
-
-                if (Variable is null)
-                    return false;
 
                 #endregion
 
@@ -303,30 +300,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer     = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("attributeValue",  AttributeValue),
+                                 new JProperty("attributeValue",   AttributeValue),
 
-                                 new JProperty("component",       Component.          ToJSON(CustomComponentSerializer,
-                                                                                             CustomEVSESerializer,
-                                                                                             CustomCustomDataSerializer)),
+                                 new JProperty("component",        Component.          ToJSON(CustomComponentSerializer,
+                                                                                              CustomEVSESerializer,
+                                                                                              CustomCustomDataSerializer)),
 
-                                 new JProperty("variable",        Variable.           ToJSON(CustomVariableSerializer,
-                                                                                             CustomCustomDataSerializer)),
+                                 new JProperty("variable",         Variable.           ToJSON(CustomVariableSerializer,
+                                                                                              CustomCustomDataSerializer)),
 
                            AttributeType.HasValue
-                               ? new JProperty("attributeType",   AttributeType.Value.AsText())
+                               ? new JProperty("attributeType",    AttributeType.Value.AsText())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",      CustomData.         ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",       CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomVariableDataSerializer is not null
-                       ? CustomVariableDataSerializer(this, JSON)
-                       : JSON;
+                       ? CustomVariableDataSerializer(this, json)
+                       : json;
 
         }
 

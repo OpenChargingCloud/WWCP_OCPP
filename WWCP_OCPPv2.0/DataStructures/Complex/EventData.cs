@@ -541,7 +541,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("eventId",                EventId.Value),
                                  new JProperty("timestamp",              Timestamp.                 ToIso8601()),
@@ -560,23 +560,23 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            TechCode is not null
-                               ? new JProperty("TechCode",               TechCode)
+                               ? new JProperty("techCode",               TechCode)
                                : null,
 
                            TechInfo is not null
-                               ? new JProperty("TechInfo",               TechInfo)
+                               ? new JProperty("techInfo",               TechInfo)
                                : null,
 
                            Cleared is not null
-                               ? new JProperty("Cleared",                Cleared.             Value)
+                               ? new JProperty("cleared",                Cleared.             Value)
                                : null,
 
                            TransactionId is not null
-                               ? new JProperty("TransactionId",          TransactionId.       Value.ToString())
+                               ? new JProperty("transactionId",          TransactionId.       Value.ToString())
                                : null,
 
                            VariableMonitoringId is not null
-                               ? new JProperty("VariableMonitoringId",   VariableMonitoringId.Value.ToString())
+                               ? new JProperty("variableMonitoringId",   VariableMonitoringId.Value.ToString())
                                : null,
 
                            CustomData is not null
@@ -586,8 +586,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        );
 
             return CustomEventDataSerializer is not null
-                       ? CustomEventDataSerializer(this, JSON)
-                       : JSON;
+                       ? CustomEventDataSerializer(this, json)
+                       : json;
 
         }
 

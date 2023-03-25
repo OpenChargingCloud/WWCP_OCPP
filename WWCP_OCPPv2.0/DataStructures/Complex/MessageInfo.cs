@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                 #region Id                [mandatory]
 
                 if (!JSON.ParseMandatory("id",
-                                         "master resource identifier",  ///????
+                                         "message identifier",
                                          DisplayMessage_Id.TryParse,
                                          out DisplayMessage_Id Id,
                                          out ErrorResponse))
@@ -408,44 +408,44 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("id",             Id.                  ToString()),
-                                 new JProperty("priority",       Priority.            AsText()),
-                                 new JProperty("message",        Message.             ToJSON(CustomMessageContentSerializer,
-                                                                                             CustomCustomDataSerializer)),
+                                 new JProperty("id",              Id.                  ToString()),
+                                 new JProperty("priority",        Priority.            AsText()),
+                                 new JProperty("message",         Message.             ToJSON(CustomMessageContentSerializer,
+                                                                                              CustomCustomDataSerializer)),
 
                            State.HasValue
-                               ? new JProperty("state",          State.         Value.ToString())
+                               ? new JProperty("state",           State.         Value.ToString())
                                : null,
 
                            StartTimestamp.HasValue
-                               ? new JProperty("startDateTime",  StartTimestamp.Value.ToString())
+                               ? new JProperty("startDateTime",   StartTimestamp.Value.ToString())
                                : null,
 
                            EndTimestamp.HasValue
-                               ? new JProperty("endDateTime",    EndTimestamp.  Value.ToString())
+                               ? new JProperty("endDateTime",     EndTimestamp.  Value.ToString())
                                : null,
 
                            TransactionId.HasValue
-                               ? new JProperty("transactionId",  TransactionId. Value.ToString())
+                               ? new JProperty("transactionId",   TransactionId. Value.Value)
                                : null,
 
                            Display is not null
-                               ? new JProperty("display",        Display.             ToJSON(CustomComponentSerializer,
-                                                                                             CustomEVSESerializer,
-                                                                                             CustomCustomDataSerializer))
+                               ? new JProperty("display",         Display.             ToJSON(CustomComponentSerializer,
+                                                                                              CustomEVSESerializer,
+                                                                                              CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.          ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomMessageInfoSerializer is not null
-                       ? CustomMessageInfoSerializer(this, JSON)
-                       : JSON;
+                       ? CustomMessageInfoSerializer(this, json)
+                       : json;
 
         }
 

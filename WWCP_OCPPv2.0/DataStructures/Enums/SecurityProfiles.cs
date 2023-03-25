@@ -42,6 +42,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+        #region Parse   (Number)
+
+        /// <summary>
+        /// Parse the given number as an OCPP security profile.
+        /// </summary>
+        /// <param name="Number">A numeric representation of an OCPP security profile.</param>
+        public static SecurityProfiles Parse(Byte Number)
+        {
+
+            if (TryParse(Number, out var securityProfile))
+                return securityProfile;
+
+            return SecurityProfiles.Unknown;
+
+        }
+
+        #endregion
+
         #region TryParse(Text)
 
         /// <summary>
@@ -60,7 +78,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region TryParse(Text, out SecurityProfile)
+        #region TryParse(Number)
+
+        /// <summary>
+        /// Try to parse the given number as an OCPP security profile.
+        /// </summary>
+        /// <param name="Number">A numeric representation of an OCPP security profile.</param>
+        public static SecurityProfiles? TryParse(Byte Number)
+        {
+
+            if (TryParse(Number, out var securityProfile))
+                return securityProfile;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text,   out SecurityProfile)
 
         /// <summary>
         /// Try to parse the given text as an OCPP security profile.
@@ -72,19 +108,56 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             switch (Text.Trim())
             {
 
-                case "SecurityProfile1":
+                case "1":
                     SecurityProfile = SecurityProfiles.SecurityProfile1;
                     return true;
 
-                case "SecurityProfile2":
+                case "2":
                     SecurityProfile = SecurityProfiles.SecurityProfile2;
                     return true;
 
-                case "SecurityProfile3":
+                case "3":
                     SecurityProfile = SecurityProfiles.SecurityProfile3;
                     return true;
 
-                case "SecurityProfile4":
+                case "4":
+                    SecurityProfile = SecurityProfiles.SecurityProfile4;
+                    return true;
+
+                default:
+                    SecurityProfile = SecurityProfiles.Unknown;
+                    return false;
+
+            }
+        }
+
+        #endregion
+
+        #region TryParse(Number, out SecurityProfile)
+
+        /// <summary>
+        /// Try to parse the given number as an OCPP security profile.
+        /// </summary>
+        /// <param name="Number">A numeric representation of an OCPP security profile.</param>
+        /// <param name="SecurityProfile">The parsed OCPP security profile.</param>
+        public static Boolean TryParse(Byte Number, out SecurityProfiles SecurityProfile)
+        {
+            switch (Number)
+            {
+
+                case 1:
+                    SecurityProfile = SecurityProfiles.SecurityProfile1;
+                    return true;
+
+                case 2:
+                    SecurityProfile = SecurityProfiles.SecurityProfile2;
+                    return true;
+
+                case 3:
+                    SecurityProfile = SecurityProfiles.SecurityProfile3;
+                    return true;
+
+                case 4:
                     SecurityProfile = SecurityProfiles.SecurityProfile4;
                     return true;
 
@@ -108,6 +181,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                    SecurityProfiles.SecurityProfile3  => "SecurityProfile3",
                    SecurityProfiles.SecurityProfile4  => "SecurityProfile4",
                    _                                  => "Unknown"
+               };
+
+        #endregion
+
+        #region AsNumber(this SecurityProfile)
+
+        public static Byte AsNumber(this SecurityProfiles SecurityProfile)
+
+            => SecurityProfile switch {
+                   SecurityProfiles.SecurityProfile1  => 1,
+                   SecurityProfiles.SecurityProfile2  => 2,
+                   SecurityProfiles.SecurityProfile3  => 3,
+                   SecurityProfiles.SecurityProfile4  => 4,
+                   _                                  => throw new ArgumentException("Invalid security profile!", nameof(SecurityProfile))
                };
 
         #endregion

@@ -224,7 +224,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out NetworkConnectionProfile,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -300,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region SecurityProfile      [mandatory]
 
-                if (!JSON.ParseMandatory("ocppTransport",
+                if (!JSON.ParseMandatory("securityProfile",
                                          "OCPP security profile",
                                          OCPPSecurityProfilesExtensions.TryParse,
                                          out SecurityProfiles SecurityProfile,
@@ -313,8 +314,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region NetworkInterface     [mandatory]
 
-                if (!JSON.ParseMandatory("ocppTransport",
-                                         "OCPP security profile",
+                if (!JSON.ParseMandatory("ocppInterface",
+                                         "OCPP network interface",
                                          NetworkInterfacesExtensions.TryParse,
                                          out NetworkInterfaces NetworkInterface,
                                          out ErrorResponse))
@@ -410,34 +411,34 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("ocppVersion",      Version.          AsText()),
-                                 new JProperty("ocppTransport",    Transport.        AsText()),
-                                 new JProperty("ocppCsmsUrl",      CentralServiceURL.ToString()),
-                                 new JProperty("messageTimeout",   (UInt32) Math.Round(MessageTimeout.TotalSeconds, 0)),
-                                 new JProperty("securityProfile",  (Byte)   SecurityProfile),
-                                 new JProperty("ocppInterface",    NetworkInterface. AsText()),
+                                 new JProperty("ocppVersion",       Version.          AsText()),
+                                 new JProperty("ocppTransport",     Transport.        AsText()),
+                                 new JProperty("ocppCsmsUrl",       CentralServiceURL.ToString()),
+                                 new JProperty("messageTimeout",    (UInt32) Math.Round(MessageTimeout.TotalSeconds, 0)),
+                                 new JProperty("securityProfile",   SecurityProfile.  AsNumber()),
+                                 new JProperty("ocppInterface",     NetworkInterface. AsText()),
 
                            VPNConfiguration is not null
-                               ? new JProperty("vpn",              VPNConfiguration. ToJSON(CustomVPNConfigurationSerializer,
-                                                                                            CustomCustomDataSerializer))
+                               ? new JProperty("vpn",               VPNConfiguration. ToJSON(CustomVPNConfigurationSerializer,
+                                                                                             CustomCustomDataSerializer))
                                : null,
 
                            APNConfiguration is not null
-                               ? new JProperty("apn",              APNConfiguration. ToJSON(CustomAPNConfigurationSerializer,
-                                                                                            CustomCustomDataSerializer))
+                               ? new JProperty("apn",               APNConfiguration. ToJSON(CustomAPNConfigurationSerializer,
+                                                                                             CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.       ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.       ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomNetworkConnectionProfileSerializer is not null
-                       ? CustomNetworkConnectionProfileSerializer(this, JSON)
-                       : JSON;
+                       ? CustomNetworkConnectionProfileSerializer(this, json)
+                       : json;
 
         }
 

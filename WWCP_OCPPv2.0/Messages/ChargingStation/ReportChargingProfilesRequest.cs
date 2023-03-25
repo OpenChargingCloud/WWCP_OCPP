@@ -736,11 +736,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                               CustomJObjectSerializerDelegate<CustomData>?                     CustomCustomDataSerializer                      = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("requestId",             ReportChargingProfilesRequestId),
-                                 new JProperty("chargingLimitSource",   ChargingLimitSource),
-                                 new JProperty("evseId",                EVSEId.ToString()),
+                                 new JProperty("chargingLimitSource",   ChargingLimitSource.AsText()),
+                                 new JProperty("evseId",                EVSEId.             ToString()),
 
                                  new JProperty("chargingProfile",       new JArray(ChargingProfiles.Select(chargingProfile => chargingProfile.ToJSON(CustomChargingProfileSerializer,
                                                                                                                                                      CustomChargingScheduleSerializer,
@@ -751,12 +751,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",            CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",            CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomReportChargingProfilesRequestSerializer is not null
-                       ? CustomReportChargingProfilesRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomReportChargingProfilesRequestSerializer(this, json)
+                       : json;
 
         }
 

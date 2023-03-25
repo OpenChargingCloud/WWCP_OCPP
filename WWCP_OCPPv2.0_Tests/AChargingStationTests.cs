@@ -79,6 +79,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                     MeterSerialNumber:        "SN-EN0001",
                                     MeterPublicKey:           "0xcafebabe",
 
+                                    DisableSendHeartbeats:    true,
+
                                     //HTTPBasicAuth:            new Tuple<String, String>("OLI_001", "1234"),
                                     //HTTPBasicAuth:            new Tuple<String, String>("GD001", "1234"),
                                     DNSClient:                testCSMS01!.DNSClient
@@ -115,6 +117,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                     MeterSerialNumber:        "SN-EN0002",
                                     MeterPublicKey:           "0xbabecafe",
 
+                                    DisableSendHeartbeats:    true,
+
                                     DNSClient:                testCSMS01!.DNSClient
                                 );
 
@@ -149,6 +153,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                     MeterSerialNumber:        "SN-EN0003",
                                     MeterPublicKey:           "0xbacafebe",
 
+                                    DisableSendHeartbeats:    true,
+
                                     DNSClient:                testCSMS01!.DNSClient
                                 );
 
@@ -157,9 +163,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
             if (testBackendWebSockets01 is not null)
             {
 
-                var response1 = chargingStation1.ConnectWebSocket("From:GD001",
-                                                                  "To:OCPPTest01",
-                                                                  URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation1.ChargeBoxId)).Result;
+                var response1 = chargingStation1.ConnectWebSocket(
+                                                     From:                    "From:GD001",
+                                                     To:                      "To:OCPPTest01",
+                                                     RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation1.ChargeBoxId),
+                                                     DisableWebSocketPings:   true
+                                                 ).Result;
 
                 Assert.IsNotNull(response1);
 

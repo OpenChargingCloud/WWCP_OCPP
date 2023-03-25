@@ -363,30 +363,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("attributeStatus",      AttributeStatus),
+                                 new JProperty("attributeStatus",       AttributeStatus.    AsText()),
 
-                                 new JProperty("component",            Component.          ToJSON(CustomComponentSerializer,
-                                                                                                  CustomEVSESerializer,
-                                                                                                  CustomCustomDataSerializer)),
+                                 new JProperty("component",             Component.          ToJSON(CustomComponentSerializer,
+                                                                                                   CustomEVSESerializer,
+                                                                                                   CustomCustomDataSerializer)),
 
-                                 new JProperty("variable",             Variable.           ToJSON(CustomVariableSerializer,
-                                                                                                  CustomCustomDataSerializer)),
+                                 new JProperty("variable",              Variable.           ToJSON(CustomVariableSerializer,
+                                                                                                   CustomCustomDataSerializer)),
 
                            AttributeValue is not null
-                               ? new JProperty("attributeValue",       AttributeValue)
+                               ? new JProperty("attributeValue",        AttributeValue)
                                : null,
 
                            AttributeType.HasValue
-                               ? new JProperty("attributeType",        AttributeType.Value.AsText())
+                               ? new JProperty("attributeType",         AttributeType.Value.AsText())
                                : null,
 
                            AttributeStatusInfo is not null
-                               ? new JProperty("attributeStatusInfo",  AttributeStatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                                  CustomCustomDataSerializer))
+                               ? new JProperty("attributeStatusInfo",   AttributeStatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                                   CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.         ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",            CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

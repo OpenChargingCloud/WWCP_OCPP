@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                  new JProperty("status",          Status.       AsText()),
 
                            TransactionId.HasValue
-                               ? new JProperty("transactionId",   TransactionId.ToString())
+                               ? new JProperty("transactionId",   TransactionId.Value.Value)
                                : null,
 
                            StatusInfo is not null

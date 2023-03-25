@@ -347,17 +347,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region ChargingNeeds        [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("messageInfo",
-                                             "message infos",
+                if (!JSON.ParseMandatoryJSON("chargingNeeds",
+                                             "charging needs",
                                              OCPPv2_0.ChargingNeeds.TryParse,
                                              out ChargingNeeds? ChargingNeeds,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     ChargingNeeds is null)
                 {
                     return false;
                 }
-
-                if (ChargingNeeds is null)
-                    return false;
 
                 #endregion
 
@@ -450,7 +448,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                               CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("evseId",              EVSEId.       ToString()),
 
@@ -468,8 +466,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null);
 
             return CustomNotifyEVChargingNeedsRequestSerializer is not null
-                       ? CustomNotifyEVChargingNeedsRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomNotifyEVChargingNeedsRequestSerializer(this, json)
+                       : json;
 
         }
 

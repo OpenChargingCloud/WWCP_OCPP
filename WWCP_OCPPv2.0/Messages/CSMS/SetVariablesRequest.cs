@@ -418,14 +418,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("setVariableData",  new JArray(VariableData.Select(variableData => variableData.ToJSON(CustomSetVariableDataSerializer,
-                                                                                                                                      CustomComponentSerializer,
-                                                                                                                                      CustomEVSESerializer,
-                                                                                                                                      CustomVariableSerializer,
-                                                                                                                                      CustomCustomDataSerializer)))),
+                                 new JProperty("setVariableData",   new JArray(VariableData.Select(variableData => variableData.ToJSON(CustomSetVariableDataSerializer,
+                                                                                                                                       CustomComponentSerializer,
+                                                                                                                                       CustomEVSESerializer,
+                                                                                                                                       CustomVariableSerializer,
+                                                                                                                                       CustomCustomDataSerializer)))),
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

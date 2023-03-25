@@ -75,6 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Limit">Power limit during the schedule period in Amperes.</param>
         /// <param name="NumberOfPhases">The number of phases that can be used for charging.</param>
         /// <param name="PhaseToUse">Optional electrical phase to use for charging.</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public ChargingSchedulePeriod(TimeSpan      StartPeriod,
                                       Decimal       Limit,
                                       Byte?         NumberOfPhases   = null,
@@ -175,7 +176,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                         out ChargingSchedulePeriod,
                         out ErrorResponse,
                         null);
-
 
 
         /// <summary>
@@ -302,19 +302,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var json = JSONObject.Create(
 
-                           new JProperty("startPeriod",         (UInt32) Math.Round(StartPeriod.TotalSeconds, 0)),
-                           new JProperty("limit",               Math.Round(Limit, 1)),
+                                 new JProperty("startPeriod",    (UInt32) Math.Round(StartPeriod.TotalSeconds, 0)),
+                                 new JProperty("limit",          Math.Round(Limit, 1)),
 
                            NumberOfPhases.HasValue
-                               ? new JProperty("numberPhases",  NumberOfPhases)
+                               ? new JProperty("numberPhases",   NumberOfPhases)
                                : null,
 
                            PhaseToUse.HasValue
-                               ? new JProperty("phaseToUse",    PhaseToUse.Value.AsNumber())
+                               ? new JProperty("phaseToUse",     PhaseToUse.Value.AsNumber())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",    CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

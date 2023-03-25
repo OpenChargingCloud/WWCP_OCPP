@@ -480,7 +480,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                               CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("idTokenInfo",         IdTokenInfo.ToJSON(CustomIdTokenInfoSerializer,
                                                                                          CustomIdTokenSerializer,
@@ -499,8 +499,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                        );
 
             return CustomAuthorizeResponseSerializer is not null
-                       ? CustomAuthorizeResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomAuthorizeResponseSerializer(this, json)
+                       : json;
 
         }
 

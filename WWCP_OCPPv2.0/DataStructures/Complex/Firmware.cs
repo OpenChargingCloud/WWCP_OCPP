@@ -188,7 +188,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out Firmware,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -309,32 +310,32 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("location",            FirmwareURL.           ToString()),
-                                 new JProperty("retrieveDateTime",    RetrieveTimestamp.     ToIso8601()),
+                                 new JProperty("location",             FirmwareURL.           ToString()),
+                                 new JProperty("retrieveDateTime",     RetrieveTimestamp.     ToIso8601()),
 
                            InstallTimestamp.HasValue
-                               ? new JProperty("installDateTime",     InstallTimestamp.Value.ToIso8601())
+                               ? new JProperty("installDateTime",      InstallTimestamp.Value.ToIso8601())
                                : null,
 
                            SigningCertificate is not null
-                               ? new JProperty("signingCertificate",  SigningCertificate)
+                               ? new JProperty("signingCertificate",   SigningCertificate)
                                : null,
 
                            Signature is not null
-                               ? new JProperty("signature",           Signature)
+                               ? new JProperty("signature",            Signature)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",          CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",           CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomFirmwareSerializer is not null
-                       ? CustomFirmwareSerializer(this, JSON)
-                       : JSON;
+                       ? CustomFirmwareSerializer(this, json)
+                       : json;
 
         }
 

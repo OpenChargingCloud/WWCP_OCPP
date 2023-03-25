@@ -260,13 +260,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                              "OCSP request data",
                                              OCPPv2_0.OCSPRequestData.TryParse,
                                              out OCSPRequestData? OCSPRequestData,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     OCSPRequestData is null)
                 {
                     return false;
                 }
-
-                if (OCSPRequestData is null)
-                    return false;
 
                 #endregion
 

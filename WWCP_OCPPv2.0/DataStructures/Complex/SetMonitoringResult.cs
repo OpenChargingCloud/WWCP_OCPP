@@ -208,7 +208,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out SetMonitoringResult,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -259,12 +260,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("severity",
                                          "severity",
-                                         Severities.TryParse,
-                                         out Severities Severity,
+                                         out Byte severity,
                                          out ErrorResponse))
                 {
                     return false;
                 }
+
+                var Severity = SeveritiesExtensions.TryParse(severity);
+
+                if (!Severity.HasValue)
+                    return false;
 
                 #endregion
 
@@ -345,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 SetMonitoringResult = new SetMonitoringResult(Status,
                                                               Type,
-                                                              Severity,
+                                                              Severity.Value,
                                                               Component,
                                                               Variable,
                                                               VariableMonitoringId,
@@ -389,39 +394,39 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.     AsText()),
+                                 new JProperty("status",       Status.     AsText()),
 
-                                 new JProperty("type",        MonitorType.AsText()),
+                                 new JProperty("type",         MonitorType.AsText()),
 
-                                 new JProperty("severity",    (Byte) Severity),
+                                 new JProperty("severity",     Severity.   AsNumber()),
 
-                                 new JProperty("component",   Component.  ToJSON(CustomComponentSerializer,
-                                                                                 CustomEVSESerializer,
-                                                                                 CustomCustomDataSerializer)),
+                                 new JProperty("component",    Component.  ToJSON(CustomComponentSerializer,
+                                                                                  CustomEVSESerializer,
+                                                                                  CustomCustomDataSerializer)),
 
-                                 new JProperty("variable",    Variable.   ToJSON(CustomVariableSerializer,
-                                                                                 CustomCustomDataSerializer)),
+                                 new JProperty("variable",     Variable.   ToJSON(CustomVariableSerializer,
+                                                                                  CustomCustomDataSerializer)),
 
                            VariableMonitoringId.HasValue
-                               ? new JProperty("id",          VariableMonitoringId.Value.Value)
+                               ? new JProperty("id",           VariableMonitoringId.Value.Value)
                                : null,
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo. ToJSON(CustomStatusInfoSerializer,
-                                                                                 CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo. ToJSON(CustomStatusInfoSerializer,
+                                                                                  CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData. ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData. ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomSetMonitoringResultSerializer is not null
-                       ? CustomSetMonitoringResultSerializer(this, JSON)
-                       : JSON;
+                       ? CustomSetMonitoringResultSerializer(this, json)
+                       : json;
 
         }
 

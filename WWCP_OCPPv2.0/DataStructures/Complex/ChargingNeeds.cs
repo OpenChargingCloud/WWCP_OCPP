@@ -170,7 +170,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                         null);
 
 
-
         /// <summary>
         /// Try to parse the given JSON representation of a charging needs.
         /// </summary>
@@ -300,24 +299,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestedEnergyTransfer",  RequestedEnergyTransfer.AsText()),
+                                 new JProperty("requestedEnergyTransfer",   RequestedEnergyTransfer.AsText()),
 
                            DepartureTime.HasValue
-                               ? new JProperty("departureTime",            DepartureTime.Value.    ToIso8601())
+                               ? new JProperty("departureTime",             DepartureTime.Value.    ToIso8601())
                                : null,
 
                            ACChargingParameters is not null
-                               ? new JProperty("acChargingParameters",     ACChargingParameters.   ToJSON(CustomACChargingParametersSerializer,
-                                                                                                          CustomCustomDataSerializer))
+                               ? new JProperty("acChargingParameters",      ACChargingParameters.   ToJSON(CustomACChargingParametersSerializer,
+                                                                                                           CustomCustomDataSerializer))
                                : null,
 
                            DCChargingParameters is not null
-                               ? new JProperty("dcChargingParameters",     DCChargingParameters.   ToJSON(CustomDCChargingParametersSerializer,
-                                                                                                          CustomCustomDataSerializer))
+                               ? new JProperty("dcChargingParameters",      DCChargingParameters.   ToJSON(CustomDCChargingParametersSerializer,
+                                                                                                           CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",               CustomData.             ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",                CustomData.             ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -154,7 +154,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out ClearMonitoringResult,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -190,15 +191,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region Id            [mandatory]
 
-                if (JSON.ParseOptional("chargingProfilePurpose",
-                                       "clear monitoring result purpose",
-                                       VariableMonitoring_Id.TryParse,
-                                       out VariableMonitoring_Id Id,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("id",
+                                         "monitoring identification",
+                                         out UInt64 id,
+                                         out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
+
+                var Id = VariableMonitoring_Id.TryParse(id);
+
+                if (!Id.HasValue)
+                    return false;
 
                 #endregion
 
@@ -232,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
 
                 ClearMonitoringResult = new ClearMonitoringResult(Status,
-                                                                  Id,
+                                                                  Id.Value,
                                                                   StatusInfo,
                                                                   CustomData);
 
@@ -267,25 +271,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataSerializer              = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
-                                 new JProperty("id",          Id.        ToString()),
+                                 new JProperty("status",       Status.    AsText()),
+                                 new JProperty("id",           Id.        Value),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomClearMonitoringResultSerializer is not null
-                       ? CustomClearMonitoringResultSerializer(this, JSON)
-                       : JSON;
+                       ? CustomClearMonitoringResultSerializer(this, json)
+                       : json;
 
         }
 

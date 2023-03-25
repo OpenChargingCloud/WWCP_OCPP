@@ -63,20 +63,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
             Timestamp.Reset();
 
             testCSMS01      = new TestCSMS(
-                                  CSMSId:                 CSMS_Id.Parse("OCPPTest01"),
-                                  RequireAuthentication:  false,
-                                  HTTPUploadPort:         IPPort.Parse(9100),
-                                  DNSClient:              new DNSClient(
-                                                              SearchForIPv6DNSServers: false,
-                                                              SearchForIPv4DNSServers: false
-                                                          )
+                                  CSMSId:                  CSMS_Id.Parse("OCPPTest01"),
+                                  RequireAuthentication:   false,
+                                  HTTPUploadPort:          IPPort.Parse(9100),
+                                  DNSClient:               new DNSClient(
+                                                               SearchForIPv6DNSServers: false,
+                                                               SearchForIPv4DNSServers: false
+                                                           )
                               );
 
             Assert.IsNotNull(testCSMS01);
 
             testBackendWebSockets01  = testCSMS01.CreateWebSocketService(
-                                           TCPPort:    IPPort.Parse(9101),
-                                           Autostart:  true
+                                           TCPPort:                 IPPort.Parse(9101),
+                                           DisableWebSocketPings:   true,
+                                           Autostart:               true
                                        );
 
             Assert.IsNotNull(testBackendWebSockets01);

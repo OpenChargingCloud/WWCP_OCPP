@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                            new JProperty("unit",              Unit),
                            new JProperty("multiplier",        Multiplier),
@@ -254,8 +254,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        );
 
             return CustomUnitsOfMeasureSerializer is not null
-                       ? CustomUnitsOfMeasureSerializer(this, JSON)
-                       : JSON;
+                       ? CustomUnitsOfMeasureSerializer(this, json)
+                       : json;
 
         }
 

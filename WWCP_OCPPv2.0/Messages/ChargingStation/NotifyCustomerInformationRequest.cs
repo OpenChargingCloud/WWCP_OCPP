@@ -256,8 +256,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                 #region Data                                  [mandatory]
 
-                if (!JSON.ParseMandatoryText("customData",
-                                             "custom data",
+                if (!JSON.ParseMandatoryText("data",
+                                             "customer data",
                                              out String Data,
                                              out ErrorResponse))
                 {

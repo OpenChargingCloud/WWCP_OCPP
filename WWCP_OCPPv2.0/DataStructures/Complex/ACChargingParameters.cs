@@ -177,7 +177,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                         null);
 
 
-
         /// <summary>
         /// Try to parse the given JSON representation of AC charging parameters.
         /// </summary>
@@ -297,13 +296,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var json = JSONObject.Create(
 
-                                 new JProperty("energyAmount",  EnergyAmount),
-                                 new JProperty("evMinCurrent",  EVMinCurrent),
-                                 new JProperty("evMaxCurrent",  EVMaxCurrent),
-                                 new JProperty("evMaxVoltage",  EVMaxVoltage),
+                                 new JProperty("energyAmount",   EnergyAmount),
+                                 new JProperty("evMinCurrent",   EVMinCurrent),
+                                 new JProperty("evMaxCurrent",   EVMaxCurrent),
+                                 new JProperty("evMaxVoltage",   EVMaxVoltage),
 
                            CustomData is not null
-                               ? new JProperty("customData",    CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

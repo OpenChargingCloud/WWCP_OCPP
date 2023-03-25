@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -63,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// The case-insensitive responder URL. [max 512]
         /// </summary>
         [Mandatory]
-        public String          ResponderURL      { get; }
+        public URL             ResponderURL      { get; }
 
         #endregion
 
@@ -82,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                String          IssuerNameHash,
                                String          IssuerKeyHash,
                                String          SerialNumber,
-                               String          ResponderURL,
+                               URL             ResponderURL,
                                CustomData?     CustomData   = null)
 
             : base(CustomData)
@@ -93,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             this.IssuerNameHash  = IssuerNameHash.Trim();
             this.IssuerKeyHash   = IssuerKeyHash. Trim();
             this.SerialNumber    = SerialNumber.  Trim();
-            this.ResponderURL    = ResponderURL.  Trim();
+            this.ResponderURL    = ResponderURL;
 
             if (this.IssuerNameHash.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(IssuerNameHash),  "The given issuer name hash must not be null or empty!");
@@ -103,9 +104,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             if (this.SerialNumber.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(SerialNumber),    "The given serial number must not be null or empty!");
-
-            if (this.ResponderURL.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(ResponderURL),    "The given responder URL must not be null or empty!");
 
         }
 
@@ -272,10 +270,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region ResponderURL      [mandatory]
 
-                if (!JSON.ParseMandatoryText("responderURL",
-                                             "responder URL",
-                                             out String ResponderURL,
-                                             out ErrorResponse))
+                if (!JSON.ParseMandatory("responderURL",
+                                         "responder URL",
+                                         URL.TryParse,
+                                         out URL ResponderURL,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -301,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                       IssuerNameHash.Trim(),
                                                       IssuerKeyHash. Trim(),
                                                       SerialNumber.  Trim(),
-                                                      ResponderURL.  Trim(),
+                                                      ResponderURL,
                                                       CustomData);
 
                 if (CustomOCSPRequestDataParser is not null)
@@ -333,23 +332,23 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer        = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                           new JProperty("hashAlgorithm",     HashAlgorithm),
-                           new JProperty("issuerNameHash",    IssuerNameHash),
-                           new JProperty("issuerKeyHash",     IssuerKeyHash),
-                           new JProperty("serialNumber",      SerialNumber),
-                           new JProperty("responderURL",      ResponderURL),
+                                 new JProperty("hashAlgorithm",    HashAlgorithm.AsText()),
+                                 new JProperty("issuerNameHash",   IssuerNameHash),
+                                 new JProperty("issuerKeyHash",    IssuerKeyHash),
+                                 new JProperty("serialNumber",     SerialNumber),
+                                 new JProperty("responderURL",     ResponderURL. ToString()),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",       CustomData.   ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomOCSPRequestDataSerializer is not null
-                       ? CustomOCSPRequestDataSerializer(this, JSON)
-                       : JSON;
+                       ? CustomOCSPRequestDataSerializer(this, json)
+                       : json;
 
         }
 

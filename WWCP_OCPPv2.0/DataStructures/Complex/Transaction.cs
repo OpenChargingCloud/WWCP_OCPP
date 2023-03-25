@@ -327,9 +327,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?   CustomCustomDataSerializer    = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("transactionId",      TransactionId.      ToString()),
+                                 new JProperty("transactionId",      TransactionId.Value),
 
                            ChargingState.HasValue
                                ? new JProperty("chargingState",      ChargingState.Value.AsText())
@@ -354,8 +354,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        );
 
             return CustomTransactionSerializer is not null
-                       ? CustomTransactionSerializer(this, JSON)
-                       : JSON;
+                       ? CustomTransactionSerializer(this, json)
+                       : json;
 
         }
 

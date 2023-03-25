@@ -328,13 +328,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                              "log parameters",
                                              LogParameters.TryParse,
                                              out LogParameters? Log,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     Log is null)
                 {
                     return false;
                 }
-
-                if (Log is null)
-                    return false;
 
                 #endregion
 
@@ -345,23 +343,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                         out Byte? Retries,
                                         out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
                 #region RetryInterval   [optional]
 
-                if (!JSON.ParseOptional("retryInterval",
-                                        "retry interval",
-                                        out UInt32? RetryIntervalUInt32,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("retryInterval",
+                                       "retry interval",
+                                       out UInt32? RetryIntervalUInt32,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 var RetryInterval = RetryIntervalUInt32.HasValue
-                                        ? TimeSpan.FromSeconds((double) RetryIntervalUInt32)
+                                        ? TimeSpan.FromSeconds((Double) RetryIntervalUInt32)
                                         : new TimeSpan?();
 
                 #endregion

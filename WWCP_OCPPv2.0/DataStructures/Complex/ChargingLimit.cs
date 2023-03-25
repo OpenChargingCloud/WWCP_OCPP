@@ -144,7 +144,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                         null);
 
 
-
         /// <summary>
         /// Try to parse the given JSON representation of a charging limit.
         /// </summary>
@@ -240,14 +239,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var json = JSONObject.Create(
 
-                           new JProperty("chargingLimitSource",   ChargingLimitSource.AsText()),
+                           new JProperty("chargingLimitSource",    ChargingLimitSource.AsText()),
 
                            IsGridCritical.HasValue
-                               ? new JProperty("isGridCritical",  IsGridCritical)
+                               ? new JProperty("isGridCritical",   IsGridCritical)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

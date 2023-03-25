@@ -1164,15 +1164,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="Autostart">Start the server immediately.</param>
         public CSMSWSServer CreateWebSocketService(String       HTTPServerName               = CSMSWSServer.DefaultHTTPServiceName,
-                                                            IIPAddress?  IPAddress                    = null,
-                                                            IPPort?      TCPPort                      = null,
+                                                   IIPAddress?  IPAddress                    = null,
+                                                   IPPort?      TCPPort                      = null,
 
-                                                            Boolean      DisableWebSocketPings        = false,
-                                                            TimeSpan?    WebSocketPingEvery           = null,
-                                                            TimeSpan?    SlowNetworkSimulationDelay   = null,
+                                                   Boolean      DisableWebSocketPings        = false,
+                                                   TimeSpan?    WebSocketPingEvery           = null,
+                                                   TimeSpan?    SlowNetworkSimulationDelay   = null,
 
-                                                            DNSClient?   DNSClient                    = null,
-                                                            Boolean      Autostart                    = false)
+                                                   DNSClient?   DNSClient                    = null,
+                                                   Boolean      Autostart                    = false)
         {
 
             var centralSystemServer = new CSMSWSServer(
@@ -2326,7 +2326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 var response = new Get15118EVCertificateResponse(Request:       Request,
                                                                  Status:        ISO15118EVCertificateStatus.Accepted,
-                                                                 EXIResponse:   EXIData.Empty,
+                                                                 EXIResponse:   EXIData.Parse("0x1234"),
                                                                  StatusInfo:    null,
                                                                  CustomData:    null);
 
@@ -2406,7 +2406,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 var response = new GetCertificateStatusResponse(Request:      Request,
                                                                 Status:       GetCertificateStatus.Accepted,
-                                                                OCSPResult:   OCSPResult.Empty,
+                                                                OCSPResult:   OCSPResult.Parse("ok!"),
                                                                 StatusInfo:   null,
                                                                 CustomData:   null);
 

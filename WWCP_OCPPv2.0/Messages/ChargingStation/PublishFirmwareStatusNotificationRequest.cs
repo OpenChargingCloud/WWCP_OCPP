@@ -343,7 +343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                               CustomJObjectSerializerDelegate<CustomData>?                                CustomCustomDataSerializer                                 = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("status",       Status.                                    AsText()),
 
@@ -360,8 +360,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null);
 
             return CustomPublishFirmwareStatusNotificationRequestSerializer is not null
-                       ? CustomPublishFirmwareStatusNotificationRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomPublishFirmwareStatusNotificationRequestSerializer(this, json)
+                       : json;
 
         }
 

@@ -534,7 +534,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                               CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("generatedAt",   GeneratedAt.ToIso8601()),
 
@@ -555,8 +555,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null);
 
             return CustomNotifyEventRequestSerializer is not null
-                       ? CustomNotifyEventRequestSerializer(this, JSON)
-                       : JSON;
+                       ? CustomNotifyEventRequestSerializer(this, json)
+                       : json;
 
         }
 

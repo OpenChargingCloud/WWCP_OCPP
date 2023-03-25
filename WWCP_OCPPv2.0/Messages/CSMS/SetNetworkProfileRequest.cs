@@ -436,13 +436,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                              "connection data",
                                              OCPPv2_0.NetworkConnectionProfile.TryParse,
                                              out NetworkConnectionProfile? NetworkConnectionProfile,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     NetworkConnectionProfile is null)
                 {
                     return false;
                 }
-
-                if (NetworkConnectionProfile is null)
-                    return false;
 
                 #endregion
 

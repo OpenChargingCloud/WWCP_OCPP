@@ -327,7 +327,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out SetMonitoringData,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -377,12 +378,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 if (!JSON.ParseMandatory("severity",
                                          "severity",
-                                         SeveritiesExtensions.TryParse,
-                                         out Severities Severity,
+                                         out Byte severity,
                                          out ErrorResponse))
                 {
                     return false;
                 }
+
+                var Severity = SeveritiesExtensions.TryParse(severity);
+
+                if (!Severity.HasValue)
+                    return false;
 
                 #endregion
 
@@ -392,13 +397,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                              "component",
                                              OCPPv2_0.Component.TryParse,
                                              out Component? Component,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     Component is null)
                 {
                     return false;
                 }
-
-                if (Component is null)
-                    return false;
 
                 #endregion
 
@@ -408,13 +411,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                              "variable",
                                              OCPPv2_0.Variable.TryParse,
                                              out Variable? Variable,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     Variable is null)
                 {
                     return false;
                 }
-
-                if (Variable is null)
-                    return false;
 
                 #endregion
 
@@ -462,7 +463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 SetMonitoringData = new SetMonitoringData(Value,
                                                           MonitorType,
-                                                          Severity,
+                                                          Severity.Value,
                                                           Component,
                                                           Variable,
                                                           VariableMonitoringId,
@@ -504,38 +505,38 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("value",        Value),
+                                 new JProperty("value",         Value),
 
-                                 new JProperty("type",         MonitorType.AsText()),
+                                 new JProperty("type",          MonitorType.AsText()),
 
-                                 new JProperty("severity",     (Byte) Severity),
+                                 new JProperty("severity",      Severity.   AsNumber()),
 
-                                 new JProperty("component",    Component.  ToJSON(CustomComponentSerializer,
-                                                                                  CustomEVSESerializer,
-                                                                                  CustomCustomDataSerializer)),
+                                 new JProperty("component",     Component.  ToJSON(CustomComponentSerializer,
+                                                                                   CustomEVSESerializer,
+                                                                                   CustomCustomDataSerializer)),
 
-                                 new JProperty("variable",     Variable.   ToJSON(CustomVariableSerializer,
-                                                                                  CustomCustomDataSerializer)),
+                                 new JProperty("variable",      Variable.   ToJSON(CustomVariableSerializer,
+                                                                                   CustomCustomDataSerializer)),
 
                            VariableMonitoringId.HasValue
-                               ? new JProperty("id",           VariableMonitoringId.Value.Value)
+                               ? new JProperty("id",            VariableMonitoringId.Value.Value)
                                : null,
 
                            Transaction.HasValue
-                               ? new JProperty("transaction",  Transaction.Value)
+                               ? new JProperty("transaction",   Transaction.Value)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData. ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",    CustomData. ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomSetMonitoringDataSerializer is not null
-                       ? CustomSetMonitoringDataSerializer(this, JSON)
-                       : JSON;
+                       ? CustomSetMonitoringDataSerializer(this, json)
+                       : json;
 
         }
 

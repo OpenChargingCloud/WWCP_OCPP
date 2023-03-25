@@ -2566,6 +2566,138 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                         }
                         break;
 
+                    case "UnpublishFirmware":
+                        {
+
+                            #region Send OnUnpublishFirmwareWSRequest event
+
+                            try
+                            {
+
+                                OnUnpublishFirmwareWSRequest?.Invoke(Timestamp.Now,
+                                                                   this,
+                                                                   requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUnpublishFirmwareWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (UnpublishFirmwareRequest.TryParse(requestMessage.Message,
+                                                                      requestMessage.RequestId,
+                                                                      ChargeBoxIdentity,
+                                                                      out var request,
+                                                                      out var errorResponse,
+                                                                      CustomUnpublishFirmwareRequestParser) && request is not null) {
+
+                                    #region Send OnUnpublishFirmwareRequest event
+
+                                    try
+                                    {
+
+                                        OnUnpublishFirmwareRequest?.Invoke(Timestamp.Now,
+                                                                           this,
+                                                                           request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUnpublishFirmwareRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    UnpublishFirmwareResponse? response = null;
+
+                                    var results = OnUnpublishFirmware?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnUnpublishFirmwareDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                   this,
+                                                                                                                                   request,
+                                                                                                                                   cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= UnpublishFirmwareResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnUnpublishFirmwareResponse event
+
+                                    try
+                                    {
+
+                                        OnUnpublishFirmwareResponse?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            request,
+                                                                            response,
+                                                                            response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUnpublishFirmwareResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnUnpublishFirmwareWSResponse event
+
+                            try
+                            {
+
+                                OnUnpublishFirmwareWSResponse?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    requestJSON,
+                                                                    new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                       OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUnpublishFirmwareWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
                     case "GetBaseReport":
                         {
 

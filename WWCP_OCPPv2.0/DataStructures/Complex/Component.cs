@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("name",        Name),
 
@@ -298,8 +298,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                        );
 
             return CustomComponentSerializer is not null
-                       ? CustomComponentSerializer(this, JSON)
-                       : JSON;
+                       ? CustomComponentSerializer(this, json)
+                       : json;
 
         }
 

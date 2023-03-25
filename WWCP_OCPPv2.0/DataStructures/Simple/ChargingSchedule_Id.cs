@@ -100,7 +100,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         #endregion
 
 
-        #region (static) Parse   (Text)
+        #region (static) NewRandom()
+
+        /// <summary>
+        /// Create a new random charging schedule identification.
+        /// </summary>
+        public static ChargingSchedule_Id NewRandom()
+
+            => new (RandomExtensions.RandomUInt64());
+
+        #endregion
+
+        #region (static) Parse    (Text)
 
         /// <summary>
         /// Parse the given string as a charging schedule identification.
@@ -119,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) Parse   (Number)
+        #region (static) Parse    (Number)
 
         /// <summary>
         /// Parse the given number as a charging schedule identification.
@@ -131,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) TryParse(Text)
+        #region (static) TryParse (Text)
 
         /// <summary>
         /// Try to parse the given text as a charging schedule identification.
@@ -149,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) TryParse(Number)
+        #region (static) TryParse (Number)
 
         /// <summary>
         /// Try to parse the given number as a charging schedule identification.
@@ -167,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) TryParse(Text,   out ChargingScheduleId)
+        #region (static) TryParse (Text,   out ChargingScheduleId)
 
         /// <summary>
         /// Try to parse the given text as a charging schedule identification.
@@ -193,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
-        #region (static) TryParse(Number, out ChargingScheduleId)
+        #region (static) TryParse (Number, out ChargingScheduleId)
 
         /// <summary>
         /// Try to parse the given number as a charging schedule identification.

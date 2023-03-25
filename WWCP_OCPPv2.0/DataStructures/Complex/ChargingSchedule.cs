@@ -227,7 +227,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                         null);
 
 
-
         /// <summary>
         /// Try to parse the given JSON representation of a charging schedule.
         /// </summary>
@@ -410,34 +409,34 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var json = JSONObject.Create(
 
-                           new JProperty("id",                      Id.                 ToString()),
-                           new JProperty("chargingRateUnit",        ChargingRateUnit.   AsText()),
-                           new JProperty("chargingSchedulePeriod",  new JArray(ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer,
-                                                                                                                                                                      CustomCustomDataSerializer)))),
+                                 new JProperty("id",                       Id.                 ToString()),
+                                 new JProperty("chargingRateUnit",         ChargingRateUnit.   AsText()),
+                                 new JProperty("chargingSchedulePeriod",   new JArray(ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer,
+                                                                                                                                                                             CustomCustomDataSerializer)))),
 
                            StartSchedule.HasValue
-                               ? new JProperty("startSchedule",     StartSchedule.Value.ToIso8601())
+                               ? new JProperty("startSchedule",            StartSchedule.Value.ToIso8601())
                                : null,
 
                            Duration.HasValue
-                               ? new JProperty("duration",          (UInt64) Math.Round(Duration.Value.TotalSeconds, 0))
+                               ? new JProperty("duration",                 (UInt64) Math.Round(Duration.Value.TotalSeconds, 0))
                                : null,
 
                            MinChargingRate.HasValue
-                               ? new JProperty("minChargingRate",   MinChargingRate.Value)
+                               ? new JProperty("minChargingRate",          MinChargingRate.Value)
                                : null,
 
                            SalesTariff is not null
-                               ? new JProperty("salesTariff",       SalesTariff.        ToJSON(CustomSalesTariffSerializer,
-                                                                                               CustomSalesTariffEntrySerializer,
-                                                                                               CustomRelativeTimeIntervalSerializer,
-                                                                                               CustomConsumptionCostSerializer,
-                                                                                               CustomCostSerializer,
-                                                                                               CustomCustomDataSerializer))
+                               ? new JProperty("salesTariff",              SalesTariff.        ToJSON(CustomSalesTariffSerializer,
+                                                                                                      CustomSalesTariffEntrySerializer,
+                                                                                                      CustomRelativeTimeIntervalSerializer,
+                                                                                                      CustomConsumptionCostSerializer,
+                                                                                                      CustomCostSerializer,
+                                                                                                      CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.         ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",               CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

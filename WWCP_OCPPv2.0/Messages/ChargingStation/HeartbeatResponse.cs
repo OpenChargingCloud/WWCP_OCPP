@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                               CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
                                  new JProperty("currentTime",   CurrentTime.ToIso8601()),
 
@@ -255,8 +255,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                        );
 
             return CustomHeartbeatResponseSerializer is not null
-                       ? CustomHeartbeatResponseSerializer(this, JSON)
-                       : JSON;
+                       ? CustomHeartbeatResponseSerializer(this, json)
+                       : json;
 
         }
 

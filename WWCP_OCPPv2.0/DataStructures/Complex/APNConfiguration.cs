@@ -215,7 +215,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out APNConfiguration,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -250,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
                 #region AuthenticationMethod    [mandatory]
 
-                if (!JSON.ParseMandatory("name",
+                if (!JSON.ParseMandatory("apnAuthentication",
                                          "APN authentication method",
                                          APNAuthenticationMethodsExtensions.TryParse,
                                          out APNAuthenticationMethods AuthenticationMethod,
@@ -351,40 +352,40 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                               CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataSerializer         = null)
         {
 
-            var JSON = JSONObject.Create(
+            var json = JSONObject.Create(
 
-                                 new JProperty("apn",                      AccessPointName),
-                                 new JProperty("apnAuthentication",        AuthenticationMethod.AsText()),
+                                 new JProperty("apn",                       AccessPointName),
+                                 new JProperty("apnAuthentication",         AuthenticationMethod.AsText()),
 
                            Username             is not null
-                               ? new JProperty("apnUserName",              Username)
+                               ? new JProperty("apnUserName",               Username)
                                : null,
 
                            Password             is not null
-                               ? new JProperty("apnPassword",              Password)
+                               ? new JProperty("apnPassword",               Password)
                                : null,
 
                            SIMPINCode           is not null
-                               ? new JProperty("simPin",                   SIMPINCode)
+                               ? new JProperty("simPin",                    SIMPINCode)
                                : null,
 
                            PreferredNetwork     is not null
-                               ? new JProperty("preferredNetwork",         PreferredNetwork)
+                               ? new JProperty("preferredNetwork",          PreferredNetwork)
                                : null,
 
                            OnlyPreferredNetwork is not null
-                               ? new JProperty("useOnlyPreferredNetwork",  OnlyPreferredNetwork)
+                               ? new JProperty("useOnlyPreferredNetwork",   OnlyPreferredNetwork)
                                : null,
 
                            CustomData           is not null
-                               ? new JProperty("customData",               CustomData.          ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",                CustomData.          ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
             return CustomAPNConfigurationSerializer is not null
-                       ? CustomAPNConfigurationSerializer(this, JSON)
-                       : JSON;
+                       ? CustomAPNConfigurationSerializer(this, json)
+                       : json;
 
         }
 

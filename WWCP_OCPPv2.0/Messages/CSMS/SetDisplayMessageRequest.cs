@@ -368,13 +368,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                              "display message",
                                              MessageInfo.TryParse,
                                              out MessageInfo? Message,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     Message is null)
                 {
                     return false;
                 }
-
-                if (Message is null)
-                    return false;
 
                 #endregion
 
@@ -456,14 +454,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("message",     Message.   ToJSON(CustomMessageInfoSerializer,
-                                                                                CustomMessageContentSerializer,
-                                                                                CustomComponentSerializer,
-                                                                                CustomEVSESerializer,
-                                                                                CustomCustomDataSerializer)),
+                                 new JProperty("message",      Message.   ToJSON(CustomMessageInfoSerializer,
+                                                                                 CustomMessageContentSerializer,
+                                                                                 CustomComponentSerializer,
+                                                                                 CustomEVSESerializer,
+                                                                                 CustomCustomDataSerializer)),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

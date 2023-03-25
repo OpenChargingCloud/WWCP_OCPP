@@ -234,7 +234,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                         null);
 
 
-
         /// <summary>
         /// Try to parse the given JSON representation of DC charging parameters.
         /// </summary>
@@ -412,35 +411,35 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var json = JSONObject.Create(
 
-                                 new JProperty("evMaxCurrent",      EVMaxCurrent),
-                                 new JProperty("evMaxVoltage",      EVMaxVoltage),
+                                 new JProperty("evMaxCurrent",       EVMaxCurrent),
+                                 new JProperty("evMaxVoltage",       EVMaxVoltage),
 
                            EnergyAmount.HasValue
-                               ? new JProperty("energyAmount",      EnergyAmount)
+                               ? new JProperty("energyAmount",       EnergyAmount)
                                : null,
 
                            EVMaxPower.HasValue
-                               ? new JProperty("evMaxPower",        EVMaxPower)
+                               ? new JProperty("evMaxPower",         EVMaxPower)
                                : null,
 
                            StateOfCharge.HasValue
-                               ? new JProperty("stateOfCharge",     StateOfCharge)
+                               ? new JProperty("stateOfCharge",      StateOfCharge)
                                : null,
 
                            EVEnergyCapacity.HasValue
-                               ? new JProperty("evEnergyCapacity",  EVEnergyCapacity)
+                               ? new JProperty("evEnergyCapacity",   EVEnergyCapacity)
                                : null,
 
                            FullSoC.HasValue
-                               ? new JProperty("fullSoC",           FullSoC)
+                               ? new JProperty("fullSoC",            FullSoC)
                                : null,
 
                            BulkSoC.HasValue
-                               ? new JProperty("bulkSoC",           BulkSoC)
+                               ? new JProperty("bulkSoC",            BulkSoC)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",         CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
