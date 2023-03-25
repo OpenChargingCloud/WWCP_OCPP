@@ -25,10 +25,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPPv2_0.CSMS;
-using NUnit.Framework.Constraints;
-using static System.Net.Mime.MediaTypeNames;
-using com.GraphDefined.SMSApi.API.Action;
-using System.Drawing;
 
 #endregion
 
