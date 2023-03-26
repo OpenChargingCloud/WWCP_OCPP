@@ -570,17 +570,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 #region ChargingProfile    [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("csChargingProfiles",
-                                             "charging station charging profiles",
+                if (!JSON.ParseMandatoryJSON("chargingProfile",
+                                             "charging profiles",
                                              OCPPv2_0.ChargingProfile.TryParse,
                                              out ChargingProfile? ChargingProfile,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     ChargingProfile is null)
                 {
                     return false;
                 }
-
-                if (ChargingProfile is null)
-                    return false;
 
                 #endregion
 
@@ -661,13 +659,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("connectorId",          EVSEId.Value),
-                                 new JProperty("csChargingProfiles",   ChargingProfile.ToJSON(CustomChargingProfileSerializer,
-                                                                                              CustomChargingScheduleSerializer,
-                                                                                              CustomChargingSchedulePeriodSerializer)),
+                                 new JProperty("evseId",            EVSEId.Value),
+                                 new JProperty("chargingProfile",   ChargingProfile.ToJSON(CustomChargingProfileSerializer,
+                                                                                           CustomChargingScheduleSerializer,
+                                                                                           CustomChargingSchedulePeriodSerializer)),
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.     ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

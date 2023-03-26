@@ -8364,6 +8364,109 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         #endregion
 
+        #region GetChargingProfiles       (ChargeBoxId, EVSEId, ChargingProfile, ...)
+
+        /// <summary>
+        /// Set the charging profile of the given charge box connector.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="EVSEId">The EVSE identification to which the charging profile applies.</param>
+        /// <param name="ChargingProfile">The charging profile to be set.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.GetChargingProfilesResponse>
+
+            GetChargingProfiles(ChargeBox_Id              ChargeBoxId,
+                                Int64                     GetChargingProfilesRequestId,
+                                ChargingProfileCriterion  ChargingProfile,
+                                EVSE_Id?                  EVSEId              = null,
+                                CustomData?               CustomData          = null,
+
+                                Request_Id?               RequestId           = null,
+                                DateTime?                 RequestTimestamp    = null,
+                                TimeSpan?                 RequestTimeout      = null,
+                                EventTracking_Id?         EventTrackingId     = null,
+                                CancellationToken?        CancellationToken   = null)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new GetChargingProfilesRequest(
+                                 ChargeBoxId,
+                                 GetChargingProfilesRequestId,
+                                 ChargingProfile,
+                                 EVSEId,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnGetChargingProfilesRequest event
+
+            try
+            {
+
+                OnGetChargingProfilesRequest?.Invoke(startTime,
+                                                     this,
+                                                     request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetChargingProfilesRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.GetChargingProfiles(request)
+
+                               : new CS.GetChargingProfilesResponse(request,
+                                                                    Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnGetChargingProfilesResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetChargingProfilesResponse?.Invoke(endTime,
+                                                      this,
+                                                      request,
+                                                      response,
+                                                      endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetChargingProfilesResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
         #region ClearChargingProfile      (ChargeBoxId, ChargingProfileId, ChargingProfileCriteria, ...)
 
         /// <summary>

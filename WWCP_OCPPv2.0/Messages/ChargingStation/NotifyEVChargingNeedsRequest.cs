@@ -450,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("evseId",              EVSEId.       ToString()),
+                                 new JProperty("evseId",              EVSEId.       Value),
 
                                  new JProperty("chargingNeeds",       ChargingNeeds.ToJSON(CustomChargingNeedsSerializer,
                                                                                            CustomACChargingParametersSerializer,

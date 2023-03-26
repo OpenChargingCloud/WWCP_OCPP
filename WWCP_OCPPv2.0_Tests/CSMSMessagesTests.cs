@@ -2205,10 +2205,270 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #endregion
 
-        // OnSetChargingProfile
-        // OnGetChargingProfiles
-        // ClearChargingProfile
-        // GetCompositeSchedule
+        #region CSMS_SetChargingProfile_Test()
+
+        /// <summary>
+        /// A test setting a charging profile at a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_SetChargingProfile_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var setChargingProfileRequests = new List<SetChargingProfileRequest>();
+
+                chargingStation1.OnSetChargingProfileRequest += async (timestamp, sender, setChargingProfileRequest) => {
+                    setChargingProfileRequests.Add(setChargingProfileRequest);
+                };
+
+                var response1  = await testCSMS01.SetChargingProfile(
+                                     ChargeBoxId:       chargingStation1.ChargeBoxId,
+                                     EVSEId:            chargingStation1.EVSEs.First().Id,
+                                     ChargingProfile:   new ChargingProfile(
+                                                            ChargingProfileId:        ChargingProfile_Id.NewRandom,
+                                                            StackLevel:               1,
+                                                            ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
+                                                            ChargingProfileKind:      ChargingProfileKinds.   Absolute,
+                                                            ChargingSchedules:        new[] {
+                                                                                          new ChargingSchedule(
+                                                                                              Id:                        ChargingSchedule_Id.NewRandom(),
+                                                                                              ChargingRateUnit:          ChargingRateUnits.Watts,
+                                                                                              ChargingSchedulePeriods:   new[] {
+                                                                                                                             new ChargingSchedulePeriod(
+                                                                                                                                 StartPeriod:      TimeSpan.Zero,
+                                                                                                                                 Limit:            20,
+                                                                                                                                 NumberOfPhases:   3,
+                                                                                                                                 PhaseToUse:       PhasesToUse.Three,
+                                                                                                                                 CustomData:       null
+                                                                                                                             )
+                                                                                                                         },
+                                                                                              StartSchedule:             Timestamp.Now,
+                                                                                              Duration:                  TimeSpan.FromMinutes(30),
+                                                                                              MinChargingRate:           6,
+                                                                                              SalesTariff:               new SalesTariff(
+                                                                                                                             Id:                   SalesTariff_Id.NewRandom,
+                                                                                                                             SalesTariffEntries:   new[] {
+                                                                                                                                                       new SalesTariffEntry(
+                                                                                                                                                           RelativeTimeInterval:   new RelativeTimeInterval(
+                                                                                                                                                                                       Start:        TimeSpan.Zero,
+                                                                                                                                                                                       Duration:     TimeSpan.FromMinutes(30),
+                                                                                                                                                                                       CustomData:   null
+                                                                                                                                                                                   ),
+                                                                                                                                                           EPriceLevel:            1,
+                                                                                                                                                           ConsumptionCosts:       new[] {
+                                                                                                                                                                                       new ConsumptionCost(
+                                                                                                                                                                                           StartValue:   1,
+                                                                                                                                                                                           Costs:        new[] {
+                                                                                                                                                                                                             new Cost(
+                                                                                                                                                                                                                 CostKind:           CostKinds.CarbonDioxideEmission,
+                                                                                                                                                                                                                 Amount:             200,
+                                                                                                                                                                                                                 AmountMultiplier:   23,
+                                                                                                                                                                                                                 CustomData:         null
+                                                                                                                                                                                                             )
+                                                                                                                                                                                                         },
+                                                                                                                                                                                           CustomData:   null
+                                                                                                                                                                                       )
+                                                                                                                                                                                   },
+                                                                                                                                                           CustomData:             null
+                                                                                                                                                       )
+                                                                                                                                                   },
+                                                                                                                             Description:          "Green Charging ++",
+                                                                                                                             NumEPriceLevels:      1,
+                                                                                                                             CustomData:           null
+                                                                                                                         ),
+                                                                                              CustomData:                null
+                                                                                          )
+                                                                                      },
+                                                            CustomData:               null
+                                                        ),
+                                     CustomData:        null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                   response1.Result.ResultCode);
+                Assert.AreEqual(ChargingProfileStatus.Accepted,   response1.Status);
+
+                Assert.AreEqual(1,                                setChargingProfileRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,     setChargingProfileRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_GetChargingProfiles_Test()
+
+        /// <summary>
+        /// A test requesting charging profiles from a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_GetChargingProfiles_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getChargingProfilesRequests = new List<GetChargingProfilesRequest>();
+
+                chargingStation1.OnGetChargingProfilesRequest += async (timestamp, sender, getChargingProfilesRequest) => {
+                    getChargingProfilesRequests.Add(getChargingProfilesRequest);
+                };
+
+                var response1  = await testCSMS01.GetChargingProfiles(
+                                     ChargeBoxId:                    chargingStation1.ChargeBoxId,
+                                     GetChargingProfilesRequestId:   1,
+                                     ChargingProfile:                new ChargingProfileCriterion(
+                                                                         ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
+                                                                         StackLevel:               1,
+                                                                         ChargingProfileIds:       new[] {
+                                                                                                       ChargingProfile_Id.Parse(123)
+                                                                                                   },
+                                                                         ChargingLimitSources:     new[] {
+                                                                                                       ChargingLimitSources.SO
+                                                                                                   },
+                                                                         CustomData:               null
+                                                                     ),
+                                     EVSEId:                         EVSE_Id.Parse(1),
+                                     CustomData:                     null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                      response1.Result.ResultCode);
+                Assert.AreEqual(GetChargingProfileStatus.Accepted,   response1.Status);
+
+                Assert.AreEqual(1,                                   getChargingProfilesRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,        getChargingProfilesRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_ClearChargingProfile_Test()
+
+        /// <summary>
+        /// A test deleting a charging profile from a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_ClearChargingProfile_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getChargingProfilesRequests = new List<ClearChargingProfileRequest>();
+
+                chargingStation1.OnClearChargingProfileRequest += async (timestamp, sender, getChargingProfilesRequest) => {
+                    getChargingProfilesRequests.Add(getChargingProfilesRequest);
+                };
+
+                var response1  = await testCSMS01.ClearChargingProfile(
+                                     ChargeBoxId:               chargingStation1.ChargeBoxId,
+                                     ChargingProfileId:         ChargingProfile_Id.Parse(123),
+                                     ChargingProfileCriteria:   new ClearChargingProfile(
+                                                                    EVSEId:                   EVSE_Id.Parse(1),
+                                                                    ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
+                                                                    StackLevel:               1,
+                                                                    CustomData:               null
+                                                                ),
+                                     CustomData:                null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                        response1.Result.ResultCode);
+                Assert.AreEqual(ClearChargingProfileStatus.Accepted,   response1.Status);
+
+                Assert.AreEqual(1,                                     getChargingProfilesRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,          getChargingProfilesRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CSMS_GetCompositeSchedule_Test()
+
+        /// <summary>
+        /// A test requesting the composite schedule from a charging station.
+        /// </summary>
+        [Test]
+        public async Task CSMS_GetCompositeSchedule_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getCompositeScheduleRequests = new List<GetCompositeScheduleRequest>();
+
+                chargingStation1.OnGetCompositeScheduleRequest += async (timestamp, sender, getCompositeScheduleRequest) => {
+                    getCompositeScheduleRequests.Add(getCompositeScheduleRequest);
+                };
+
+                var response1  = await testCSMS01.GetCompositeSchedule(
+                                     ChargeBoxId:        chargingStation1.ChargeBoxId,
+                                     Duration:           TimeSpan.FromSeconds(1),
+                                     EVSEId:             EVSE_Id.Parse(1),
+                                     ChargingRateUnit:   ChargingRateUnits.Watts,
+                                     CustomData:         null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(GenericStatus.Accepted,         response1.Status);
+
+                Assert.AreEqual(1,                              getCompositeScheduleRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getCompositeScheduleRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
 
         #region CSMS_UnlockConnector_Test()
 
@@ -2257,7 +2517,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         }
 
         #endregion
-
 
 
         #region CSMS_SetDisplayMessage_Test()

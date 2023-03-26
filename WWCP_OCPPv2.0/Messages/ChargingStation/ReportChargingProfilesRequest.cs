@@ -740,7 +740,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                                  new JProperty("requestId",             ReportChargingProfilesRequestId),
                                  new JProperty("chargingLimitSource",   ChargingLimitSource.AsText()),
-                                 new JProperty("evseId",                EVSEId.             ToString()),
+                                 new JProperty("evseId",                EVSEId.             Value),
 
                                  new JProperty("chargingProfile",       new JArray(ChargingProfiles.Select(chargingProfile => chargingProfile.ToJSON(CustomChargingProfileSerializer,
                                                                                                                                                      CustomChargingScheduleSerializer,

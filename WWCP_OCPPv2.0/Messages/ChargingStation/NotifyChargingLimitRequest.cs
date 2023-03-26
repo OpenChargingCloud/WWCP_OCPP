@@ -625,7 +625,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                : null,
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",             EVSEId.       ToString())
+                               ? new JProperty("evseId",             EVSEId.       Value.Value)
                                : null,
 
                            CustomData is not null

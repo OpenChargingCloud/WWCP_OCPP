@@ -423,7 +423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                : null,
 
                            ValidEVSEIds.Any()
-                               ? new JProperty("evseId",                new JArray(ValidEVSEIds.Select(evseId => evseId.ToString())))
+                               ? new JProperty("evseId",                new JArray(ValidEVSEIds.Select(evseId => evseId.Value)))
                                : null,
 
                            GroupIdToken is not null

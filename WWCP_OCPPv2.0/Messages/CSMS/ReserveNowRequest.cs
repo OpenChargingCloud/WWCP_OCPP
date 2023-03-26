@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                : null,
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",          EVSEId.       Value.ToString())
+                               ? new JProperty("evseId",          EVSEId.       Value.Value)
                                : null,
 
                            GroupIdToken is not null

@@ -307,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                  new JProperty("chargingLimitSource",   ChargingLimitSource.AsText()),
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",                EVSEId.             ToString())
+                               ? new JProperty("evseId",                EVSEId.             Value.Value)
                                : null,
 
                            CustomData is not null
@@ -433,11 +433,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(ChargingLimitSource.AsText(),
+            => String.Concat(
 
-                             EVSEId.HasValue
-                                 ? " at " + EVSEId.ToString()
-                                 : "");
+                   ChargingLimitSource.AsText(),
+
+                   EVSEId.HasValue
+                       ? " at " + EVSEId.Value
+                       : ""
+
+               );
 
         #endregion
 

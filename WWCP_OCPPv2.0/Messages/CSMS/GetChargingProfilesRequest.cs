@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                 #region GetChargingProfilesRequestId    [mandatory]
 
                 if (!JSON.ParseMandatory("requestId",
-                                         "certificate chain",
+                                         "request identification",
                                          out Int64 GetChargingProfilesRequestId,
                                          out ErrorResponse))
                 {
@@ -309,17 +309,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
                 #region ChargingProfile                 [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("requestId",
-                                             "certificate chain",
+                if (!JSON.ParseMandatoryJSON("chargingProfile",
+                                             "charging profile",
                                              ChargingProfileCriterion.TryParse,
                                              out ChargingProfileCriterion? ChargingProfile,
-                                             out ErrorResponse))
+                                             out ErrorResponse) ||
+                     ChargingProfile is null)
                 {
                     return false;
                 }
-
-                if (ChargingProfile is null)
-                    return false;
 
                 #endregion
 
@@ -411,15 +409,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestId",         GetChargingProfilesRequestId.ToString()),
-                                 new JProperty("chargingProfile",   ChargingProfile.             ToJSON(CustomChargingProfileCriterionSerializer)),
+                                 new JProperty("requestId",         GetChargingProfilesRequestId),
+                                 new JProperty("chargingProfile",   ChargingProfile.ToJSON(CustomChargingProfileCriterionSerializer)),
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",            EVSEId.                      ToString())
+                               ? new JProperty("evseId",            EVSEId.Value.Value)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.                  ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.     ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -355,15 +355,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                           new JProperty("duration",                (UInt64) Duration.TotalSeconds),
-                           new JProperty("evseId",                  EVSEId.           Value),
+                                 new JProperty("duration",           (UInt64) Duration.TotalSeconds),
+                                 new JProperty("evseId",             EVSEId.           Value),
 
                            ChargingRateUnit.HasValue
-                               ? new JProperty("chargingRateUnit",  ChargingRateUnit. Value.AsText())
+                               ? new JProperty("chargingRateUnit",   ChargingRateUnit. Value.AsText())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.             ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",         CustomData.             ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -363,8 +363,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                                  new JProperty("timestamp",         Timestamp.      ToIso8601()),
                                  new JProperty("connectorStatus",   ConnectorStatus.AsText()),
-                                 new JProperty("evseId",            EVSEId.         ToString()),
-                                 new JProperty("connectorId",       ConnectorId.    ToString()),
+                                 new JProperty("evseId",            EVSEId.         Value),
+                                 new JProperty("connectorId",       ConnectorId.    Value),
 
                            CustomData is not null
                                ? new JProperty("customData",        CustomData.     ToJSON(CustomCustomDataSerializer))

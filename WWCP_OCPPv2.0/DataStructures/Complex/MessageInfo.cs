@@ -410,7 +410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             var json = JSONObject.Create(
 
-                                 new JProperty("id",              Id.                  ToString()),
+                                 new JProperty("id",              Id.                  Value),
                                  new JProperty("priority",        Priority.            AsText()),
                                  new JProperty("message",         Message.             ToJSON(CustomMessageContentSerializer,
                                                                                               CustomCustomDataSerializer)),

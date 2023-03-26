@@ -154,7 +154,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
             => TryParse(JSON,
                         out ClearChargingProfile,
-                        out ErrorResponse);
+                        out ErrorResponse,
+                        null);
 
 
         /// <summary>
@@ -275,15 +276,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             var json = JSONObject.Create(
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",                  EVSEId.                Value.ToString())
+                               ? new JProperty("evseId",                  EVSEId.                Value.Value)
                                : null,
 
                            ChargingProfilePurpose.HasValue
-                               ? new JProperty("chargingProfilePurpose",  ChargingProfilePurpose.Value.ToString())
+                               ? new JProperty("chargingProfilePurpose",  ChargingProfilePurpose.Value.AsText())
                                : null,
 
                            StackLevel.HasValue
-                               ? new JProperty("stackLevel",              StackLevel.            Value.ToString())
+                               ? new JProperty("stackLevel",              StackLevel.            Value)
                                : null,
 
                            CustomData is not null
