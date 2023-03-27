@@ -15,7 +15,7 @@ every charging station or CSMS message.
 and at least one tests exists for every charging station or CSMS message. This
 version was also tested on multiple *Open Charge Alliance Plugfests*.
 - **OCPP v1.5** is no longer maintained. If you still need this version please
-send us a mail.
+send us an e-mail.
 
 ## Content
 
