@@ -7,6 +7,16 @@ Open Charge Alliance. The focus of this protocol are the communication
 aspects between a e-mobility charging station and its operator backend.
 For more details on this protocol please visit http://www.openchargealliance.org.
 
+## Versions
+
+- **OCPP v2.0.1** is fully implemented and at least one tests exists for
+every charging station or CSMS message.
+- **OCPP v1.6** and the **Security Whitepaper** extensions are fully implemented
+and at least one tests exists for every charging station or CSMS message. This
+version was also tested on multiple *Open Charge Alliance Plugfests*.
+- **OCPP v1.5** is no longer maintained. If you still need this version please
+send us a mail.
+
 ## Content
 
 - **Implementation Details and Differences** for [OCPP v1.6](WWCP_OCPPv1.6/README.md) and [OCPP v2.0.1](WWCP_OCPPv2.0/README.md) to the official protocol specification. The OCPP specification has unfortunatelly many flaws and security issues. This implementation provides extentions and work-arounds for most of these issues to simplify the daily operations business, high availability or to support additional concepts/methods like *European General Data Protection Regulation (GDPR)*  and the *German Calibration Law (Eichrecht)*.
