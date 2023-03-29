@@ -324,11 +324,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestId",   GetBaseReportRequestId.ToString()),
-                                 new JProperty("reportBase",  ReportBase.            AsText()),
+                                 new JProperty("requestId",    GetBaseReportRequestId),
+                                 new JProperty("reportBase",   ReportBase.            AsText()),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.            ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.            ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

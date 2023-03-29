@@ -1805,10 +1805,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                            }.AsImmutable);
 
             }
-            else if (!secWebSocketProtocols.Contains("ocpp1.6"))
+            else if (!secWebSocketProtocols.Contains("ocpp2.0.1"))
             {
 
-                DebugX.Log("This WebSocket service only supports 'ocpp1.6'!");
+                DebugX.Log("This WebSocket service only supports 'ocpp2.0.1'!");
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {

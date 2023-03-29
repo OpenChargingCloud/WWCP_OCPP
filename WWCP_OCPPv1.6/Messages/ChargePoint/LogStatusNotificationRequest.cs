@@ -285,10 +285,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             var json = JSONObject.Create(
 
-                           new JProperty("status",           Status.AsText()),
+                                 new JProperty("status",      Status.AsText()),
 
                            LogRequestId.HasValue
-                               ? new JProperty("requestId",  LogRequestId.Value)
+                               ? new JProperty("requestId",   LogRequestId.Value)
                                : null
 
                        );

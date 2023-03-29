@@ -569,7 +569,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestId",            CustomerInformationRequestId.ToString()),
+                                 new JProperty("requestId",            CustomerInformationRequestId),
                                  new JProperty("report",               Report),
                                  new JProperty("clear",                Clear),
 

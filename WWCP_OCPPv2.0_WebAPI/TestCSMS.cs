@@ -1107,7 +1107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             Directory.CreateDirectory("HTTPSSEs");
 
             this.TestAPI                 = new UsersAPI(
-                                               HTTPServerPort:        IPPort.Parse(3500),
+                                               HTTPServerPort:        IPPort.Parse(3501),
                                                HTTPServerName:        "GraphDefined OCPP Test Central System",
                                                HTTPServiceName:       "GraphDefined OCPP Test Central System Service",
                                                APIRobotEMailAddress:  EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),

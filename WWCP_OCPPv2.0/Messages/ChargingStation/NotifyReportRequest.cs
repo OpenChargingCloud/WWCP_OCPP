@@ -592,7 +592,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestId",     NotifyReportRequestId.ToString()),
+                                 new JProperty("requestId",     NotifyReportRequestId),
                                  new JProperty("seqNo",         SequenceNumber),
                                  new JProperty("generatedAt",   GeneratedAt.          ToIso8601()),
 

@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                  new JProperty("status",       Status.                                    AsText()),
 
                            PublishFirmwareStatusNotificationRequestId.HasValue
-                               ? new JProperty("requestId",    PublishFirmwareStatusNotificationRequestId.ToString())
+                               ? new JProperty("requestId",    PublishFirmwareStatusNotificationRequestId)
                                : null,
 
                            DownloadLocations.Any()
