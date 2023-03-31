@@ -48,36 +48,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public class ChargePointConnector
         {
 
-            public Connector_Id     Id                       { get; }
+            public Connector_Id      Id                       { get; }
 
-            public Availabilities   Availability             { get; set; }
-
-
-            public Boolean          IsReserved               { get; set; }
-
-            public Boolean          IsCharging               { get; set; }
-
-            public IdToken          IdToken                  { get; set; }
-
-            public IdTagInfo        IdTagInfo                { get; set; }
-
-            public Transaction_Id   TransactionId            { get; set; }
-
-            public ChargingProfile  ChargingProfile          { get; set; }
+            public Availabilities    Availability             { get; set; }
 
 
-            public DateTime         StartTimestamp           { get; set; }
+            public Boolean           IsReserved               { get; set; }
 
-            public UInt64           MeterStartValue          { get; set; }
+            public Boolean           IsCharging               { get; set; }
 
-            public String           SignedStartMeterValue    { get; set; }
+            public IdToken           IdToken                  { get; set; }
+
+            public IdTagInfo         IdTagInfo                { get; set; }
+
+            public Transaction_Id    TransactionId            { get; set; }
+
+            public ChargingProfile?  ChargingProfile          { get; set; }
 
 
-            public DateTime         StopTimestamp            { get; set; }
+            public DateTime          StartTimestamp           { get; set; }
 
-            public UInt64           MeterStopValue           { get; set; }
+            public UInt64            MeterStartValue          { get; set; }
 
-            public String           SignedStopMeterValue     { get; set; }
+            public String?           SignedStartMeterValue    { get; set; }
+
+
+            public DateTime          StopTimestamp            { get; set; }
+
+            public UInt64            MeterStopValue           { get; set; }
+
+            public String?           SignedStopMeterValue     { get; set; }
 
 
             public ChargePointConnector(Connector_Id    Id,
@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             /// <param name="RebootRequired">Changing this configuration value requires a reboot of the charge box to take effect.</param>
             public ConfigurationData(String        Value,
                                      AccessRights  AccessRights,
-                                     Boolean       RebootRequired = false)
+                                     Boolean       RebootRequired   = false)
             {
 
                 this.Value           = Value;
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         private readonly            List<EnquedRequest>         EnquedRequests;
 
-        public                      Tuple<String, String>?      HTTPBasicAuth               { get; }
+        public                      IHTTPAuthentication?        HTTPAuthentication          { get; }
         public                      DNSClient?                  DNSClient                   { get; }
 
         private                     Int64                       internalRequestId           = 100000;
@@ -875,7 +875,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                       this.MaintenanceEvery,
                                                       this.MaintenanceEvery);
 
-            this.HTTPBasicAuth            = HTTPBasicAuth;
+            this.HTTPAuthentication       = HTTPAuthentication;
             this.DNSClient                = DNSClient;
 
         }
@@ -976,11 +976,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                           Boolean?                              PreferIPv4                   = null,
                                                           String?                               HTTPUserAgent                = null,
                                                           HTTPPath?                             URLPathPrefix                = null,
-                                                          Tuple<String, String>?                HTTPBasicAuth                = null,
+                                                          IHTTPAuthentication?                  HTTPAuthentication           = null,
                                                           TimeSpan?                             RequestTimeout               = null,
                                                           TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
                                                           UInt16?                               MaxNumberOfRetries           = null,
                                                           Boolean                               UseHTTPPipelining            = false,
+
+                                                          IEnumerable<String>?                  SecWebSocketProtocols        = null,
 
                                                           Boolean                               DisableMaintenanceTasks      = false,
                                                           TimeSpan?                             MaintenanceEvery             = null,
@@ -1011,11 +1013,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                  URLPathPrefix,
                                  TLSProtocol,
                                  PreferIPv4,
-                                 HTTPBasicAuth ?? this.HTTPBasicAuth,
+                                 HTTPAuthentication ?? this.HTTPAuthentication,
                                  RequestTimeout,
                                  TransmissionRetryDelay,
                                  MaxNumberOfRetries,
                                  UseHTTPPipelining,
+
+                                 SecWebSocketProtocols ?? new[] { "ocpp1.6" },
 
                                  DisableMaintenanceTasks,
                                  MaintenanceEvery,
@@ -3853,6 +3857,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
         //ToDo: Add security extensions
+
 
     }
 

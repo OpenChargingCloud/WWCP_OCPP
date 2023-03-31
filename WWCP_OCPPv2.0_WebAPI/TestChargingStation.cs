@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
 
         private readonly            List<EnquedRequest>         EnquedRequests;
 
-        public                      Tuple<String, String>?      HTTPBasicAuth               { get; }
+        public                      IHTTPAuthentication?        HTTPAuthentication          { get; }
         public                      DNSClient?                  DNSClient                   { get; }
 
         private                     Int64                       internalRequestId           = 100000;
@@ -1352,7 +1352,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                       this.MaintenanceEvery,
                                                       this.MaintenanceEvery);
 
-            this.HTTPBasicAuth            = HTTPBasicAuth;
+            this.HTTPAuthentication       = HTTPAuthentication;
             this.DNSClient                = DNSClient;
 
         }
@@ -1376,11 +1376,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                                           Boolean?                              PreferIPv4                   = null,
                                                           String?                               HTTPUserAgent                = null,
                                                           HTTPPath?                             URLPathPrefix                = null,
-                                                          Tuple<String, String>?                HTTPBasicAuth                = null,
+                                                          IHTTPAuthentication?                  HTTPAuthentication           = null,
                                                           TimeSpan?                             RequestTimeout               = null,
                                                           TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
                                                           UInt16?                               MaxNumberOfRetries           = null,
                                                           Boolean                               UseHTTPPipelining            = false,
+
+                                                          IEnumerable<String>?                  SecWebSocketProtocols        = null,
 
                                                           Boolean                               DisableMaintenanceTasks      = false,
                                                           TimeSpan?                             MaintenanceEvery             = null,
@@ -1411,11 +1413,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0
                                  URLPathPrefix,
                                  TLSProtocol,
                                  PreferIPv4,
-                                 HTTPBasicAuth ?? this.HTTPBasicAuth,
+                                 HTTPAuthentication ?? this.HTTPAuthentication,
                                  RequestTimeout,
                                  TransmissionRetryDelay,
                                  MaxNumberOfRetries,
                                  UseHTTPPipelining,
+
+                                 SecWebSocketProtocols ?? new[] { "ocpp2.0.1" },
 
                                  DisableMaintenanceTasks,
                                  MaintenanceEvery,

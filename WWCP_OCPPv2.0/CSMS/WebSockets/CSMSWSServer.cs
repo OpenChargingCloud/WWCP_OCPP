@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
             public DateTime                       Timeout             { get; }
 
             public JObject?                       Response            { get; set; }
-            public ResultCodes?                 ErrorCode           { get; set; }
+            public ResultCodes?                   ErrorCode           { get; set; }
             public String?                        ErrorDescription    { get; set; }
             public JObject?                       ErrorDetails        { get; set; }
 
@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                     DateTime                       Timeout,
 
                                     JObject?                       Response           = null,
-                                    ResultCodes?                 ErrorCode          = null,
+                                    ResultCodes?                   ErrorCode          = null,
                                     String?                        ErrorDescription   = null,
                                     JObject?                       ErrorDetails       = null)
             {
@@ -6050,7 +6050,27 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomResetRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+
+            //sendRequestState = new SendRequestState(Timestamp.Now,
+            //                                        Request.ChargeBoxId,
+            //                                        new OCPP_WebSocket_RequestMessage(
+            //                                            Request_Id.Parse("1"),
+            //                                            Request.Action,
+            //                                            Request.ToJSON(CustomResetRequestSerializer),
+            //                                            OCPP_WebSocket_MessageTypes.CALL
+            //                                        ),
+            //                                        Timestamp.Now + TimeSpan.FromHours(1),
+            //                                        new JObject(),
+            //                                        ResultCodes.FormationViolation,
+            //                                        "Format Error 0815!",
+            //                                        new JObject());
+
+
+            if (sendRequestState.ErrorCode.HasValue)
+                response = new ResetResponse(Request,
+                                             Result.FromSendRequestState(sendRequestState));
+
+            else if (sendRequestState.Response is not null)
             {
 
                 if (ResetResponse.TryParse(Request,

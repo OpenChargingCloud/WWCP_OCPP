@@ -1085,7 +1085,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ClientCert">The SSL/TLS client certificate to use of HTTP authentication.</param>
         /// <param name="HTTPUserAgent">The HTTP user agent identification.</param>
         /// <param name="URLPathPrefix">An optional default URL path prefix.</param>
-        /// <param name="HTTPBasicAuth">The WebService-Security username/password.</param>
+        /// <param name="HTTPAuthentication">The WebService-Security username/password.</param>
         /// <param name="RequestTimeout">An optional Request timeout.</param>
         /// <param name="TransmissionRetryDelay">The delay between transmission retries.</param>
         /// <param name="MaxNumberOfRetries">The maximum number of transmission retries for HTTP request.</param>
@@ -1109,11 +1109,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                    HTTPPath?                             URLPathPrefix                = null,
                                    SslProtocols?                         TLSProtocol                  = null,
                                    Boolean?                              PreferIPv4                   = null,
-                                   Tuple<String, String>?                HTTPBasicAuth                = null,
+                                   IHTTPAuthentication?                  HTTPAuthentication           = null,
                                    TimeSpan?                             RequestTimeout               = null,
                                    TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
                                    UInt16?                               MaxNumberOfRetries           = 3,
                                    Boolean                               UseHTTPPipelining            = false,
+
+                                   IEnumerable<String>?                  SecWebSocketProtocols        = null,
 
                                    Boolean                               DisableMaintenanceTasks      = false,
                                    TimeSpan?                             MaintenanceEvery             = null,
@@ -1137,11 +1139,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    URLPathPrefix,
                    TLSProtocol,
                    PreferIPv4,
-                   HTTPBasicAuth,
+                   HTTPAuthentication,
                    RequestTimeout ?? DefaultRequestTimeout,
                    TransmissionRetryDelay,
                    MaxNumberOfRetries,
                    UseHTTPPipelining,
+
+                   SecWebSocketProtocols,
 
                    DisableMaintenanceTasks,
                    MaintenanceEvery,

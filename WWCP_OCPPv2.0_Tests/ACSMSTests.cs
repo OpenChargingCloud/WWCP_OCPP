@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             testCSMS01      = new TestCSMS(
                                   CSMSId:                  CSMS_Id.Parse("OCPPTest01"),
-                                  RequireAuthentication:   false,
+                                  RequireAuthentication:   true,
                                   HTTPUploadPort:          IPPort.Parse(9100),
                                   DNSClient:               new DNSClient(
                                                                SearchForIPv6DNSServers: false,
@@ -81,8 +81,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                        );
 
             Assert.IsNotNull(testBackendWebSockets01);
-
-            testCSMS01.AddHTTPBasicAuth(ChargeBox_Id.Parse("test01"), "1234abcd");
 
         }
 

@@ -17,6 +17,7 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using static cloud.charging.open.protocols.OCPPv2_0.CSMS.CSMSWSServer;
@@ -47,11 +48,27 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <summary>
         /// Human-readable error details.
         /// </summary>
-        public String?      Details        { get; }
+        public JObject?     Details        { get; }
 
         #endregion
 
         #region Constructor(s)
+
+        ///// <summary>
+        ///// Create a new generic OCPP result.
+        ///// </summary>
+        ///// <param name="ResultCode">The machine-readable result code.</param>
+        ///// <param name="Description">A human-readable error description.</param>
+        //public Result(ResultCodes  ResultCode,
+        //              String?      Description   = null,
+        //              String?      Details       = null)
+        //{
+
+        //    this.ResultCode   = ResultCode;
+        //    this.Description  = Description?.Trim();
+        //    this.Details      = Details?.Trim();
+
+        //}
 
         /// <summary>
         /// Create a new generic OCPP result.
@@ -60,12 +77,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// <param name="Description">A human-readable error description.</param>
         public Result(ResultCodes  ResultCode,
                       String?      Description   = null,
-                      String?      Details       = null)
+                      JObject?     Details       = null)
         {
 
             this.ResultCode   = ResultCode;
             this.Description  = Description?.Trim();
-            this.Details      = Details?.Trim();
+            this.Details      = Details;
 
         }
 
@@ -78,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             => new (
                    SendRequestState.ErrorCode ?? ResultCodes.GenericError,
                    SendRequestState.ErrorDescription,
-                   SendRequestState.ErrorDetails?.ToString()
+                   SendRequestState.ErrorDetails
                );
 
 
@@ -88,8 +105,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         /// Unknown result code.
         /// </summary>
         /// <param name="Description">A human-readable error description.</param>
-        public static Result GenericError(String? Description   = null,
-                                          String? Details       = null)
+        public static Result GenericError(String?  Description   = null,
+                                          JObject? Details       = null)
 
             => new (ResultCodes.GenericError,
                     Description,
