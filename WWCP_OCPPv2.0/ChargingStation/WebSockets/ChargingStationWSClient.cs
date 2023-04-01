@@ -7527,88 +7527,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #region SendRequest(Action, RequestId, Message)
 
-        public async Task<Request_Id?> SendRequest(String      Action,
-                                                   Request_Id  RequestId,
-                                                   JObject     Message)
-        {
-
-            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
-                                           ConfigureAwait(false))
-            {
-                try
-                {
-
-                    if (HTTPStream is not null)
-                    {
-
-                        var wsRequestMessage = new OCPP_WebSocket_RequestMessage(
-                                                   RequestId,
-                                                   Action,
-                                                   Message
-                                               );
-
-                        SendWebSocketFrame(new WebSocketFrame(
-                                               WebSocketFrame.Fin.Final,
-                                               WebSocketFrame.MaskStatus.On,
-                                               new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
-                                               WebSocketFrame.Opcodes.Text,
-                                               wsRequestMessage.ToByteArray(),
-                                               WebSocketFrame.Rsv.Off,
-                                               WebSocketFrame.Rsv.Off,
-                                               WebSocketFrame.Rsv.Off
-                                           ));
-
-                        requests.Add(RequestId,
-                                     new SendRequestState2(
-                                         Timestamp.Now,
-                                         wsRequestMessage,
-                                         Timestamp.Now + TimeSpan.FromSeconds(10)
-                                     ));
-
-                        //File.AppendAllText(LogfileName,
-                        //                   String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
-                        //                                 "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                            Environment.NewLine,
-                        //                                 "Message sent: ",      wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
-                        //                                 "--------------------------------------------------------------------------------------------", Environment.NewLine));
-
-                    }
-                    else
-                    {
-
-                        DebugX.Log("Invalid WebSocket connection!");
-
-                        //DebugX.Log("Will try to reconnect!");
-                        //await Connect();
-
-                    }
-
-                }
-                catch (Exception e)
-                {
-
-                    while (e.InnerException is not null)
-                        e = e.InnerException;
-
-                    DebugX.LogException(e);
-
-                }
-                finally
-                {
-                    MaintenanceSemaphore.Release();
-                }
-            }
-            else
-                DebugX.LogT("Could not aquire the maintenance tasks lock!");
-
-            return RequestId;
-
-        }
-
-
-
-        public async Task<OCPP_WebSocket_RequestMessage> SendRequest2(String      Action,
-                                                                      Request_Id  RequestId,
-                                                                      JObject     Message)
+        public async Task<OCPP_WebSocket_RequestMessage> SendRequest(String      Action,
+                                                                     Request_Id  RequestId,
+                                                                     JObject     Message)
         {
 
             OCPP_WebSocket_RequestMessage? wsRequestMessage = null;
@@ -7700,58 +7621,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         }
 
-
         #endregion
 
+        #region (private) WaitForResponse(RequestMessage)
 
-        private async Task<JObject?> WaitForResponse(Request_Id? RequestId)
-        {
-
-            if (!RequestId.HasValue)
-                return null;
-
-            var endTime = Timestamp.Now + RequestTimeout;
-
-            #region Wait for a response... till timeout
-
-            do
-            {
-
-                try
-                {
-
-                    await Task.Delay(25);
-
-                    if (requests.TryGetValue(RequestId.Value, out var sendRequestState) &&
-                       (sendRequestState?.Response is not null ||
-                        sendRequestState?.ErrorCode.HasValue == true))
-                    {
-
-                        lock (requests)
-                        {
-                            requests.Remove(RequestId.Value);
-                        }
-
-                        return sendRequestState.Response;
-
-                    }
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(String.Concat(nameof(ChargingStationWSClient), ".", nameof(WaitForResponse), " exception occured: ", e.Message));
-                }
-
-            }
-            while (Timestamp.Now < endTime);
-
-            #endregion
-
-            return null;
-
-        }
-
-        private async Task<SendRequestState2> WaitForResponse2(OCPP_WebSocket_RequestMessage RequestMessage)
+        private async Task<SendRequestState2> WaitForResponse(OCPP_WebSocket_RequestMessage RequestMessage)
         {
 
             var endTime = Timestamp.Now + RequestTimeout;
@@ -7804,6 +7678,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         }
 
+        #endregion
+
 
 
         #region SendBootNotification                 (Request)
@@ -7840,16 +7716,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
             BootNotificationResponse? response = null;
 
-            var requestMessage = await SendRequest2(Request.Action,
-                                                    Request.RequestId,
-                                                    Request.ToJSON(CustomBootNotificationRequestSerializer,
-                                                                   CustomChargingStationSerializer,
-                                                                   CustomCustomDataSerializer));
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomBootNotificationRequestSerializer,
+                                                                  CustomChargingStationSerializer,
+                                                                  CustomCustomDataSerializer));
 
             if (requestMessage.NoErrors)
             {
 
-                var sendRequestState = await WaitForResponse2(requestMessage);
+                var sendRequestState = await WaitForResponse(requestMessage);
 
                 if (sendRequestState.NoErrors &&
                     sendRequestState.Response is not null)
@@ -7937,22 +7813,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomFirmwareStatusNotificationRequestSerializer,
-                                                             CustomCustomDataSerializer));
+            FirmwareStatusNotificationResponse? response = null;
 
-            if (!FirmwareStatusNotificationResponse.TryParse(Request,
-                                                            (await WaitForResponse(requestId)) ?? new JObject(),
-                                                             out var response,
-                                                             out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomFirmwareStatusNotificationRequestSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new FirmwareStatusNotificationResponse(Request,
-                                                                  Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (FirmwareStatusNotificationResponse.TryParse(Request,
+                                                                    sendRequestState.Response,
+                                                                    out var firmwareStatusNotificationResponse,
+                                                                    out var errorResponse) &&
+                        firmwareStatusNotificationResponse is not null)
+                    {
+                        response = firmwareStatusNotificationResponse;
+                    }
+
+                    response ??= new FirmwareStatusNotificationResponse(Request,
+                                                                        Result.Format(errorResponse));
+
+                }
+
+                response ??= new FirmwareStatusNotificationResponse(Request,
+                                                                    Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new FirmwareStatusNotificationResponse(Request,
-                                                                Result.GenericError());
+                                                                Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnFirmwareStatusNotificationResponse event
@@ -8014,22 +7911,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomPublishFirmwareStatusNotificationRequestSerializer,
-                                                             CustomCustomDataSerializer));
+            PublishFirmwareStatusNotificationResponse? response = null;
 
-            if (!PublishFirmwareStatusNotificationResponse.TryParse(Request,
-                                                                   (await WaitForResponse(requestId)) ?? new JObject(),
-                                                                    out var response,
-                                                                    out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomPublishFirmwareStatusNotificationRequestSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new PublishFirmwareStatusNotificationResponse(Request,
-                                                                         Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (PublishFirmwareStatusNotificationResponse.TryParse(Request,
+                                                                           sendRequestState.Response,
+                                                                           out var publishFirmwareStatusNotificationResponse,
+                                                                           out var errorResponse) &&
+                        publishFirmwareStatusNotificationResponse is not null)
+                    {
+                        response = publishFirmwareStatusNotificationResponse;
+                    }
+
+                    response ??= new PublishFirmwareStatusNotificationResponse(Request,
+                                                                               Result.Format(errorResponse));
+
+                }
+
+                response ??= new PublishFirmwareStatusNotificationResponse(Request,
+                                                                           Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new PublishFirmwareStatusNotificationResponse(Request,
-                                                                       Result.GenericError());
+                                                                       Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnPublishFirmwareStatusNotificationResponse event
@@ -8091,22 +8009,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomHeartbeatRequestSerializer,
-                                                             CustomCustomDataSerializer));
+            HeartbeatResponse? response = null;
 
-            if (!HeartbeatResponse.TryParse(Request,
-                                           (await WaitForResponse(requestId)) ?? new JObject(),
-                                            out var response,
-                                            out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomHeartbeatRequestSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new HeartbeatResponse(Request,
-                                                 Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (HeartbeatResponse.TryParse(Request,
+                                                          sendRequestState.Response,
+                                                          out var heartbeatResponse,
+                                                          out var errorResponse) &&
+                        heartbeatResponse is not null)
+                    {
+                        response = heartbeatResponse;
+                    }
+
+                    response ??= new HeartbeatResponse(Request,
+                                                       Result.Format(errorResponse));
+
+                }
+
+                response ??= new HeartbeatResponse(Request,
+                                                   Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new HeartbeatResponse(Request,
-                                               Result.GenericError());
+                                               Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnHeartbeatResponse event
@@ -8168,26 +8107,47 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomNotifyEventRequestSerializer,
-                                                             CustomEventDataSerializer,
-                                                             CustomComponentSerializer,
-                                                             CustomEVSESerializer,
-                                                             CustomVariableSerializer,
-                                                             CustomCustomDataSerializer));
+            NotifyEventResponse? response = null;
 
-            if (!NotifyEventResponse.TryParse(Request,
-                                             (await WaitForResponse(requestId)) ?? new JObject(),
-                                              out var response,
-                                              out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomNotifyEventRequestSerializer,
+                                                                  CustomEventDataSerializer,
+                                                                  CustomComponentSerializer,
+                                                                  CustomEVSESerializer,
+                                                                  CustomVariableSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new NotifyEventResponse(Request,
-                                                   Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (NotifyEventResponse.TryParse(Request,
+                                                     sendRequestState.Response,
+                                                     out var notifyEventResponse,
+                                                     out var errorResponse) &&
+                        notifyEventResponse is not null)
+                    {
+                        response = notifyEventResponse;
+                    }
+
+                    response ??= new NotifyEventResponse(Request,
+                                                         Result.Format(errorResponse));
+
+                }
+
+                response ??= new NotifyEventResponse(Request,
+                                                     Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new NotifyEventResponse(Request,
-                                                 Result.GenericError());
+                                                 Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnNotifyEventResponse event
@@ -8249,22 +8209,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomSecurityEventNotificationSerializer,
-                                                             CustomCustomDataSerializer));
+            SecurityEventNotificationResponse? response = null;
 
-            if (!SecurityEventNotificationResponse.TryParse(Request,
-                                                           (await WaitForResponse(requestId)) ?? new JObject(),
-                                                            out var response,
-                                                            out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomSecurityEventNotificationSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new SecurityEventNotificationResponse(Request,
-                                                                 Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (SecurityEventNotificationResponse.TryParse(Request,
+                                                                   sendRequestState.Response,
+                                                                   out var securityEventNotificationResponse,
+                                                                   out var errorResponse) &&
+                        securityEventNotificationResponse is not null)
+                    {
+                        response = securityEventNotificationResponse;
+                    }
+
+                    response ??= new SecurityEventNotificationResponse(Request,
+                                                                       Result.Format(errorResponse));
+
+                }
+
+                response ??= new SecurityEventNotificationResponse(Request,
+                                                                   Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new SecurityEventNotificationResponse(Request,
-                                                               Result.GenericError());
+                                                               Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnSecurityEventNotificationResponse event
@@ -8326,28 +8307,49 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomNotifyReportRequestSerializer,
-                                                             CustomReportDataSerializer,
-                                                             CustomComponentSerializer,
-                                                             CustomEVSESerializer,
-                                                             CustomVariableSerializer,
-                                                             CustomVariableAttributeSerializer,
-                                                             CustomVariableCharacteristicsSerializer,
-                                                             CustomCustomDataSerializer));
+            NotifyReportResponse? response = null;
 
-            if (!NotifyReportResponse.TryParse(Request,
-                                              (await WaitForResponse(requestId)) ?? new JObject(),
-                                               out var response,
-                                               out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomNotifyReportRequestSerializer,
+                                                                  CustomReportDataSerializer,
+                                                                  CustomComponentSerializer,
+                                                                  CustomEVSESerializer,
+                                                                  CustomVariableSerializer,
+                                                                  CustomVariableAttributeSerializer,
+                                                                  CustomVariableCharacteristicsSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new NotifyReportResponse(Request,
-                                                    Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (NotifyReportResponse.TryParse(Request,
+                                                      sendRequestState.Response,
+                                                      out var notifyReportResponse,
+                                                      out var errorResponse) &&
+                        notifyReportResponse is not null)
+                    {
+                        response = notifyReportResponse;
+                    }
+
+                    response ??= new NotifyReportResponse(Request,
+                                                          Result.Format(errorResponse));
+
+                }
+
+                response ??= new NotifyReportResponse(Request,
+                                                      Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new NotifyReportResponse(Request,
-                                                  Result.GenericError());
+                                                  Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnNotifyReportResponse event
@@ -8409,27 +8411,48 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomNotifyMonitoringReportRequestSerializer,
-                                                             CustomMonitoringDataSerializer,
-                                                             CustomComponentSerializer,
-                                                             CustomEVSESerializer,
-                                                             CustomVariableSerializer,
-                                                             CustomVariableMonitoringSerializer,
-                                                             CustomCustomDataSerializer));
+            NotifyMonitoringReportResponse? response = null;
 
-            if (!NotifyMonitoringReportResponse.TryParse(Request,
-                                                        (await WaitForResponse(requestId)) ?? new JObject(),
-                                                         out var response,
-                                                         out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomNotifyMonitoringReportRequestSerializer,
+                                                                  CustomMonitoringDataSerializer,
+                                                                  CustomComponentSerializer,
+                                                                  CustomEVSESerializer,
+                                                                  CustomVariableSerializer,
+                                                                  CustomVariableMonitoringSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new NotifyMonitoringReportResponse(Request,
-                                                              Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (NotifyMonitoringReportResponse.TryParse(Request,
+                                                                sendRequestState.Response,
+                                                                out var notifyMonitoringReportResponse,
+                                                                out var errorResponse) &&
+                        notifyMonitoringReportResponse is not null)
+                    {
+                        response = notifyMonitoringReportResponse;
+                    }
+
+                    response ??= new NotifyMonitoringReportResponse(Request,
+                                                                    Result.Format(errorResponse));
+
+                }
+
+                response ??= new NotifyMonitoringReportResponse(Request,
+                                                                Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new NotifyMonitoringReportResponse(Request,
-                                                            Result.GenericError());
+                                                            Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnNotifyMonitoringReportResponse event
@@ -8459,7 +8482,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         #endregion
 
-        #region LogStatusNotification                (Request)
+        #region SendLogStatusNotification            (Request)
 
         /// <summary>
         /// Send a log status notification.
@@ -8491,22 +8514,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomLogStatusNotificationSerializer,
-                                                             CustomCustomDataSerializer));
+            LogStatusNotificationResponse? response = null;
 
-            if (!LogStatusNotificationResponse.TryParse(Request,
-                                                       (await WaitForResponse(requestId)) ?? new JObject(),
-                                                        out var response,
-                                                        out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomLogStatusNotificationSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new LogStatusNotificationResponse(Request,
-                                                             Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (LogStatusNotificationResponse.TryParse(Request,
+                                                               sendRequestState.Response,
+                                                               out var logStatusNotificationResponse,
+                                                               out var errorResponse) &&
+                        logStatusNotificationResponse is not null)
+                    {
+                        response = logStatusNotificationResponse;
+                    }
+
+                    response ??= new LogStatusNotificationResponse(Request,
+                                                                   Result.Format(errorResponse));
+
+                }
+
+                response ??= new LogStatusNotificationResponse(Request,
+                                                               Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new LogStatusNotificationResponse(Request,
-                                                           Result.GenericError());
+                                                           Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnLogStatusNotificationResponse event
@@ -8568,22 +8612,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomDataTransferRequestSerializer,
-                                                             CustomCustomDataSerializer));
+            CSMS.DataTransferResponse? response = null;
 
-            if (!CSMS.DataTransferResponse.TryParse(Request,
-                                                   (await WaitForResponse(requestId)) ?? new JObject(),
-                                                    out var response,
-                                                    out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomDataTransferRequestSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new CSMS.DataTransferResponse(Request,
-                                                         Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (CSMS.DataTransferResponse.TryParse(Request,
+                                                           sendRequestState.Response,
+                                                           out var dataTransferResponse,
+                                                           out var errorResponse) &&
+                        dataTransferResponse is not null)
+                    {
+                        response = dataTransferResponse;
+                    }
+
+                    response ??= new CSMS.DataTransferResponse(Request,
+                                                               Result.Format(errorResponse));
+
+                }
+
+                response ??= new CSMS.DataTransferResponse(Request,
+                                                           Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new CSMS.DataTransferResponse(Request,
-                                                       Result.GenericError());
+                                                       Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnDataTransferResponse event
@@ -8646,22 +8711,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomSignCertificateRequestSerializer,
-                                                             CustomCustomDataSerializer));
+            SignCertificateResponse? response = null;
 
-            if (!SignCertificateResponse.TryParse(Request,
-                                                 (await WaitForResponse(requestId)) ?? new JObject(),
-                                                  out var response,
-                                                  out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomSignCertificateRequestSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new SignCertificateResponse(Request,
-                                                       Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (SignCertificateResponse.TryParse(Request,
+                                                         sendRequestState.Response,
+                                                         out var signCertificateResponse,
+                                                         out var errorResponse) &&
+                        signCertificateResponse is not null)
+                    {
+                        response = signCertificateResponse;
+                    }
+
+                    response ??= new SignCertificateResponse(Request,
+                                                             Result.Format(errorResponse));
+
+                }
+
+                response ??= new SignCertificateResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new SignCertificateResponse(Request,
-                                                     Result.GenericError());
+                                                     Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnSignCertificateResponse event
@@ -8723,22 +8809,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomGet15118EVCertificateSerializer,
-                                                             CustomCustomDataSerializer));
+            Get15118EVCertificateResponse? response = null;
 
-            if (!Get15118EVCertificateResponse.TryParse(Request,
-                                                       (await WaitForResponse(requestId)) ?? new JObject(),
-                                                        out var response,
-                                                        out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomGet15118EVCertificateSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new Get15118EVCertificateResponse(Request,
-                                                             Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (Get15118EVCertificateResponse.TryParse(Request,
+                                                               sendRequestState.Response,
+                                                               out var get15118EVCertificateResponse,
+                                                               out var errorResponse) &&
+                        get15118EVCertificateResponse is not null)
+                    {
+                        response = get15118EVCertificateResponse;
+                    }
+
+                    response ??= new Get15118EVCertificateResponse(Request,
+                                                                   Result.Format(errorResponse));
+
+                }
+
+                response ??= new Get15118EVCertificateResponse(Request,
+                                                               Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new Get15118EVCertificateResponse(Request,
-                                                           Result.GenericError());
+                                                           Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnGet15118EVCertificateResponse event
@@ -8800,23 +8907,44 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomGetCertificateStatusSerializer,
-                                                             CustomOCSPRequestDataSerializer,
-                                                             CustomCustomDataSerializer));
+            GetCertificateStatusResponse? response = null;
 
-            if (!GetCertificateStatusResponse.TryParse(Request,
-                                                      (await WaitForResponse(requestId)) ?? new JObject(),
-                                                       out var response,
-                                                       out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomGetCertificateStatusSerializer,
+                                                                  CustomOCSPRequestDataSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new GetCertificateStatusResponse(Request,
-                                                            Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (GetCertificateStatusResponse.TryParse(Request,
+                                                              sendRequestState.Response,
+                                                              out var getCertificateStatusResponse,
+                                                              out var errorResponse) &&
+                        getCertificateStatusResponse is not null)
+                    {
+                        response = getCertificateStatusResponse;
+                    }
+
+                    response ??= new GetCertificateStatusResponse(Request,
+                                                                  Result.Format(errorResponse));
+
+                }
+
+                response ??= new GetCertificateStatusResponse(Request,
+                                                              Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new GetCertificateStatusResponse(Request,
-                                                          Result.GenericError());
+                                                          Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnGetCertificateStatusResponse event
@@ -8879,22 +9007,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomReservationStatusUpdateRequestSerializer,
-                                                             CustomCustomDataSerializer));
+            ReservationStatusUpdateResponse? response = null;
 
-            if (!ReservationStatusUpdateResponse.TryParse(Request,
-                                                         (await WaitForResponse(requestId)) ?? new JObject(),
-                                                          out var response,
-                                                          out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomReservationStatusUpdateRequestSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new ReservationStatusUpdateResponse(Request,
-                                                               Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (ReservationStatusUpdateResponse.TryParse(Request,
+                                                                 sendRequestState.Response,
+                                                                 out var reservationStatusUpdateResponse,
+                                                                 out var errorResponse) &&
+                        reservationStatusUpdateResponse is not null)
+                    {
+                        response = reservationStatusUpdateResponse;
+                    }
+
+                    response ??= new ReservationStatusUpdateResponse(Request,
+                                                                     Result.Format(errorResponse));
+
+                }
+
+                response ??= new ReservationStatusUpdateResponse(Request,
+                                                                 Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new ReservationStatusUpdateResponse(Request,
-                                                             Result.GenericError());
+                                                             Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnReservationStatusUpdateResponse event
@@ -8956,25 +9105,46 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomAuthorizeRequestSerializer,
-                                                             CustomIdTokenSerializer,
-                                                             CustomAdditionalInfoSerializer,
-                                                             CustomOCSPRequestDataSerializer,
-                                                             CustomCustomDataSerializer));
+            AuthorizeResponse? response = null;
 
-            if (!AuthorizeResponse.TryParse(Request,
-                                           (await WaitForResponse(requestId)) ?? new JObject(),
-                                            out var response,
-                                            out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomAuthorizeRequestSerializer,
+                                                                  CustomIdTokenSerializer,
+                                                                  CustomAdditionalInfoSerializer,
+                                                                  CustomOCSPRequestDataSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new AuthorizeResponse(Request,
-                                                 Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (AuthorizeResponse.TryParse(Request,
+                                                   sendRequestState.Response,
+                                                   out var authorizeResponse,
+                                                   out var errorResponse) &&
+                        authorizeResponse is not null)
+                    {
+                        response = authorizeResponse;
+                    }
+
+                    response ??= new AuthorizeResponse(Request,
+                                                       Result.Format(errorResponse));
+
+                }
+
+                response ??= new AuthorizeResponse(Request,
+                                                   Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new AuthorizeResponse(Request,
-                                               Result.GenericError());
+                                               Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnAuthorizeResponse event
@@ -9036,25 +9206,46 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomNotifyEVChargingNeedsRequestSerializer,
-                                                             CustomChargingNeedsSerializer,
-                                                             CustomACChargingParametersSerializer,
-                                                             CustomDCChargingParametersSerializer,
-                                                             CustomCustomDataSerializer));
+            NotifyEVChargingNeedsResponse? response = null;
 
-            if (!NotifyEVChargingNeedsResponse.TryParse(Request,
-                                                       (await WaitForResponse(requestId)) ?? new JObject(),
-                                                        out var response,
-                                                        out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomNotifyEVChargingNeedsRequestSerializer,
+                                                                  CustomChargingNeedsSerializer,
+                                                                  CustomACChargingParametersSerializer,
+                                                                  CustomDCChargingParametersSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new NotifyEVChargingNeedsResponse(Request,
-                                                             Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (NotifyEVChargingNeedsResponse.TryParse(Request,
+                                                               sendRequestState.Response,
+                                                               out var notifyEVChargingNeedsResponse,
+                                                               out var errorResponse) &&
+                        notifyEVChargingNeedsResponse is not null)
+                    {
+                        response = notifyEVChargingNeedsResponse;
+                    }
+
+                    response ??= new NotifyEVChargingNeedsResponse(Request,
+                                                                   Result.Format(errorResponse));
+
+                }
+
+                response ??= new NotifyEVChargingNeedsResponse(Request,
+                                                               Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new NotifyEVChargingNeedsResponse(Request,
-                                                           Result.GenericError());
+                                                           Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnNotifyEVChargingNeedsResponse event
@@ -9116,30 +9307,51 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomTransactionEventRequestSerializer,
-                                                             CustomTransactionSerializer,
-                                                             CustomIdTokenSerializer,
-                                                             CustomAdditionalInfoSerializer,
-                                                             CustomEVSESerializer,
-                                                             CustomMeterValueSerializer,
-                                                             CustomSampledValueSerializer,
-                                                             CustomSignedMeterValueSerializer,
-                                                             CustomUnitsOfMeasureSerializer,
-                                                             CustomCustomDataSerializer));
+            TransactionEventResponse? response = null;
 
-            if (!TransactionEventResponse.TryParse(Request,
-                                                   (await WaitForResponse(requestId)) ?? new JObject(),
-                                                   out var response,
-                                                   out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomTransactionEventRequestSerializer,
+                                                                  CustomTransactionSerializer,
+                                                                  CustomIdTokenSerializer,
+                                                                  CustomAdditionalInfoSerializer,
+                                                                  CustomEVSESerializer,
+                                                                  CustomMeterValueSerializer,
+                                                                  CustomSampledValueSerializer,
+                                                                  CustomSignedMeterValueSerializer,
+                                                                  CustomUnitsOfMeasureSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new TransactionEventResponse(Request,
-                                                        Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (TransactionEventResponse.TryParse(Request,
+                                                          sendRequestState.Response,
+                                                          out var transactionEventResponse,
+                                                          out var errorResponse) &&
+                        transactionEventResponse is not null)
+                    {
+                        response = transactionEventResponse;
+                    }
+
+                    response ??= new TransactionEventResponse(Request,
+                                                              Result.Format(errorResponse));
+
+                }
+
+                response ??= new TransactionEventResponse(Request,
+                                                          Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new TransactionEventResponse(Request,
-                                                      Result.GenericError());
+                                                      Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnTransactionEventResponse event
@@ -9201,22 +9413,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomStatusNotificationRequestSerializer,
-                                                             CustomCustomDataSerializer));
+            StatusNotificationResponse? response = null;
 
-            if (!StatusNotificationResponse.TryParse(Request,
-                                                    (await WaitForResponse(requestId)) ?? new JObject(),
-                                                     out var response,
-                                                     out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomStatusNotificationRequestSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new StatusNotificationResponse(Request,
-                                                          Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (StatusNotificationResponse.TryParse(Request,
+                                                            sendRequestState.Response,
+                                                            out var statusNotificationResponse,
+                                                            out var errorResponse) &&
+                        statusNotificationResponse is not null)
+                    {
+                        response = statusNotificationResponse;
+                    }
+
+                    response ??= new StatusNotificationResponse(Request,
+                                                                Result.Format(errorResponse));
+
+                }
+
+                response ??= new StatusNotificationResponse(Request,
+                                                            Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new StatusNotificationResponse(Request,
-                                                        Result.GenericError());
+                                                        Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnStatusNotificationResponse event
@@ -9278,24 +9511,45 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomMeterValuesRequestSerializer,
-                                                             CustomMeterValueSerializer,
-                                                             CustomSampledValueSerializer,
-                                                             CustomCustomDataSerializer));
+            MeterValuesResponse? response = null;
 
-            if (!MeterValuesResponse.TryParse(Request,
-                                             (await WaitForResponse(requestId)) ?? new JObject(),
-                                              out var response,
-                                              out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomMeterValuesRequestSerializer,
+                                                                  CustomMeterValueSerializer,
+                                                                  CustomSampledValueSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new MeterValuesResponse(Request,
-                                                   Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (MeterValuesResponse.TryParse(Request,
+                                                     sendRequestState.Response,
+                                                     out var meterValuesResponse,
+                                                     out var errorResponse) &&
+                        meterValuesResponse is not null)
+                    {
+                        response = meterValuesResponse;
+                    }
+
+                    response ??= new MeterValuesResponse(Request,
+                                                         Result.Format(errorResponse));
+
+                }
+
+                response ??= new MeterValuesResponse(Request,
+                                                     Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new MeterValuesResponse(Request,
-                                                 Result.GenericError());
+                                                 Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnMeterValuesResponse event
@@ -9357,29 +9611,50 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomNotifyChargingLimitRequestSerializer,
-                                                             CustomChargingScheduleSerializer,
-                                                             CustomChargingSchedulePeriodSerializer,
-                                                             CustomSalesTariffSerializer,
-                                                             CustomSalesTariffEntrySerializer,
-                                                             CustomRelativeTimeIntervalSerializer,
-                                                             CustomConsumptionCostSerializer,
-                                                             CustomCostSerializer,
-                                                             CustomCustomDataSerializer));
+            NotifyChargingLimitResponse? response = null;
 
-            if (!NotifyChargingLimitResponse.TryParse(Request,
-                                                     (await WaitForResponse(requestId)) ?? new JObject(),
-                                                      out var response,
-                                                      out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomNotifyChargingLimitRequestSerializer,
+                                                                  CustomChargingScheduleSerializer,
+                                                                  CustomChargingSchedulePeriodSerializer,
+                                                                  CustomSalesTariffSerializer,
+                                                                  CustomSalesTariffEntrySerializer,
+                                                                  CustomRelativeTimeIntervalSerializer,
+                                                                  CustomConsumptionCostSerializer,
+                                                                  CustomCostSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new NotifyChargingLimitResponse(Request,
-                                                           Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (NotifyChargingLimitResponse.TryParse(Request,
+                                                          sendRequestState.Response,
+                                                          out var notifyChargingLimitResponse,
+                                                          out var errorResponse) &&
+                        notifyChargingLimitResponse is not null)
+                    {
+                        response = notifyChargingLimitResponse;
+                    }
+
+                    response ??= new NotifyChargingLimitResponse(Request,
+                                                                 Result.Format(errorResponse));
+
+                }
+
+                response ??= new NotifyChargingLimitResponse(Request,
+                                                             Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new NotifyChargingLimitResponse(Request,
-                                                         Result.GenericError());
+                                                         Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnNotifyChargingLimitResponse event
@@ -9441,22 +9716,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomClearedChargingLimitRequestSerializer,
-                                                             CustomCustomDataSerializer));
+            ClearedChargingLimitResponse? response = null;
 
-            if (!ClearedChargingLimitResponse.TryParse(Request,
-                                                      (await WaitForResponse(requestId)) ?? new JObject(),
-                                                       out var response,
-                                                       out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomClearedChargingLimitRequestSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new ClearedChargingLimitResponse(Request,
-                                                            Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (ClearedChargingLimitResponse.TryParse(Request,
+                                                              sendRequestState.Response,
+                                                              out var clearedChargingLimitResponse,
+                                                              out var errorResponse) &&
+                        clearedChargingLimitResponse is not null)
+                    {
+                        response = clearedChargingLimitResponse;
+                    }
+
+                    response ??= new ClearedChargingLimitResponse(Request,
+                                                                  Result.Format(errorResponse));
+
+                }
+
+                response ??= new ClearedChargingLimitResponse(Request,
+                                                              Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new ClearedChargingLimitResponse(Request,
-                                                          Result.GenericError());
+                                                          Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnClearedChargingLimitResponse event
@@ -9518,25 +9814,46 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomReportChargingProfilesRequestSerializer,
-                                                             CustomChargingProfileSerializer,
-                                                             CustomChargingScheduleSerializer,
-                                                             CustomChargingSchedulePeriodSerializer,
-                                                             CustomCustomDataSerializer));
+            ReportChargingProfilesResponse? response = null;
 
-            if (!ReportChargingProfilesResponse.TryParse(Request,
-                                                        (await WaitForResponse(requestId)) ?? new JObject(),
-                                                         out var response,
-                                                         out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomReportChargingProfilesRequestSerializer,
+                                                                  CustomChargingProfileSerializer,
+                                                                  CustomChargingScheduleSerializer,
+                                                                  CustomChargingSchedulePeriodSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new ReportChargingProfilesResponse(Request,
-                                                              Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (ReportChargingProfilesResponse.TryParse(Request,
+                                                          sendRequestState.Response,
+                                                          out var reportChargingProfilesResponse,
+                                                          out var errorResponse) &&
+                        reportChargingProfilesResponse is not null)
+                    {
+                        response = reportChargingProfilesResponse;
+                    }
+
+                    response ??= new ReportChargingProfilesResponse(Request,
+                                                                    Result.Format(errorResponse));
+
+                }
+
+                response ??= new ReportChargingProfilesResponse(Request,
+                                                                Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new ReportChargingProfilesResponse(Request,
-                                                            Result.GenericError());
+                                                            Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnReportChargingProfilesResponse event
@@ -9599,26 +9916,47 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomNotifyDisplayMessagesRequestSerializer,
-                                                             CustomMessageInfoSerializer,
-                                                             CustomMessageContentSerializer,
-                                                             CustomComponentSerializer,
-                                                             CustomEVSESerializer,
-                                                             CustomCustomDataSerializer));
+            NotifyDisplayMessagesResponse? response = null;
 
-            if (!NotifyDisplayMessagesResponse.TryParse(Request,
-                                                       (await WaitForResponse(requestId)) ?? new JObject(),
-                                                        out var response,
-                                                        out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomNotifyDisplayMessagesRequestSerializer,
+                                                                  CustomMessageInfoSerializer,
+                                                                  CustomMessageContentSerializer,
+                                                                  CustomComponentSerializer,
+                                                                  CustomEVSESerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new NotifyDisplayMessagesResponse(Request,
-                                                             Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (NotifyDisplayMessagesResponse.TryParse(Request,
+                                                               sendRequestState.Response,
+                                                               out var notifyDisplayMessagesResponse,
+                                                               out var errorResponse) &&
+                        notifyDisplayMessagesResponse is not null)
+                    {
+                        response = notifyDisplayMessagesResponse;
+                    }
+
+                    response ??= new NotifyDisplayMessagesResponse(Request,
+                                                                   Result.Format(errorResponse));
+
+                }
+
+                response ??= new NotifyDisplayMessagesResponse(Request,
+                                                               Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new NotifyDisplayMessagesResponse(Request,
-                                                           Result.GenericError());
+                                                           Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnNotifyDisplayMessagesResponse event
@@ -9680,22 +10018,43 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomNotifyCustomerInformationRequestSerializer,
-                                                             CustomCustomDataSerializer));
+            NotifyCustomerInformationResponse? response = null;
 
-            if (!NotifyCustomerInformationResponse.TryParse(Request,
-                                                           (await WaitForResponse(requestId)) ?? new JObject(),
-                                                            out var response,
-                                                            out var errorResponse))
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomNotifyCustomerInformationRequestSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new NotifyCustomerInformationResponse(Request,
-                                                                 Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (NotifyCustomerInformationResponse.TryParse(Request,
+                                                                   sendRequestState.Response,
+                                                                   out var notifyCustomerInformationResponse,
+                                                                   out var errorResponse) &&
+                        notifyCustomerInformationResponse is not null)
+                    {
+                        response = notifyCustomerInformationResponse;
+                    }
+
+                    response ??= new NotifyCustomerInformationResponse(Request,
+                                                                       Result.Format(errorResponse));
+
+                }
+
+                response ??= new NotifyCustomerInformationResponse(Request,
+                                                                   Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new NotifyCustomerInformationResponse(Request,
-                                                               Result.GenericError());
+                                                               Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnNotifyCustomerInformationResponse event

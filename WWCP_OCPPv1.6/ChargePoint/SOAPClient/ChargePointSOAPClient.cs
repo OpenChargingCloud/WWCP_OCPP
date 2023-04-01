@@ -2181,17 +2181,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Security extensions
 
-        public Task<LogStatusNotificationResponse> LogStatusNotification(LogStatusNotificationRequest Request)
+        public Task<LogStatusNotificationResponse> SendLogStatusNotification(LogStatusNotificationRequest Request)
         {
             throw new NotImplementedException();
         }
 
-        public Task<SecurityEventNotificationResponse> SecurityEventNotification(SecurityEventNotificationRequest Request)
+        public Task<SecurityEventNotificationResponse> SendSecurityEventNotification(SecurityEventNotificationRequest Request)
         {
             throw new NotImplementedException();
         }
 
-        public Task<SignCertificateResponse> SignCertificate(SignCertificateRequest Request)
+        public Task<SignCertificateResponse> SendCertificateSigningRequest(SignCertificateRequest Request)
         {
             throw new NotImplementedException();
         }

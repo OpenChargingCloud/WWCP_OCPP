@@ -293,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">A log status notification request.</param>
         public Task<LogStatusNotificationResponse>
 
-            LogStatusNotification(LogStatusNotificationRequest  Request);
+            SendLogStatusNotification(LogStatusNotificationRequest  Request);
 
         #endregion
 
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">A security event notification request.</param>
         public Task<SecurityEventNotificationResponse>
 
-            SecurityEventNotification(SecurityEventNotificationRequest  Request);
+            SendSecurityEventNotification(SecurityEventNotificationRequest  Request);
 
         #endregion
 
@@ -317,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">A sign certificate request.</param>
         public Task<SignCertificateResponse>
 
-            SignCertificate(SignCertificateRequest  Request);
+            SendCertificateSigningRequest(SignCertificateRequest  Request);
 
         #endregion
 
