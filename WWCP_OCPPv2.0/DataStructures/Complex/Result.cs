@@ -18,6 +18,7 @@
 #region Usings
 
 using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 using static cloud.charging.open.protocols.OCPPv2_0.CSMS.CSMSWSServer;
@@ -41,48 +42,41 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public ResultCodes  ResultCode     { get; }
 
         /// <summary>
-        /// A human-readable error description.
+        /// The optional human-readable error description.
         /// </summary>
         public String?      Description    { get; }
 
         /// <summary>
-        /// Human-readable error details.
+        /// Optional error details.
         /// </summary>
         public JObject?     Details        { get; }
+
+        /// <summary>
+        /// The optional response message.
+        /// </summary>
+        public JObject?     Response       { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        ///// <summary>
-        ///// Create a new generic OCPP result.
-        ///// </summary>
-        ///// <param name="ResultCode">The machine-readable result code.</param>
-        ///// <param name="Description">A human-readable error description.</param>
-        //public Result(ResultCodes  ResultCode,
-        //              String?      Description   = null,
-        //              String?      Details       = null)
-        //{
-
-        //    this.ResultCode   = ResultCode;
-        //    this.Description  = Description?.Trim();
-        //    this.Details      = Details?.Trim();
-
-        //}
-
         /// <summary>
         /// Create a new generic OCPP result.
         /// </summary>
         /// <param name="ResultCode">The machine-readable result code.</param>
-        /// <param name="Description">A human-readable error description.</param>
+        /// <param name="Description">An optional human-readable error description.</param>
+        /// <param name="Details">Optional error details.</param>
+        /// <param name="Response">An optional response message.</param>
         public Result(ResultCodes  ResultCode,
                       String?      Description   = null,
-                      JObject?     Details       = null)
+                      JObject?     Details       = null,
+                      JObject?     Response      = null)
         {
 
             this.ResultCode   = ResultCode;
             this.Description  = Description?.Trim();
             this.Details      = Details;
+            this.Response     = Response;
 
         }
 
@@ -95,7 +89,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0
             => new (
                    SendRequestState.ErrorCode ?? ResultCodes.GenericError,
                    SendRequestState.ErrorDescription,
-                   SendRequestState.ErrorDetails
+                   SendRequestState.ErrorDetails,
+                   SendRequestState.Response
                );
 
 

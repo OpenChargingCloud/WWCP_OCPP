@@ -97,6 +97,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
             public String?                        ErrorDescription    { get; set; }
             public JObject?                       ErrorDetails        { get; set; }
 
+
+            public Boolean                        NoErrors
+                 => !ErrorCode.HasValue;
+
+            public Boolean                        HasErrors
+                 =>  ErrorCode.HasValue;
+
+
             public SendRequestState(DateTime                       Timestamp,
                                     ChargeBox_Id                   ChargeBoxId,
                                     OCPP_WebSocket_RequestMessage  WSRequestMessage,
@@ -6066,29 +6074,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
             //                                        new JObject());
 
 
-            if (sendRequestState.ErrorCode.HasValue)
-                response = new ResetResponse(Request,
-                                             Result.FromSendRequestState(sendRequestState));
-
-            else if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (ResetResponse.TryParse(Request,
                                            sendRequestState.Response,
                                            out var resetResponse,
-                                           out var errorResponse))
+                                           out var errorResponse) &&
+                    resetResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = resetResponse;
                 }
 
-                else
-                    response = new ResetResponse(Request,
-                                                 Result.Format(errorResponse));
+                response ??= new ResetResponse(Request,
+                                               Result.Format(errorResponse));
 
             }
-            else
-                response = new ResetResponse(Request,
-                                             Result.FromSendRequestState(sendRequestState));
+
+            response ??= new ResetResponse(Request,
+                                           Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnResetResponse event
@@ -6150,25 +6155,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomUpdateFirmwareRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (UpdateFirmwareResponse.TryParse(Request,
                                                     sendRequestState.Response,
                                                     out var updateFirmwareResponse,
-                                                    out var errorResponse))
+                                                    out var errorResponse) &&
+                    updateFirmwareResponse is not null)
                 {
-                    response = updateFirmwareResponse!;
+                    response = updateFirmwareResponse;
                 }
 
-                else
-                    response = new UpdateFirmwareResponse(Request,
-                                                          Result.Format(errorResponse));
+                response ??= new UpdateFirmwareResponse(Request,
+                                                        Result.Format(errorResponse));
 
             }
-            else
-                response = new UpdateFirmwareResponse(Request,
-                                                      Result.FromSendRequestState(sendRequestState));
+
+            response ??= new UpdateFirmwareResponse(Request,
+                                                    Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnUpdateFirmwareResponse event
@@ -6230,25 +6236,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomPublishFirmwareRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (PublishFirmwareResponse.TryParse(Request,
                                                      sendRequestState.Response,
-                                                     out var updateFirmwareResponse,
-                                                     out var errorResponse))
+                                                     out var publishFirmwareResponse,
+                                                     out var errorResponse) &&
+                    publishFirmwareResponse is not null)
                 {
-                    response = updateFirmwareResponse!;
+                    response = publishFirmwareResponse;
                 }
 
-                else
-                    response = new PublishFirmwareResponse(Request,
-                                                           Result.Format(errorResponse));
+                response ??= new PublishFirmwareResponse(Request,
+                                                         Result.Format(errorResponse));
 
             }
-            else
-                response = new PublishFirmwareResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
+
+            response ??= new PublishFirmwareResponse(Request,
+                                                     Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnPublishFirmwareResponse event
@@ -6310,25 +6317,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomUnpublishFirmwareRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (UnpublishFirmwareResponse.TryParse(Request,
                                                        sendRequestState.Response,
-                                                       out var updateFirmwareResponse,
-                                                       out var errorResponse))
+                                                       out var unpublishFirmwareResponse,
+                                                       out var errorResponse) &&
+                    unpublishFirmwareResponse is not null)
                 {
-                    response = updateFirmwareResponse!;
+                    response = unpublishFirmwareResponse;
                 }
 
-                else
-                    response = new UnpublishFirmwareResponse(Request,
-                                                             Result.Format(errorResponse));
+                response ??= new UnpublishFirmwareResponse(Request,
+                                                           Result.Format(errorResponse));
 
             }
-            else
-                response = new UnpublishFirmwareResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+
+            response ??= new UnpublishFirmwareResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnUnpublishFirmwareResponse event
@@ -6390,25 +6398,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomGetBaseReportRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetBaseReportResponse.TryParse(Request,
                                                    sendRequestState.Response,
-                                                   out var resetResponse,
-                                                   out var errorResponse))
+                                                   out var getBaseReportResponse,
+                                                   out var errorResponse) &&
+                    getBaseReportResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = getBaseReportResponse;
                 }
 
-                else
-                    response = new GetBaseReportResponse(Request,
-                                                         Result.Format(errorResponse));
+                response ??= new GetBaseReportResponse(Request,
+                                                       Result.Format(errorResponse));
 
             }
-            else
-                response = new GetBaseReportResponse(Request,
-                                                     Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetBaseReportResponse(Request,
+                                                   Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetBaseReportResponse event
@@ -6470,25 +6479,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomGetReportRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetReportResponse.TryParse(Request,
                                                sendRequestState.Response,
-                                               out var resetResponse,
-                                               out var errorResponse))
+                                               out var getReport,
+                                               out var errorResponse) &&
+                    getReport is not null)
                 {
-                    response = resetResponse!;
+                    response = getReport;
                 }
 
-                else
-                    response = new GetReportResponse(Request,
-                                                     Result.Format(errorResponse));
+                response ??= new GetReportResponse(Request,
+                                                   Result.Format(errorResponse));
 
             }
-            else
-                response = new GetReportResponse(Request,
-                                                 Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetReportResponse(Request,
+                                               Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetReportResponse event
@@ -6554,25 +6564,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomGetLogRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetLogResponse.TryParse(Request,
                                             sendRequestState.Response,
-                                            out var clearCacheResponse,
-                                            out var errorResponse))
+                                            out var getLogResponse,
+                                            out var errorResponse) &&
+                    getLogResponse is not null)
                 {
-                    response = clearCacheResponse!;
+                    response = getLogResponse;
                 }
 
-                else
-                    response = new GetLogResponse(Request,
-                                                  Result.Format(errorResponse));
+                response ??= new GetLogResponse(Request,
+                                                Result.Format(errorResponse));
 
             }
-            else
-                response = new GetLogResponse(Request,
-                                              Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetLogResponse(Request,
+                                            Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetLogResponse event
@@ -6634,25 +6645,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomSetVariablesRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (SetVariablesResponse.TryParse(Request,
                                                   sendRequestState.Response,
-                                                  out var resetResponse,
-                                                  out var errorResponse))
+                                                  out var setVariablesResponse,
+                                                  out var errorResponse) &&
+                    setVariablesResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = setVariablesResponse;
                 }
 
-                else
-                    response = new SetVariablesResponse(Request,
-                                                        Result.Format(errorResponse));
+                response ??= new SetVariablesResponse(Request,
+                                                      Result.Format(errorResponse));
 
             }
-            else
-                response = new SetVariablesResponse(Request,
-                                                    Result.FromSendRequestState(sendRequestState));
+
+            response ??= new SetVariablesResponse(Request,
+                                                  Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnSetVariablesResponse event
@@ -6714,25 +6726,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomGetVariablesRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetVariablesResponse.TryParse(Request,
                                                   sendRequestState.Response,
-                                                  out var resetResponse,
-                                                  out var errorResponse))
+                                                  out var getVariablesResponse,
+                                                  out var errorResponse) &&
+                    getVariablesResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = getVariablesResponse;
                 }
 
-                else
-                    response = new GetVariablesResponse(Request,
-                                                        Result.Format(errorResponse));
+                response ??= new GetVariablesResponse(Request,
+                                                      Result.Format(errorResponse));
 
             }
-            else
-                response = new GetVariablesResponse(Request,
-                                                    Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetVariablesResponse(Request,
+                                                  Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetVariablesResponse event
@@ -6794,25 +6807,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomSetMonitoringBaseRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (SetMonitoringBaseResponse.TryParse(Request,
                                                        sendRequestState.Response,
-                                                       out var resetResponse,
-                                                       out var errorResponse))
+                                                       out var setMonitoringBaseResponse,
+                                                       out var errorResponse) &&
+                    setMonitoringBaseResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = setMonitoringBaseResponse;
                 }
 
-                else
-                    response = new SetMonitoringBaseResponse(Request,
-                                                 Result.Format(errorResponse));
+                response ??= new SetMonitoringBaseResponse(Request,
+                                                           Result.Format(errorResponse));
 
             }
-            else
-                response = new SetMonitoringBaseResponse(Request,
-                                             Result.FromSendRequestState(sendRequestState));
+
+            response ??= new SetMonitoringBaseResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnSetMonitoringBaseResponse event
@@ -6874,25 +6888,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomGetMonitoringReportRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetMonitoringReportResponse.TryParse(Request,
                                                          sendRequestState.Response,
-                                                         out var resetResponse,
-                                                         out var errorResponse))
+                                                         out var getMonitoringReportResponse,
+                                                         out var errorResponse) &&
+                    getMonitoringReportResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = getMonitoringReportResponse;
                 }
 
-                else
-                    response = new GetMonitoringReportResponse(Request,
-                                                 Result.Format(errorResponse));
+                response ??= new GetMonitoringReportResponse(Request,
+                                                             Result.Format(errorResponse));
 
             }
-            else
-                response = new GetMonitoringReportResponse(Request,
-                                             Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetMonitoringReportResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetMonitoringReportResponse event
@@ -6954,25 +6969,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomSetMonitoringLevelRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (SetMonitoringLevelResponse.TryParse(Request,
                                                         sendRequestState.Response,
-                                                        out var resetResponse,
-                                                        out var errorResponse))
+                                                        out var setMonitoringLevelResponse,
+                                                        out var errorResponse) &&
+                    setMonitoringLevelResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = setMonitoringLevelResponse;
                 }
 
-                else
-                    response = new SetMonitoringLevelResponse(Request,
-                                                 Result.Format(errorResponse));
+                response ??= new SetMonitoringLevelResponse(Request,
+                                                            Result.Format(errorResponse));
 
             }
-            else
-                response = new SetMonitoringLevelResponse(Request,
-                                             Result.FromSendRequestState(sendRequestState));
+
+            response ??= new SetMonitoringLevelResponse(Request,
+                                                        Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnSetMonitoringLevelResponse event
@@ -7034,25 +7050,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomSetVariableMonitoringRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (SetVariableMonitoringResponse.TryParse(Request,
                                                            sendRequestState.Response,
-                                                           out var resetResponse,
-                                                           out var errorResponse))
+                                                           out var setVariableMonitoringResponse,
+                                                           out var errorResponse) &&
+                    setVariableMonitoringResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = setVariableMonitoringResponse;
                 }
 
-                else
-                    response = new SetVariableMonitoringResponse(Request,
-                                                                 Result.Format(errorResponse));
+                response ??= new SetVariableMonitoringResponse(Request,
+                                                               Result.Format(errorResponse));
 
             }
-            else
-                response = new SetVariableMonitoringResponse(Request,
-                                                             Result.FromSendRequestState(sendRequestState));
+
+            response ??= new SetVariableMonitoringResponse(Request,
+                                                           Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnSetVariableMonitoringResponse event
@@ -7114,25 +7131,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomClearVariableMonitoringRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (ClearVariableMonitoringResponse.TryParse(Request,
                                                              sendRequestState.Response,
-                                                             out var resetResponse,
-                                                             out var errorResponse))
+                                                             out var clearVariableMonitoringResponse,
+                                                             out var errorResponse) &&
+                    clearVariableMonitoringResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = clearVariableMonitoringResponse;
                 }
 
-                else
-                    response = new ClearVariableMonitoringResponse(Request,
-                                                                   Result.Format(errorResponse));
+                response ??= new ClearVariableMonitoringResponse(Request,
+                                                                 Result.Format(errorResponse));
 
             }
-            else
-                response = new ClearVariableMonitoringResponse(Request,
-                                                               Result.FromSendRequestState(sendRequestState));
+
+            response ??= new ClearVariableMonitoringResponse(Request,
+                                                             Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnClearVariableMonitoringResponse event
@@ -7194,25 +7212,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomSetNetworkProfileRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (SetNetworkProfileResponse.TryParse(Request,
                                                        sendRequestState.Response,
-                                                       out var resetResponse,
-                                                       out var errorResponse))
+                                                       out var setNetworkProfileResponse,
+                                                       out var errorResponse) &&
+                    setNetworkProfileResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = setNetworkProfileResponse;
                 }
 
-                else
-                    response = new SetNetworkProfileResponse(Request,
-                                                             Result.Format(errorResponse));
+                response ??= new SetNetworkProfileResponse(Request,
+                                                           Result.Format(errorResponse));
 
             }
-            else
-                response = new SetNetworkProfileResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+
+            response ??= new SetNetworkProfileResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnSetNetworkProfileResponse event
@@ -7274,25 +7293,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomChangeAvailabilityRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (ChangeAvailabilityResponse.TryParse(Request,
                                                         sendRequestState.Response,
                                                         out var changeAvailabilityResponse,
-                                                        out var errorResponse))
+                                                        out var errorResponse) &&
+                    changeAvailabilityResponse is not null)
                 {
-                    response = changeAvailabilityResponse!;
+                    response = changeAvailabilityResponse;
                 }
 
-                else
-                    response = new ChangeAvailabilityResponse(Request,
-                                                              Result.Format(errorResponse));
+                response ??= new ChangeAvailabilityResponse(Request,
+                                                            Result.Format(errorResponse));
 
             }
-            else
-                response = new ChangeAvailabilityResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+
+            response ??= new ChangeAvailabilityResponse(Request,
+                                                        Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnChangeAvailabilityResponse event
@@ -7354,25 +7374,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomTriggerMessageRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (TriggerMessageResponse.TryParse(Request,
                                                     sendRequestState.Response,
                                                     out var triggerMessageResponse,
-                                                    out var errorResponse))
+                                                    out var errorResponse) &&
+                    triggerMessageResponse is not null)
                 {
-                    response = triggerMessageResponse!;
+                    response = triggerMessageResponse;
                 }
 
-                else
-                    response = new TriggerMessageResponse(Request,
-                                                          Result.Format(errorResponse));
+                response ??= new TriggerMessageResponse(Request,
+                                                        Result.Format(errorResponse));
 
             }
-            else
-                response = new TriggerMessageResponse(Request,
-                                                      Result.FromSendRequestState(sendRequestState));
+
+            response ??= new TriggerMessageResponse(Request,
+                                                    Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnTriggerMessageResponse event
@@ -7434,25 +7455,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomDataTransferRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (CS.DataTransferResponse.TryParse(Request,
                                                      sendRequestState.Response,
                                                      out var dataTransferResponse,
-                                                     out var errorResponse))
+                                                     out var errorResponse) &&
+                    dataTransferResponse is not null)
                 {
-                    response = dataTransferResponse!;
+                    response = dataTransferResponse;
                 }
 
-                else
-                    response = new CS.DataTransferResponse(Request,
-                                                           Result.Format(errorResponse));
+                response ??= new CS.DataTransferResponse(Request,
+                                                         Result.Format(errorResponse));
 
             }
-            else
-                response = new CS.DataTransferResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
+
+            response ??= new CS.DataTransferResponse(Request,
+                                                     Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnDataTransferResponse event
@@ -7519,25 +7541,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomCertificateSignedRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (CertificateSignedResponse.TryParse(Request,
                                                        sendRequestState.Response,
-                                                       out var clearCacheResponse,
-                                                       out var errorResponse))
+                                                       out var certificateSignedResponse,
+                                                       out var errorResponse) &&
+                    certificateSignedResponse is not null)
                 {
-                    response = clearCacheResponse!;
+                    response = certificateSignedResponse;
                 }
 
-                else
-                    response = new CertificateSignedResponse(Request,
-                                                             Result.Format(errorResponse));
+                response ??= new CertificateSignedResponse(Request,
+                                                           Result.Format(errorResponse));
 
             }
-            else
-                response = new CertificateSignedResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+
+            response ??= new CertificateSignedResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnCertificateSignedResponse event
@@ -7603,25 +7626,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomInstallCertificateRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (InstallCertificateResponse.TryParse(Request,
                                                         sendRequestState.Response,
-                                                        out var clearCacheResponse,
-                                                        out var errorResponse))
+                                                        out var installCertificateResponse,
+                                                        out var errorResponse) &&
+                    installCertificateResponse is not null)
                 {
-                    response = clearCacheResponse!;
+                    response = installCertificateResponse;
                 }
 
-                else
-                    response = new InstallCertificateResponse(Request,
-                                                              Result.Format(errorResponse));
+                response ??= new InstallCertificateResponse(Request,
+                                                            Result.Format(errorResponse));
 
             }
-            else
-                response = new InstallCertificateResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+
+            response ??= new InstallCertificateResponse(Request,
+                                                        Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnInstallCertificateResponse event
@@ -7687,25 +7711,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomGetInstalledCertificateIdsRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetInstalledCertificateIdsResponse.TryParse(Request,
                                                                 sendRequestState.Response,
-                                                                out var clearCacheResponse,
-                                                                out var errorResponse))
+                                                                out var getInstalledCertificateIdsResponse,
+                                                                out var errorResponse) &&
+                    getInstalledCertificateIdsResponse is not null)
                 {
-                    response = clearCacheResponse!;
+                    response = getInstalledCertificateIdsResponse;
                 }
 
-                else
-                    response = new GetInstalledCertificateIdsResponse(Request,
-                                                                      Result.Format(errorResponse));
+                response ??= new GetInstalledCertificateIdsResponse(Request,
+                                                                    Result.Format(errorResponse));
 
             }
-            else
-                response = new GetInstalledCertificateIdsResponse(Request,
-                                                                  Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetInstalledCertificateIdsResponse(Request,
+                                                                Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetInstalledCertificateIdsResponse event
@@ -7771,25 +7796,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomDeleteCertificateRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (DeleteCertificateResponse.TryParse(Request,
                                                        sendRequestState.Response,
-                                                       out var clearCacheResponse,
-                                                       out var errorResponse))
+                                                       out var deleteCertificateResponse,
+                                                       out var errorResponse) &&
+                    deleteCertificateResponse is not null)
                 {
-                    response = clearCacheResponse!;
+                    response = deleteCertificateResponse;
                 }
 
-                else
-                    response = new DeleteCertificateResponse(Request,
-                                                             Result.Format(errorResponse));
+                response ??= new DeleteCertificateResponse(Request,
+                                                           Result.Format(errorResponse));
 
             }
-            else
-                response = new DeleteCertificateResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+
+            response ??= new DeleteCertificateResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnDeleteCertificateResponse event
@@ -7852,25 +7878,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomGetLocalListVersionRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetLocalListVersionResponse.TryParse(Request,
                                                          sendRequestState.Response,
                                                          out var getLocalListVersionResponse,
-                                                         out var errorResponse))
+                                                         out var errorResponse) &&
+                    getLocalListVersionResponse is not null)
                 {
-                    response = getLocalListVersionResponse!;
+                    response = getLocalListVersionResponse;
                 }
 
-                else
-                    response = new GetLocalListVersionResponse(Request,
-                                                               Result.Format(errorResponse));
+                response ??= new GetLocalListVersionResponse(Request,
+                                                             Result.Format(errorResponse));
 
             }
-            else
-                response = new GetLocalListVersionResponse(Request,
-                                                           Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetLocalListVersionResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetLocalListVersionResponse event
@@ -7932,25 +7959,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomSendLocalListRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (SendLocalListResponse.TryParse(Request,
                                                    sendRequestState.Response,
                                                    out var sendLocalListResponse,
-                                                   out var errorResponse))
+                                                   out var errorResponse) &&
+                    sendLocalListResponse is not null)
                 {
-                    response = sendLocalListResponse!;
+                    response = sendLocalListResponse;
                 }
 
-                else
-                    response = new SendLocalListResponse(Request,
-                                                         Result.Format(errorResponse));
+                response ??= new SendLocalListResponse(Request,
+                                                       Result.Format(errorResponse));
 
             }
-            else
-                response = new SendLocalListResponse(Request,
-                                                     Result.FromSendRequestState(sendRequestState));
+
+            response ??= new SendLocalListResponse(Request,
+                                                   Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnSendLocalListResponse event
@@ -8012,25 +8040,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomClearCacheRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (ClearCacheResponse.TryParse(Request,
                                                 sendRequestState.Response,
                                                 out var clearCacheResponse,
-                                                out var errorResponse))
+                                                out var errorResponse) &&
+                    clearCacheResponse is not null)
                 {
-                    response = clearCacheResponse!;
+                    response = clearCacheResponse;
                 }
 
-                else
-                    response = new ClearCacheResponse(Request,
-                                                      Result.Format(errorResponse));
+                response ??= new ClearCacheResponse(Request,
+                                                    Result.Format(errorResponse));
 
             }
-            else
-                response = new ClearCacheResponse(Request,
-                                                  Result.FromSendRequestState(sendRequestState));
+
+            response ??= new ClearCacheResponse(Request,
+                                                Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnClearCacheResponse event
@@ -8093,25 +8122,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomReserveNowRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (ReserveNowResponse.TryParse(Request,
                                                 sendRequestState.Response,
                                                 out var reserveNowResponse,
-                                                out var errorResponse))
+                                                out var errorResponse) &&
+                    reserveNowResponse is not null)
                 {
-                    response = reserveNowResponse!;
+                    response = reserveNowResponse;
                 }
 
-                else
-                    response = new ReserveNowResponse(Request,
-                                                      Result.Format(errorResponse));
+                response ??= new ReserveNowResponse(Request,
+                                                    Result.Format(errorResponse));
 
             }
-            else
-                response = new ReserveNowResponse(Request,
-                                                  Result.FromSendRequestState(sendRequestState));
+
+            response ??= new ReserveNowResponse(Request,
+                                                Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnReserveNowResponse event
@@ -8173,25 +8203,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomCancelReservationRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (CancelReservationResponse.TryParse(Request,
                                                        sendRequestState.Response,
                                                        out var cancelReservationResponse,
-                                                       out var errorResponse))
+                                                       out var errorResponse) &&
+                    cancelReservationResponse is not null)
                 {
-                    response = cancelReservationResponse!;
+                    response = cancelReservationResponse;
                 }
 
-                else
-                    response = new CancelReservationResponse(Request,
-                                                             Result.Format(errorResponse));
+                response ??= new CancelReservationResponse(Request,
+                                                           Result.Format(errorResponse));
 
             }
-            else
-                response = new CancelReservationResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+
+            response ??= new CancelReservationResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnCancelReservationResponse event
@@ -8253,25 +8284,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomRequestStartTransactionRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (RequestStartTransactionResponse.TryParse(Request,
                                                              sendRequestState.Response,
-                                                             out var resetResponse,
-                                                             out var errorResponse))
+                                                             out var requestStartTransactionResponse,
+                                                             out var errorResponse) &&
+                    requestStartTransactionResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = requestStartTransactionResponse;
                 }
 
-                else
-                    response = new RequestStartTransactionResponse(Request,
-                                                                   Result.Format(errorResponse));
+                response ??= new RequestStartTransactionResponse(Request,
+                                                                 Result.Format(errorResponse));
 
             }
-            else
-                response = new RequestStartTransactionResponse(Request,
-                                                               Result.FromSendRequestState(sendRequestState));
+
+            response ??= new RequestStartTransactionResponse(Request,
+                                                             Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnRequestStartTransactionResponse event
@@ -8333,25 +8365,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomRequestStopTransactionRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (RequestStopTransactionResponse.TryParse(Request,
                                                             sendRequestState.Response,
-                                                            out var resetResponse,
-                                                            out var errorResponse))
+                                                            out var requestStopTransactionResponse,
+                                                            out var errorResponse) &&
+                    requestStopTransactionResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = requestStopTransactionResponse;
                 }
 
-                else
-                    response = new RequestStopTransactionResponse(Request,
-                                                                  Result.Format(errorResponse));
+                response ??= new RequestStopTransactionResponse(Request,
+                                                                Result.Format(errorResponse));
 
             }
-            else
-                response = new RequestStopTransactionResponse(Request,
-                                                              Result.FromSendRequestState(sendRequestState));
+
+            response ??= new RequestStopTransactionResponse(Request,
+                                                            Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnRequestStopTransactionResponse event
@@ -8413,25 +8446,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomGetTransactionStatusRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetTransactionStatusResponse.TryParse(Request,
                                                           sendRequestState.Response,
-                                                          out var resetResponse,
-                                                          out var errorResponse))
+                                                          out var getTransactionStatusResponse,
+                                                          out var errorResponse) &&
+                    getTransactionStatusResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = getTransactionStatusResponse;
                 }
 
-                else
-                    response = new GetTransactionStatusResponse(Request,
-                                                                Result.Format(errorResponse));
+                response ??= new GetTransactionStatusResponse(Request,
+                                                              Result.Format(errorResponse));
 
             }
-            else
-                response = new GetTransactionStatusResponse(Request,
-                                                            Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetTransactionStatusResponse(Request,
+                                                          Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetTransactionStatusResponse event
@@ -8493,25 +8527,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomSetChargingProfileRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (SetChargingProfileResponse.TryParse(Request,
                                                         sendRequestState.Response,
                                                         out var setChargingProfileResponse,
-                                                        out var errorResponse))
+                                                        out var errorResponse) &&
+                    setChargingProfileResponse is not null)
                 {
-                    response = setChargingProfileResponse!;
+                    response = setChargingProfileResponse;
                 }
 
-                else
-                    response = new SetChargingProfileResponse(Request,
-                                                              Result.Format(errorResponse));
+                response ??= new SetChargingProfileResponse(Request,
+                                                            Result.Format(errorResponse));
 
             }
-            else
-                response = new SetChargingProfileResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+
+            response ??= new SetChargingProfileResponse(Request,
+                                                        Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnSetChargingProfileResponse event
@@ -8573,25 +8608,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomGetChargingProfilesRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetChargingProfilesResponse.TryParse(Request,
                                                          sendRequestState.Response,
-                                                         out var resetResponse,
-                                                         out var errorResponse))
+                                                         out var getChargingProfilesResponse,
+                                                         out var errorResponse) &&
+                    getChargingProfilesResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = getChargingProfilesResponse;
                 }
 
-                else
-                    response = new GetChargingProfilesResponse(Request,
-                                                               Result.Format(errorResponse));
+                response ??= new GetChargingProfilesResponse(Request,
+                                                             Result.Format(errorResponse));
 
             }
-            else
-                response = new GetChargingProfilesResponse(Request,
-                                                           Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetChargingProfilesResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetChargingProfilesResponse event
@@ -8653,25 +8689,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomClearChargingProfileRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (ClearChargingProfileResponse.TryParse(Request,
                                                           sendRequestState.Response,
                                                           out var clearChargingProfileResponse,
-                                                          out var errorResponse))
+                                                          out var errorResponse) &&
+                    clearChargingProfileResponse is not null)
                 {
-                    response = clearChargingProfileResponse!;
+                    response = clearChargingProfileResponse;
                 }
 
-                else
-                    response = new ClearChargingProfileResponse(Request,
-                                                                Result.Format(errorResponse));
+                response ??= new ClearChargingProfileResponse(Request,
+                                                              Result.Format(errorResponse));
 
             }
-            else
-                response = new ClearChargingProfileResponse(Request,
-                                                            Result.FromSendRequestState(sendRequestState));
+
+            response ??= new ClearChargingProfileResponse(Request,
+                                                          Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnClearChargingProfileResponse event
@@ -8734,25 +8771,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomGetCompositeScheduleRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetCompositeScheduleResponse.TryParse(Request,
                                                           sendRequestState.Response,
                                                           out var getCompositeScheduleResponse,
-                                                          out var errorResponse))
+                                                          out var errorResponse) &&
+                    getCompositeScheduleResponse is not null)
                 {
-                    response = getCompositeScheduleResponse!;
+                    response = getCompositeScheduleResponse;
                 }
 
-                else
-                    response = new GetCompositeScheduleResponse(Request,
-                                                                Result.Format(errorResponse));
+                response ??= new GetCompositeScheduleResponse(Request,
+                                                              Result.Format(errorResponse));
 
             }
-            else
-                response = new GetCompositeScheduleResponse(Request,
-                                                            Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetCompositeScheduleResponse(Request,
+                                                          Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetCompositeScheduleResponse event
@@ -8814,25 +8852,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomUnlockConnectorRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (UnlockConnectorResponse.TryParse(Request,
                                                      sendRequestState.Response,
                                                      out var unlockConnectorResponse,
-                                                     out var errorResponse))
+                                                     out var errorResponse) &&
+                    unlockConnectorResponse is not null)
                 {
-                    response = unlockConnectorResponse!;
+                    response = unlockConnectorResponse;
                 }
 
-                else
-                    response = new UnlockConnectorResponse(Request,
-                                                           Result.Format(errorResponse));
+                response ??= new UnlockConnectorResponse(Request,
+                                                         Result.Format(errorResponse));
 
             }
-            else
-                response = new UnlockConnectorResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
+
+            response ??= new UnlockConnectorResponse(Request,
+                                                     Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnUnlockConnectorResponse event
@@ -8895,25 +8934,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomSetDisplayMessageRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (SetDisplayMessageResponse.TryParse(Request,
                                                        sendRequestState.Response,
-                                                       out var resetResponse,
-                                                       out var errorResponse))
+                                                       out var setDisplayMessageResponse,
+                                                       out var errorResponse) &&
+                    setDisplayMessageResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = setDisplayMessageResponse;
                 }
 
-                else
-                    response = new SetDisplayMessageResponse(Request,
-                                                             Result.Format(errorResponse));
+                response ??= new SetDisplayMessageResponse(Request,
+                                                           Result.Format(errorResponse));
 
             }
-            else
-                response = new SetDisplayMessageResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+
+            response ??= new SetDisplayMessageResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnSetDisplayMessageResponse event
@@ -8975,25 +9015,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomGetDisplayMessagesRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetDisplayMessagesResponse.TryParse(Request,
                                                         sendRequestState.Response,
-                                                        out var resetResponse,
-                                                        out var errorResponse))
+                                                        out var getDisplayMessagesResponse,
+                                                        out var errorResponse) &&
+                    getDisplayMessagesResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = getDisplayMessagesResponse;
                 }
 
-                else
-                    response = new GetDisplayMessagesResponse(Request,
-                                                              Result.Format(errorResponse));
+                response ??= new GetDisplayMessagesResponse(Request,
+                                                            Result.Format(errorResponse));
 
             }
-            else
-                response = new GetDisplayMessagesResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetDisplayMessagesResponse(Request,
+                                                        Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetDisplayMessagesResponse event
@@ -9055,25 +9096,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomClearDisplayMessageRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (ClearDisplayMessageResponse.TryParse(Request,
                                                          sendRequestState.Response,
-                                                         out var resetResponse,
-                                                         out var errorResponse))
+                                                         out var clearDisplayMessageResponse,
+                                                         out var errorResponse) &&
+                    clearDisplayMessageResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = clearDisplayMessageResponse;
                 }
 
-                else
-                    response = new ClearDisplayMessageResponse(Request,
-                                                               Result.Format(errorResponse));
+                response ??= new ClearDisplayMessageResponse(Request,
+                                                             Result.Format(errorResponse));
 
             }
-            else
-                response = new ClearDisplayMessageResponse(Request,
-                                                           Result.FromSendRequestState(sendRequestState));
+
+            response ??= new ClearDisplayMessageResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnClearDisplayMessageResponse event
@@ -9135,25 +9177,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomCostUpdatedRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (CostUpdatedResponse.TryParse(Request,
                                                  sendRequestState.Response,
-                                                 out var resetResponse,
-                                                 out var errorResponse))
+                                                 out var costUpdatedResponse,
+                                                 out var errorResponse) &&
+                    costUpdatedResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = costUpdatedResponse;
                 }
 
-                else
-                    response = new CostUpdatedResponse(Request,
-                                                       Result.Format(errorResponse));
+                response ??= new CostUpdatedResponse(Request,
+                                                     Result.Format(errorResponse));
 
             }
-            else
-                response = new CostUpdatedResponse(Request,
-                                                   Result.FromSendRequestState(sendRequestState));
+
+            response ??= new CostUpdatedResponse(Request,
+                                                 Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnCostUpdatedResponse event
@@ -9215,25 +9258,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                                                      Request.ToJSON(CustomCustomerInformationRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (CustomerInformationResponse.TryParse(Request,
                                                          sendRequestState.Response,
-                                                         out var resetResponse,
-                                                         out var errorResponse))
+                                                         out var customerInformationResponse,
+                                                         out var errorResponse) &&
+                    customerInformationResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = customerInformationResponse;
                 }
 
-                else
-                    response = new CustomerInformationResponse(Request,
-                                                               Result.Format(errorResponse));
+                response ??= new CustomerInformationResponse(Request,
+                                                             Result.Format(errorResponse));
 
             }
-            else
-                response = new CustomerInformationResponse(Request,
-                                                           Result.FromSendRequestState(sendRequestState));
+
+            response ??= new CustomerInformationResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnCustomerInformationResponse event

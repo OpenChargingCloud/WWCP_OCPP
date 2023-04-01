@@ -17,6 +17,8 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 using static cloud.charging.open.protocols.OCPPv1_6.CS.CentralSystemWSServer;
@@ -40,14 +42,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public ResultCodes  ResultCode     { get; }
 
         /// <summary>
-        /// A human-readable error description.
+        /// The optional human-readable error description.
         /// </summary>
         public String?      Description    { get; }
 
         /// <summary>
-        /// Human-readable error details.
+        /// Optional error details.
         /// </summary>
-        public String?      Details        { get; }
+        public JObject?     Details        { get; }
+
+        /// <summary>
+        /// The optional response message.
+        /// </summary>
+        public JObject?     Response       { get; }
 
         #endregion
 
@@ -57,15 +64,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Create a new generic OCPP result.
         /// </summary>
         /// <param name="ResultCode">The machine-readable result code.</param>
-        /// <param name="Description">A human-readable error description.</param>
+        /// <param name="Description">An optional human-readable error description.</param>
+        /// <param name="Details">Optional error details.</param>
+        /// <param name="Response">An optional response message.</param>
         public Result(ResultCodes  ResultCode,
                       String?      Description   = null,
-                      String?      Details       = null)
+                      JObject?     Details       = null,
+                      JObject?     Response      = null)
         {
 
             this.ResultCode   = ResultCode;
             this.Description  = Description?.Trim();
-            this.Details      = Details?.Trim();
+            this.Details      = Details;
+            this.Response     = Response;
 
         }
 
@@ -77,7 +88,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             => new (
                    SendRequestState.ErrorCode ?? ResultCodes.GenericError,
                    SendRequestState.ErrorDescription,
-                   SendRequestState.ErrorDetails?.ToString()
+                   SendRequestState.ErrorDetails,
+                   SendRequestState.Response
                );
 
 
@@ -87,8 +99,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Unknown result code.
         /// </summary>
         /// <param name="Description">A human-readable error description.</param>
-        public static Result GenericError(String? Description   = null,
-                                          String? Details       = null)
+        public static Result GenericError(String?  Description   = null,
+                                          JObject? Details       = null)
 
             => new (ResultCodes.GenericError,
                     Description,

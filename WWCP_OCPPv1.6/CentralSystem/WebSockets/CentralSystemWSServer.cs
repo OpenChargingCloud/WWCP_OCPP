@@ -97,6 +97,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             public String?                        ErrorDescription    { get; set; }
             public JObject?                       ErrorDetails        { get; set; }
 
+
+            public Boolean                        NoErrors
+                 => !ErrorCode.HasValue;
+
+            public Boolean                        HasErrors
+                 =>  ErrorCode.HasValue;
+
+
             public SendRequestState(DateTime                       Timestamp,
                                     ChargeBox_Id                   ChargeBoxId,
                                     OCPP_WebSocket_RequestMessage  WSRequestMessage,
@@ -3998,25 +4006,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomResetRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (ResetResponse.TryParse(Request,
                                            sendRequestState.Response,
                                            out var resetResponse,
-                                           out var errorResponse))
+                                           out var errorResponse) &&
+                    resetResponse is not null)
                 {
-                    response = resetResponse!;
+                    response = resetResponse;
                 }
 
-                else
-                    response = new ResetResponse(Request,
-                                                 Result.Format(errorResponse));
+                response ??= new ResetResponse(Request,
+                                               Result.Format(errorResponse));
 
             }
-            else
-                response = new ResetResponse(Request,
-                                             Result.FromSendRequestState(sendRequestState));
+
+            response ??= new ResetResponse(Request,
+                                           Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnResetResponse event
@@ -4078,25 +4087,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomChangeAvailabilityRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (ChangeAvailabilityResponse.TryParse(Request,
                                                         sendRequestState.Response,
                                                         out var changeAvailabilityResponse,
-                                                        out var errorResponse))
+                                                        out var errorResponse) &&
+                    changeAvailabilityResponse is not null)
                 {
-                    response = changeAvailabilityResponse!;
+                    response = changeAvailabilityResponse;
                 }
 
-                else
-                    response = new ChangeAvailabilityResponse(Request,
-                                                              Result.Format(errorResponse));
+                response ??= new ChangeAvailabilityResponse(Request,
+                                                            Result.Format(errorResponse));
 
             }
-            else
-                response = new ChangeAvailabilityResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+
+            response ??= new ChangeAvailabilityResponse(Request,
+                                                        Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnChangeAvailabilityResponse event
@@ -4158,25 +4168,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomGetConfigurationRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetConfigurationResponse.TryParse(Request,
                                                       sendRequestState.Response,
                                                       out var getConfigurationResponse,
-                                                      out var errorResponse))
+                                                      out var errorResponse) &&
+                    getConfigurationResponse is not null)
                 {
-                    response = getConfigurationResponse!;
+                    response = getConfigurationResponse;
                 }
 
-                else
-                    response = new GetConfigurationResponse(Request,
-                                                            Result.Format(errorResponse));
+                response ??= new GetConfigurationResponse(Request,
+                                                          Result.Format(errorResponse));
 
             }
-            else
-                response = new GetConfigurationResponse(Request,
-                                                        Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetConfigurationResponse(Request,
+                                                      Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetConfigurationResponse event
@@ -4238,25 +4249,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomChangeConfigurationRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (ChangeConfigurationResponse.TryParse(Request,
                                                          sendRequestState.Response,
                                                          out var changeConfigurationResponse,
-                                                         out var errorResponse))
+                                                         out var errorResponse) &&
+                    changeConfigurationResponse is not null)
                 {
-                    response = changeConfigurationResponse!;
+                    response = changeConfigurationResponse;
                 }
 
-                else
-                    response = new ChangeConfigurationResponse(Request,
-                                                               Result.Format(errorResponse));
+                response ??= new ChangeConfigurationResponse(Request,
+                                                             Result.Format(errorResponse));
 
             }
-            else
-                response = new ChangeConfigurationResponse(Request,
-                                                           Result.FromSendRequestState(sendRequestState));
+
+            response ??= new ChangeConfigurationResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnChangeConfigurationResponse event
@@ -4318,25 +4330,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomDataTransferRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (CP.DataTransferResponse.TryParse(Request,
                                                      sendRequestState.Response,
                                                      out var dataTransferResponse,
-                                                     out var errorResponse))
+                                                     out var errorResponse) &&
+                    dataTransferResponse is not null)
                 {
-                    response = dataTransferResponse!;
+                    response = dataTransferResponse;
                 }
 
-                else
-                    response = new CP.DataTransferResponse(Request,
-                                                           Result.Format(errorResponse));
+                response ??= new CP.DataTransferResponse(Request,
+                                                         Result.Format(errorResponse));
 
             }
-            else
-                response = new CP.DataTransferResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
+
+            response ??= new CP.DataTransferResponse(Request,
+                                                     Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnDataTransferResponse event
@@ -4398,25 +4411,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomGetDiagnosticsRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetDiagnosticsResponse.TryParse(Request,
                                                     sendRequestState.Response,
                                                     out var getDiagnosticsResponse,
-                                                    out var errorResponse))
+                                                    out var errorResponse) &&
+                    getDiagnosticsResponse is not null)
                 {
-                    response = getDiagnosticsResponse!;
+                    response = getDiagnosticsResponse;
                 }
 
-                else
-                    response = new GetDiagnosticsResponse(Request,
-                                                          Result.Format(errorResponse));
+                response ??= new GetDiagnosticsResponse(Request,
+                                                        Result.Format(errorResponse));
 
             }
-            else
-                response = new GetDiagnosticsResponse(Request,
-                                                      Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetDiagnosticsResponse(Request,
+                                                    Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetDiagnosticsResponse event
@@ -4478,25 +4492,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomTriggerMessageRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (TriggerMessageResponse.TryParse(Request,
                                                     sendRequestState.Response,
                                                     out var triggerMessageResponse,
-                                                    out var errorResponse))
+                                                    out var errorResponse) &&
+                    triggerMessageResponse is not null)
                 {
-                    response = triggerMessageResponse!;
+                    response = triggerMessageResponse;
                 }
 
-                else
-                    response = new TriggerMessageResponse(Request,
-                                                          Result.Format(errorResponse));
+                response ??= new TriggerMessageResponse(Request,
+                                                        Result.Format(errorResponse));
 
             }
-            else
-                response = new TriggerMessageResponse(Request,
-                                                      Result.FromSendRequestState(sendRequestState));
+
+            response ??= new TriggerMessageResponse(Request,
+                                                    Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnTriggerMessageResponse event
@@ -4558,25 +4573,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomUpdateFirmwareRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (UpdateFirmwareResponse.TryParse(Request,
                                                     sendRequestState.Response,
                                                     out var updateFirmwareResponse,
-                                                    out var errorResponse))
+                                                    out var errorResponse) &&
+                    updateFirmwareResponse is not null)
                 {
-                    response = updateFirmwareResponse!;
+                    response = updateFirmwareResponse;
                 }
 
-                else
-                    response = new UpdateFirmwareResponse(Request,
-                                                          Result.Format(errorResponse));
+                response ??= new UpdateFirmwareResponse(Request,
+                                                        Result.Format(errorResponse));
 
             }
-            else
-                response = new UpdateFirmwareResponse(Request,
-                                                      Result.FromSendRequestState(sendRequestState));
+
+            response ??= new UpdateFirmwareResponse(Request,
+                                                    Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnUpdateFirmwareResponse event
@@ -4639,25 +4655,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomReserveNowRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (ReserveNowResponse.TryParse(Request,
                                                     sendRequestState.Response,
                                                     out var reserveNowResponse,
-                                                    out var errorResponse))
+                                                    out var errorResponse) &&
+                    reserveNowResponse is not null)
                 {
-                    response = reserveNowResponse!;
+                    response = reserveNowResponse;
                 }
 
-                else
-                    response = new ReserveNowResponse(Request,
-                                                      Result.Format(errorResponse));
+                response ??= new ReserveNowResponse(Request,
+                                                    Result.Format(errorResponse));
 
             }
-            else
-                response = new ReserveNowResponse(Request,
-                                                  Result.FromSendRequestState(sendRequestState));
+
+            response ??= new ReserveNowResponse(Request,
+                                                Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnReserveNowResponse event
@@ -4719,25 +4736,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomCancelReservationRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (CancelReservationResponse.TryParse(Request,
                                                        sendRequestState.Response,
                                                        out var cancelReservationResponse,
-                                                       out var errorResponse))
+                                                       out var errorResponse) &&
+                    cancelReservationResponse is not null)
                 {
-                    response = cancelReservationResponse!;
+                    response = cancelReservationResponse;
                 }
 
-                else
-                    response = new CancelReservationResponse(Request,
-                                                             Result.Format(errorResponse));
+                response ??= new CancelReservationResponse(Request,
+                                                           Result.Format(errorResponse));
 
             }
-            else
-                response = new CancelReservationResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+
+            response ??= new CancelReservationResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnCancelReservationResponse event
@@ -4804,25 +4822,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      ),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (RemoteStartTransactionResponse.TryParse(Request,
                                                             sendRequestState.Response,
                                                             out var remoteStartTransactionResponse,
-                                                            out var errorResponse))
+                                                            out var errorResponse) &&
+                    remoteStartTransactionResponse is not null)
                 {
-                    response = remoteStartTransactionResponse!;
+                    response = remoteStartTransactionResponse;
                 }
 
-                else
-                    response = new RemoteStartTransactionResponse(Request,
-                                                                  Result.Format(errorResponse));
+                response ??= new RemoteStartTransactionResponse(Request,
+                                                                Result.Format(errorResponse));
 
             }
-            else
-                response = new RemoteStartTransactionResponse(Request,
-                                                              Result.FromSendRequestState(sendRequestState));
+
+            response ??= new RemoteStartTransactionResponse(Request,
+                                                            Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnRemoteStartTransactionResponse event
@@ -4884,25 +4903,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomRemoteStopTransactionRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (RemoteStopTransactionResponse.TryParse(Request,
                                                            sendRequestState.Response,
                                                            out var remoteStopTransactionResponse,
-                                                           out var errorResponse))
+                                                           out var errorResponse) &&
+                    remoteStopTransactionResponse is not null)
                 {
-                    response = remoteStopTransactionResponse!;
+                    response = remoteStopTransactionResponse;
                 }
 
-                else
-                    response = new RemoteStopTransactionResponse(Request,
-                                                                 Result.Format(errorResponse));
+                response ??= new RemoteStopTransactionResponse(Request,
+                                                               Result.Format(errorResponse));
 
             }
-            else
-                response = new RemoteStopTransactionResponse(Request,
-                                                             Result.FromSendRequestState(sendRequestState));
+
+            response ??= new RemoteStopTransactionResponse(Request,
+                                                           Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnRemoteStopTransactionResponse event
@@ -4964,25 +4984,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomSetChargingProfileRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (SetChargingProfileResponse.TryParse(Request,
                                                         sendRequestState.Response,
                                                         out var setChargingProfileResponse,
-                                                        out var errorResponse))
+                                                        out var errorResponse) &&
+                    setChargingProfileResponse is not null)
                 {
-                    response = setChargingProfileResponse!;
+                    response = setChargingProfileResponse;
                 }
 
-                else
-                    response = new SetChargingProfileResponse(Request,
-                                                              Result.Format(errorResponse));
+                response ??= new SetChargingProfileResponse(Request,
+                                                            Result.Format(errorResponse));
 
             }
-            else
-                response = new SetChargingProfileResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+
+            response ??= new SetChargingProfileResponse(Request,
+                                                        Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnSetChargingProfileResponse event
@@ -5044,25 +5065,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomClearChargingProfileRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (ClearChargingProfileResponse.TryParse(Request,
                                                           sendRequestState.Response,
                                                           out var clearChargingProfileResponse,
-                                                          out var errorResponse))
+                                                          out var errorResponse) &&
+                    clearChargingProfileResponse is not null)
                 {
-                    response = clearChargingProfileResponse!;
+                    response = clearChargingProfileResponse;
                 }
 
-                else
-                    response = new ClearChargingProfileResponse(Request,
-                                                                Result.Format(errorResponse));
+                response ??= new ClearChargingProfileResponse(Request,
+                                                              Result.Format(errorResponse));
 
             }
-            else
-                response = new ClearChargingProfileResponse(Request,
-                                                            Result.FromSendRequestState(sendRequestState));
+
+            response ??= new ClearChargingProfileResponse(Request,
+                                                          Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnClearChargingProfileResponse event
@@ -5125,25 +5147,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomGetCompositeScheduleRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetCompositeScheduleResponse.TryParse(Request,
                                                           sendRequestState.Response,
                                                           out var getCompositeScheduleResponse,
-                                                          out var errorResponse))
+                                                          out var errorResponse) &&
+                    getCompositeScheduleResponse is not null)
                 {
-                    response = getCompositeScheduleResponse!;
+                    response = getCompositeScheduleResponse;
                 }
 
-                else
-                    response = new GetCompositeScheduleResponse(Request,
-                                                                Result.Format(errorResponse));
+                response ??= new GetCompositeScheduleResponse(Request,
+                                                              Result.Format(errorResponse));
 
             }
-            else
-                response = new GetCompositeScheduleResponse(Request,
-                                                            Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetCompositeScheduleResponse(Request,
+                                                          Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetCompositeScheduleResponse event
@@ -5205,25 +5228,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomUnlockConnectorRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (UnlockConnectorResponse.TryParse(Request,
                                                      sendRequestState.Response,
                                                      out var unlockConnectorResponse,
-                                                     out var errorResponse))
+                                                     out var errorResponse) &&
+                    unlockConnectorResponse is not null)
                 {
-                    response = unlockConnectorResponse!;
+                    response = unlockConnectorResponse;
                 }
 
-                else
-                    response = new UnlockConnectorResponse(Request,
-                                                           Result.Format(errorResponse));
+                response ??= new UnlockConnectorResponse(Request,
+                                                         Result.Format(errorResponse));
 
             }
-            else
-                response = new UnlockConnectorResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
+
+            response ??= new UnlockConnectorResponse(Request,
+                                                     Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnUnlockConnectorResponse event
@@ -5286,25 +5310,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomGetLocalListVersionRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetLocalListVersionResponse.TryParse(Request,
                                                          sendRequestState.Response,
                                                          out var getLocalListVersionResponse,
-                                                         out var errorResponse))
+                                                         out var errorResponse) &&
+                    getLocalListVersionResponse is not null)
                 {
-                    response = getLocalListVersionResponse!;
+                    response = getLocalListVersionResponse;
                 }
 
-                else
-                    response = new GetLocalListVersionResponse(Request,
-                                                               Result.Format(errorResponse));
+                response ??= new GetLocalListVersionResponse(Request,
+                                                             Result.Format(errorResponse));
 
             }
-            else
-                response = new GetLocalListVersionResponse(Request,
-                                                           Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetLocalListVersionResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetLocalListVersionResponse event
@@ -5366,25 +5391,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomSendLocalListRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (SendLocalListResponse.TryParse(Request,
                                                    sendRequestState.Response,
                                                    out var sendLocalListResponse,
-                                                   out var errorResponse))
+                                                   out var errorResponse) &&
+                    sendLocalListResponse is not null)
                 {
-                    response = sendLocalListResponse!;
+                    response = sendLocalListResponse;
                 }
 
-                else
-                    response = new SendLocalListResponse(Request,
-                                                         Result.Format(errorResponse));
+                response ??= new SendLocalListResponse(Request,
+                                                       Result.Format(errorResponse));
 
             }
-            else
-                response = new SendLocalListResponse(Request,
-                                                     Result.FromSendRequestState(sendRequestState));
+
+            response ??= new SendLocalListResponse(Request,
+                                                   Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnSendLocalListResponse event
@@ -5446,25 +5472,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomClearCacheRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (ClearCacheResponse.TryParse(Request,
                                                 sendRequestState.Response,
                                                 out var clearCacheResponse,
-                                                out var errorResponse))
+                                                out var errorResponse) &&
+                    clearCacheResponse is not null)
                 {
-                    response = clearCacheResponse!;
+                    response = clearCacheResponse;
                 }
 
-                else
-                    response = new ClearCacheResponse(Request,
-                                                      Result.Format(errorResponse));
+                response ??= new ClearCacheResponse(Request,
+                                                    Result.Format(errorResponse));
 
             }
-            else
-                response = new ClearCacheResponse(Request,
-                                                  Result.FromSendRequestState(sendRequestState));
+
+            response ??= new ClearCacheResponse(Request,
+                                                Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnClearCacheResponse event
@@ -5534,25 +5561,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomCertificateSignedRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (CertificateSignedResponse.TryParse(Request,
                                                        sendRequestState.Response,
-                                                       out var clearCacheResponse,
-                                                       out var errorResponse))
+                                                       out var certificateSignedResponse,
+                                                       out var errorResponse) &&
+                    certificateSignedResponse is not null)
                 {
-                    response = clearCacheResponse!;
+                    response = certificateSignedResponse;
                 }
 
-                else
-                    response = new CertificateSignedResponse(Request,
-                                                             Result.Format(errorResponse));
+                response ??= new CertificateSignedResponse(Request,
+                                                           Result.Format(errorResponse));
 
             }
-            else
-                response = new CertificateSignedResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+
+            response ??= new CertificateSignedResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnCertificateSignedResponse event
@@ -5618,25 +5646,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomDeleteCertificateRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (DeleteCertificateResponse.TryParse(Request,
                                                        sendRequestState.Response,
-                                                       out var clearCacheResponse,
-                                                       out var errorResponse))
+                                                       out var deleteCertificateResponse,
+                                                       out var errorResponse) &&
+                    deleteCertificateResponse is not null)
                 {
-                    response = clearCacheResponse!;
+                    response = deleteCertificateResponse;
                 }
 
-                else
-                    response = new DeleteCertificateResponse(Request,
-                                                             Result.Format(errorResponse));
+                response ??= new DeleteCertificateResponse(Request,
+                                                           Result.Format(errorResponse));
 
             }
-            else
-                response = new DeleteCertificateResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+
+            response ??= new DeleteCertificateResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnDeleteCertificateResponse event
@@ -5702,25 +5731,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomExtendedTriggerMessageRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (ExtendedTriggerMessageResponse.TryParse(Request,
                                                             sendRequestState.Response,
-                                                            out var clearCacheResponse,
-                                                            out var errorResponse))
+                                                            out var extendedTriggerMessageResponse,
+                                                            out var errorResponse) &&
+                    extendedTriggerMessageResponse is not null)
                 {
-                    response = clearCacheResponse!;
+                    response = extendedTriggerMessageResponse;
                 }
 
-                else
-                    response = new ExtendedTriggerMessageResponse(Request,
-                                                                  Result.Format(errorResponse));
+                response ??= new ExtendedTriggerMessageResponse(Request,
+                                                                Result.Format(errorResponse));
 
             }
-            else
-                response = new ExtendedTriggerMessageResponse(Request,
-                                                              Result.FromSendRequestState(sendRequestState));
+
+            response ??= new ExtendedTriggerMessageResponse(Request,
+                                                            Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnExtendedTriggerMessageResponse event
@@ -5786,25 +5816,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomGetInstalledCertificateIdsRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetInstalledCertificateIdsResponse.TryParse(Request,
                                                                 sendRequestState.Response,
-                                                                out var clearCacheResponse,
-                                                                out var errorResponse))
+                                                                out var getInstalledCertificateIdsResponse,
+                                                                out var errorResponse) &&
+                    getInstalledCertificateIdsResponse is not null)
                 {
-                    response = clearCacheResponse!;
+                    response = getInstalledCertificateIdsResponse;
                 }
 
-                else
-                    response = new GetInstalledCertificateIdsResponse(Request,
-                                                                      Result.Format(errorResponse));
+                response ??= new GetInstalledCertificateIdsResponse(Request,
+                                                                    Result.Format(errorResponse));
 
             }
-            else
-                response = new GetInstalledCertificateIdsResponse(Request,
-                                                                  Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetInstalledCertificateIdsResponse(Request,
+                                                                Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetInstalledCertificateIdsResponse event
@@ -5870,25 +5901,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomGetLogRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (GetLogResponse.TryParse(Request,
                                             sendRequestState.Response,
-                                            out var clearCacheResponse,
-                                            out var errorResponse))
+                                            out var getLogResponse,
+                                            out var errorResponse) &&
+                    getLogResponse is not null)
                 {
-                    response = clearCacheResponse!;
+                    response = getLogResponse;
                 }
 
-                else
-                    response = new GetLogResponse(Request,
-                                                  Result.Format(errorResponse));
+                response ??= new GetLogResponse(Request,
+                                                Result.Format(errorResponse));
 
             }
-            else
-                response = new GetLogResponse(Request,
-                                              Result.FromSendRequestState(sendRequestState));
+
+            response ??= new GetLogResponse(Request,
+                                            Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnGetLogResponse event
@@ -5954,25 +5986,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomInstallCertificateRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (InstallCertificateResponse.TryParse(Request,
                                                         sendRequestState.Response,
-                                                        out var clearCacheResponse,
-                                                        out var errorResponse))
+                                                        out var installCertificateResponse,
+                                                        out var errorResponse) &&
+                    installCertificateResponse is not null)
                 {
-                    response = clearCacheResponse!;
+                    response = installCertificateResponse;
                 }
 
-                else
-                    response = new InstallCertificateResponse(Request,
-                                                              Result.Format(errorResponse));
+                response ??= new InstallCertificateResponse(Request,
+                                                            Result.Format(errorResponse));
 
             }
-            else
-                response = new InstallCertificateResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+
+            response ??= new InstallCertificateResponse(Request,
+                                                        Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnInstallCertificateResponse event
@@ -6038,25 +6071,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.ToJSON(CustomSignedUpdateFirmwareRequestSerializer),
                                                      Request.RequestTimeout);
 
-            if (sendRequestState.Response is not null)
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
             {
 
                 if (SignedUpdateFirmwareResponse.TryParse(Request,
                                                           sendRequestState.Response,
-                                                          out var clearCacheResponse,
-                                                          out var errorResponse))
+                                                          out var signedUpdateFirmwareResponse,
+                                                          out var errorResponse) &&
+                    signedUpdateFirmwareResponse is not null)
                 {
-                    response = clearCacheResponse!;
+                    response = signedUpdateFirmwareResponse;
                 }
 
-                else
-                    response = new SignedUpdateFirmwareResponse(Request,
-                                                                Result.Format(errorResponse));
+                response ??= new SignedUpdateFirmwareResponse(Request,
+                                                              Result.Format(errorResponse));
 
             }
-            else
-                response = new SignedUpdateFirmwareResponse(Request,
-                                                            Result.FromSendRequestState(sendRequestState));
+
+            response ??= new SignedUpdateFirmwareResponse(Request,
+                                                          Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnSignedUpdateFirmwareResponse event
