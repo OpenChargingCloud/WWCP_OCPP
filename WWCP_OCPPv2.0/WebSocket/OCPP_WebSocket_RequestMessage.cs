@@ -38,22 +38,33 @@ namespace cloud.charging.open.protocols.OCPPv2_0.WebSockets
         /// <summary>
         /// The unique request identification.
         /// </summary>
-        public Request_Id                   RequestId      { get; }
+        public Request_Id                   RequestId       { get; }
 
         /// <summary>
         /// An OCPP action/method name.
         /// </summary>
-        public String                       Action         { get; }
+        public String                       Action          { get; }
 
         /// <summary>
         /// The JSON request message payload.
         /// </summary>
-        public JObject                      Message        { get; }
+        public JObject                      Message         { get; }
 
         /// <summary>
         /// The message type.
         /// </summary>
-        public OCPP_WebSocket_MessageTypes  MessageType    { get; }
+        public OCPP_WebSocket_MessageTypes  MessageType     { get; }
+
+        /// <summary>
+        /// The optional error message.
+        /// </summary>
+        public String?                      ErrorMessage    { get; }
+
+        public Boolean NoErrors
+            => ErrorMessage is null;
+
+        public Boolean HasErrors
+            => ErrorMessage is not null;
 
         #endregion
 
@@ -66,16 +77,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0.WebSockets
         /// <param name="Action">An OCPP action/method name.</param>
         /// <param name="Message">A JSON request message payload.</param>
         /// <param name="MessageType">A message type (default: CALL (2) )</param>
+        /// <param name="ErrorMessage">An optional error message.</param>
         public OCPP_WebSocket_RequestMessage(Request_Id                   RequestId,
                                              String                       Action,
                                              JObject                      Message,
-                                             OCPP_WebSocket_MessageTypes  MessageType = OCPP_WebSocket_MessageTypes.CALL)
+                                             OCPP_WebSocket_MessageTypes  MessageType    = OCPP_WebSocket_MessageTypes.CALL,
+                                             String?                      ErrorMessage   = null)
         {
 
-            this.RequestId    = RequestId;
-            this.Action       = Action;
-            this.Message      = Message ?? new JObject();
-            this.MessageType  = MessageType;
+            this.RequestId     = RequestId;
+            this.Action        = Action;
+            this.Message       = Message ?? new JObject();
+            this.MessageType   = MessageType;
+            this.ErrorMessage  = ErrorMessage;
 
         }
 
@@ -194,9 +208,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.WebSockets
         /// </summary>
         public override String ToString()
 
-            => String.Concat(RequestId,
-                             " => ",
-                             Message.ToString());
+            => String.Concat(
+                   RequestId,
+                   " => ",
+                   Message.ToString()
+               );
 
         #endregion
 

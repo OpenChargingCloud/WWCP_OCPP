@@ -21,8 +21,6 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using static cloud.charging.open.protocols.OCPPv1_6.CS.CentralSystemWSServer;
-
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6
@@ -83,7 +81,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        public static Result FromSendRequestState(SendRequestState SendRequestState)
+        public static Result FromSendRequestState(CS.CentralSystemWSServer.SendRequestState SendRequestState)
+
+            => new (
+                   SendRequestState.ErrorCode ?? ResultCodes.GenericError,
+                   SendRequestState.ErrorDescription,
+                   SendRequestState.ErrorDetails,
+                   SendRequestState.Response
+               );
+
+        public static Result FromSendRequestState(CP.ChargePointWSClient.SendRequestState2 SendRequestState)
 
             => new (
                    SendRequestState.ErrorCode ?? ResultCodes.GenericError,

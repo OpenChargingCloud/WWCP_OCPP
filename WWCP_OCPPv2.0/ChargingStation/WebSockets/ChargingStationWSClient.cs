@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                                    IChargingStationServer
     {
 
-        #region (class) SendRequestState
+        #region (class) SendRequestState2
 
         public class SendRequestState2
         {
@@ -60,6 +60,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             public ResultCodes?                   ErrorCode           { get; set; }
             public String?                        ErrorDescription    { get; set; }
             public JObject?                       ErrorDetails        { get; set; }
+
+
+            public Boolean                        NoErrors
+                 => !ErrorCode.HasValue;
+
+            public Boolean                        HasErrors
+                 =>  ErrorCode.HasValue;
+
 
             public SendRequestState2(DateTime                       Timestamp,
                                      OCPP_WebSocket_RequestMessage  WSRequestMessage,
@@ -7596,6 +7604,103 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
         }
 
+
+
+        public async Task<OCPP_WebSocket_RequestMessage> SendRequest2(String      Action,
+                                                                      Request_Id  RequestId,
+                                                                      JObject     Message)
+        {
+
+            OCPP_WebSocket_RequestMessage? wsRequestMessage = null;
+
+            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
+                                           ConfigureAwait(false))
+            {
+                try
+                {
+
+                    if (HTTPStream is not null)
+                    {
+
+                        wsRequestMessage = new OCPP_WebSocket_RequestMessage(
+                                               RequestId,
+                                               Action,
+                                               Message
+                                           );
+
+                        SendWebSocketFrame(new WebSocketFrame(
+                                               WebSocketFrame.Fin.Final,
+                                               WebSocketFrame.MaskStatus.On,
+                                               new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
+                                               WebSocketFrame.Opcodes.Text,
+                                               wsRequestMessage.ToByteArray(),
+                                               WebSocketFrame.Rsv.Off,
+                                               WebSocketFrame.Rsv.Off,
+                                               WebSocketFrame.Rsv.Off
+                                           ));
+
+                        requests.Add(RequestId,
+                                     new SendRequestState2(
+                                         Timestamp.Now,
+                                         wsRequestMessage,
+                                         Timestamp.Now + TimeSpan.FromSeconds(10)
+                                     ));
+
+                        //File.AppendAllText(LogfileName,
+                        //                   String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
+                        //                                 "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                            Environment.NewLine,
+                        //                                 "Message sent: ",      wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
+                        //                                 "--------------------------------------------------------------------------------------------", Environment.NewLine));
+
+                    }
+                    else
+                    {
+
+                        wsRequestMessage = new OCPP_WebSocket_RequestMessage(
+                                               RequestId,
+                                               Action,
+                                               Message,
+                                               ErrorMessage: "Invalid WebSocket connection!"
+                                           );
+
+                    }
+
+                }
+                catch (Exception e)
+                {
+
+                    while (e.InnerException is not null)
+                        e = e.InnerException;
+
+                    wsRequestMessage = new OCPP_WebSocket_RequestMessage(
+                                           RequestId,
+                                           Action,
+                                           Message,
+                                           ErrorMessage: e.Message
+                                       );
+
+                    DebugX.LogException(e);
+
+                }
+                finally
+                {
+                    MaintenanceSemaphore.Release();
+                }
+            }
+
+            else
+                wsRequestMessage = new OCPP_WebSocket_RequestMessage(
+                                       RequestId,
+                                       Action,
+                                       Message,
+                                       ErrorMessage: "Could not aquire the maintenance tasks lock!"
+                                   );
+
+            return wsRequestMessage;
+
+        }
+
+
         #endregion
 
 
@@ -7618,8 +7723,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                     await Task.Delay(25);
 
                     if (requests.TryGetValue(RequestId.Value, out var sendRequestState) &&
-                        sendRequestState?.Response is not null ||
-                        sendRequestState?.ErrorCode.HasValue == true)
+                       (sendRequestState?.Response is not null ||
+                        sendRequestState?.ErrorCode.HasValue == true))
                     {
 
                         lock (requests)
@@ -7643,6 +7748,59 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
             return null;
+
+        }
+
+        private async Task<SendRequestState2> WaitForResponse2(OCPP_WebSocket_RequestMessage RequestMessage)
+        {
+
+            var endTime = Timestamp.Now + RequestTimeout;
+
+            #region Wait for a response... till timeout
+
+            do
+            {
+
+                try
+                {
+
+                    await Task.Delay(25);
+
+                    if (requests.TryGetValue(RequestMessage.RequestId, out var sendRequestState2) &&
+                       (sendRequestState2?.Response is not null ||
+                        sendRequestState2?.ErrorCode.HasValue == true))
+                    {
+
+                        lock (requests)
+                        {
+                            requests.Remove(RequestMessage.RequestId);
+                        }
+
+                        return sendRequestState2;
+
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(String.Concat(nameof(ChargingStationWSClient), ".", nameof(WaitForResponse), " exception occured: ", e.Message));
+                }
+
+            }
+            while (Timestamp.Now < endTime);
+
+            #endregion
+
+            return new SendRequestState2(
+                       Timestamp:          Timestamp.Now,
+                       WSRequestMessage:   RequestMessage,
+                       Timeout:            endTime,
+
+                       Response:           null,
+                       ErrorCode:          ResultCodes.Timeout,
+                       ErrorDescription:   null,
+                       ErrorDetails:       null
+                   );
 
         }
 
@@ -7680,23 +7838,44 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             #endregion
 
 
-            var requestId = await SendRequest(Request.Action,
-                                              Request.RequestId,
-                                              Request.ToJSON(CustomBootNotificationRequestSerializer,
-                                                             CustomChargingStationSerializer,
-                                                             CustomCustomDataSerializer));
+            BootNotificationResponse? response = null;
 
-            if (!BootNotificationResponse.TryParse(Request,
-                                                  (await WaitForResponse(requestId)) ?? new JObject(),
-                                                   out var response,
-                                                   out var errorResponse))
+            var requestMessage = await SendRequest2(Request.Action,
+                                                    Request.RequestId,
+                                                    Request.ToJSON(CustomBootNotificationRequestSerializer,
+                                                                   CustomChargingStationSerializer,
+                                                                   CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
             {
-                response = new BootNotificationResponse(Request,
-                                                        Result.Format(errorResponse));
+
+                var sendRequestState = await WaitForResponse2(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (BootNotificationResponse.TryParse(Request,
+                                                          sendRequestState.Response,
+                                                          out var bootNotificationResponse,
+                                                          out var errorResponse) &&
+                        bootNotificationResponse is not null)
+                    {
+                        response = bootNotificationResponse;
+                    }
+
+                    response ??= new BootNotificationResponse(Request,
+                                                              Result.Format(errorResponse));
+
+                }
+
+                response ??= new BootNotificationResponse(Request,
+                                                          Result.FromSendRequestState(sendRequestState));
+
             }
 
             response ??= new BootNotificationResponse(Request,
-                                                      Result.GenericError());
+                                                      Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnBootNotificationResponse event
