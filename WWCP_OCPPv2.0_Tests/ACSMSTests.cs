@@ -38,11 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #region Data
 
-        protected TestCSMS?                       testCSMS01;
-        protected CSMSWSServer?                   testBackendWebSockets01;
+        protected TestCSMS?        testCSMS01;
+        protected CSMSWSServer?    testBackendWebSockets01;
 
-        protected List<Tuple<DateTime, String>>?  csmsWebSocketRequestMessages;
-        protected List<Tuple<DateTime, String>>?  csmsWebSocketResponseMessages;
+        protected List<LogData1>?  csmsWebSocketTextMessagesReceived;
+        protected List<LogData2>?  csmsWebSocketTextMessageResponsesSent;
+        protected List<LogData1>?  csmsWebSocketTextMessagesSent;
+        protected List<LogData2>?  csmsWebSocketTextMessageResponsesReceived;
 
         #endregion
 
@@ -86,15 +88,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
             Assert.IsNotNull(testBackendWebSockets01);
 
 
-            csmsWebSocketRequestMessages   = new List<Tuple<DateTime, String>>();
-            csmsWebSocketResponseMessages  = new List<Tuple<DateTime, String>>();
+            csmsWebSocketTextMessagesReceived          = new List<LogData1>();
+            csmsWebSocketTextMessageResponsesSent      = new List<LogData2>();
+            csmsWebSocketTextMessagesSent              = new List<LogData1>();
+            csmsWebSocketTextMessageResponsesReceived  = new List<LogData2>();
 
-            testBackendWebSockets01.OnTextMessageRequest  += async (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, requestMessage) => {
-                csmsWebSocketRequestMessages. Add(new Tuple<DateTime, String>(requestTimestamp,  requestMessage));
+            testBackendWebSockets01.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, requestMessage) => {
+                csmsWebSocketTextMessagesReceived.        Add(new LogData1(requestTimestamp, requestMessage));
             };
 
-            testBackendWebSockets01.OnTextMessageResponse += async (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
-                csmsWebSocketResponseMessages.Add(new Tuple<DateTime, String>(responseTimestamp, responseMessage ?? "-"));
+            testBackendWebSockets01.OnTextMessageResponseSent     += async (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
+                csmsWebSocketTextMessageResponsesSent.    Add(new LogData2(requestTimestamp, requestMessage, responseTimestamp, responseMessage ?? "-"));
+            };
+
+            testBackendWebSockets01.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, requestMessage) => {
+                csmsWebSocketTextMessagesSent.            Add(new LogData1(requestTimestamp, requestMessage));
+            };
+
+            testBackendWebSockets01.OnTextMessageResponseReceived += async (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
+                csmsWebSocketTextMessageResponsesReceived.Add(new LogData2(requestTimestamp, requestMessage, responseTimestamp, responseMessage ?? "-"));
             };
 
         }

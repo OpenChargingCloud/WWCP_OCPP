@@ -657,7 +657,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region OnTextMessage  (Request/Response)
 
-        public event OnWebSocketTextMessageRequestDelegate?      OnTextMessageRequest;
+        public event OnWebSocketTextMessageDelegate?      OnTextMessageRequest;
 
         //public event OnWebSocketTextMessageDelegate             OnTextMessage;
 
@@ -667,7 +667,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region OnBinaryMessage(Request/Response)
 
-        public event OnWebSocketBinaryMessageRequestDelegate?    OnBinaryMessageRequest;
+        public event OnWebSocketBinaryMessageDelegate?    OnBinaryMessageRequest;
 
         //public event OnWebSocketBinaryMessageDelegate           OnBinaryMessage;
 
@@ -896,7 +896,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region OnTextMessageRequest
 
-            centralSystemServer.OnTextMessageRequest += async (timestamp,
+            centralSystemServer.OnTextMessageReceived += async (timestamp,
                                                                webSocketServer,
                                                                webSocketConnection,
                                                                eventTrackingId,
@@ -917,14 +917,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region OnTextMessageResponse
 
-            centralSystemServer.OnTextMessageResponse += async (timestamp,
-                                                                webSocketServer,
-                                                                webSocketConnection,
-                                                                eventTrackingId,
-                                                                requestTimestamp,
-                                                                requestMessage,
-                                                                responseTimestamp,
-                                                                responseMessage) => {
+            centralSystemServer.OnTextMessageResponseSent += async (timestamp,
+                                                                    webSocketServer,
+                                                                    webSocketConnection,
+                                                                    eventTrackingId,
+                                                                    requestTimestamp,
+                                                                    requestMessage,
+                                                                    responseTimestamp,
+                                                                    responseMessage) => {
 
                 if (OnTextMessageResponse is not null)
                     await OnTextMessageResponse.Invoke(timestamp,

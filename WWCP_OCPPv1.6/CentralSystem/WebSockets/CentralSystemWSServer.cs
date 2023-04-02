@@ -40,9 +40,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
     /// <param name="WebSocketServer">The sending WebSocket server.</param>
     /// <param name="Request">The incoming request.</param>
-    public delegate Task WebSocketRequestLogHandler(DateTime         Timestamp,
-                                                    WebSocketServer  WebSocketServer,
-                                                    JArray           Request);
+    public delegate Task WebSocketRequestLogHandler              (DateTime                         Timestamp,
+                                                                  WebSocketServer                  WebSocketServer,
+                                                                  JArray                           Request);
 
     /// <summary>
     /// The delegate for the HTTP web socket response log.
@@ -51,17 +51,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="WebSocketServer">The sending WebSocket server.</param>
     /// <param name="Request">The incoming WebSocket request.</param>
     /// <param name="Response">The outgoing WebSocket response.</param>
-    public delegate Task WebSocketResponseLogHandler(DateTime         Timestamp,
-                                                     WebSocketServer  WebSocketServer,
-                                                     JArray           Request,
-                                                     JArray           Response);
+    public delegate Task WebSocketResponseLogHandler             (DateTime                Timestamp,
+                                                                  WebSocketServer         WebSocketServer,
+                                                                  JArray                  Request,
+                                                                  JArray                  Response);
 
+    public delegate Task OnNewCentralSystemWSConnectionDelegate  (DateTime                Timestamp,
+                                                                  ICentralSystem          CentralSystem,
+                                                                  WebSocketConnection     NewWebSocketConnection,
+                                                                  EventTracking_Id        EventTrackingId,
+                                                                  CancellationToken       CancellationToken);
 
-    public delegate Task OnNewCentralSystemWSConnectionDelegate(DateTime             Timestamp,
-                                                                ICentralSystem       CentralSystem,
-                                                                WebSocketConnection  NewWebSocketConnection,
-                                                                EventTracking_Id     EventTrackingId,
-                                                                CancellationToken    CancellationToken);
+    public delegate Task OnWebSocketTextMessageResponseDelegate  (DateTime                Timestamp,
+                                                                  CentralSystemWSServer   Server,
+                                                                  WebSocketConnection     Connection,
+                                                                  EventTracking_Id        EventTrackingId,
+                                                                  DateTime                RequestTimestamp,
+                                                                  String                  RequestMessage,
+                                                                  DateTime                ResponseTimestamp,
+                                                                  String?                 ResponseMessage);
+
+    public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTime                Timestamp,
+                                                                  CentralSystemWSServer   Server,
+                                                                  WebSocketConnection     Connection,
+                                                                  EventTracking_Id        EventTrackingId,
+                                                                  DateTime                RequestTimestamp,
+                                                                  Byte[]                  RequestMessage,
+                                                                  DateTime                ResponseTimestamp,
+                                                                  Byte[]?                 ResponseMessage);
 
 
     /// <summary>
@@ -87,15 +104,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public class SendRequestState
         {
 
-            public DateTime                       Timestamp           { get; }
-            public ChargeBox_Id                   ChargeBoxId         { get; }
-            public OCPP_WebSocket_RequestMessage  WSRequestMessage    { get; }
-            public DateTime                       Timeout             { get; }
+            public DateTime                       Timestamp            { get; }
+            public ChargeBox_Id                   ChargeBoxId          { get; }
+            public OCPP_WebSocket_RequestMessage  WSRequestMessage     { get; }
+            public DateTime                       Timeout              { get; }
 
-            public JObject?                       Response            { get; set; }
-            public ResultCodes?                   ErrorCode           { get; set; }
-            public String?                        ErrorDescription    { get; set; }
-            public JObject?                       ErrorDetails        { get; set; }
+            public DateTime?                      ResponseTimestamp    { get; set; }
+            public JObject?                       Response             { get; set; }
+
+            public ResultCodes?                   ErrorCode            { get; set; }
+            public String?                        ErrorDescription     { get; set; }
+            public JObject?                       ErrorDetails         { get; set; }
 
 
             public Boolean                        NoErrors
@@ -110,21 +129,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     OCPP_WebSocket_RequestMessage  WSRequestMessage,
                                     DateTime                       Timeout,
 
-                                    JObject?                       Response           = null,
-                                    ResultCodes?                   ErrorCode          = null,
-                                    String?                        ErrorDescription   = null,
-                                    JObject?                       ErrorDetails       = null)
+                                    DateTime?                      ResponseTimestamp   = null,
+                                    JObject?                       Response            = null,
+
+                                    ResultCodes?                   ErrorCode           = null,
+                                    String?                        ErrorDescription    = null,
+                                    JObject?                       ErrorDetails        = null)
             {
 
-                this.Timestamp         = Timestamp;
-                this.ChargeBoxId       = ChargeBoxId;
-                this.WSRequestMessage  = WSRequestMessage;
-                this.Timeout           = Timeout;
+                this.Timestamp          = Timestamp;
+                this.ChargeBoxId        = ChargeBoxId;
+                this.WSRequestMessage   = WSRequestMessage;
+                this.Timeout            = Timeout;
 
-                this.Response          = Response;
-                this.ErrorCode         = ErrorCode;
-                this.ErrorDescription  = ErrorDescription;
-                this.ErrorDetails      = ErrorDetails;
+                this.ResponseTimestamp  = ResponseTimestamp;
+                this.Response           = Response;
+
+                this.ErrorCode          = ErrorCode;
+                this.ErrorDescription   = ErrorDescription;
+                this.ErrorDetails       = ErrorDetails;
 
             }
 
@@ -160,10 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         private readonly        Dictionary<Request_Id, SendRequestState>                        requests;
 
-
         private const           String                                                          LogfileName                 = "CentralSystemWSServer.log";
-
-        private const           Formatting                                                      JSONFormating               = Formatting.None;
 
         #endregion
 
@@ -191,23 +211,424 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public ChargeBox_Id ChargeBoxIdentity
             => throw new NotImplementedException();
 
-        public String From
+        public String                             From
             => "";
+
+        public String                             To
+            => "";
+
+        /// <summary>
+        /// The JSON formatting to use.
+        /// </summary>
+        public Formatting                         JSONFormatting           { get; set; } = Formatting.None;
 
         public CentralSystemSOAPClient.CSClientLogger Logger
             => throw new NotImplementedException();
-
-        public String To
-            => "";
 
         #endregion
 
         #region Events
 
-        public event OnNewCentralSystemWSConnectionDelegate? OnNewCentralSystemWSConnection;
+        public event OnNewCentralSystemWSConnectionDelegate?    OnNewCentralSystemWSConnection;
 
 
-        // CP -> CS
+        /// <summary>
+        /// An event sent whenever the response to a text message was sent.
+        /// </summary>
+        public event OnWebSocketTextMessageResponseDelegate?    OnTextMessageResponseSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a text message was received.
+        /// </summary>
+        public event OnWebSocketTextMessageResponseDelegate?    OnTextMessageResponseReceived;
+
+
+
+        /// <summary>
+        /// An event sent whenever the response to a binary message was sent.
+        /// </summary>
+        public event OnWebSocketBinaryMessageResponseDelegate?  OnBinaryMessageResponseSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a binary message was received.
+        /// </summary>
+        public event OnWebSocketBinaryMessageResponseDelegate?  OnBinaryMessageResponseReceived;
+
+
+        #region CSMS -> Charging Station
+
+        #region OnReset
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnResetRequestDelegate?   OnResetRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnResetResponseDelegate?  OnResetResponse;
+
+        #endregion
+
+        #region OnChangeAvailability
+
+        /// <summary>
+        /// An event sent whenever a change availability request was sent.
+        /// </summary>
+        public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a change availability request was sent.
+        /// </summary>
+        public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+
+        #endregion
+
+        #region OnGetConfiguration
+
+        /// <summary>
+        /// An event sent whenever a get configuration request was sent.
+        /// </summary>
+        public event OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a get configuration request was sent.
+        /// </summary>
+        public event OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
+
+        #endregion
+
+        #region OnChangeConfiguration
+
+        /// <summary>
+        /// An event sent whenever a change configuration request was sent.
+        /// </summary>
+        public event OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a change configuration request was sent.
+        /// </summary>
+        public event OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
+
+        #endregion
+
+        #region OnDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a data transfer request was sent.
+        /// </summary>
+        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a data transfer request was sent.
+        /// </summary>
+        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
+
+        #endregion
+
+        #region OnGetDiagnostics
+
+        /// <summary>
+        /// An event sent whenever a get diagnostics request was sent.
+        /// </summary>
+        public event OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a get diagnostics request was sent.
+        /// </summary>
+        public event OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
+
+        #endregion
+
+        #region OnTriggerMessage
+
+        /// <summary>
+        /// An event sent whenever a trigger message request was sent.
+        /// </summary>
+        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a trigger message request was sent.
+        /// </summary>
+        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+
+        #endregion
+
+        #region OnUpdateFirmware
+
+        /// <summary>
+        /// An event sent whenever an update firmware request was sent.
+        /// </summary>
+        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an update firmware request was sent.
+        /// </summary>
+        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+
+        #endregion
+
+
+        #region OnReserveNow
+
+        /// <summary>
+        /// An event sent whenever a reserve now request was sent.
+        /// </summary>
+        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reserve now request was sent.
+        /// </summary>
+        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
+
+        #endregion
+
+        #region OnCancelReservation
+
+        /// <summary>
+        /// An event sent whenever a cancel reservation request was sent.
+        /// </summary>
+        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a cancel reservation request was sent.
+        /// </summary>
+        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+
+        #endregion
+
+        #region OnRemoteStartTransaction
+
+        /// <summary>
+        /// An event sent whenever a remote start transaction request was sent.
+        /// </summary>
+        public event OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a remote start transaction request was sent.
+        /// </summary>
+        public event OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
+
+        #endregion
+
+        #region OnRemoteStopTransaction
+
+        /// <summary>
+        /// An event sent whenever a remote stop transaction request was sent.
+        /// </summary>
+        public event OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a remote stop transaction request was sent.
+        /// </summary>
+        public event OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
+
+        #endregion
+
+        #region OnSetChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a set charging profile request was sent.
+        /// </summary>
+        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a set charging profile request was sent.
+        /// </summary>
+        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+
+        #endregion
+
+        #region OnClearChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a clear charging profile request was sent.
+        /// </summary>
+        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a clear charging profile request was sent.
+        /// </summary>
+        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+
+        #endregion
+
+        #region OnGetCompositeSchedule
+
+        /// <summary>
+        /// An event sent whenever a get composite schedule request was sent.
+        /// </summary>
+        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a get composite schedule request was sent.
+        /// </summary>
+        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+
+        #endregion
+
+        #region OnUnlockConnector
+
+        /// <summary>
+        /// An event sent whenever an unlock connector request was sent.
+        /// </summary>
+        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an unlock connector request was sent.
+        /// </summary>
+        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+
+        #endregion
+
+
+        #region OnGetLocalListVersion
+
+        /// <summary>
+        /// An event sent whenever a get local list version request was sent.
+        /// </summary>
+        public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a get local list version request was sent.
+        /// </summary>
+        public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+
+        #endregion
+
+        #region OnSendLocalList
+
+        /// <summary>
+        /// An event sent whenever a send local list request was sent.
+        /// </summary>
+        public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a send local list request was sent.
+        /// </summary>
+        public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+
+        #endregion
+
+        #region OnClearCache
+
+        /// <summary>
+        /// An event sent whenever a clear cache request was sent.
+        /// </summary>
+        public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a clear cache request was sent.
+        /// </summary>
+        public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
+
+        #endregion
+
+
+        // Security extensions
+
+        #region OnCertificateSigned
+
+        /// <summary>
+        /// An event sent whenever a certificate signed request was sent.
+        /// </summary>
+        public event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a certificate signed request was sent.
+        /// </summary>
+        public event OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+
+        #endregion
+
+        #region OnDeleteCertificate
+
+        /// <summary>
+        /// An event sent whenever a delete certificate request was sent.
+        /// </summary>
+        public event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a delete certificate request was sent.
+        /// </summary>
+        public event OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+
+        #endregion
+
+        #region OnExtendedTriggerMessage
+
+        /// <summary>
+        /// An event sent whenever an extended trigger message request was sent.
+        /// </summary>
+        public event OnExtendedTriggerMessageRequestDelegate?   OnExtendedTriggerMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an extended trigger message request was sent.
+        /// </summary>
+        public event OnExtendedTriggerMessageResponseDelegate?  OnExtendedTriggerMessageResponse;
+
+        #endregion
+
+        #region OnGetInstalledCertificateIds
+
+        /// <summary>
+        /// An event sent whenever a get installed certificate ids request was sent.
+        /// </summary>
+        public event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a get installed certificate ids request was sent.
+        /// </summary>
+        public event OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+
+        #endregion
+
+        #region OnGetLog
+
+        /// <summary>
+        /// An event sent whenever a get log request was sent.
+        /// </summary>
+        public event OnGetLogRequestDelegate?   OnGetLogRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a get log request was sent.
+        /// </summary>
+        public event OnGetLogResponseDelegate?  OnGetLogResponse;
+
+        #endregion
+
+        #region OnInstallCertificate
+
+        /// <summary>
+        /// An event sent whenever an install certificate request was sent.
+        /// </summary>
+        public event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an install certificate request was sent.
+        /// </summary>
+        public event OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+
+        #endregion
+
+        #region OnSignedUpdateFirmware
+
+        /// <summary>
+        /// An event sent whenever a signed update firmware request was sent.
+        /// </summary>
+        public event OnSignedUpdateFirmwareRequestDelegate?   OnSignedUpdateFirmwareRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a signed update firmware request was sent.
+        /// </summary>
+        public event OnSignedUpdateFirmwareResponseDelegate?  OnSignedUpdateFirmwareResponse;
+
+        #endregion
+
+        #endregion
+
+        #region CSMS <- Charging Station
 
         #region OnBootNotification
 
@@ -619,377 +1040,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public event WebSocketResponseLogHandler?                          OnSignedFirmwareStatusNotificationWSResponse;
 
         #endregion
-
-
-
-        // CS -> CP
-
-        #region OnReset
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event OnResetRequestDelegate?   OnResetRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnResetResponseDelegate?  OnResetResponse;
-
-        #endregion
-
-        #region OnChangeAvailability
-
-        /// <summary>
-        /// An event sent whenever a change availability request was sent.
-        /// </summary>
-        public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a change availability request was sent.
-        /// </summary>
-        public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
-
-        #endregion
-
-        #region OnGetConfiguration
-
-        /// <summary>
-        /// An event sent whenever a get configuration request was sent.
-        /// </summary>
-        public event OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a get configuration request was sent.
-        /// </summary>
-        public event OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
-
-        #endregion
-
-        #region OnChangeConfiguration
-
-        /// <summary>
-        /// An event sent whenever a change configuration request was sent.
-        /// </summary>
-        public event OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a change configuration request was sent.
-        /// </summary>
-        public event OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
-
-        #endregion
-
-        #region OnDataTransfer
-
-        /// <summary>
-        /// An event sent whenever a data transfer request was sent.
-        /// </summary>
-        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
-        /// </summary>
-        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
-
-        #endregion
-
-        #region OnGetDiagnostics
-
-        /// <summary>
-        /// An event sent whenever a get diagnostics request was sent.
-        /// </summary>
-        public event OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a get diagnostics request was sent.
-        /// </summary>
-        public event OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
-
-        #endregion
-
-        #region OnTriggerMessage
-
-        /// <summary>
-        /// An event sent whenever a trigger message request was sent.
-        /// </summary>
-        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a trigger message request was sent.
-        /// </summary>
-        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
-
-        #endregion
-
-        #region OnUpdateFirmware
-
-        /// <summary>
-        /// An event sent whenever an update firmware request was sent.
-        /// </summary>
-        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to an update firmware request was sent.
-        /// </summary>
-        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
-
-        #endregion
-
-
-        #region OnReserveNow
-
-        /// <summary>
-        /// An event sent whenever a reserve now request was sent.
-        /// </summary>
-        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reserve now request was sent.
-        /// </summary>
-        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
-
-        #endregion
-
-        #region OnCancelReservation
-
-        /// <summary>
-        /// An event sent whenever a cancel reservation request was sent.
-        /// </summary>
-        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a cancel reservation request was sent.
-        /// </summary>
-        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
-
-        #endregion
-
-        #region OnRemoteStartTransaction
-
-        /// <summary>
-        /// An event sent whenever a remote start transaction request was sent.
-        /// </summary>
-        public event OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a remote start transaction request was sent.
-        /// </summary>
-        public event OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
-
-        #endregion
-
-        #region OnRemoteStopTransaction
-
-        /// <summary>
-        /// An event sent whenever a remote stop transaction request was sent.
-        /// </summary>
-        public event OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a remote stop transaction request was sent.
-        /// </summary>
-        public event OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
-
-        #endregion
-
-        #region OnSetChargingProfile
-
-        /// <summary>
-        /// An event sent whenever a set charging profile request was sent.
-        /// </summary>
-        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a set charging profile request was sent.
-        /// </summary>
-        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
-
-        #endregion
-
-        #region OnClearChargingProfile
-
-        /// <summary>
-        /// An event sent whenever a clear charging profile request was sent.
-        /// </summary>
-        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a clear charging profile request was sent.
-        /// </summary>
-        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
-
-        #endregion
-
-        #region OnGetCompositeSchedule
-
-        /// <summary>
-        /// An event sent whenever a get composite schedule request was sent.
-        /// </summary>
-        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a get composite schedule request was sent.
-        /// </summary>
-        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
-
-        #endregion
-
-        #region OnUnlockConnector
-
-        /// <summary>
-        /// An event sent whenever an unlock connector request was sent.
-        /// </summary>
-        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to an unlock connector request was sent.
-        /// </summary>
-        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
-
-        #endregion
-
-
-        #region OnGetLocalListVersion
-
-        /// <summary>
-        /// An event sent whenever a get local list version request was sent.
-        /// </summary>
-        public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a get local list version request was sent.
-        /// </summary>
-        public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
-
-        #endregion
-
-        #region OnSendLocalList
-
-        /// <summary>
-        /// An event sent whenever a send local list request was sent.
-        /// </summary>
-        public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a send local list request was sent.
-        /// </summary>
-        public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
-
-        #endregion
-
-        #region OnClearCache
-
-        /// <summary>
-        /// An event sent whenever a clear cache request was sent.
-        /// </summary>
-        public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a clear cache request was sent.
-        /// </summary>
-        public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
-
-        #endregion
-
-
-        // Security extensions
-
-        #region OnCertificateSigned
-
-        /// <summary>
-        /// An event sent whenever a certificate signed request was sent.
-        /// </summary>
-        public event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a certificate signed request was sent.
-        /// </summary>
-        public event OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
-
-        #endregion
-
-        #region OnDeleteCertificate
-
-        /// <summary>
-        /// An event sent whenever a delete certificate request was sent.
-        /// </summary>
-        public event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a delete certificate request was sent.
-        /// </summary>
-        public event OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
-
-        #endregion
-
-        #region OnExtendedTriggerMessage
-
-        /// <summary>
-        /// An event sent whenever an extended trigger message request was sent.
-        /// </summary>
-        public event OnExtendedTriggerMessageRequestDelegate?   OnExtendedTriggerMessageRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to an extended trigger message request was sent.
-        /// </summary>
-        public event OnExtendedTriggerMessageResponseDelegate?  OnExtendedTriggerMessageResponse;
-
-        #endregion
-
-        #region OnGetInstalledCertificateIds
-
-        /// <summary>
-        /// An event sent whenever a get installed certificate ids request was sent.
-        /// </summary>
-        public event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a get installed certificate ids request was sent.
-        /// </summary>
-        public event OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
-
-        #endregion
-
-        #region OnGetLog
-
-        /// <summary>
-        /// An event sent whenever a get log request was sent.
-        /// </summary>
-        public event OnGetLogRequestDelegate?   OnGetLogRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a get log request was sent.
-        /// </summary>
-        public event OnGetLogResponseDelegate?  OnGetLogResponse;
-
-        #endregion
-
-        #region OnInstallCertificate
-
-        /// <summary>
-        /// An event sent whenever an install certificate request was sent.
-        /// </summary>
-        public event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to an install certificate request was sent.
-        /// </summary>
-        public event OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
-
-        #endregion
-
-        #region OnSignedUpdateFirmware
-
-        /// <summary>
-        /// An event sent whenever a signed update firmware request was sent.
-        /// </summary>
-        public event OnSignedUpdateFirmwareRequestDelegate?   OnSignedUpdateFirmwareRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a signed update firmware request was sent.
-        /// </summary>
-        public event OnSignedUpdateFirmwareResponseDelegate?  OnSignedUpdateFirmwareResponse;
 
         #endregion
 
@@ -1416,7 +1466,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            RequestTimestamp,
                            OCPPTextMessage,
                            Timestamp.Now,
-                           new JArray().ToString(JSONFormating),
+                           new JArray().ToString(JSONFormatting),
                            EventTrackingId
                        );
 
@@ -1429,12 +1479,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 var json = JArray.Parse(OCPPTextMessage);
-
-                //File.AppendAllText(LogfileName,
-                //                   String.Concat("Timestamp: ",        Timestamp.Now.ToIso8601(),                                                    Environment.NewLine,
-                //                                 "ChargeBoxId: ",      Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId")?.ToString() ?? "-",  Environment.NewLine,
-                //                                 "Message received: ", JSON.ToString(Newtonsoft.Json.Formatting.Indented),                           Environment.NewLine,
-                //                                 "--------------------------------------------------------------------------------------------",     Environment.NewLine));
 
                 #region MessageType 2: CALL        (A request from a charge point)
 
@@ -3588,25 +3632,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                             #endregion
 
 
-                            // LogStatusNotification
-                            // SecurityEventNotification
-                            // SignCertificate
-                            // SignedFirmwareStatusNotification
-
-
                             default:
 
-                                // It does not make much sense to send this error to a charging station as no one will read it there!
-                                DebugX.Log(nameof(CentralSystemWSServer) + " The OCPP message action '" + action + "' is unkown!");
+                                DebugX.Log($"{nameof(CentralSystemWSServer)}: The OCPP message '{action}' is unkown!");
 
-                                //OCPPResponse = new OCPP_WebSocket_ResponseMessage(
-                                //                   requestId.Value,
-                                //                   new JObject()
-                                //               );
+                                OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                                         requestId.Value,
+                                                         ResultCodes.ProtocolError,
+                                                         $"The OCPP message '{action}' is unkown!",
+                                                         new JObject(
+                                                             new JProperty("request", OCPPTextMessage)
+                                                         )
+                                                     );
 
                                 break;
 
                         }
+
+                        #region OnTextMessageResponseSent
+
+                        try
+                        {
+
+                            OnTextMessageResponseSent?.Invoke(Timestamp.Now,
+                                                              this,
+                                                              Connection,
+                                                              EventTracking_Id.New,
+                                                              RequestTimestamp,
+                                                              json.ToString(JSONFormatting),
+                                                              Timestamp.Now,
+                                                              OCPPResponse?.ToJSON()?.ToString(JSONFormatting));
+
+                        }
+                        catch (Exception e)
+                        {
+                            DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnTextMessageResponseSent));
+                        }
+
+                        #endregion
 
                     }
 
@@ -3638,7 +3701,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         if (Request_Id.TryParse(json[1]?.Value<String>() ?? "", out var requestId) &&
                             requests.TryGetValue(requestId, out var request))
                         {
-                            request.Response = json[2] as JObject;
+
+                            request.ResponseTimestamp  = Timestamp.Now;
+                            request.Response           = json[2] as JObject;
+
+                            #region OnTextMessageResponseReceived
+
+                            try
+                            {
+
+                                OnTextMessageResponseReceived?.Invoke(Timestamp.Now,
+                                                                      this,
+                                                                      Connection,
+                                                                      EventTracking_Id.New,
+                                                                      request.Timestamp,
+                                                                      request.WSRequestMessage.ToJSON().ToString(JSONFormatting),
+                                                                      Timestamp.Now,
+                                                                      request.Response?.ToString(JSONFormatting));
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnTextMessageResponseReceived));
+                            }
+
+                            #endregion
+
                         }
                     }
 
@@ -3751,7 +3839,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                        OCPPTextMessage,
                        Timestamp.Now,
                        (OCPPResponse?.     ToJSON() ??
-                        OCPPErrorResponse?.ToJSON())?.ToString(JSONFormating)
+                        OCPPErrorResponse?.ToJSON())?.ToString(JSONFormatting)
                            ?? String.Empty,
                        EventTrackingId
                    );
@@ -3878,16 +3966,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             var now = Timestamp.Now;
 
             return new SendRequestState(
-                       now,
-                       ChargeBoxId,
-                       new OCPP_WebSocket_RequestMessage(
-                           RequestId,
-                           OCPPAction,
-                           JSONPayload
-                       ),
-                       now,
-                       new JObject(),
-                       ResultCodes.InternalError
+                       Timestamp:           now,
+                       ChargeBoxId:         ChargeBoxId,
+                       WSRequestMessage:    new OCPP_WebSocket_RequestMessage(
+                                                RequestId,
+                                                OCPPAction,
+                                                JSONPayload
+                                            ),
+                       Timeout:             now,
+                       ResponseTimestamp:   now,
+                       Response:            new JObject(),
+                       ErrorCode:           ResultCodes.InternalError,
+                       ErrorDescription:    null,
+                       ErrorDetails:        null
                    );
 
         }
@@ -3937,17 +4028,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     foreach (var webSocketConnection in webSocketConnections)
                     {
 
-                        var success = SendFrame(webSocketConnection,
-                                                new WebSocketFrame(
-                                                    WebSocketFrame.Fin.Final,
-                                                    WebSocketFrame.MaskStatus.Off,
-                                                    new Byte[4],
-                                                    WebSocketFrame.Opcodes.Text,
-                                                    wsRequestMessage.ToJSON().ToString(Formatting.None).ToUTF8Bytes(),
-                                                    WebSocketFrame.Rsv.Off,
-                                                    WebSocketFrame.Rsv.Off,
-                                                    WebSocketFrame.Rsv.Off
-                                                ));
+                        var success = SendText(webSocketConnection,
+                                               wsRequestMessage.ToJSON().ToString(Formatting.None),
+                                               EventTracking_Id.New);
 
                         if (success == SendStatus.Success)
                             break;

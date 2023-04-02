@@ -21,6 +21,7 @@ using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -32,12 +33,31 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv2_0.CSMS;
 using cloud.charging.open.protocols.OCPPv2_0.WebSockets;
-using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_0.CS
 {
+
+    public delegate Task  OnWebSocketClientTextMessageResponseDelegate  (DateTime                  Timestamp,
+                                                                         ChargingStationWSClient   Client,
+                                                                         WebSocketFrame            Frame,
+                                                                         EventTracking_Id          EventTrackingId,
+                                                                         DateTime                  RequestTimestamp,
+                                                                         String                    RequestMessage,
+                                                                         DateTime                  ResponseTimestamp,
+                                                                         String                    ResponseMessage);
+
+
+    public delegate Task  OnWebSocketClientBinaryMessageResponseDelegate(DateTime                  Timestamp,
+                                                                         ChargingStationWSClient   Client,
+                                                                         WebSocketFrame            Frame,
+                                                                         EventTracking_Id          EventTrackingId,
+                                                                         DateTime                  RequestTimestamp,
+                                                                         Byte[]                    RequestMessage,
+                                                                         DateTime                  ResponseTimestamp,
+                                                                         Byte[]                    ResponseMessage);
+
 
     /// <summary>
     /// The charging station HTTP WebSocket client runs on a charging station
@@ -53,14 +73,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         public class SendRequestState2
         {
 
-            public DateTime                       Timestamp           { get; }
-            public OCPP_WebSocket_RequestMessage  WSRequestMessage    { get; }
-            public DateTime                       Timeout             { get; }
+            public DateTime                       Timestamp            { get; }
+            public OCPP_WebSocket_RequestMessage  WSRequestMessage     { get; }
+            public DateTime                       Timeout              { get; }
 
-            public JObject?                       Response            { get; set; }
-            public ResultCodes?                   ErrorCode           { get; set; }
-            public String?                        ErrorDescription    { get; set; }
-            public JObject?                       ErrorDetails        { get; set; }
+            public DateTime?                      ResponseTimestamp    { get; set; }
+            public JObject?                       Response             { get; set; }
+
+            public ResultCodes?                   ErrorCode            { get; set; }
+            public String?                        ErrorDescription     { get; set; }
+            public JObject?                       ErrorDetails         { get; set; }
 
 
             public Boolean                        NoErrors
@@ -74,20 +96,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                      OCPP_WebSocket_RequestMessage  WSRequestMessage,
                                      DateTime                       Timeout,
 
-                                     JObject?                       Response           = null,
-                                     ResultCodes?                   ErrorCode          = null,
-                                     String?                        ErrorDescription   = null,
-                                     JObject?                       ErrorDetails       = null)
+                                     DateTime?                      ResponseTimestamp   = null,
+                                     JObject?                       Response            = null,
+
+                                     ResultCodes?                   ErrorCode           = null,
+                                     String?                        ErrorDescription    = null,
+                                     JObject?                       ErrorDetails        = null)
             {
 
-                this.Timestamp         = Timestamp;
-                this.WSRequestMessage  = WSRequestMessage;
-                this.Timeout           = Timeout;
+                this.Timestamp          = Timestamp;
+                this.WSRequestMessage   = WSRequestMessage;
+                this.Timeout            = Timeout;
 
-                this.Response          = Response;
-                this.ErrorCode         = ErrorCode;
-                this.ErrorDescription  = ErrorDescription;
-                this.ErrorDetails      = ErrorDetails;
+                this.ResponseTimestamp  = ResponseTimestamp;
+                this.Response           = Response;
+
+                this.ErrorCode          = ErrorCode;
+                this.ErrorDescription   = ErrorDescription;
+                this.ErrorDetails       = ErrorDetails;
 
             }
 
@@ -131,6 +157,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// The destination URI of the websocket message.
         /// </summary>
         public String                                To                              { get; }
+
+        /// <summary>
+        /// The JSON formatting to use.
+        /// </summary>
+        public Formatting                            JSONFormatting                  { get; set; } = Formatting.None;
 
         /// <summary>
         /// The attached OCPP CP client (HTTP/websocket client) logger.
@@ -278,6 +309,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         #endregion
 
         #region Events
+
+        public event OnWebSocketClientTextMessageResponseDelegate?    OnTextMessageResponseReceived;
+        public event OnWebSocketClientTextMessageResponseDelegate?    OnTextMessageResponseSent;
+
+        public event OnWebSocketClientBinaryMessageResponseDelegate?  OnBinaryMessageResponseReceived;
+        public event OnWebSocketClientBinaryMessageResponseDelegate?  OnBinaryMessageResponseSent;
+
 
         #region Charging Station -> CSMS
 
@@ -2166,13 +2204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
             else if (OCPP_WebSocket_RequestMessage. TryParse(textPayload, out var requestMessage)  && requestMessage  is not null)
             {
 
-                File.AppendAllText(LogfileName,
-                                   String.Concat("timestamp: ",         Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
-                                                 "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                            Environment.NewLine,
-                                                 "Message received: ",  requestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented),   Environment.NewLine,
-                                                 "--------------------------------------------------------------------------------------------", Environment.NewLine));
-
-
+                var requestTimestamp         = Timestamp.Now;
                 var requestJSON              = JArray.Parse(textPayload);
                 var cancellationTokenSource  = new CancellationTokenSource();
 
@@ -7471,25 +7503,34 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                 if (OCPPResponseJSON is not null)
                 {
 
-                    var wsResponseMessage = new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
-                                                                               OCPPResponseJSON);
+                    SendText(new OCPP_WebSocket_ResponseMessage(
+                                 requestMessage.RequestId,
+                                 OCPPResponseJSON).
+                                 ToJSON().
+                                 ToString(JSONFormatting));
 
-                    SendWebSocketFrame(new WebSocketFrame(
-                                           WebSocketFrame.Fin.Final,
-                                           WebSocketFrame.MaskStatus.On,
-                                           new Byte[] { 0xaa, 0xaa, 0xaa, 0xaa },
-                                           WebSocketFrame.Opcodes.Text,
-                                           wsResponseMessage.ToByteArray(),
-                                           WebSocketFrame.Rsv.Off,
-                                           WebSocketFrame.Rsv.Off,
-                                           WebSocketFrame.Rsv.Off
-                                       ));
 
-                    File.AppendAllText(LogfileName,
-                                       String.Concat("Timestamp: ",    Timestamp.Now.ToIso8601(),                                                     Environment.NewLine,
-                                                     "ChargeBoxId: ",  ChargeBoxIdentity.ToString(),                                                  Environment.NewLine,
-                                                     "Message sent: ", wsResponseMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented),      Environment.NewLine,
-                                                     "--------------------------------------------------------------------------------------------",  Environment.NewLine));
+                    #region OnTextMessageResponseSent
+
+                    try
+                    {
+
+                        OnTextMessageResponseSent?.Invoke(Timestamp.Now,
+                                                          this,
+                                                          frame,
+                                                          EventTracking_Id.New,
+                                                          requestTimestamp,
+                                                          requestJSON.     ToString(JSONFormatting),
+                                                          Timestamp.Now,
+                                                          OCPPResponseJSON.ToString(JSONFormatting));
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnTextMessageResponseSent));
+                    }
+
+                    #endregion
 
                 }
 
@@ -7500,8 +7541,35 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                 lock (requests)
                 {
 
-                    if (requests.TryGetValue(responseMessage.RequestId, out var resp))
-                        resp.Response = responseMessage.Message;
+                    if (requests.TryGetValue(responseMessage.RequestId, out var sendRequestState))
+                    {
+
+                        sendRequestState.ResponseTimestamp  = Timestamp.Now;
+                        sendRequestState.Response           = responseMessage.Message;
+
+                        #region OnTextMessageResponseReceived
+
+                        try
+                        {
+
+                            OnTextMessageResponseReceived?.Invoke(Timestamp.Now,
+                                                                  this,
+                                                                  frame,
+                                                                  EventTracking_Id.New,
+                                                                  sendRequestState.Timestamp,
+                                                                  sendRequestState.WSRequestMessage.ToJSON().ToString(JSONFormatting),
+                                                                  sendRequestState.ResponseTimestamp.Value,
+                                                                  sendRequestState.Response.ToString(JSONFormatting));
+
+                        }
+                        catch (Exception e)
+                        {
+                            DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnTextMessageResponseReceived));
+                        }
+
+                        #endregion
+
+                    }
 
                     else
                         DebugX.Log(nameof(ChargingStationWSClient), " Received unknown OCPP response message: " + textPayload);
@@ -7551,7 +7619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
 
                         SendText(wsRequestMessage.
                                      ToJSON().
-                                     ToString(Newtonsoft.Json.Formatting.None));
+                                     ToString(JSONFormatting));
 
                         requests.Add(RequestId,
                                      new SendRequestState2(

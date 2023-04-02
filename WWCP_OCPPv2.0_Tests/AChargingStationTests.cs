@@ -37,17 +37,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #region Data
 
-        protected TestChargingStation?            chargingStation1;
-        protected TestChargingStation?            chargingStation2;
-        protected TestChargingStation?            chargingStation3;
+        protected TestChargingStation?  chargingStation1;
+        protected TestChargingStation?  chargingStation2;
+        protected TestChargingStation?  chargingStation3;
 
-        protected List<Tuple<DateTime, String>>?  chargingStation1IncomingWebSocketTextMessages;
-        protected List<Tuple<DateTime, String>>?  chargingStation2IncomingWebSocketTextMessages;
-        protected List<Tuple<DateTime, String>>?  chargingStation3IncomingWebSocketTextMessages;
+        protected List<LogData1>?       chargingStation1WebSocketTextMessagesReceived;
+        protected List<LogData1>?       chargingStation2WebSocketTextMessagesReceived;
+        protected List<LogData1>?       chargingStation3WebSocketTextMessagesReceived;
 
-        protected List<Tuple<DateTime, String>>?  chargingStation1OutgoingWebSocketTextMessages;
-        protected List<Tuple<DateTime, String>>?  chargingStation2OutgoingWebSocketTextMessages;
-        protected List<Tuple<DateTime, String>>?  chargingStation3OutgoingWebSocketTextMessages;
+        protected List<LogData2>?       chargingStation1WebSocketTextMessageResponsesReceived;
+        protected List<LogData2>?       chargingStation2WebSocketTextMessageResponsesReceived;
+        protected List<LogData2>?       chargingStation3WebSocketTextMessageResponsesReceived;
+
+        protected List<LogData2>?       chargingStation1WebSocketTextMessageResponsesSent;
+        protected List<LogData2>?       chargingStation2WebSocketTextMessageResponsesSent;
+        protected List<LogData2>?       chargingStation3WebSocketTextMessageResponsesSent;
+
+        protected List<LogData1>?       chargingStation1WebSocketTextMessagesSent;
+        protected List<LogData1>?       chargingStation2WebSocketTextMessagesSent;
+        protected List<LogData1>?       chargingStation3WebSocketTextMessagesSent;
 
         #endregion
 
@@ -62,8 +70,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             #region Charging Station #1
 
-            chargingStation1IncomingWebSocketTextMessages = new List<Tuple<DateTime, String>>();
-            chargingStation1OutgoingWebSocketTextMessages = new List<Tuple<DateTime, String>>();
+            chargingStation1WebSocketTextMessagesReceived          = new List<LogData1>();
+            chargingStation1WebSocketTextMessageResponsesSent      = new List<LogData2>();
+            chargingStation1WebSocketTextMessagesSent              = new List<LogData1>();
+            chargingStation1WebSocketTextMessageResponsesReceived  = new List<LogData2>();
 
             chargingStation1 = new TestChargingStation(
                                     ChargeBoxId:              ChargeBox_Id.Parse("GD001"),
@@ -147,12 +157,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 if (chargingStation1WebSocketClient is not null)
                 {
 
-                    chargingStation1WebSocketClient.OnIncomingTextMessage += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message) => {
-                        chargingStation1IncomingWebSocketTextMessages.Add(new Tuple<DateTime, String>(timestamp, message));
+                    chargingStation1WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message) => {
+                        chargingStation1WebSocketTextMessagesReceived.        Add(new LogData1(timestamp, message));
                     };
 
-                    chargingStation1WebSocketClient.OnOutgoingTextMessage += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message) => {
-                        chargingStation1OutgoingWebSocketTextMessages.Add(new Tuple<DateTime, String>(timestamp, message));
+                    chargingStation1WebSocketClient.OnTextMessageResponseSent     += async (timestamp, client, webSocketFrame, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
+                        chargingStation1WebSocketTextMessageResponsesSent.    Add(new LogData2(requestTimestamp, requestMessage, responseTimestamp, responseMessage));
+                    };
+
+                    chargingStation1WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message) => {
+                        chargingStation1WebSocketTextMessagesSent.            Add(new LogData1(timestamp, message));
+                    };
+
+                    chargingStation1WebSocketClient.OnTextMessageResponseReceived += async (timestamp, client, webSocketFrame, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
+                        chargingStation1WebSocketTextMessageResponsesReceived.Add(new LogData2(requestTimestamp, requestMessage, responseTimestamp, responseMessage));
                     };
 
                 }
@@ -163,8 +181,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             #region Charging Station #2
 
-            chargingStation2IncomingWebSocketTextMessages = new List<Tuple<DateTime, String>>();
-            chargingStation2OutgoingWebSocketTextMessages = new List<Tuple<DateTime, String>>();
+            chargingStation2WebSocketTextMessagesReceived          = new List<LogData1>();
+            chargingStation2WebSocketTextMessageResponsesSent      = new List<LogData2>();
+            chargingStation2WebSocketTextMessagesSent              = new List<LogData1>();
+            chargingStation2WebSocketTextMessageResponsesReceived  = new List<LogData2>();
 
             chargingStation2  = new TestChargingStation(
                                     ChargeBoxId:              ChargeBox_Id.Parse("CP002"),
@@ -206,8 +226,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             #region Charging Station #3
 
-            chargingStation3IncomingWebSocketTextMessages = new List<Tuple<DateTime, String>>();
-            chargingStation3OutgoingWebSocketTextMessages = new List<Tuple<DateTime, String>>();
+            chargingStation3WebSocketTextMessagesReceived          = new List<LogData1>();
+            chargingStation3WebSocketTextMessageResponsesSent      = new List<LogData2>();
+            chargingStation3WebSocketTextMessagesSent              = new List<LogData1>();
+            chargingStation3WebSocketTextMessageResponsesReceived  = new List<LogData2>();
 
             chargingStation3 = new TestChargingStation(
                                     ChargeBoxId:              ChargeBox_Id.Parse("CP003"),
