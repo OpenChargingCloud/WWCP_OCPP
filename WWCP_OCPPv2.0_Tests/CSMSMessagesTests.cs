@@ -2817,22 +2817,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         public async Task CSMS_ClearDisplayMessage_Test()
         {
 
-            if (testCSMS01                                    is not null &&
-                testBackendWebSockets01                       is not null &&
-                csmsWebSocketTextMessagesReceived                  is not null &&
+            if (testCSMS01                                            is not null &&
+                testBackendWebSockets01                               is not null &&
+                csmsWebSocketTextMessagesSent                         is not null &&
+                csmsWebSocketTextMessageResponsesReceived             is not null &&
+                csmsWebSocketTextMessagesReceived                     is not null &&
                 csmsWebSocketTextMessageResponsesSent                 is not null &&
 
-                chargingStation1                              is not null &&
-                chargingStation1WebSocketTextMessagesReceived is not null &&
-                chargingStation1WebSocketTextMessagesSent is not null &&
+                chargingStation1                                      is not null &&
+                chargingStation1WebSocketTextMessagesReceived         is not null &&
+                chargingStation1WebSocketTextMessageResponsesSent     is not null &&
+                chargingStation1WebSocketTextMessagesSent             is not null &&
+                chargingStation1WebSocketTextMessageResponsesReceived is not null &&
 
-                chargingStation2                              is not null &&
-                chargingStation2WebSocketTextMessagesReceived is not null &&
-                chargingStation2WebSocketTextMessagesSent is not null &&
+                chargingStation2                                      is not null &&
+                chargingStation2WebSocketTextMessagesReceived         is not null &&
+                chargingStation2WebSocketTextMessageResponsesSent     is not null &&
+                chargingStation2WebSocketTextMessagesSent             is not null &&
+                chargingStation2WebSocketTextMessageResponsesReceived is not null &&
 
-                chargingStation3                              is not null &&
-                chargingStation3WebSocketTextMessagesReceived is not null &&
-                chargingStation3WebSocketTextMessagesSent is not null)
+                chargingStation3                                      is not null &&
+                chargingStation3WebSocketTextMessagesReceived         is not null &&
+                chargingStation3WebSocketTextMessageResponsesSent     is not null &&
+                chargingStation3WebSocketTextMessagesSent             is not null &&
+                chargingStation3WebSocketTextMessageResponsesReceived is not null)
 
             {
 
@@ -2924,6 +2932,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 Assert.AreEqual(1,                getDisplayMessagesRequests.Count);
 
 
+                await Task.Delay(500);
+
 
                 // Delete message #1
                 var clearDisplayMessageRequests = new List<ClearDisplayMessageRequest>();
@@ -2941,6 +2951,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 Assert.AreEqual(ResultCodes.OK,   clearResponse.Result.ResultCode);
                 Assert.AreEqual(1,                clearDisplayMessageRequests.Count);
 
+
+                await Task.Delay(500);
 
 
                 // Get Messages AFTER
@@ -2964,10 +2976,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 Assert.AreEqual(1,                notifyDisplayMessagesRequests.ElementAt(1).MessageInfos.Count());
 
 
-                Assert.AreEqual(7, csmsWebSocketTextMessagesReceived.                 Count);
-                Assert.AreEqual(6, chargingStation1WebSocketTextMessagesReceived.Count);
-                Assert.AreEqual(7, chargingStation1WebSocketTextMessagesSent.Count);
-                Assert.AreEqual(1, csmsWebSocketTextMessageResponsesSent.                Count);
+                Assert.AreEqual(7, csmsWebSocketTextMessagesSent.                        Count);
+                Assert.AreEqual(5, csmsWebSocketTextMessageResponsesReceived.            Count);
+                Assert.AreEqual(7, csmsWebSocketTextMessagesReceived.                    Count);
+                Assert.AreEqual(2, csmsWebSocketTextMessageResponsesSent.                Count);
+
+                Assert.AreEqual(7, chargingStation1WebSocketTextMessagesReceived.        Count);
+                Assert.AreEqual(5, chargingStation1WebSocketTextMessageResponsesSent.    Count);
+                Assert.AreEqual(7, chargingStation1WebSocketTextMessagesSent.            Count);
+                Assert.AreEqual(2, chargingStation1WebSocketTextMessageResponsesReceived.Count);
 
             }
 
