@@ -899,15 +899,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             centralSystemServer.OnTextMessageRequest += async (timestamp,
                                                                webSocketServer,
                                                                webSocketConnection,
-                                                               webSocketTextMessageRequest,
-                                                               cancellationToken) => {
+                                                               eventTrackingId,
+                                                               requestTimestamp,
+                                                               requestMessage) => {
 
                 if (OnTextMessageRequest is not null)
                     await OnTextMessageRequest.Invoke(timestamp,
                                                       webSocketServer,
                                                       webSocketConnection,
-                                                      webSocketTextMessageRequest,
-                                                      cancellationToken);
+                                                      eventTrackingId,
+                                                      requestTimestamp,
+                                                      requestMessage);
 
             };
 

@@ -182,6 +182,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
+        String? ClientCloseMessage { get; }
+
+
         #region SendBootNotification
 
         /// <summary>

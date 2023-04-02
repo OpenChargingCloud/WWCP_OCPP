@@ -32,6 +32,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv2_0.CSMS;
 using cloud.charging.open.protocols.OCPPv2_0.WebSockets;
+using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
 
 #endregion
 
@@ -130,7 +131,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         /// The destination URI of the websocket message.
         /// </summary>
         public String                                To                              { get; }
-
 
         /// <summary>
         /// The attached OCPP CP client (HTTP/websocket client) logger.
@@ -7549,29 +7549,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                                Message
                                            );
 
-                        SendWebSocketFrame(new WebSocketFrame(
-                                               WebSocketFrame.Fin.Final,
-                                               WebSocketFrame.MaskStatus.On,
-                                               new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
-                                               WebSocketFrame.Opcodes.Text,
-                                               wsRequestMessage.ToByteArray(),
-                                               WebSocketFrame.Rsv.Off,
-                                               WebSocketFrame.Rsv.Off,
-                                               WebSocketFrame.Rsv.Off
-                                           ));
+                        SendText(wsRequestMessage.
+                                     ToJSON().
+                                     ToString(Newtonsoft.Json.Formatting.None));
 
                         requests.Add(RequestId,
                                      new SendRequestState2(
                                          Timestamp.Now,
                                          wsRequestMessage,
-                                         Timestamp.Now + TimeSpan.FromSeconds(10)
+                                         Timestamp.Now + RequestTimeout
                                      ));
-
-                        //File.AppendAllText(LogfileName,
-                        //                   String.Concat("Timestamp: ",         Timestamp.Now.ToIso8601(),                                               Environment.NewLine,
-                        //                                 "ChargeBoxId: ",       ChargeBoxIdentity.ToString(),                                            Environment.NewLine,
-                        //                                 "Message sent: ",      wsRequestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented), Environment.NewLine,
-                        //                                 "--------------------------------------------------------------------------------------------", Environment.NewLine));
 
                     }
                     else
@@ -7679,7 +7666,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
         }
 
         #endregion
-
 
 
         #region SendBootNotification                 (Request)

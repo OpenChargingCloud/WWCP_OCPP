@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public const            String                                                          DefaultHTTPServiceName      = "GraphDefined OCPP " + Version.Number + " HTTP/WebSocket/JSON Central System API";
+        public const            String                                                          DefaultHTTPServiceName      = "GraphDefined OCPP " + Version.Number + " HTTP/WebSocket/JSON CSMS API";
 
         /// <summary>
         /// The default HTTP server TCP port.
@@ -1739,6 +1739,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                    null,
                    null,
 
+                   new[] { $"ocpp{Version.Number[1..]}" },
                    DisableWebSocketPings,
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
@@ -1792,9 +1793,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
 
             #region Verify 'Sec-WebSocket-Protocol'...
 
-            var secWebSocketProtocols = Connection.Request?.SecWebSocketProtocol?.Split(',')?.Select(protocol => protocol?.Trim()).ToArray();
-
-            if (secWebSocketProtocols is null)
+            if (Connection.Request?.SecWebSocketProtocol is null ||
+                Connection.Request?.SecWebSocketProtocol.Any() == false)
             {
 
                 DebugX.Log("Missing 'Sec-WebSocket-Protocol' HTTP header!");
@@ -1813,10 +1813,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                            }.AsImmutable);
 
             }
-            else if (!secWebSocketProtocols.Contains("ocpp2.0.1"))
+            else if (Connection.Request?.SecWebSocketProtocol.Contains($"ocpp{Version.Number[1..]}") == false)
             {
 
-                DebugX.Log("This WebSocket service only supports 'ocpp2.0.1'!");
+                DebugX.Log($"This WebSocket service only supports 'ocpp{Version.Number[1..]}'!");
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {
@@ -1826,7 +1826,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                            Content      = JSONObject.Create(
                                               new JProperty("description",
                                                   JSONObject.Create(
-                                                      new JProperty("en", "This WebSocket service only supports 'ocpp1.6'!")
+                                                      new JProperty("en", $"This WebSocket service only supports 'ocpp{Version.Number[1..]}'!")
                                               ))).ToUTF8Bytes(),
                            Connection   = "close"
                        }.AsImmutable);

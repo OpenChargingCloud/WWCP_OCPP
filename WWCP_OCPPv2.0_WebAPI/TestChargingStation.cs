@@ -225,6 +225,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0
         public IChargingStationClient?      CSClient                    { get; private set; }
 
 
+        public String? ClientCloseMessage
+            => CSClient?.ClientCloseMessage;
+
+
         /// <summary>
         /// The sender identification.
         /// </summary>

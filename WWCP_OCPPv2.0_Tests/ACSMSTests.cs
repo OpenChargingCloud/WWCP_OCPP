@@ -38,8 +38,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #region Data
 
-        protected TestCSMS?      testCSMS01;
-        protected CSMSWSServer?  testBackendWebSockets01;
+        protected TestCSMS?                       testCSMS01;
+        protected CSMSWSServer?                   testBackendWebSockets01;
+
+        protected List<Tuple<DateTime, String>>?  csmsWebSocketRequestMessages;
+        protected List<Tuple<DateTime, String>>?  csmsWebSocketResponseMessages;
 
         #endregion
 
@@ -81,6 +84,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                        );
 
             Assert.IsNotNull(testBackendWebSockets01);
+
+
+            csmsWebSocketRequestMessages   = new List<Tuple<DateTime, String>>();
+            csmsWebSocketResponseMessages  = new List<Tuple<DateTime, String>>();
+
+            testBackendWebSockets01.OnTextMessageRequest  += async (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, requestMessage) => {
+                csmsWebSocketRequestMessages. Add(new Tuple<DateTime, String>(requestTimestamp,  requestMessage));
+            };
+
+            testBackendWebSockets01.OnTextMessageResponse += async (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
+                csmsWebSocketResponseMessages.Add(new Tuple<DateTime, String>(responseTimestamp, responseMessage ?? "-"));
+            };
 
         }
 

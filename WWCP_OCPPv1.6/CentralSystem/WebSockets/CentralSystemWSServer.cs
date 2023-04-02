@@ -1160,6 +1160,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    null,
                    null,
 
+                   new[] { $"ocpp{Version.Number[1..]}" },
                    DisableWebSocketPings,
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
@@ -1213,9 +1214,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             #region Verify 'Sec-WebSocket-Protocol'...
 
-            var secWebSocketProtocols = Connection.Request?.SecWebSocketProtocol?.Split(',')?.Select(protocol => protocol?.Trim()).ToArray();
-
-            if (secWebSocketProtocols is null)
+            if (Connection.Request?.SecWebSocketProtocol is null ||
+                Connection.Request?.SecWebSocketProtocol.Any() == false)
             {
 
                 DebugX.Log("Missing 'Sec-WebSocket-Protocol' HTTP header!");
@@ -1234,10 +1234,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            }.AsImmutable);
 
             }
-            else if (!secWebSocketProtocols.Contains("ocpp1.6"))
+            else if (Connection.Request?.SecWebSocketProtocol.Contains($"ocpp{Version.Number[1..]}") == false)
             {
 
-                DebugX.Log("This web socket service only supports 'ocpp1.6'!");
+                DebugX.Log($"This web socket service only supports 'ocpp{Version.Number[1..]}'!");
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {
@@ -1247,7 +1247,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                            Content      = JSONObject.Create(
                                               new JProperty("description",
                                                   JSONObject.Create(
-                                                      new JProperty("en", "This web socket service only supports 'ocpp1.6'!")
+                                                      new JProperty("en", $"This web socket service only supports 'ocpp{Version.Number[1..]}'!")
                                               ))).ToUTF8Bytes(),
                            Connection   = "close"
                        }.AsImmutable);

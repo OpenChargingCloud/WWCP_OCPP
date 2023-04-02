@@ -1278,17 +1278,23 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
         public async Task ChargingStation_SendMeterValues_Test()
         {
 
-            Assert.IsNotNull(testCSMS01);
-            Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            if (testCSMS01                                    is not null &&
+                testBackendWebSockets01                       is not null &&
+                csmsWebSocketRequestMessages                  is not null &&
+                csmsWebSocketResponseMessages                 is not null &&
 
-            if (testCSMS01              is not null &&
-                testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargingStation1                              is not null &&
+                chargingStation1IncomingWebSocketTextMessages is not null &&
+                chargingStation1OutgoingWebSocketTextMessages is not null &&
+
+                chargingStation2                              is not null &&
+                chargingStation2IncomingWebSocketTextMessages is not null &&
+                chargingStation2OutgoingWebSocketTextMessages is not null &&
+
+                chargingStation3                              is not null &&
+                chargingStation3IncomingWebSocketTextMessages is not null &&
+                chargingStation3OutgoingWebSocketTextMessages is not null)
+
             {
 
                 var meterValuesRequests = new List<CS.MeterValuesRequest>();
@@ -1394,6 +1400,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                    );
 
 
+                var clientCloseMessage = chargingStation1.ClientCloseMessage;
+
                 Assert.AreEqual (ResultCodes.OK,                                                  response1.Result.ResultCode);
 
                 Assert.AreEqual (1,                                                               meterValuesRequests.Count);
@@ -1441,6 +1449,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 //Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Unit,        meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Unit);
                 //Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Unit,        meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Unit);
                 //Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Unit,        meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Unit);
+
+
+                Assert.AreEqual(1, chargingStation1IncomingWebSocketTextMessages.Count);
+                Assert.AreEqual(1, csmsWebSocketRequestMessages.                 Count);
+                Assert.AreEqual(1, csmsWebSocketResponseMessages.                Count);
+                Assert.AreEqual(1, chargingStation1OutgoingWebSocketTextMessages.Count);
 
             }
 

@@ -2894,6 +2894,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                 Assert.AreEqual(2,                notifyDisplayMessagesRequests.ElementAt(0).MessageInfos.Count());
                 Assert.AreEqual(1,                notifyDisplayMessagesRequests.ElementAt(1).MessageInfos.Count());
 
+
+                Assert.AreEqual(1, csmsWebSocketRequestMessages. Count);
+                Assert.AreEqual(1, csmsWebSocketResponseMessages.Count);
+
             }
 
         }

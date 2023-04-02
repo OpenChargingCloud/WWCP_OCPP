@@ -22,6 +22,8 @@ using NUnit.Framework;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPPv2_0.CS;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_0.tests
@@ -35,9 +37,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
         #region Data
 
-        protected TestChargingStation? chargingStation1;
-        protected TestChargingStation? chargingStation2;
-        protected TestChargingStation? chargingStation3;
+        protected TestChargingStation?            chargingStation1;
+        protected TestChargingStation?            chargingStation2;
+        protected TestChargingStation?            chargingStation3;
+
+        protected List<Tuple<DateTime, String>>?  chargingStation1IncomingWebSocketTextMessages;
+        protected List<Tuple<DateTime, String>>?  chargingStation2IncomingWebSocketTextMessages;
+        protected List<Tuple<DateTime, String>>?  chargingStation3IncomingWebSocketTextMessages;
+
+        protected List<Tuple<DateTime, String>>?  chargingStation1OutgoingWebSocketTextMessages;
+        protected List<Tuple<DateTime, String>>?  chargingStation2OutgoingWebSocketTextMessages;
+        protected List<Tuple<DateTime, String>>?  chargingStation3OutgoingWebSocketTextMessages;
 
         #endregion
 
@@ -50,7 +60,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             base.SetupEachTest();
 
-            chargingStation1  = new TestChargingStation(
+            #region Charging Station #1
+
+            chargingStation1IncomingWebSocketTextMessages = new List<Tuple<DateTime, String>>();
+            chargingStation1OutgoingWebSocketTextMessages = new List<Tuple<DateTime, String>>();
+
+            chargingStation1 = new TestChargingStation(
                                     ChargeBoxId:              ChargeBox_Id.Parse("GD001"),
                                     VendorName:               "GraphDefined OEM #1",
                                     Model:                    "VCP.1",
@@ -88,6 +103,69 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             Assert.IsNotNull(chargingStation1);
 
+
+            if (testBackendWebSockets01 is not null)
+            {
+
+                testCSMS01.AddHTTPBasicAuth(ChargeBox_Id.Parse("test01"), "1234abcd");
+
+                var response1 = chargingStation1.ConnectWebSocket(
+                                                     From:                    "From:GD001",
+                                                     To:                      "To:OCPPTest01",
+                                                     RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation1.ChargeBoxId),
+                                                     HTTPAuthentication:      new HTTPBasicAuthentication("test01", "1234abcd"),
+                                                     DisableWebSocketPings:   true
+                                                 ).Result;
+
+                Assert.IsNotNull(response1);
+
+                if (response1 is not null)
+                {
+
+                    // HTTP/1.1 101 Switching Protocols
+                    // Date:                    Mon, 02 Apr 2023 15:55:18 GMT
+                    // Server:                  GraphDefined OCPP v2.0.1 HTTP/WebSocket/JSON CSMS API
+                    // Connection:              Upgrade
+                    // Upgrade:                 websocket
+                    // Sec-WebSocket-Accept:    HSmrc0sMlYUkAGmm5OPpG2HaGWk=
+                    // Sec-WebSocket-Protocol:  ocpp2.0.1
+                    // Sec-WebSocket-Version:   13
+
+                    Assert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    response1.HTTPStatusCode);
+                    Assert.AreEqual($"GraphDefined OCPP {Version.Number} HTTP/WebSocket/JSON CSMS API",   response1.Server);
+                    Assert.AreEqual("Upgrade",                                                            response1.Connection);
+                    Assert.AreEqual("websocket",                                                          response1.Upgrade);
+                    Assert.IsTrue  (response1.SecWebSocketProtocol.Contains($"ocpp{Version.Number[1..]}"));
+                    Assert.AreEqual("13",                                                                 response1.SecWebSocketVersion);
+
+                }
+
+
+                var chargingStation1WebSocketClient = chargingStation1.CSClient as ChargingStationWSClient;
+                Assert.IsNotNull(chargingStation1WebSocketClient);
+
+                if (chargingStation1WebSocketClient is not null)
+                {
+
+                    chargingStation1WebSocketClient.OnIncomingTextMessage += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message) => {
+                        chargingStation1IncomingWebSocketTextMessages.Add(new Tuple<DateTime, String>(timestamp, message));
+                    };
+
+                    chargingStation1WebSocketClient.OnOutgoingTextMessage += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message) => {
+                        chargingStation1OutgoingWebSocketTextMessages.Add(new Tuple<DateTime, String>(timestamp, message));
+                    };
+
+                }
+
+            }
+
+            #endregion
+
+            #region Charging Station #2
+
+            chargingStation2IncomingWebSocketTextMessages = new List<Tuple<DateTime, String>>();
+            chargingStation2OutgoingWebSocketTextMessages = new List<Tuple<DateTime, String>>();
+
             chargingStation2  = new TestChargingStation(
                                     ChargeBoxId:              ChargeBox_Id.Parse("CP002"),
                                     VendorName:               "GraphDefined OEM #2",
@@ -124,7 +202,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             Assert.IsNotNull(chargingStation2);
 
-            chargingStation3  = new TestChargingStation(
+            #endregion
+
+            #region Charging Station #3
+
+            chargingStation3IncomingWebSocketTextMessages = new List<Tuple<DateTime, String>>();
+            chargingStation3OutgoingWebSocketTextMessages = new List<Tuple<DateTime, String>>();
+
+            chargingStation3 = new TestChargingStation(
                                     ChargeBoxId:              ChargeBox_Id.Parse("CP003"),
                                     VendorName:               "GraphDefined OEM #3",
                                     Model:                    "VCP.3",
@@ -160,50 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
 
             Assert.IsNotNull(chargingStation3);
 
-            if (testBackendWebSockets01 is not null)
-            {
-
-                testCSMS01.AddHTTPBasicAuth(ChargeBox_Id.Parse("test01"), "1234abcd");
-
-                var response1 = chargingStation1.ConnectWebSocket(
-                                                     From:                    "From:GD001",
-                                                     To:                      "To:OCPPTest01",
-                                                     RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation1.ChargeBoxId),
-                                                     HTTPAuthentication:      new HTTPBasicAuthentication("test01", "1234abcd"),
-                                                     DisableWebSocketPings:   true
-                                                 ).Result;
-
-                Assert.IsNotNull(response1);
-
-                if (response1 is not null)
-                {
-
-                    // HTTP/1.1 101 Switching Protocols
-                    // Date:                    Mon, 31 Oct 2022 00:33:18 GMT
-                    // Server:                  GraphDefined OCPP v1.6 HTTP/WebSocket/JSON Central System API
-                    // Connection:              Upgrade
-                    // Upgrade:                 websocket
-                    // Sec-WebSocket-Accept:    HSmrc0sMlYUkAGmm5OPpG2HaGWk=
-                    // Sec-WebSocket-Protocol:  ocpp1.6
-                    // Sec-WebSocket-Version:   13
-
-                    Assert.AreEqual(HTTPStatusCode.SwitchingProtocols,  response1.HTTPStatusCode);
-                    Assert.AreEqual("Upgrade",                          response1.Connection);
-                    Assert.AreEqual("websocket",                        response1.Upgrade);
-                    Assert.AreEqual("ocpp1.6",                          response1.SecWebSocketProtocol);
-
-                }
-
-
-                //var response2 = chargingStation1.ConnectWebSocket("From:GD002",
-                //                                                  "To:OCPPTest01",
-                //                                                  URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation1.ChargeBoxId)).Result;
-
-                //var response3 = chargingStation1.ConnectWebSocket("From:GD003",
-                //                                                  "To:OCPPTest01",
-                //                                                  URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation1.ChargeBoxId)).Result;
-
-            }
+            #endregion
 
         }
 

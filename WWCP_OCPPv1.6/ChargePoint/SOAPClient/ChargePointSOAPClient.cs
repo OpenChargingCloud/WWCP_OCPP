@@ -74,18 +74,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The source URI of the SOAP message.
         /// </summary>
-        public String          From                { get; }
+        public String          From                  { get; }
 
         /// <summary>
         /// The destination URI of the SOAP message.
         /// </summary>
-        public String          To                  { get; }
+        public String          To                    { get; }
 
+        /// <summary>
+        /// The optional error message when this client closed the HTTP SOAP connection.
+        /// </summary>
+        public String?         ClientCloseMessage    { get; private set; }
 
         /// <summary>
         /// The attached OCPP CP client (HTTP/SOAP client) logger.
         /// </summary>
-        public CPClientLogger  Logger              { get; }
+        public CPClientLogger  Logger                { get; }
 
         #endregion
 

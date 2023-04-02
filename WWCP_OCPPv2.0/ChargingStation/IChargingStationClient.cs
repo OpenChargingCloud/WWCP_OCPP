@@ -395,6 +395,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CS
                                               IEventSender
     {
 
+        String? ClientCloseMessage { get; }
+
+
         #region SendBootNotification
 
         /// <summary>
