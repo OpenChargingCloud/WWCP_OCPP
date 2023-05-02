@@ -815,15 +815,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<ResetResponse>(httpresponse,
-                                                               new ResetResponse(
-                                                                   Request,
-                                                                   Result.Format(
-                                                                       "Invalid SOAP => " +
-                                                                       httpresponse.HTTPBody.ToUTF8String()
-                                                                   )
-                                                               ),
-                                                               IsFault: true);
+                        return HTTPResponse<ResetResponse>.IsFault(httpresponse,
+                                                                   new ResetResponse(
+                                                                       Request,
+                                                                       Result.Format(
+                                                                           "Invalid SOAP => " +
+                                                                           httpresponse.HTTPBody.ToUTF8String()
+                                                                       )
+                                                                   ));
 
                     },
 
@@ -835,16 +834,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<ResetResponse>(httpresponse,
-                                                               new ResetResponse(
-                                                                   Request,
-                                                                   Result.Server(
-                                                                        httpresponse.HTTPStatusCode.ToString() +
-                                                                        " => " +
-                                                                        httpresponse.HTTPBody.ToUTF8String()
-                                                                   )
-                                                               ),
-                                                               IsFault: true);
+                        return HTTPResponse<ResetResponse>.IsFault(httpresponse,
+                                                                   new ResetResponse(
+                                                                       Request,
+                                                                       Result.Server(
+                                                                            httpresponse.HTTPStatusCode.ToString() +
+                                                                            " => " +
+                                                                            httpresponse.HTTPBody.ToUTF8String()
+                                                                       )
+                                                                   ));
 
                     },
 
@@ -993,15 +991,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<ChangeAvailabilityResponse>(httpresponse,
-                                                                            new ChangeAvailabilityResponse(
-                                                                                Request,
-                                                                                Result.Format(
-                                                                                    "Invalid SOAP => " +
-                                                                                    httpresponse.HTTPBody.ToUTF8String()
-                                                                                )
-                                                                            ),
-                                                                            IsFault: true);
+                        return HTTPResponse<ChangeAvailabilityResponse>.IsFault(httpresponse,
+                                                                                new ChangeAvailabilityResponse(
+                                                                                    Request,
+                                                                                    Result.Format(
+                                                                                        "Invalid SOAP => " +
+                                                                                        httpresponse.HTTPBody.ToUTF8String()
+                                                                                    )
+                                                                                ));
 
                     },
 
@@ -1013,16 +1010,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<ChangeAvailabilityResponse>(httpresponse,
-                                                                            new ChangeAvailabilityResponse(
-                                                                                Request,
-                                                                                Result.Server(
-                                                                                     httpresponse.HTTPStatusCode.ToString() +
-                                                                                     " => " +
-                                                                                     httpresponse.HTTPBody.ToUTF8String()
-                                                                                )
-                                                                            ),
-                                                                            IsFault: true);
+                        return HTTPResponse<ChangeAvailabilityResponse>.IsFault(httpresponse,
+                                                                                new ChangeAvailabilityResponse(
+                                                                                    Request,
+                                                                                    Result.Server(
+                                                                                         httpresponse.HTTPStatusCode.ToString() +
+                                                                                         " => " +
+                                                                                         httpresponse.HTTPBody.ToUTF8String()
+                                                                                    )
+                                                                                ));
 
                     },
 
@@ -1170,15 +1166,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<GetConfigurationResponse>(httpresponse,
-                                                                          new GetConfigurationResponse(
-                                                                              Request,
-                                                                              Result.Format(
-                                                                                  "Invalid SOAP => " +
-                                                                                  httpresponse.HTTPBody.ToUTF8String()
-                                                                              )
-                                                                          ),
-                                                                          IsFault: true);
+                        return HTTPResponse<GetConfigurationResponse>.IsFault(httpresponse,
+                                                                              new GetConfigurationResponse(
+                                                                                  Request,
+                                                                                  Result.Format(
+                                                                                      "Invalid SOAP => " +
+                                                                                      httpresponse.HTTPBody.ToUTF8String()
+                                                                                  )
+                                                                              ));
 
                     },
 
@@ -1190,16 +1185,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<GetConfigurationResponse>(httpresponse,
-                                                                          new GetConfigurationResponse(
-                                                                              Request,
-                                                                              Result.Server(
-                                                                                   httpresponse.HTTPStatusCode.ToString() +
-                                                                                   " => " +
-                                                                                   httpresponse.HTTPBody.ToUTF8String()
-                                                                              )
-                                                                          ),
-                                                                          IsFault: true);
+                        return HTTPResponse<GetConfigurationResponse>.IsFault(httpresponse,
+                                                                              new GetConfigurationResponse(
+                                                                                  Request,
+                                                                                  Result.Server(
+                                                                                       httpresponse.HTTPStatusCode.ToString() +
+                                                                                       " => " +
+                                                                                       httpresponse.HTTPBody.ToUTF8String()
+                                                                                  )
+                                                                              ));
 
                     },
 
@@ -1347,15 +1341,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<ChangeConfigurationResponse>(httpresponse,
-                                                                             new ChangeConfigurationResponse(
-                                                                                 Request,
-                                                                                 Result.Format(
-                                                                                     "Invalid SOAP => " +
-                                                                                     httpresponse.HTTPBody.ToUTF8String()
-                                                                                 )
-                                                                             ),
-                                                                             IsFault: true);
+                        return HTTPResponse<ChangeConfigurationResponse>.IsFault(httpresponse,
+                                                                                 new ChangeConfigurationResponse(
+                                                                                     Request,
+                                                                                     Result.Format(
+                                                                                         "Invalid SOAP => " +
+                                                                                         httpresponse.HTTPBody.ToUTF8String()
+                                                                                     )
+                                                                                 ));
 
                     },
 
@@ -1367,16 +1360,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<ChangeConfigurationResponse>(httpresponse,
-                                                                             new ChangeConfigurationResponse(
-                                                                                 Request,
-                                                                                 Result.Server(
-                                                                                      httpresponse.HTTPStatusCode.ToString() +
-                                                                                      " => " +
-                                                                                      httpresponse.HTTPBody.ToUTF8String()
-                                                                                 )
-                                                                             ),
-                                                                             IsFault: true);
+                        return HTTPResponse<ChangeConfigurationResponse>.IsFault(httpresponse,
+                                                                                 new ChangeConfigurationResponse(
+                                                                                     Request,
+                                                                                     Result.Server(
+                                                                                          httpresponse.HTTPStatusCode.ToString() +
+                                                                                          " => " +
+                                                                                          httpresponse.HTTPBody.ToUTF8String()
+                                                                                     )
+                                                                                 ));
 
                     },
 
@@ -1524,15 +1516,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<CP.DataTransferResponse>(httpresponse,
-                                                                         new CP.DataTransferResponse(
-                                                                             Request,
-                                                                             Result.Format(
-                                                                                 "Invalid SOAP => " +
-                                                                                 httpresponse.HTTPBody.ToUTF8String()
-                                                                             )
-                                                                         ),
-                                                                         IsFault: true);
+                        return HTTPResponse<CP.DataTransferResponse>.IsFault(httpresponse,
+                                                                             new CP.DataTransferResponse(
+                                                                                 Request,
+                                                                                 Result.Format(
+                                                                                     "Invalid SOAP => " +
+                                                                                     httpresponse.HTTPBody.ToUTF8String()
+                                                                                 )
+                                                                             ));
 
                     },
 
@@ -1544,16 +1535,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<CP.DataTransferResponse>(httpresponse,
-                                                                         new CP.DataTransferResponse(
-                                                                             Request,
-                                                                             Result.Server(
-                                                                                  httpresponse.HTTPStatusCode.ToString() +
-                                                                                  " => " +
-                                                                                  httpresponse.HTTPBody.ToUTF8String()
-                                                                             )
-                                                                         ),
-                                                                         IsFault: true);
+                        return HTTPResponse<CP.DataTransferResponse>.IsFault(httpresponse,
+                                                                             new CP.DataTransferResponse(
+                                                                                 Request,
+                                                                                 Result.Server(
+                                                                                      httpresponse.HTTPStatusCode.ToString() +
+                                                                                      " => " +
+                                                                                      httpresponse.HTTPBody.ToUTF8String()
+                                                                                 )
+                                                                             ));
 
                     },
 
@@ -1701,15 +1691,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<GetDiagnosticsResponse>(httpresponse,
-                                                                        new GetDiagnosticsResponse(
-                                                                            Request,
-                                                                            Result.Format(
-                                                                                "Invalid SOAP => " +
-                                                                                httpresponse.HTTPBody.ToUTF8String()
-                                                                            )
-                                                                        ),
-                                                                        IsFault: true);
+                        return HTTPResponse<GetDiagnosticsResponse>.IsFault(httpresponse,
+                                                                            new GetDiagnosticsResponse(
+                                                                                Request,
+                                                                                Result.Format(
+                                                                                    "Invalid SOAP => " +
+                                                                                    httpresponse.HTTPBody.ToUTF8String()
+                                                                                )
+                                                                            ));
 
                     },
 
@@ -1721,16 +1710,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<GetDiagnosticsResponse>(httpresponse,
-                                                                        new GetDiagnosticsResponse(
-                                                                            Request,
-                                                                            Result.Server(
-                                                                                 httpresponse.HTTPStatusCode.ToString() +
-                                                                                 " => " +
-                                                                                 httpresponse.HTTPBody.ToUTF8String()
-                                                                            )
-                                                                        ),
-                                                                        IsFault: true);
+                        return HTTPResponse<GetDiagnosticsResponse>.IsFault(httpresponse,
+                                                                            new GetDiagnosticsResponse(
+                                                                                Request,
+                                                                                Result.Server(
+                                                                                     httpresponse.HTTPStatusCode.ToString() +
+                                                                                     " => " +
+                                                                                     httpresponse.HTTPBody.ToUTF8String()
+                                                                                )
+                                                                            ));
 
                     },
 
@@ -1878,15 +1866,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<TriggerMessageResponse>(httpresponse,
-                                                                        new TriggerMessageResponse(
-                                                                            Request,
-                                                                            Result.Format(
-                                                                                "Invalid SOAP => " +
-                                                                                httpresponse.HTTPBody.ToUTF8String()
-                                                                            )
-                                                                        ),
-                                                                        IsFault: true);
+                        return HTTPResponse<TriggerMessageResponse>.IsFault(httpresponse,
+                                                                            new TriggerMessageResponse(
+                                                                                Request,
+                                                                                Result.Format(
+                                                                                    "Invalid SOAP => " +
+                                                                                    httpresponse.HTTPBody.ToUTF8String()
+                                                                                )
+                                                                            ));
 
                     },
 
@@ -1898,16 +1885,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<TriggerMessageResponse>(httpresponse,
-                                                                        new TriggerMessageResponse(
-                                                                            Request,
-                                                                            Result.Server(
-                                                                                 httpresponse.HTTPStatusCode.ToString() +
-                                                                                 " => " +
-                                                                                 httpresponse.HTTPBody.ToUTF8String()
-                                                                            )
-                                                                        ),
-                                                                        IsFault: true);
+                        return HTTPResponse<TriggerMessageResponse>.IsFault(httpresponse,
+                                                                            new TriggerMessageResponse(
+                                                                                Request,
+                                                                                Result.Server(
+                                                                                     httpresponse.HTTPStatusCode.ToString() +
+                                                                                     " => " +
+                                                                                     httpresponse.HTTPBody.ToUTF8String()
+                                                                                )
+                                                                            ));
 
                     },
 
@@ -2055,15 +2041,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<UpdateFirmwareResponse>(httpresponse,
-                                                                        new UpdateFirmwareResponse(
-                                                                            Request,
-                                                                            Result.Format(
-                                                                                "Invalid SOAP => " +
-                                                                                httpresponse.HTTPBody.ToUTF8String()
-                                                                            )
-                                                                        ),
-                                                                        IsFault: true);
+                        return HTTPResponse<UpdateFirmwareResponse>.IsFault(httpresponse,
+                                                                            new UpdateFirmwareResponse(
+                                                                                Request,
+                                                                                Result.Format(
+                                                                                    "Invalid SOAP => " +
+                                                                                    httpresponse.HTTPBody.ToUTF8String()
+                                                                                )
+                                                                            ));
 
                     },
 
@@ -2075,16 +2060,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<UpdateFirmwareResponse>(httpresponse,
-                                                                        new UpdateFirmwareResponse(
-                                                                            Request,
-                                                                            Result.Server(
-                                                                                 httpresponse.HTTPStatusCode.ToString() +
-                                                                                 " => " +
-                                                                                 httpresponse.HTTPBody.ToUTF8String()
-                                                                            )
-                                                                        ),
-                                                                        IsFault: true);
+                        return HTTPResponse<UpdateFirmwareResponse>.IsFault(httpresponse,
+                                                                            new UpdateFirmwareResponse(
+                                                                                Request,
+                                                                                Result.Server(
+                                                                                     httpresponse.HTTPStatusCode.ToString() +
+                                                                                     " => " +
+                                                                                     httpresponse.HTTPBody.ToUTF8String()
+                                                                                )
+                                                                            ));
 
                     },
 
@@ -2233,15 +2217,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<ReserveNowResponse>(httpresponse,
-                                                                    new ReserveNowResponse(
-                                                                        Request,
-                                                                        Result.Format(
-                                                                            "Invalid SOAP => " +
-                                                                            httpresponse.HTTPBody.ToUTF8String()
-                                                                        )
-                                                                    ),
-                                                                    IsFault: true);
+                        return HTTPResponse<ReserveNowResponse>.IsFault(httpresponse,
+                                                                        new ReserveNowResponse(
+                                                                            Request,
+                                                                            Result.Format(
+                                                                                "Invalid SOAP => " +
+                                                                                httpresponse.HTTPBody.ToUTF8String()
+                                                                            )
+                                                                        ));
 
                     },
 
@@ -2253,16 +2236,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<ReserveNowResponse>(httpresponse,
-                                                                    new ReserveNowResponse(
-                                                                        Request,
-                                                                        Result.Server(
-                                                                             httpresponse.HTTPStatusCode.ToString() +
-                                                                             " => " +
-                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                        )
-                                                                    ),
-                                                                    IsFault: true);
+                        return HTTPResponse<ReserveNowResponse>.IsFault(httpresponse,
+                                                                        new ReserveNowResponse(
+                                                                            Request,
+                                                                            Result.Server(
+                                                                                 httpresponse.HTTPStatusCode.ToString() +
+                                                                                 " => " +
+                                                                                 httpresponse.HTTPBody.ToUTF8String()
+                                                                            )
+                                                                        ));
 
                     },
 
@@ -2410,15 +2392,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<CancelReservationResponse>(httpresponse,
-                                                                           new CancelReservationResponse(
-                                                                               Request,
-                                                                               Result.Format(
-                                                                                   "Invalid SOAP => " +
-                                                                                   httpresponse.HTTPBody.ToUTF8String()
-                                                                               )
-                                                                           ),
-                                                                           IsFault: true);
+                        return HTTPResponse<CancelReservationResponse>.IsFault(httpresponse,
+                                                                               new CancelReservationResponse(
+                                                                                   Request,
+                                                                                   Result.Format(
+                                                                                       "Invalid SOAP => " +
+                                                                                       httpresponse.HTTPBody.ToUTF8String()
+                                                                                   )
+                                                                               ));
 
                     },
 
@@ -2430,16 +2411,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<CancelReservationResponse>(httpresponse,
-                                                                           new CancelReservationResponse(
-                                                                               Request,
-                                                                               Result.Server(
-                                                                                    httpresponse.HTTPStatusCode.ToString() +
-                                                                                    " => " +
-                                                                                    httpresponse.HTTPBody.ToUTF8String()
-                                                                               )
-                                                                           ),
-                                                                           IsFault: true);
+                        return HTTPResponse<CancelReservationResponse>.IsFault(httpresponse,
+                                                                               new CancelReservationResponse(
+                                                                                   Request,
+                                                                                   Result.Server(
+                                                                                        httpresponse.HTTPStatusCode.ToString() +
+                                                                                        " => " +
+                                                                                        httpresponse.HTTPBody.ToUTF8String()
+                                                                                   )
+                                                                               ));
 
                     },
 
@@ -2587,15 +2567,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<RemoteStartTransactionResponse>(httpresponse,
-                                                                                new RemoteStartTransactionResponse(
-                                                                                    Request,
-                                                                                    Result.Format(
-                                                                                        "Invalid SOAP => " +
-                                                                                        httpresponse.HTTPBody.ToUTF8String()
-                                                                                    )
-                                                                                ),
-                                                                                IsFault: true);
+                        return HTTPResponse<RemoteStartTransactionResponse>.IsFault(httpresponse,
+                                                                                    new RemoteStartTransactionResponse(
+                                                                                        Request,
+                                                                                        Result.Format(
+                                                                                            "Invalid SOAP => " +
+                                                                                            httpresponse.HTTPBody.ToUTF8String()
+                                                                                        )
+                                                                                    ));
 
                     },
 
@@ -2607,16 +2586,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<RemoteStartTransactionResponse>(httpresponse,
-                                                                                new RemoteStartTransactionResponse(
-                                                                                    Request,
-                                                                                    Result.Server(
-                                                                                         httpresponse.HTTPStatusCode.ToString() +
-                                                                                         " => " +
-                                                                                         httpresponse.HTTPBody.ToUTF8String()
-                                                                                    )
-                                                                                ),
-                                                                                IsFault: true);
+                        return HTTPResponse<RemoteStartTransactionResponse>.IsFault(httpresponse,
+                                                                                    new RemoteStartTransactionResponse(
+                                                                                        Request,
+                                                                                        Result.Server(
+                                                                                             httpresponse.HTTPStatusCode.ToString() +
+                                                                                             " => " +
+                                                                                             httpresponse.HTTPBody.ToUTF8String()
+                                                                                        )
+                                                                                    ));
 
                     },
 
@@ -2764,15 +2742,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<RemoteStopTransactionResponse>(httpresponse,
-                                                                               new RemoteStopTransactionResponse(
-                                                                                   Request,
-                                                                                   Result.Format(
-                                                                                       "Invalid SOAP => " +
-                                                                                       httpresponse.HTTPBody.ToUTF8String()
-                                                                                   )
-                                                                               ),
-                                                                               IsFault: true);
+                        return HTTPResponse<RemoteStopTransactionResponse>.IsFault(httpresponse,
+                                                                                   new RemoteStopTransactionResponse(
+                                                                                       Request,
+                                                                                       Result.Format(
+                                                                                           "Invalid SOAP => " +
+                                                                                           httpresponse.HTTPBody.ToUTF8String()
+                                                                                       )
+                                                                                   ));
 
                     },
 
@@ -2784,16 +2761,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<RemoteStopTransactionResponse>(httpresponse,
-                                                                               new RemoteStopTransactionResponse(
-                                                                                   Request,
-                                                                                   Result.Server(
-                                                                                        httpresponse.HTTPStatusCode.ToString() +
-                                                                                        " => " +
-                                                                                        httpresponse.HTTPBody.ToUTF8String()
-                                                                                   )
-                                                                               ),
-                                                                               IsFault: true);
+                        return HTTPResponse<RemoteStopTransactionResponse>.IsFault(httpresponse,
+                                                                                   new RemoteStopTransactionResponse(
+                                                                                       Request,
+                                                                                       Result.Server(
+                                                                                            httpresponse.HTTPStatusCode.ToString() +
+                                                                                            " => " +
+                                                                                            httpresponse.HTTPBody.ToUTF8String()
+                                                                                       )
+                                                                                   ));
 
                     },
 
@@ -2941,15 +2917,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<SetChargingProfileResponse>(httpresponse,
-                                                                            new SetChargingProfileResponse(
-                                                                                Request,
-                                                                                Result.Format(
-                                                                                    "Invalid SOAP => " +
-                                                                                    httpresponse.HTTPBody.ToUTF8String()
-                                                                                )
-                                                                            ),
-                                                                            IsFault: true);
+                        return HTTPResponse<SetChargingProfileResponse>.IsFault(httpresponse,
+                                                                                new SetChargingProfileResponse(
+                                                                                    Request,
+                                                                                    Result.Format(
+                                                                                        "Invalid SOAP => " +
+                                                                                        httpresponse.HTTPBody.ToUTF8String()
+                                                                                    )
+                                                                                ));
 
                     },
 
@@ -2961,16 +2936,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<SetChargingProfileResponse>(httpresponse,
-                                                                            new SetChargingProfileResponse(
-                                                                                Request,
-                                                                                Result.Server(
-                                                                                     httpresponse.HTTPStatusCode.ToString() +
-                                                                                     " => " +
-                                                                                     httpresponse.HTTPBody.ToUTF8String()
-                                                                                )
-                                                                            ),
-                                                                            IsFault: true);
+                        return HTTPResponse<SetChargingProfileResponse>.IsFault(httpresponse,
+                                                                                new SetChargingProfileResponse(
+                                                                                    Request,
+                                                                                    Result.Server(
+                                                                                         httpresponse.HTTPStatusCode.ToString() +
+                                                                                         " => " +
+                                                                                         httpresponse.HTTPBody.ToUTF8String()
+                                                                                    )
+                                                                                ));
 
                     },
 
@@ -3118,15 +3092,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<ClearChargingProfileResponse>(httpresponse,
-                                                                              new ClearChargingProfileResponse(
-                                                                                  Request,
-                                                                                  Result.Format(
-                                                                                      "Invalid SOAP => " +
-                                                                                      httpresponse.HTTPBody.ToUTF8String()
-                                                                                  )
-                                                                              ),
-                                                                              IsFault: true);
+                        return HTTPResponse<ClearChargingProfileResponse>.IsFault(httpresponse,
+                                                                                  new ClearChargingProfileResponse(
+                                                                                      Request,
+                                                                                      Result.Format(
+                                                                                          "Invalid SOAP => " +
+                                                                                          httpresponse.HTTPBody.ToUTF8String()
+                                                                                      )
+                                                                                  ));
 
                     },
 
@@ -3138,16 +3111,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<ClearChargingProfileResponse>(httpresponse,
-                                                                              new ClearChargingProfileResponse(
-                                                                                  Request,
-                                                                                  Result.Server(
-                                                                                       httpresponse.HTTPStatusCode.ToString() +
-                                                                                       " => " +
-                                                                                       httpresponse.HTTPBody.ToUTF8String()
-                                                                                  )
-                                                                              ),
-                                                                              IsFault: true);
+                        return HTTPResponse<ClearChargingProfileResponse>.IsFault(httpresponse,
+                                                                                  new ClearChargingProfileResponse(
+                                                                                      Request,
+                                                                                      Result.Server(
+                                                                                           httpresponse.HTTPStatusCode.ToString() +
+                                                                                           " => " +
+                                                                                           httpresponse.HTTPBody.ToUTF8String()
+                                                                                      )
+                                                                                  ));
 
                     },
 
@@ -3295,15 +3267,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<GetCompositeScheduleResponse>(httpresponse,
-                                                                              new GetCompositeScheduleResponse(
-                                                                                  Request,
-                                                                                  Result.Format(
-                                                                                      "Invalid SOAP => " +
-                                                                                      httpresponse.HTTPBody.ToUTF8String()
-                                                                                  )
-                                                                              ),
-                                                                              IsFault: true);
+                        return HTTPResponse<GetCompositeScheduleResponse>.IsFault(httpresponse,
+                                                                                  new GetCompositeScheduleResponse(
+                                                                                      Request,
+                                                                                      Result.Format(
+                                                                                          "Invalid SOAP => " +
+                                                                                          httpresponse.HTTPBody.ToUTF8String()
+                                                                                      )
+                                                                                  ));
 
                     },
 
@@ -3315,16 +3286,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<GetCompositeScheduleResponse>(httpresponse,
-                                                                              new GetCompositeScheduleResponse(
-                                                                                  Request,
-                                                                                  Result.Server(
-                                                                                       httpresponse.HTTPStatusCode.ToString() +
-                                                                                       " => " +
-                                                                                       httpresponse.HTTPBody.ToUTF8String()
-                                                                                  )
-                                                                              ),
-                                                                              IsFault: true);
+                        return HTTPResponse<GetCompositeScheduleResponse>.IsFault(httpresponse,
+                                                                                  new GetCompositeScheduleResponse(
+                                                                                      Request,
+                                                                                      Result.Server(
+                                                                                           httpresponse.HTTPStatusCode.ToString() +
+                                                                                           " => " +
+                                                                                           httpresponse.HTTPBody.ToUTF8String()
+                                                                                      )
+                                                                                  ));
 
                     },
 
@@ -3472,15 +3442,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<UnlockConnectorResponse>(httpresponse,
-                                                                         new UnlockConnectorResponse(
-                                                                             Request,
-                                                                             Result.Format(
-                                                                                 "Invalid SOAP => " +
-                                                                                 httpresponse.HTTPBody.ToUTF8String()
-                                                                             )
-                                                                         ),
-                                                                         IsFault: true);
+                        return HTTPResponse<UnlockConnectorResponse>.IsFault(httpresponse,
+                                                                             new UnlockConnectorResponse(
+                                                                                 Request,
+                                                                                 Result.Format(
+                                                                                     "Invalid SOAP => " +
+                                                                                     httpresponse.HTTPBody.ToUTF8String()
+                                                                                 )
+                                                                             ));
 
                     },
 
@@ -3492,16 +3461,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<UnlockConnectorResponse>(httpresponse,
-                                                                         new UnlockConnectorResponse(
-                                                                             Request,
-                                                                             Result.Server(
-                                                                                  httpresponse.HTTPStatusCode.ToString() +
-                                                                                  " => " +
-                                                                                  httpresponse.HTTPBody.ToUTF8String()
-                                                                             )
-                                                                         ),
-                                                                         IsFault: true);
+                        return HTTPResponse<UnlockConnectorResponse>.IsFault(httpresponse,
+                                                                             new UnlockConnectorResponse(
+                                                                                 Request,
+                                                                                 Result.Server(
+                                                                                      httpresponse.HTTPStatusCode.ToString() +
+                                                                                      " => " +
+                                                                                      httpresponse.HTTPBody.ToUTF8String()
+                                                                                 )
+                                                                             ));
 
                     },
 
@@ -3650,15 +3618,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<GetLocalListVersionResponse>(httpresponse,
-                                                                             new GetLocalListVersionResponse(
-                                                                                 Request,
-                                                                                 Result.Format(
-                                                                                     "Invalid SOAP => " +
-                                                                                     httpresponse.HTTPBody.ToUTF8String()
-                                                                                 )
-                                                                             ),
-                                                                             IsFault: true);
+                        return HTTPResponse<GetLocalListVersionResponse>.IsFault(httpresponse,
+                                                                                 new GetLocalListVersionResponse(
+                                                                                     Request,
+                                                                                     Result.Format(
+                                                                                         "Invalid SOAP => " +
+                                                                                         httpresponse.HTTPBody.ToUTF8String()
+                                                                                     )
+                                                                                 ));
 
                     },
 
@@ -3670,16 +3637,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<GetLocalListVersionResponse>(httpresponse,
-                                                                             new GetLocalListVersionResponse(
-                                                                                 Request,
-                                                                                 Result.Server(
-                                                                                      httpresponse.HTTPStatusCode.ToString() +
-                                                                                      " => " +
-                                                                                      httpresponse.HTTPBody.ToUTF8String()
-                                                                                 )
-                                                                             ),
-                                                                             IsFault: true);
+                        return HTTPResponse<GetLocalListVersionResponse>.IsFault(httpresponse,
+                                                                                 new GetLocalListVersionResponse(
+                                                                                     Request,
+                                                                                     Result.Server(
+                                                                                          httpresponse.HTTPStatusCode.ToString() +
+                                                                                          " => " +
+                                                                                          httpresponse.HTTPBody.ToUTF8String()
+                                                                                     )
+                                                                                 ));
 
                     },
 
@@ -3827,15 +3793,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<SendLocalListResponse>(httpresponse,
-                                                                       new SendLocalListResponse(
-                                                                           Request,
-                                                                           Result.Format(
-                                                                               "Invalid SOAP => " +
-                                                                               httpresponse.HTTPBody.ToUTF8String()
-                                                                           )
-                                                                       ),
-                                                                       IsFault: true);
+                        return HTTPResponse<SendLocalListResponse>.IsFault(httpresponse,
+                                                                           new SendLocalListResponse(
+                                                                               Request,
+                                                                               Result.Format(
+                                                                                   "Invalid SOAP => " +
+                                                                                   httpresponse.HTTPBody.ToUTF8String()
+                                                                               )
+                                                                           ));
 
                     },
 
@@ -3847,16 +3812,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<SendLocalListResponse>(httpresponse,
-                                                                       new SendLocalListResponse(
-                                                                           Request,
-                                                                           Result.Server(
-                                                                                httpresponse.HTTPStatusCode.ToString() +
-                                                                                " => " +
-                                                                                httpresponse.HTTPBody.ToUTF8String()
-                                                                           )
-                                                                       ),
-                                                                       IsFault: true);
+                        return HTTPResponse<SendLocalListResponse>.IsFault(httpresponse,
+                                                                           new SendLocalListResponse(
+                                                                               Request,
+                                                                               Result.Server(
+                                                                                    httpresponse.HTTPStatusCode.ToString() +
+                                                                                    " => " +
+                                                                                    httpresponse.HTTPBody.ToUTF8String()
+                                                                               )
+                                                                           ));
 
                     },
 
@@ -4004,15 +3968,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendSOAPError(timestamp, this, httpresponse.Content);
 
-                        return new HTTPResponse<ClearCacheResponse>(httpresponse,
-                                                                    new ClearCacheResponse(
-                                                                        Request,
-                                                                        Result.Format(
-                                                                            "Invalid SOAP => " +
-                                                                            httpresponse.HTTPBody.ToUTF8String()
-                                                                        )
-                                                                    ),
-                                                                    IsFault: true);
+                        return HTTPResponse<ClearCacheResponse>.IsFault(httpresponse,
+                                                                        new ClearCacheResponse(
+                                                                            Request,
+                                                                            Result.Format(
+                                                                                "Invalid SOAP => " +
+                                                                                httpresponse.HTTPBody.ToUTF8String()
+                                                                            )
+                                                                        ));
 
                     },
 
@@ -4024,16 +3987,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         SendHTTPError(timestamp, this, httpresponse);
 
-                        return new HTTPResponse<ClearCacheResponse>(httpresponse,
-                                                                    new ClearCacheResponse(
-                                                                        Request,
-                                                                        Result.Server(
-                                                                             httpresponse.HTTPStatusCode.ToString() +
-                                                                             " => " +
-                                                                             httpresponse.HTTPBody.ToUTF8String()
-                                                                        )
-                                                                    ),
-                                                                    IsFault: true);
+                        return HTTPResponse<ClearCacheResponse>.IsFault(httpresponse,
+                                                                        new ClearCacheResponse(
+                                                                            Request,
+                                                                            Result.Server(
+                                                                                 httpresponse.HTTPStatusCode.ToString() +
+                                                                                 " => " +
+                                                                                 httpresponse.HTTPBody.ToUTF8String()
+                                                                            )
+                                                                        ));
 
                     },
 

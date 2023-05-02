@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = "PUT",
+                                                 AccessControlAllowMethods  = new[] { "PUT" },
                                                  Connection                 = "close"
                                              };
 
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = "PUT",
+                                                 AccessControlAllowMethods  = new[] { "PUT" },
                                                  ContentType                = HTTPContentType.TEXT_UTF8,
                                                  Content                    = e.Message.ToUTF8Bytes(),
                                                  Connection                 = "close"
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = "PUT",
+                                                 AccessControlAllowMethods  = new[] { "PUT" },
                                                  Connection                 = "close"
                                              };
 
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                  Server                     = DefaultHTTPServerName,
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
-                                                 AccessControlAllowMethods  = "PUT",
+                                                 AccessControlAllowMethods  = new[] { "PUT" },
                                                  ContentType                = HTTPContentType.TEXT_UTF8,
                                                  Content                    = e.Message.ToUTF8Bytes(),
                                                  Connection                 = "close"
