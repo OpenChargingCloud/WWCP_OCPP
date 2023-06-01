@@ -598,6 +598,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        String?                               LoggingPath                  =  null,
                                        String                                LoggingContext               = CSClientLogger.DefaultContext,
                                        LogfileCreatorDelegate?               LogfileCreator               = null,
+                                       Boolean?                              DisableLogging               = false,
                                        HTTPClientLogger?                     HTTPLogger                   = null,
                                        DNSClient?                            DNSClient                    = null)
 
@@ -617,6 +618,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                    TransmissionRetryDelay,
                    MaxNumberOfRetries,
                    UseHTTPPipelining,
+                   DisableLogging,
                    HTTPLogger,
                    DNSClient)
 
@@ -785,6 +787,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -961,6 +964,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -1136,6 +1140,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -1311,6 +1316,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -1486,6 +1492,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -1661,6 +1668,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -1836,6 +1844,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -2011,6 +2020,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -2187,6 +2197,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -2362,6 +2373,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -2537,6 +2549,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -2712,6 +2725,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -2887,6 +2901,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -3062,6 +3077,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -3237,6 +3253,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -3412,6 +3429,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -3588,6 +3606,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -3763,6 +3782,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
@@ -3938,6 +3958,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                        TransmissionRetryDelay,
                                                        MaxNumberOfRetries,
                                                        UseHTTPPipelining,
+                                                       DisableLogging,
                                                        HTTPLogger,
                                                        DNSClient))
                 {
