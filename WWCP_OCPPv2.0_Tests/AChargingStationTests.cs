@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0.tests
                                                      From:                    "From:GD001",
                                                      To:                      "To:OCPPTest01",
                                                      RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation1.ChargeBoxId),
-                                                     HTTPAuthentication:      new HTTPBasicAuthentication("test01", "1234abcd"),
+                                                     HTTPAuthentication:      HTTPBasicAuthentication.Create("test01", "1234abcd"),
                                                      DisableWebSocketPings:   true
                                                  ).Result;
 

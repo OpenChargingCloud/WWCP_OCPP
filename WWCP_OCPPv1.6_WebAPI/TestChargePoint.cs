@@ -907,6 +907,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                    String?                               LoggingPath                  = null,
                                    String?                               LoggingContext               = null,
                                    LogfileCreatorDelegate?               LogfileCreator               = null,
+                                   Boolean?                              DisableLogging               = false,
                                    HTTPClientLogger?                     HTTPLogger                   = null,
 
                                    String?                               HTTPServerName               = null,
@@ -943,6 +944,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                       LoggingPath,
                                                       LoggingContext,
                                                       LogfileCreator,
+                                                      DisableLogging,
                                                       HTTPLogger,
                                                       DNSClient ?? this.DNSClient);
 
