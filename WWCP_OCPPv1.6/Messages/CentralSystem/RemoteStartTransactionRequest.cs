@@ -68,16 +68,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public RemoteStartTransactionRequest(ChargeBox_Id        ChargeBoxId,
-                                             IdToken             IdTag,
-                                             Connector_Id?       ConnectorId         = null,
-                                             ChargingProfile?    ChargingProfile     = null,
+        public RemoteStartTransactionRequest(ChargeBox_Id       ChargeBoxId,
+                                             IdToken            IdTag,
+                                             Connector_Id?      ConnectorId         = null,
+                                             ChargingProfile?   ChargingProfile     = null,
 
-                                             Request_Id?         RequestId           = null,
-                                             DateTime?           RequestTimestamp    = null,
-                                             TimeSpan?           RequestTimeout      = null,
-                                             EventTracking_Id?   EventTrackingId     = null,
-                                             CancellationToken?  CancellationToken   = null)
+                                             Request_Id?        RequestId           = null,
+                                             DateTime?          RequestTimestamp    = null,
+                                             TimeSpan?          RequestTimeout      = null,
+                                             EventTracking_Id?  EventTrackingId     = null,
+                                             CancellationToken  CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "RemoteStartTransaction",

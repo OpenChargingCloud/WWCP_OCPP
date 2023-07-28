@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                          DateTime?              RequestTimestamp    = null,
                                          TimeSpan?              RequestTimeout      = null,
                                          EventTracking_Id?      EventTrackingId     = null,
-                                         CancellationToken?     CancellationToken   = null)
+                                         CancellationToken      CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "StatusNotification",

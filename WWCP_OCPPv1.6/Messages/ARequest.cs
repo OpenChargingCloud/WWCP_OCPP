@@ -49,42 +49,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The charge box identification.
         /// </summary>
         [Mandatory]
-        public ChargeBox_Id        ChargeBoxId          { get; }
+        public ChargeBox_Id       ChargeBoxId          { get; }
 
         /// <summary>
         /// The request identification.
         /// </summary>
         [Mandatory]
-        public Request_Id          RequestId            { get; }
+        public Request_Id         RequestId            { get; }
 
         /// <summary>
         /// The timestamp of the request message creation.
         /// </summary>
         [Mandatory]
-        public DateTime            RequestTimestamp     { get; }
+        public DateTime           RequestTimestamp     { get; }
 
         /// <summary>
         /// The timeout of this request.
         /// </summary>
         [Mandatory]
-        public TimeSpan            RequestTimeout       { get; }
+        public TimeSpan           RequestTimeout       { get; }
 
         /// <summary>
         /// An event tracking identification for correlating this request with other events.
         /// </summary>
         [Mandatory]
-        public EventTracking_Id    EventTrackingId      { get; }
+        public EventTracking_Id   EventTrackingId      { get; }
 
         /// <summary>
         /// The OCPP SOAP and HTTP Web Socket action.
         /// </summary>
         [Mandatory]
-        public String              Action               { get; }
+        public String             Action               { get; }
 
         /// <summary>
         /// An optional token to cancel this request.
         /// </summary>
-        public CancellationToken?  CancellationToken    { get; }
+        public CancellationToken  CancellationToken    { get; }
 
         #endregion
 
@@ -101,14 +101,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ARequest(ChargeBox_Id        ChargeBoxId,
-                        String              Action,
+        public ARequest(ChargeBox_Id       ChargeBoxId,
+                        String             Action,
 
-                        Request_Id?         RequestId           = null,
-                        DateTime?           RequestTimestamp    = null,
-                        TimeSpan?           RequestTimeout      = null,
-                        EventTracking_Id?   EventTrackingId     = null,
-                        CancellationToken?  CancellationToken   = null)
+                        Request_Id?        RequestId           = null,
+                        DateTime?          RequestTimestamp    = null,
+                        TimeSpan?          RequestTimeout      = null,
+                        EventTracking_Id?  EventTrackingId     = null,
+                        CancellationToken  CancellationToken   = default)
         {
 
             this.ChargeBoxId        = ChargeBoxId;

@@ -903,6 +903,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                    TimeSpan?                             RequestTimeout               = null,
                                    TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
                                    UInt16?                               MaxNumberOfRetries           = null,
+                                   UInt32?                               InternalBufferSize           = null,
                                    Boolean                               UseHTTPPipelining            = false,
                                    String?                               LoggingPath                  = null,
                                    String?                               LoggingContext               = null,
@@ -928,11 +929,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                       RemoteURL,
                                                       VirtualHostname,
                                                       Description,
+                                                      PreferIPv4,
                                                       RemoteCertificateValidator,
                                                       ClientCertificateSelector,
                                                       ClientCert,
                                                       TLSProtocol,
-                                                      PreferIPv4,
                                                       HTTPUserAgent,
                                                       URLPathPrefix,
                                                       WSSLoginPassword,
@@ -940,6 +941,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                       RequestTimeout,
                                                       TransmissionRetryDelay,
                                                       MaxNumberOfRetries,
+                                                      InternalBufferSize,
                                                       UseHTTPPipelining,
                                                       LoggingPath,
                                                       LoggingContext,
@@ -2832,10 +2834,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.BootNotificationResponse>
 
-            SendBootNotification(DateTime?           RequestTimestamp    = null,
-                                 TimeSpan?           RequestTimeout      = null,
-                                 EventTracking_Id?   EventTrackingId     = null,
-                                 CancellationToken?  CancellationToken   = null)
+            SendBootNotification(DateTime?          RequestTimestamp    = null,
+                                 TimeSpan?          RequestTimeout      = null,
+                                 EventTracking_Id?  EventTrackingId     = null,
+                                 CancellationToken  CancellationToken   = default)
 
         {
 
@@ -2953,10 +2955,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.HeartbeatResponse>
 
-            SendHeartbeat(DateTime?           RequestTimestamp    = null,
-                          TimeSpan?           RequestTimeout      = null,
-                          EventTracking_Id?   EventTrackingId     = null,
-                          CancellationToken?  CancellationToken   = null)
+            SendHeartbeat(DateTime?          RequestTimestamp    = null,
+                          TimeSpan?          RequestTimeout      = null,
+                          EventTracking_Id?  EventTrackingId     = null,
+                          CancellationToken  CancellationToken   = default)
 
         {
 
@@ -3049,12 +3051,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.AuthorizeResponse>
 
-            Authorize(IdToken             IdTag,
+            Authorize(IdToken            IdTag,
 
-                      DateTime?           RequestTimestamp    = null,
-                      TimeSpan?           RequestTimeout      = null,
-                      EventTracking_Id?   EventTrackingId     = null,
-                      CancellationToken?  CancellationToken   = null)
+                      DateTime?          RequestTimestamp    = null,
+                      TimeSpan?          RequestTimeout      = null,
+                      EventTracking_Id?  EventTrackingId     = null,
+                      CancellationToken  CancellationToken   = default)
 
         {
 
@@ -3146,16 +3148,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.StartTransactionResponse>
 
-            StartTransaction(Connector_Id        ConnectorId,
-                             IdToken             IdTag,
-                             DateTime            StartTimestamp,
-                             UInt64              MeterStart,
-                             Reservation_Id?     ReservationId       = null,
+            StartTransaction(Connector_Id       ConnectorId,
+                             IdToken            IdTag,
+                             DateTime           StartTimestamp,
+                             UInt64             MeterStart,
+                             Reservation_Id?    ReservationId       = null,
 
-                             DateTime?           RequestTimestamp    = null,
-                             TimeSpan?           RequestTimeout      = null,
-                             EventTracking_Id?   EventTrackingId     = null,
-                             CancellationToken?  CancellationToken   = null)
+                             DateTime?          RequestTimestamp    = null,
+                             TimeSpan?          RequestTimeout      = null,
+                             EventTracking_Id?  EventTrackingId     = null,
+                             CancellationToken  CancellationToken   = default)
 
             {
 
@@ -3283,7 +3285,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                    DateTime?              RequestTimestamp    = null,
                                    TimeSpan?              RequestTimeout      = null,
                                    EventTracking_Id?      EventTrackingId     = null,
-                                   CancellationToken?     CancellationToken   = null)
+                                   CancellationToken      CancellationToken   = default)
 
         {
 
@@ -3386,7 +3388,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                             DateTime?                RequestTimestamp    = null,
                             TimeSpan?                RequestTimeout      = null,
                             EventTracking_Id?        EventTrackingId     = null,
-                            CancellationToken?       CancellationToken   = null)
+                            CancellationToken        CancellationToken   = default)
 
         {
 
@@ -3491,7 +3493,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                             DateTime?                 RequestTimestamp    = null,
                             TimeSpan?                 RequestTimeout      = null,
                             EventTracking_Id?         EventTrackingId     = null,
-                            CancellationToken?        CancellationToken   = null)
+                            CancellationToken         CancellationToken   = default)
 
         {
 
@@ -3587,14 +3589,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.DataTransferResponse>
 
-            TransferData(String              VendorId,
-                         String?             MessageId           = null,
-                         String?             Data                = null,
+            TransferData(String             VendorId,
+                         String?            MessageId           = null,
+                         String?            Data                = null,
 
-                         DateTime?           RequestTimestamp    = null,
-                         TimeSpan?           RequestTimeout      = null,
-                         EventTracking_Id?   EventTrackingId     = null,
-                         CancellationToken?  CancellationToken   = null)
+                         DateTime?          RequestTimestamp    = null,
+                         TimeSpan?          RequestTimeout      = null,
+                         EventTracking_Id?  EventTrackingId     = null,
+                         CancellationToken  CancellationToken   = default)
 
         {
 
@@ -3684,12 +3686,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.DiagnosticsStatusNotificationResponse>
 
-            SendDiagnosticsStatusNotification(DiagnosticsStatus   Status,
+            SendDiagnosticsStatusNotification(DiagnosticsStatus  Status,
 
-                                              DateTime?           RequestTimestamp    = null,
-                                              TimeSpan?           RequestTimeout      = null,
-                                              EventTracking_Id?   EventTrackingId     = null,
-                                              CancellationToken?  CancellationToken   = null)
+                                              DateTime?          RequestTimestamp    = null,
+                                              TimeSpan?          RequestTimeout      = null,
+                                              EventTracking_Id?  EventTrackingId     = null,
+                                              CancellationToken  CancellationToken   = default)
 
         {
 
@@ -3777,12 +3779,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.FirmwareStatusNotificationResponse>
 
-            SendFirmwareStatusNotification(FirmwareStatus      Status,
+            SendFirmwareStatusNotification(FirmwareStatus     Status,
 
-                                           DateTime?           RequestTimestamp    = null,
-                                           TimeSpan?           RequestTimeout      = null,
-                                           EventTracking_Id?   EventTrackingId     = null,
-                                           CancellationToken?  CancellationToken   = null)
+                                           DateTime?          RequestTimestamp    = null,
+                                           TimeSpan?          RequestTimeout      = null,
+                                           EventTracking_Id?  EventTrackingId     = null,
+                                           CancellationToken  CancellationToken   = default)
 
         {
 

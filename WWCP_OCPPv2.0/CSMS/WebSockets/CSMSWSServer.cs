@@ -1849,16 +1849,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                 DebugX.Log("Missing 'Sec-WebSocket-Protocol' HTTP header!");
 
                 return Task.FromResult<HTTPResponse?>(
-                           new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {
-                               Server       = HTTPServiceName,
-                               Date         = Timestamp.Now,
-                               ContentType  = HTTPContentType.JSON_UTF8,
-                               Content      = JSONObject.Create(
-                                                  new JProperty("description",
-                                                  JSONObject.Create(
-                                                      new JProperty("en", "Missing 'Sec-WebSocket-Protocol' HTTP header!")
-                                                  ))).ToUTF8Bytes(),
-                               Connection   = "close"
+                           new HTTPResponse.Builder() {
+                               HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                               Server          = HTTPServiceName,
+                               Date            = Timestamp.Now,
+                               ContentType     = HTTPContentType.JSON_UTF8,
+                               Content         = JSONObject.Create(
+                                                     new JProperty("description",
+                                                     JSONObject.Create(
+                                                         new JProperty("en", "Missing 'Sec-WebSocket-Protocol' HTTP header!")
+                                                     ))).ToUTF8Bytes(),
+                               Connection      = "close"
                            }.AsImmutable);
 
             }
@@ -1868,17 +1869,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                 DebugX.Log($"This WebSocket service only supports 'ocpp{Version.Number[1..]}'!");
 
                 return Task.FromResult<HTTPResponse?>(
-                           new HTTPResponse.Builder(HTTPStatusCode.BadRequest) {
-                           Server       = HTTPServiceName,
-                           Date         = Timestamp.Now,
-                           ContentType  = HTTPContentType.JSON_UTF8,
-                           Content      = JSONObject.Create(
-                                              new JProperty("description",
-                                                  JSONObject.Create(
-                                                      new JProperty("en", $"This WebSocket service only supports 'ocpp{Version.Number[1..]}'!")
-                                              ))).ToUTF8Bytes(),
-                           Connection   = "close"
-                       }.AsImmutable);
+                           new HTTPResponse.Builder() {
+                               HTTPStatusCode  = HTTPStatusCode.BadRequest,
+                               Server          = HTTPServiceName,
+                               Date            = Timestamp.Now,
+                               ContentType     = HTTPContentType.JSON_UTF8,
+                               Content         = JSONObject.Create(
+                                                     new JProperty("description",
+                                                         JSONObject.Create(
+                                                             new JProperty("en", $"This WebSocket service only supports 'ocpp{Version.Number[1..]}'!")
+                                                     ))).ToUTF8Bytes(),
+                               Connection      = "close"
+                           }.AsImmutable);
 
             }
 
@@ -1906,10 +1908,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0.CSMS
                     DebugX.Log(nameof(CSMSWSServer), " connection from " + Connection.RemoteSocket + " missing authorization!");
 
                 return Task.FromResult<HTTPResponse?>(
-                           new HTTPResponse.Builder(HTTPStatusCode.Unauthorized) {
-                               Server      = HTTPServiceName,
-                               Date        = Timestamp.Now,
-                               Connection  = "close"
+                           new HTTPResponse.Builder() {
+                               HTTPStatusCode  = HTTPStatusCode.Unauthorized,
+                               Server          = HTTPServiceName,
+                               Date            = Timestamp.Now,
+                               Connection      = "close"
                            }.AsImmutable);
 
             }

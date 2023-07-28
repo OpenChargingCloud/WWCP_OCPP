@@ -341,8 +341,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Constructor(s)
 
-        #region ChargePointSOAPClient(Request.ChargeBoxId, Hostname, ..., LoggingContext = CPClientLogger.DefaultContext, ...)
-
         /// <summary>
         /// Create a new charge point SOAP client running on a charge point
         /// and connecting to a central system to invoke methods.
@@ -376,18 +374,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                      URL                                   RemoteURL,
                                      HTTPHostname?                         VirtualHostname              = null,
                                      String?                               Description                  = null,
+                                     Boolean?                              PreferIPv4                   = null,
                                      RemoteCertificateValidationCallback?  RemoteCertificateValidator   = null,
                                      LocalCertificateSelectionCallback?    ClientCertificateSelector    = null,
                                      X509Certificate?                      ClientCert                   = null,
                                      SslProtocols?                         TLSProtocol                  = null,
-                                     Boolean?                              PreferIPv4                   = null,
                                      String                                HTTPUserAgent                = DefaultHTTPUserAgent,
                                      HTTPPath?                             URLPathPrefix                = null,
                                      Tuple<String, String>?                WSSLoginPassword             = null,
                                      HTTPContentType?                      HTTPContentType              = null,
                                      TimeSpan?                             RequestTimeout               = null,
                                      TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
-                                     UInt16?                               MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
+                                     UInt16?                               MaxNumberOfRetries           = null,
+                                     UInt32?                               InternalBufferSize           = null,
                                      Boolean                               UseHTTPPipelining            = false,
 
                                      String?                               LoggingPath                  = null,
@@ -401,11 +400,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    VirtualHostname,
 
                    Description,
+                   PreferIPv4,
                    RemoteCertificateValidator,
                    ClientCertificateSelector,
                    ClientCert,
                    TLSProtocol,
-                   PreferIPv4,
                    HTTPUserAgent,
                    URLPathPrefix ?? DefaultURLPathPrefix,
                    WSSLoginPassword,
@@ -413,6 +412,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                    RequestTimeout,
                    TransmissionRetryDelay,
                    MaxNumberOfRetries,
+                   InternalBufferSize,
                    UseHTTPPipelining,
                    DisableLogging,
                    HTTPLogger,
@@ -443,81 +443,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                          LogfileCreator);
 
         }
-
-        #endregion
-
-        #region ChargePointSOAPClient(Request.ChargeBoxId, Logger, Hostname, ...)
-
-        /// <summary>
-        /// Create a new charge point SOAP client.
-        /// </summary>
-        /// <param name="ChargeBoxIdentity">A unqiue identification of this client.</param>
-        /// <param name="From">The source URI of the SOAP message.</param>
-        /// <param name="To">The destination URI of the SOAP message.</param>
-        /// 
-        /// <param name="Hostname">The OCPP hostname to connect to.</param>
-        /// <param name="RemotePort">An optional OCPP TCP port to connect to.</param>
-        /// <param name="RemoteCertificateValidator">A delegate to verify the remote TLS certificate.</param>
-        /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
-        /// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
-        /// <param name="URLPrefix">An default URI prefix.</param>
-        /// <param name="HTTPUserAgent">An optional HTTP user agent to use.</param>
-        /// <param name="RequestTimeout">An optional timeout for upstream queries.</param>
-        /// <param name="MaxNumberOfRetries">The default number of maximum transmission retries.</param>
-        /// <param name="DNSClient">An optional DNS client.</param>
-        //public ChargePointSOAPClient(String                               ChargeBoxIdentity,
-        //                             String                               From,
-        //                             String                               To,
-
-        //                             CPClientLogger                       Logger,
-        //                             HTTPHostname                         Hostname,
-        //                             IPPort?                              RemotePort                   = null,
-        //                             RemoteCertificateValidationCallback  RemoteCertificateValidator   = null,
-        //                             LocalCertificateSelectionCallback    ClientCertificateSelector    = null,
-        //                             HTTPHostname?                        HTTPVirtualHost              = null,
-        //                             HTTPPath?                            URLPrefix                    = null,
-        //                             String                               HTTPUserAgent                = DefaultHTTPUserAgent,
-        //                             TimeSpan?                            RequestTimeout               = null,
-        //                             Byte?                                MaxNumberOfRetries           = DefaultMaxNumberOfRetries,
-        //                             DNSClient                            DNSClient                    = null)
-
-        //    : base(Request.ChargeBoxId,
-        //           Hostname,
-        //           RemotePort ?? DefaultRemotePort,
-        //           RemoteCertificateValidator,
-        //           ClientCertificateSelector,
-        //           HTTPVirtualHost,
-        //           URLPrefix ?? DefaultURLPrefix,
-        //           null,
-        //           HTTPUserAgent,
-        //           RequestTimeout,
-        //           null,
-        //           MaxNumberOfRetries,
-        //           DNSClient)
-
-        //{
-
-        //    #region Initial checks
-
-        //    if (ChargeBoxIdentity.IsNullOrEmpty())
-        //        throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identification must not be null or empty!");
-
-        //    if (From.IsNullOrEmpty())
-        //        throw new ArgumentNullException(nameof(From),               "The given SOAP message source must not be null or empty!");
-
-        //    if (To.IsNullOrEmpty())
-        //        throw new ArgumentNullException(nameof(To),                 "The given SOAP message destination must not be null or empty!");
-
-        //    #endregion
-
-        //    this.From    = From;
-        //    this.To      = To;
-
-        //    this.Logger  = Logger ?? throw new ArgumentNullException(nameof(Hostname), "The given hostname must not be null or empty!");
-
-        //}
-
-        #endregion
 
         #endregion
 
@@ -560,11 +485,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    VirtualHostname,
                                                    false,
                                                    null,
+                                                   PreferIPv4,
                                                    RemoteCertificateValidator,
                                                    ClientCertificateSelector,
                                                    ClientCert,
                                                    TLSProtocol,
-                                                   PreferIPv4,
                                                    HTTPUserAgent,
                                                    URLPathPrefix,
                                                    WSSLoginPassword,
@@ -572,6 +497,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                    RequestTimeout,
                                                    TransmissionRetryDelay,
                                                    MaxNumberOfRetries,
+                                                   InternalBufferSize,
                                                    UseHTTPPipelining,
                                                    DisableLogging,
                                                    HTTPLogger,
@@ -721,29 +647,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             HTTPResponse<HeartbeatResponse>? result = null;
 
-            using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                    VirtualHostname,
-                                                    false,
-                                                    null,
-                                                    RemoteCertificateValidator,
-                                                    ClientCertificateSelector,
-                                                    ClientCert,
-                                                    TLSProtocol,
-                                                    PreferIPv4,
-                                                    HTTPUserAgent,
-                                                    URLPathPrefix,
-                                                    WSSLoginPassword,
-                                                    HTTPContentType,
-                                                    RequestTimeout,
-                                                    TransmissionRetryDelay,
-                                                    MaxNumberOfRetries,
-                                                    UseHTTPPipelining,
-                                                    DisableLogging,
-                                                    HTTPLogger,
-                                                    DNSClient))
+            using (var soapClient = new SOAPClient(RemoteURL,
+                                                   VirtualHostname,
+                                                   false,
+                                                   null,
+                                                   PreferIPv4,
+                                                   RemoteCertificateValidator,
+                                                   ClientCertificateSelector,
+                                                   ClientCert,
+                                                   TLSProtocol,
+                                                   HTTPUserAgent,
+                                                   URLPathPrefix,
+                                                   WSSLoginPassword,
+                                                   HTTPContentType,
+                                                   RequestTimeout,
+                                                   TransmissionRetryDelay,
+                                                   MaxNumberOfRetries,
+                                                   InternalBufferSize,
+                                                   UseHTTPPipelining,
+                                                   DisableLogging,
+                                                   HTTPLogger,
+                                                   DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/Heartbeat",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -886,29 +813,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             HTTPResponse<AuthorizeResponse>? result = null;
 
-            using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                    VirtualHostname,
-                                                    false,
-                                                    null,
-                                                    RemoteCertificateValidator,
-                                                    ClientCertificateSelector,
-                                                    ClientCert,
-                                                    TLSProtocol,
-                                                    PreferIPv4,
-                                                    HTTPUserAgent,
-                                                    URLPathPrefix,
-                                                    WSSLoginPassword,
-                                                    HTTPContentType,
-                                                    RequestTimeout,
-                                                    TransmissionRetryDelay,
-                                                    MaxNumberOfRetries,
-                                                    UseHTTPPipelining,
-                                                    DisableLogging,
-                                                    HTTPLogger,
-                                                    DNSClient))
+            using (var soapClient = new SOAPClient(RemoteURL,
+                                                   VirtualHostname,
+                                                   false,
+                                                   null,
+                                                   PreferIPv4,
+                                                   RemoteCertificateValidator,
+                                                   ClientCertificateSelector,
+                                                   ClientCert,
+                                                   TLSProtocol,
+                                                   HTTPUserAgent,
+                                                   URLPathPrefix,
+                                                   WSSLoginPassword,
+                                                   HTTPContentType,
+                                                   RequestTimeout,
+                                                   TransmissionRetryDelay,
+                                                   MaxNumberOfRetries,
+                                                   InternalBufferSize,
+                                                   UseHTTPPipelining,
+                                                   DisableLogging,
+                                                   HTTPLogger,
+                                                   DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/Authorize",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -1051,29 +979,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             HTTPResponse<StartTransactionResponse>? result = null;
 
-            using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                    VirtualHostname,
-                                                    false,
-                                                    null,
-                                                    RemoteCertificateValidator,
-                                                    ClientCertificateSelector,
-                                                    ClientCert,
-                                                    TLSProtocol,
-                                                    PreferIPv4,
-                                                    HTTPUserAgent,
-                                                    URLPathPrefix,
-                                                    WSSLoginPassword,
-                                                    HTTPContentType,
-                                                    RequestTimeout,
-                                                    TransmissionRetryDelay,
-                                                    MaxNumberOfRetries,
-                                                    UseHTTPPipelining,
-                                                    DisableLogging,
-                                                    HTTPLogger,
-                                                    DNSClient))
+            using (var soapClient = new SOAPClient(RemoteURL,
+                                                   VirtualHostname,
+                                                   false,
+                                                   null,
+                                                   PreferIPv4,
+                                                   RemoteCertificateValidator,
+                                                   ClientCertificateSelector,
+                                                   ClientCert,
+                                                   TLSProtocol,
+                                                   HTTPUserAgent,
+                                                   URLPathPrefix,
+                                                   WSSLoginPassword,
+                                                   HTTPContentType,
+                                                   RequestTimeout,
+                                                   TransmissionRetryDelay,
+                                                   MaxNumberOfRetries,
+                                                   InternalBufferSize,
+                                                   UseHTTPPipelining,
+                                                   DisableLogging,
+                                                   HTTPLogger,
+                                                   DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/StartTransaction",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -1216,15 +1145,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             HTTPResponse<StatusNotificationResponse>? result = null;
 
-            using (var _OCPPClient = new SOAPClient(RemoteURL,
+            using (var soapClient = new SOAPClient(RemoteURL,
                                                     VirtualHostname,
                                                     false,
                                                     null,
+                                                    PreferIPv4,
                                                     RemoteCertificateValidator,
                                                     ClientCertificateSelector,
                                                     ClientCert,
                                                     TLSProtocol,
-                                                    PreferIPv4,
                                                     HTTPUserAgent,
                                                     URLPathPrefix,
                                                     WSSLoginPassword,
@@ -1232,13 +1161,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     RequestTimeout,
                                                     TransmissionRetryDelay,
                                                     MaxNumberOfRetries,
+                                                    InternalBufferSize,
                                                     UseHTTPPipelining,
                                                     DisableLogging,
                                                     HTTPLogger,
                                                     DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/StatusNotification",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -1381,29 +1311,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             HTTPResponse<MeterValuesResponse>? result = null;
 
-            using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                    VirtualHostname,
-                                                    false,
-                                                    null,
-                                                    RemoteCertificateValidator,
-                                                    ClientCertificateSelector,
-                                                    ClientCert,
-                                                    TLSProtocol,
-                                                    PreferIPv4,
-                                                    HTTPUserAgent,
-                                                    URLPathPrefix,
-                                                    WSSLoginPassword,
-                                                    HTTPContentType,
-                                                    RequestTimeout,
-                                                    TransmissionRetryDelay,
-                                                    MaxNumberOfRetries,
-                                                    UseHTTPPipelining,
-                                                    DisableLogging,
-                                                    HTTPLogger,
-                                                    DNSClient))
+            using (var soapClient = new SOAPClient(RemoteURL,
+                                                   VirtualHostname,
+                                                   false,
+                                                   null,
+                                                   PreferIPv4,
+                                                   RemoteCertificateValidator,
+                                                   ClientCertificateSelector,
+                                                   ClientCert,
+                                                   TLSProtocol,
+                                                   HTTPUserAgent,
+                                                   URLPathPrefix,
+                                                   WSSLoginPassword,
+                                                   HTTPContentType,
+                                                   RequestTimeout,
+                                                   TransmissionRetryDelay,
+                                                   MaxNumberOfRetries,
+                                                   InternalBufferSize,
+                                                   UseHTTPPipelining,
+                                                   DisableLogging,
+                                                   HTTPLogger,
+                                                   DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/MeterValues",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -1546,29 +1477,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             HTTPResponse<StopTransactionResponse>? result = null;
 
-            using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                    VirtualHostname,
-                                                    false,
-                                                    null,
-                                                    RemoteCertificateValidator,
-                                                    ClientCertificateSelector,
-                                                    ClientCert,
-                                                    TLSProtocol,
-                                                    PreferIPv4,
-                                                    HTTPUserAgent,
-                                                    URLPathPrefix,
-                                                    WSSLoginPassword,
-                                                    HTTPContentType,
-                                                    RequestTimeout,
-                                                    TransmissionRetryDelay,
-                                                    MaxNumberOfRetries,
-                                                    UseHTTPPipelining,
-                                                    DisableLogging,
-                                                    HTTPLogger,
-                                                    DNSClient))
+            using (var soapClient = new SOAPClient(RemoteURL,
+                                                   VirtualHostname,
+                                                   false,
+                                                   null,
+                                                   PreferIPv4,
+                                                   RemoteCertificateValidator,
+                                                   ClientCertificateSelector,
+                                                   ClientCert,
+                                                   TLSProtocol,
+                                                   HTTPUserAgent,
+                                                   URLPathPrefix,
+                                                   WSSLoginPassword,
+                                                   HTTPContentType,
+                                                   RequestTimeout,
+                                                   TransmissionRetryDelay,
+                                                   MaxNumberOfRetries,
+                                                   InternalBufferSize,
+                                                   UseHTTPPipelining,
+                                                   DisableLogging,
+                                                   HTTPLogger,
+                                                   DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/StopTransaction",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -1711,29 +1643,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             HTTPResponse<CS.DataTransferResponse>? result = null;
 
-            using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                    VirtualHostname,
-                                                    false,
-                                                    null,
-                                                    RemoteCertificateValidator,
-                                                    ClientCertificateSelector,
-                                                    ClientCert,
-                                                    TLSProtocol,
-                                                    PreferIPv4,
-                                                    HTTPUserAgent,
-                                                    URLPathPrefix,
-                                                    WSSLoginPassword,
-                                                    HTTPContentType,
-                                                    RequestTimeout,
-                                                    TransmissionRetryDelay,
-                                                    MaxNumberOfRetries,
-                                                    UseHTTPPipelining,
-                                                    DisableLogging,
-                                                    HTTPLogger,
-                                                    DNSClient))
+            using (var soapClient = new SOAPClient(RemoteURL,
+                                                   VirtualHostname,
+                                                   false,
+                                                   null,
+                                                   PreferIPv4,
+                                                   RemoteCertificateValidator,
+                                                   ClientCertificateSelector,
+                                                   ClientCert,
+                                                   TLSProtocol,
+                                                   HTTPUserAgent,
+                                                   URLPathPrefix,
+                                                   WSSLoginPassword,
+                                                   HTTPContentType,
+                                                   RequestTimeout,
+                                                   TransmissionRetryDelay,
+                                                   MaxNumberOfRetries,
+                                                   InternalBufferSize,
+                                                   UseHTTPPipelining,
+                                                   DisableLogging,
+                                                   HTTPLogger,
+                                                   DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/DataTransfer",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -1875,29 +1808,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             HTTPResponse<DiagnosticsStatusNotificationResponse>? result = null;
 
-            using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                    VirtualHostname,
-                                                    false,
-                                                    null,
-                                                    RemoteCertificateValidator,
-                                                    ClientCertificateSelector,
-                                                    ClientCert,
-                                                    TLSProtocol,
-                                                    PreferIPv4,
-                                                    HTTPUserAgent,
-                                                    URLPathPrefix,
-                                                    WSSLoginPassword,
-                                                    HTTPContentType,
-                                                    RequestTimeout,
-                                                    TransmissionRetryDelay,
-                                                    MaxNumberOfRetries,
-                                                    UseHTTPPipelining,
-                                                    DisableLogging,
-                                                    HTTPLogger,
-                                                    DNSClient))
+            using (var soapClient = new SOAPClient(RemoteURL,
+                                                   VirtualHostname,
+                                                   false,
+                                                   null,
+                                                   PreferIPv4,
+                                                   RemoteCertificateValidator,
+                                                   ClientCertificateSelector,
+                                                   ClientCert,
+                                                   TLSProtocol,
+                                                   HTTPUserAgent,
+                                                   URLPathPrefix,
+                                                   WSSLoginPassword,
+                                                   HTTPContentType,
+                                                   RequestTimeout,
+                                                   TransmissionRetryDelay,
+                                                   MaxNumberOfRetries,
+                                                   InternalBufferSize,
+                                                   UseHTTPPipelining,
+                                                   DisableLogging,
+                                                   HTTPLogger,
+                                                   DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/DiagnosticsStatusNotification",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,
@@ -2039,29 +1973,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             HTTPResponse<FirmwareStatusNotificationResponse>? result = null;
 
-            using (var _OCPPClient = new SOAPClient(RemoteURL,
-                                                    VirtualHostname,
-                                                    false,
-                                                    null,
-                                                    RemoteCertificateValidator,
-                                                    ClientCertificateSelector,
-                                                    ClientCert,
-                                                    TLSProtocol,
-                                                    PreferIPv4,
-                                                    HTTPUserAgent,
-                                                    URLPathPrefix,
-                                                    WSSLoginPassword,
-                                                    HTTPContentType,
-                                                    RequestTimeout,
-                                                    TransmissionRetryDelay,
-                                                    MaxNumberOfRetries,
-                                                    UseHTTPPipelining,
-                                                    DisableLogging,
-                                                    HTTPLogger,
-                                                    DNSClient))
+            using (var soapClient = new SOAPClient(RemoteURL,
+                                                   VirtualHostname,
+                                                   false,
+                                                   null,
+                                                   PreferIPv4,
+                                                   RemoteCertificateValidator,
+                                                   ClientCertificateSelector,
+                                                   ClientCert,
+                                                   TLSProtocol,
+                                                   HTTPUserAgent,
+                                                   URLPathPrefix,
+                                                   WSSLoginPassword,
+                                                   HTTPContentType,
+                                                   RequestTimeout,
+                                                   TransmissionRetryDelay,
+                                                   MaxNumberOfRetries,
+                                                   InternalBufferSize,
+                                                   UseHTTPPipelining,
+                                                   DisableLogging,
+                                                   HTTPLogger,
+                                                   DNSClient))
             {
 
-                result = await _OCPPClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
+                result = await soapClient.Query(SOAP.Encapsulation(Request.ChargeBoxId,
                                                                     "/FirmwareStatusNotification",
                                                                     Request_Id.NewRandom().ToString(),
                                                                     From,

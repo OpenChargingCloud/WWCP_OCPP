@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                 DateTime?                  RequestTimestamp    = null,
                                                 TimeSpan?                  RequestTimeout      = null,
                                                 EventTracking_Id?          EventTrackingId     = null,
-                                                CancellationToken?         CancellationToken   = null)
+                                                CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.Reset(
                    new ResetRequest(
@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                           DateTime?                  RequestTimestamp    = null,
                                                                           TimeSpan?                  RequestTimeout      = null,
                                                                           EventTracking_Id?          EventTrackingId     = null,
-                                                                          CancellationToken?         CancellationToken   = null)
+                                                                          CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.ChangeAvailability(
                    new ChangeAvailabilityRequest(
@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                       DateTime?                  RequestTimestamp    = null,
                                                                       TimeSpan?                  RequestTimeout      = null,
                                                                       EventTracking_Id?          EventTrackingId     = null,
-                                                                      CancellationToken?         CancellationToken   = null)
+                                                                      CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.GetConfiguration(
                    new GetConfigurationRequest(
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                             DateTime?                  RequestTimestamp    = null,
                                                                             TimeSpan?                  RequestTimeout      = null,
                                                                             EventTracking_Id?          EventTrackingId     = null,
-                                                                            CancellationToken?         CancellationToken   = null)
+                                                                            CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.ChangeConfiguration(
                    new ChangeConfigurationRequest(
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                  DateTime?                  RequestTimestamp    = null,
                                                                  TimeSpan?                  RequestTimeout      = null,
                                                                  EventTracking_Id?          EventTrackingId     = null,
-                                                                 CancellationToken?         CancellationToken   = null)
+                                                                 CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.DataTransfer(
                    new DataTransferRequest(
@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                   DateTime?                  RequestTimestamp    = null,
                                                                   TimeSpan?                  RequestTimeout      = null,
                                                                   EventTracking_Id?          EventTrackingId     = null,
-                                                                  CancellationToken?         CancellationToken   = null)
+                                                                  CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.GetDiagnostics(
                    new GetDiagnosticsRequest(
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                   DateTime?                  RequestTimestamp    = null,
                                                                   TimeSpan?                  RequestTimeout      = null,
                                                                   EventTracking_Id?          EventTrackingId     = null,
-                                                                  CancellationToken?         CancellationToken   = null)
+                                                                  CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.TriggerMessage(
                    new TriggerMessageRequest(
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                   DateTime?                  RequestTimestamp    = null,
                                                                   TimeSpan?                  RequestTimeout      = null,
                                                                   EventTracking_Id?          EventTrackingId     = null,
-                                                                  CancellationToken?         CancellationToken   = null)
+                                                                  CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.UpdateFirmware(
                    new UpdateFirmwareRequest(
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                           DateTime?                  RequestTimestamp    = null,
                                                           TimeSpan?                  RequestTimeout      = null,
                                                           EventTracking_Id?          EventTrackingId     = null,
-                                                          CancellationToken?         CancellationToken   = null)
+                                                          CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.ReserveNow(
                    new ReserveNowRequest(
@@ -433,7 +433,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                         DateTime?                  RequestTimestamp    = null,
                                                                         TimeSpan?                  RequestTimeout      = null,
                                                                         EventTracking_Id?          EventTrackingId     = null,
-                                                                        CancellationToken?         CancellationToken   = null)
+                                                                        CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.CancelReservation(
                    new CancelReservationRequest(
@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                                   DateTime?                  RequestTimestamp    = null,
                                                                                   TimeSpan?                  RequestTimeout      = null,
                                                                                   EventTracking_Id?          EventTrackingId     = null,
-                                                                                  CancellationToken?         CancellationToken   = null)
+                                                                                  CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.RemoteStartTransaction(
                    new RemoteStartTransactionRequest(
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                                 DateTime?                  RequestTimestamp    = null,
                                                                                 TimeSpan?                  RequestTimeout      = null,
                                                                                 EventTracking_Id?          EventTrackingId     = null,
-                                                                                CancellationToken?         CancellationToken   = null)
+                                                                                CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.RemoteStopTransaction(
                    new RemoteStopTransactionRequest(
@@ -549,7 +549,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                           DateTime?                  RequestTimestamp    = null,
                                                                           TimeSpan?                  RequestTimeout      = null,
                                                                           EventTracking_Id?          EventTrackingId     = null,
-                                                                          CancellationToken?         CancellationToken   = null)
+                                                                          CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.SetChargingProfile(
                    new SetChargingProfileRequest(
@@ -593,7 +593,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                               DateTime?                  RequestTimestamp         = null,
                                                                               TimeSpan?                  RequestTimeout           = null,
                                                                               EventTracking_Id?          EventTrackingId          = null,
-                                                                              CancellationToken?         CancellationToken        = null)
+                                                                              CancellationToken          CancellationToken        = default)
 
             => ICentralSystemClient.ClearChargingProfile(
                    new ClearChargingProfileRequest(
@@ -637,7 +637,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                               DateTime?                  RequestTimestamp    = null,
                                                                               TimeSpan?                  RequestTimeout      = null,
                                                                               EventTracking_Id?          EventTrackingId     = null,
-                                                                              CancellationToken?         CancellationToken   = null)
+                                                                              CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.GetCompositeSchedule(
                    new GetCompositeScheduleRequest(
@@ -676,7 +676,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                     DateTime?                  RequestTimestamp    = null,
                                                                     TimeSpan?                  RequestTimeout      = null,
                                                                     EventTracking_Id?          EventTrackingId     = null,
-                                                                    CancellationToken?         CancellationToken   = null)
+                                                                    CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.UnlockConnector(
                    new UnlockConnectorRequest(
@@ -712,7 +712,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                             DateTime?                  RequestTimestamp    = null,
                                                                             TimeSpan?                  RequestTimeout      = null,
                                                                             EventTracking_Id?          EventTrackingId     = null,
-                                                                            CancellationToken?         CancellationToken   = null)
+                                                                            CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.GetLocalListVersion(
                    new GetLocalListVersionRequest(
@@ -751,7 +751,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                 DateTime?                        RequestTimestamp         = null,
                                                                 TimeSpan?                        RequestTimeout           = null,
                                                                 EventTracking_Id?                EventTrackingId          = null,
-                                                                CancellationToken?               CancellationToken        = null)
+                                                                CancellationToken                CancellationToken        = default)
 
             => ICentralSystemClient.SendLocalList(
                    new SendLocalListRequest(
@@ -788,7 +788,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                           DateTime?                  RequestTimestamp    = null,
                                                           TimeSpan?                  RequestTimeout      = null,
                                                           EventTracking_Id?          EventTrackingId     = null,
-                                                          CancellationToken?         CancellationToken   = null)
+                                                          CancellationToken          CancellationToken   = default)
 
             => ICentralSystemClient.ClearCache(
                    new ClearCacheRequest(

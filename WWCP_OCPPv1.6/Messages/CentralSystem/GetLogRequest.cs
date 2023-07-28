@@ -80,18 +80,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout"></param>
         /// <param name="EventTrackingId"></param>
         /// <param name="CancellationToken"></param>
-        public GetLogRequest(ChargeBox_Id        ChargeBoxId,
-                             LogTypes            LogType,
-                             Int32               LogRequestId,
-                             LogParameters       Log,
-                             Byte?               Retries             = null,
-                             TimeSpan?           RetryInterval       = null,
+        public GetLogRequest(ChargeBox_Id       ChargeBoxId,
+                             LogTypes           LogType,
+                             Int32              LogRequestId,
+                             LogParameters      Log,
+                             Byte?              Retries             = null,
+                             TimeSpan?          RetryInterval       = null,
 
-                             Request_Id?         RequestId           = null,
-                             DateTime?           RequestTimestamp    = null,
-                             TimeSpan?           RequestTimeout      = null,
-                             EventTracking_Id?   EventTrackingId     = null,
-                             CancellationToken?  CancellationToken   = null)
+                             Request_Id?        RequestId           = null,
+                             DateTime?          RequestTimestamp    = null,
+                             TimeSpan?          RequestTimeout      = null,
+                             EventTracking_Id?  EventTrackingId     = null,
+                             CancellationToken  CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "GetLog",

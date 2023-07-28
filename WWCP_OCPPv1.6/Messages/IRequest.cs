@@ -34,42 +34,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The charge box identification.
         /// </summary>
         [Mandatory]
-        ChargeBox_Id        ChargeBoxId          { get; }
+        ChargeBox_Id       ChargeBoxId          { get; }
 
         /// <summary>
         /// The request identification.
         /// </summary>
         [Mandatory]
-        Request_Id          RequestId            { get; }
+        Request_Id         RequestId            { get; }
 
         /// <summary>
         /// The timestamp of the request message creation.
         /// </summary>
         [Mandatory]
-        DateTime            RequestTimestamp     { get; }
+        DateTime           RequestTimestamp     { get; }
 
         /// <summary>
         /// The timeout of this request.
         /// </summary>
         [Mandatory]
-        TimeSpan            RequestTimeout       { get; }
+        TimeSpan           RequestTimeout       { get; }
 
         /// <summary>
         /// An event tracking identification for correlating this request with other events.
         /// </summary>
         [Mandatory]
-        EventTracking_Id    EventTrackingId      { get; }
+        EventTracking_Id   EventTrackingId      { get; }
 
         /// <summary>
         /// The OCPP SOAP and HTTP Web Socket action.
         /// </summary>
         [Mandatory]
-        String              Action               { get; }
+        String             Action               { get; }
 
         /// <summary>
         /// An optional token to cancel this request.
         /// </summary>
-        CancellationToken?  CancellationToken    { get; }
+        CancellationToken  CancellationToken    { get; }
 
 
     }
