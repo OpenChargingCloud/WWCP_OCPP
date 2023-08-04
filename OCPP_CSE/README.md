@@ -20,6 +20,7 @@ This structured list of proposals seeks to address these issues in a way that ev
   - RS232/RS485 transport *upcoming*
   - Modbus/TCP transport to allow a direct communication with e.g. smart energy meters located in the remote network of a charging location *upcoming*
 - OCPP Overlay Networking *upcoming*
+  - Connected charging stations, (local) nodes and backends exchange routing information about reachable nodes *upcoming*
   - OCPP Local Node *upcoming*
 - OCPP Security Gateway *upcoming*
 - OCPP HTTP/WebSocket Server on each charging station *upcoming*
