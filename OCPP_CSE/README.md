@@ -15,6 +15,7 @@ This structured list of proposals seeks to address these issues in a way that ev
   - Transparenzplattform > Ladestationsbetreiber
   - Bestätigung der Ladestationen an Transparenzplattform
 - Efficient transport of binary data within OCPP websockets *upcoming*
+  - Setup and tear-down of binary channels and topologies *upcoming*
   - Firmware updates *upcoming*
   - More efficient measurement data transport *upcoming*
   - RS232/RS485 transport *upcoming*
