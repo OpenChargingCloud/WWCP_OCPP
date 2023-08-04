@@ -25,3 +25,6 @@ This structured list of proposals seeks to address these issues in a way that ev
 - OCPP HTTP/WebSocket Server on each charging station *upcoming*
   - Alternative local communication between charging stations and local nodes *upcoming*
   - EV Driver/EV Communication via WLAN + App (special user rolls required) *upcoming*
+    - Charging Tickets: EMP signed anonymous authorization data for offline charging
+    - EV Driver Networking: EV driver can deliver firmware or configuration updates to a charging station or fetch charging session data and deliver it to a charging station operator
+
