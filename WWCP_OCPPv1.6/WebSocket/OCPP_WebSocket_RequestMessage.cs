@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         #endregion
 
 
-        #region ToJSON()
+        #region ToJSON     ()
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -117,6 +117,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
                     RequestId.ToString(),
                     Action,
                     Message);
+
+        #endregion
+
+        #region ToText     (Format = None)
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
+        /// <param name="Format">A JSON format.</param>
+        public String ToText(Formatting Format = Formatting.None)
+
+            => ToJSON().ToString(Format);
 
         #endregion
 

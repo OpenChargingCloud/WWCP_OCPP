@@ -897,18 +897,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #region OnTextMessageRequest
 
             centralSystemServer.OnTextMessageReceived += async (timestamp,
-                                                               webSocketServer,
-                                                               webSocketConnection,
-                                                               eventTrackingId,
-                                                               requestTimestamp,
-                                                               requestMessage) => {
+                                                                webSocketServer,
+                                                                webSocketConnection,
+                                                                eventTrackingId,
+                                                                requestMessage) => {
 
                 if (OnTextMessageRequest is not null)
                     await OnTextMessageRequest.Invoke(timestamp,
                                                       webSocketServer,
                                                       webSocketConnection,
                                                       eventTrackingId,
-                                                      requestTimestamp,
                                                       requestMessage);
 
             };

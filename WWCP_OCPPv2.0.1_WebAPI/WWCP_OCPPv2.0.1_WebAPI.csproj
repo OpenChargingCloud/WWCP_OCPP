@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>cloud.charging.open.protocols.OCPPv2_0.WebAPI</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>cloud.charging.open.protocols.OCPPv2_0.WebAPI</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.NetCore" Version="1.9.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj" />
+    <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
+    <ProjectReference Include="..\..\UsersAPI\UsersAPI\UsersAPI.csproj" />
+    <ProjectReference Include="..\WWCP_OCPPv2.0.1\WWCP_OCPPv2.0.1.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1177,12 +1177,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="ClientCertificateSelector">A delegate to select a TLS client certificate.</param>
         /// <param name="ClientCert">The SSL/TLS client certificate to use of HTTP authentication.</param>
         /// <param name="HTTPUserAgent">The HTTP user agent identification.</param>
-        /// <param name="URLPathPrefix">An optional default URL path prefix.</param>
         /// <param name="HTTPAuthentication">The WebService-Security username/password.</param>
         /// <param name="RequestTimeout">An optional Request timeout.</param>
         /// <param name="TransmissionRetryDelay">The delay between transmission retries.</param>
         /// <param name="MaxNumberOfRetries">The maximum number of transmission retries for HTTP request.</param>
-        /// <param name="UseHTTPPipelining">Whether to pipeline multiple HTTP Request through a single HTTP/TCP connection.</param>
         /// <param name="LoggingPath">The logging path.</param>
         /// <param name="LoggingContext">An optional context for logging client methods.</param>
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
@@ -1195,18 +1193,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                    URL                                   RemoteURL,
                                    HTTPHostname?                         VirtualHostname              = null,
                                    String?                               Description                  = null,
+                                   Boolean?                              PreferIPv4                   = null,
                                    RemoteCertificateValidationCallback?  RemoteCertificateValidator   = null,
                                    LocalCertificateSelectionCallback?    ClientCertificateSelector    = null,
                                    X509Certificate?                      ClientCert                   = null,
-                                   String                                HTTPUserAgent                = DefaultHTTPUserAgent,
-                                   HTTPPath?                             URLPathPrefix                = null,
                                    SslProtocols?                         TLSProtocol                  = null,
-                                   Boolean?                              PreferIPv4                   = null,
+                                   String?                               HTTPUserAgent                = DefaultHTTPUserAgent,
                                    IHTTPAuthentication?                  HTTPAuthentication           = null,
                                    TimeSpan?                             RequestTimeout               = null,
                                    TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
                                    UInt16?                               MaxNumberOfRetries           = 3,
-                                   Boolean                               UseHTTPPipelining            = false,
+                                   UInt32?                               InternalBufferSize           = null,
 
                                    IEnumerable<String>?                  SecWebSocketProtocols        = null,
 
@@ -1225,26 +1222,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             : base(RemoteURL,
                    VirtualHostname,
                    Description,
+                   PreferIPv4,
                    RemoteCertificateValidator,
                    ClientCertificateSelector,
                    ClientCert,
-                   HTTPUserAgent,
-                   URLPathPrefix,
                    TLSProtocol,
-                   PreferIPv4,
+                   HTTPUserAgent,
                    HTTPAuthentication,
                    RequestTimeout ?? DefaultRequestTimeout,
                    TransmissionRetryDelay,
                    MaxNumberOfRetries,
-                   UseHTTPPipelining,
+                   InternalBufferSize,
 
                    SecWebSocketProtocols,
 
-                   DisableMaintenanceTasks,
-                   MaintenanceEvery,
                    DisableWebSocketPings,
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
+
+                   DisableMaintenanceTasks,
+                   MaintenanceEvery,
 
                    LoggingPath,
                    LoggingContext,
@@ -3911,16 +3908,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                Message
                                            );
 
-                        SendWebSocketFrame(new WebSocketFrame(
-                                               WebSocketFrame.Fin.Final,
-                                               WebSocketFrame.MaskStatus.On,
-                                               new Byte[] { 0xaa, 0xbb, 0xcc, 0xdd },
-                                               WebSocketFrame.Opcodes.Text,
-                                               wsRequestMessage.ToByteArray(),
-                                               WebSocketFrame.Rsv.Off,
-                                               WebSocketFrame.Rsv.Off,
-                                               WebSocketFrame.Rsv.Off
-                                           ));
+                        await SendWebSocketFrame(WebSocketFrame.Text(
+                                                     Text:        wsRequestMessage.ToText(),
+                                                     Mask:        WebSocketFrame.MaskStatus.On,
+                                                     MaskingKey:  RandomExtensions.GetBytes(4)
+                                                 ));
 
                         requests.Add(RequestId,
                                      new SendRequestState2(
