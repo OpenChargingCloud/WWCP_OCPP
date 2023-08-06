@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
             testBackendWebSockets01  = testCSMS01.CreateWebSocketService(
                                            TCPPort:                 IPPort.Parse(9101),
                                            DisableWebSocketPings:   true,
-                                           Autostart:               true
+                                           AutoStart:               true
                                        );
 
             Assert.IsNotNull(testBackendWebSockets01);

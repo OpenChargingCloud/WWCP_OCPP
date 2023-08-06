@@ -1113,7 +1113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                                APIRobotEMailAddress:  EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
                                                SMTPClient:            new NullMailer(),
                                                DNSClient:             DNSClient,
-                                               Autostart:             true
+                                               AutoStart:             true
                                            );
 
             this.TestAPI.HTTPServer.AddAuth(request => {
@@ -1162,7 +1162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
-        /// <param name="Autostart">Start the server immediately.</param>
+        /// <param name="AutoStart">Start the server immediately.</param>
         public CSMSWSServer CreateWebSocketService(String       HTTPServerName               = CSMSWSServer.DefaultHTTPServiceName,
                                                    IIPAddress?  IPAddress                    = null,
                                                    IPPort?      TCPPort                      = null,
@@ -1172,7 +1172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                                    TimeSpan?    SlowNetworkSimulationDelay   = null,
 
                                                    DNSClient?   DNSClient                    = null,
-                                                   Boolean      Autostart                    = false)
+                                                   Boolean      AutoStart                    = false)
         {
 
             var centralSystemServer = new CSMSWSServer(
@@ -1305,7 +1305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             #endregion
 
 
-            if (Autostart)
+            if (AutoStart)
                 centralSystemServer.Start();
 
             return centralSystemServer;

@@ -725,7 +725,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                APIRobotEMailAddress:  EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
                                                SMTPClient:            new NullMailer(),
                                                DNSClient:             DNSClient,
-                                               Autostart:             true
+                                               AutoStart:             true
                                            );
 
             this.TestAPI.HTTPServer.AddAuth(request => {
@@ -777,7 +777,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="ContentType">An optional HTTP content type to use.</param>
         /// <param name="RegisterHTTPRootService">Register HTTP root services for sending a notice to clients connecting via HTML or plain text.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
-        /// <param name="Autostart">Start the server immediately.</param>
+        /// <param name="AutoStart">Start the server immediately.</param>
         public CentralSystemSOAPServer CreateSOAPService(String           HTTPServerName            = CentralSystemSOAPServer.DefaultHTTPServerName,
                                                          IPPort?          TCPPort                   = null,
                                                          String           ServiceName               = null,
@@ -785,7 +785,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                          HTTPContentType  ContentType               = null,
                                                          Boolean          RegisterHTTPRootService   = true,
                                                          DNSClient        DNSClient                 = null,
-                                                         Boolean          Autostart                 = false)
+                                                         Boolean          AutoStart                 = false)
         {
 
             var centralSystemServer = new CentralSystemSOAPServer(HTTPServerName,
@@ -795,7 +795,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                   ContentType,
                                                                   RegisterHTTPRootService,
                                                                   DNSClient ?? this.DNSClient,
-                                                                  Autostart);
+                                                                  AutoStart);
 
             Attach(centralSystemServer);
 
@@ -814,7 +814,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="IPAddress">An IP address to listen on.</param>
         /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
-        /// <param name="Autostart">Start the server immediately.</param>
+        /// <param name="AutoStart">Start the server immediately.</param>
         public CentralSystemWSServer CreateWebSocketService(String       HTTPServerName               = CentralSystemWSServer.DefaultHTTPServiceName,
                                                             IIPAddress?  IPAddress                    = null,
                                                             IPPort?      TCPPort                      = null,
@@ -824,7 +824,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                             TimeSpan?    SlowNetworkSimulationDelay   = null,
 
                                                             DNSClient?   DNSClient                    = null,
-                                                            Boolean      Autostart                    = false)
+                                                            Boolean      AutoStart                    = false)
         {
 
             var centralSystemServer = new CentralSystemWSServer(
@@ -957,7 +957,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            if (Autostart)
+            if (AutoStart)
                 centralSystemServer.Start();
 
             return centralSystemServer;

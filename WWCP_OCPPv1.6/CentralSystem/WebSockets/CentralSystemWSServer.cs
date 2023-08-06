@@ -1241,7 +1241,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (protected) ValidateTCPConnection        (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         private Task<Boolean?> ValidateTCPConnection(DateTime                      LogTimestamp,
-                                                     WebSocketServer               Server,
+                                                     AWebSocketServer              Server,
                                                      System.Net.Sockets.TcpClient  Connection,
                                                      EventTracking_Id              EventTrackingId,
                                                      CancellationToken             CancellationToken)
@@ -1256,7 +1256,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (protected) ValidateWebSocketConnection  (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         private Task<HTTPResponse?> ValidateWebSocketConnection(DateTime                   LogTimestamp,
-                                                                WebSocketServer            Server,
+                                                                AWebSocketServer           Server,
                                                                 WebSocketServerConnection  Connection,
                                                                 EventTracking_Id           EventTrackingId,
                                                                 CancellationToken          CancellationToken)
@@ -1350,7 +1350,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         protected Task ProcessNewWebSocketConnection(DateTime                   LogTimestamp,
-                                                     WebSocketServer            Server,
+                                                     AWebSocketServer           Server,
                                                      WebSocketServerConnection  Connection,
                                                      EventTracking_Id           EventTrackingId,
                                                      CancellationToken          CancellationToken)
@@ -1420,7 +1420,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, EventTrackingId, StatusCode, Reason)
 
         protected Task ProcessCloseMessage(DateTime                          LogTimestamp,
-                                           WebSocketServer                   Server,
+                                           AWebSocketServer                  Server,
                                            WebSocketServerConnection         Connection,
                                            EventTracking_Id                  EventTrackingId,
                                            WebSocketFrame.ClosingStatusCode  StatusCode,
@@ -3999,7 +3999,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Action">An OCPP action.</param>
         /// <param name="JSON">The JSON payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
-        public Task<SendJSONResults> SendJSON(Request_Id    RequestId,
+        public async Task<SendJSONResults> SendJSON(Request_Id    RequestId,
                                               ChargeBox_Id  ChargeBoxId,
                                               String        Action,
                                               JObject       JSON,
@@ -4032,9 +4032,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     foreach (var webSocketConnection in webSocketConnections)
                     {
 
-                        var success = SendText(webSocketConnection,
-                                               wsRequestMessage.ToJSON().ToString(Formatting.None),
-                                               EventTracking_Id.New);
+                        var success = await SendText(webSocketConnection,
+                                                     wsRequestMessage.ToJSON().ToString(Formatting.None),
+                                                     EventTracking_Id.New);
 
                         if (success == SendStatus.Success)
                             break;
@@ -4044,16 +4044,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     }
 
-                    return Task.FromResult(SendJSONResults.Success);
+                    return SendJSONResults.Success;
 
                 }
                 else
-                    return Task.FromResult(SendJSONResults.UnknownClient);
+                    return SendJSONResults.UnknownClient;
 
             }
             catch (Exception)
             {
-                return Task.FromResult(SendJSONResults.TransmissionFailed);
+                return SendJSONResults.TransmissionFailed;
             }
 
         }
