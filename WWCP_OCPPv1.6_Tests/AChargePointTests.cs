@@ -18,8 +18,9 @@
 #region Usings
 
 using NUnit.Framework;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -138,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                     Assert.AreEqual(HTTPStatusCode.SwitchingProtocols,  response1.HTTPStatusCode);
                     Assert.AreEqual("Upgrade",                          response1.Connection);
                     Assert.AreEqual("websocket",                        response1.Upgrade);
-                    Assert.AreEqual("ocpp1.6",                          response1.SecWebSocketProtocol);
+                    Assert.AreEqual("ocpp1.6",                          response1.SecWebSocketProtocol.First());
 
                 }
 

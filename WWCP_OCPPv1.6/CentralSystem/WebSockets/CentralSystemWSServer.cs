@@ -4000,10 +4000,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="JSON">The JSON payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
         public async Task<SendJSONResults> SendJSON(Request_Id    RequestId,
-                                              ChargeBox_Id  ChargeBoxId,
-                                              String        Action,
-                                              JObject       JSON,
-                                              DateTime      RequestTimeout)
+                                                    ChargeBox_Id  ChargeBoxId,
+                                                    String        Action,
+                                                    JObject       JSON,
+                                                    DateTime      RequestTimeout)
         {
 
             var wsRequestMessage = new OCPP_WebSocket_RequestMessage(
@@ -4032,9 +4032,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     foreach (var webSocketConnection in webSocketConnections)
                     {
 
-                        var success = await SendText(webSocketConnection,
-                                                     wsRequestMessage.ToJSON().ToString(Formatting.None),
-                                                     EventTracking_Id.New);
+                        var success = await SendTextMessage(webSocketConnection,
+                                                            wsRequestMessage.ToJSON().ToString(Formatting.None),
+                                                            EventTracking_Id.New);
 
                         if (success == SendStatus.Success)
                             break;

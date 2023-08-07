@@ -969,16 +969,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                 var connectorId        = Connector_Id.Parse(1);
                 var operationalStatus  = OperationalStatus.Operative;
 
-                var response1     = await testCSMS01.ChangeAvailability(
-                                              ChargeBoxId:         chargingStation1.ChargeBoxId,
-                                              OperationalStatus:   operationalStatus,
-                                              EVSE:                new EVSE(
-                                                                       Id:            evseId,
-                                                                       ConnectorId:   connectorId,
-                                                                       CustomData:    null
-                                                                   ),
-                                              CustomData:          null
-                                          );
+                var response1          = await testCSMS01.ChangeAvailability(
+                                                   ChargeBoxId:         chargingStation1.ChargeBoxId,
+                                                   OperationalStatus:   operationalStatus,
+                                                   EVSE:                new EVSE(
+                                                                            Id:            evseId,
+                                                                            ConnectorId:   connectorId,
+                                                                            CustomData:    null
+                                                                        ),
+                                                   CustomData:          null
+                                               );
 
                 Assert.AreEqual(ResultCodes.OK,                      response1.Result.ResultCode);
                 Assert.AreEqual(ChangeAvailabilityStatus.Accepted,   response1.Status);
