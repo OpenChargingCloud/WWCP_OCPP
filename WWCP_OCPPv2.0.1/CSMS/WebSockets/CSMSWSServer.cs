@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Security.Authentication;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -24,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.Sockets;
+using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_0_1.CS;
@@ -1769,29 +1773,54 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CSMSWSServer(String       HTTPServiceName              = DefaultHTTPServiceName,
-                            IIPAddress?  IPAddress                    = null,
-                            IPPort?      TCPPort                      = null,
+        public CSMSWSServer(String                               HTTPServiceName              = DefaultHTTPServiceName,
+                            IIPAddress?                          IPAddress                    = null,
+                            IPPort?                              TCPPort                      = null,
 
-                            Boolean      RequireAuthentication        = true,
-                            Boolean      DisableWebSocketPings        = false,
-                            TimeSpan?    WebSocketPingEvery           = null,
-                            TimeSpan?    SlowNetworkSimulationDelay   = null,
+                            Boolean                              RequireAuthentication        = true,
+                            Boolean                              DisableWebSocketPings        = false,
+                            TimeSpan?                            WebSocketPingEvery           = null,
+                            TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                            DNSClient?   DNSClient                    = null,
-                            Boolean      AutoStart                    = false)
+                            ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+                            RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
+                            LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+                            SslProtocols?                        AllowedTLSProtocols          = null,
+                            Boolean?                             ClientCertificateRequired    = null,
+                            Boolean?                             CheckCertificateRevocation   = null,
+
+                            ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
+                            ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
+                            Boolean?                             ServerThreadIsBackground     = null,
+                            ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
+                            TimeSpan?                            ConnectionTimeout            = null,
+                            UInt32?                              MaxClientConnections         = null,
+
+                            DNSClient?                           DNSClient                    = null,
+                            Boolean                              AutoStart                    = false)
 
             : base(IPAddress,
                    TCPPort ?? IPPort.Parse(8000),
                    HTTPServiceName,
-                   null,
-                   null,
-                   null,
 
                    new[] { $"ocpp{Version.Number[1..]}" },
                    DisableWebSocketPings,
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
+
+                   ServerCertificateSelector,
+                   ClientCertificateValidator,
+                   ClientCertificateSelector,
+                   AllowedTLSProtocols,
+                   ClientCertificateRequired,
+                   CheckCertificateRevocation,
+
+                   ServerThreadNameCreator,
+                   ServerThreadPrioritySetter,
+                   ServerThreadIsBackground,
+                   ConnectionIdBuilder,
+                   ConnectionTimeout,
+                   MaxClientConnections,
 
                    DNSClient,
                    false)

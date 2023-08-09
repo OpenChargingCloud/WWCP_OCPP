@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
@@ -367,34 +366,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public ChargePointSOAPClient(ChargeBox_Id                          ChargeBoxIdentity,
-                                     String                                From,
-                                     String                                To,
+        public ChargePointSOAPClient(ChargeBox_Id                         ChargeBoxIdentity,
+                                     String                               From,
+                                     String                               To,
 
-                                     URL                                   RemoteURL,
-                                     HTTPHostname?                         VirtualHostname              = null,
-                                     String?                               Description                  = null,
-                                     Boolean?                              PreferIPv4                   = null,
-                                     RemoteCertificateValidationCallback?  RemoteCertificateValidator   = null,
-                                     LocalCertificateSelectionCallback?    ClientCertificateSelector    = null,
-                                     X509Certificate?                      ClientCert                   = null,
-                                     SslProtocols?                         TLSProtocol                  = null,
-                                     String                                HTTPUserAgent                = DefaultHTTPUserAgent,
-                                     HTTPPath?                             URLPathPrefix                = null,
-                                     Tuple<String, String>?                WSSLoginPassword             = null,
-                                     HTTPContentType?                      HTTPContentType              = null,
-                                     TimeSpan?                             RequestTimeout               = null,
-                                     TransmissionRetryDelayDelegate?       TransmissionRetryDelay       = null,
-                                     UInt16?                               MaxNumberOfRetries           = null,
-                                     UInt32?                               InternalBufferSize           = null,
-                                     Boolean                               UseHTTPPipelining            = false,
+                                     URL                                  RemoteURL,
+                                     HTTPHostname?                        VirtualHostname              = null,
+                                     String?                              Description                  = null,
+                                     Boolean?                             PreferIPv4                   = null,
+                                     RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
+                                     LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+                                     X509Certificate?                     ClientCert                   = null,
+                                     SslProtocols?                        TLSProtocol                  = null,
+                                     String                               HTTPUserAgent                = DefaultHTTPUserAgent,
+                                     HTTPPath?                            URLPathPrefix                = null,
+                                     Tuple<String, String>?               WSSLoginPassword             = null,
+                                     HTTPContentType?                     HTTPContentType              = null,
+                                     TimeSpan?                            RequestTimeout               = null,
+                                     TransmissionRetryDelayDelegate?      TransmissionRetryDelay       = null,
+                                     UInt16?                              MaxNumberOfRetries           = null,
+                                     UInt32?                              InternalBufferSize           = null,
+                                     Boolean                              UseHTTPPipelining            = false,
 
-                                     String?                               LoggingPath                  = null,
-                                     String                                LoggingContext               = CPClientLogger.DefaultContext,
-                                     LogfileCreatorDelegate?               LogfileCreator               = null,
-                                     Boolean?                              DisableLogging               = false,
-                                     HTTPClientLogger?                     HTTPLogger                   = null,
-                                     DNSClient?                            DNSClient                    = null)
+                                     String?                              LoggingPath                  = null,
+                                     String                               LoggingContext               = CPClientLogger.DefaultContext,
+                                     LogfileCreatorDelegate?              LogfileCreator               = null,
+                                     Boolean?                             DisableLogging               = false,
+                                     HTTPClientLogger?                    HTTPLogger                   = null,
+                                     DNSClient?                           DNSClient                    = null)
 
             : base(RemoteURL,
                    VirtualHostname,

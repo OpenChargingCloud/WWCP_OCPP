@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Security.Authentication;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -24,6 +26,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.Sockets;
+using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv1_6.CP;
@@ -40,9 +44,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
     /// <param name="WebSocketServer">The sending WebSocket server.</param>
     /// <param name="Request">The incoming request.</param>
-    public delegate Task WebSocketRequestLogHandler              (DateTime                         Timestamp,
-                                                                  WebSocketServer                  WebSocketServer,
-                                                                  JArray                           Request);
+    public delegate Task WebSocketRequestLogHandler              (DateTime                    Timestamp,
+                                                                  WebSocketServer             WebSocketServer,
+                                                                  JArray                      Request);
 
     /// <summary>
     /// The delegate for the HTTP web socket response log.
@@ -51,34 +55,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="WebSocketServer">The sending WebSocket server.</param>
     /// <param name="Request">The incoming WebSocket request.</param>
     /// <param name="Response">The outgoing WebSocket response.</param>
-    public delegate Task WebSocketResponseLogHandler             (DateTime                Timestamp,
-                                                                  WebSocketServer         WebSocketServer,
-                                                                  JArray                  Request,
-                                                                  JArray                  Response);
+    public delegate Task WebSocketResponseLogHandler             (DateTime                    Timestamp,
+                                                                  WebSocketServer             WebSocketServer,
+                                                                  JArray                      Request,
+                                                                  JArray                      Response);
 
-    public delegate Task OnNewCentralSystemWSConnectionDelegate  (DateTime                Timestamp,
-                                                                  ICentralSystem          CentralSystem,
-                                                                  WebSocketServerConnection     NewWebSocketServerConnection,
-                                                                  EventTracking_Id        EventTrackingId,
-                                                                  CancellationToken       CancellationToken);
+    public delegate Task OnNewCentralSystemWSConnectionDelegate  (DateTime                    Timestamp,
+                                                                  ICentralSystem              CentralSystem,
+                                                                  WebSocketServerConnection   NewWebSocketServerConnection,
+                                                                  EventTracking_Id            EventTrackingId,
+                                                                  CancellationToken           CancellationToken);
 
-    public delegate Task OnWebSocketTextMessageResponseDelegate  (DateTime                Timestamp,
-                                                                  CentralSystemWSServer   Server,
-                                                                  WebSocketServerConnection     Connection,
-                                                                  EventTracking_Id        EventTrackingId,
-                                                                  DateTime                RequestTimestamp,
-                                                                  String                  RequestMessage,
-                                                                  DateTime                ResponseTimestamp,
-                                                                  String?                 ResponseMessage);
+    public delegate Task OnWebSocketTextMessageResponseDelegate  (DateTime                    Timestamp,
+                                                                  CentralSystemWSServer       Server,
+                                                                  WebSocketServerConnection   Connection,
+                                                                  EventTracking_Id            EventTrackingId,
+                                                                  DateTime                    RequestTimestamp,
+                                                                  String                      RequestMessage,
+                                                                  DateTime                    ResponseTimestamp,
+                                                                  String?                     ResponseMessage);
 
-    public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTime                Timestamp,
-                                                                  CentralSystemWSServer   Server,
-                                                                  WebSocketServerConnection     Connection,
-                                                                  EventTracking_Id        EventTrackingId,
-                                                                  DateTime                RequestTimestamp,
-                                                                  Byte[]                  RequestMessage,
-                                                                  DateTime                ResponseTimestamp,
-                                                                  Byte[]?                 ResponseMessage);
+    public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTime                    Timestamp,
+                                                                  CentralSystemWSServer       Server,
+                                                                  WebSocketServerConnection   Connection,
+                                                                  EventTracking_Id            EventTrackingId,
+                                                                  DateTime                    RequestTimestamp,
+                                                                  Byte[]                      RequestMessage,
+                                                                  DateTime                    ResponseTimestamp,
+                                                                  Byte[]?                     ResponseMessage);
 
 
     /// <summary>
@@ -1191,29 +1195,54 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CentralSystemWSServer(String       HTTPServiceName              = DefaultHTTPServiceName,
-                                     IIPAddress?  IPAddress                    = null,
-                                     IPPort?      TCPPort                      = null,
+        public CentralSystemWSServer(String                               HTTPServiceName              = DefaultHTTPServiceName,
+                                     IIPAddress?                          IPAddress                    = null,
+                                     IPPort?                              TCPPort                      = null,
 
-                                     Boolean      RequireAuthentication        = true,
-                                     Boolean      DisableWebSocketPings        = false,
-                                     TimeSpan?    WebSocketPingEvery           = null,
-                                     TimeSpan?    SlowNetworkSimulationDelay   = null,
+                                     Boolean                              RequireAuthentication        = true,
+                                     Boolean                              DisableWebSocketPings        = false,
+                                     TimeSpan?                            WebSocketPingEvery           = null,
+                                     TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                                     DNSClient?   DNSClient                    = null,
-                                     Boolean      AutoStart                    = false)
+                                     ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+                                     RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
+                                     LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+                                     SslProtocols?                        AllowedTLSProtocols          = null,
+                                     Boolean?                             ClientCertificateRequired    = null,
+                                     Boolean?                             CheckCertificateRevocation   = null,
+
+                                     ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
+                                     ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
+                                     Boolean?                             ServerThreadIsBackground     = null,
+                                     ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
+                                     TimeSpan?                            ConnectionTimeout            = null,
+                                     UInt32?                              MaxClientConnections         = null,
+
+                                     DNSClient?                           DNSClient                    = null,
+                                     Boolean                              AutoStart                    = false)
 
             : base(IPAddress,
                    TCPPort ?? IPPort.Parse(8000),
                    HTTPServiceName,
-                   null,
-                   null,
-                   null,
 
                    new[] { $"ocpp{Version.Number[1..]}" },
                    DisableWebSocketPings,
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
+
+                   ServerCertificateSelector,
+                   ClientCertificateValidator,
+                   ClientCertificateSelector,
+                   AllowedTLSProtocols,
+                   ClientCertificateRequired,
+                   CheckCertificateRevocation,
+
+                   ServerThreadNameCreator,
+                   ServerThreadPrioritySetter,
+                   ServerThreadIsBackground,
+                   ConnectionIdBuilder,
+                   ConnectionTimeout,
+                   MaxClientConnections,
 
                    DNSClient,
                    false)
