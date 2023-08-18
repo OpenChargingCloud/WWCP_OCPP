@@ -682,9 +682,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             : base(Id,
                    JSONLDContext ?? DefaultJSONLDContext,
-                   LastChange,
+                   null,
+                   Description,
                    null,
                    CustomData,
+                   null,
+                   LastChange,
                    DataSource)
 
         {
@@ -1086,8 +1089,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <summary>
         /// An chargeBox builder.
         /// </summary>
-        public new class Builder : AEntity<ChargeBox_Id,
-                                           ChargeBox>.Builder
+        public new class Builder : AEntity<ChargeBox_Id, ChargeBox>.Builder
         {
 
             #region Properties
@@ -1444,6 +1446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                        LastChange,
                        null,
                        CustomData,
+                       null,
                        DataSource)
 
             {
@@ -1827,7 +1830,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             #endregion
 
-            #region CompareTo(Builder)
+            #region CompareTo(ChargeBox)
+
+            /// <summary>
+            /// Compares two instances of this object.
+            /// </summary>
+            /// <param name="ChargeBox">An chargeBox object to compare with.</param>
+            public override Int32 CompareTo(ChargeBox? ChargeBox)
+
+                => ChargeBox is null
+                       ? throw new ArgumentNullException(nameof(ChargeBox), "The given chargeBox must not be null!")
+                       : Id.CompareTo(ChargeBox.Id);
+
 
             /// <summary>
             /// Compares two instances of this object.
@@ -1859,7 +1873,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             #endregion
 
-            #region Equals(Builder)
+            #region Equals(ChargeBox)
+
+            /// <summary>
+            /// Compares two chargeBoxs for equality.
+            /// </summary>
+            /// <param name="ChargeBox">An chargeBox to compare with.</param>
+            /// <returns>True if both match; False otherwise.</returns>
+            public override Boolean Equals(ChargeBox? ChargeBox)
+
+                => ChargeBox is not null &&
+                       Id.Equals(ChargeBox.Id);
+
 
             /// <summary>
             /// Compares two chargeBoxs for equality.
@@ -1868,7 +1893,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             /// <returns>True if both match; False otherwise.</returns>
             public Boolean Equals(Builder Builder)
 
-                => Builder is Builder &&
+                => Builder is not null &&
                        Id.Equals(Builder.Id);
 
             #endregion
