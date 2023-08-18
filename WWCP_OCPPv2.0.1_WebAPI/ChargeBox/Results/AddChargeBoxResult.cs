@@ -25,93 +25,253 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
-    public class AddChargeBoxResult : AResult<ChargeBox>
+    /// <summary>
+    /// The result of an add charge box request.
+    /// </summary>
+    public class AddChargeBoxResult : AEnitityResult<ChargeBox, ChargeBox_Id>
     {
+
+        #region Properties
 
         public ChargeBox?  ChargeBox
             => Object;
 
+        #endregion
 
-        public AddChargeBoxResult(ChargeBox?        ChargeBox,
-                                  EventTracking_Id  EventTrackingId,
-                                  Boolean           IsSuccess,
-                                  String?           Argument           = null,
-                                  I18NString?       ErrorDescription   = null)
+        #region Constructor(s)
+
+        public AddChargeBoxResult(ChargeBox              ChargeBox,
+                                        CommandResult          Result,
+                                        EventTracking_Id?      EventTrackingId   = null,
+                                        IId?                   SenderId          = null,
+                                        Object?                Sender            = null,
+                                        I18NString?            Description       = null,
+                                        IEnumerable<Warning>?  Warnings          = null,
+                                        TimeSpan?              Runtime           = null)
 
             : base(ChargeBox,
+                   Result,
                    EventTrackingId,
-                   IsSuccess,
-                   Argument,
-                   ErrorDescription)
+                   SenderId,
+                   Sender,
+                   Description,
+                   Warnings,
+                   Runtime)
 
         { }
 
-
-        public static AddChargeBoxResult Success(ChargeBox         ChargeBox,
-                                                 EventTracking_Id  EventTrackingId)
-
-            => new AddChargeBoxResult(ChargeBox,
-                                      EventTrackingId,
-                                      true,
-                                      null,
-                                      null);
+        #endregion
 
 
-        public static AddChargeBoxResult ArgumentError(ChargeBox?        ChargeBox,
-                                                       EventTracking_Id  EventTrackingId,
-                                                       String            Argument,
-                                                       String            Description)
+        #region (static) AdminDown    (ChargeBox, ...)
 
-            => new AddChargeBoxResult(ChargeBox,
-                                      EventTrackingId,
-                                      false,
-                                      Argument,
-                                      I18NString.Create(Languages.en,
-                                                        Description));
+        public static AddChargeBoxResult
 
-        public static AddChargeBoxResult ArgumentError(ChargeBox?        ChargeBox,
-                                                       EventTracking_Id  EventTrackingId,
-                                                       String?           Argument,
-                                                       I18NString?       Description)
+            AdminDown(ChargeBox              ChargeBox,
+                      EventTracking_Id?      EventTrackingId   = null,
+                      IId?                   SenderId          = null,
+                      Object?                Sender            = null,
+                      I18NString?            Description       = null,
+                      IEnumerable<Warning>?  Warnings          = null,
+                      TimeSpan?              Runtime           = null)
 
-            => new AddChargeBoxResult(ChargeBox,
-                                      EventTrackingId,
-                                      false,
-                                      Argument,
-                                      Description);
+                => new (ChargeBox,
+                        CommandResult.AdminDown,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) NoOperation  (ChargeBox, ...)
+
+        public static AddChargeBoxResult
+
+            NoOperation(ChargeBox              ChargeBox,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   SenderId          = null,
+                        Object?                Sender            = null,
+                        I18NString?            Description       = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.NoOperation,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
 
 
-        public static AddChargeBoxResult Failed(ChargeBox         ChargeBox,
-                                                EventTracking_Id  EventTrackingId,
-                                                String            Description)
+        #region (static) Enqueued     (ChargeBox, ...)
 
-            => new AddChargeBoxResult(ChargeBox,
-                                      EventTrackingId,
-                                      false,
-                                      null,
-                                      I18NString.Create(Languages.en,
-                                                        Description));
+        public static AddChargeBoxResult
 
-        public static AddChargeBoxResult Failed(ChargeBox         ChargeBox,
-                                                EventTracking_Id  EventTrackingId,
-                                                I18NString        Description)
+            Enqueued(ChargeBox              ChargeBox,
+                     EventTracking_Id?      EventTrackingId   = null,
+                     IId?                   SenderId          = null,
+                     Object?                Sender            = null,
+                     I18NString?            Description       = null,
+                     IEnumerable<Warning>?  Warnings          = null,
+                     TimeSpan?              Runtime           = null)
 
-            => new AddChargeBoxResult(ChargeBox,
-                                      EventTrackingId,
-                                      false,
-                                      null,
-                                      Description);
+                => new (ChargeBox,
+                        CommandResult.Enqueued,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-        public static AddChargeBoxResult Failed(ChargeBox         ChargeBox,
-                                                EventTracking_Id  EventTrackingId,
-                                                Exception         Exception)
+        #endregion
 
-            => new AddChargeBoxResult(ChargeBox,
-                                      EventTrackingId,
-                                      false,
-                                      null,
-                                      I18NString.Create(Languages.en,
-                                                        Exception.Message));
+        #region (static) Success      (ChargeBox, ...)
+
+        public static AddChargeBoxResult
+
+            Success(ChargeBox              ChargeBox,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   SenderId          = null,
+                    Object?                Sender            = null,
+                    I18NString?            Description       = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.Success,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) ArgumentError(ChargeBox, Description, ...)
+
+        public static AddChargeBoxResult
+
+            ArgumentError(ChargeBox              ChargeBox,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   SenderId          = null,
+                          Object?                Sender            = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.ArgumentError,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargeBox, Description, ...)
+
+        public static AddChargeBoxResult
+
+            Error(ChargeBox              ChargeBox,
+                  I18NString             Description,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   SenderId          = null,
+                  Object?                Sender            = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.Error,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargeBox, Exception,   ...)
+
+        public static AddChargeBoxResult
+
+            Error(ChargeBox              ChargeBox,
+                  Exception              Exception,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   SenderId          = null,
+                  Object?                Sender            = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.Error,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        Exception.Message.ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Timeout      (ChargeBox, Timeout,     ...)
+
+        public static AddChargeBoxResult
+
+            Timeout(ChargeBox              ChargeBox,
+                    TimeSpan               Timeout,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   SenderId          = null,
+                    Object?                Sender            = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.Timeout,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        $"Timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout  (ChargeBox, Timeout,     ...)
+
+        public static AddChargeBoxResult
+
+            LockTimeout(ChargeBox              ChargeBox,
+                        TimeSpan               Timeout,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   SenderId          = null,
+                        Object?                Sender            = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.LockTimeout,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
 
     }
 

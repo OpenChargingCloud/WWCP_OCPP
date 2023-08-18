@@ -25,9 +25,9 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using social.OpenData.UsersAPI;
-using social.OpenData.UsersAPI.Notifications;
 
 using cloud.charging.open.protocols.OCPPv1_6.CP;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP.Notifications;
 
 #endregion
 

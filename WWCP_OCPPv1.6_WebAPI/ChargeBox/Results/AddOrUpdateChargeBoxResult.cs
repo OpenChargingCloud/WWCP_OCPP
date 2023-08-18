@@ -25,114 +25,293 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
-    public class AddOrUpdateChargeBoxResult : AResult<ChargeBox>
+    /// <summary>
+    /// The result of an add or update charge box request.
+    /// </summary>
+    public class AddOrUpdateChargeBoxResult : AEnitityResult<ChargeBox, ChargeBox_Id>
     {
 
-        public ChargeBox ChargeBox
+        #region Properties
+
+        public ChargeBox?       ChargeBox
             => Object;
 
-        public ChargeBox     ParentChargeBox    { get; internal set; }
+        public AddedOrUpdated?  AddedOrUpdated    { get; internal set; }
 
-        public AddedOrUpdated?  AddedOrUpdated        { get; internal set; }
+        #endregion
 
+        #region Constructor(s)
 
-        public AddOrUpdateChargeBoxResult(ChargeBox      ChargeBox,
-                                             EventTracking_Id  EventTrackingId,
-                                             Boolean           IsSuccess,
-                                             String            Argument             = null,
-                                             I18NString        ErrorDescription     = null,
-                                             ChargeBox      ParentChargeBox   = null,
-                                             AddedOrUpdated?   AddedOrUpdated       = null)
+        public AddOrUpdateChargeBoxResult(ChargeBox              ChargeBox,
+                                          CommandResult          Result,
+                                          EventTracking_Id?      EventTrackingId   = null,
+                                          IId?                   SenderId          = null,
+                                          Object?                Sender            = null,
+                                          AddedOrUpdated?        AddedOrUpdated    = null,
+                                          I18NString?            Description       = null,
+                                          IEnumerable<Warning>?  Warnings          = null,
+                                          TimeSpan?              Runtime           = null)
 
             : base(ChargeBox,
+                   Result,
                    EventTrackingId,
-                   IsSuccess,
-                   Argument,
-                   ErrorDescription)
+                   SenderId,
+                   Sender,
+                   Description,
+                   Warnings,
+                   Runtime)
 
         {
 
-            this.ParentChargeBox  = ParentChargeBox;
-            this.AddedOrUpdated      = AddedOrUpdated;
+            this.AddedOrUpdated = AddedOrUpdated;
 
         }
 
-
-        public static AddOrUpdateChargeBoxResult Success(ChargeBox      ChargeBox,
-                                                            AddedOrUpdated    AddedOrUpdated,
-                                                            EventTracking_Id  EventTrackingId,
-                                                            ChargeBox      ParentChargeBox = null)
-
-            => new AddOrUpdateChargeBoxResult(ChargeBox,
-                                                 EventTrackingId,
-                                                 true,
-                                                 null,
-                                                 null,
-                                                 ParentChargeBox,
-                                                 AddedOrUpdated);
+        #endregion
 
 
-        public static AddOrUpdateChargeBoxResult ArgumentError(ChargeBox      ChargeBox,
-                                                                  EventTracking_Id  EventTrackingId,
-                                                                  String            Argument,
-                                                                  String            Description)
+        #region (static) AdminDown    (ChargeBox, ...)
 
-            => new AddOrUpdateChargeBoxResult(ChargeBox,
-                                                 EventTrackingId,
-                                                 false,
-                                                 Argument,
-                                                 I18NString.Create(Languages.en,
-                                                                   Description));
+        public static AddOrUpdateChargeBoxResult
 
-        public static AddOrUpdateChargeBoxResult ArgumentError(ChargeBox      ChargeBox,
-                                                                  EventTracking_Id  EventTrackingId,
-                                                                  String            Argument,
-                                                                  I18NString        Description)
+            AdminDown(ChargeBox              ChargeBox,
+                      EventTracking_Id?      EventTrackingId   = null,
+                      IId?                   SenderId          = null,
+                      Object?                Sender            = null,
+                      I18NString?            Description       = null,
+                      IEnumerable<Warning>?  Warnings          = null,
+                      TimeSpan?              Runtime           = null)
 
-            => new AddOrUpdateChargeBoxResult(ChargeBox,
-                                                 EventTrackingId,
-                                                 false,
-                                                 Argument,
-                                                 Description);
+                => new (ChargeBox,
+                        CommandResult.AdminDown,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.NoOperation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) NoOperation  (ChargeBox, ...)
+
+        public static AddOrUpdateChargeBoxResult
+
+            NoOperation(ChargeBox              ChargeBox,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   SenderId          = null,
+                        Object?                Sender            = null,
+                        I18NString?            Description       = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.NoOperation,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.NoOperation,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
 
 
-        public static AddOrUpdateChargeBoxResult Failed(ChargeBox      ChargeBox,
-                                                           EventTracking_Id  EventTrackingId,
-                                                           String            Description,
-                                                           ChargeBox      ParentChargeBox  = null)
+        #region (static) Enqueued     (ChargeBox, ...)
 
-            => new AddOrUpdateChargeBoxResult(ChargeBox,
-                                                 EventTrackingId,
-                                                 false,
-                                                 null,
-                                                 I18NString.Create(Languages.en,
-                                                                   Description),
-                                                 ParentChargeBox);
+        public static AddOrUpdateChargeBoxResult
 
-        public static AddOrUpdateChargeBoxResult Failed(ChargeBox      ChargeBox,
-                                                           EventTracking_Id  EventTrackingId,
-                                                           I18NString        Description,
-                                                           ChargeBox      ParentChargeBox  = null)
+            Enqueued(ChargeBox              ChargeBox,
+                     EventTracking_Id?      EventTrackingId   = null,
+                     IId?                   SenderId          = null,
+                     Object?                Sender            = null,
+                     I18NString?            Description       = null,
+                     IEnumerable<Warning>?  Warnings          = null,
+                     TimeSpan?              Runtime           = null)
 
-            => new AddOrUpdateChargeBoxResult(ChargeBox,
-                                                 EventTrackingId,
-                                                 false,
-                                                 null,
-                                                 Description,
-                                                 ParentChargeBox);
+                => new (ChargeBox,
+                        CommandResult.Enqueued,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Enqueued,
+                        Description,
+                        Warnings,
+                        Runtime);
 
-        public static AddOrUpdateChargeBoxResult Failed(ChargeBox      ChargeBox,
-                                                           EventTracking_Id  EventTrackingId,
-                                                           Exception         Exception,
-                                                           ChargeBox      ParentChargeBox  = null)
+        #endregion
 
-            => new AddOrUpdateChargeBoxResult(ChargeBox,
-                                                 EventTrackingId,
-                                                 false,
-                                                 null,
-                                                 I18NString.Create(Languages.en,
-                                                                   Exception.Message),
-                                                 ParentChargeBox);
+        #region (static) Added        (ChargeBox, ...)
+
+        public static AddOrUpdateChargeBoxResult
+
+            Added(ChargeBox              ChargeBox,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   SenderId          = null,
+                  Object?                Sender            = null,
+                  I18NString?            Description       = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.Success,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Add,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Updated      (ChargeBox, ...)
+
+        public static AddOrUpdateChargeBoxResult
+
+            Updated(ChargeBox              ChargeBox,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   SenderId          = null,
+                    Object?                Sender            = null,
+                    I18NString?            Description       = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.Success,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Update,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) ArgumentError(ChargeBox, Description, ...)
+
+        public static AddOrUpdateChargeBoxResult
+
+            ArgumentError(ChargeBox              ChargeBox,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   SenderId          = null,
+                          Object?                Sender            = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.ArgumentError,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargeBox, Description, ...)
+
+        public static AddOrUpdateChargeBoxResult
+
+            Error(ChargeBox              ChargeBox,
+                  I18NString             Description,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   SenderId          = null,
+                  Object?                Sender            = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.Error,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error        (ChargeBox, Exception,   ...)
+
+        public static AddOrUpdateChargeBoxResult
+
+            Error(ChargeBox              ChargeBox,
+                  Exception              Exception,
+                  EventTracking_Id?      EventTrackingId   = null,
+                  IId?                   SenderId          = null,
+                  Object?                Sender            = null,
+                  IEnumerable<Warning>?  Warnings          = null,
+                  TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.Error,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
+                        Exception.Message.ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Timeout      (ChargeBox, Timeout,     ...)
+
+        public static AddOrUpdateChargeBoxResult
+
+            Timeout(ChargeBox              ChargeBox,
+                    TimeSpan               Timeout,
+                    EventTracking_Id?      EventTrackingId   = null,
+                    IId?                   SenderId          = null,
+                    Object?                Sender            = null,
+                    IEnumerable<Warning>?  Warnings          = null,
+                    TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.Timeout,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
+                        $"Timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) LockTimeout  (ChargeBox, Timeout,     ...)
+
+        public static AddOrUpdateChargeBoxResult
+
+            LockTimeout(ChargeBox              ChargeBox,
+                        TimeSpan               Timeout,
+                        EventTracking_Id?      EventTrackingId   = null,
+                        IId?                   SenderId          = null,
+                        Object?                Sender            = null,
+                        IEnumerable<Warning>?  Warnings          = null,
+                        TimeSpan?              Runtime           = null)
+
+                => new (ChargeBox,
+                        CommandResult.LockTimeout,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
+                        $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
 
     }
 

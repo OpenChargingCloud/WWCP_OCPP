@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public new const       String              HTTPRoot                    = "cloud.charging.open.protocols.OCPPv1_6.WebAPI.HTTPRoot.";
+        public new const       String              HTTPRoot                    = "cloud.charging.open.protocols.OCPPv2_0_1.WebAPI.HTTPRoot.";
 
 
         //ToDo: http://www.iana.org/form/media-types
@@ -1110,7 +1110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             HTTPServer.RegisterResourcesFolder(this,
                                                HTTPHostname.Any,
                                                URLPathPrefix,
-                                               "cloud.charging.open.protocols.OCPPv1_6.WebAPI.HTTPRoot",
+                                               "cloud.charging.open.protocols.OCPPv2_0_1.WebAPI.HTTPRoot",
                                                DefaultFilename: "index.html");
 
             //HTTPServer.AddMethodCallback(HTTPHostname.Any,

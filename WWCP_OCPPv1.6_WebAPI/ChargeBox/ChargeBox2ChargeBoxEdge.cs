@@ -17,9 +17,7 @@
 
 #region Usings
 
-using System;
-
-using social.OpenData.UsersAPI;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 

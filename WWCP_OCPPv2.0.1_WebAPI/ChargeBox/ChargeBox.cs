@@ -25,7 +25,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using social.OpenData.UsersAPI;
-using social.OpenData.UsersAPI.Notifications;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP.Notifications;
 
 using cloud.charging.open.protocols.OCPPv2_0_1.CS;
 
