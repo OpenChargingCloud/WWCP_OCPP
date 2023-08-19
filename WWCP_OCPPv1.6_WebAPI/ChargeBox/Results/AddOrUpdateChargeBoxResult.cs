@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region Properties
 
         public ChargeBox?       ChargeBox
-            => Object;
+            => Entity;
 
         public AddedOrUpdated?  AddedOrUpdated    { get; internal set; }
 

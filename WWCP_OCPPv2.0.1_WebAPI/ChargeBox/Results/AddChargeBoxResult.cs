@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         #region Properties
 
         public ChargeBox?  ChargeBox
-            => Object;
+            => Entity;
 
         #endregion
 
