@@ -5334,15 +5334,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.ResetResponse>
 
-            Reset(ChargeBox_Id        ChargeBoxId,
-                  ResetTypes          ResetType,
-                  CustomData?         CustomData          = null,
+            Reset(ChargeBox_Id       ChargeBoxId,
+                  ResetTypes         ResetType,
+                  CustomData?        CustomData          = null,
 
-                  Request_Id?         RequestId           = null,
-                  DateTime?           RequestTimestamp    = null,
-                  TimeSpan?           RequestTimeout      = null,
-                  EventTracking_Id?   EventTrackingId     = null,
-                  CancellationToken?  CancellationToken   = null)
+                  Request_Id?        RequestId           = null,
+                  DateTime?          RequestTimestamp    = null,
+                  TimeSpan?          RequestTimeout      = null,
+                  EventTracking_Id?  EventTrackingId     = null,
+                  CancellationToken  CancellationToken   = default)
 
         {
 
@@ -5435,18 +5435,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.UpdateFirmwareResponse>
 
-            UpdateFirmware(ChargeBox_Id        ChargeBoxId,
-                           Firmware            Firmware,
-                           Int32               UpdateFirmwareRequestId,
-                           Byte?               Retries             = null,
-                           TimeSpan?           RetryInterval       = null,
-                           CustomData?         CustomData          = null,
+            UpdateFirmware(ChargeBox_Id       ChargeBoxId,
+                           Firmware           Firmware,
+                           Int32              UpdateFirmwareRequestId,
+                           Byte?              Retries             = null,
+                           TimeSpan?          RetryInterval       = null,
+                           CustomData?        CustomData          = null,
 
-                           Request_Id?         RequestId           = null,
-                           DateTime?           RequestTimestamp    = null,
-                           TimeSpan?           RequestTimeout      = null,
-                           EventTracking_Id?   EventTrackingId     = null,
-                           CancellationToken?  CancellationToken   = null)
+                           Request_Id?        RequestId           = null,
+                           DateTime?          RequestTimestamp    = null,
+                           TimeSpan?          RequestTimeout      = null,
+                           EventTracking_Id?  EventTrackingId     = null,
+                           CancellationToken  CancellationToken   = default)
 
         {
 
@@ -5543,19 +5543,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.PublishFirmwareResponse>
 
-            PublishFirmware(ChargeBox_Id        ChargeBoxId,
-                            Int32               PublishFirmwareRequestId,
-                            URL                 DownloadLocation,
-                            String              MD5Checksum,
-                            Byte?               Retries             = null,
-                            TimeSpan?           RetryInterval       = null,
-                            CustomData?         CustomData          = null,
+            PublishFirmware(ChargeBox_Id       ChargeBoxId,
+                            Int32              PublishFirmwareRequestId,
+                            URL                DownloadLocation,
+                            String             MD5Checksum,
+                            Byte?              Retries             = null,
+                            TimeSpan?          RetryInterval       = null,
+                            CustomData?        CustomData          = null,
 
-                            Request_Id?         RequestId           = null,
-                            DateTime?           RequestTimestamp    = null,
-                            TimeSpan?           RequestTimeout      = null,
-                            EventTracking_Id?   EventTrackingId     = null,
-                            CancellationToken?  CancellationToken   = null)
+                            Request_Id?        RequestId           = null,
+                            DateTime?          RequestTimestamp    = null,
+                            TimeSpan?          RequestTimeout      = null,
+                            EventTracking_Id?  EventTrackingId     = null,
+                            CancellationToken  CancellationToken   = default)
 
         {
 
@@ -5649,15 +5649,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.UnpublishFirmwareResponse>
 
-            UnpublishFirmware(ChargeBox_Id        ChargeBoxId,
-                              String              MD5Checksum,
-                              CustomData?         CustomData          = null,
+            UnpublishFirmware(ChargeBox_Id       ChargeBoxId,
+                              String             MD5Checksum,
+                              CustomData?        CustomData          = null,
 
-                              Request_Id?         RequestId           = null,
-                              DateTime?           RequestTimestamp    = null,
-                              TimeSpan?           RequestTimeout      = null,
-                              EventTracking_Id?   EventTrackingId     = null,
-                              CancellationToken?  CancellationToken   = null)
+                              Request_Id?        RequestId           = null,
+                              DateTime?          RequestTimestamp    = null,
+                              TimeSpan?          RequestTimeout      = null,
+                              EventTracking_Id?  EventTrackingId     = null,
+                              CancellationToken  CancellationToken   = default)
 
         {
 
@@ -5748,16 +5748,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.GetBaseReportResponse>
 
-            GetBaseReport(ChargeBox_Id        ChargeBoxId,
-                          Int64               GetBaseReportRequestId,
-                          ReportBases         ReportBase,
-                          CustomData?         CustomData          = null,
+            GetBaseReport(ChargeBox_Id       ChargeBoxId,
+                          Int64              GetBaseReportRequestId,
+                          ReportBases        ReportBase,
+                          CustomData?        CustomData          = null,
 
-                          Request_Id?         RequestId           = null,
-                          DateTime?           RequestTimestamp    = null,
-                          TimeSpan?           RequestTimeout      = null,
-                          EventTracking_Id?   EventTrackingId     = null,
-                          CancellationToken?  CancellationToken   = null)
+                          Request_Id?        RequestId           = null,
+                          DateTime?          RequestTimestamp    = null,
+                          TimeSpan?          RequestTimeout      = null,
+                          EventTracking_Id?  EventTrackingId     = null,
+                          CancellationToken  CancellationToken   = default)
 
         {
 
@@ -5860,7 +5860,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                       DateTime?                       RequestTimestamp    = null,
                       TimeSpan?                       RequestTimeout      = null,
                       EventTracking_Id?               EventTrackingId     = null,
-                      CancellationToken?              CancellationToken   = null)
+                      CancellationToken               CancellationToken   = default)
 
         {
 
@@ -5956,19 +5956,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.GetLogResponse>
 
-            GetLog(ChargeBox_Id        ChargeBoxId,
-                   LogTypes            LogType,
-                   Int32               LogRequestId,
-                   LogParameters       Log,
-                   Byte?               Retries             = null,
-                   TimeSpan?           RetryInterval       = null,
-                   CustomData?         CustomData          = null,
+            GetLog(ChargeBox_Id       ChargeBoxId,
+                   LogTypes           LogType,
+                   Int32              LogRequestId,
+                   LogParameters      Log,
+                   Byte?              Retries             = null,
+                   TimeSpan?          RetryInterval       = null,
+                   CustomData?        CustomData          = null,
 
-                   Request_Id?         RequestId           = null,
-                   DateTime?           RequestTimestamp    = null,
-                   TimeSpan?           RequestTimeout      = null,
-                   EventTracking_Id?   EventTrackingId     = null,
-                   CancellationToken?  CancellationToken   = null)
+                   Request_Id?        RequestId           = null,
+                   DateTime?          RequestTimestamp    = null,
+                   TimeSpan?          RequestTimeout      = null,
+                   EventTracking_Id?  EventTrackingId     = null,
+                   CancellationToken  CancellationToken   = default)
 
         {
 
@@ -6071,7 +6071,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                          DateTime?                     RequestTimestamp    = null,
                          TimeSpan?                     RequestTimeout      = null,
                          EventTracking_Id?             EventTrackingId     = null,
-                         CancellationToken?            CancellationToken   = null)
+                         CancellationToken             CancellationToken   = default)
 
         {
 
@@ -6169,7 +6169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                          DateTime?                     RequestTimestamp    = null,
                          TimeSpan?                     RequestTimeout      = null,
                          EventTracking_Id?             EventTrackingId     = null,
-                         CancellationToken?            CancellationToken   = null)
+                         CancellationToken             CancellationToken   = default)
 
         {
 
@@ -6259,15 +6259,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.SetMonitoringBaseResponse>
 
-            SetMonitoringBase(ChargeBox_Id        ChargeBoxId,
-                              MonitoringBases     MonitoringBase,
-                              CustomData?         CustomData          = null,
+            SetMonitoringBase(ChargeBox_Id       ChargeBoxId,
+                              MonitoringBases    MonitoringBase,
+                              CustomData?        CustomData          = null,
 
-                              Request_Id?         RequestId           = null,
-                              DateTime?           RequestTimestamp    = null,
-                              TimeSpan?           RequestTimeout      = null,
-                              EventTracking_Id?   EventTrackingId     = null,
-                              CancellationToken?  CancellationToken   = null)
+                              Request_Id?        RequestId           = null,
+                              DateTime?          RequestTimestamp    = null,
+                              TimeSpan?          RequestTimeout      = null,
+                              EventTracking_Id?  EventTrackingId     = null,
+                              CancellationToken  CancellationToken   = default)
 
         {
 
@@ -6369,7 +6369,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                 DateTime?                        RequestTimestamp    = null,
                                 TimeSpan?                        RequestTimeout      = null,
                                 EventTracking_Id?                EventTrackingId     = null,
-                                CancellationToken?               CancellationToken   = null)
+                                CancellationToken                CancellationToken   = default)
 
         {
 
@@ -6461,15 +6461,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.SetMonitoringLevelResponse>
 
-            SetMonitoringLevel(ChargeBox_Id        ChargeBoxId,
-                               Severities          Severity,
-                               CustomData?         CustomData          = null,
+            SetMonitoringLevel(ChargeBox_Id       ChargeBoxId,
+                               Severities         Severity,
+                               CustomData?        CustomData          = null,
 
-                               Request_Id?         RequestId           = null,
-                               DateTime?           RequestTimestamp    = null,
-                               TimeSpan?           RequestTimeout      = null,
-                               EventTracking_Id?   EventTrackingId     = null,
-                               CancellationToken?  CancellationToken   = null)
+                               Request_Id?        RequestId           = null,
+                               DateTime?          RequestTimestamp    = null,
+                               TimeSpan?          RequestTimeout      = null,
+                               EventTracking_Id?  EventTrackingId     = null,
+                               CancellationToken  CancellationToken   = default)
 
         {
 
@@ -6567,7 +6567,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                   DateTime?                       RequestTimestamp    = null,
                                   TimeSpan?                       RequestTimeout      = null,
                                   EventTracking_Id?               EventTrackingId     = null,
-                                  CancellationToken?              CancellationToken   = null)
+                                  CancellationToken               CancellationToken   = default)
 
         {
 
@@ -6665,7 +6665,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                     DateTime?                           RequestTimestamp    = null,
                                     TimeSpan?                           RequestTimeout      = null,
                                     EventTracking_Id?                   EventTrackingId     = null,
-                                    CancellationToken?                  CancellationToken   = null)
+                                    CancellationToken                   CancellationToken   = default)
 
         {
 
@@ -6765,7 +6765,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                               DateTime?                 RequestTimestamp    = null,
                               TimeSpan?                 RequestTimeout      = null,
                               EventTracking_Id?         EventTrackingId     = null,
-                              CancellationToken?        CancellationToken   = null)
+                              CancellationToken         CancellationToken   = default)
 
         {
 
@@ -6857,16 +6857,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.ChangeAvailabilityResponse>
 
-            ChangeAvailability(ChargeBox_Id        ChargeBoxId,
-                               OperationalStatus   OperationalStatus,
-                               EVSE?               EVSE,
-                               CustomData?         CustomData          = null,
+            ChangeAvailability(ChargeBox_Id       ChargeBoxId,
+                               OperationalStatus  OperationalStatus,
+                               EVSE?              EVSE,
+                               CustomData?        CustomData          = null,
 
-                               Request_Id?         RequestId           = null,
-                               DateTime?           RequestTimestamp    = null,
-                               TimeSpan?           RequestTimeout      = null,
-                               EventTracking_Id?   EventTrackingId     = null,
-                               CancellationToken?  CancellationToken   = null)
+                               Request_Id?        RequestId           = null,
+                               DateTime?          RequestTimestamp    = null,
+                               TimeSpan?          RequestTimeout      = null,
+                               EventTracking_Id?  EventTrackingId     = null,
+                               CancellationToken  CancellationToken   = default)
 
         {
 
@@ -6958,16 +6958,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.TriggerMessageResponse>
 
-            TriggerMessage(ChargeBox_Id        ChargeBoxId,
-                           MessageTriggers     RequestedMessage,
-                           EVSE_Id?            EVSEId              = null,
-                           CustomData?         CustomData          = null,
+            TriggerMessage(ChargeBox_Id       ChargeBoxId,
+                           MessageTriggers    RequestedMessage,
+                           EVSE_Id?           EVSEId              = null,
+                           CustomData?        CustomData          = null,
 
-                           Request_Id?         RequestId           = null,
-                           DateTime?           RequestTimestamp    = null,
-                           TimeSpan?           RequestTimeout      = null,
-                           EventTracking_Id?   EventTrackingId     = null,
-                           CancellationToken?  CancellationToken   = null)
+                           Request_Id?        RequestId           = null,
+                           DateTime?          RequestTimestamp    = null,
+                           TimeSpan?          RequestTimeout      = null,
+                           EventTracking_Id?  EventTrackingId     = null,
+                           CancellationToken  CancellationToken   = default)
 
         {
 
@@ -7060,17 +7060,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.DataTransferResponse>
 
-            TransferData(ChargeBox_Id        ChargeBoxId,
-                         String              VendorId,
-                         String?             MessageId           = null,
-                         JToken?             Data                = null,
-                         CustomData?         CustomData          = null,
+            TransferData(ChargeBox_Id       ChargeBoxId,
+                         String             VendorId,
+                         String?            MessageId           = null,
+                         JToken?            Data                = null,
+                         CustomData?        CustomData          = null,
 
-                         Request_Id?         RequestId           = null,
-                         DateTime?           RequestTimestamp    = null,
-                         TimeSpan?           RequestTimeout      = null,
-                         EventTracking_Id?   EventTrackingId     = null,
-                         CancellationToken?  CancellationToken   = null)
+                         Request_Id?        RequestId           = null,
+                         DateTime?          RequestTimestamp    = null,
+                         TimeSpan?          RequestTimeout      = null,
+                         EventTracking_Id?  EventTrackingId     = null,
+                         CancellationToken  CancellationToken   = default)
 
         {
 
@@ -7172,7 +7172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                               DateTime?               RequestTimestamp    = null,
                               TimeSpan?               RequestTimeout      = null,
                               EventTracking_Id?       EventTrackingId     = null,
-                              CancellationToken?      CancellationToken   = null)
+                              CancellationToken       CancellationToken   = default)
 
         {
 
@@ -7264,16 +7264,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.InstallCertificateResponse>
 
-            InstallCertificate(ChargeBox_Id        ChargeBoxId,
-                               CertificateUse      CertificateType,
-                               Certificate         Certificate,
-                               CustomData?         CustomData          = null,
+            InstallCertificate(ChargeBox_Id       ChargeBoxId,
+                               CertificateUse     CertificateType,
+                               Certificate        Certificate,
+                               CustomData?        CustomData          = null,
 
-                               Request_Id?         RequestId           = null,
-                               DateTime?           RequestTimestamp    = null,
-                               TimeSpan?           RequestTimeout      = null,
-                               EventTracking_Id?   EventTrackingId     = null,
-                               CancellationToken?  CancellationToken   = null)
+                               Request_Id?        RequestId           = null,
+                               DateTime?          RequestTimestamp    = null,
+                               TimeSpan?          RequestTimeout      = null,
+                               EventTracking_Id?  EventTrackingId     = null,
+                               CancellationToken  CancellationToken   = default)
 
         {
 
@@ -7372,7 +7372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                        DateTime?                     RequestTimestamp    = null,
                                        TimeSpan?                     RequestTimeout      = null,
                                        EventTracking_Id?             EventTrackingId     = null,
-                                       CancellationToken?            CancellationToken   = null)
+                                       CancellationToken             CancellationToken   = default)
 
         {
 
@@ -7470,7 +7470,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                               DateTime?            RequestTimestamp    = null,
                               TimeSpan?            RequestTimeout      = null,
                               EventTracking_Id?    EventTrackingId     = null,
-                              CancellationToken?   CancellationToken   = null)
+                              CancellationToken    CancellationToken   = default)
 
         {
 
@@ -7560,14 +7560,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.GetLocalListVersionResponse>
 
-            GetLocalListVersion(ChargeBox_Id        ChargeBoxId,
-                                CustomData?         CustomData          = null,
+            GetLocalListVersion(ChargeBox_Id       ChargeBoxId,
+                                CustomData?        CustomData          = null,
 
-                                Request_Id?         RequestId           = null,
-                                DateTime?           RequestTimestamp    = null,
-                                TimeSpan?           RequestTimeout      = null,
-                                EventTracking_Id?   EventTrackingId     = null,
-                                CancellationToken?  CancellationToken   = null)
+                                Request_Id?        RequestId           = null,
+                                DateTime?          RequestTimestamp    = null,
+                                TimeSpan?          RequestTimeout      = null,
+                                EventTracking_Id?  EventTrackingId     = null,
+                                CancellationToken  CancellationToken   = default)
 
         {
 
@@ -7668,7 +7668,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                           DateTime?                        RequestTimestamp         = null,
                           TimeSpan?                        RequestTimeout           = null,
                           EventTracking_Id?                EventTrackingId          = null,
-                          CancellationToken?               CancellationToken        = null)
+                          CancellationToken                CancellationToken        = default)
 
         {
 
@@ -7759,14 +7759,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.ClearCacheResponse>
 
-            ClearCache(ChargeBox_Id        ChargeBoxId,
-                       CustomData?         CustomData          = null,
+            ClearCache(ChargeBox_Id       ChargeBoxId,
+                       CustomData?        CustomData          = null,
 
-                       Request_Id?         RequestId           = null,
-                       DateTime?           RequestTimestamp    = null,
-                       TimeSpan?           RequestTimeout      = null,
-                       EventTracking_Id?   EventTrackingId     = null,
-                       CancellationToken?  CancellationToken   = null)
+                       Request_Id?        RequestId           = null,
+                       DateTime?          RequestTimestamp    = null,
+                       TimeSpan?          RequestTimeout      = null,
+                       EventTracking_Id?  EventTrackingId     = null,
+                       CancellationToken  CancellationToken   = default)
 
         {
 
@@ -7860,21 +7860,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.ReserveNowResponse>
 
-            ReserveNow(ChargeBox_Id        ChargeBoxId,
-                       Connector_Id        ConnectorId,
-                       Reservation_Id      ReservationId,
-                       DateTime            ExpiryDate,
-                       IdToken             IdToken,
-                       ConnectorTypes?     ConnectorType       = null,
-                       EVSE_Id?            EVSEId              = null,
-                       IdToken?            GroupIdToken        = null,
-                       CustomData?         CustomData          = null,
+            ReserveNow(ChargeBox_Id       ChargeBoxId,
+                       Connector_Id       ConnectorId,
+                       Reservation_Id     ReservationId,
+                       DateTime           ExpiryDate,
+                       IdToken            IdToken,
+                       ConnectorTypes?    ConnectorType       = null,
+                       EVSE_Id?           EVSEId              = null,
+                       IdToken?           GroupIdToken        = null,
+                       CustomData?        CustomData          = null,
 
-                       Request_Id?         RequestId           = null,
-                       DateTime?           RequestTimestamp    = null,
-                       TimeSpan?           RequestTimeout      = null,
-                       EventTracking_Id?   EventTrackingId     = null,
-                       CancellationToken?  CancellationToken   = null)
+                       Request_Id?        RequestId           = null,
+                       DateTime?          RequestTimestamp    = null,
+                       TimeSpan?          RequestTimeout      = null,
+                       EventTracking_Id?  EventTrackingId     = null,
+                       CancellationToken  CancellationToken   = default)
 
         {
 
@@ -7969,15 +7969,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.CancelReservationResponse>
 
-            CancelReservation(ChargeBox_Id        ChargeBoxId,
-                              Reservation_Id      ReservationId,
-                              CustomData?         CustomData          = null,
+            CancelReservation(ChargeBox_Id       ChargeBoxId,
+                              Reservation_Id     ReservationId,
+                              CustomData?        CustomData          = null,
 
-                              Request_Id?         RequestId           = null,
-                              DateTime?           RequestTimestamp    = null,
-                              TimeSpan?           RequestTimeout      = null,
-                              EventTracking_Id?   EventTrackingId     = null,
-                              CancellationToken?  CancellationToken   = null)
+                              Request_Id?        RequestId           = null,
+                              DateTime?          RequestTimestamp    = null,
+                              TimeSpan?          RequestTimeout      = null,
+                              EventTracking_Id?  EventTrackingId     = null,
+                              CancellationToken  CancellationToken   = default)
 
         {
 
@@ -8071,19 +8071,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.RequestStartTransactionResponse>
 
-            StartCharging(ChargeBox_Id        ChargeBoxId,
-                          RemoteStart_Id      RequestStartTransactionRequestId,
-                          IdToken             IdToken,
-                          EVSE_Id?            EVSEId              = null,
-                          ChargingProfile?    ChargingProfile     = null,
-                          IdToken?            GroupIdToken        = null,
-                          CustomData?         CustomData          = null,
+            StartCharging(ChargeBox_Id       ChargeBoxId,
+                          RemoteStart_Id     RequestStartTransactionRequestId,
+                          IdToken            IdToken,
+                          EVSE_Id?           EVSEId              = null,
+                          ChargingProfile?   ChargingProfile     = null,
+                          IdToken?           GroupIdToken        = null,
+                          CustomData?        CustomData          = null,
 
-                          Request_Id?         RequestId           = null,
-                          DateTime?           RequestTimestamp    = null,
-                          TimeSpan?           RequestTimeout      = null,
-                          EventTracking_Id?   EventTrackingId     = null,
-                          CancellationToken?  CancellationToken   = null)
+                          Request_Id?        RequestId           = null,
+                          DateTime?          RequestTimestamp    = null,
+                          TimeSpan?          RequestTimeout      = null,
+                          EventTracking_Id?  EventTrackingId     = null,
+                          CancellationToken  CancellationToken   = default)
 
         {
 
@@ -8177,15 +8177,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.RequestStopTransactionResponse>
 
-            StopCharging(ChargeBox_Id        ChargeBoxId,
-                         Transaction_Id      TransactionId,
-                         CustomData?         CustomData          = null,
+            StopCharging(ChargeBox_Id       ChargeBoxId,
+                         Transaction_Id     TransactionId,
+                         CustomData?        CustomData          = null,
 
-                         Request_Id?         RequestId           = null,
-                         DateTime?           RequestTimestamp    = null,
-                         TimeSpan?           RequestTimeout      = null,
-                         EventTracking_Id?   EventTrackingId     = null,
-                         CancellationToken?  CancellationToken   = null)
+                         Request_Id?        RequestId           = null,
+                         DateTime?          RequestTimestamp    = null,
+                         TimeSpan?          RequestTimeout      = null,
+                         EventTracking_Id?  EventTrackingId     = null,
+                         CancellationToken  CancellationToken   = default)
 
         {
 
@@ -8275,15 +8275,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.GetTransactionStatusResponse>
 
-            GetTransactionStatus(ChargeBox_Id        ChargeBoxId,
-                                 Transaction_Id?     TransactionId       = null,
-                                 CustomData?         CustomData          = null,
+            GetTransactionStatus(ChargeBox_Id       ChargeBoxId,
+                                 Transaction_Id?    TransactionId       = null,
+                                 CustomData?        CustomData          = null,
 
-                                 Request_Id?         RequestId           = null,
-                                 DateTime?           RequestTimestamp    = null,
-                                 TimeSpan?           RequestTimeout      = null,
-                                 EventTracking_Id?   EventTrackingId     = null,
-                                 CancellationToken?  CancellationToken   = null)
+                                 Request_Id?        RequestId           = null,
+                                 DateTime?          RequestTimestamp    = null,
+                                 TimeSpan?          RequestTimeout      = null,
+                                 EventTracking_Id?  EventTrackingId     = null,
+                                 CancellationToken  CancellationToken   = default)
 
         {
 
@@ -8374,16 +8374,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.SetChargingProfileResponse>
 
-            SetChargingProfile(ChargeBox_Id        ChargeBoxId,
-                               EVSE_Id             EVSEId,
-                               ChargingProfile     ChargingProfile,
-                               CustomData?         CustomData          = null,
+            SetChargingProfile(ChargeBox_Id       ChargeBoxId,
+                               EVSE_Id            EVSEId,
+                               ChargingProfile    ChargingProfile,
+                               CustomData?        CustomData          = null,
 
-                               Request_Id?         RequestId           = null,
-                               DateTime?           RequestTimestamp    = null,
-                               TimeSpan?           RequestTimeout      = null,
-                               EventTracking_Id?   EventTrackingId     = null,
-                               CancellationToken?  CancellationToken   = null)
+                               Request_Id?        RequestId           = null,
+                               DateTime?          RequestTimestamp    = null,
+                               TimeSpan?          RequestTimeout      = null,
+                               EventTracking_Id?  EventTrackingId     = null,
+                               CancellationToken  CancellationToken   = default)
 
         {
 
@@ -8485,7 +8485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                 DateTime?                 RequestTimestamp    = null,
                                 TimeSpan?                 RequestTimeout      = null,
                                 EventTracking_Id?         EventTrackingId     = null,
-                                CancellationToken?        CancellationToken   = null)
+                                CancellationToken         CancellationToken   = default)
 
         {
 
@@ -8587,7 +8587,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                  DateTime?              RequestTimestamp          = null,
                                  TimeSpan?              RequestTimeout            = null,
                                  EventTracking_Id?      EventTrackingId           = null,
-                                 CancellationToken?     CancellationToken         = null)
+                                 CancellationToken      CancellationToken         = default)
 
         {
 
@@ -8690,7 +8690,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                  DateTime?           RequestTimestamp    = null,
                                  TimeSpan?           RequestTimeout      = null,
                                  EventTracking_Id?   EventTrackingId     = null,
-                                 CancellationToken?  CancellationToken   = null)
+                                 CancellationToken   CancellationToken   = default)
 
         {
 
@@ -8782,16 +8782,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.UnlockConnectorResponse>
 
-            UnlockConnector(ChargeBox_Id        ChargeBoxId,
-                            EVSE_Id             EVSEId,
-                            Connector_Id        ConnectorId,
-                            CustomData?         CustomData          = null,
+            UnlockConnector(ChargeBox_Id       ChargeBoxId,
+                            EVSE_Id            EVSEId,
+                            Connector_Id       ConnectorId,
+                            CustomData?        CustomData          = null,
 
-                            Request_Id?         RequestId           = null,
-                            DateTime?           RequestTimestamp    = null,
-                            TimeSpan?           RequestTimeout      = null,
-                            EventTracking_Id?   EventTrackingId     = null,
-                            CancellationToken?  CancellationToken   = null)
+                            Request_Id?        RequestId           = null,
+                            DateTime?          RequestTimestamp    = null,
+                            TimeSpan?          RequestTimeout      = null,
+                            EventTracking_Id?  EventTrackingId     = null,
+                            CancellationToken  CancellationToken   = default)
 
         {
 
@@ -8882,15 +8882,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.SetDisplayMessageResponse>
 
-            SetDisplayMessage(ChargeBox_Id        ChargeBoxId,
-                              MessageInfo         Message,
-                              CustomData?         CustomData          = null,
+            SetDisplayMessage(ChargeBox_Id       ChargeBoxId,
+                              MessageInfo        Message,
+                              CustomData?        CustomData          = null,
 
-                              Request_Id?         RequestId           = null,
-                              DateTime?           RequestTimestamp    = null,
-                              TimeSpan?           RequestTimeout      = null,
-                              EventTracking_Id?   EventTrackingId     = null,
-                              CancellationToken?  CancellationToken   = null)
+                              Request_Id?        RequestId           = null,
+                              DateTime?          RequestTimestamp    = null,
+                              TimeSpan?          RequestTimeout      = null,
+                              EventTracking_Id?  EventTrackingId     = null,
+                              CancellationToken  CancellationToken   = default)
 
         {
 
@@ -8992,7 +8992,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                DateTime?                        RequestTimestamp    = null,
                                TimeSpan?                        RequestTimeout      = null,
                                EventTracking_Id?                EventTrackingId     = null,
-                               CancellationToken?               CancellationToken   = null)
+                               CancellationToken                CancellationToken   = default)
 
         {
 
@@ -9083,15 +9083,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.ClearDisplayMessageResponse>
 
-            ClearDisplayMessage(ChargeBox_Id        ChargeBoxId,
-                                DisplayMessage_Id   DisplayMessageId,
-                                CustomData?         CustomData          = null,
+            ClearDisplayMessage(ChargeBox_Id       ChargeBoxId,
+                                DisplayMessage_Id  DisplayMessageId,
+                                CustomData?        CustomData          = null,
 
-                                Request_Id?         RequestId           = null,
-                                DateTime?           RequestTimestamp    = null,
-                                TimeSpan?           RequestTimeout      = null,
-                                EventTracking_Id?   EventTrackingId     = null,
-                                CancellationToken?  CancellationToken   = null)
+                                Request_Id?        RequestId           = null,
+                                DateTime?          RequestTimestamp    = null,
+                                TimeSpan?          RequestTimeout      = null,
+                                EventTracking_Id?  EventTrackingId     = null,
+                                CancellationToken  CancellationToken   = default)
 
         {
 
@@ -9180,16 +9180,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.CostUpdatedResponse>
 
-            SendCostUpdated(ChargeBox_Id        ChargeBoxId,
-                            Decimal             TotalCost,
-                            Transaction_Id      TransactionId,
-                            CustomData?         CustomData          = null,
+            SendCostUpdated(ChargeBox_Id       ChargeBoxId,
+                            Decimal            TotalCost,
+                            Transaction_Id     TransactionId,
+                            CustomData?        CustomData          = null,
 
-                            Request_Id?         RequestId           = null,
-                            DateTime?           RequestTimestamp    = null,
-                            TimeSpan?           RequestTimeout      = null,
-                            EventTracking_Id?   EventTrackingId     = null,
-                            CancellationToken?  CancellationToken   = null)
+                            Request_Id?        RequestId           = null,
+                            DateTime?          RequestTimestamp    = null,
+                            TimeSpan?          RequestTimeout      = null,
+                            EventTracking_Id?  EventTrackingId     = null,
+                            CancellationToken  CancellationToken   = default)
 
         {
 
@@ -9296,7 +9296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                        DateTime?             RequestTimestamp      = null,
                                        TimeSpan?             RequestTimeout        = null,
                                        EventTracking_Id?     EventTrackingId       = null,
-                                       CancellationToken?    CancellationToken     = null)
+                                       CancellationToken     CancellationToken     = default)
 
         {
 

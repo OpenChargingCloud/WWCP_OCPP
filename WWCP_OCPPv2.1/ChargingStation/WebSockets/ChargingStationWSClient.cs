@@ -249,6 +249,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         public CustomJObjectSerializerDelegate<GetCertificateStatusRequest>?               CustomGetCertificateStatusSerializer                        { get; set; }
 
+        public CustomJObjectSerializerDelegate<GetCRLRequest>?                             CustomGetCRLSerializer                                      { get; set; }
+
         public CustomJObjectSerializerDelegate<ReservationStatusUpdateRequest>?            CustomReservationStatusUpdateRequestSerializer              { get; set; }
 
         public CustomJObjectSerializerDelegate<AuthorizeRequest>?                          CustomAuthorizeRequestSerializer                            { get; set; }
@@ -305,6 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public CustomJObjectSerializerDelegate<ChargingProfile>?                           CustomChargingProfileSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<MessageInfo>?                               CustomMessageInfoSerializer                                 { get; set; }
         public CustomJObjectSerializerDelegate<MessageContent>?                            CustomMessageContentSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<CertificateHashData>?                       CustomCertificateHashDataSerializer                         { get; set; }
 
         #endregion
 
@@ -629,6 +632,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// An event fired whenever a response to a get certificate status request was received.
         /// </summary>
         public event OnGetCertificateStatusResponseDelegate?    OnGetCertificateStatusResponse;
+
+        #endregion
+
+        #region OnGetCRLRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a get certificate revocation list request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetCRLRequestDelegate?     OnGetCRLRequest;
+
+        /// <summary>
+        /// An event fired whenever a get certificate revocation list request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?     OnGetCRLWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a get certificate revocation list request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?    OnGetCRLWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a get certificate revocation list request was received.
+        /// </summary>
+        public event OnGetCRLResponseDelegate?    OnGetCRLResponse;
 
         #endregion
 
@@ -9018,6 +9045,105 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGetCertificateStatusResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetCRL                               (Request)
+
+        /// <summary>
+        /// Send a get certificate revocation list request.
+        /// </summary>
+        /// <param name="Request">A GetCRL request.</param>
+        public async Task<GetCRLResponse>
+
+            GetCRL(GetCRLRequest  Request)
+
+        {
+
+            #region Send OnGetCRLRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetCRLRequest?.Invoke(startTime,
+                                        this,
+                                        Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGetCRLRequest));
+            }
+
+            #endregion
+
+
+            GetCRLResponse? response = null;
+
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomGetCRLSerializer,
+                                                                  CustomCertificateHashDataSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
+            {
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (GetCRLResponse.TryParse(Request,
+                                                sendRequestState.Response,
+                                                out var getCertificateStatusResponse,
+                                                out var errorResponse) &&
+                        getCertificateStatusResponse is not null)
+                    {
+                        response = getCertificateStatusResponse;
+                    }
+
+                    response ??= new GetCRLResponse(Request,
+                                                    Result.Format(errorResponse));
+
+                }
+
+                response ??= new GetCRLResponse(Request,
+                                                Result.FromSendRequestState(sendRequestState));
+
+            }
+
+            response ??= new GetCRLResponse(Request,
+                                            Result.GenericError(requestMessage.ErrorMessage));
+
+
+            #region Send OnGetCRLResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetCRLResponse?.Invoke(endTime,
+                                         this,
+                                         Request,
+                                         response,
+                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGetCRLResponse));
             }
 
             #endregion

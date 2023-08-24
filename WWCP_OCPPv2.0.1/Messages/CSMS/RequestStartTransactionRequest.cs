@@ -87,19 +87,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public RequestStartTransactionRequest(ChargeBox_Id        ChargeBoxId,
-                                              RemoteStart_Id      RequestStartTransactionRequestId,
-                                              IdToken             IdToken,
-                                              EVSE_Id?            EVSEId              = null,
-                                              ChargingProfile?    ChargingProfile     = null,
-                                              IdToken?            GroupIdToken        = null,
-                                              CustomData?         CustomData          = null,
+        public RequestStartTransactionRequest(ChargeBox_Id       ChargeBoxId,
+                                              RemoteStart_Id     RequestStartTransactionRequestId,
+                                              IdToken            IdToken,
+                                              EVSE_Id?           EVSEId              = null,
+                                              ChargingProfile?   ChargingProfile     = null,
+                                              IdToken?           GroupIdToken        = null,
+                                              CustomData?        CustomData          = null,
 
-                                              Request_Id?         RequestId           = null,
-                                              DateTime?           RequestTimestamp    = null,
-                                              TimeSpan?           RequestTimeout      = null,
-                                              EventTracking_Id?   EventTrackingId     = null,
-                                              CancellationToken?  CancellationToken   = null)
+                                              Request_Id?        RequestId           = null,
+                                              DateTime?          RequestTimestamp    = null,
+                                              TimeSpan?          RequestTimeout      = null,
+                                              EventTracking_Id?  EventTrackingId     = null,
+                                              CancellationToken  CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "RequestStartTransaction",

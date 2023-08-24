@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An optional token to cancel this request.
         /// </summary>
-        CancellationToken?  CancellationToken    { get; }
+        CancellationToken  CancellationToken    { get; }
 
     }
 

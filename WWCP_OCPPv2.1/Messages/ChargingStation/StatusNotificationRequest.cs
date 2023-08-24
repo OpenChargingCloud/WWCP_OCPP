@@ -77,18 +77,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public StatusNotificationRequest(ChargeBox_Id        ChargeBoxId,
-                                         DateTime            Timestamp,
-                                         ConnectorStatus     ConnectorStatus,
-                                         EVSE_Id             EVSEId,
-                                         Connector_Id        ConnectorId,
-                                         CustomData?         CustomData          = null,
+        public StatusNotificationRequest(ChargeBox_Id       ChargeBoxId,
+                                         DateTime           Timestamp,
+                                         ConnectorStatus    ConnectorStatus,
+                                         EVSE_Id            EVSEId,
+                                         Connector_Id       ConnectorId,
+                                         CustomData?        CustomData          = null,
 
-                                         Request_Id?         RequestId           = null,
-                                         DateTime?           RequestTimestamp    = null,
-                                         TimeSpan?           RequestTimeout      = null,
-                                         EventTracking_Id?   EventTrackingId     = null,
-                                         CancellationToken?  CancellationToken   = null)
+                                         Request_Id?        RequestId           = null,
+                                         DateTime?          RequestTimestamp    = null,
+                                         TimeSpan?          RequestTimeout      = null,
+                                         EventTracking_Id?  EventTrackingId     = null,
+                                         CancellationToken  CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "StatusNotification",

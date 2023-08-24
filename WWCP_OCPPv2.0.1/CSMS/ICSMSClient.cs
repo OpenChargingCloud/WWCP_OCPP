@@ -46,16 +46,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<ResetResponse> Reset(this ICSMSClient    ICSMSClient,
-                                                ChargeBox_Id        ChargeBoxId,
-                                                ResetTypes          ResetType,
-                                                CustomData?         CustomData          = null,
+        public static Task<ResetResponse> Reset(this ICSMSClient   ICSMSClient,
+                                                ChargeBox_Id       ChargeBoxId,
+                                                ResetTypes         ResetType,
+                                                CustomData?        CustomData          = null,
 
-                                                Request_Id?         RequestId           = null,
-                                                DateTime?           RequestTimestamp    = null,
-                                                TimeSpan?           RequestTimeout      = null,
-                                                EventTracking_Id?   EventTrackingId     = null,
-                                                CancellationToken?  CancellationToken   = null)
+                                                Request_Id?        RequestId           = null,
+                                                DateTime?          RequestTimestamp    = null,
+                                                TimeSpan?          RequestTimeout      = null,
+                                                EventTracking_Id?  EventTrackingId     = null,
+                                                CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.Reset(
                    new ResetRequest(
@@ -88,19 +88,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<UpdateFirmwareResponse> UpdateFirmware(this ICSMSClient    ICSMSClient,
-                                                                  ChargeBox_Id        ChargeBoxId,
-                                                                  Firmware            Firmware,
-                                                                  Int32               UpdateFirmwareRequestId,
-                                                                  Byte?               Retries             = null,
-                                                                  TimeSpan?           RetryInterval       = null,
-                                                                  CustomData?         CustomData          = null,
+        public static Task<UpdateFirmwareResponse> UpdateFirmware(this ICSMSClient   ICSMSClient,
+                                                                  ChargeBox_Id       ChargeBoxId,
+                                                                  Firmware           Firmware,
+                                                                  Int32              UpdateFirmwareRequestId,
+                                                                  Byte?              Retries             = null,
+                                                                  TimeSpan?          RetryInterval       = null,
+                                                                  CustomData?        CustomData          = null,
 
-                                                                  Request_Id?         RequestId           = null,
-                                                                  DateTime?           RequestTimestamp    = null,
-                                                                  TimeSpan?           RequestTimeout      = null,
-                                                                  EventTracking_Id?   EventTrackingId     = null,
-                                                                  CancellationToken?  CancellationToken   = null)
+                                                                  Request_Id?        RequestId           = null,
+                                                                  DateTime?          RequestTimestamp    = null,
+                                                                  TimeSpan?          RequestTimeout      = null,
+                                                                  EventTracking_Id?  EventTrackingId     = null,
+                                                                  CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.UpdateFirmware(
                    new UpdateFirmwareRequest(
@@ -137,20 +137,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<PublishFirmwareResponse> PublishFirmware(this ICSMSClient    ICSMSClient,
-                                                                    ChargeBox_Id        ChargeBoxId,
-                                                                    Int32               PublishFirmwareRequestId,
-                                                                    URL                 DownloadLocation,
-                                                                    String              MD5Checksum,
-                                                                    Byte?               Retries             = null,
-                                                                    TimeSpan?           RetryInterval       = null,
-                                                                    CustomData?         CustomData          = null,
+        public static Task<PublishFirmwareResponse> PublishFirmware(this ICSMSClient   ICSMSClient,
+                                                                    ChargeBox_Id       ChargeBoxId,
+                                                                    Int32              PublishFirmwareRequestId,
+                                                                    URL                DownloadLocation,
+                                                                    String             MD5Checksum,
+                                                                    Byte?              Retries             = null,
+                                                                    TimeSpan?          RetryInterval       = null,
+                                                                    CustomData?        CustomData          = null,
 
-                                                                    Request_Id?         RequestId           = null,
-                                                                    DateTime?           RequestTimestamp    = null,
-                                                                    TimeSpan?           RequestTimeout      = null,
-                                                                    EventTracking_Id?   EventTrackingId     = null,
-                                                                    CancellationToken?  CancellationToken   = null)
+                                                                    Request_Id?        RequestId           = null,
+                                                                    DateTime?          RequestTimestamp    = null,
+                                                                    TimeSpan?          RequestTimeout      = null,
+                                                                    EventTracking_Id?  EventTrackingId     = null,
+                                                                    CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.PublishFirmware(
                    new PublishFirmwareRequest(
@@ -184,16 +184,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<UnpublishFirmwareResponse> UnpublishFirmware(this ICSMSClient    ICSMSClient,
-                                                                        ChargeBox_Id        ChargeBoxId,
-                                                                        String              MD5Checksum,
-                                                                        CustomData?         CustomData          = null,
+        public static Task<UnpublishFirmwareResponse> UnpublishFirmware(this ICSMSClient   ICSMSClient,
+                                                                        ChargeBox_Id       ChargeBoxId,
+                                                                        String             MD5Checksum,
+                                                                        CustomData?        CustomData          = null,
 
-                                                                        Request_Id?         RequestId           = null,
-                                                                        DateTime?           RequestTimestamp    = null,
-                                                                        TimeSpan?           RequestTimeout      = null,
-                                                                        EventTracking_Id?   EventTrackingId     = null,
-                                                                        CancellationToken?  CancellationToken   = null)
+                                                                        Request_Id?        RequestId           = null,
+                                                                        DateTime?          RequestTimestamp    = null,
+                                                                        TimeSpan?          RequestTimeout      = null,
+                                                                        EventTracking_Id?  EventTrackingId     = null,
+                                                                        CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.UnpublishFirmware(
                    new UnpublishFirmwareRequest(
@@ -224,17 +224,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<GetBaseReportResponse> GetBaseReport(this ICSMSClient    ICSMSClient,
-                                                                ChargeBox_Id        ChargeBoxId,
-                                                                Int64               GetBaseReportRequestId,
-                                                                ReportBases         ReportBase,
-                                                                CustomData?         CustomData          = null,
+        public static Task<GetBaseReportResponse> GetBaseReport(this ICSMSClient   ICSMSClient,
+                                                                ChargeBox_Id       ChargeBoxId,
+                                                                Int64              GetBaseReportRequestId,
+                                                                ReportBases        ReportBase,
+                                                                CustomData?        CustomData          = null,
 
-                                                                Request_Id?         RequestId           = null,
-                                                                DateTime?           RequestTimestamp    = null,
-                                                                TimeSpan?           RequestTimeout      = null,
-                                                                EventTracking_Id?   EventTrackingId     = null,
-                                                                CancellationToken?  CancellationToken   = null)
+                                                                Request_Id?        RequestId           = null,
+                                                                DateTime?          RequestTimestamp    = null,
+                                                                TimeSpan?          RequestTimeout      = null,
+                                                                EventTracking_Id?  EventTrackingId     = null,
+                                                                CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.GetBaseReport(
                    new GetBaseReportRequest(
@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                         DateTime?                       RequestTimestamp    = null,
                                                         TimeSpan?                       RequestTimeout      = null,
                                                         EventTracking_Id?               EventTrackingId     = null,
-                                                        CancellationToken?              CancellationToken   = null)
+                                                        CancellationToken               CancellationToken   = default)
 
             => ICSMSClient.GetReport(
                    new GetReportRequest(
@@ -314,20 +314,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<GetLogResponse> GetLog(this ICSMSClient    ICSMSClient,
-                                                  ChargeBox_Id        ChargeBoxId,
-                                                  LogTypes            LogType,
-                                                  Int32               LogRequestId,
-                                                  LogParameters       Log,
-                                                  Byte?               Retries             = null,
-                                                  TimeSpan?           RetryInterval       = null,
-                                                  CustomData?         CustomData          = null,
+        public static Task<GetLogResponse> GetLog(this ICSMSClient   ICSMSClient,
+                                                  ChargeBox_Id       ChargeBoxId,
+                                                  LogTypes           LogType,
+                                                  Int32              LogRequestId,
+                                                  LogParameters      Log,
+                                                  Byte?              Retries             = null,
+                                                  TimeSpan?          RetryInterval       = null,
+                                                  CustomData?        CustomData          = null,
 
-                                                  Request_Id?         RequestId           = null,
-                                                  DateTime?           RequestTimestamp    = null,
-                                                  TimeSpan?           RequestTimeout      = null,
-                                                  EventTracking_Id?   EventTrackingId     = null,
-                                                  CancellationToken?  CancellationToken   = null)
+                                                  Request_Id?        RequestId           = null,
+                                                  DateTime?          RequestTimestamp    = null,
+                                                  TimeSpan?          RequestTimeout      = null,
+                                                  EventTracking_Id?  EventTrackingId     = null,
+                                                  CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.GetLog(
                    new GetLogRequest(
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                               DateTime?                     RequestTimestamp    = null,
                                                               TimeSpan?                     RequestTimeout      = null,
                                                               EventTracking_Id?             EventTrackingId     = null,
-                                                              CancellationToken?            CancellationToken   = null)
+                                                              CancellationToken             CancellationToken   = default)
 
             => ICSMSClient.SetVariables(
                    new SetVariablesRequest(
@@ -409,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                               DateTime?                     RequestTimestamp    = null,
                                                               TimeSpan?                     RequestTimeout      = null,
                                                               EventTracking_Id?             EventTrackingId     = null,
-                                                              CancellationToken?            CancellationToken   = null)
+                                                              CancellationToken             CancellationToken   = default)
 
             => ICSMSClient.GetVariables(
                    new GetVariablesRequest(
@@ -439,16 +439,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<SetMonitoringBaseResponse> SetMonitoringBase(this ICSMSClient    ICSMSClient,
-                                                                        ChargeBox_Id        ChargeBoxId,
-                                                                        MonitoringBases     MonitoringBase,
-                                                                        CustomData?         CustomData          = null,
+        public static Task<SetMonitoringBaseResponse> SetMonitoringBase(this ICSMSClient   ICSMSClient,
+                                                                        ChargeBox_Id       ChargeBoxId,
+                                                                        MonitoringBases    MonitoringBase,
+                                                                        CustomData?        CustomData          = null,
 
-                                                                        Request_Id?         RequestId           = null,
-                                                                        DateTime?           RequestTimestamp    = null,
-                                                                        TimeSpan?           RequestTimeout      = null,
-                                                                        EventTracking_Id?   EventTrackingId     = null,
-                                                                        CancellationToken?  CancellationToken   = null)
+                                                                        Request_Id?        RequestId           = null,
+                                                                        DateTime?          RequestTimestamp    = null,
+                                                                        TimeSpan?          RequestTimeout      = null,
+                                                                        EventTracking_Id?  EventTrackingId     = null,
+                                                                        CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.SetMonitoringBase(
                    new SetMonitoringBaseRequest(
@@ -491,7 +491,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                                             DateTime?                        RequestTimestamp    = null,
                                                                             TimeSpan?                        RequestTimeout      = null,
                                                                             EventTracking_Id?                EventTrackingId     = null,
-                                                                            CancellationToken?               CancellationToken   = null)
+                                                                            CancellationToken                CancellationToken   = default)
 
             => ICSMSClient.GetMonitoringReport(
                    new GetMonitoringReportRequest(
@@ -523,16 +523,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<SetMonitoringLevelResponse> SetMonitoringLevel(this ICSMSClient    ICSMSClient,
-                                                                          ChargeBox_Id        ChargeBoxId,
-                                                                          Severities          Severity,
-                                                                          CustomData?         CustomData          = null,
+        public static Task<SetMonitoringLevelResponse> SetMonitoringLevel(this ICSMSClient   ICSMSClient,
+                                                                          ChargeBox_Id       ChargeBoxId,
+                                                                          Severities         Severity,
+                                                                          CustomData?        CustomData          = null,
 
-                                                                          Request_Id?         RequestId           = null,
-                                                                          DateTime?           RequestTimestamp    = null,
-                                                                          TimeSpan?           RequestTimeout      = null,
-                                                                          EventTracking_Id?   EventTrackingId     = null,
-                                                                          CancellationToken?  CancellationToken   = null)
+                                                                          Request_Id?        RequestId           = null,
+                                                                          DateTime?          RequestTimestamp    = null,
+                                                                          TimeSpan?          RequestTimeout      = null,
+                                                                          EventTracking_Id?  EventTrackingId     = null,
+                                                                          CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.SetMonitoringLevel(
                    new SetMonitoringLevelRequest(
@@ -571,7 +571,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                                                 DateTime?                       RequestTimestamp    = null,
                                                                                 TimeSpan?                       RequestTimeout      = null,
                                                                                 EventTracking_Id?               EventTrackingId     = null,
-                                                                                CancellationToken?              CancellationToken   = null)
+                                                                                CancellationToken               CancellationToken   = default)
 
             => ICSMSClient.SetVariableMonitoring(
                    new SetVariableMonitoringRequest(
@@ -610,7 +610,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                                                     DateTime?                           RequestTimestamp    = null,
                                                                                     TimeSpan?                           RequestTimeout      = null,
                                                                                     EventTracking_Id?                   EventTrackingId     = null,
-                                                                                    CancellationToken?                  CancellationToken   = null)
+                                                                                    CancellationToken                   CancellationToken   = default)
 
             => ICSMSClient.ClearVariableMonitoring(
                    new ClearVariableMonitoringRequest(
@@ -651,7 +651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                                         DateTime?                 RequestTimestamp    = null,
                                                                         TimeSpan?                 RequestTimeout      = null,
                                                                         EventTracking_Id?         EventTrackingId     = null,
-                                                                        CancellationToken?        CancellationToken   = null)
+                                                                        CancellationToken         CancellationToken   = default)
 
             => ICSMSClient.SetNetworkProfile(
                    new SetNetworkProfileRequest(
@@ -683,17 +683,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<ChangeAvailabilityResponse> ChangeAvailability(this ICSMSClient    ICSMSClient,
-                                                                          ChargeBox_Id        ChargeBoxId,
-                                                                          OperationalStatus   OperationalStatus,
-                                                                          EVSE?               EVSE                = null,
-                                                                          CustomData?         CustomData          = null,
+        public static Task<ChangeAvailabilityResponse> ChangeAvailability(this ICSMSClient   ICSMSClient,
+                                                                          ChargeBox_Id       ChargeBoxId,
+                                                                          OperationalStatus  OperationalStatus,
+                                                                          EVSE?              EVSE                = null,
+                                                                          CustomData?        CustomData          = null,
 
-                                                                          Request_Id?         RequestId           = null,
-                                                                          DateTime?           RequestTimestamp    = null,
-                                                                          TimeSpan?           RequestTimeout      = null,
-                                                                          EventTracking_Id?   EventTrackingId     = null,
-                                                                          CancellationToken?  CancellationToken   = null)
+                                                                          Request_Id?        RequestId           = null,
+                                                                          DateTime?          RequestTimestamp    = null,
+                                                                          TimeSpan?          RequestTimeout      = null,
+                                                                          EventTracking_Id?  EventTrackingId     = null,
+                                                                          CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.ChangeAvailability(
                    new ChangeAvailabilityRequest(
@@ -726,17 +726,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<TriggerMessageResponse> TriggerMessage(this ICSMSClient    ICSMSClient,
-                                                                  ChargeBox_Id        ChargeBoxId,
-                                                                  MessageTriggers     RequestedMessage,
-                                                                  EVSE_Id?            EVSEId              = null,
-                                                                  CustomData?         CustomData          = null,
+        public static Task<TriggerMessageResponse> TriggerMessage(this ICSMSClient   ICSMSClient,
+                                                                  ChargeBox_Id       ChargeBoxId,
+                                                                  MessageTriggers    RequestedMessage,
+                                                                  EVSE_Id?           EVSEId              = null,
+                                                                  CustomData?        CustomData          = null,
 
-                                                                  Request_Id?         RequestId           = null,
-                                                                  DateTime?           RequestTimestamp    = null,
-                                                                  TimeSpan?           RequestTimeout      = null,
-                                                                  EventTracking_Id?   EventTrackingId     = null,
-                                                                  CancellationToken?  CancellationToken   = null)
+                                                                  Request_Id?        RequestId           = null,
+                                                                  DateTime?          RequestTimestamp    = null,
+                                                                  TimeSpan?          RequestTimeout      = null,
+                                                                  EventTracking_Id?  EventTrackingId     = null,
+                                                                  CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.TriggerMessage(
                    new TriggerMessageRequest(
@@ -769,18 +769,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<CS.DataTransferResponse> TransferData(this ICSMSClient    ICSMSClient,
-                                                                 ChargeBox_Id        ChargeBoxId,
-                                                                 String              VendorId,
-                                                                 String              MessageId,
-                                                                 String              Data,
-                                                                 CustomData?         CustomData          = null,
+        public static Task<CS.DataTransferResponse> TransferData(this ICSMSClient   ICSMSClient,
+                                                                 ChargeBox_Id       ChargeBoxId,
+                                                                 String             VendorId,
+                                                                 String             MessageId,
+                                                                 String             Data,
+                                                                 CustomData?        CustomData          = null,
 
-                                                                 Request_Id?         RequestId           = null,
-                                                                 DateTime?           RequestTimestamp    = null,
-                                                                 TimeSpan?           RequestTimeout      = null,
-                                                                 EventTracking_Id?   EventTrackingId     = null,
-                                                                 CancellationToken?  CancellationToken   = null)
+                                                                 Request_Id?        RequestId           = null,
+                                                                 DateTime?          RequestTimestamp    = null,
+                                                                 TimeSpan?          RequestTimeout      = null,
+                                                                 EventTracking_Id?  EventTrackingId     = null,
+                                                                 CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.TransferData(
                    new DataTransferRequest(
@@ -824,7 +824,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                                             DateTime?               RequestTimestamp    = null,
                                                                             TimeSpan?               RequestTimeout      = null,
                                                                             EventTracking_Id?       EventTrackingId     = null,
-                                                                            CancellationToken?      CancellationToken   = null)
+                                                                            CancellationToken       CancellationToken   = default)
 
             => ICSMSClient.SendSignedCertificate(
                    new CertificateSignedRequest(
@@ -857,17 +857,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<InstallCertificateResponse> InstallCertificate(this ICSMSClient    ICSMSClient,
-                                                                          ChargeBox_Id        ChargeBoxId,
-                                                                          CertificateUse      CertificateType,
-                                                                          Certificate         Certificate,
-                                                                          CustomData?         CustomData          = null,
+        public static Task<InstallCertificateResponse> InstallCertificate(this ICSMSClient   ICSMSClient,
+                                                                          ChargeBox_Id       ChargeBoxId,
+                                                                          CertificateUse     CertificateType,
+                                                                          Certificate        Certificate,
+                                                                          CustomData?        CustomData          = null,
 
-                                                                          Request_Id?         RequestId           = null,
-                                                                          DateTime?           RequestTimestamp    = null,
-                                                                          TimeSpan?           RequestTimeout      = null,
-                                                                          EventTracking_Id?   EventTrackingId     = null,
-                                                                          CancellationToken?  CancellationToken   = null)
+                                                                          Request_Id?        RequestId           = null,
+                                                                          DateTime?          RequestTimestamp    = null,
+                                                                          TimeSpan?          RequestTimeout      = null,
+                                                                          EventTracking_Id?  EventTrackingId     = null,
+                                                                          CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.InstallCertificate(
                    new InstallCertificateRequest(
@@ -908,7 +908,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                                                           DateTime?                     RequestTimestamp    = null,
                                                                                           TimeSpan?                     RequestTimeout      = null,
                                                                                           EventTracking_Id?             EventTrackingId     = null,
-                                                                                          CancellationToken?            CancellationToken   = null)
+                                                                                          CancellationToken             CancellationToken   = default)
 
             => ICSMSClient.GetInstalledCertificateIds(
                    new GetInstalledCertificateIdsRequest(
@@ -948,7 +948,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                                         DateTime?            RequestTimestamp    = null,
                                                                         TimeSpan?            RequestTimeout      = null,
                                                                         EventTracking_Id?    EventTrackingId     = null,
-                                                                        CancellationToken?   CancellationToken   = null)
+                                                                        CancellationToken    CancellationToken   = default)
 
             => ICSMSClient.DeleteCertificate(
                    new DeleteCertificateRequest(
@@ -979,15 +979,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<GetLocalListVersionResponse> GetLocalListVersion(this ICSMSClient    ICSMSClient,
-                                                                            ChargeBox_Id        ChargeBoxId,
-                                                                            CustomData?         CustomData          = null,
+        public static Task<GetLocalListVersionResponse> GetLocalListVersion(this ICSMSClient   ICSMSClient,
+                                                                            ChargeBox_Id       ChargeBoxId,
+                                                                            CustomData?        CustomData          = null,
 
-                                                                            Request_Id?         RequestId           = null,
-                                                                            DateTime?           RequestTimestamp    = null,
-                                                                            TimeSpan?           RequestTimeout      = null,
-                                                                            EventTracking_Id?   EventTrackingId     = null,
-                                                                            CancellationToken?  CancellationToken   = null)
+                                                                            Request_Id?        RequestId           = null,
+                                                                            DateTime?          RequestTimestamp    = null,
+                                                                            TimeSpan?          RequestTimeout      = null,
+                                                                            EventTracking_Id?  EventTrackingId     = null,
+                                                                            CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.GetLocalListVersion(
                    new GetLocalListVersionRequest(
@@ -1029,7 +1029,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                                 DateTime?                        RequestTimestamp         = null,
                                                                 TimeSpan?                        RequestTimeout           = null,
                                                                 EventTracking_Id?                EventTrackingId          = null,
-                                                                CancellationToken?               CancellationToken        = null)
+                                                                CancellationToken                CancellationToken        = default)
 
             => ICSMSClient.SendLocalList(
                    new SendLocalListRequest(
@@ -1061,15 +1061,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<ClearCacheResponse> ClearCache(this ICSMSClient    ICSMSClient,
-                                                          ChargeBox_Id        ChargeBoxId,
-                                                          CustomData?         CustomData          = null,
+        public static Task<ClearCacheResponse> ClearCache(this ICSMSClient   ICSMSClient,
+                                                          ChargeBox_Id       ChargeBoxId,
+                                                          CustomData?        CustomData          = null,
 
-                                                          Request_Id?         RequestId           = null,
-                                                          DateTime?           RequestTimestamp    = null,
-                                                          TimeSpan?           RequestTimeout      = null,
-                                                          EventTracking_Id?   EventTrackingId     = null,
-                                                          CancellationToken?  CancellationToken   = null)
+                                                          Request_Id?        RequestId           = null,
+                                                          DateTime?          RequestTimestamp    = null,
+                                                          TimeSpan?          RequestTimeout      = null,
+                                                          EventTracking_Id?  EventTrackingId     = null,
+                                                          CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.ClearCache(
                    new ClearCacheRequest(
@@ -1104,21 +1104,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<ReserveNowResponse> ReserveNow(this ICSMSClient    ICSMSClient,
-                                                          ChargeBox_Id        ChargeBoxId,
-                                                          Reservation_Id      ReservationId,
-                                                          DateTime            ExpiryDate,
-                                                          IdToken             IdToken,
-                                                          ConnectorTypes?     ConnectorType       = null,
-                                                          EVSE_Id?            EVSEId              = null,
-                                                          IdToken?            GroupIdToken        = null,
-                                                          CustomData?         CustomData          = null,
+        public static Task<ReserveNowResponse> ReserveNow(this ICSMSClient   ICSMSClient,
+                                                          ChargeBox_Id       ChargeBoxId,
+                                                          Reservation_Id     ReservationId,
+                                                          DateTime           ExpiryDate,
+                                                          IdToken            IdToken,
+                                                          ConnectorTypes?    ConnectorType       = null,
+                                                          EVSE_Id?           EVSEId              = null,
+                                                          IdToken?           GroupIdToken        = null,
+                                                          CustomData?        CustomData          = null,
 
-                                                          Request_Id?         RequestId           = null,
-                                                          DateTime?           RequestTimestamp    = null,
-                                                          TimeSpan?           RequestTimeout      = null,
-                                                          EventTracking_Id?   EventTrackingId     = null,
-                                                          CancellationToken?  CancellationToken   = null)
+                                                          Request_Id?        RequestId           = null,
+                                                          DateTime?          RequestTimestamp    = null,
+                                                          TimeSpan?          RequestTimeout      = null,
+                                                          EventTracking_Id?  EventTrackingId     = null,
+                                                          CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.ReserveNow(
                    new ReserveNowRequest(
@@ -1152,16 +1152,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<CancelReservationResponse> CancelReservation(this ICSMSClient    ICSMSClient,
-                                                                        ChargeBox_Id        ChargeBoxId,
-                                                                        Reservation_Id      ReservationId,
-                                                                        CustomData?         CustomData          = null,
+        public static Task<CancelReservationResponse> CancelReservation(this ICSMSClient   ICSMSClient,
+                                                                        ChargeBox_Id       ChargeBoxId,
+                                                                        Reservation_Id     ReservationId,
+                                                                        CustomData?        CustomData          = null,
 
-                                                                        Request_Id?         RequestId           = null,
-                                                                        DateTime?           RequestTimestamp    = null,
-                                                                        TimeSpan?           RequestTimeout      = null,
-                                                                        EventTracking_Id?   EventTrackingId     = null,
-                                                                        CancellationToken?  CancellationToken   = null)
+                                                                        Request_Id?        RequestId           = null,
+                                                                        DateTime?          RequestTimestamp    = null,
+                                                                        TimeSpan?          RequestTimeout      = null,
+                                                                        EventTracking_Id?  EventTrackingId     = null,
+                                                                        CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.CancelReservation(
                    new CancelReservationRequest(
@@ -1195,20 +1195,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<RequestStartTransactionResponse> StartCharging(this ICSMSClient    ICSMSClient,
-                                                                          ChargeBox_Id        ChargeBoxId,
-                                                                          RemoteStart_Id      RequestStartTransactionRequestId,
-                                                                          IdToken             IdToken,
-                                                                          EVSE_Id?            EVSEId              = null,
-                                                                          ChargingProfile?    ChargingProfile     = null,
-                                                                          IdToken?            GroupIdToken        = null,
-                                                                          CustomData?         CustomData          = null,
+        public static Task<RequestStartTransactionResponse> StartCharging(this ICSMSClient   ICSMSClient,
+                                                                          ChargeBox_Id       ChargeBoxId,
+                                                                          RemoteStart_Id     RequestStartTransactionRequestId,
+                                                                          IdToken            IdToken,
+                                                                          EVSE_Id?           EVSEId              = null,
+                                                                          ChargingProfile?   ChargingProfile     = null,
+                                                                          IdToken?           GroupIdToken        = null,
+                                                                          CustomData?        CustomData          = null,
 
-                                                                          Request_Id?         RequestId           = null,
-                                                                          DateTime?           RequestTimestamp    = null,
-                                                                          TimeSpan?           RequestTimeout      = null,
-                                                                          EventTracking_Id?   EventTrackingId     = null,
-                                                                          CancellationToken?  CancellationToken   = null)
+                                                                          Request_Id?        RequestId           = null,
+                                                                          DateTime?          RequestTimestamp    = null,
+                                                                          TimeSpan?          RequestTimeout      = null,
+                                                                          EventTracking_Id?  EventTrackingId     = null,
+                                                                          CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.StartCharging(
                    new RequestStartTransactionRequest(
@@ -1242,16 +1242,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<RequestStopTransactionResponse> StopCharging(this ICSMSClient    ICSMSClient,
-                                                                        ChargeBox_Id        ChargeBoxId,
-                                                                        Transaction_Id      TransactionId,
-                                                                        CustomData?         CustomData          = null,
+        public static Task<RequestStopTransactionResponse> StopCharging(this ICSMSClient   ICSMSClient,
+                                                                        ChargeBox_Id       ChargeBoxId,
+                                                                        Transaction_Id     TransactionId,
+                                                                        CustomData?        CustomData          = null,
 
-                                                                        Request_Id?         RequestId           = null,
-                                                                        DateTime?           RequestTimestamp    = null,
-                                                                        TimeSpan?           RequestTimeout      = null,
-                                                                        EventTracking_Id?   EventTrackingId     = null,
-                                                                        CancellationToken?  CancellationToken   = null)
+                                                                        Request_Id?        RequestId           = null,
+                                                                        DateTime?          RequestTimestamp    = null,
+                                                                        TimeSpan?          RequestTimeout      = null,
+                                                                        EventTracking_Id?  EventTrackingId     = null,
+                                                                        CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.StopCharging(
                    new RequestStopTransactionRequest(
@@ -1281,16 +1281,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<GetTransactionStatusResponse> GetTransactionStatus(this ICSMSClient    ICSMSClient,
-                                                                              ChargeBox_Id        ChargeBoxId,
-                                                                              Transaction_Id      TransactionId,
-                                                                              CustomData?         CustomData          = null,
+        public static Task<GetTransactionStatusResponse> GetTransactionStatus(this ICSMSClient   ICSMSClient,
+                                                                              ChargeBox_Id       ChargeBoxId,
+                                                                              Transaction_Id     TransactionId,
+                                                                              CustomData?        CustomData          = null,
 
-                                                                              Request_Id?         RequestId           = null,
-                                                                              DateTime?           RequestTimestamp    = null,
-                                                                              TimeSpan?           RequestTimeout      = null,
-                                                                              EventTracking_Id?   EventTrackingId     = null,
-                                                                              CancellationToken?  CancellationToken   = null)
+                                                                              Request_Id?        RequestId           = null,
+                                                                              DateTime?          RequestTimestamp    = null,
+                                                                              TimeSpan?          RequestTimeout      = null,
+                                                                              EventTracking_Id?  EventTrackingId     = null,
+                                                                              CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.GetTransactionStatus(
                    new GetTransactionStatusRequest(
@@ -1321,17 +1321,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<SetChargingProfileResponse> SetChargingProfile(this ICSMSClient    ICSMSClient,
-                                                                          ChargeBox_Id        ChargeBoxId,
-                                                                          EVSE_Id             EVSEId,
-                                                                          ChargingProfile     ChargingProfile,
-                                                                          CustomData?         CustomData          = null,
+        public static Task<SetChargingProfileResponse> SetChargingProfile(this ICSMSClient   ICSMSClient,
+                                                                          ChargeBox_Id       ChargeBoxId,
+                                                                          EVSE_Id            EVSEId,
+                                                                          ChargingProfile    ChargingProfile,
+                                                                          CustomData?        CustomData          = null,
 
-                                                                          Request_Id?         RequestId           = null,
-                                                                          DateTime?           RequestTimestamp    = null,
-                                                                          TimeSpan?           RequestTimeout      = null,
-                                                                          EventTracking_Id?   EventTrackingId     = null,
-                                                                          CancellationToken?  CancellationToken   = null)
+                                                                          Request_Id?        RequestId           = null,
+                                                                          DateTime?          RequestTimestamp    = null,
+                                                                          TimeSpan?          RequestTimeout      = null,
+                                                                          EventTracking_Id?  EventTrackingId     = null,
+                                                                          CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.SetChargingProfile(
                    new SetChargingProfileRequest(
@@ -1375,7 +1375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                                             DateTime?                 RequestTimestamp    = null,
                                                                             TimeSpan?                 RequestTimeout      = null,
                                                                             EventTracking_Id?         EventTrackingId     = null,
-                                                                            CancellationToken?        CancellationToken   = null)
+                                                                            CancellationToken         CancellationToken   = default)
 
             => ICSMSClient.GetChargingProfiles(
                    new GetChargingProfilesRequest(
@@ -1410,15 +1410,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<ClearChargingProfileResponse> ClearChargingProfile(this ICSMSClient       ICSMSClient,
                                                                               ChargeBox_Id           ChargeBoxId,
-                                                                              ChargingProfile_Id?    ChargingProfileId        = null,
-                                                                              ClearChargingProfile?  ClearChargingProfile     = null,
-                                                                              CustomData?            CustomData               = null,
+                                                                              ChargingProfile_Id?    ChargingProfileId      = null,
+                                                                              ClearChargingProfile?  ClearChargingProfile   = null,
+                                                                              CustomData?            CustomData             = null,
 
-                                                                              Request_Id?            RequestId                = null,
-                                                                              DateTime?              RequestTimestamp         = null,
-                                                                              TimeSpan?              RequestTimeout           = null,
-                                                                              EventTracking_Id?      EventTrackingId          = null,
-                                                                              CancellationToken?     CancellationToken        = null)
+                                                                              Request_Id?            RequestId              = null,
+                                                                              DateTime?              RequestTimestamp       = null,
+                                                                              TimeSpan?              RequestTimeout         = null,
+                                                                              EventTracking_Id?      EventTrackingId        = null,
+                                                                              CancellationToken      CancellationToken      = default)
 
             => ICSMSClient.ClearChargingProfile(
                    new ClearChargingProfileRequest(
@@ -1463,7 +1463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                                               DateTime?           RequestTimestamp    = null,
                                                                               TimeSpan?           RequestTimeout      = null,
                                                                               EventTracking_Id?   EventTrackingId     = null,
-                                                                              CancellationToken?  CancellationToken   = null)
+                                                                              CancellationToken   CancellationToken   = default)
 
             => ICSMSClient.GetCompositeSchedule(
                    new GetCompositeScheduleRequest(
@@ -1497,17 +1497,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<UnlockConnectorResponse> UnlockConnector(this ICSMSClient    ICSMSClient,
-                                                                    ChargeBox_Id        ChargeBoxId,
-                                                                    EVSE_Id             EVSEId,
-                                                                    Connector_Id        ConnectorId,
-                                                                    CustomData?         CustomData          = null,
+        public static Task<UnlockConnectorResponse> UnlockConnector(this ICSMSClient   ICSMSClient,
+                                                                    ChargeBox_Id       ChargeBoxId,
+                                                                    EVSE_Id            EVSEId,
+                                                                    Connector_Id       ConnectorId,
+                                                                    CustomData?        CustomData          = null,
 
-                                                                    Request_Id?         RequestId           = null,
-                                                                    DateTime?           RequestTimestamp    = null,
-                                                                    TimeSpan?           RequestTimeout      = null,
-                                                                    EventTracking_Id?   EventTrackingId     = null,
-                                                                    CancellationToken?  CancellationToken   = null)
+                                                                    Request_Id?        RequestId           = null,
+                                                                    DateTime?          RequestTimestamp    = null,
+                                                                    TimeSpan?          RequestTimeout      = null,
+                                                                    EventTracking_Id?  EventTrackingId     = null,
+                                                                    CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.UnlockConnector(
                    new UnlockConnectorRequest(
@@ -1540,16 +1540,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<SetDisplayMessageResponse> SetDisplayMessage(this ICSMSClient    ICSMSClient,
-                                                                        ChargeBox_Id        ChargeBoxId,
-                                                                        MessageInfo         Message,
-                                                                        CustomData?         CustomData          = null,
+        public static Task<SetDisplayMessageResponse> SetDisplayMessage(this ICSMSClient   ICSMSClient,
+                                                                        ChargeBox_Id       ChargeBoxId,
+                                                                        MessageInfo        Message,
+                                                                        CustomData?        CustomData          = null,
 
-                                                                        Request_Id?         RequestId           = null,
-                                                                        DateTime?           RequestTimestamp    = null,
-                                                                        TimeSpan?           RequestTimeout      = null,
-                                                                        EventTracking_Id?   EventTrackingId     = null,
-                                                                        CancellationToken?  CancellationToken   = null)
+                                                                        Request_Id?        RequestId           = null,
+                                                                        DateTime?          RequestTimestamp    = null,
+                                                                        TimeSpan?          RequestTimeout      = null,
+                                                                        EventTracking_Id?  EventTrackingId     = null,
+                                                                        CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.SetDisplayMessage(
                    new SetDisplayMessageRequest(
@@ -1595,7 +1595,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                                           DateTime?                        RequestTimestamp    = null,
                                                                           TimeSpan?                        RequestTimeout      = null,
                                                                           EventTracking_Id?                EventTrackingId     = null,
-                                                                          CancellationToken?               CancellationToken   = null)
+                                                                          CancellationToken                CancellationToken   = default)
 
             => ICSMSClient.GetDisplayMessages(
                    new GetDisplayMessagesRequest(
@@ -1629,16 +1629,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<ClearDisplayMessageResponse> ClearDisplayMessage(this ICSMSClient    ICSMSClient,
-                                                                            ChargeBox_Id        ChargeBoxId,
-                                                                            DisplayMessage_Id   DisplayMessageId,
-                                                                            CustomData?         CustomData          = null,
+        public static Task<ClearDisplayMessageResponse> ClearDisplayMessage(this ICSMSClient   ICSMSClient,
+                                                                            ChargeBox_Id       ChargeBoxId,
+                                                                            DisplayMessage_Id  DisplayMessageId,
+                                                                            CustomData?        CustomData          = null,
 
-                                                                            Request_Id?         RequestId           = null,
-                                                                            DateTime?           RequestTimestamp    = null,
-                                                                            TimeSpan?           RequestTimeout      = null,
-                                                                            EventTracking_Id?   EventTrackingId     = null,
-                                                                            CancellationToken?  CancellationToken   = null)
+                                                                            Request_Id?        RequestId           = null,
+                                                                            DateTime?          RequestTimestamp    = null,
+                                                                            TimeSpan?          RequestTimeout      = null,
+                                                                            EventTracking_Id?  EventTrackingId     = null,
+                                                                            CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.ClearDisplayMessage(
                    new ClearDisplayMessageRequest(
@@ -1670,17 +1670,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<CostUpdatedResponse> SendCostUpdated(this ICSMSClient    ICSMSClient,
-                                                                ChargeBox_Id        ChargeBoxId,
-                                                                Decimal             TotalCost,
-                                                                Transaction_Id      TransactionId,
-                                                                CustomData?         CustomData          = null,
+        public static Task<CostUpdatedResponse> SendCostUpdated(this ICSMSClient   ICSMSClient,
+                                                                ChargeBox_Id       ChargeBoxId,
+                                                                Decimal            TotalCost,
+                                                                Transaction_Id     TransactionId,
+                                                                CustomData?        CustomData          = null,
 
-                                                                Request_Id?         RequestId           = null,
-                                                                DateTime?           RequestTimestamp    = null,
-                                                                TimeSpan?           RequestTimeout      = null,
-                                                                EventTracking_Id?   EventTrackingId     = null,
-                                                                CancellationToken?  CancellationToken   = null)
+                                                                Request_Id?        RequestId           = null,
+                                                                DateTime?          RequestTimestamp    = null,
+                                                                TimeSpan?          RequestTimeout      = null,
+                                                                EventTracking_Id?  EventTrackingId     = null,
+                                                                CancellationToken  CancellationToken   = default)
 
             => ICSMSClient.SendCostUpdated(
                    new CostUpdatedRequest(
@@ -1731,7 +1731,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                                                                                    DateTime?             RequestTimestamp      = null,
                                                                                    TimeSpan?             RequestTimeout        = null,
                                                                                    EventTracking_Id?     EventTrackingId       = null,
-                                                                                   CancellationToken?    CancellationToken     = null)
+                                                                                   CancellationToken     CancellationToken     = default)
 
             => ICSMSClient.RequestCustomerInformation(
                    new CustomerInformationRequest(

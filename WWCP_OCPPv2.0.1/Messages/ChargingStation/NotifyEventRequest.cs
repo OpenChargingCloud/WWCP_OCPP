@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                                   DateTime?               RequestTimestamp    = null,
                                   TimeSpan?               RequestTimeout      = null,
                                   EventTracking_Id?       EventTrackingId     = null,
-                                  CancellationToken?      CancellationToken   = null)
+                                  CancellationToken       CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "NotifyEvent",

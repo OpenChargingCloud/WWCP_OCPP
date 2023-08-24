@@ -83,18 +83,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UpdateFirmwareRequest(ChargeBox_Id        ChargeBoxId,
-                                     Firmware            Firmware,
-                                     Int32               UpdateFirmwareRequestId,
-                                     Byte?               Retries             = null,
-                                     TimeSpan?           RetryInterval       = null,
-                                     CustomData?         CustomData          = null,
+        public UpdateFirmwareRequest(ChargeBox_Id       ChargeBoxId,
+                                     Firmware           Firmware,
+                                     Int32              UpdateFirmwareRequestId,
+                                     Byte?              Retries             = null,
+                                     TimeSpan?          RetryInterval       = null,
+                                     CustomData?        CustomData          = null,
 
-                                     Request_Id?         RequestId           = null,
-                                     DateTime?           RequestTimestamp    = null,
-                                     TimeSpan?           RequestTimeout      = null,
-                                     EventTracking_Id?   EventTrackingId     = null,
-                                     CancellationToken?  CancellationToken   = null)
+                                     Request_Id?        RequestId           = null,
+                                     DateTime?          RequestTimestamp    = null,
+                                     TimeSpan?          RequestTimeout      = null,
+                                     EventTracking_Id?  EventTrackingId     = null,
+                                     CancellationToken  CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "UpdateFirmware",

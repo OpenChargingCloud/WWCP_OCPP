@@ -49,16 +49,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public EXIData                      EXIResponse           { get; }
 
         /// <summary>
-        /// Optional detailed status information.
-        /// </summary>
-        [Optional]
-        public StatusInfo?                  StatusInfo            { get; }
-
-        /// <summary>
         /// The number of contracts that can be retrieved with additional requests.
         /// </summary>
         [Optional]
         public UInt32?                      RemainingContracts    { get; }
+
+        /// <summary>
+        /// Optional detailed status information.
+        /// </summary>
+        [Optional]
+        public StatusInfo?                  StatusInfo            { get; }
 
         #endregion
 
@@ -72,14 +72,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The get 15118 EV certificate request leading to this response.</param>
         /// <param name="Status">The success or failure of the EXI message processing.</param>
         /// <param name="EXIResponse">Base64 encoded certificate installation response to the electric vehicle.</param>
-        /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="RemainingContracts">The number of contracts that can be retrieved with additional requests.</param>
+        /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public Get15118EVCertificateResponse(CS.Get15118EVCertificateRequest  Request,
                                              ISO15118EVCertificateStatus      Status,
                                              EXIData                          EXIResponse,
-                                             StatusInfo?                      StatusInfo           = null,
                                              UInt32?                          RemainingContracts   = null,
+                                             StatusInfo?                      StatusInfo           = null,
                                              CustomData?                      CustomData           = null)
 
             : base(Request,
@@ -90,8 +90,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             this.Status              = Status;
             this.EXIResponse         = EXIResponse;
-            this.StatusInfo          = StatusInfo;
             this.RemainingContracts  = RemainingContracts;
+            this.StatusInfo          = StatusInfo;
 
         }
 
@@ -278,13 +278,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region StatusInfo            [optional]
+                #region RemainingContracts    [optional]
 
-                if (JSON.ParseOptionalJSON("statusInfo",
-                                           "detailed status info",
-                                           OCPPv2_1.StatusInfo.TryParse,
-                                           out StatusInfo? StatusInfo,
-                                           out ErrorResponse))
+                if (JSON.ParseOptional("remainingContracts",
+                                       "remaining contracts",
+                                       out UInt32? RemainingContracts,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -292,12 +291,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region RemainingContracts    [optional]
+                #region StatusInfo            [optional]
 
-                if (JSON.ParseOptional("remainingContracts",
-                                       "remaining contracts",
-                                       out UInt32? RemainingContracts,
-                                       out ErrorResponse))
+                if (JSON.ParseOptionalJSON("statusInfo",
+                                           "detailed status info",
+                                           OCPPv2_1.StatusInfo.TryParse,
+                                           out StatusInfo? StatusInfo,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -324,8 +324,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                     Request,
                                                     Status,
                                                     EXIRequest,
-                                                    StatusInfo,
                                                     RemainingContracts,
+                                                    StatusInfo,
                                                     CustomData
                                                 );
 
@@ -365,15 +365,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  new JProperty("status",               Status.     AsText()),
                                  new JProperty("exiResponse",          EXIResponse.ToString()),
 
-                           StatusInfo is not null
-                               ? new JProperty("statusInfo",           StatusInfo. ToJSON(CustomStatusInfoSerializer,
-                                                                                          CustomCustomDataSerializer))
-                               : null,
-
                            RemainingContracts is not null
                                ? new JProperty("remainingContracts",   RemainingContracts.Value)
                                : null,
 
+                           StatusInfo is not null
+                               ? new JProperty("statusInfo",           StatusInfo. ToJSON(CustomStatusInfoSerializer,
+                                                                                          CustomCustomDataSerializer))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",           CustomData. ToJSON(CustomCustomDataSerializer))
@@ -477,11 +476,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                Status.     Equals(Get15118EVCertificateResponse.Status)      &&
                EXIResponse.Equals(Get15118EVCertificateResponse.EXIResponse) &&
 
-             ((StatusInfo         is     null && Get15118EVCertificateResponse.StatusInfo         is     null) ||
-               StatusInfo         is not null && Get15118EVCertificateResponse.StatusInfo         is not null && StatusInfo.              Equals(Get15118EVCertificateResponse.StatusInfo)) &&
-
              ((RemainingContracts is     null && Get15118EVCertificateResponse.RemainingContracts is null) ||
                RemainingContracts is not null && Get15118EVCertificateResponse.RemainingContracts is not null && RemainingContracts.Value.Equals(Get15118EVCertificateResponse.RemainingContracts.Value)) &&
+
+             ((StatusInfo         is     null && Get15118EVCertificateResponse.StatusInfo         is     null) ||
+               StatusInfo         is not null && Get15118EVCertificateResponse.StatusInfo         is not null && StatusInfo.              Equals(Get15118EVCertificateResponse.StatusInfo)) &&
 
                base.GenericEquals(Get15118EVCertificateResponse);
 
@@ -502,8 +501,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 return Status.             GetHashCode()       * 11 ^
                        EXIResponse.        GetHashCode()       *  7 ^
-                      (StatusInfo?.        GetHashCode() ?? 0) *  5 ^
-                      (RemainingContracts?.GetHashCode() ?? 0) *  3 ^
+                      (RemainingContracts?.GetHashCode() ?? 0) *  5 ^
+                      (StatusInfo?.        GetHashCode() ?? 0) *  3 ^
 
                        base.               GetHashCode();
 
@@ -522,6 +521,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => Status.ToString();
 
         #endregion
+
 
     }
 

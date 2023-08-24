@@ -227,6 +227,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region GetCRL
+
+        /// <summary>
+        /// An event fired whenever a GetCRL request will be sent to the CSMS.
+        /// </summary>
+        event OnGetCRLRequestDelegate?   OnGetCRLRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetCRL request was received.
+        /// </summary>
+        event OnGetCRLResponseDelegate?  OnGetCRLResponse;
+
+        #endregion
+
 
         #region SendReservationStatusUpdate
 
@@ -526,6 +540,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">A get certificate status request.</param>
         public Task<GetCertificateStatusResponse> GetCertificateStatus(GetCertificateStatusRequest Request);
+
+        #endregion
+
+        #region GetCRL
+
+        /// <summary>
+        /// Get a certificate revocation list from CSMS for the specified certificate.
+        /// </summary>
+        /// <param name="Request">A get certificate revocation list request.</param>
+        public Task<GetCRLResponse> GetCRL(GetCRLRequest Request);
 
         #endregion
 

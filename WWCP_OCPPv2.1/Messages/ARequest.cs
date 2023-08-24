@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An optional token to cancel this request.
         /// </summary>
-        public CancellationToken?  CancellationToken    { get; }
+        public CancellationToken  CancellationToken    { get; }
 
         #endregion
 
@@ -110,16 +110,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ARequest(ChargeBox_Id        ChargeBoxId,
-                        String              Action,
+        public ARequest(ChargeBox_Id       ChargeBoxId,
+                        String             Action,
 
-                        CustomData?         CustomData          = null,
+                        CustomData?        CustomData          = null,
 
-                        Request_Id?         RequestId           = null,
-                        DateTime?           RequestTimestamp    = null,
-                        TimeSpan?           RequestTimeout      = null,
-                        EventTracking_Id?   EventTrackingId     = null,
-                        CancellationToken?  CancellationToken   = null)
+                        Request_Id?        RequestId           = null,
+                        DateTime?          RequestTimestamp    = null,
+                        TimeSpan?          RequestTimeout      = null,
+                        EventTracking_Id?  EventTrackingId     = null,
+                        CancellationToken  CancellationToken   = default)
         {
 
             this.ChargeBoxId        = ChargeBoxId;
