@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public static class IChargingStationClientExtensions
     {
 
-
+        //ToDo: Implement IChargingStationClientExtensions!
 
     }
 

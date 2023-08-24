@@ -1892,56 +1892,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region OnGetCompositeSchedule
 
         /// <summary>
-        /// An event sent whenever a get composite schedule websocket request was received.
+        /// An event sent whenever a GetCompositeSchedule websocket request was received.
         /// </summary>
         public event WSClientRequestLogHandler?                 OnGetCompositeScheduleWSRequest;
 
         /// <summary>
-        /// An event sent whenever a get composite schedule request was received.
+        /// An event sent whenever a GetCompositeSchedule request was received.
         /// </summary>
         public event OnGetCompositeScheduleRequestDelegate?     OnGetCompositeScheduleRequest;
 
         /// <summary>
-        /// An event sent whenever a get composite schedule request was received.
+        /// An event sent whenever a GetCompositeSchedule request was received.
         /// </summary>
         public event OnGetCompositeScheduleDelegate?            OnGetCompositeSchedule;
 
         /// <summary>
-        /// An event sent whenever a response to a get composite schedule request was sent.
+        /// An event sent whenever a response to a GetCompositeSchedule request was sent.
         /// </summary>
         public event OnGetCompositeScheduleResponseDelegate?    OnGetCompositeScheduleResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a get composite schedule request was sent.
+        /// An event sent whenever a websocket response to a GetCompositeSchedule request was sent.
         /// </summary>
         public event WSClientResponseLogHandler?                OnGetCompositeScheduleWSResponse;
+
+        #endregion
+
+        #region OnNotifyAllowedEnergyTransfer
+
+        /// <summary>
+        /// An event sent whenever a NotifyAllowedEnergyTransfer websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                        OnNotifyAllowedEnergyTransferWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyAllowedEnergyTransfer request was received.
+        /// </summary>
+        public event OnNotifyAllowedEnergyTransferRequestDelegate?     OnNotifyAllowedEnergyTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyAllowedEnergyTransfer request was received.
+        /// </summary>
+        public event OnNotifyAllowedEnergyTransferDelegate?            OnNotifyAllowedEnergyTransfer;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyAllowedEnergyTransfer request was sent.
+        /// </summary>
+        public event OnNotifyAllowedEnergyTransferResponseDelegate?    OnNotifyAllowedEnergyTransferResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a NotifyAllowedEnergyTransfer request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                       OnNotifyAllowedEnergyTransferWSResponse;
 
         #endregion
 
         #region OnUnlockConnector
 
         /// <summary>
-        /// An event sent whenever an unlock connector websocket request was received.
+        /// An event sent whenever an UnlockConnector websocket request was received.
         /// </summary>
         public event WSClientRequestLogHandler?            OnUnlockConnectorWSRequest;
 
         /// <summary>
-        /// An event sent whenever an unlock connector request was received.
+        /// An event sent whenever an UnlockConnector request was received.
         /// </summary>
         public event OnUnlockConnectorRequestDelegate?     OnUnlockConnectorRequest;
 
         /// <summary>
-        /// An event sent whenever an unlock connector request was received.
+        /// An event sent whenever an UnlockConnector request was received.
         /// </summary>
         public event OnUnlockConnectorDelegate?            OnUnlockConnector;
 
         /// <summary>
-        /// An event sent whenever a response to an unlock connector request was sent.
+        /// An event sent whenever a response to an UnlockConnector request was sent.
         /// </summary>
         public event OnUnlockConnectorResponseDelegate?    OnUnlockConnectorResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to an unlock connector request was sent.
+        /// An event sent whenever a websocket response to an UnlockConnector request was sent.
         /// </summary>
         public event WSClientResponseLogHandler?           OnUnlockConnectorWSResponse;
 
@@ -1951,27 +1980,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region OnAFRRSignal
 
         /// <summary>
-        /// An event sent whenever an AFRR signal websocket request was received.
+        /// An event sent whenever an AFRRSignal websocket request was received.
         /// </summary>
         public event WSClientRequestLogHandler?       OnAFRRSignalWSRequest;
 
         /// <summary>
-        /// An event sent whenever an AFRR signal request was received.
+        /// An event sent whenever an AFRRSignal request was received.
         /// </summary>
         public event OnAFRRSignalRequestDelegate?     OnAFRRSignalRequest;
 
         /// <summary>
-        /// An event sent whenever an AFRR signal request was received.
+        /// An event sent whenever an AFRRSignal request was received.
         /// </summary>
         public event OnAFRRSignalDelegate?            OnAFRRSignal;
 
         /// <summary>
-        /// An event sent whenever a response to an AFRR signal request was sent.
+        /// An event sent whenever a response to an AFRRSignal request was sent.
         /// </summary>
         public event OnAFRRSignalResponseDelegate?    OnAFRRSignalResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to an AFRR signal request was sent.
+        /// An event sent whenever a websocket response to an AFRRSignal request was sent.
         /// </summary>
         public event WSClientResponseLogHandler?      OnAFRRSignalWSResponse;
 

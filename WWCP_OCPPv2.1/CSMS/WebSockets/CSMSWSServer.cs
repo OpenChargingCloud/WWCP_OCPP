@@ -741,6 +741,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region OnNotifyAllowedEnergyTransfer
+
+        /// <summary>
+        /// An event sent whenever a NotifyAllowedEnergyTransfer request was sent.
+        /// </summary>
+        public event OnNotifyAllowedEnergyTransferRequestDelegate?     OnNotifyAllowedEnergyTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyAllowedEnergyTransfer request was sent.
+        /// </summary>
+        public event OnNotifyAllowedEnergyTransferResponseDelegate?    OnNotifyAllowedEnergyTransferResponse;
+
+        #endregion
+
         #region OnUnlockConnector
 
         /// <summary>
@@ -1781,6 +1795,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?          CustomClearChargingProfileRequestSerializer            { get; set; }
 
         public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?          CustomGetCompositeScheduleRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<NotifyAllowedEnergyTransferRequest>?   CustomNotifyAllowedEnergyTransferRequestSerializer     { get; set; }
 
         public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?               CustomUnlockConnectorRequestSerializer                 { get; set; }
 
@@ -6193,7 +6209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region Reset                     (Request)
+        #region Reset                      (Request)
 
         public async Task<ResetResponse> Reset(ResetRequest Request)
         {
@@ -6290,7 +6306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UpdateFirmware            (Request)
+        #region UpdateFirmware             (Request)
 
         public async Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
         {
@@ -6371,7 +6387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region PublishFirmware           (Request)
+        #region PublishFirmware            (Request)
 
         public async Task<PublishFirmwareResponse> PublishFirmware(PublishFirmwareRequest Request)
         {
@@ -6452,7 +6468,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UnpublishFirmware         (Request)
+        #region UnpublishFirmware          (Request)
 
         public async Task<UnpublishFirmwareResponse> UnpublishFirmware(UnpublishFirmwareRequest Request)
         {
@@ -6533,7 +6549,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetBaseReport             (Request)
+        #region GetBaseReport              (Request)
 
         public async Task<GetBaseReportResponse> GetBaseReport(GetBaseReportRequest Request)
         {
@@ -6614,7 +6630,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetReport                 (Request)
+        #region GetReport                  (Request)
 
         public async Task<GetReportResponse> GetReport(GetReportRequest Request)
         {
@@ -6695,7 +6711,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetLog                    (Request)
+        #region GetLog                     (Request)
 
         /// <summary>
         /// Retrieve log files from the charging station.
@@ -6780,7 +6796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetVariables              (Request)
+        #region SetVariables               (Request)
 
         public async Task<SetVariablesResponse> SetVariables(SetVariablesRequest Request)
         {
@@ -6861,7 +6877,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetVariables              (Request)
+        #region GetVariables               (Request)
 
         public async Task<GetVariablesResponse> GetVariables(GetVariablesRequest Request)
         {
@@ -6942,7 +6958,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetMonitoringBase         (Request)
+        #region SetMonitoringBase          (Request)
 
         public async Task<SetMonitoringBaseResponse> SetMonitoringBase(SetMonitoringBaseRequest Request)
         {
@@ -7023,7 +7039,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetMonitoringReport       (Request)
+        #region GetMonitoringReport        (Request)
 
         public async Task<GetMonitoringReportResponse> GetMonitoringReport(GetMonitoringReportRequest Request)
         {
@@ -7104,7 +7120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetMonitoringLevel        (Request)
+        #region SetMonitoringLevel         (Request)
 
         public async Task<SetMonitoringLevelResponse> SetMonitoringLevel(SetMonitoringLevelRequest Request)
         {
@@ -7185,7 +7201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetVariableMonitoring     (Request)
+        #region SetVariableMonitoring      (Request)
 
         public async Task<SetVariableMonitoringResponse> SetVariableMonitoring(SetVariableMonitoringRequest Request)
         {
@@ -7266,7 +7282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearVariableMonitoring   (Request)
+        #region ClearVariableMonitoring    (Request)
 
         public async Task<ClearVariableMonitoringResponse> ClearVariableMonitoring(ClearVariableMonitoringRequest Request)
         {
@@ -7347,7 +7363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetNetworkProfile         (Request)
+        #region SetNetworkProfile          (Request)
 
         public async Task<SetNetworkProfileResponse> SetNetworkProfile(SetNetworkProfileRequest Request)
         {
@@ -7428,7 +7444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ChangeAvailability        (Request)
+        #region ChangeAvailability         (Request)
 
         public async Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request)
         {
@@ -7509,7 +7525,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region TriggerMessage            (Request)
+        #region TriggerMessage             (Request)
 
         public async Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request)
         {
@@ -7590,7 +7606,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region TransferData              (Request)
+        #region TransferData               (Request)
 
         public async Task<CS.DataTransferResponse> TransferData(DataTransferRequest Request)
         {
@@ -7672,7 +7688,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region CertificateSigned         (Request)
+        #region CertificateSigned          (Request)
 
         /// <summary>
         /// Send the signed certificate to the charging station.
@@ -7757,7 +7773,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region InstallCertificate        (Request)
+        #region InstallCertificate         (Request)
 
         /// <summary>
         /// Install the given certificate within the charging station.
@@ -7842,7 +7858,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetInstalledCertificateIds(Request)
+        #region GetInstalledCertificateIds (Request)
 
         /// <summary>
         /// Retrieve a list of all installed certificates within the charging station.
@@ -7927,7 +7943,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region DeleteCertificate         (Request)
+        #region DeleteCertificate          (Request)
 
         /// <summary>
         /// Delete the given certificate on the charging station.
@@ -8013,7 +8029,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetLocalListVersion       (Request)
+        #region GetLocalListVersion        (Request)
 
         public async Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
         {
@@ -8094,7 +8110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SendLocalList             (Request)
+        #region SendLocalList              (Request)
 
         public async Task<SendLocalListResponse> SendLocalList(SendLocalListRequest Request)
         {
@@ -8175,7 +8191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearCache                (Request)
+        #region ClearCache                 (Request)
 
         public async Task<ClearCacheResponse> ClearCache(ClearCacheRequest Request)
         {
@@ -8257,7 +8273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region ReserveNow                (Request)
+        #region ReserveNow                 (Request)
 
         public async Task<ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
         {
@@ -8338,7 +8354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region CancelReservation         (Request)
+        #region CancelReservation          (Request)
 
         public async Task<CancelReservationResponse> CancelReservation(CancelReservationRequest Request)
         {
@@ -8419,7 +8435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region StartCharging             (Request)
+        #region StartCharging              (Request)
 
         public async Task<RequestStartTransactionResponse> StartCharging(RequestStartTransactionRequest Request)
         {
@@ -8500,7 +8516,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region StopCharging              (Request)
+        #region StopCharging               (Request)
 
         public async Task<RequestStopTransactionResponse> StopCharging(RequestStopTransactionRequest Request)
         {
@@ -8581,7 +8597,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetTransactionStatus      (Request)
+        #region GetTransactionStatus       (Request)
 
         public async Task<GetTransactionStatusResponse> GetTransactionStatus(GetTransactionStatusRequest Request)
         {
@@ -8662,7 +8678,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetChargingProfile        (Request)
+        #region SetChargingProfile         (Request)
 
         public async Task<SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request)
         {
@@ -8743,7 +8759,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetChargingProfiles       (Request)
+        #region GetChargingProfiles        (Request)
 
         public async Task<GetChargingProfilesResponse> GetChargingProfiles(GetChargingProfilesRequest Request)
         {
@@ -8824,7 +8840,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearChargingProfile      (Request)
+        #region ClearChargingProfile       (Request)
 
         public async Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request)
         {
@@ -8905,7 +8921,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetCompositeSchedule      (Request)
+        #region GetCompositeSchedule       (Request)
 
 
         public async Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request)
@@ -8987,7 +9003,89 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UnlockConnector           (Request)
+        #region NotifyAllowedEnergyTransfer(Request)
+
+
+        public async Task<NotifyAllowedEnergyTransferResponse> NotifyAllowedEnergyTransfer(NotifyAllowedEnergyTransferRequest Request)
+        {
+
+            #region Send OnNotifyAllowedEnergyTransferRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyAllowedEnergyTransferRequest?.Invoke(startTime,
+                                                             this,
+                                                             Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyAllowedEnergyTransferRequest));
+            }
+
+            #endregion
+
+
+            NotifyAllowedEnergyTransferResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomNotifyAllowedEnergyTransferRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
+
+                if (NotifyAllowedEnergyTransferResponse.TryParse(Request,
+                                                                 sendRequestState.Response,
+                                                                 out var getCompositeScheduleResponse,
+                                                                 out var errorResponse) &&
+                    getCompositeScheduleResponse is not null)
+                {
+                    response = getCompositeScheduleResponse;
+                }
+
+                response ??= new NotifyAllowedEnergyTransferResponse(Request,
+                                                                     Result.Format(errorResponse));
+
+            }
+
+            response ??= new NotifyAllowedEnergyTransferResponse(Request,
+                                                                 Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnNotifyAllowedEnergyTransferResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyAllowedEnergyTransferResponse?.Invoke(endTime,
+                                                              this,
+                                                              Request,
+                                                              response,
+                                                              endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyAllowedEnergyTransferResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region UnlockConnector            (Request)
 
         public async Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request)
         {
@@ -9069,7 +9167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region AFRRSignal                (Request)
+        #region AFRRSignal                 (Request)
 
         public async Task<AFRRSignalResponse> AFRRSignal(AFRRSignalRequest Request)
         {
@@ -9151,7 +9249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetDisplayMessage         (Request)
+        #region SetDisplayMessage          (Request)
 
         public async Task<SetDisplayMessageResponse> SetDisplayMessage(SetDisplayMessageRequest Request)
         {
@@ -9232,7 +9330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetDisplayMessages        (Request)
+        #region GetDisplayMessages         (Request)
 
         public async Task<GetDisplayMessagesResponse> GetDisplayMessages(GetDisplayMessagesRequest Request)
         {
@@ -9313,7 +9411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearDisplayMessage       (Request)
+        #region ClearDisplayMessage        (Request)
 
         public async Task<ClearDisplayMessageResponse> ClearDisplayMessage(ClearDisplayMessageRequest Request)
         {
@@ -9394,7 +9492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SendCostUpdated           (Request)
+        #region SendCostUpdated            (Request)
 
         public async Task<CostUpdatedResponse> SendCostUpdated(CostUpdatedRequest Request)
         {
@@ -9475,7 +9573,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region RequestCustomerInformation(Request)
+        #region RequestCustomerInformation (Request)
 
         public async Task<CustomerInformationResponse> RequestCustomerInformation(CustomerInformationRequest Request)
         {

@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public static class ICSMSClientExtensions
     {
 
-        #region Reset                     (ChargeBoxId, ResetType, ...)
+        #region Reset                      (ChargeBoxId, ResetType, ...)
 
         /// <summary>
         /// Reset the given charge box.
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UpdateFirmware            (ChargeBoxId, FirmwareURL, RetrieveDate, Retries = null, RetryInterval = null, ...)
+        #region UpdateFirmware             (ChargeBoxId, FirmwareURL, RetrieveDate, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Initiate a firmware download from the given location at the given charge box.
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region PublishFirmware           (ChargeBoxId, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
+        #region PublishFirmware            (ChargeBoxId, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Publish a firmware image.
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UnpublishFirmware         (ChargeBoxId, MD5Checksum, ...)
+        #region UnpublishFirmware          (ChargeBoxId, MD5Checksum, ...)
 
         /// <summary>
         /// Unpublish a firmware image.
@@ -211,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetBaseReport             (ChargeBoxId, GetBaseReportRequestId, ReportBase, ...)
+        #region GetBaseReport              (ChargeBoxId, GetBaseReportRequestId, ReportBase, ...)
 
         /// <summary>
         /// Get a base report.
@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetReport                 (ChargeBoxId, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
+        #region GetReport                  (ChargeBoxId, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
 
         /// <summary>
         /// Get a report.
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetLog                    (ChargeBoxId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
+        #region GetLog                     (ChargeBoxId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Get a log(file).
@@ -349,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetVariables              (ChargeBoxId, VariableData, ...)
+        #region SetVariables               (ChargeBoxId, VariableData, ...)
 
         /// <summary>
         /// Set variables.
@@ -388,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetVariables              (ChargeBoxId, VariableData, ...)
+        #region GetVariables               (ChargeBoxId, VariableData, ...)
 
         /// <summary>
         /// Get variables.
@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetMonitoringBase         (ChargeBoxId, MonitoringBase, ...)
+        #region SetMonitoringBase          (ChargeBoxId, MonitoringBase, ...)
 
         /// <summary>
         /// Set the monitoring base.
@@ -466,7 +466,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetMonitoringReport       (ChargeBoxId, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
+        #region GetMonitoringReport        (ChargeBoxId, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
 
         /// <summary>
         /// Get a monitoring report.
@@ -511,7 +511,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetMonitoringLevel        (ChargeBoxId, Severity, ...)
+        #region SetMonitoringLevel         (ChargeBoxId, Severity, ...)
 
         /// <summary>
         /// Set the monitoring level.
@@ -550,7 +550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetVariableMonitoring     (ChargeBoxId, MonitoringData, ...)
+        #region SetVariableMonitoring      (ChargeBoxId, MonitoringData, ...)
 
         /// <summary>
         /// Set a variable monitoring.
@@ -589,7 +589,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearVariableMonitoring   (ChargeBoxId, VariableMonitoringIds, ...)
+        #region ClearVariableMonitoring    (ChargeBoxId, VariableMonitoringIds, ...)
 
         /// <summary>
         /// Remove the given variable monitoring.
@@ -628,7 +628,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetNetworkProfile         (ChargeBoxId, ConfigurationSlot, NetworkConnectionProfile, ...)
+        #region SetNetworkProfile          (ChargeBoxId, ConfigurationSlot, NetworkConnectionProfile, ...)
 
         /// <summary>
         /// Set the network profile.
@@ -670,7 +670,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ChangeAvailability        (ChargeBoxId, OperationalStatus, EVSE, ...)
+        #region ChangeAvailability         (ChargeBoxId, OperationalStatus, EVSE, ...)
 
         /// <summary>
         /// Change the availability of the given charging station or EVSE.
@@ -712,7 +712,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region TriggerMessage            (ChargeBoxId, RequestedMessage, ConnectorId = null, ...)
+        #region TriggerMessage             (ChargeBoxId, RequestedMessage, ConnectorId = null, ...)
 
         /// <summary>
         /// Create a trigger for the given message at the given charging station or EVSE.
@@ -755,7 +755,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region TransferData              (ChargeBoxId, VendorId, MessageId, Data, ...)
+        #region TransferData               (ChargeBoxId, VendorId, MessageId, Data, ...)
 
         /// <summary>
         /// Send the given vendor-specific data.
@@ -801,7 +801,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SendSignedCertificate     (ChargeBoxId, CertificateChain, CertificateType, ...)
+        #region SendSignedCertificate      (ChargeBoxId, CertificateChain, CertificateType, ...)
 
         /// <summary>
         /// Send the signed certificate to the charging station.
@@ -843,7 +843,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region InstallCertificate        (ChargeBoxId, CertificateType, Certificate, ...)
+        #region InstallCertificate         (ChargeBoxId, CertificateType, Certificate, ...)
 
         /// <summary>
         /// Install the given certificate within the charging station.
@@ -886,7 +886,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetInstalledCertificateIds(ChargeBoxId, CertificateTypes, ...)
+        #region GetInstalledCertificateIds (ChargeBoxId, CertificateTypes, ...)
 
         /// <summary>
         /// Retrieve a list of all installed certificates within the charging station.
@@ -926,7 +926,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region DeleteCertificate         (ChargeBoxId, CertificateHashData, ...)
+        #region DeleteCertificate          (ChargeBoxId, CertificateHashData, ...)
 
         /// <summary>
         /// Remove the given certificate from the charging station.
@@ -967,7 +967,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetLocalListVersion       (ChargeBoxId, ...)
+        #region GetLocalListVersion        (ChargeBoxId, ...)
 
         /// <summary>
         /// Return the local white list of the given charging station.
@@ -1004,7 +1004,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SendLocalList             (ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
+        #region SendLocalList              (ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
 
         /// <summary>
         /// Set the local white liste at the given charging station.
@@ -1049,7 +1049,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearCache                (ChargeBoxId, ...)
+        #region ClearCache                 (ChargeBoxId, ...)
 
         /// <summary>
         /// Clear the local white liste cache of the given charging station.
@@ -1087,7 +1087,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region ReserveNow                (ChargeBoxId, ReservationId, ExpiryDate, IdToken, ConnectorType = null, EVSEId = null, GroupIdToken = null, ...)
+        #region ReserveNow                 (ChargeBoxId, ReservationId, ExpiryDate, IdToken, ConnectorType = null, EVSEId = null, GroupIdToken = null, ...)
 
         /// <summary>
         /// Create a charging reservation at the given charging station.
@@ -1141,7 +1141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region CancelReservation         (ChargeBoxId, ReservationId, ...)
+        #region CancelReservation          (ChargeBoxId, ReservationId, ...)
 
         /// <summary>
         /// Cancel the given charging reservation.
@@ -1179,7 +1179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region StartCharging             (ChargeBoxId, RequestStartTransactionRequestId, IdToken, EVSEId = null, ChargingProfile = null, GroupIdToken = null, ...)
+        #region StartCharging              (ChargeBoxId, RequestStartTransactionRequestId, IdToken, EVSEId = null, ChargingProfile = null, GroupIdToken = null, ...)
 
         /// <summary>
         /// Start a charging process (transaction).
@@ -1230,7 +1230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region StopCharging              (ChargeBoxId, TransactionId, ...)
+        #region StopCharging               (ChargeBoxId, TransactionId, ...)
 
         /// <summary>
         /// Start a charging process (transaction).
@@ -1269,7 +1269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetTransactionStatus      (ChargeBoxId, TransactionId, ...)
+        #region GetTransactionStatus       (ChargeBoxId, TransactionId, ...)
 
         /// <summary>
         /// Get the status of a charging process (transaction).
@@ -1308,7 +1308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetChargingProfile        (ChargeBoxId, EVSEId, ChargingProfile, ...)
+        #region SetChargingProfile         (ChargeBoxId, EVSEId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given EVSE at the given charging station.
@@ -1350,7 +1350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetChargingProfiles       (ChargeBoxId, GetChargingProfilesRequestId, ChargingProfile, EVSEId = null, ...)
+        #region GetChargingProfiles        (ChargeBoxId, GetChargingProfilesRequestId, ChargingProfile, EVSEId = null, ...)
 
         /// <summary>
         /// Get all charging profiles from the given charging station.
@@ -1395,7 +1395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearChargingProfile      (ChargeBoxId, ChargingProfileId, ClearChargingProfile, ...)
+        #region ClearChargingProfile       (ChargeBoxId, ChargingProfileId, ClearChargingProfile, ...)
 
         /// <summary>
         /// Remove matching charging profiles from the given charging station.
@@ -1437,7 +1437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetCompositeSchedule      (ChargeBoxId, Duration, EVSEId, ChargingRateUnit = null, ...)
+        #region GetCompositeSchedule       (ChargeBoxId, Duration, EVSEId, ChargingRateUnit = null, ...)
 
         /// <summary>
         /// Return the charging schedule at the given charging station and EVSE
@@ -1483,7 +1483,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UnlockConnector           (ChargeBoxId, EVSEId, ConnectorId, ...)
+        #region NotifyAllowedEnergyTransfer(ChargeBoxId, AllowedEnergyTransferModes, ...)
+
+        /// <summary>
+        /// Update the list of authorized energy services.
+        /// </summary>
+        /// <param name="ICSMSClient">A CSMS client.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="AllowedEnergyTransferModes">An enumeration of allowed energy transfer modes.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        public static Task<NotifyAllowedEnergyTransferResponse> NotifyAllowedEnergyTransfer(this ICSMSClient                  ICSMSClient,
+                                                                                            ChargeBox_Id                      ChargeBoxId,
+                                                                                            IEnumerable<EnergyTransferModes>  AllowedEnergyTransferModes,
+                                                                                            CustomData?                       CustomData          = null,
+
+                                                                                            Request_Id?                       RequestId           = null,
+                                                                                            DateTime?                         RequestTimestamp    = null,
+                                                                                            TimeSpan?                         RequestTimeout      = null,
+                                                                                            EventTracking_Id?                 EventTrackingId     = null,
+                                                                                            CancellationToken                 CancellationToken   = default)
+
+            => ICSMSClient.NotifyAllowedEnergyTransfer(
+                   new NotifyAllowedEnergyTransferRequest(
+                       ChargeBoxId,
+                       AllowedEnergyTransferModes,
+                       CustomData,
+
+                       RequestId,
+                       RequestTimestamp,
+                       RequestTimeout,
+                       EventTrackingId,
+                       CancellationToken
+                   )
+               );
+
+        #endregion
+
+        #region UnlockConnector            (ChargeBoxId, EVSEId, ConnectorId, ...)
 
         /// <summary>
         /// Unlock the given EVSE/connector at the given charging station.
@@ -1527,7 +1567,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetDisplayMessage         (ChargeBoxId, Message, ...)
+        #region SendAFRRSignal             (ChargeBoxId, EVSEId, ConnectorId, ...)
+
+        /// <summary>
+        /// Send an automatic frequency restoration reserve (AFRR) signal.
+        /// </summary>
+        /// <param name="ICSMSClient">A CSMS client.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ActivationTimestamp">The time when the signal becomes active.</param>
+        /// <param name="Signal">The value of the AFRR signal in v2xSignalWattCurve. Usually between -1 and 1.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        public static Task<AFRRSignalResponse> SendAFRRSignal(this ICSMSClient   ICSMSClient,
+                                                              ChargeBox_Id       ChargeBoxId,
+                                                              DateTime           ActivationTimestamp,
+                                                              AFRR_Signal        Signal,
+                                                              CustomData?        CustomData          = null,
+
+                                                              Request_Id?        RequestId           = null,
+                                                              DateTime?          RequestTimestamp    = null,
+                                                              TimeSpan?          RequestTimeout      = null,
+                                                              EventTracking_Id?  EventTrackingId     = null,
+                                                              CancellationToken  CancellationToken   = default)
+
+            => ICSMSClient.AFRRSignal(
+                   new AFRRSignalRequest(
+                       ChargeBoxId,
+                       ActivationTimestamp,
+                       Signal,
+                       CustomData,
+
+                       RequestId,
+                       RequestTimestamp,
+                       RequestTimeout,
+                       EventTrackingId,
+                       CancellationToken
+                   )
+               );
+
+        #endregion
+
+
+        #region SetDisplayMessage          (ChargeBoxId, Message, ...)
 
         /// <summary>
         /// Set a display message.
@@ -1567,7 +1651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetDisplayMessages        (ChargeBoxId, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null,...)
+        #region GetDisplayMessages         (ChargeBoxId, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null,...)
 
         /// <summary>
         /// Get all display messages.
@@ -1616,7 +1700,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearDisplayMessage       (ChargeBoxId, DisplayMessageId,...)
+        #region ClearDisplayMessage        (ChargeBoxId, DisplayMessageId,...)
 
         /// <summary>
         /// Remove the given display message.
@@ -1656,7 +1740,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region CostUpdated               (ChargeBoxId, TotalCost, TransactionId, ...)
+        #region CostUpdated                (ChargeBoxId, TotalCost, TransactionId, ...)
 
         /// <summary>
         /// Send updated cost(s).
@@ -1699,7 +1783,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region RequestCustomerInformation(ChargeBoxId, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
+        #region RequestCustomerInformation (ChargeBoxId, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
 
         /// <summary>
         /// Request customer information.
@@ -2243,6 +2327,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region NotifyAllowedEnergyTransfer
+
+        /// <summary>
+        /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the CSMS.
+        /// </summary>
+        event OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was received.
+        /// </summary>
+        event OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
+
+        #endregion
+
         #region UnlockConnector
 
         /// <summary>
@@ -2696,10 +2794,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region GetCompositeSchedule
 
         /// <summary>
-        /// Return the charging schedule at the given charging station and EVSE
+        /// Return the charging schedule at the given charging station and EVSE.
         /// </summary>
         /// <param name="Request">A get composite schedule request.</param>
         Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request);
+
+        #endregion
+
+        #region NotifyAllowedEnergyTransfer
+
+        /// <summary>
+        /// Update the list of authorized energy services.
+        /// </summary>
+        /// <param name="Request">A notify allowed energy transfer request.</param>
+        Task<NotifyAllowedEnergyTransferResponse> NotifyAllowedEnergyTransfer(NotifyAllowedEnergyTransferRequest Request);
 
         #endregion
 
@@ -2714,7 +2822,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region UnlockConnector
+        #region AFRRSignal
 
         /// <summary>
         /// Send an aFRR signal to the charging station.

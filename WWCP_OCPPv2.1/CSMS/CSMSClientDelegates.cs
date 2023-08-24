@@ -981,6 +981,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     #endregion
 
+    #region OnNotifyAllowedEnergyTransfer
+
+    /// <summary>
+    /// A delegate called whenever a notify allowed energy transfer request will be sent to a charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnNotifyAllowedEnergyTransferRequestDelegate(DateTime                             Timestamp,
+                                                                      IEventSender                         Sender,
+                                                                      NotifyAllowedEnergyTransferRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a notify allowed energy transfer request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnNotifyAllowedEnergyTransferResponseDelegate(DateTime                              Timestamp,
+                                                                       IEventSender                          Sender,
+                                                                       NotifyAllowedEnergyTransferRequest    Request,
+                                                                       NotifyAllowedEnergyTransferResponse   Response,
+                                                                       TimeSpan                              Runtime);
+
+    #endregion
+
     #region OnUnlockConnector
 
     /// <summary>

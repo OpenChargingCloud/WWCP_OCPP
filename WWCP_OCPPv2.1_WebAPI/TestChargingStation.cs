@@ -1186,6 +1186,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region NotifyAllowedEnergyTransfer
+
+        /// <summary>
+        /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was received.
+        /// </summary>
+        public event OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
+
+        #endregion
+
         #region UnlockConnector
 
         /// <summary>
@@ -4593,6 +4607,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
+            #region OnNotifyAllowedEnergyTransfer
+
+            CPServer.OnNotifyAllowedEnergyTransfer += async (LogTimestamp,
+                                                             Sender,
+                                                             Request,
+                                                             CancellationToken) => {
+
+                #region Send OnNotifyAllowedEnergyTransferRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyAllowedEnergyTransferRequest?.Invoke(startTime,
+                                                                 this,
+                                                                 Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyAllowedEnergyTransferRequest));
+                }
+
+                #endregion
+
+
+                var response = new NotifyAllowedEnergyTransferResponse(
+                                   Request,
+                                   NotifyAllowedEnergyTransferStatus.Accepted
+                               );
+
+
+                #region Send OnNotifyAllowedEnergyTransferResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnNotifyAllowedEnergyTransferResponse?.Invoke(responseTimestamp,
+                                                                  this,
+                                                                  Request,
+                                                                  response,
+                                                                  responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyAllowedEnergyTransferResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
             #region OnUnlockConnector
 
             CPServer.OnUnlockConnector += async (LogTimestamp,
@@ -4715,8 +4788,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid AFRRSignal request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new AFRRSignalResponse(Request,
-                                                      GenericStatus.Rejected);
+                    response = new AFRRSignalResponse(
+                                   Request,
+                                   GenericStatus.Rejected
+                               );
 
                 }
                 else
@@ -4728,7 +4803,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    Request,
                                    Request.ActivationTimestamp < Timestamp.Now - TimeSpan.FromDays(1)
                                        ? GenericStatus.Rejected
-                                       : GenericStatus.Accepted);
+                                       : GenericStatus.Accepted
+                               );
 
                 }
 

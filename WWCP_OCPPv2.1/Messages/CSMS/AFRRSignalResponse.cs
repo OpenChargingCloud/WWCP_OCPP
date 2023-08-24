@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        //ToDo: Update schema documentation after official release of OCPP 2.1!
+        //ToDo: Update schema documentation after the official release of OCPP v2.1!
 
         #region Documentation
 

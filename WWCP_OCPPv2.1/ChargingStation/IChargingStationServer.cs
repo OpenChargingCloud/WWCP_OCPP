@@ -668,36 +668,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region OnGetCompositeSchedule
 
         /// <summary>
-        /// An event sent whenever a get composite schedule request was received.
+        /// An event sent whenever a GetCompositeSchedule request was received.
         /// </summary>
         event OnGetCompositeScheduleRequestDelegate    OnGetCompositeScheduleRequest;
 
         /// <summary>
-        /// An event sent whenever a get composite schedule was received.
+        /// An event sent whenever a GetCompositeSchedule was received.
         /// </summary>
         event OnGetCompositeScheduleDelegate           OnGetCompositeSchedule;
 
         /// <summary>
-        /// An event sent whenever a response to a get composite schedule request was sent.
+        /// An event sent whenever a response to a GetCompositeSchedule request was sent.
         /// </summary>
         event OnGetCompositeScheduleResponseDelegate   OnGetCompositeScheduleResponse;
+
+        #endregion
+
+        #region OnNotifyAllowedEnergyTransfer
+
+        /// <summary>
+        /// An event sent whenever a NotifyAllowedEnergyTransfer request was received.
+        /// </summary>
+        event OnNotifyAllowedEnergyTransferRequestDelegate    OnNotifyAllowedEnergyTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyAllowedEnergyTransfer was received.
+        /// </summary>
+        event OnNotifyAllowedEnergyTransferDelegate           OnNotifyAllowedEnergyTransfer;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyAllowedEnergyTransfer request was sent.
+        /// </summary>
+        event OnNotifyAllowedEnergyTransferResponseDelegate   OnNotifyAllowedEnergyTransferResponse;
 
         #endregion
 
         #region OnUnlockConnector
 
         /// <summary>
-        /// An event sent whenever an unlock connector request was received.
+        /// An event sent whenever an UnlockConnector request was received.
         /// </summary>
         event OnUnlockConnectorRequestDelegate    OnUnlockConnectorRequest;
 
         /// <summary>
-        /// An event sent whenever an unlock connector was received.
+        /// An event sent whenever an UnlockConnector was received.
         /// </summary>
         event OnUnlockConnectorDelegate           OnUnlockConnector;
 
         /// <summary>
-        /// An event sent whenever a response to an unlock connector request was sent.
+        /// An event sent whenever a response to an UnlockConnector request was sent.
         /// </summary>
         event OnUnlockConnectorResponseDelegate   OnUnlockConnectorResponse;
 

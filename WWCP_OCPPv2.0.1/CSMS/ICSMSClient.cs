@@ -2681,7 +2681,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         #region GetCompositeSchedule
 
         /// <summary>
-        /// Return the charging schedule at the given charging station and EVSE
+        /// Return the charging schedule at the given charging station and EVSE.
         /// </summary>
         /// <param name="Request">A get composite schedule request.</param>
         Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request);

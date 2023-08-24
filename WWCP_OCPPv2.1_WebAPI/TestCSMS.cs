@@ -938,6 +938,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region NotifyAllowedEnergyTransfer
+
+        /// <summary>
+        /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was received.
+        /// </summary>
+        public event OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
+
+        #endregion
+
         #region UnlockConnector
 
         /// <summary>
@@ -956,12 +970,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region AFRRSignal
 
         /// <summary>
-        /// An event fired whenever an AFRR signal request will be sent to the CSMS.
+        /// An event fired whenever an AFRRSignal request will be sent to the CSMS.
         /// </summary>
         public event OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
 
         /// <summary>
-        /// An event fired whenever a response to an AFRR signal request was received.
+        /// An event fired whenever a response to an AFRRSignal request was received.
         /// </summary>
         public event OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
 

@@ -1661,6 +1661,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
+    #region OnNotifyAllowedEnergyTransfer
+
+    /// <summary>
+    /// A NotifyAllowedEnergyTransfer request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnNotifyAllowedEnergyTransferRequestDelegate(DateTime                             Timestamp,
+                                                     IEventSender                         Sender,
+                                                     NotifyAllowedEnergyTransferRequest   Request);
+
+
+    /// <summary>
+    /// A NotifyAllowedEnergyTransfer request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<NotifyAllowedEnergyTransferResponse>
+
+        OnNotifyAllowedEnergyTransferDelegate(DateTime                             Timestamp,
+                                              IEventSender                         Sender,
+                                              NotifyAllowedEnergyTransferRequest   Request,
+                                              CancellationToken                    CancellationToken);
+
+
+    /// <summary>
+    /// A NotifyAllowedEnergyTransfer response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnNotifyAllowedEnergyTransferResponseDelegate(DateTime                              Timestamp,
+                                                      IEventSender                          Sender,
+                                                      NotifyAllowedEnergyTransferRequest    Request,
+                                                      NotifyAllowedEnergyTransferResponse   Response,
+                                                      TimeSpan                              Runtime);
+
+    #endregion
+
     #region OnUnlockConnector
 
     /// <summary>
