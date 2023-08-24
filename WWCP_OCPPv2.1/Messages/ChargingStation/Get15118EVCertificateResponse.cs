@@ -39,20 +39,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The success or failure of the EXI message processing.
         /// </summary>
         [Mandatory]
-        public ISO15118EVCertificateStatus  Status         { get; }
+        public ISO15118EVCertificateStatus  Status                { get; }
 
         /// <summary>
         /// Base64 encoded certificate installation response to the electric vehicle.
         /// [max 5600]
         /// </summary>
         [Mandatory]
-        public EXIData                      EXIResponse    { get; }
+        public EXIData                      EXIResponse           { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?                  StatusInfo     { get; }
+        public StatusInfo?                  StatusInfo            { get; }
+
+        /// <summary>
+        /// The number of contracts that can be retrieved with additional requests.
+        /// </summary>
+        [Optional]
+        public UInt32?                      RemainingContracts    { get; }
 
         #endregion
 
@@ -67,12 +73,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Status">The success or failure of the EXI message processing.</param>
         /// <param name="EXIResponse">Base64 encoded certificate installation response to the electric vehicle.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="RemainingContracts">The number of contracts that can be retrieved with additional requests.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public Get15118EVCertificateResponse(CS.Get15118EVCertificateRequest  Request,
                                              ISO15118EVCertificateStatus      Status,
                                              EXIData                          EXIResponse,
-                                             StatusInfo?                      StatusInfo   = null,
-                                             CustomData?                      CustomData   = null)
+                                             StatusInfo?                      StatusInfo           = null,
+                                             UInt32?                          RemainingContracts   = null,
+                                             CustomData?                      CustomData           = null)
 
             : base(Request,
                    Result.OK(),
@@ -80,9 +88,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.Status       = Status;
-            this.EXIResponse  = EXIResponse;
-            this.StatusInfo   = StatusInfo;
+            this.Status              = Status;
+            this.EXIResponse         = EXIResponse;
+            this.StatusInfo          = StatusInfo;
+            this.RemainingContracts  = RemainingContracts;
 
         }
 
@@ -107,6 +116,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+
+        //ToDo: Update schema documentation after official release of OCPP 2.1!
 
         #region Documentation
 
@@ -241,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 Get15118EVCertificateResponse = null;
 
-                #region Status        [mandatory]
+                #region Status                [mandatory]
 
                 if (!JSON.ParseMandatory("status",
                                          "ISO 15118 EV certificate status",
@@ -254,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region EXIRequest    [mandatory]
+                #region EXIRequest            [mandatory]
 
                 if (!JSON.ParseMandatory("exiResponse",
                                          "EXI response",
@@ -267,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region StatusInfo    [optional]
+                #region StatusInfo            [optional]
 
                 if (JSON.ParseOptionalJSON("statusInfo",
                                            "detailed status info",
@@ -281,7 +292,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData    [optional]
+                #region RemainingContracts    [optional]
+
+                if (JSON.ParseOptional("remainingContracts",
+                                       "remaining contracts",
+                                       out UInt32? RemainingContracts,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData            [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -296,11 +320,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                Get15118EVCertificateResponse = new Get15118EVCertificateResponse(Request,
-                                                                                  Status,
-                                                                                  EXIRequest,
-                                                                                  StatusInfo,
-                                                                                  CustomData);
+                Get15118EVCertificateResponse = new Get15118EVCertificateResponse(
+                                                    Request,
+                                                    Status,
+                                                    EXIRequest,
+                                                    StatusInfo,
+                                                    RemainingContracts,
+                                                    CustomData
+                                                );
 
                 if (CustomGet15118EVCertificateResponseParser is not null)
                     Get15118EVCertificateResponse = CustomGet15118EVCertificateResponseParser(JSON,
@@ -335,17 +362,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",        Status.     AsText()),
-                                 new JProperty("exiResponse",   EXIResponse.ToString()),
+                                 new JProperty("status",               Status.     AsText()),
+                                 new JProperty("exiResponse",          EXIResponse.ToString()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",    StatusInfo. ToJSON(CustomStatusInfoSerializer,
-                                                                                   CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",           StatusInfo. ToJSON(CustomStatusInfoSerializer,
+                                                                                          CustomCustomDataSerializer))
+                               : null,
+
+                           RemainingContracts is not null
+                               ? new JProperty("remainingContracts",   RemainingContracts.Value)
                                : null,
 
 
                            CustomData is not null
-                               ? new JProperty("customData",    CustomData. ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",           CustomData. ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -446,8 +477,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                Status.     Equals(Get15118EVCertificateResponse.Status)      &&
                EXIResponse.Equals(Get15118EVCertificateResponse.EXIResponse) &&
 
-             ((StatusInfo is     null && Get15118EVCertificateResponse.StatusInfo is     null) ||
-               StatusInfo is not null && Get15118EVCertificateResponse.StatusInfo is not null && StatusInfo.Equals(Get15118EVCertificateResponse.StatusInfo)) &&
+             ((StatusInfo         is     null && Get15118EVCertificateResponse.StatusInfo         is     null) ||
+               StatusInfo         is not null && Get15118EVCertificateResponse.StatusInfo         is not null && StatusInfo.              Equals(Get15118EVCertificateResponse.StatusInfo)) &&
+
+             ((RemainingContracts is     null && Get15118EVCertificateResponse.RemainingContracts is null) ||
+               RemainingContracts is not null && Get15118EVCertificateResponse.RemainingContracts is not null && RemainingContracts.Value.Equals(Get15118EVCertificateResponse.RemainingContracts.Value)) &&
 
                base.GenericEquals(Get15118EVCertificateResponse);
 
@@ -466,11 +500,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             unchecked
             {
 
-                return Status.     GetHashCode()       * 7 ^
-                       EXIResponse.GetHashCode()       * 5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
+                return Status.             GetHashCode()       * 11 ^
+                       EXIResponse.        GetHashCode()       *  7 ^
+                      (StatusInfo?.        GetHashCode() ?? 0) *  5 ^
+                      (RemainingContracts?.GetHashCode() ?? 0) *  3 ^
 
-                       base.       GetHashCode();
+                       base.               GetHashCode();
 
             }
         }

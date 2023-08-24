@@ -6428,6 +6428,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ISO15118SchemaVersion">ISO/IEC 15118 schema version used for the session between charging station and electric vehicle. Required for parsing the EXI data stream within the central system.</param>
         /// <param name="CertificateAction">Whether certificate needs to be installed or updated.</param>
         /// <param name="EXIRequest">Base64 encoded certificate installation request from the electric vehicle. [max 5600]</param>
+        /// <param name="MaximumContractCertificateChains">Optional number of contracts that EV wants to install at most.</param>
+        /// <param name="PrioritizedEMAIds">An optional enumeration of eMA Ids that have priority in case more contracts than maximumContractCertificateChains are available.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -6440,13 +6442,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             Get15118EVCertificate(ISO15118SchemaVersion  ISO15118SchemaVersion,
                                   CertificateAction      CertificateAction,
                                   EXIData                EXIRequest,
-                                  CustomData?            CustomData          = null,
+                                  UInt32?                MaximumContractCertificateChains   = 1,
+                                  IEnumerable<EMA_Id>?   PrioritizedEMAIds                  = null,
+                                  CustomData?            CustomData                         = null,
 
-                                  Request_Id?            RequestId           = null,
-                                  DateTime?              RequestTimestamp    = null,
-                                  TimeSpan?              RequestTimeout      = null,
-                                  EventTracking_Id?      EventTrackingId     = null,
-                                  CancellationToken?     CancellationToken   = null)
+                                  Request_Id?            RequestId                          = null,
+                                  DateTime?              RequestTimestamp                   = null,
+                                  TimeSpan?              RequestTimeout                     = null,
+                                  EventTracking_Id?      EventTrackingId                    = null,
+                                  CancellationToken?     CancellationToken                  = null)
 
         {
 
@@ -6459,6 +6463,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  ISO15118SchemaVersion,
                                  CertificateAction,
                                  EXIRequest,
+                                 MaximumContractCertificateChains,
+                                 PrioritizedEMAIds,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,

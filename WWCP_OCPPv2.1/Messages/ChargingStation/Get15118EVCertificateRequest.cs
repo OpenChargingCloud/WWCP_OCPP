@@ -39,20 +39,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Required for parsing the EXI data stream within the central system.
         /// </summary>
         [Mandatory]
-        public ISO15118SchemaVersion  ISO15118SchemaVersion    { get; }
+        public ISO15118SchemaVersion  ISO15118SchemaVersion               { get; }
 
         /// <summary>
         /// Whether certificate needs to be installed or updated.
         /// </summary>
         [Mandatory]
-        public CertificateAction      CertificateAction        { get; }
+        public CertificateAction      CertificateAction                   { get; }
 
         /// <summary>
         /// Base64 encoded certificate installation request from the electric vehicle.
         /// [max 5600]
         /// </summary>
         [Mandatory]
-        public EXIData                EXIRequest               { get; }
+        public EXIData                EXIRequest                          { get; }
+
+        /// <summary>
+        /// The optional number of contracts that EV wants to install at most.
+        /// </summary>
+        [Optional]
+        public UInt32?                MaximumContractCertificateChains    { get; }
+
+        /// <summary>
+        /// The optional enumeration of eMA Ids that have priority in case more contracts
+        /// than maximumContractCertificateChains are available.
+        /// </summary>
+        [Optional]
+        public IEnumerable<EMA_Id>    PrioritizedEMAIds                   { get; }
+
 
         #endregion
 
@@ -65,6 +79,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ISO15118SchemaVersion">ISO/IEC 15118 schema version used for the session between charging station and electric vehicle. Required for parsing the EXI data stream within the central system.</param>
         /// <param name="CertificateAction">Whether certificate needs to be installed or updated.</param>
         /// <param name="EXIRequest">Base64 encoded certificate installation request from the electric vehicle. [max 5600]</param>
+        /// <param name="MaximumContractCertificateChains">Optional number of contracts that EV wants to install at most.</param>
+        /// <param name="PrioritizedEMAIds">An optional enumeration of eMA Ids that have priority in case more contracts than maximumContractCertificateChains are available.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -76,13 +92,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             ISO15118SchemaVersion  ISO15118SchemaVersion,
                                             CertificateAction      CertificateAction,
                                             EXIData                EXIRequest,
-                                            CustomData?            CustomData          = null,
+                                            UInt32?                MaximumContractCertificateChains   = 1,
+                                            IEnumerable<EMA_Id>?   PrioritizedEMAIds                  = null,
+                                            CustomData?            CustomData                         = null,
 
-                                            Request_Id?            RequestId           = null,
-                                            DateTime?              RequestTimestamp    = null,
-                                            TimeSpan?              RequestTimeout      = null,
-                                            EventTracking_Id?      EventTrackingId     = null,
-                                            CancellationToken?     CancellationToken   = null)
+                                            Request_Id?            RequestId                          = null,
+                                            DateTime?              RequestTimestamp                   = null,
+                                            TimeSpan?              RequestTimeout                     = null,
+                                            EventTracking_Id?      EventTrackingId                    = null,
+                                            CancellationToken?     CancellationToken                  = null)
 
             : base(ChargeBoxId,
                    "Get15118EVCertificate",
@@ -95,14 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            this.ISO15118SchemaVersion  = ISO15118SchemaVersion;
-            this.CertificateAction      = CertificateAction;
-            this.EXIRequest             = EXIRequest;
+            this.ISO15118SchemaVersion             = ISO15118SchemaVersion;
+            this.CertificateAction                 = CertificateAction;
+            this.EXIRequest                        = EXIRequest;
+            this.MaximumContractCertificateChains  = MaximumContractCertificateChains;
+            this.PrioritizedEMAIds                 = PrioritizedEMAIds?.Distinct() ?? Array.Empty<EMA_Id>();
 
         }
 
         #endregion
 
+
+        //ToDo: Update schema documentation after official release of OCPP 2.1!
 
         #region Documentation
 
@@ -245,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 Get15118EVCertificateRequest = null;
 
-                #region ISO15118SchemaVersion    [mandatory]
+                #region ISO15118SchemaVersion               [mandatory]
 
                 if (!JSON.ParseMandatory("iso15118SchemaVersion",
                                          "ISO 15118 schema version",
@@ -258,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region CertificateAction        [mandatory]
+                #region CertificateAction                   [mandatory]
 
                 if (!JSON.ParseMandatory("action",
                                          "certificate action",
@@ -271,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region EXIRequest               [mandatory]
+                #region EXIRequest                          [mandatory]
 
                 if (!JSON.ParseMandatory("exiRequest",
                                          "EXI request",
@@ -284,7 +306,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region CustomData               [optional]
+                #region MaximumContractCertificateChains    [optional]
+
+                if (JSON.ParseOptional("maximumContractCertificateChains",
+                                       "custom data",
+                                       out UInt32? MaximumContractCertificateChains,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region PrioritizedEMAIDs                   [optional]
+
+                if (JSON.ParseOptionalHashSet("prioritizedEMAIDs",
+                                              "prioritized eMA Ids",
+                                              EMA_Id.TryParse,
+                                              out HashSet<EMA_Id> PrioritizedEMAIDs,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData                          [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -298,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargeBoxId              [optional, OCPP_CSE]
+                #region ChargeBoxId                         [optional, OCPP_CSE]
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
@@ -318,12 +367,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                Get15118EVCertificateRequest = new Get15118EVCertificateRequest(ChargeBoxId,
-                                                                                ISO15118SchemaVersion,
-                                                                                CertificateAction,
-                                                                                EXIRequest,
-                                                                                CustomData,
-                                                                                RequestId);
+                Get15118EVCertificateRequest = new Get15118EVCertificateRequest(
+                                                   ChargeBoxId,
+                                                   ISO15118SchemaVersion,
+                                                   CertificateAction,
+                                                   EXIRequest,
+                                                   MaximumContractCertificateChains,
+                                                   PrioritizedEMAIDs,
+                                                   CustomData,
+                                                   RequestId
+                                               );
 
                 if (CustomGet15118EVCertificateRequestParser is not null)
                     Get15118EVCertificateRequest = CustomGet15118EVCertificateRequestParser(JSON,
@@ -356,12 +409,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("iso15118SchemaVersion",  ISO15118SchemaVersion.ToString()),
-                                 new JProperty("action",                 CertificateAction.    ToString()),
-                                 new JProperty("exiRequest",             EXIRequest.           ToString()),
+                                 new JProperty("iso15118SchemaVersion",              ISO15118SchemaVersion.                 ToString()),
+                                 new JProperty("action",                             CertificateAction.                     ToString()),
+                                 new JProperty("exiRequest",                         EXIRequest.                            ToString()),
+
+                           MaximumContractCertificateChains.HasValue
+                               ? new JProperty("maximumContractCertificateChains",   MaximumContractCertificateChains.Value.ToString())
+                               : null,
+
+                           PrioritizedEMAIds.Any()
+                               ? new JProperty("prioritizedEMAIDs",                  new JArray(PrioritizedEMAIds.Select(prioritizedEMAId => prioritizedEMAId.ToString())))
+                               : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",             CustomData.           ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",                         CustomData.           ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -449,6 +510,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                CertificateAction.    Equals(Get15118EVCertificateRequest.CertificateAction)     &&
                EXIRequest.           Equals(Get15118EVCertificateRequest.EXIRequest)            &&
 
+            ((!MaximumContractCertificateChains.HasValue && !Get15118EVCertificateRequest.MaximumContractCertificateChains.HasValue) ||
+              (MaximumContractCertificateChains.HasValue &&  Get15118EVCertificateRequest.MaximumContractCertificateChains.HasValue   &&
+               MaximumContractCertificateChains.Value.Equals(Get15118EVCertificateRequest.MaximumContractCertificateChains.Value)))   &&
+
+            ((!PrioritizedEMAIds.Any()                   && !Get15118EVCertificateRequest.PrioritizedEMAIds.Any())                   ||
+              (PrioritizedEMAIds.Any()                   &&  Get15118EVCertificateRequest.PrioritizedEMAIds.Any()                     &&
+               PrioritizedEMAIds.Count().             Equals(Get15118EVCertificateRequest.PrioritizedEMAIds.Count())                  &&
+               PrioritizedEMAIds.All(prioritizedEMAId => Get15118EVCertificateRequest.PrioritizedEMAIds.Contains(prioritizedEMAId)))) &&
+
                base.          GenericEquals(Get15118EVCertificateRequest);
 
         #endregion
@@ -466,11 +536,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             unchecked
             {
 
-                return ISO15118SchemaVersion.GetHashCode() * 7 ^
-                       CertificateAction.    GetHashCode() * 5 ^
-                       EXIRequest.           GetHashCode() * 3 ^
+                return ISO15118SchemaVersion.            GetHashCode()        * 13 ^
+                       CertificateAction.                GetHashCode()        * 11 ^
+                       EXIRequest.                       GetHashCode()        *  7 ^
+                      (MaximumContractCertificateChains?.GetHashCode()  ?? 0) *  5 ^
+                      (PrioritizedEMAIds?.               CalcHashCode() ?? 0) *  3 ^
 
-                       base.                 GetHashCode();
+                       base.                             GetHashCode();
 
             }
         }
@@ -484,13 +556,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-                   CertificateAction,
-                   ", ",
-                   ISO15118SchemaVersion
-               );
+            => $"{CertificateAction}, {ISO15118SchemaVersion}";
 
         #endregion
+
 
     }
 

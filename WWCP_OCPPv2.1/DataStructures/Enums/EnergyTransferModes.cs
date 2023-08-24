@@ -127,11 +127,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         Unknown,
 
         /// <summary>
-        /// DC charging.
-        /// </summary>
-        DC,
-
-        /// <summary>
         /// AC single phase charging according to IEC 62196.
         /// </summary>
         AC_SinglePhase,
@@ -144,7 +139,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// AC three phase charging according to IEC 62196.
         /// </summary>
-        AC_ThreePhases
+        AC_ThreePhases,
+
+        /// <summary>
+        /// DC charging.
+        /// </summary>
+        DC,
+
+        /// <summary>
+        /// DC charging via ACDP (pantograph)
+        /// </summary>
+        DC_ACDP,
+
+        /// <summary>
+        /// Wireless power transfer
+        /// </summary>
+        WPT,
+
+        /// <summary>
+        /// AC bidirectional 1 phase
+        /// </summary>
+        AC_single_phase_BPT,
+
+        /// <summary>
+        /// AC bidirectional 2 phase
+        /// </summary>
+        AC_two_phase_BPT,
+
+        /// <summary>
+        /// AC bidirectional 3 phase
+        /// </summary>
+        AC_three_phase_BPT,
+
+        /// <summary>
+        /// DC bidirectional
+        /// </summary>
+        DC_BPT,
+
+        /// <summary>
+        /// DC bidirectional charging via ACDP (pantograph)
+        /// </summary>
+        DC_ACDP_BPT
 
     }
 
