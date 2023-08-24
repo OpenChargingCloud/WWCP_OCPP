@@ -653,6 +653,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     #endregion
 
+    #region OnGetCRL
+
+    /// <summary>
+    /// A get certificate revocation list request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    public delegate Task
+
+        OnGetCRLRequestDelegate(DateTime        Timestamp,
+                                IEventSender    Sender,
+                                GetCRLRequest   Request);
+
+
+    /// <summary>
+    /// A get certificate revocation list at the given charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<GetCRLResponse>
+
+        OnGetCRLDelegate(DateTime            Timestamp,
+                         IEventSender        Sender,
+                         GetCRLRequest       Request,
+                         CancellationToken   CancellationToken);
+
+
+    /// <summary>
+    /// A get certificate revocation list response.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="Response">The stop transaction response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task
+
+        OnGetCRLResponseDelegate(DateTime         Timestamp,
+                                 IEventSender     Sender,
+                                 GetCRLRequest    Request,
+                                 GetCRLResponse   Response,
+                                 TimeSpan         Runtime);
+
+    #endregion
+
 
     #region OnReservationStatusUpdate
 

@@ -1631,7 +1631,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid TriggerMessage request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid TriggerMessage request for charge box '{Request.ChargeBoxId}'!");
 
                     response = new TriggerMessageResponse(Request,
                                                           TriggerMessageStatus.Rejected);
@@ -1640,7 +1640,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming TriggerMessage request for '" + Request.RequestedMessage + "' at connector '" + Request.ConnectorId + "'.");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming TriggerMessage request for '" + Request.RequestedMessage + "' at connector '" + Request.ConnectorId + "'.");
 
                     response = new TriggerMessageResponse(Request,
                                                           TriggerMessageStatus.Rejected);
@@ -1709,7 +1709,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid UpdateFirmware request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid UpdateFirmware request for charge box '{Request.ChargeBoxId}'!");
 
                     response = new UpdateFirmwareResponse(Request);
 
@@ -1717,7 +1717,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming UpdateFirmware request for '" + Request.FirmwareURL + "'.");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming UpdateFirmware request for '" + Request.FirmwareURL + "'.");
 
                     response = new UpdateFirmwareResponse(Request);
 
@@ -1900,7 +1900,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid RemoteStartTransaction request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid RemoteStartTransaction request for charge box '{Request.ChargeBoxId}'!");
 
                     response = new RemoteStartTransactionResponse(Request,
                                                                   RemoteStartStopStatus.Rejected);
@@ -1909,7 +1909,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming RemoteStartTransaction for '" + Request.ConnectorId + "' with IdTag '" + Request.IdTag + "'.");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming RemoteStartTransaction for '" + Request.ConnectorId + "' with IdTag '" + Request.IdTag + "'.");
 
                     // ToDo: lock(connectors)
 
@@ -2056,7 +2056,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid RemoteStopTransaction request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid RemoteStopTransaction request for charge box '{Request.ChargeBoxId}'!");
 
                     response = new RemoteStopTransactionResponse(Request,
                                                                  RemoteStartStopStatus.Rejected);
@@ -2065,7 +2065,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming RemoteStopTransaction for '" + Request.TransactionId + "'.");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming RemoteStopTransaction for '" + Request.TransactionId + "'.");
 
                     // ToDo: lock(connectors)
 
@@ -2201,7 +2201,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid SetChargingProfile request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetChargingProfile request for charge box '{Request.ChargeBoxId}'!");
 
                     response = new SetChargingProfileResponse(Request,
                                                               ChargingProfileStatus.Rejected);
@@ -2217,7 +2217,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming SetChargingProfile for '" + Request.ConnectorId + "'.");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetChargingProfile for '" + Request.ConnectorId + "'.");
 
                     // ToDo: lock(connectors)
 
@@ -2425,7 +2425,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid UnlockConnector request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid UnlockConnector request for charge box '{Request.ChargeBoxId}'!");
 
                     response = new UnlockConnectorResponse(Request,
                                                            UnlockStatus.UnlockFailed);
@@ -2434,7 +2434,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming UnlockConnector for '" + Request.ConnectorId + "'.");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming UnlockConnector for '" + Request.ConnectorId + "'.");
 
                     // ToDo: lock(connectors)
 
@@ -2516,7 +2516,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid GetLocalListVersion request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetLocalListVersion request for charge box '{Request.ChargeBoxId}'!");
 
                     response = new GetLocalListVersionResponse(Request,
                                                                0);
@@ -2525,7 +2525,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming GetLocalListVersion request.");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetLocalListVersion request.");
 
                     response = new GetLocalListVersionResponse(Request,
                                                                0);
@@ -2594,7 +2594,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid SendLocalList request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SendLocalList request for charge box '{Request.ChargeBoxId}'!");
 
                     response = new SendLocalListResponse(Request,
                                                          UpdateStatus.NotSupported);
@@ -2603,7 +2603,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming SendLocalList request: '" + Request.UpdateType + "' version '" + Request.ListVersion + "'.");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SendLocalList request: '" + Request.UpdateType + "' version '" + Request.ListVersion + "'.");
 
                     response = new SendLocalListResponse(Request,
                                                          UpdateStatus.NotSupported);
@@ -2672,7 +2672,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Invalid ClearCache request for charge box '" + Request.ChargeBoxId + "'!");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid ClearCache request for charge box '{Request.ChargeBoxId}'!");
 
                     response = new ClearCacheResponse(Request,
                                                       ClearCacheStatus.Rejected);
@@ -2681,7 +2681,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log("ChargeBox[" + ChargeBoxId + "] Incoming ClearCache request.");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming ClearCache request.");
 
                     response = new ClearCacheResponse(Request,
                                                       ClearCacheStatus.Rejected);

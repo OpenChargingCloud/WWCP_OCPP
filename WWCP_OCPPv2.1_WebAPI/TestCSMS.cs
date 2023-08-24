@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using System.Threading.Channels;
 
 #endregion
 
@@ -948,6 +949,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event fired whenever a response to an UnlockConnector request was received.
         /// </summary>
         public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+
+        #endregion
+
+
+        #region AFRRSignal
+
+        /// <summary>
+        /// An event fired whenever an AFRR signal request will be sent to the CSMS.
+        /// </summary>
+        public event OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an AFRR signal request was received.
+        /// </summary>
+        public event OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
 
         #endregion
 
@@ -8856,6 +8872,110 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUnlockConnectorResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        #region AFRRSignal                (ChargeBoxId, ActivationTimestamp, Signal, ...)
+
+        /// <summary>
+        /// Send an aFRR signal to the charging station.
+        /// The charging station uses the value of signal to select a matching power value
+        /// from the v2xSignalWattCurve in the charging schedule period.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ActivationTimestamp">The time when the signal becomes active.</param>
+        /// <param name="Signal">Ther value of the signal in v2xSignalWattCurve. Usually between -1 and 1.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.AFRRSignalResponse>
+
+            AFRRSignal(ChargeBox_Id       ChargeBoxId,
+                       DateTime           ActivationTimestamp,
+                       AFRR_Signal        Signal,
+                       CustomData?        CustomData          = null,
+
+                       Request_Id?        RequestId           = null,
+                       DateTime?          RequestTimestamp    = null,
+                       TimeSpan?          RequestTimeout      = null,
+                       EventTracking_Id?  EventTrackingId     = null,
+                       CancellationToken  CancellationToken   = default)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new AFRRSignalRequest(
+                                 ChargeBoxId,
+                                 ActivationTimestamp,
+                                 Signal,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnAFRRSignalRequest event
+
+            try
+            {
+
+                OnAFRRSignalRequest?.Invoke(startTime,
+                                            this,
+                                            request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnAFRRSignalRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.AFRRSignal(request)
+
+                               : new CS.AFRRSignalResponse(request,
+                                                           Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnAFRRSignalResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAFRRSignalResponse?.Invoke(endTime,
+                                             this,
+                                             request,
+                                             response,
+                                             endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnAFRRSignalResponse));
             }
 
             #endregion

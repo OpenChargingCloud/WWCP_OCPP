@@ -299,6 +299,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region OnGetCRL
+
+        /// <summary>
+        /// An event sent whenever a get certificate revocation list request was received.
+        /// </summary>
+        event OnGetCRLRequestDelegate    OnGetCRLRequest;
+
+        /// <summary>
+        /// An event sent whenever a get certificate revocation list was received.
+        /// </summary>
+        event OnGetCRLDelegate           OnGetCRL;
+
+        /// <summary>
+        /// An event sent whenever a response to a get certificate revocation list was sent.
+        /// </summary>
+        event OnGetCRLResponseDelegate   OnGetCRLResponse;
+
+        #endregion
+
 
         #region OnReservationStatusUpdate
 

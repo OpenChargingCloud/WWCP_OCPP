@@ -1710,6 +1710,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     #endregion
 
 
+    #region OnAFRRSignal
+
+    /// <summary>
+    /// An AFRR signal request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnAFRRSignalRequestDelegate(DateTime            Timestamp,
+                                    IEventSender        Sender,
+                                    AFRRSignalRequest   Request);
+
+
+    /// <summary>
+    /// An AFRR signal request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<AFRRSignalResponse>
+
+        OnAFRRSignalDelegate(DateTime            Timestamp,
+                             IEventSender        Sender,
+                             AFRRSignalRequest   Request,
+                             CancellationToken   CancellationToken);
+
+
+    /// <summary>
+    /// An AFRR signal response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnAFRRSignalResponseDelegate(DateTime             Timestamp,
+                                     IEventSender         Sender,
+                                     AFRRSignalRequest    Request,
+                                     AFRRSignalResponse   Response,
+                                     TimeSpan             Runtime);
+
+    #endregion
+
+
     #region OnSetDisplayMessage
 
     /// <summary>

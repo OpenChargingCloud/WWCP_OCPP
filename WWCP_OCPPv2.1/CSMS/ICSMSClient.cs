@@ -2258,6 +2258,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
+        #region AFRRSignal
+
+        /// <summary>
+        /// An event fired whenever an AFRR signal request will be sent to the CSMS.
+        /// </summary>
+        event OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an AFRR signal request was received.
+        /// </summary>
+        event OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
+
+        #endregion
+
+
         #region SetDisplayMessage
 
         /// <summary>
@@ -2695,6 +2710,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">An unlock connector request.</param>
         Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request);
+
+        #endregion
+
+
+        #region UnlockConnector
+
+        /// <summary>
+        /// Send an aFRR signal to the charging station.
+        /// The charging station uses the value of signal to select a matching power value
+        /// from the v2xSignalWattCurve in the charging schedule period.
+        /// </summary>
+        /// <param name="Request">An unlock connector request.</param>
+        Task<AFRRSignalResponse> AFRRSignal(AFRRSignalRequest Request);
 
         #endregion
 

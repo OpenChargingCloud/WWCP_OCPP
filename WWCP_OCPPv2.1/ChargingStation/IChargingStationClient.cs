@@ -230,12 +230,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetCRL
 
         /// <summary>
-        /// An event fired whenever a GetCRL request will be sent to the CSMS.
+        /// An event fired whenever a get certificate revocation list request will be sent to the CSMS.
         /// </summary>
         event OnGetCRLRequestDelegate?   OnGetCRLRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a GetCRL request was received.
+        /// An event fired whenever a response to a get certificate revocation list request was received.
         /// </summary>
         event OnGetCRLResponseDelegate?  OnGetCRLResponse;
 

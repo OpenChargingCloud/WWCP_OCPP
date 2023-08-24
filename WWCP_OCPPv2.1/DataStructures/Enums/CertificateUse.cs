@@ -145,7 +145,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// ISO 15118 V2G certificate chain (excluding the V2GRootCertificate).
         /// </summary>
-        V2GCertificateChain
+        V2GCertificateChain,
+
+        /// <summary>
+        /// Root certificate for verification of the Manufacturer certificate.
+        /// </summary>
+        ManufacturerRootCertificate,
+
+        /// <summary>
+        /// OEM root certificate for 2-way TLS with EV.
+        /// </summary>
+        OEMRootCertificate
+
 
     }
 

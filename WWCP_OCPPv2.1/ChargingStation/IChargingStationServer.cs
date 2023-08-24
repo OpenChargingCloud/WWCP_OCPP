@@ -704,6 +704,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
+        #region OnAFRRSignal
+
+        /// <summary>
+        /// An event sent whenever an AFRR signal request was received.
+        /// </summary>
+        event OnAFRRSignalRequestDelegate    OnAFRRSignalRequest;
+
+        /// <summary>
+        /// An event sent whenever an AFRR signal was received.
+        /// </summary>
+        event OnAFRRSignalDelegate           OnAFRRSignal;
+
+        /// <summary>
+        /// An event sent whenever a response to an AFRR signal request was sent.
+        /// </summary>
+        event OnAFRRSignalResponseDelegate   OnAFRRSignalResponse;
+
+        #endregion
+
+
         #region OnSetDisplayMessage
 
         /// <summary>

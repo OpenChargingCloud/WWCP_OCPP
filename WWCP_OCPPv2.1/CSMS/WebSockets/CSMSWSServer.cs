@@ -756,6 +756,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
+        #region OnAFRRSignal
+
+        /// <summary>
+        /// An event sent whenever an AFRR signal request was sent.
+        /// </summary>
+        public event OnAFRRSignalRequestDelegate?     OnAFRRSignalRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an AFRR signal request was sent.
+        /// </summary>
+        public event OnAFRRSignalResponseDelegate?    OnAFRRSignalResponse;
+
+        #endregion
+
+
         #region OnSetDisplayMessage
 
         /// <summary>
@@ -1205,6 +1220,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// An event sent whenever a WebSocket response to a GetCertificateStatus was sent.
         /// </summary>
         public event WebSocketResponseLogHandler?               OnGetCertificateStatusWSResponse;
+
+        #endregion
+
+        #region OnGetCRL
+
+        /// <summary>
+        /// An event sent whenever a GetCRL WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?     OnGetCRLWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a GetCRL request was received.
+        /// </summary>
+        public event OnGetCRLRequestDelegate?        OnGetCRLRequest;
+
+        /// <summary>
+        /// An event sent whenever a GetCRL was received.
+        /// </summary>
+        public event OnGetCRLDelegate?               OnGetCRL;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetCRL was sent.
+        /// </summary>
+        public event OnGetCRLResponseDelegate?       OnGetCRLResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a GetCRL was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?    OnGetCRLWSResponse;
 
         #endregion
 
@@ -1739,6 +1783,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?          CustomGetCompositeScheduleRequestSerializer            { get; set; }
 
         public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?               CustomUnlockConnectorRequestSerializer                 { get; set; }
+
+        public CustomJObjectSerializerDelegate<AFRRSignalRequest>?                    CustomAFRRSignalRequestSerializer                      { get; set; }
 
 
         public CustomJObjectSerializerDelegate<SetDisplayMessageRequest>?             CustomSetDisplayMessageRequestSerializer               { get; set; }
@@ -9012,6 +9058,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUnlockConnectorResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        #region AFRRSignal                (Request)
+
+        public async Task<AFRRSignalResponse> AFRRSignal(AFRRSignalRequest Request)
+        {
+
+            #region Send OnAFRRSignalRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAFRRSignalRequest?.Invoke(startTime,
+                                            this,
+                                            Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAFRRSignalRequest));
+            }
+
+            #endregion
+
+
+            AFRRSignalResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomAFRRSignalRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
+
+                if (AFRRSignalResponse.TryParse(Request,
+                                                sendRequestState.Response,
+                                                out var unlockConnectorResponse,
+                                                out var errorResponse) &&
+                    unlockConnectorResponse is not null)
+                {
+                    response = unlockConnectorResponse;
+                }
+
+                response ??= new AFRRSignalResponse(Request,
+                                                    Result.Format(errorResponse));
+
+            }
+
+            response ??= new AFRRSignalResponse(Request,
+                                                Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnAFRRSignalResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAFRRSignalResponse?.Invoke(endTime,
+                                             this,
+                                             Request,
+                                             response,
+                                             endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAFRRSignalResponse));
             }
 
             #endregion

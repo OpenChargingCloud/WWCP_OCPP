@@ -1010,6 +1010,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     #endregion
 
 
+    #region OnAFRRSignal
+
+    /// <summary>
+    /// A delegate called whenever an AFRR signal request will be sent to a charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnAFRRSignalRequestDelegate(DateTime            Timestamp,
+                                                     IEventSender        Sender,
+                                                     AFRRSignalRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever an response to a AFRR signal request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnAFRRSignalResponseDelegate(DateTime             Timestamp,
+                                                      IEventSender         Sender,
+                                                      AFRRSignalRequest    Request,
+                                                      AFRRSignalResponse   Response,
+                                                      TimeSpan             Runtime);
+
+    #endregion
+
+
     #region OnSetDisplayMessage
 
     /// <summary>
