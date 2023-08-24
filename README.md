@@ -3,8 +3,10 @@
 This software will allow the communication between World Wide Charging
 Protocol (WWCP) entities and entities implementing the
 _Open ChargePoint Protocol Version 1.6/2.0.1/2.1_, which is defined by the
-Open Charge Alliance. The focus of this protocol are the communication
-aspects between a e-mobility charging station and its operator backend.
+_Open Charge Alliance (OCA)_. The focus of this protocol are the communication
+aspects between e-mobility charging stations, local nodes and charging station
+operator backends.
+
 For more details on this protocol please visit http://www.openchargealliance.org.
 
 ## Versions
