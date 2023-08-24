@@ -24,7 +24,6 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using social.OpenData.UsersAPI;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP.Notifications;
 
 using cloud.charging.open.protocols.OCPPv2_0_1.CS;
@@ -809,9 +808,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         #endregion
 
 
-        #region CopyAllLinkedDataFrom(OldChargeBox)
+        #region CopyAllLinkedDataFromBase(OldChargeBox)
 
-        public override void CopyAllLinkedDataFrom(ChargeBox OldChargeBox)
+        public override void CopyAllLinkedDataFromBase(ChargeBox OldChargeBox)
         {
 
             //if (OldChargeBox._User2ChargeBox_Edges.Any() && !_User2ChargeBox_Edges.Any())
@@ -1663,9 +1662,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             #endregion
 
 
-            #region CopyAllLinkedDataFrom(OldChargeBox)
+            #region CopyAllLinkedDataFromBase(OldChargeBox)
 
-            public override void CopyAllLinkedDataFrom(ChargeBox OldChargeBox)
+            public override void CopyAllLinkedDataFromBase(ChargeBox OldChargeBox)
             {
 
                 //if (OldChargeBox._User2ChargeBox_Edges.Any() && !_User2ChargeBox_Edges.Any())

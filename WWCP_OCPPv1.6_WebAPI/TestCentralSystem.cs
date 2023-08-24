@@ -25,8 +25,6 @@ using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using social.OpenData.UsersAPI;
-
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
@@ -46,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         private          readonly  Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>>   reachableChargingBoxes;
 
-        private          readonly  UsersAPI                                                    TestAPI;
+        private          readonly  HTTPExtAPI                                                  TestAPI;
 
         private          readonly  OCPPWebAPI                                                  WebAPI;
 
@@ -718,7 +716,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             Directory.CreateDirectory("HTTPSSEs");
 
-            this.TestAPI                 = new UsersAPI(
+            this.TestAPI                 = new HTTPExtAPI(
                                                HTTPServerPort:        IPPort.Parse(3500),
                                                HTTPServerName:        "GraphDefined OCPP Test Central System",
                                                HTTPServiceName:       "GraphDefined OCPP Test Central System Service",
@@ -734,7 +732,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 if (request.Path.StartsWith(TestAPI.URLPathPrefix + "/webapi"))
                 {
-                    return UsersAPI.Anonymous;
+                    return HTTPExtAPI.Anonymous;
                 }
 
                 #endregion
@@ -2824,7 +2822,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             if (chargeBoxes.TryGetValue(ChargeBox.Id, out var OldChargeBox))
             {
                 chargeBoxes.Remove(OldChargeBox.Id);
-                ChargeBox.CopyAllLinkedDataFrom(OldChargeBox);
+                ChargeBox.CopyAllLinkedDataFromBase(OldChargeBox);
             }
 
             chargeBoxes.Add(ChargeBox.Id, ChargeBox);
@@ -3025,7 +3023,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             //                          CurrentUserId);
 
             chargeBoxes.Remove(OldChargeBox.Id);
-            ChargeBox.CopyAllLinkedDataFrom(OldChargeBox);
+            ChargeBox.CopyAllLinkedDataFromBase(OldChargeBox);
             chargeBoxes.Add(ChargeBox.Id, ChargeBox);
 
             OnUpdated?.Invoke(ChargeBox,
@@ -3183,7 +3181,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             //                          CurrentUserId);
 
             chargeBoxes.Remove(ChargeBox.Id);
-            updatedChargeBox.CopyAllLinkedDataFrom(ChargeBox);
+            updatedChargeBox.CopyAllLinkedDataFromBase(ChargeBox);
             chargeBoxes.Add(updatedChargeBox.Id, updatedChargeBox);
 
             OnUpdated?.Invoke(updatedChargeBox,

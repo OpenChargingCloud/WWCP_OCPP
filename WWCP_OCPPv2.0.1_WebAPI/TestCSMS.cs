@@ -27,8 +27,6 @@ using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using social.OpenData.UsersAPI;
-
 using cloud.charging.open.protocols.OCPPv2_0_1.CSMS;
 
 #endregion
@@ -49,19 +47,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
         private          readonly  Dictionary<ChargeBox_Id, Tuple<ICSMS, DateTime>>   reachableChargingBoxes;
 
-        private          readonly  UsersAPI                                                    TestAPI;
+        private          readonly  HTTPExtAPI                                         TestAPI;
 
-        private          readonly  OCPPWebAPI                                                  WebAPI;
+        private          readonly  OCPPWebAPI                                         WebAPI;
 
-        protected static readonly  SemaphoreSlim                                               ChargeBoxesSemaphore    = new (1, 1);
+        protected static readonly  SemaphoreSlim                                      ChargeBoxesSemaphore    = new (1, 1);
 
-        protected static readonly  TimeSpan                                                    SemaphoreSlimTimeout    = TimeSpan.FromSeconds(5);
+        protected static readonly  TimeSpan                                           SemaphoreSlimTimeout    = TimeSpan.FromSeconds(5);
 
-        public    static readonly  IPPort                                                      DefaultHTTPUploadPort   = IPPort.Parse(9901);
+        public    static readonly  IPPort                                             DefaultHTTPUploadPort   = IPPort.Parse(9901);
 
-        private                    Int64                                                       internalRequestId       = 900000;
+        private                    Int64                                              internalRequestId       = 900000;
 
-        private                    TimeSpan                                                    defaultRequestTimeout   = TimeSpan.FromSeconds(30);
+        private                    TimeSpan                                           defaultRequestTimeout   = TimeSpan.FromSeconds(30);
 
         #endregion
 
@@ -1106,7 +1104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             Directory.CreateDirectory("HTTPSSEs");
 
-            this.TestAPI                 = new UsersAPI(
+            this.TestAPI                 = new HTTPExtAPI(
                                                HTTPServerPort:        IPPort.Parse(3501),
                                                HTTPServerName:        "GraphDefined OCPP Test Central System",
                                                HTTPServiceName:       "GraphDefined OCPP Test Central System Service",
@@ -1122,7 +1120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 if (request.Path.StartsWith(TestAPI.URLPathPrefix + "/webapi"))
                 {
-                    return UsersAPI.Anonymous;
+                    return HTTPExtAPI.Anonymous;
                 }
 
                 #endregion
@@ -4320,7 +4318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             if (chargeBoxes.TryGetValue(ChargeBox.Id, out var OldChargeBox))
             {
                 chargeBoxes.Remove(OldChargeBox.Id);
-                ChargeBox.CopyAllLinkedDataFrom(OldChargeBox);
+                ChargeBox.CopyAllLinkedDataFromBase(OldChargeBox);
             }
 
             chargeBoxes.Add(ChargeBox.Id, ChargeBox);
@@ -4521,7 +4519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             //                          CurrentUserId);
 
             chargeBoxes.Remove(OldChargeBox.Id);
-            ChargeBox.CopyAllLinkedDataFrom(OldChargeBox);
+            ChargeBox.CopyAllLinkedDataFromBase(OldChargeBox);
             chargeBoxes.Add(ChargeBox.Id, ChargeBox);
 
             OnUpdated?.Invoke(ChargeBox,
@@ -4679,7 +4677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             //                          CurrentUserId);
 
             chargeBoxes.Remove(ChargeBox.Id);
-            updatedChargeBox.CopyAllLinkedDataFrom(ChargeBox);
+            updatedChargeBox.CopyAllLinkedDataFromBase(ChargeBox);
             chargeBoxes.Add(updatedChargeBox.Id, updatedChargeBox);
 
             OnUpdated?.Invoke(updatedChargeBox,
