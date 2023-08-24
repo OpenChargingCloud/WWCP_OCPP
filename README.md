@@ -22,7 +22,7 @@ send us an e-mail.
 
 ## Content
 
-- **Implementation Details and Differences** for [OCPP v1.6](WWCP_OCPPv1.6/README.md), [OCPP v2.0.1](WWCP_OCPPv2.0.1/README.md)  and [OCPP v2.0.1](WWCP_OCPPv2.1/README.md) to the official protocol specification. The OCPP specification has unfortunatelly many flaws and security issues. This implementation provides extentions and work-arounds for most of these issues to simplify the daily operations business, high availability or to support additional concepts/methods like *European General Data Protection Regulation (GDPR)*  and the *German Calibration Law (Eichrecht)*.
+- **Implementation Details and Differences** for [OCPP v1.6](WWCP_OCPPv1.6/README.md), [OCPP v2.0.1](WWCP_OCPPv2.0.1/README.md)  and [OCPP v2.1](WWCP_OCPPv2.1/README.md) to the official protocol specification. The OCPP specification has unfortunatelly many flaws and security issues. This implementation provides extentions and work-arounds for most of these issues to simplify the daily operations business, high availability or to support additional concepts/methods like *European General Data Protection Regulation (GDPR)*  and the *German Calibration Law (Eichrecht)*.
 
 
 ### Your participation
