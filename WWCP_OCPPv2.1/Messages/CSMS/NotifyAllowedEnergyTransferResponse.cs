@@ -51,14 +51,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region NotifyAllowedEnergyTransferResponse(Request, Status, Schedule = null, StatusInfo = null, CustomData = null)
+        #region NotifyAllowedEnergyTransferResponse(Request, Status, StatusInfo = null, CustomData = null)
 
         /// <summary>
         /// Create a new notify allowed energy transfer response.
         /// </summary>
         /// <param name="Request">The notify allowed energy transfer request leading to this response.</param>
         /// <param name="Status">The charging station will indicate if it was able to process the request.</param>
-        /// <param name="Schedule">The calculated composite schedule. It may only be omitted when this message contains status 'rejected'.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public NotifyAllowedEnergyTransferResponse(CSMS.NotifyAllowedEnergyTransferRequest  Request,
@@ -121,11 +120,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(Request,
                          JSON,
-                         out var getCompositeScheduleResponse,
+                         out var notifyAllowedEnergyTransferResponse,
                          out var errorResponse,
                          CustomNotifyAllowedEnergyTransferResponseParser))
             {
-                return getCompositeScheduleResponse!;
+                return notifyAllowedEnergyTransferResponse!;
             }
 
             throw new ArgumentException("The given JSON representation of a notify allowed energy transfer response is invalid: " + errorResponse,
@@ -230,13 +229,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomNotifyAllowedEnergyTransferResponseSerializer">A delegate to serialize custom notify allowed energy transfer responses.</param>
-        /// <param name="CustomCompositeScheduleSerializer">A delegate to serialize custom composite schedule requests.</param>
-        /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyAllowedEnergyTransferResponse>?  CustomNotifyAllowedEnergyTransferResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CompositeSchedule>?                    CustomCompositeScheduleSerializer                     = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?               CustomChargingSchedulePeriodSerializer                = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                           CustomStatusInfoSerializer                            = null,
                               CustomJObjectSerializerDelegate<CustomData>?                           CustomCustomDataSerializer                            = null)
         {
@@ -334,8 +329,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Object">A notify allowed energy transfer response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is NotifyAllowedEnergyTransferResponse getCompositeScheduleResponse &&
-                   Equals(getCompositeScheduleResponse);
+            => Object is NotifyAllowedEnergyTransferResponse notifyAllowedEnergyTransferResponse &&
+                   Equals(notifyAllowedEnergyTransferResponse);
 
         #endregion
 

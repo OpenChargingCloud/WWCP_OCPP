@@ -1568,6 +1568,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region OnNotifyCRL
+
+        /// <summary>
+        /// An event sent whenever a NotifyCRL websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?      OnNotifyCRLWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyCRL request was received.
+        /// </summary>
+        public event OnNotifyCRLRequestDelegate?     OnNotifyCRLRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyCRL request was received.
+        /// </summary>
+        public event OnNotifyCRLDelegate?            OnNotifyCRL;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyCRL request was sent.
+        /// </summary>
+        public event OnNotifyCRLResponseDelegate?    OnNotifyCRLResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a NotifyCRL request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?     OnNotifyCRLWSResponse;
+
+        #endregion
+
 
         #region OnGetLocalListVersion
 

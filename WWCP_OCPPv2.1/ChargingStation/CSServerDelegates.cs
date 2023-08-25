@@ -1083,6 +1083,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
+    #region OnNotifyCRL
+
+    /// <summary>
+    /// A NotifyCRL request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnNotifyCRLRequestDelegate(DateTime           Timestamp,
+                                   IEventSender       Sender,
+                                   NotifyCRLRequest   Request);
+
+
+    /// <summary>
+    /// A NotifyCRL request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<NotifyCRLResponse>
+
+        OnNotifyCRLDelegate(DateTime            Timestamp,
+                            IEventSender        Sender,
+                            NotifyCRLRequest    Request,
+                            CancellationToken   CancellationToken);
+
+
+    /// <summary>
+    /// A NotifyCRL response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnNotifyCRLResponseDelegate(DateTime            Timestamp,
+                                    IEventSender        Sender,
+                                    NotifyCRLRequest    Request,
+                                    NotifyCRLResponse   Response,
+                                    TimeSpan            Runtime);
+
+    #endregion
+
 
     #region OnGetLocalListVersion
 

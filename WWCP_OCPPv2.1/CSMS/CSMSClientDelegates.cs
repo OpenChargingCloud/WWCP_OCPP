@@ -643,6 +643,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     #endregion
 
+    #region OnNotifyCRL
+
+    /// <summary>
+    /// A delegate called whenever a NotifyCRL request will be sent to a charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnNotifyCRLRequestDelegate(DateTime           Timestamp,
+                                                    IEventSender       Sender,
+                                                    NotifyCRLRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a NotifyCRL request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnNotifyCRLResponseDelegate(DateTime            Timestamp,
+                                                     IEventSender        Sender,
+                                                     NotifyCRLRequest    Request,
+                                                     NotifyCRLResponse   Response,
+                                                     TimeSpan            Runtime);
+
+    #endregion
+
 
     #region OnGetLocalListVersion
 

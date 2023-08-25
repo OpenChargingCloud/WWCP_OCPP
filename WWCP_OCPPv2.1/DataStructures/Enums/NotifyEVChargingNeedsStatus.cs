@@ -84,6 +84,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     NotifyEVChargingNeedsStatus = NotifyEVChargingNeedsStatus.Processing;
                     return true;
 
+                case "NoChargingProfile":
+                    NotifyEVChargingNeedsStatus = NotifyEVChargingNeedsStatus.NoChargingProfile;
+                    return true;
+
                 default:
                     NotifyEVChargingNeedsStatus = NotifyEVChargingNeedsStatus.Unknown;
                     return false;
@@ -103,10 +107,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this NotifyEVChargingNeedsStatus NotifyEVChargingNeedsStatus)
 
             => NotifyEVChargingNeedsStatus switch {
-                   NotifyEVChargingNeedsStatus.Accepted    => "Accepted",
-                   NotifyEVChargingNeedsStatus.Rejected    => "Rejected",
-                   NotifyEVChargingNeedsStatus.Processing  => "Processing",
-                   _                                       => "Unknown"
+                   NotifyEVChargingNeedsStatus.Accepted           => "Accepted",
+                   NotifyEVChargingNeedsStatus.Rejected           => "Rejected",
+                   NotifyEVChargingNeedsStatus.Processing         => "Processing",
+                   NotifyEVChargingNeedsStatus.NoChargingProfile  => "NoChargingProfile",
+                   _                                              => "Unknown"
                };
 
         #endregion
@@ -138,7 +143,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The CSMS is gathering information to provide a schedule.
         /// </summary>
-        Processing
+        Processing,
+
+        /// <summary>
+        /// The CSMS will not provide a charging profile.
+        /// </summary>
+        NoChargingProfile
 
     }
 

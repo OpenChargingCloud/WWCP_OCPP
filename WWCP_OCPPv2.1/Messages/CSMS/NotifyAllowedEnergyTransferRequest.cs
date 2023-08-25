@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #region AllowedEnergyTransferModes    [mandatory]
 
                 if (!JSON.ParseMandatoryHashSet("allowedEnergyTransfer",
-                                                "allowed energy transfer mdoes",
+                                                "allowed energy transfer modes",
                                                 EnergyTransferModesExtensions.TryParse,
                                                 out HashSet<EnergyTransferModes> AllowedEnergyTransferModes,
                                                 out ErrorResponse))

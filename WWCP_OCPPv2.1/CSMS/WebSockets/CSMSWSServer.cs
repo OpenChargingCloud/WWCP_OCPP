@@ -571,6 +571,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region OnNotifyCRL
+
+        /// <summary>
+        /// An event sent whenever a NotifyCRL request was sent.
+        /// </summary>
+        public event OnNotifyCRLRequestDelegate?     OnNotifyCRLRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyCRL request was sent.
+        /// </summary>
+        public event OnNotifyCRLResponseDelegate?    OnNotifyCRLResponse;
+
+        #endregion
+
 
         #region OnGetLocalListVersion
 
@@ -1769,6 +1783,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?    CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
 
         public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?             CustomDeleteCertificateRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<NotifyCRLRequest>?                     CustomNotifyCRLRequestSerializer                       { get; set; }
 
 
         public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?           CustomGetLocalListVersionRequestSerializer             { get; set; }
@@ -8018,6 +8034,95 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDeleteCertificateResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyCRL                  (Request)
+
+        /// <summary>
+        /// Notify the charging station about the status of a certificate revocation list.
+        /// </summary>
+        /// <param name="Request">A delete certificate request.</param>
+        public async Task<NotifyCRLResponse> NotifyCRL(NotifyCRLRequest Request)
+        {
+
+            #region Send OnNotifyCRLRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyCRLRequest?.Invoke(startTime,
+                                           this,
+                                           Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyCRLRequest));
+            }
+
+            #endregion
+
+
+            NotifyCRLResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomNotifyCRLRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
+
+                if (NotifyCRLResponse.TryParse(Request,
+                                               sendRequestState.Response,
+                                               out var deleteCertificateResponse,
+                                               out var errorResponse) &&
+                    deleteCertificateResponse is not null)
+                {
+                    response = deleteCertificateResponse;
+                }
+
+                response ??= new NotifyCRLResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
+
+            }
+
+            response ??= new NotifyCRLResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
+
+
+            #region Send OnNotifyCRLResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyCRLResponse?.Invoke(endTime,
+                                            this,
+                                            Request,
+                                            response,
+                                            endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyCRLResponse));
             }
 
             #endregion

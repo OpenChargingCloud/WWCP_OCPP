@@ -966,6 +966,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region NotifyCRLAvailability      (ChargeBoxId, NotifyCRLRequestId, Availability, Location, ...)
+
+        /// <summary>
+        /// Notify the charging station about the status of a certificate revocation list.
+        /// </summary>
+        /// <param name="ICSMSClient">A CSMS client.</param>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NotifyCRLRequestId">An unique identification of this request.</param>
+        /// <param name="Availability">An availability status of the certificate revocation list.</param>
+        /// <param name="Location">An optional location of the certificate revocation list.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional request timeout.</param>
+        public static Task<NotifyCRLResponse> NotifyCRLAvailability(this ICSMSClient     ICSMSClient,
+                                                                    ChargeBox_Id         ChargeBoxId,
+                                                                    Int32                NotifyCRLRequestId,
+                                                                    NotifyCRLStatus      Availability,
+                                                                    URL?                 Location,
+                                                                    CustomData?          CustomData          = null,
+
+                                                                    Request_Id?          RequestId           = null,
+                                                                    DateTime?            RequestTimestamp    = null,
+                                                                    TimeSpan?            RequestTimeout      = null,
+                                                                    EventTracking_Id?    EventTrackingId     = null,
+                                                                    CancellationToken    CancellationToken   = default)
+
+            => ICSMSClient.NotifyCRL(
+                   new NotifyCRLRequest(
+                       ChargeBoxId,
+                       NotifyCRLRequestId,
+                       Availability,
+                       Location,
+                       CustomData,
+
+                       RequestId,
+                       RequestTimestamp,
+                       RequestTimeout,
+                       EventTrackingId,
+                       CancellationToken
+                   )
+               );
+
+        #endregion
+
 
         #region GetLocalListVersion        (ChargeBoxId, ...)
 
@@ -2157,6 +2203,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region NotifyCRL
+
+        /// <summary>
+        /// An event fired whenever a NotifyCRL request will be sent to the CSMS.
+        /// </summary>
+        event OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyCRL request was received.
+        /// </summary>
+        event OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
+
+        #endregion
+
 
         #region GetLocalListVersion
 
@@ -2676,6 +2736,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Request">A delete certificate request.</param>
         Task<DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request);
+
+        #endregion
+
+        #region NotifyCRL
+
+        /// <summary>
+        /// Notify the charging station about the status of a certificate revocation list.
+        /// </summary>
+        /// <param name="Request">A NotifyCRL request.</param>
+        Task<NotifyCRLResponse> NotifyCRL(NotifyCRLRequest Request);
 
         #endregion
 

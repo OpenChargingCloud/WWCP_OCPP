@@ -97,11 +97,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return true;
 
                 case "MacAddress":
-                    IdTokenType = IdTokenTypes.MacAddress;
+                    IdTokenType = IdTokenTypes.MACAddress;
                     return true;
 
                 case "NoAuthorization":
                     IdTokenType = IdTokenTypes.NoAuthorization;
+                    return true;
+
+                case "EVCCID":
+                    IdTokenType = IdTokenTypes.EVCCID;
+                    return true;
+
+                case "NEMA":
+                    IdTokenType = IdTokenTypes.NEMA;
                     return true;
 
                 default:
@@ -125,7 +133,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    IdTokenTypes.ISO15693         => "ISO15693",
                    IdTokenTypes.KeyCode          => "KeyCode",
                    IdTokenTypes.Local            => "Local",
-                   IdTokenTypes.MacAddress       => "MacAddress",
+                   IdTokenTypes.MACAddress       => "MacAddress",
+                   IdTokenTypes.EVCCID           => "EVCCID",
+                   IdTokenTypes.NEMA             => "NEMA",
                    IdTokenTypes.NoAuthorization  => "NoAuthorization",
                    _                             => "Unknown"
                };
@@ -177,14 +187,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         Local,
 
         /// <summary>
-        /// MacAddress
+        /// MAC Address
         /// </summary>
-        MacAddress,
+        MACAddress,
 
         /// <summary>
         /// NoAuthorization
         /// </summary>
-        NoAuthorization
+        NoAuthorization,
+
+        /// <summary>
+        /// EVCCID of EV.
+        /// For ISO 15118-2  this is the MAC address.
+        /// For ISO 15118-20 this is an identifier up to 255 characters.
+        /// </summary>
+        EVCCID,
+
+        /// <summary>
+        /// NEMA EVSE1 2018 token.
+        /// </summary>
+        NEMA
 
     }
 

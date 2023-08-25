@@ -92,6 +92,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     MeasurementLocation = MeasurementLocations.Outlet;
                     return true;
 
+                case "LocalGrid":
+                    MeasurementLocation = MeasurementLocations.LocalGrid;
+                    return true;
+
                 default:
                     MeasurementLocation = MeasurementLocations.Unknown;
                     return false;
@@ -107,12 +111,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this MeasurementLocations MeasurementLocation)
 
             => MeasurementLocation switch {
-                   MeasurementLocations.Body    => "Body",
-                   MeasurementLocations.Cable   => "Cable",
-                   MeasurementLocations.EV      => "EV",
-                   MeasurementLocations.Inlet   => "Inlet",
-                   MeasurementLocations.Outlet  => "Outlet",
-                   _                            => "Unknown"
+                   MeasurementLocations.Body       => "Body",
+                   MeasurementLocations.Cable      => "Cable",
+                   MeasurementLocations.EV         => "EV",
+                   MeasurementLocations.Inlet      => "Inlet",
+                   MeasurementLocations.Outlet     => "Outlet",
+                   MeasurementLocations.LocalGrid  => "LocalGrid",
+                   _                               => "Unknown"
                };
 
         #endregion
@@ -154,7 +159,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Outlet
         /// </summary>
-        Outlet
+        Outlet,
+
+        /// <summary>
+        /// Local grid meter.
+        /// </summary>
+        LocalGrid
 
     }
 

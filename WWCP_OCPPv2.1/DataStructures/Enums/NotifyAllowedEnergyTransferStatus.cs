@@ -122,7 +122,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         Accepted,
 
         /// <summary>
-        /// Request has not been accepted and will not be executed.
+        /// Request has been rejected. Should not occur, unless there are
+        /// some technical problems.
         /// </summary>
         Rejected
 

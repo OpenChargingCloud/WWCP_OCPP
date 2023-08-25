@@ -84,6 +84,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     ChargingProfileKind = ChargingProfileKinds.Relative;
                     return true;
 
+                case "Dynamic":
+                    ChargingProfileKind = ChargingProfileKinds.Dynamic;
+                    return true;
+
                 default:
                     ChargingProfileKind = ChargingProfileKinds.Unknown;
                     return false;
@@ -102,6 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    ChargingProfileKinds.Absolute   => "Absolute",
                    ChargingProfileKinds.Recurring  => "Recurring",
                    ChargingProfileKinds.Relative   => "Relative",
+                   ChargingProfileKinds.Dynamic    => "Dynamic",
                    _                               => "Unknown"
                };
 
@@ -139,7 +144,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// When a charging profile is received for a transaction in progress, then it should activate immediately.
         /// No value for startSchedule should be supplied.
         /// </summary>
-        Relative
+        Relative,
+
+        /// <summary>
+        /// The schedule consists of only one charging schedule period, which is updated
+        /// dynamically by the CSMS.
+        /// </summary>
+        Dynamic
 
     }
 

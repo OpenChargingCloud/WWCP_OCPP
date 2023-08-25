@@ -72,6 +72,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             switch (Text.Trim())
             {
 
+                case "AbnormalCondition":
+                    TriggerReason = TriggerReasons.AbnormalCondition;
+                    return true;
+
                 case "Authorized":
                     TriggerReason = TriggerReasons.Authorized;
                     return true;
@@ -104,12 +108,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     TriggerReason = TriggerReasons.EVConnectTimeout;
                     return true;
 
+                case "EVDeparted":
+                    TriggerReason = TriggerReasons.EVDeparted;
+                    return true;
+
+                case "EVDetected":
+                    TriggerReason = TriggerReasons.EVDetected;
+                    return true;
+
                 case "MeterValueClock":
                     TriggerReason = TriggerReasons.MeterValueClock;
                     return true;
 
                 case "MeterValuePeriodic":
                     TriggerReason = TriggerReasons.MeterValuePeriodic;
+                    return true;
+
+                case "RemoteStop":
+                    TriggerReason = TriggerReasons.RemoteStop;
+                    return true;
+
+                case "RemoteStart":
+                    TriggerReason = TriggerReasons.RemoteStart;
+                    return true;
+
+                case "ResetCommand":
+                    TriggerReason = TriggerReasons.ResetCommand;
+                    return true;
+
+                case "SignedDataReceived":
+                    TriggerReason = TriggerReasons.SignedDataReceived;
+                    return true;
+
+                case "StopAuthorized":
+                    TriggerReason = TriggerReasons.StopAuthorized;
                     return true;
 
                 case "TimeLimitReached":
@@ -124,36 +156,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     TriggerReason = TriggerReasons.UnlockCommand;
                     return true;
 
-                case "StopAuthorized":
-                    TriggerReason = TriggerReasons.StopAuthorized;
-                    return true;
-
-                case "EVDeparted":
-                    TriggerReason = TriggerReasons.EVDeparted;
-                    return true;
-
-                case "EVDetected":
-                    TriggerReason = TriggerReasons.EVDetected;
-                    return true;
-
-                case "RemoteStop":
-                    TriggerReason = TriggerReasons.RemoteStop;
-                    return true;
-
-                case "RemoteStart":
-                    TriggerReason = TriggerReasons.RemoteStart;
-                    return true;
-
-                case "AbnormalCondition":
-                    TriggerReason = TriggerReasons.AbnormalCondition;
-                    return true;
-
-                case "SignedDataReceived":
-                    TriggerReason = TriggerReasons.SignedDataReceived;
-                    return true;
-
-                case "ResetCommand":
-                    TriggerReason = TriggerReasons.ResetCommand;
+                case "OperationModeChanged":
+                    TriggerReason = TriggerReasons.OperationModeChanged;
                     return true;
 
 
@@ -172,6 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this TriggerReasons TriggerReason)
 
             => TriggerReason switch {
+                   TriggerReasons.AbnormalCondition     => "AbnormalCondition",
                    TriggerReasons.Authorized            => "Authorized",
                    TriggerReasons.CablePluggedIn        => "CablePluggedIn",
                    TriggerReasons.ChargingRateChanged   => "ChargingRateChanged",
@@ -180,19 +185,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    TriggerReasons.EnergyLimitReached    => "EnergyLimitReached",
                    TriggerReasons.EVCommunicationLost   => "EVCommunicationLost",
                    TriggerReasons.EVConnectTimeout      => "EVConnectTimeout",
+                   TriggerReasons.EVDeparted            => "EVDeparted",
+                   TriggerReasons.EVDetected            => "EVDetected",
                    TriggerReasons.MeterValueClock       => "MeterValueClock",
                    TriggerReasons.MeterValuePeriodic    => "MeterValuePeriodic",
+                   TriggerReasons.RemoteStop            => "RemoteStop",
+                   TriggerReasons.RemoteStart           => "RemoteStart",
+                   TriggerReasons.ResetCommand          => "ResetCommand",
+                   TriggerReasons.SignedDataReceived    => "SignedDataReceived",
+                   TriggerReasons.StopAuthorized        => "StopAuthorized",
                    TriggerReasons.TimeLimitReached      => "TimeLimitReached",
                    TriggerReasons.Trigger               => "Trigger",
                    TriggerReasons.UnlockCommand         => "UnlockCommand",
-                   TriggerReasons.StopAuthorized        => "StopAuthorized",
-                   TriggerReasons.EVDeparted            => "EVDeparted",
-                   TriggerReasons.EVDetected            => "EVDetected",
-                   TriggerReasons.RemoteStop            => "RemoteStop",
-                   TriggerReasons.RemoteStart           => "RemoteStart",
-                   TriggerReasons.AbnormalCondition     => "AbnormalCondition",
-                   TriggerReasons.SignedDataReceived    => "SignedDataReceived",
-                   TriggerReasons.ResetCommand          => "ResetCommand",
+                   TriggerReasons.OperationModeChanged  => "OperationModeChanged",
                    _                                    => "Unknown"
                };
 
@@ -212,27 +217,116 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         Unknown,
 
-        Authorized,
-        CablePluggedIn,
-        ChargingRateChanged,
-        ChargingStateChanged,
-        Deauthorized,
-        EnergyLimitReached,
-        EVCommunicationLost,
-        EVConnectTimeout,
-        MeterValueClock,
-        MeterValuePeriodic,
-        TimeLimitReached,
-        Trigger,
-        UnlockCommand,
-        StopAuthorized,
-        EVDeparted,
-        EVDetected,
-        RemoteStop,
-        RemoteStart,
+
+        /// <summary>
+        /// An abnormal error or fault condition has occurred.
+        /// </summary>
         AbnormalCondition,
+
+        /// <summary>
+        /// Charging is authorized, by any means. Might be an RFID, or other authorization means
+        /// </summary>
+        Authorized,
+
+        /// <summary>
+        /// Cable is plugged in and an EV is detected.
+        /// </summary>
+        CablePluggedIn,
+
+        /// <summary>
+        /// Rate of charging changed by more than LimitChangeSignificance.
+        /// </summary>
+        ChargingRateChanged,
+
+        /// <summary>
+        /// Charging State changed.
+        /// </summary>
+        ChargingStateChanged,
+
+        /// <summary>
+        /// The transaction was stopped because of the authorization status in the response to a transactionEventRequest.
+        /// </summary>
+        Deauthorized,
+
+        /// <summary>
+        /// Maximum energy of charging reached. For example: in a pre-paid charging solution.
+        /// </summary>
+        EnergyLimitReached,
+
+        /// <summary>
+        /// Communication with EV lost, for example: cable disconnected.
+        /// </summary>
+        EVCommunicationLost,
+
+        /// <summary>
+        /// EV not connected before the connection is timed out.
+        /// </summary>
+        EVConnectTimeout,
+
+        /// <summary>
+        /// EV departed. For example: When a departing EV triggers a parking bay detector.
+        /// </summary>
+        EVDeparted,
+
+        /// <summary>
+        /// EV detected. For example: When an arriving EV triggers a parking bay detector.
+        /// </summary>
+        EVDetected,
+
+        /// <summary>
+        /// Needed to send a clock aligned meter value.
+        /// </summary>
+        MeterValueClock,
+
+        /// <summary>
+        /// Needed to send a periodic meter value.
+        /// </summary>
+        MeterValuePeriodic,
+
+        /// <summary>
+        /// A RequestStopTransactionRequest has been sent.
+        /// </summary>
+        RemoteStop,
+
+        /// <summary>
+        /// A RequestStartTransactionRequest has been sent.
+        /// </summary>
+        RemoteStart,
+
+        /// <summary>
+        /// CSMS sent a Reset Charging Station command.
+        /// </summary>
+        ResetCommand,
+
+        /// <summary>
+        /// Signed data is received from the energy meter.
+        /// </summary>
         SignedDataReceived,
-        ResetCommand
+
+        /// <summary>
+        /// An EV Driver has been authorized to stop charging. For example: By swiping an RFID card.
+        /// </summary>
+        StopAuthorized,
+
+        /// <summary>
+        /// Maximum time of charging reached. For example: in a pre-paid charging solution.
+        /// </summary>
+        TimeLimitReached,
+
+        /// <summary>
+        /// Requested by the CSMS via a TriggerMessageRequest.
+        /// </summary>
+        Trigger,
+
+        /// <summary>
+        /// CSMS sent an Unlock Connector command.
+        /// </summary>
+        UnlockCommand,
+
+        /// <summary>
+        /// The (V2X) operation mode in charging schedule period has changed.
+        /// </summary>
+        OperationModeChanged
 
     }
 

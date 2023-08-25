@@ -88,6 +88,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             this.EVMaxCurrent = EVMaxCurrent;
             this.EVMaxVoltage = EVMaxVoltage;
 
+            unchecked
+            {
+
+                hashCode = EnergyAmount.GetHashCode() * 11 ^
+                           EVMinCurrent.GetHashCode() *  7 ^
+                           EVMaxCurrent.GetHashCode() *  5 ^
+                           EVMaxVoltage.GetHashCode() *  3 ^
+
+                           base.GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -326,8 +338,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="ACChargingParameters1">AC charging parameters.</param>
         /// <param name="ACChargingParameters2">Another AC charging parameters.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ACChargingParameters ACChargingParameters1,
-                                           ACChargingParameters ACChargingParameters2)
+        public static Boolean operator == (ACChargingParameters? ACChargingParameters1,
+                                           ACChargingParameters? ACChargingParameters2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -352,8 +364,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="ACChargingParameters1">AC charging parameters.</param>
         /// <param name="ACChargingParameters2">Another AC charging parameters.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ACChargingParameters ACChargingParameters1,
-                                           ACChargingParameters ACChargingParameters2)
+        public static Boolean operator != (ACChargingParameters? ACChargingParameters1,
+                                           ACChargingParameters? ACChargingParameters2)
 
             => !(ACChargingParameters1 == ACChargingParameters2);
 
@@ -399,24 +411,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return EnergyAmount.GetHashCode() * 11 ^
-                       EVMinCurrent.GetHashCode() *  7 ^
-                       EVMaxCurrent.GetHashCode() *  5 ^
-                       EVMaxVoltage.GetHashCode() *  3 ^
-
-                       base.        GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

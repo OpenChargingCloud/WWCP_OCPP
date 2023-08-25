@@ -39,25 +39,57 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The source of the charging needs.
         /// </summary>
         [Mandatory]
-        public EnergyTransferModes    RequestedEnergyTransfer    { get; }
+        public EnergyTransferModes               RequestedEnergyTransfer    { get; }
+
+        /// <summary>
+        /// The enumeration of energy transfer modes marked as available by the EV.
+        /// </summary>
+        [Optional]
+        public IEnumerable<EnergyTransferModes>  AvailableEnergyTransfer    { get; }
+
+        /// <summary>
+        /// Optional indication whether the EV wants to operate in dynamic or scheduled mode.
+        /// When absent, scheduled mode is assumed.
+        /// </summary>
+        [Optional]
+        public ControlModes?                     ControlMode                { get; }
+
+        /// <summary>
+        /// Optional indication whether only the EV or also the EVSE or CSMS
+        /// determines min/target state-of-charge and departure time.
+        /// </summary>
+        [Optional]
+        public MobilityNeedsModes?               MobilityNeedsMode          { get; }
+
+        /// <summary>
+        /// The optional pricing structure type that will be offered.
+        /// </summary>
+        [Optional]
+        public PricingTypes?                     Pricing                    { get; }
 
         /// <summary>
         /// The optional indication whether the charging needs is critical for the grid.
         /// </summary>
         [Optional]
-        public DateTime?              DepartureTime              { get; }
+        public DateTime?                         DepartureTime              { get; }
 
         /// <summary>
         /// Optional EV AC charging parameters.
         /// </summary>
         [Optional]
-        public ACChargingParameters?  ACChargingParameters       { get; }
+        public ACChargingParameters?             ACChargingParameters       { get; }
 
         /// <summary>
         /// Optional EV DC charging parameters.
         /// </summary>
         [Optional]
-        public DCChargingParameters?  DCChargingParameters       { get; }
+        public DCChargingParameters?             DCChargingParameters       { get; }
+
+        /// <summary>
+        /// Optional EV ISO 15118-20 charging parameters.
+        /// </summary>
+        [Optional]
+        public V2XChargingParameters?            V2XChargingParameters      { get; }
 
         #endregion
 
@@ -340,8 +372,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingNeeds1">Charging needs.</param>
         /// <param name="ChargingNeeds2">Another charging needs.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingNeeds ChargingNeeds1,
-                                           ChargingNeeds ChargingNeeds2)
+        public static Boolean operator == (ChargingNeeds? ChargingNeeds1,
+                                           ChargingNeeds? ChargingNeeds2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -366,8 +398,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingNeeds1">Charging needs.</param>
         /// <param name="ChargingNeeds2">Another charging needs.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingNeeds ChargingNeeds1,
-                                           ChargingNeeds ChargingNeeds2)
+        public static Boolean operator != (ChargingNeeds? ChargingNeeds1,
+                                           ChargingNeeds? ChargingNeeds2)
 
             => !(ChargingNeeds1 == ChargingNeeds2);
 

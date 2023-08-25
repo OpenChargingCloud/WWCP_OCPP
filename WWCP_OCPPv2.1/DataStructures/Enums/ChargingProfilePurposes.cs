@@ -80,6 +80,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     ChargingProfilePurpose = ChargingProfilePurposes.ChargePointMaxProfile;
                     return true;
 
+                case "PriorityCharging":
+                    ChargingProfilePurpose = ChargingProfilePurposes.PriorityCharging;
+                    return true;
+
+                case "LocalGeneration":
+                    ChargingProfilePurpose = ChargingProfilePurposes.LocalGeneration;
+                    return true;
+
                 case "TxProfile":
                     ChargingProfilePurpose = ChargingProfilePurposes.TxProfile;
                     return true;
@@ -105,6 +113,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    ChargingProfilePurposes.ChargingStationExternalConstraints  => "ChargingStationExternalConstraints",
                    ChargingProfilePurposes.ChargePointMaxProfile               => "ChargePointMaxProfile",
                    ChargingProfilePurposes.TxProfile                           => "TxProfile",
+                   ChargingProfilePurposes.PriorityCharging                    => "PriorityCharging",
+                   ChargingProfilePurposes.LocalGeneration                     => "LocalGeneration",
                    _                                                           => "TxDefaultProfile"
                };
 
@@ -135,6 +145,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// for an entire charging station.
         /// </summary>
         ChargePointMaxProfile,
+
+        /// <summary>
+        /// This profile is used in place of a Tx(Default)Profile when priority charging is requested,
+        /// either locally on the charging station or by a UsePriorityChargingRequest from the CSMS.
+        /// </summary>
+        PriorityCharging,
+
+        /// <summary>
+        /// This profile adds capacity from local generation. Its capacity is added on top of other
+        /// charging profiles.
+        /// </summary>
+        LocalGeneration,
 
         /// <summary>
         /// Default profile to be used for new transactions.

@@ -80,6 +80,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     LogType = LogTypes.SecurityLog;
                     return true;
 
+                case "DataCollectorLog":
+                    LogType = LogTypes.DataCollectorLog;
+                    return true;
+
                 default:
                     LogType = LogTypes.Unknown;
                     return false;
@@ -95,9 +99,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this LogTypes LogType)
 
             => LogType switch {
-                   LogTypes.DiagnosticsLog  => "DiagnosticsLog",
-                   LogTypes.SecurityLog     => "SecurityLog",
-                   _                        => "Unknown"
+                   LogTypes.DiagnosticsLog    => "DiagnosticsLog",
+                   LogTypes.SecurityLog       => "SecurityLog",
+                   LogTypes.DataCollectorLog  => "DataCollectorLog",
+                   _                          => "Unknown"
                };
 
         #endregion
@@ -124,7 +129,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Sent by the Central System to the Charge Point to request that the Charge Point uploads the security log.
         /// </summary>
-        SecurityLog
+        SecurityLog,
+
+        /// <summary>
+        /// The log of sampled measurements from the DataCollector component.
+        /// </summary>
+        DataCollectorLog
 
     }
 

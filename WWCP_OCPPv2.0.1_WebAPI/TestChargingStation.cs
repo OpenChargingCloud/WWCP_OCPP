@@ -1453,11 +1453,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         #region WireEvents(CPServer)
 
 
-        private ConcurrentDictionary<DisplayMessage_Id, MessageInfo>     displayMessages   = new ();
-        private ConcurrentDictionary<Reservation_Id,    Reservation_Id>  reservations      = new ();
-        private ConcurrentDictionary<Transaction_Id,    Transaction>     transactions      = new ();
-        private ConcurrentDictionary<Transaction_Id,    Decimal>         totalCosts        = new ();
-        private ConcurrentDictionary<CertificateUse,    Certificate>     certificates      = new ();
+        private readonly ConcurrentDictionary<DisplayMessage_Id, MessageInfo>     displayMessages   = new ();
+        private readonly ConcurrentDictionary<Reservation_Id,    Reservation_Id>  reservations      = new ();
+        private readonly ConcurrentDictionary<Transaction_Id,    Transaction>     transactions      = new ();
+        private readonly ConcurrentDictionary<Transaction_Id,    Decimal>         totalCosts        = new ();
+        private readonly ConcurrentDictionary<CertificateUse,    Certificate>     certificates      = new ();
 
         public void WireEvents(IChargingStationServer CPServer)
         {

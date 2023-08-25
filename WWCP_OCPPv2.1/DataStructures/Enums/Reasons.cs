@@ -72,6 +72,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             switch (Text.Trim())
             {
 
+                case "ChargingNeedsNotAccepted":
+                    Reason = Reasons.ChargingNeedsNotAccepted;
+                    return true;
+
                 case "DeAuthorized":
                     Reason = Reasons.DeAuthorized;
                     return true;
@@ -158,26 +162,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this Reasons Reason)
 
             => Reason switch {
-                   Reasons.DeAuthorized        => "DeAuthorized",
-                   Reasons.EmergencyStop       => "EmergencyStop",
-                   Reasons.EnergyLimitReached  => "EnergyLimitReached",
-                   Reasons.EVDisconnected      => "EVDisconnected",
-                   Reasons.GroundFault         => "GroundFault",
-                   Reasons.ImmediateReset      => "ImmediateReset",
-                   Reasons.Local               => "Local",
-                   Reasons.LocalOutOfCredit    => "LocalOutOfCredit",
-                   Reasons.MasterPass          => "MasterPass",
-                   Reasons.Other               => "Other",
-                   Reasons.OvercurrentFault    => "OvercurrentFault",
-                   Reasons.PowerLoss           => "PowerLoss",
-                   Reasons.PowerQuality        => "PowerQuality",
-                   Reasons.Reboot              => "Reboot",
-                   Reasons.Remote              => "Remote",
-                   Reasons.SOCLimitReached     => "SOCLimitReached",
-                   Reasons.StoppedByEV         => "StoppedByEV",
-                   Reasons.TimeLimitReached    => "TimeLimitReached",
-                   Reasons.Timeout             => "Timeout",
-                   _                           => "Unknown"
+                   Reasons.ChargingNeedsNotAccepted  => "ChargingNeedsNotAccepted",
+                   Reasons.DeAuthorized              => "DeAuthorized",
+                   Reasons.EmergencyStop             => "EmergencyStop",
+                   Reasons.EnergyLimitReached        => "EnergyLimitReached",
+                   Reasons.EVDisconnected            => "EVDisconnected",
+                   Reasons.GroundFault               => "GroundFault",
+                   Reasons.ImmediateReset            => "ImmediateReset",
+                   Reasons.Local                     => "Local",
+                   Reasons.LocalOutOfCredit          => "LocalOutOfCredit",
+                   Reasons.MasterPass                => "MasterPass",
+                   Reasons.Other                     => "Other",
+                   Reasons.OvercurrentFault          => "OvercurrentFault",
+                   Reasons.PowerLoss                 => "PowerLoss",
+                   Reasons.PowerQuality              => "PowerQuality",
+                   Reasons.Reboot                    => "Reboot",
+                   Reasons.Remote                    => "Remote",
+                   Reasons.SOCLimitReached           => "SOCLimitReached",
+                   Reasons.StoppedByEV               => "StoppedByEV",
+                   Reasons.TimeLimitReached          => "TimeLimitReached",
+                   Reasons.Timeout                   => "Timeout",
+                   _                                 => "Unknown"
                };
 
         #endregion
@@ -198,6 +203,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         /// <summary>
+        /// CSMS cannot accept the requested energy transfer type or other part of the EV charging needs.
+        /// </summary>
+        ChargingNeedsNotAccepted,
+
+        /// <summary>
         /// The transaction was stopped because of the authorization
         /// status in a StartTransaction response.
         /// </summary>
@@ -208,75 +218,92 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         EmergencyStop,
 
-
+        /// <summary>
+        /// EV charging session reached a locally enforced maximum energy transfer limit.
+        /// </summary>
         EnergyLimitReached,
 
         /// <summary>
-        /// Disconnection of the cable or vehicle moved away
-        /// from inductive charge unit.
+        /// Disconnection of the cable or vehicle moved away from inductive charge unit.
         /// </summary>
         EVDisconnected,
 
-
+        /// <summary>
+        /// A GroundFault has occurred.
+        /// </summary>
         GroundFault,
 
-
+        /// <summary>
+        /// A Reset(Immediate) command was received.
+        /// </summary>
         ImmediateReset,
 
-
         /// <summary>
-        /// Stopped locally on request of the user at the Charge Point.
+        /// Stopped locally on request of the EV Driver at the charging station.
         /// This is a regular termination of a transaction.
+        /// Examples: presenting an IdToken tag, pressing a button to stop.
         /// </summary>
         Local,
 
-
+        /// <summary>
+        /// A local credit limit enforced through the charging station has been exceeded.
+        /// </summary>
         LocalOutOfCredit,
 
-
+        /// <summary>
+        /// The transaction was stopped using a token with a MasterPassGroupId.
+        /// </summary>
         MasterPass,
-
 
         /// <summary>
         /// Any other reason.
         /// </summary>
         Other,
 
-
+        /// <summary>
+        /// A larger than intended electric current has occurred.
+        /// </summary>
         OvercurrentFault,
-
 
         /// <summary>
         /// Complete loss of power.
         /// </summary>
         PowerLoss,
 
+        /// <summary>
+        /// Quality of power too low, e.g. voltage too low/high, phase imbalance, etc
+        /// </summary>
         PowerQuality,
 
-
         /// <summary>
-        /// A locally initiated reset/reboot occurred,
-        /// e.g. the watchdog kicked in.
+        /// A locally initiated reset/reboot occurred, e.g. the watchdog kicked in.
         /// </summary>
         Reboot,
 
         /// <summary>
-        /// Stopped remotely on request of the user, e.g. via using
-        /// a smartphone app or exceeding a (non local) prepaid credit.
-        /// This is a regular termination of a transaction.
+        /// Stopped remotely on request of the CSMS. This is a regular termination of a transaction.
+        /// Examples: termination using a smartphone app, exceeding a(non local) prepaid credit.
         /// </summary>
         Remote,
 
-
+        /// <summary>
+        /// Electric vehicle has reported reaching a locally enforced maximum battery state-of-charge.
+        /// </summary>
         SOCLimitReached,
 
-
+        /// <summary>
+        /// The transaction was stopped by the EV.
+        /// </summary>
         StoppedByEV,
 
-
+        /// <summary>
+        /// EV charging session reached a locally enforced time limit.
+        /// </summary>
         TimeLimitReached,
 
-
+        /// <summary>
+        /// EV not connected within timeout.
+        /// </summary>
         Timeout
 
     }

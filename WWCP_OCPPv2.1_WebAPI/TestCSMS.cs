@@ -768,6 +768,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region NotifyCRL
+
+        /// <summary>
+        /// An event fired whenever a NotifyCRL request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyCRL request was received.
+        /// </summary>
+        public event OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
+
+        #endregion
+
 
         #region GetLocalListVersion
 

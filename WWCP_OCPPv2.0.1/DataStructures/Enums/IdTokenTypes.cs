@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                     return true;
 
                 case "MacAddress":
-                    IdTokenType = IdTokenTypes.MacAddress;
+                    IdTokenType = IdTokenTypes.MACAddress;
                     return true;
 
                 case "NoAuthorization":
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                    IdTokenTypes.ISO15693         => "ISO15693",
                    IdTokenTypes.KeyCode          => "KeyCode",
                    IdTokenTypes.Local            => "Local",
-                   IdTokenTypes.MacAddress       => "MacAddress",
+                   IdTokenTypes.MACAddress       => "MacAddress",
                    IdTokenTypes.NoAuthorization  => "NoAuthorization",
                    _                             => "Unknown"
                };
@@ -177,9 +177,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         Local,
 
         /// <summary>
-        /// MacAddress
+        /// MAC Address
         /// </summary>
-        MacAddress,
+        MACAddress,
 
         /// <summary>
         /// NoAuthorization

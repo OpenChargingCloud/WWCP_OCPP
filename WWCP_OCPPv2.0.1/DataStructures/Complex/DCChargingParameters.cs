@@ -125,6 +125,23 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             this.FullSoC           = FullSoC;
             this.BulkSoC           = BulkSoC;
 
+            unchecked
+            {
+
+                hashCode = EVMaxCurrent.     GetHashCode()       * 29 ^
+                           EVMaxVoltage.     GetHashCode()       * 19 ^
+
+                          (EnergyAmount?.    GetHashCode() ?? 0) * 17 ^
+                          (EVMaxPower?.      GetHashCode() ?? 0) * 13 ^
+                          (StateOfCharge?.   GetHashCode() ?? 0) * 11 ^
+                          (EVEnergyCapacity?.GetHashCode() ?? 0) *  7 ^
+                          (FullSoC?.         GetHashCode() ?? 0) *  5 ^
+                          (BulkSoC?.         GetHashCode() ?? 0) *  3 ^
+
+                           base.             GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -463,8 +480,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="DCChargingParameters1">DC charging parameters.</param>
         /// <param name="DCChargingParameters2">Another DC charging parameters.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (DCChargingParameters DCChargingParameters1,
-                                           DCChargingParameters DCChargingParameters2)
+        public static Boolean operator == (DCChargingParameters? DCChargingParameters1,
+                                           DCChargingParameters? DCChargingParameters2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -489,8 +506,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="DCChargingParameters1">DC charging parameters.</param>
         /// <param name="DCChargingParameters2">Another DC charging parameters.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (DCChargingParameters DCChargingParameters1,
-                                           DCChargingParameters DCChargingParameters2)
+        public static Boolean operator != (DCChargingParameters? DCChargingParameters1,
+                                           DCChargingParameters? DCChargingParameters2)
 
             => !(DCChargingParameters1 == DCChargingParameters2);
 
@@ -503,7 +520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two DC charging parameters for equality..
+        /// Compares two DC charging parameters for equality.
         /// </summary>
         /// <param name="Object">DC charging parameters to compare with.</param>
         public override Boolean Equals(Object? Object)
@@ -552,29 +569,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return EVMaxCurrent.     GetHashCode()       * 29 ^
-                       EVMaxVoltage.     GetHashCode()       * 19 ^
-
-                      (EnergyAmount?.    GetHashCode() ?? 0) * 17 ^
-                      (EVMaxPower?.      GetHashCode() ?? 0) * 13 ^
-                      (StateOfCharge?.   GetHashCode() ?? 0) * 11 ^
-                      (EVEnergyCapacity?.GetHashCode() ?? 0) *  7 ^
-                      (FullSoC?.         GetHashCode() ?? 0) *  5 ^
-                      (BulkSoC?.         GetHashCode() ?? 0) *  3 ^
-
-                       base.             GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
