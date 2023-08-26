@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// The EV energy offer.
+    /// The EV absolute price schedule.
     /// (See also: ISO 15118-20 CommonMessages/Complex/EVAbsolutePriceSchedule)
     /// </summary>
     public class EVAbsolutePriceSchedule : ACustomData,
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public PriceAlgorithm_Id                          PriceAlgorithm                    { get; }
 
         /// <summary>
-        /// The enumeration of EV price rule stacks.
+        /// The enumeration of EV absolute price schedule entries.
         /// </summary>
         [Mandatory]
         public IEnumerable<EVAbsolutePriceScheduleEntry>  EVAbsolutePriceScheduleEntries    { get; }
@@ -65,12 +65,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charging limit.
+        /// Create a new ev absolute price schedule.
         /// </summary>
         /// <param name="TimeAnchor">A time anchor.</param>
         /// <param name="Currency">A currency (ISO 4217).</param>
         /// <param name="PriceAlgorithm">A price algorithm.</param>
-        /// <param name="EVAbsolutePriceScheduleEntries">An enumeration of EV price rule stacks (max 1024).</param>
+        /// <param name="EVAbsolutePriceScheduleEntries">An enumeration of EV absolute price schedule entries (max 1024).</param>
         public EVAbsolutePriceSchedule(DateTime                                   TimeAnchor,
                                        Currency                                   Currency,
                                        PriceAlgorithm_Id                          PriceAlgorithm,
@@ -103,6 +103,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        //ToDo: Update schema documentation after the official release of OCPP v2.1!
+
         #region Documentation
 
 
@@ -111,10 +113,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (JSON, CustomEVAbsolutePriceScheduleParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a charging limit.
+        /// Parse the given JSON representation of a ev absolute price schedule.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomEVAbsolutePriceScheduleParser">A delegate to parse custom charging limit JSON objects.</param>
+        /// <param name="CustomEVAbsolutePriceScheduleParser">A delegate to parse custom ev absolute price schedule JSON objects.</param>
         public static EVAbsolutePriceSchedule Parse(JObject                                      JSON,
                                           CustomJObjectParserDelegate<EVAbsolutePriceSchedule>?  CustomEVAbsolutePriceScheduleParser   = null)
         {
@@ -127,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return evAbsolutePriceSchedule!;
             }
 
-            throw new ArgumentException("The given JSON representation of a charging limit is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ev absolute price schedule is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -139,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a charging limit.
+        /// Try to parse the given JSON representation of a ev absolute price schedule.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EVAbsolutePriceSchedule">The parsed connector type.</param>
@@ -155,12 +157,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a charging limit.
+        /// Try to parse the given JSON representation of a ev absolute price schedule.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EVAbsolutePriceSchedule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomEVAbsolutePriceScheduleParser">A delegate to parse custom charging limit JSON objects.</param>
+        /// <param name="CustomEVAbsolutePriceScheduleParser">A delegate to parse custom ev absolute price schedule JSON objects.</param>
         public static Boolean TryParse(JObject                                      JSON,
                                        out EVAbsolutePriceSchedule?                           EVAbsolutePriceSchedule,
                                        out String?                                  ErrorResponse,
@@ -259,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 EVAbsolutePriceSchedule  = default;
-                ErrorResponse            = "The given JSON representation of a charging limit is invalid: " + e.Message;
+                ErrorResponse            = "The given JSON representation of a ev absolute price schedule is invalid: " + e.Message;
                 return false;
 
             }
@@ -273,7 +275,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomEVAbsolutePriceScheduleSerializer">A delegate to serialize custom charging limits.</param>
+        /// <param name="CustomEVAbsolutePriceScheduleSerializer">A delegate to serialize custom ev absolute price schedules.</param>
+        /// <param name="CustomEVAbsolutePriceScheduleEntrySerializer">A delegate to serialize custom charging limits.</param>
+        /// <param name="CustomEVPriceRuleSerializer">A delegate to serialize custom ev price rules.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<EVAbsolutePriceSchedule>?       CustomEVAbsolutePriceScheduleSerializer        = null,
                               CustomJObjectSerializerDelegate<EVAbsolutePriceScheduleEntry>?  CustomEVAbsolutePriceScheduleEntrySerializer   = null,
@@ -311,8 +315,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVAbsolutePriceSchedule1">A charging limit.</param>
-        /// <param name="EVAbsolutePriceSchedule2">Another charging limit.</param>
+        /// <param name="EVAbsolutePriceSchedule1">A ev absolute price schedule.</param>
+        /// <param name="EVAbsolutePriceSchedule2">Another ev absolute price schedule.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EVAbsolutePriceSchedule? EVAbsolutePriceSchedule1,
                                            EVAbsolutePriceSchedule? EVAbsolutePriceSchedule2)
@@ -337,8 +341,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVAbsolutePriceSchedule1">A charging limit.</param>
-        /// <param name="EVAbsolutePriceSchedule2">Another charging limit.</param>
+        /// <param name="EVAbsolutePriceSchedule1">A ev absolute price schedule.</param>
+        /// <param name="EVAbsolutePriceSchedule2">Another ev absolute price schedule.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVAbsolutePriceSchedule? EVAbsolutePriceSchedule1,
                                            EVAbsolutePriceSchedule? EVAbsolutePriceSchedule2)
@@ -354,9 +358,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two charging limits for equality..
+        /// Compares two ev absolute price schedules for equality..
         /// </summary>
-        /// <param name="Object">A charging limit to compare with.</param>
+        /// <param name="Object">A ev absolute price schedule to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is EVAbsolutePriceSchedule evAbsolutePriceSchedule &&
@@ -367,9 +371,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(EVAbsolutePriceSchedule)
 
         /// <summary>
-        /// Compares two charging limits for equality.
+        /// Compares two ev absolute price schedules for equality.
         /// </summary>
-        /// <param name="EVAbsolutePriceSchedule">A charging limit to compare with.</param>
+        /// <param name="EVAbsolutePriceSchedule">A ev absolute price schedule to compare with.</param>
         public Boolean Equals(EVAbsolutePriceSchedule? EVAbsolutePriceSchedule)
 
             => EVAbsolutePriceSchedule is not null &&

@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charging limit.
+        /// Create a new ev energy offer.
         /// </summary>
         /// <param name="EVPowerSchedule">An EV power schedule.</param>
         /// <param name="EVAbsolutePriceSchedule">An optional absolute EV price schedule.</param>
@@ -84,6 +84,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        //ToDo: Update schema documentation after the official release of OCPP v2.1!
+
         #region Documentation
 
 
@@ -92,10 +94,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (JSON, CustomEVEnergyOfferParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a charging limit.
+        /// Parse the given JSON representation of a ev energy offer.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomEVEnergyOfferParser">A delegate to parse custom charging limit JSON objects.</param>
+        /// <param name="CustomEVEnergyOfferParser">A delegate to parse custom ev energy offer JSON objects.</param>
         public static EVEnergyOffer Parse(JObject                                      JSON,
                                           CustomJObjectParserDelegate<EVEnergyOffer>?  CustomEVEnergyOfferParser   = null)
         {
@@ -108,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return evEnergyOffer!;
             }
 
-            throw new ArgumentException("The given JSON representation of a charging limit is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a ev energy offer is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -120,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a charging limit.
+        /// Try to parse the given JSON representation of a ev energy offer.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EVEnergyOffer">The parsed connector type.</param>
@@ -136,12 +138,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a charging limit.
+        /// Try to parse the given JSON representation of a ev energy offer.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="EVEnergyOffer">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomEVEnergyOfferParser">A delegate to parse custom charging limit JSON objects.</param>
+        /// <param name="CustomEVEnergyOfferParser">A delegate to parse custom ev energy offer JSON objects.</param>
         public static Boolean TryParse(JObject                                      JSON,
                                        out EVEnergyOffer?                           EVEnergyOffer,
                                        out String?                                  ErrorResponse,
@@ -212,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 EVEnergyOffer  = default;
-                ErrorResponse  = "The given JSON representation of a charging limit is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of a ev energy offer is invalid: " + e.Message;
                 return false;
 
             }
@@ -221,28 +223,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomEVEnergyOfferSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomEVEnergyOfferSerializer = null, CustomEVPowerScheduleSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomEVEnergyOfferSerializer">A delegate to serialize custom charging limits.</param>
+        /// <param name="CustomEVEnergyOfferSerializer">A delegate to serialize custom ev energy offers.</param>
+        /// <param name="CustomEVPowerScheduleSerializer">A delegate to serialize custom ev power schedules.</param>
+        /// <param name="CustomEVPowerScheduleEntrySerializer">A delegate to serialize custom ev power schedule entries.</param>
+        /// <param name="CustomEVAbsolutePriceScheduleEntrySerializer">A delegate to serialize custom charging limits.</param>
+        /// <param name="CustomEVPriceRuleSerializer">A delegate to serialize custom ev price rules.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<EVEnergyOffer>?  CustomEVEnergyOfferSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?     CustomCustomDataSerializer      = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<EVEnergyOffer>?                 CustomEVEnergyOfferSerializer                  = null,
+                              CustomJObjectSerializerDelegate<EVPowerSchedule>?               CustomEVPowerScheduleSerializer                = null,
+                              CustomJObjectSerializerDelegate<EVPowerScheduleEntry>?          CustomEVPowerScheduleEntrySerializer           = null,
+                              CustomJObjectSerializerDelegate<EVAbsolutePriceSchedule>?       CustomEVAbsolutePriceScheduleSerializer        = null,
+                              CustomJObjectSerializerDelegate<EVAbsolutePriceScheduleEntry>?  CustomEVAbsolutePriceScheduleEntrySerializer   = null,
+                              CustomJObjectSerializerDelegate<EVPriceRule>?                   CustomEVPriceRuleSerializer                    = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
             var json = JSONObject.Create(
 
                                  new JProperty("evPowerSchedule",           EVPowerSchedule.        ToJSON(CustomEVPowerScheduleSerializer,
-                                                                                                           CustomEVPowerScheduleEntrySerializer,
-                                                                                                           CustomRationalNumberSerializer)),
+                                                                                                           CustomEVPowerScheduleEntrySerializer)),
 
                            EVAbsolutePriceSchedule is not null
                                ? new JProperty("evAbsolutePriceSchedule",   EVAbsolutePriceSchedule.ToJSON(CustomEVAbsolutePriceScheduleSerializer,
-                                                                                                           CustomEVPriceRuleStackSerializer,
-                                                                                                           CustomEVPriceRuleSerializer,
-                                                                                                           CustomRationalNumberSerializer))
+                                                                                                           CustomEVAbsolutePriceScheduleEntrySerializer,
+                                                                                                           CustomEVPriceRuleSerializer))
                                : null,
 
                            CustomData is not null
@@ -267,8 +276,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVEnergyOffer1">A charging limit.</param>
-        /// <param name="EVEnergyOffer2">Another charging limit.</param>
+        /// <param name="EVEnergyOffer1">A ev energy offer.</param>
+        /// <param name="EVEnergyOffer2">Another ev energy offer.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EVEnergyOffer? EVEnergyOffer1,
                                            EVEnergyOffer? EVEnergyOffer2)
@@ -293,8 +302,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVEnergyOffer1">A charging limit.</param>
-        /// <param name="EVEnergyOffer2">Another charging limit.</param>
+        /// <param name="EVEnergyOffer1">A ev energy offer.</param>
+        /// <param name="EVEnergyOffer2">Another ev energy offer.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVEnergyOffer? EVEnergyOffer1,
                                            EVEnergyOffer? EVEnergyOffer2)
@@ -310,9 +319,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two charging limits for equality..
+        /// Compares two ev energy offers for equality..
         /// </summary>
-        /// <param name="Object">A charging limit to compare with.</param>
+        /// <param name="Object">A ev energy offer to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is EVEnergyOffer evEnergyOffer &&
@@ -323,9 +332,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(EVEnergyOffer)
 
         /// <summary>
-        /// Compares two charging limits for equality.
+        /// Compares two ev energy offers for equality.
         /// </summary>
-        /// <param name="EVEnergyOffer">A charging limit to compare with.</param>
+        /// <param name="EVEnergyOffer">A ev energy offer to compare with.</param>
         public Boolean Equals(EVEnergyOffer? EVEnergyOffer)
 
             => EVEnergyOffer is not null &&
