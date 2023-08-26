@@ -45,21 +45,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMinimumChargePower
         /// </summary>
         [Optional]
-        public Decimal?  MinChargePower           { get; }
+        public Watt?           MinChargePower           { get; }
 
         /// <summary>
         /// The optional minimum charge power in W on phase L2, defined by max(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMinimumChargePower_L2
         /// </summary>
         [Optional]
-        public Decimal?  MinChargePower_L2        { get; }
+        public Watt?           MinChargePower_L2        { get; }
 
         /// <summary>
         /// The optional minimum charge power in W on phase L3, defined by max(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMinimumChargePower_L3
         /// </summary>
         [Optional]
-        public Decimal?  MinChargePower_L3        { get; }
+        public Watt?           MinChargePower_L3        { get; }
 
         /// <summary>
         /// The optional maximum charge power in W, defined by min(EV, EVSE).
@@ -68,21 +68,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMaximumChargePower
         /// </summary>
         [Optional]
-        public Decimal?  MaxChargePower           { get; }
+        public Watt?           MaxChargePower           { get; }
 
         /// <summary>
         /// The optional maximum charge power in W on phase L2, defined by min(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargePower_L2
         /// </summary>
         [Optional]
-        public Decimal?  MaxChargePower_L2        { get; }
+        public Watt?           MaxChargePower_L2        { get; }
 
         /// <summary>
         /// The optional maximum charge power in W on phase L3, defined by min(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMaximumChargePower_L3
         /// </summary>
         [Optional]
-        public Decimal?  MaxChargePower_L3        { get; }
+        public Watt?           MaxChargePower_L3        { get; }
 
 
         /// <summary>
@@ -92,21 +92,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMinimumDischargePower
         /// </summary>
         [Optional]
-        public Decimal?  MinDischargePower        { get; }
+        public Watt?           MinDischargePower        { get; }
 
         /// <summary>
         /// The optional minimum discharge power in W on phase L2, defined by max(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMinimumDischargePower_L2
         /// </summary>
         [Optional]
-        public Decimal?  MinDischargePower_L2     { get; }
+        public Watt?           MinDischargePower_L2     { get; }
 
         /// <summary>
         /// The optional minimum discharge power in W on phase L3, defined by max(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMinimumDischargePower_L3
         /// </summary>
         [Optional]
-        public Decimal?  MinDischargePower_L3     { get; }
+        public Watt?           MinDischargePower_L3     { get; }
 
         /// <summary>
         /// The optional maximum discharge power in W, defined by min(EV, EVSE).
@@ -115,21 +115,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: BPT_AC/DC_CPDReqEnergyTransferModeType: EVMaximumDischargePower
         /// </summary>
         [Optional]
-        public Decimal?  MaxDischargePower        { get; }
+        public Watt?           MaxDischargePower        { get; }
 
         /// <summary>
         /// The optional maximum discharge power in W on phase L2, defined by min(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargePower_L2
         /// </summary>
         [Optional]
-        public Decimal?  MaxDischargePower_L2     { get; }
+        public Watt?           MaxDischargePower_L2     { get; }
 
         /// <summary>
         /// The optional maximum discharge power in W on phase L3, defined by min(EV, EVSE).
         /// ISO 15118-20: BPT_AC_CPDReqEnergyTransferModeType: EVMaximumDischargePower_L3
         /// </summary>
         [Optional]
-        public Decimal?  MaxDischargePower_L3     { get; }
+        public Watt?           MaxDischargePower_L3     { get; }
 
 
         /// <summary>
@@ -137,42 +137,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: BPT_DC_CPDReqEnergyTransferModeType: EVMinimumChargeCurrent
         /// </summary>
         [Optional]
-        public Decimal?  MinChargeCurrent         { get; }
+        public Ampere?         MinChargeCurrent         { get; }
 
         /// <summary>
         /// The optional maximum charge current in A, defined by min(EV, EVSE).
         /// ISO 15118-20: BPT_DC_CPDReqEnergyTransferModeType: EVMaximumChargeCurrent
         /// </summary>
         [Optional]
-        public Decimal?  MaxChargeCurrent         { get; }
+        public Ampere?         MaxChargeCurrent         { get; }
 
         /// <summary>
         /// The optional minimum discharge current in A, defined by max(EV, EVSE).
         /// ISO 15118-20: BPT_DC_CPDReqEnergyTransferModeType: EVMinimumDischargeCurrent
         /// </summary>
         [Optional]
-        public Decimal?  MinDischargeCurrent      { get; }
+        public Ampere?         MinDischargeCurrent      { get; }
 
         /// <summary>
         /// The optional maximum discharge current in A, defined by min(EV, EVSE).
         /// ISO 15118-20: BPT_DC_CPDReqEnergyTransferModeType: EVMaximumDischargeCurrent
         /// </summary>
         [Optional]
-        public Decimal?  MaxDischargeCurrent      { get; }
+        public Ampere?         MaxDischargeCurrent      { get; }
 
         /// <summary>
         /// The optional minimum voltage in V, defined by max(EV, EVSE).
         /// ISO 15118-20: BPT_DC_CPDReqEnergyTransferModeType: EVMinimumVoltage
         /// </summary>
         [Optional]
-        public Decimal?  MinVoltage               { get; }
+        public Volt?           MinVoltage               { get; }
 
         /// <summary>
         /// The optional maximum voltage in V, defined by min(EV, EVSE).
         /// ISO 15118-20: BPT_DC_CPDReqEnergyTransferModeType: EVMaximumVoltage
         /// </summary>
         [Optional]
-        public Decimal?  MaxVoltage               { get; }
+        public Volt?           MaxVoltage               { get; }
 
 
         /// <summary>
@@ -180,21 +180,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: Dynamic/Scheduled_SEReqControlModeType: EVTargetEnergyRequest
         /// </summary>
         [Optional]
-        public Decimal?  EVTargetEnergyRequest    { get; }
+        public WattHour?       EVTargetEnergyRequest    { get; }
 
         /// <summary>
         /// The optional energy to minimum allowed state-of-charge in Wh.
         /// ISO 15118-20: Dynamic/Scheduled_SEReqControlModeType: EVMinimumEnergyRequest
         /// </summary>
         [Optional]
-        public Decimal?  EVMinEnergyRequest       { get; }
+        public WattHour?       EVMinEnergyRequest       { get; }
 
         /// <summary>
         /// The optional energy to maximum-state-of charge in Wh.
         /// ISO 15118-20: Dynamic/Scheduled_SEReqControlModeType: EVMaximumEnergyRequest
         /// </summary>
         [Optional]
-        public Decimal?  EVMaxEnergyRequest       { get; }
+        public WattHour?       EVMaxEnergyRequest       { get; }
 
         /// <summary>
         /// The optional energy to minimum state-of-charge for cycling (V2X) activity.
@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: Dynamic_SEReqControlModeType: EVMinimumV2XEnergyRequest
         /// </summary>
         [Optional]
-        public Decimal?  EVMinV2XEnergyRequest    { get; }
+        public Decimal?        EVMinV2XEnergyRequest    { get; }
 
         /// <summary>
         /// The optional energy to maximum state-of-charge for cycling (V2X) activity.
@@ -210,14 +210,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: Dynamic_SEReqControlModeType: EVMaximumV2XEnergyRequest
         /// </summary>
         [Optional]
-        public Decimal?  EVMaxV2XEnergyRequest    { get; }
+        public Decimal?        EVMaxV2XEnergyRequest    { get; }
 
         /// <summary>
         /// The optional target state-of-charge at departure as a percentage.
         /// ISO 15118-20: BPT_DC_CPDReqEnergyTransferModeType: TargetSOC
         /// </summary>
         [Optional]
-        public Byte?     TargetSoC                { get; }
+        public PercentageInt?  TargetSoC                { get; }
 
         #endregion
 
@@ -255,35 +255,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TargetSoC">The optional target state-of-charge at departure as a percentage.</param>
         /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public V2XChargingParameters(Decimal?     MinChargePower          = null,
-                                     Decimal?     MinChargePower_L2       = null,
-                                     Decimal?     MinChargePower_L3       = null,
-                                     Decimal?     MaxChargePower          = null,
-                                     Decimal?     MaxChargePower_L2       = null,
-                                     Decimal?     MaxChargePower_L3       = null,
+        public V2XChargingParameters(Watt?           MinChargePower          = null,
+                                     Watt?           MinChargePower_L2       = null,
+                                     Watt?           MinChargePower_L3       = null,
+                                     Watt?           MaxChargePower          = null,
+                                     Watt?           MaxChargePower_L2       = null,
+                                     Watt?           MaxChargePower_L3       = null,
 
-                                     Decimal?     MinDischargePower       = null,
-                                     Decimal?     MinDischargePower_L2    = null,
-                                     Decimal?     MinDischargePower_L3    = null,
-                                     Decimal?     MaxDischargePower       = null,
-                                     Decimal?     MaxDischargePower_L2    = null,
-                                     Decimal?     MaxDischargePower_L3    = null,
+                                     Watt?           MinDischargePower       = null,
+                                     Watt?           MinDischargePower_L2    = null,
+                                     Watt?           MinDischargePower_L3    = null,
+                                     Watt?           MaxDischargePower       = null,
+                                     Watt?           MaxDischargePower_L2    = null,
+                                     Watt?           MaxDischargePower_L3    = null,
 
-                                     Decimal?     MinChargeCurrent        = null,
-                                     Decimal?     MaxChargeCurrent        = null,
-                                     Decimal?     MinDischargeCurrent     = null,
-                                     Decimal?     MaxDischargeCurrent     = null,
-                                     Decimal?     MinVoltage              = null,
-                                     Decimal?     MaxVoltage              = null,
+                                     Ampere?         MinChargeCurrent        = null,
+                                     Ampere?         MaxChargeCurrent        = null,
+                                     Ampere?         MinDischargeCurrent     = null,
+                                     Ampere?         MaxDischargeCurrent     = null,
+                                     Volt?           MinVoltage              = null,
+                                     Volt?           MaxVoltage              = null,
 
-                                     Decimal?     EVTargetEnergyRequest   = null,
-                                     Decimal?     EVMinEnergyRequest      = null,
-                                     Decimal?     EVMaxEnergyRequest      = null,
-                                     Decimal?     EVMinV2XEnergyRequest   = null,
-                                     Decimal?     EVMaxV2XEnergyRequest   = null,
-                                     Byte?        TargetSoC               = null,
+                                     WattHour?       EVTargetEnergyRequest   = null,
+                                     WattHour?       EVMinEnergyRequest      = null,
+                                     WattHour?       EVMaxEnergyRequest      = null,
+                                     Decimal?        EVMinV2XEnergyRequest   = null,
+                                     Decimal?        EVMaxV2XEnergyRequest   = null,
+                                     PercentageInt?  TargetSoC               = null,
 
-                                     CustomData?  CustomData              = null)
+                                     CustomData?     CustomData              = null)
 
             : base(CustomData)
 
@@ -432,7 +432,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("minChargePower",
                                        "minimum charge power",
-                                       out Decimal? MinChargePower,
+                                       Watt.TryParse,
+                                       out Watt? MinChargePower,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -445,7 +446,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("minChargePower_L2",
                                        "minimum charge power on phase L2",
-                                       out Decimal? MinChargePower_L2,
+                                       Watt.TryParse,
+                                       out Watt? MinChargePower_L2,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -458,7 +460,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("minChargePower_L3",
                                        "minimum charge power on phase L3",
-                                       out Decimal? MinChargePower_L3,
+                                       Watt.TryParse,
+                                       out Watt? MinChargePower_L3,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -471,7 +474,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("maxChargePower",
                                        "maximum charge power",
-                                       out Decimal? MaxChargePower,
+                                       Watt.TryParse,
+                                       out Watt? MaxChargePower,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -484,7 +488,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("maxChargePower_L2",
                                        "maximum charge power on phase L2",
-                                       out Decimal? MaxChargePower_L2,
+                                       Watt.TryParse,
+                                       out Watt? MaxChargePower_L2,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -497,7 +502,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("maxChargePower_L3",
                                        "maximum charge power on phase L3",
-                                       out Decimal? MaxChargePower_L3,
+                                       Watt.TryParse,
+                                       out Watt? MaxChargePower_L3,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -511,7 +517,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("minDischargePower",
                                        "minimum discharge power",
-                                       out Decimal? MinDischargePower,
+                                       Watt.TryParse,
+                                       out Watt? MinDischargePower,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -524,7 +531,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("minDischargePower_L2",
                                        "minimum discharge power on phase L2",
-                                       out Decimal? MinDischargePower_L2,
+                                       Watt.TryParse,
+                                       out Watt? MinDischargePower_L2,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -537,7 +545,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("minDischargePower_L3",
                                        "minimum discharge power on phase L3",
-                                       out Decimal? MinDischargePower_L3,
+                                       Watt.TryParse,
+                                       out Watt? MinDischargePower_L3,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -550,7 +559,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("maxDischargePower",
                                        "maximum discharge power",
-                                       out Decimal? MaxDischargePower,
+                                       Watt.TryParse,
+                                       out Watt? MaxDischargePower,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -563,7 +573,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("maxDischargePower_L2",
                                        "maximum discharge power on phase L2",
-                                       out Decimal? MaxDischargePower_L2,
+                                       Watt.TryParse,
+                                       out Watt? MaxDischargePower_L2,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -576,7 +587,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("maxDischargePower_L3",
                                        "maximum discharge power on phase L3",
-                                       out Decimal? MaxDischargePower_L3,
+                                       Watt.TryParse,
+                                       out Watt? MaxDischargePower_L3,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -590,7 +602,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("minChargeCurrent",
                                        "minimum charge current",
-                                       out Decimal? MinChargeCurrent,
+                                       Ampere.TryParse,
+                                       out Ampere? MinChargeCurrent,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -603,7 +616,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("maxChargeCurrent",
                                        "maximum charge current",
-                                       out Decimal? MaxChargeCurrent,
+                                       Ampere.TryParse,
+                                       out Ampere? MaxChargeCurrent,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -616,7 +630,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("minDischargeCurrent",
                                        "minimum discharge current",
-                                       out Decimal? MinDischargeCurrent,
+                                       Ampere.TryParse,
+                                       out Ampere? MinDischargeCurrent,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -629,7 +644,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("maxDischargeCurrent",
                                        "maximum discharge current",
-                                       out Decimal? MaxDischargeCurrent,
+                                       Ampere.TryParse,
+                                       out Ampere? MaxDischargeCurrent,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -642,7 +658,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("minVoltage",
                                        "minimum voltage",
-                                       out Decimal? MinVoltage,
+                                       Volt.TryParse,
+                                       out Volt? MinVoltage,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -655,7 +672,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("maxVoltage",
                                        "maximum voltage",
-                                       out Decimal? MaxVoltage,
+                                       Volt.TryParse,
+                                       out Volt? MaxVoltage,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -669,7 +687,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("evTargetEnergyRequest",
                                        "ev target energy request",
-                                       out Decimal? EVTargetEnergyRequest,
+                                       WattHour.TryParse,
+                                       out WattHour? EVTargetEnergyRequest,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -682,7 +701,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("evMinEnergyRequest",
                                        "ev minimum energy request",
-                                       out Decimal? EVMinEnergyRequest,
+                                       WattHour.TryParse,
+                                       out WattHour? EVMinEnergyRequest,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -695,7 +715,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("evMaxEnergyRequest",
                                        "ev maximum energy request",
-                                       out Decimal? EVMaxEnergyRequest,
+                                       WattHour.TryParse,
+                                       out WattHour? EVMaxEnergyRequest,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -734,7 +755,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("targetSoC",
                                        "target state-of-charge",
-                                       out Byte? TargetSoC,
+                                       PercentageInt.TryParse,
+                                       out PercentageInt? TargetSoC,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -820,96 +842,96 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomV2XChargingParametersSerializer">A delegate to serialize custom V2X charging parameters.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<V2XChargingParameters>?  CustomV2XChargingParametersSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
+                              CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataSerializer              = null)
         {
 
             var json = JSONObject.Create(
 
-                           MinChargePower.HasValue
-                               ? new JProperty("minChargePower",          MinChargePower.Value)
+                           MinChargePower.       HasValue
+                               ? new JProperty("minChargePower",          MinChargePower.       Value.Value)
                                : null,
 
-                           MinChargePower_L2.HasValue
-                               ? new JProperty("minChargePower_L2",       MinChargePower_L2.Value)
+                           MinChargePower_L2.    HasValue
+                               ? new JProperty("minChargePower_L2",       MinChargePower_L2.    Value.Value)
                                : null,
 
-                           MinChargePower_L3.HasValue
-                               ? new JProperty("minChargePower_L3",       MinChargePower_L3.Value)
+                           MinChargePower_L3.    HasValue
+                               ? new JProperty("minChargePower_L3",       MinChargePower_L3.    Value.Value)
                                : null,
 
-                           MaxChargePower.HasValue
-                               ? new JProperty("maxChargePower",          MaxChargePower.Value)
+                           MaxChargePower.       HasValue
+                               ? new JProperty("maxChargePower",          MaxChargePower.       Value.Value)
                                : null,
 
-                           MaxChargePower_L2.HasValue
-                               ? new JProperty("maxChargePower_L2",       MaxChargePower_L2.Value)
+                           MaxChargePower_L2.    HasValue
+                               ? new JProperty("maxChargePower_L2",       MaxChargePower_L2.    Value.Value)
                                : null,
 
-                           MaxChargePower_L3.HasValue
-                               ? new JProperty("maxChargePower_L3",       MaxChargePower_L3.Value)
-                               : null,
-
-
-                           MinDischargePower.HasValue
-                               ? new JProperty("minDischargePower",       MinDischargePower.Value)
-                               : null,
-
-                           MinDischargePower_L2.HasValue
-                               ? new JProperty("minDischargePower_L2",    MinDischargePower_L2.Value)
-                               : null,
-
-                           MinDischargePower_L3.HasValue
-                               ? new JProperty("minDischargePower_L3",    MinDischargePower_L3.Value)
-                               : null,
-
-                           MaxDischargePower.HasValue
-                               ? new JProperty("maxDischargePower",       MaxDischargePower.Value)
-                               : null,
-
-                           MaxDischargePower_L2.HasValue
-                               ? new JProperty("maxDischargePower_L2",    MaxDischargePower_L2.Value)
-                               : null,
-
-                           MaxDischargePower_L3.HasValue
-                               ? new JProperty("maxDischargePower_L3",    MaxDischargePower_L3.Value)
+                           MaxChargePower_L3.    HasValue
+                               ? new JProperty("maxChargePower_L3",       MaxChargePower_L3.    Value.Value)
                                : null,
 
 
-                           MinChargeCurrent.HasValue
-                               ? new JProperty("minChargeCurrent",        MinChargeCurrent.Value)
+                           MinDischargePower.    HasValue
+                               ? new JProperty("minDischargePower",       MinDischargePower.    Value.Value)
                                : null,
 
-                           MaxChargeCurrent.HasValue
-                               ? new JProperty("maxChargeCurrent",        MaxChargeCurrent.Value)
+                           MinDischargePower_L2. HasValue
+                               ? new JProperty("minDischargePower_L2",    MinDischargePower_L2. Value.Value)
                                : null,
 
-                           MinDischargeCurrent.HasValue
-                               ? new JProperty("minDischargeCurrent",     MinDischargeCurrent.Value)
+                           MinDischargePower_L3. HasValue
+                               ? new JProperty("minDischargePower_L3",    MinDischargePower_L3. Value.Value)
                                : null,
 
-                           MaxDischargeCurrent.HasValue
-                               ? new JProperty("maxDischargeCurrent",     MaxDischargeCurrent.Value)
+                           MaxDischargePower.    HasValue
+                               ? new JProperty("maxDischargePower",       MaxDischargePower.    Value.Value)
                                : null,
 
-                           MinVoltage.HasValue
-                               ? new JProperty("minVoltage",              MinVoltage.Value)
+                           MaxDischargePower_L2. HasValue
+                               ? new JProperty("maxDischargePower_L2",    MaxDischargePower_L2. Value.Value)
                                : null,
 
-                           MaxVoltage.HasValue
-                               ? new JProperty("maxVoltage",              MaxVoltage.Value)
+                           MaxDischargePower_L3. HasValue
+                               ? new JProperty("maxDischargePower_L3",    MaxDischargePower_L3. Value.Value)
+                               : null,
+
+
+                           MinChargeCurrent.     HasValue
+                               ? new JProperty("minChargeCurrent",        MinChargeCurrent.     Value.Value)
+                               : null,
+
+                           MaxChargeCurrent.     HasValue
+                               ? new JProperty("maxChargeCurrent",        MaxChargeCurrent.     Value.Value)
+                               : null,
+
+                           MinDischargeCurrent.  HasValue
+                               ? new JProperty("minDischargeCurrent",     MinDischargeCurrent.  Value.Value)
+                               : null,
+
+                           MaxDischargeCurrent.  HasValue
+                               ? new JProperty("maxDischargeCurrent",     MaxDischargeCurrent.  Value.Value)
+                               : null,
+
+                           MinVoltage.           HasValue
+                               ? new JProperty("minVoltage",              MinVoltage.           Value.Value)
+                               : null,
+
+                           MaxVoltage.           HasValue
+                               ? new JProperty("maxVoltage",              MaxVoltage.           Value.Value)
                                : null,
 
 
                            EVTargetEnergyRequest.HasValue
-                               ? new JProperty("evTargetEnergyRequest",   EVTargetEnergyRequest.Value)
+                               ? new JProperty("evTargetEnergyRequest",   EVTargetEnergyRequest.Value.Value)
                                : null,
 
-                           EVMinEnergyRequest.HasValue
-                               ? new JProperty("evMinEnergyRequest",      EVMinEnergyRequest.Value)
+                           EVMinEnergyRequest.   HasValue
+                               ? new JProperty("evMinEnergyRequest",      EVMinEnergyRequest.   Value.Value)
                                : null,
 
-                           EVMaxEnergyRequest.HasValue
-                               ? new JProperty("evMaxEnergyRequest",      EVMaxEnergyRequest.Value)
+                           EVMaxEnergyRequest.   HasValue
+                               ? new JProperty("evMaxEnergyRequest",      EVMaxEnergyRequest.   Value.Value)
                                : null,
 
                            EVMinV2XEnergyRequest.HasValue
@@ -920,8 +942,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? new JProperty("evMaxV2XEnergyRequest",   EVMaxV2XEnergyRequest.Value)
                                : null,
 
-                           TargetSoC.HasValue
-                               ? new JProperty("targetSoC",               TargetSoC.Value)
+                           TargetSoC.            HasValue
+                               ? new JProperty("targetSoC",               TargetSoC.            Value.Value)
                                : null,
 
 

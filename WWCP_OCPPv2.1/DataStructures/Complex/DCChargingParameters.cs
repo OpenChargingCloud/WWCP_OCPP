@@ -40,51 +40,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// including the maximum cable capacity.
         /// </summary>
         [Mandatory]
-        public UInt32   EVMaxCurrent        { get; }
+        public Ampere          EVMaxCurrent        { get; }
 
         /// <summary>
         /// The maximum voltage (volts) supported by the electric vehicle.
         /// </summary>
         [Mandatory]
-        public UInt32   EVMaxVoltage        { get; }
+        public Volt            EVMaxVoltage        { get; }
 
         /// <summary>
         /// The optional amount of energy requested (in Wh).
         /// This includes energy required for preconditioning.
         /// </summary>
         [Optional]
-        public UInt32?  EnergyAmount        { get; }
+        public WattHour?       EnergyAmount        { get; }
 
         /// <summary>
         /// The optional maximum power (in W) supported by the electric vehicle.
         /// Required for DC charging.
         /// </summary>
         [Optional]
-        public UInt32?  EVMaxPower          { get; }
+        public Watt?           EVMaxPower          { get; }
 
         /// <summary>
         /// The optional energy available in the battery (in percent of the battery capacity).
         /// </summary>
         [Optional]
-        public Byte?    StateOfCharge       { get; }
+        public PercentageInt?  StateOfCharge       { get; }
 
         /// <summary>
         /// The optional capacity of the electric vehicle battery (in Wh).
         /// </summary>
         [Optional]
-        public UInt32?  EVEnergyCapacity    { get; }
+        public WattHour?       EVEnergyCapacity    { get; }
 
         /// <summary>
         /// The optional percentage of SoC at which the EV considers the battery fully charged.
         /// </summary>
         [Optional]
-        public Byte?    FullSoC             { get; }
+        public PercentageInt?  FullSoC             { get; }
 
         /// <summary>
         /// The optional percentage of SoC at which the EV considers a fast charging process to end.
         /// </summary>
         [Optional]
-        public Byte?    BulkSoC             { get; }
+        public PercentageInt?  BulkSoC             { get; }
 
         #endregion
 
@@ -102,15 +102,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="FullSoC">The optional percentage of SoC at which the EV considers the battery fully charged.</param>
         /// <param name="BulkSoC">The optional percentage of SoC at which the EV considers a fast charging process to end.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public DCChargingParameters(UInt32       EVMaxCurrent,
-                                    UInt32       EVMaxVoltage,
-                                    UInt32?      EnergyAmount,
-                                    UInt32?      EVMaxPower,
-                                    Byte?        StateOfCharge,
-                                    UInt32?      EVEnergyCapacity,
-                                    Byte?        FullSoC,
-                                    Byte?        BulkSoC,
-                                    CustomData?  CustomData   = null)
+        public DCChargingParameters(Ampere          EVMaxCurrent,
+                                    Volt            EVMaxVoltage,
+                                    WattHour?       EnergyAmount,
+                                    Watt?           EVMaxPower,
+                                    PercentageInt?  StateOfCharge,
+                                    WattHour?       EVEnergyCapacity,
+                                    PercentageInt?  FullSoC,
+                                    PercentageInt?  BulkSoC,
+                                    CustomData?     CustomData   = null)
 
             : base(CustomData)
 
@@ -273,7 +273,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("evMaxCurrent",
                                          "ev max current",
-                                         out UInt32 EVMaxCurrent,
+                                         Ampere.TryParse,
+                                         out Ampere EVMaxCurrent,
                                          out ErrorResponse))
                 {
                     return false;
@@ -285,7 +286,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("evMaxVoltage",
                                          "ev max voltage",
-                                         out UInt32 EVMaxVoltage,
+                                         Volt.TryParse,
+                                         out Volt EVMaxVoltage,
                                          out ErrorResponse))
                 {
                     return false;
@@ -297,7 +299,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("energyAmount",
                                        "energy amount",
-                                       out UInt32? EnergyAmount,
+                                       WattHour.TryParse,
+                                       out WattHour? EnergyAmount,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -310,7 +313,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("evMaxPower",
                                        "EV max power",
-                                       out UInt32? EVMaxPower,
+                                       Watt.TryParse,
+                                       out Watt? EVMaxPower,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -323,7 +327,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("stateOfCharge",
                                        "state of charge",
-                                       out Byte? StateOfCharge,
+                                       PercentageInt.TryParse,
+                                       out PercentageInt? StateOfCharge,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -336,7 +341,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("evEnergyCapacity",
                                        "ev energy capacity",
-                                       out UInt32? EVEnergyCapacity,
+                                       WattHour.TryParse,
+                                       out WattHour? EVEnergyCapacity,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -349,7 +355,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("fullSoC",
                                        "full state of charge",
-                                       out Byte? FullSoC,
+                                       PercentageInt.TryParse,
+                                       out PercentageInt? FullSoC,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -362,7 +369,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("bulkSoC",
                                        "bulk state of charge",
-                                       out Byte? BulkSoC,
+                                       PercentageInt.TryParse,
+                                       out PercentageInt? BulkSoC,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -386,15 +394,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                DCChargingParameters = new DCChargingParameters(EVMaxCurrent,
-                                                                EVMaxVoltage,
-                                                                EnergyAmount,
-                                                                EVMaxPower,
-                                                                StateOfCharge,
-                                                                EVEnergyCapacity,
-                                                                FullSoC,
-                                                                BulkSoC,
-                                                                CustomData);
+                DCChargingParameters = new DCChargingParameters(
+                                           EVMaxCurrent,
+                                           EVMaxVoltage,
+                                           EnergyAmount,
+                                           EVMaxPower,
+                                           StateOfCharge,
+                                           EVEnergyCapacity,
+                                           FullSoC,
+                                           BulkSoC,
+                                           CustomData
+                                       );
 
                 if (CustomDCChargingParametersParser is not null)
                     DCChargingParameters = CustomDCChargingParametersParser(JSON,
@@ -428,31 +438,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("evMaxCurrent",       EVMaxCurrent),
-                                 new JProperty("evMaxVoltage",       EVMaxVoltage),
+                                 new JProperty("evMaxCurrent",       EVMaxCurrent.          IntegerValue),
+                                 new JProperty("evMaxVoltage",       EVMaxVoltage.          IntegerValue),
 
                            EnergyAmount.HasValue
-                               ? new JProperty("energyAmount",       EnergyAmount)
+                               ? new JProperty("energyAmount",       EnergyAmount.    Value.IntegerValue)
                                : null,
 
                            EVMaxPower.HasValue
-                               ? new JProperty("evMaxPower",         EVMaxPower)
+                               ? new JProperty("evMaxPower",         EVMaxPower.      Value.IntegerValue)
                                : null,
 
                            StateOfCharge.HasValue
-                               ? new JProperty("stateOfCharge",      StateOfCharge)
+                               ? new JProperty("stateOfCharge",      StateOfCharge.   Value.Value)
                                : null,
 
                            EVEnergyCapacity.HasValue
-                               ? new JProperty("evEnergyCapacity",   EVEnergyCapacity)
+                               ? new JProperty("evEnergyCapacity",   EVEnergyCapacity.Value.IntegerValue)
                                : null,
 
                            FullSoC.HasValue
-                               ? new JProperty("fullSoC",            FullSoC)
+                               ? new JProperty("fullSoC",            FullSoC.         Value.Value)
                                : null,
 
                            BulkSoC.HasValue
-                               ? new JProperty("bulkSoC",            BulkSoC)
+                               ? new JProperty("bulkSoC",            BulkSoC.         Value.Value)
                                : null,
 
                            CustomData is not null

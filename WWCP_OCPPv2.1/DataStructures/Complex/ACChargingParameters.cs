@@ -40,26 +40,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// This includes energy required for preconditioning.
         /// </summary>
         [Mandatory]
-        public UInt32  EnergyAmount    { get; }
+        public WattHour  EnergyAmount    { get; }
 
         /// <summary>
-        /// The minimum current (amperes) supported by the electric vehicle (per phase).
+        /// The minimum current (in A) supported by the electric vehicle (per phase).
         /// </summary>
         [Mandatory]
-        public UInt32  EVMinCurrent    { get; }
+        public Ampere    EVMinCurrent    { get; }
 
         /// <summary>
-        /// The maximum current (amperes) supported by the electric vehicle (per phase)
+        /// The maximum current (in A) supported by the electric vehicle (per phase)
         /// including the maximum cable capacity.
         /// </summary>
         [Mandatory]
-        public UInt32  EVMaxCurrent    { get; }
+        public Ampere    EVMaxCurrent    { get; }
 
         /// <summary>
-        /// The maximum voltage (volts) supported by the electric vehicle.
+        /// The maximum voltage (in V) supported by the electric vehicle.
         /// </summary>
         [Mandatory]
-        public UInt32  EVMaxVoltage    { get; }
+        public Volt      EVMaxVoltage    { get; }
 
         #endregion
 
@@ -69,24 +69,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new AC charging parameters.
         /// </summary>
         /// <param name="EnergyAmount">The amount of energy requested (in Wh). This includes energy required for preconditioning.</param>
-        /// <param name="EVMinCurrent">The minimum current (amperes) supported by the electric vehicle (per phase).</param>
-        /// <param name="EVMaxCurrent">The maximum current (amperes) supported by the electric vehicle (per phase) including the maximum cable capacity.</param>
-        /// <param name="EVMaxVoltage">The maximum voltage (volts) supported by the electric vehicle.</param>
+        /// <param name="EVMinCurrent">The minimum current (in A) supported by the electric vehicle (per phase).</param>
+        /// <param name="EVMaxCurrent">The maximum current (in A) supported by the electric vehicle (per phase) including the maximum cable capacity.</param>
+        /// <param name="EVMaxVoltage">The maximum voltage (in V) supported by the electric vehicle.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public ACChargingParameters(UInt32       EnergyAmount,
-                                    UInt32       EVMinCurrent,
-                                    UInt32       EVMaxCurrent,
-                                    UInt32       EVMaxVoltage,
+        public ACChargingParameters(WattHour     EnergyAmount,
+                                    Ampere       EVMinCurrent,
+                                    Ampere       EVMaxCurrent,
+                                    Volt         EVMaxVoltage,
                                     CustomData?  CustomData   = null)
 
             : base(CustomData)
 
         {
 
-            this.EnergyAmount = EnergyAmount;
-            this.EVMinCurrent = EVMinCurrent;
-            this.EVMaxCurrent = EVMaxCurrent;
-            this.EVMaxVoltage = EVMaxVoltage;
+            this.EnergyAmount  = EnergyAmount;
+            this.EVMinCurrent  = EVMinCurrent;
+            this.EVMaxCurrent  = EVMaxCurrent;
+            this.EVMaxVoltage  = EVMaxVoltage;
 
             unchecked
             {
@@ -211,7 +211,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("energyAmount",
                                          "energy amount",
-                                         out UInt32 EnergyAmount,
+                                         WattHour.TryParse,
+                                         out WattHour EnergyAmount,
                                          out ErrorResponse))
                 {
                     return false;
@@ -223,7 +224,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("evMinCurrent",
                                          "ev min current",
-                                         out UInt32 EVMinCurrent,
+                                         Ampere.TryParse,
+                                         out Ampere EVMinCurrent,
                                          out ErrorResponse))
                 {
                     return false;
@@ -235,7 +237,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("evMaxCurrent",
                                          "ev max current",
-                                         out UInt32 EVMaxCurrent,
+                                         Ampere.TryParse,
+                                         out Ampere EVMaxCurrent,
                                          out ErrorResponse))
                 {
                     return false;
@@ -247,7 +250,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("evMaxVoltage",
                                          "ev max voltage",
-                                         out UInt32 EVMaxVoltage,
+                                         Volt.TryParse,
+                                         out Volt EVMaxVoltage,
                                          out ErrorResponse))
                 {
                     return false;
@@ -270,11 +274,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                ACChargingParameters = new ACChargingParameters(EnergyAmount,
-                                                                EVMinCurrent,
-                                                                EVMaxCurrent,
-                                                                EVMaxVoltage,
-                                                                CustomData);
+                ACChargingParameters = new ACChargingParameters(
+                                           EnergyAmount,
+                                           EVMinCurrent,
+                                           EVMaxCurrent,
+                                           EVMaxVoltage,
+                                           CustomData
+                                       );
 
                 if (CustomACChargingParametersParser is not null)
                     ACChargingParameters = CustomACChargingParametersParser(JSON,
@@ -308,10 +314,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("energyAmount",   EnergyAmount),
-                                 new JProperty("evMinCurrent",   EVMinCurrent),
-                                 new JProperty("evMaxCurrent",   EVMaxCurrent),
-                                 new JProperty("evMaxVoltage",   EVMaxVoltage),
+                                 new JProperty("energyAmount",   EnergyAmount.IntegerValue),
+                                 new JProperty("evMinCurrent",   EVMinCurrent.IntegerValue),
+                                 new JProperty("evMaxCurrent",   EVMaxCurrent.IntegerValue),
+                                 new JProperty("evMaxVoltage",   EVMaxVoltage.IntegerValue),
 
                            CustomData is not null
                                ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))

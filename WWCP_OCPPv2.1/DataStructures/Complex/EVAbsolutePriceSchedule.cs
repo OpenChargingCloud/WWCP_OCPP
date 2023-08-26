@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomEVAbsolutePriceScheduleSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomEVAbsolutePriceScheduleSerializer = null, CustomEVAbsolutePriceScheduleEntrySerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.

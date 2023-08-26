@@ -231,6 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomEVEnergyOfferSerializer">A delegate to serialize custom ev energy offers.</param>
         /// <param name="CustomEVPowerScheduleSerializer">A delegate to serialize custom ev power schedules.</param>
         /// <param name="CustomEVPowerScheduleEntrySerializer">A delegate to serialize custom ev power schedule entries.</param>
+        /// <param name="CustomEVAbsolutePriceScheduleSerializer">A delegate to serialize custom ev absolute price schedules.</param>
         /// <param name="CustomEVAbsolutePriceScheduleEntrySerializer">A delegate to serialize custom charging limits.</param>
         /// <param name="CustomEVPriceRuleSerializer">A delegate to serialize custom ev price rules.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>

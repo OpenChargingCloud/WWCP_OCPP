@@ -292,6 +292,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public CustomJObjectSerializerDelegate<ChargingNeeds>?                             CustomChargingNeedsSerializer                               { get; set; }
         public CustomJObjectSerializerDelegate<ACChargingParameters>?                      CustomACChargingParametersSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<DCChargingParameters>?                      CustomDCChargingParametersSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<V2XChargingParameters>?                     CustomV2XChargingParametersSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<EVEnergyOffer>?                             CustomEVEnergyOfferSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<EVPowerSchedule>?                           CustomEVPowerScheduleSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<EVPowerScheduleEntry>?                      CustomEVPowerScheduleEntrySerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<EVAbsolutePriceSchedule>?                   CustomEVAbsolutePriceScheduleSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<EVAbsolutePriceScheduleEntry>?              CustomEVAbsolutePriceScheduleEntrySerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<EVPriceRule>?                               CustomEVPriceRuleSerializer                                 { get; set; }
         public CustomJObjectSerializerDelegate<Transaction>?                               CustomTransactionSerializer                                 { get; set; }
         public CustomJObjectSerializerDelegate<MeterValue>?                                CustomMeterValueSerializer                                  { get; set; }
         public CustomJObjectSerializerDelegate<SampledValue>?                              CustomSampledValueSerializer                                { get; set; }
@@ -9482,6 +9489,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                   CustomChargingNeedsSerializer,
                                                                   CustomACChargingParametersSerializer,
                                                                   CustomDCChargingParametersSerializer,
+                                                                  CustomV2XChargingParametersSerializer,
+                                                                  CustomEVEnergyOfferSerializer,
+                                                                  CustomEVPowerScheduleSerializer,
+                                                                  CustomEVPowerScheduleEntrySerializer,
+                                                                  CustomEVAbsolutePriceScheduleSerializer,
+                                                                  CustomEVAbsolutePriceScheduleEntrySerializer,
+                                                                  CustomEVPriceRuleSerializer,
                                                                   CustomCustomDataSerializer));
 
             if (requestMessage.NoErrors)
