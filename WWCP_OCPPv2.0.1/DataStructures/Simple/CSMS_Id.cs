@@ -51,8 +51,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
     /// A central system identification.
     /// </summary>
     public readonly struct CSMS_Id : IId,
-                                              IEquatable<CSMS_Id>,
-                                              IComparable<CSMS_Id>
+                                     IEquatable<CSMS_Id>,
+                                     IComparable<CSMS_Id>
     {
 
         #region Data

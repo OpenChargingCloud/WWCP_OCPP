@@ -91,6 +91,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         [Optional]
         public V2XChargingParameters?            V2XChargingParameters      { get; }
 
+        /// <summary>
+        /// Optional discharging and associated price offered by EV.
+        /// Schedule periods during which EV is willing to discharge have a dischargingLimit
+        /// set to the maximum amount it can discharge.
+        /// ISO 15118-20: Scheduled_SEReqControlModeType: EVEnergyOffer
+        /// </summary>
+        [Optional]
+        public EVEnergyOffer?                    EVEnergyOffer              { get; }
+
         #endregion
 
         #region Constructor(s)
