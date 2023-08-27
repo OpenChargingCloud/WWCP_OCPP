@@ -90,6 +90,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.EVSEId       = EVSEId;
             this.MeterValues  = MeterValues.Distinct();
 
+
+            unchecked
+            {
+
+                hashCode = EVSEId.     GetHashCode() * 5 ^
+                           MeterValues.GetHashCode() * 3 ^
+
+                           base.       GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -637,22 +648,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return EVSEId.     GetHashCode() * 5 ^
-                       MeterValues.GetHashCode() * 3 ^
-
-                       base.       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

@@ -266,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a response to a transaction event HTTP WebSocket request was received.
         /// </summary>
-        event ClientResponseLogHandler OnTransactionEventWSResponse;
+        event ClientResponseLogHandler  OnTransactionEventWSResponse;
 
         #endregion
 

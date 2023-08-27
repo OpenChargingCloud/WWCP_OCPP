@@ -98,6 +98,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         [Mandatory]
         public IEnumerable<ChargingSchedule>  ChargingSchedules         { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        [Optional]
+        public TimeSpan?                      MaxOfflineDuration        { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Optional]
+        public TimeSpan?                      UpdateInterval            { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Optional]
+        public String?                        PriceScheduleSignature    { get; }
+
         #endregion
 
         #region Constructor(s)

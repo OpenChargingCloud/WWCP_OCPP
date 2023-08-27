@@ -88,6 +88,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.ActivationTimestamp  = ActivationTimestamp;
             this.Signal               = Signal;
 
+            unchecked
+            {
+
+                hashCode = ActivationTimestamp.GetHashCode() * 5 ^
+                           Signal.             GetHashCode() * 3 ^
+
+                           base.               GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -378,22 +388,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ActivationTimestamp.GetHashCode() * 5 ^
-                       Signal.             GetHashCode() * 3 ^
-
-                       base.               GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -407,7 +408,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => $"'{Signal}' @ '{ActivationTimestamp}'";
 
         #endregion
-
 
     }
 

@@ -124,6 +124,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.MonitoringData                   = MonitoringData.Distinct();
             this.ToBeContinued                    = ToBeContinued;
 
+            unchecked
+            {
+
+                hashCode = NotifyMonitoringReportRequestId.GetHashCode()       * 17 ^
+                           SequenceNumber.                 GetHashCode()       * 13 ^
+                           GeneratedAt.                    GetHashCode()       * 11 ^
+                           MonitoringData.                 CalcHashCode()      *  7 ^
+                          (ToBeContinued?.                 GetHashCode() ?? 0) *  5 ^
+                          (CustomData?.                    GetHashCode() ?? 0) *  3 ^
+
+                           base.                           GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -666,26 +680,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return NotifyMonitoringReportRequestId.GetHashCode()       * 17 ^
-                       SequenceNumber.                 GetHashCode()       * 13 ^
-                       GeneratedAt.                    GetHashCode()       * 11 ^
-                       MonitoringData.                 CalcHashCode()      *  7 ^
-                      (ToBeContinued?.                 GetHashCode() ?? 0) *  5 ^
-                      (CustomData?.                    GetHashCode() ?? 0) *  3 ^
-
-                       base.                           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
