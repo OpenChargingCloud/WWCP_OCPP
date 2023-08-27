@@ -75,10 +75,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// Create a new additional case insensitive authorization identifier.
         /// </summary>
         /// <param name="TransactionId">The unique identification of the transaction.</param>
-        /// <param name="ChargingState">The optional current charging state.</param>
-        /// <param name="TimeSpentCharging">The optional total time that energy flowed from the EVSE to the EV during this transaction.</param>
-        /// <param name="StoppedReason">The optional reason why the transaction was stopped. MAY only be omitted when reason is "Local".</param>
-        /// <param name="RemoteStartId">The optional remote start identification of the related request start transaction request to match the request with this transaction.</param>
+        /// <param name="ChargingState">An optional current charging state.</param>
+        /// <param name="TimeSpentCharging">An optional total time that energy flowed from the EVSE to the EV during this transaction.</param>
+        /// <param name="StoppedReason">An optional reason why the transaction was stopped. MAY only be omitted when reason is "Local".</param>
+        /// <param name="RemoteStartId">An optional remote start identification of the related request start transaction request to match the request with this transaction.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public Transaction(Transaction_Id   TransactionId,
                            ChargingStates?  ChargingState       = null,

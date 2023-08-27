@@ -1159,6 +1159,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
              ((EVSE               is     null &&  TransactionEventRequest.EVSE               is     null) ||
               (EVSE               is not null &&  TransactionEventRequest.EVSE               is not null && EVSE.                    Equals(TransactionEventRequest.EVSE))) &&
 
+               MeterValues.Count().Equals(TransactionEventRequest.MeterValues.Count()) &&
+               MeterValues.All(energyTransferMode => TransactionEventRequest.MeterValues.Contains(energyTransferMode)) &&
+
                base.    GenericEquals(TransactionEventRequest);
 
         #endregion
@@ -1204,14 +1207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-
-                   Timestamp.ToIso8601(),
-                   " ",
-                   EventType, ", ",
-                   TriggerReason.AsText()
-
-               );
+            => $"{Timestamp} {EventType}, {TriggerReason.AsText()}";
 
         #endregion
 

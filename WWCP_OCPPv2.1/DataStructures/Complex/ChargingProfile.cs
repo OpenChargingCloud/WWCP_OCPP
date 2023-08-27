@@ -33,6 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    IEquatable<ChargingProfile>
     {
 
+        //ToDo: Implement me!
+
         #region Properties
 
         /// <summary>
@@ -61,21 +63,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public ChargingProfileKinds           ChargingProfileKind       { get; }
 
         /// <summary>
-        /// The enumeration of charging limits for the available power or current over time.
-        /// In order to support ISO 15118 schedule negotiation, it supports at most three schedules with associated tariff to choose from.
-        /// </summary>
-        [Mandatory]
-        public IEnumerable<ChargingSchedule>  ChargingSchedules         { get; }
-
-
-        /// <summary>
-        /// When the ChargingProfilePurpose is set to TxProfile, this value MAY
-        /// be used to match the profile to a specific charging transaction.
-        /// </summary>
-        [Optional]
-        public Transaction_Id?                TransactionId             { get; }
-
-        /// <summary>
         /// An optional indication of the start point of a recurrence.
         /// </summary>
         [Optional]
@@ -96,6 +83,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         [Optional]
         public DateTime?                      ValidTo                   { get; }
+
+        /// <summary>
+        /// When the ChargingProfilePurpose is set to TxProfile, this value MAY
+        /// be used to match the profile to a specific charging transaction.
+        /// </summary>
+        [Optional]
+        public Transaction_Id?                TransactionId             { get; }
+
+        /// <summary>
+        /// The enumeration of charging limits for the available power or current over time.
+        /// In order to support ISO 15118 schedule negotiation, it supports at most three schedules with associated tariff to choose from.
+        /// </summary>
+        [Mandatory]
+        public IEnumerable<ChargingSchedule>  ChargingSchedules         { get; }
 
         #endregion
 

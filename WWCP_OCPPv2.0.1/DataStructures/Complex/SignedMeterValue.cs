@@ -90,6 +90,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             this.EncodingMethod   = EncodingMethod;
             this.PublicKey        = PublicKey;
 
+            unchecked
+            {
+
+                hashCode = SignedMeterData.GetHashCode() * 11 ^
+                           SigningMethod.  GetHashCode() *  7 ^
+                           EncodingMethod. GetHashCode() *  5 ^
+                           PublicKey.      GetHashCode() *  3 ^
+
+                           base.           GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -267,11 +279,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                SignedMeterValue = new SignedMeterValue(SignedMeterData,
-                                                        SigningMethod,
-                                                        EncodingMethod,
-                                                        PublicKey,
-                                                        CustomData);
+                SignedMeterValue = new SignedMeterValue(
+                                       SignedMeterData,
+                                       SigningMethod,
+                                       EncodingMethod,
+                                       PublicKey,
+                                       CustomData
+                                   );
 
                 if (CustomSignedMeterValueParser is not null)
                     SignedMeterValue = CustomSignedMeterValueParser(JSON,
@@ -407,24 +421,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return SignedMeterData.GetHashCode() * 11 ^
-                       SigningMethod.  GetHashCode() *  7 ^
-                       EncodingMethod. GetHashCode() *  5 ^
-                       PublicKey.      GetHashCode() *  3 ^
-
-                       base.           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

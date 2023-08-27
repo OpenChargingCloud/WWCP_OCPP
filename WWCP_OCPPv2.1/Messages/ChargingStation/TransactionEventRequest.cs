@@ -40,54 +40,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// All others should be of type "updated".
         /// </summary>
         [Mandatory]
-        public TransactionEvents        EventType             { get; }
+        public TransactionEvents        EventType                { get; }
 
         /// <summary>
         /// The timestamp at which this transaction event occurred.
         /// </summary>
         [Mandatory]
-        public DateTime                 Timestamp             { get; }
+        public DateTime                 Timestamp                { get; }
 
         /// <summary>
         /// The reason the charging station sends this message.
         /// </summary>
         [Mandatory]
-        public TriggerReasons           TriggerReason         { get; }
+        public TriggerReasons           TriggerReason            { get; }
 
         /// <summary>
         /// This incremental sequence number, helps to determine whether all messages of a transaction have been received.
         /// </summary>
-        public UInt32                   SequenceNumber        { get; }
+        public UInt32                   SequenceNumber           { get; }
 
         /// <summary>
         /// Transaction related information.
         /// </summary>
         [Mandatory]
-        public Transaction              TransactionInfo       { get; }
+        public Transaction              TransactionInfo          { get; }
 
         /// <summary>
         /// The optional indication whether this transaction event happened when the charging station was offline.
         /// </summary>
         [Optional]
-        public Boolean?                 Offline               { get; }
+        public Boolean?                 Offline                  { get; }
 
         /// <summary>
         /// The optional numer of electrical phases used, when the charging station is able to report it.
         /// </summary>
         [Optional]
-        public Byte?                    NumberOfPhasesUsed    { get; }
+        public Byte?                    NumberOfPhasesUsed       { get; }
 
         /// <summary>
         /// The optional maximum current of the connected cable in amperes.
         /// </summary>
         [Optional]
-        public Int16?                   CableMaxCurrent       { get; }
+        public Ampere?                  CableMaxCurrent          { get; }
 
         /// <summary>
         /// The optional unqiue reservation identification of the reservation that terminated as a result of this transaction.
         /// </summary>
         [Optional]
-        public Reservation_Id?          ReservationId         { get; }
+        public Reservation_Id?          ReservationId            { get; }
 
         /// <summary>
         /// The optional identification token for which a transaction has to be/was started.
@@ -95,19 +95,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The identification token should only be send once in a TransactionEventRequest for every authorization done for this transaction.
         /// </summary>
         [Optional]
-        public IdToken?                 IdToken               { get; }
+        public IdToken?                 IdToken                  { get; }
 
         /// <summary>
         /// The optional indication of the EVSE (and connector) used.
         /// </summary>
         [Optional]
-        public EVSE?                    EVSE                  { get; }
+        public EVSE?                    EVSE                     { get; }
 
         /// <summary>
         /// The optional enumeration of meter values.
         /// </summary>
         [Optional]
-        public IEnumerable<MeterValue>  MeterValues           { get; }
+        public IEnumerable<MeterValue>  MeterValues              { get; }
+
+        /// <summary>
+        /// The optional current status of the battery management system within the EV.
+        /// </summary>
+        public PreconditioningStatus?   PreconditioningStatus    { get; }
 
         #endregion
 
@@ -144,20 +149,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        UInt32                    SequenceNumber,
                                        Transaction               TransactionInfo,
 
-                                       Boolean?                  Offline              = null,
-                                       Byte?                     NumberOfPhasesUsed   = null,
-                                       Int16?                    CableMaxCurrent      = null,
-                                       Reservation_Id?           ReservationId        = null,
-                                       IdToken?                  IdToken              = null,
-                                       EVSE?                     EVSE                 = null,
-                                       IEnumerable<MeterValue>?  MeterValues          = null,
-                                       CustomData?               CustomData           = null,
+                                       Boolean?                  Offline                 = null,
+                                       Byte?                     NumberOfPhasesUsed      = null,
+                                       Ampere?                   CableMaxCurrent         = null,
+                                       Reservation_Id?           ReservationId           = null,
+                                       IdToken?                  IdToken                 = null,
+                                       EVSE?                     EVSE                    = null,
+                                       IEnumerable<MeterValue>?  MeterValues             = null,
+                                       PreconditioningStatus?    PreconditioningStatus   = null,
+                                       CustomData?               CustomData              = null,
 
-                                       Request_Id?               RequestId            = null,
-                                       DateTime?                 RequestTimestamp     = null,
-                                       TimeSpan?                 RequestTimeout       = null,
-                                       EventTracking_Id?         EventTrackingId      = null,
-                                       CancellationToken         CancellationToken    = default)
+                                       Request_Id?               RequestId               = null,
+                                       DateTime?                 RequestTimestamp        = null,
+                                       TimeSpan?                 RequestTimeout          = null,
+                                       EventTracking_Id?         EventTrackingId         = null,
+                                       CancellationToken         CancellationToken       = default)
 
             : base(ChargeBoxId,
                    "TransactionEvent",
@@ -170,19 +176,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            this.EventType           = EventType;
-            this.Timestamp           = Timestamp;
-            this.TriggerReason       = TriggerReason;
-            this.SequenceNumber      = SequenceNumber;
-            this.TransactionInfo     = TransactionInfo;
+            this.EventType              = EventType;
+            this.Timestamp              = Timestamp;
+            this.TriggerReason          = TriggerReason;
+            this.SequenceNumber         = SequenceNumber;
+            this.TransactionInfo        = TransactionInfo;
 
-            this.Offline             = Offline;
-            this.NumberOfPhasesUsed  = NumberOfPhasesUsed;
-            this.CableMaxCurrent     = CableMaxCurrent;
-            this.ReservationId       = ReservationId;
-            this.IdToken             = IdToken;
-            this.EVSE                = EVSE;
-            this.MeterValues         = MeterValues?.Distinct() ?? Array.Empty<MeterValue>();
+            this.Offline                = Offline;
+            this.NumberOfPhasesUsed     = NumberOfPhasesUsed;
+            this.CableMaxCurrent        = CableMaxCurrent;
+            this.ReservationId          = ReservationId;
+            this.IdToken                = IdToken;
+            this.EVSE                   = EVSE;
+            this.MeterValues            = MeterValues?.Distinct() ?? Array.Empty<MeterValue>();
+            this.PreconditioningStatus  = PreconditioningStatus;
 
         }
 
@@ -747,7 +754,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 TransactionEventRequest = null;
 
-                #region EventType             [mandatory]
+                #region EventType                [mandatory]
 
                 if (!JSON.ParseMandatory("eventType",
                                          "event type",
@@ -760,7 +767,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region Timestamp             [mandatory]
+                #region Timestamp                [mandatory]
 
                 if (!JSON.ParseMandatory("timestamp",
                                          "timestamp",
@@ -772,7 +779,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region TriggerReason         [mandatory]
+                #region TriggerReason            [mandatory]
 
                 if (!JSON.ParseMandatory("triggerReason",
                                          "trigger reason",
@@ -785,7 +792,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region SequenceNumber        [mandatory]
+                #region SequenceNumber           [mandatory]
 
                 if (!JSON.ParseMandatory("seqNo",
                                          "sequence number",
@@ -797,7 +804,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region TransactionInfo       [mandatory]
+                #region TransactionInfo          [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("transactionInfo",
                                              "transaction info",
@@ -814,7 +821,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                #region Offline               [optional]
+                #region Offline                  [optional]
 
                 if (JSON.ParseOptional("offline",
                                        "offline",
@@ -827,7 +834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region NumberOfPhasesUsed    [optional]
+                #region NumberOfPhasesUsed       [optional]
 
                 if (JSON.ParseOptional("numberOfPhasesUsed",
                                        "number of phases used",
@@ -840,11 +847,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region CableMaxCurrent       [optional]
+                #region CableMaxCurrent          [optional]
 
                 if (JSON.ParseOptional("cableMaxCurrent",
                                        "cable max current",
-                                       out Int16? CableMaxCurrent,
+                                       Ampere.TryParse,
+                                       out Ampere? CableMaxCurrent,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -853,7 +861,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ReservationId         [optional]
+                #region ReservationId            [optional]
 
                 if (JSON.ParseOptional("reservationId",
                                        "reservation identification",
@@ -867,7 +875,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region IdToken               [optional]
+                #region IdToken                  [optional]
 
                 if (JSON.ParseOptionalJSON("idToken",
                                            "identification token",
@@ -881,7 +889,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region EVSE                  [optional]
+                #region EVSE                     [optional]
 
                 if (JSON.ParseOptionalJSON("evse",
                                            "EVSE",
@@ -895,7 +903,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region MeterValues           [optional]
+                #region MeterValues              [optional]
 
                 if (JSON.ParseOptionalHashSet("meterValue",
                                               "meter values",
@@ -909,8 +917,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region PreconditioningStatus    [optional]
 
-                #region CustomData            [optional]
+                if (JSON.ParseOptional("preconditioningStatus",
+                                       "preconditioning status",
+                                       PreconditioningStatusExtensions.TryParse,
+                                       out PreconditioningStatus? PreconditioningStatus,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region CustomData               [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -924,7 +946,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargeBoxId           [optional, OCPP_CSE]
+                #region ChargeBoxId              [optional, OCPP_CSE]
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
@@ -944,24 +966,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                TransactionEventRequest = new TransactionEventRequest(ChargeBoxId,
+                TransactionEventRequest = new TransactionEventRequest(
+                                              ChargeBoxId,
 
-                                                                      EventType,
-                                                                      Timestamp,
-                                                                      TriggerReason,
-                                                                      SequenceNumber,
-                                                                      Transaction,
+                                              EventType,
+                                              Timestamp,
+                                              TriggerReason,
+                                              SequenceNumber,
+                                              Transaction,
 
-                                                                      Offline,
-                                                                      NumberOfPhasesUsed,
-                                                                      CableMaxCurrent,
-                                                                      ReservationId,
-                                                                      IdToken,
-                                                                      EVSE,
-                                                                      MeterValues,
+                                              Offline,
+                                              NumberOfPhasesUsed,
+                                              CableMaxCurrent,
+                                              ReservationId,
+                                              IdToken,
+                                              EVSE,
+                                              MeterValues,
+                                              PreconditioningStatus,
 
-                                                                      CustomData,
-                                                                      RequestId);
+                                              CustomData,
+                                              RequestId
+                                          );
 
                 if (CustomTransactionEventRequestParser is not null)
                     TransactionEventRequest = CustomTransactionEventRequestParser(JSON,
@@ -1010,50 +1035,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("eventType",            EventType.      AsText()),
-                                 new JProperty("timestamp",            Timestamp.      ToIso8601()),
-                                 new JProperty("triggerReason",        TriggerReason.  AsText()),
-                                 new JProperty("seqNo",                SequenceNumber),
-                                 new JProperty("transactionInfo",      TransactionInfo.ToJSON(CustomTransactionSerializer,
-                                                                                              CustomCustomDataSerializer)),
+                                 new JProperty("eventType",               EventType.      AsText()),
+                                 new JProperty("timestamp",               Timestamp.      ToIso8601()),
+                                 new JProperty("triggerReason",           TriggerReason.  AsText()),
+                                 new JProperty("seqNo",                   SequenceNumber),
+                                 new JProperty("transactionInfo",         TransactionInfo.ToJSON(CustomTransactionSerializer,
+                                                                                                 CustomCustomDataSerializer)),
 
                            Offline.HasValue
-                               ? new JProperty("offline",              Offline.           Value)
+                               ? new JProperty("offline",                 Offline.           Value)
                                : null,
 
                            NumberOfPhasesUsed.HasValue
-                               ? new JProperty("numberOfPhasesUsed",   NumberOfPhasesUsed.Value)
+                               ? new JProperty("numberOfPhasesUsed",      NumberOfPhasesUsed.Value)
                                : null,
 
                            CableMaxCurrent.HasValue
-                               ? new JProperty("cableMaxCurrent",      CableMaxCurrent.   Value)
+                               ? new JProperty("cableMaxCurrent",         CableMaxCurrent.   Value.IntegerValue)
                                : null,
 
                            ReservationId.HasValue
-                               ? new JProperty("reservationId",        ReservationId.     Value.Value)
+                               ? new JProperty("reservationId",           ReservationId.     Value.Value)
                                : null,
 
                            IdToken is not null
-                               ? new JProperty("idToken",              IdToken.        ToJSON(CustomIdTokenSerializer,
-                                                                                              CustomAdditionalInfoSerializer,
-                                                                                              CustomCustomDataSerializer))
+                               ? new JProperty("idToken",                 IdToken.        ToJSON(CustomIdTokenSerializer,
+                                                                                                 CustomAdditionalInfoSerializer,
+                                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            EVSE is not null
-                               ? new JProperty("evse",                 EVSE.           ToJSON(CustomEVSESerializer,
-                                                                                              CustomCustomDataSerializer))
+                               ? new JProperty("evse",                    EVSE.           ToJSON(CustomEVSESerializer,
+                                                                                                 CustomCustomDataSerializer))
                                : null,
 
                            MeterValues.Any()
-                               ? new JProperty("meterValue",           new JArray(MeterValues.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
-                                                                                                                                     CustomSampledValueSerializer,
-                                                                                                                                     CustomSignedMeterValueSerializer,
-                                                                                                                                     CustomUnitsOfMeasureSerializer,
-                                                                                                                                     CustomCustomDataSerializer))))
+                               ? new JProperty("meterValue",              new JArray(MeterValues.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
+                                                                                                                                        CustomSampledValueSerializer,
+                                                                                                                                        CustomSignedMeterValueSerializer,
+                                                                                                                                        CustomUnitsOfMeasureSerializer,
+                                                                                                                                        CustomCustomDataSerializer))))
+                               : null,
+
+                           PreconditioningStatus.HasValue
+                               ? new JProperty("preconditioningStatus",   PreconditioningStatus.Value.AsText())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",           CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",              CustomData.     ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomTransactionEventRequestSerializer is not null
@@ -1141,23 +1170,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                SequenceNumber. Equals(TransactionEventRequest.SequenceNumber)  &&
                TransactionInfo.Equals(TransactionEventRequest.TransactionInfo) &&
 
-            ((!Offline.           HasValue    && !TransactionEventRequest.Offline.           HasValue)    ||
-               Offline.           HasValue    &&  TransactionEventRequest.Offline.           HasValue    && Offline.           Value.Equals(TransactionEventRequest.Offline.           Value)) &&
+            ((!Offline.              HasValue    && !TransactionEventRequest.Offline.              HasValue)    ||
+               Offline.              HasValue    &&  TransactionEventRequest.Offline.              HasValue    && Offline.              Value.Equals(TransactionEventRequest.Offline.              Value)) &&
 
-            ((!NumberOfPhasesUsed.HasValue    && !TransactionEventRequest.NumberOfPhasesUsed.HasValue)    ||
-               NumberOfPhasesUsed.HasValue    &&  TransactionEventRequest.NumberOfPhasesUsed.HasValue    && NumberOfPhasesUsed.Value.Equals(TransactionEventRequest.NumberOfPhasesUsed.Value)) &&
+            ((!NumberOfPhasesUsed.   HasValue    && !TransactionEventRequest.NumberOfPhasesUsed.   HasValue)    ||
+               NumberOfPhasesUsed.   HasValue    &&  TransactionEventRequest.NumberOfPhasesUsed.   HasValue    && NumberOfPhasesUsed.   Value.Equals(TransactionEventRequest.NumberOfPhasesUsed.   Value)) &&
 
-            ((!CableMaxCurrent.   HasValue    && !TransactionEventRequest.CableMaxCurrent.   HasValue)    ||
-               CableMaxCurrent.   HasValue    &&  TransactionEventRequest.CableMaxCurrent.   HasValue    && CableMaxCurrent.   Value.Equals(TransactionEventRequest.CableMaxCurrent.   Value)) &&
+            ((!CableMaxCurrent.      HasValue    && !TransactionEventRequest.CableMaxCurrent.      HasValue)    ||
+               CableMaxCurrent.      HasValue    &&  TransactionEventRequest.CableMaxCurrent.      HasValue    && CableMaxCurrent.      Value.Equals(TransactionEventRequest.CableMaxCurrent.      Value)) &&
 
-            ((!ReservationId.     HasValue    && !TransactionEventRequest.ReservationId.     HasValue)    ||
-               ReservationId.     HasValue    &&  TransactionEventRequest.ReservationId.     HasValue    && ReservationId.     Value.Equals(TransactionEventRequest.ReservationId.     Value)) &&
+            ((!ReservationId.        HasValue    && !TransactionEventRequest.ReservationId.        HasValue)    ||
+               ReservationId.        HasValue    &&  TransactionEventRequest.ReservationId.        HasValue    && ReservationId.        Value.Equals(TransactionEventRequest.ReservationId.        Value)) &&
 
-             ((IdToken            is     null &&  TransactionEventRequest.IdToken            is     null) ||
-              (IdToken            is not null &&  TransactionEventRequest.IdToken            is not null && IdToken.                 Equals(TransactionEventRequest.IdToken))) &&
+             ((IdToken               is     null &&  TransactionEventRequest.IdToken               is     null) ||
+              (IdToken               is not null &&  TransactionEventRequest.IdToken               is not null && IdToken.                    Equals(TransactionEventRequest.IdToken)))                    &&
 
-             ((EVSE               is     null &&  TransactionEventRequest.EVSE               is     null) ||
-              (EVSE               is not null &&  TransactionEventRequest.EVSE               is not null && EVSE.                    Equals(TransactionEventRequest.EVSE))) &&
+             ((EVSE                  is     null &&  TransactionEventRequest.EVSE                  is     null) ||
+              (EVSE                  is not null &&  TransactionEventRequest.EVSE                  is not null && EVSE.                       Equals(TransactionEventRequest.EVSE)))                       &&
+
+            ((!PreconditioningStatus.HasValue    && !TransactionEventRequest.PreconditioningStatus.HasValue)    ||
+               PreconditioningStatus.HasValue    &&  TransactionEventRequest.PreconditioningStatus.HasValue    && PreconditioningStatus.Value.Equals(TransactionEventRequest.PreconditioningStatus.Value)) &&
+
+               MeterValues.Count().Equals(TransactionEventRequest.MeterValues.Count()) &&
+               MeterValues.All(energyTransferMode => TransactionEventRequest.MeterValues.Contains(energyTransferMode)) &&
 
                base.    GenericEquals(TransactionEventRequest);
 
@@ -1176,21 +1211,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             unchecked
             {
 
-                return EventType.          GetHashCode()       * 41 ^
-                       Timestamp.          GetHashCode()       * 37 ^
-                       TriggerReason.      GetHashCode()       * 31 ^
-                       SequenceNumber.     GetHashCode()       * 29 ^
-                       TransactionInfo.    GetHashCode()       * 23 ^
+                return EventType.             GetHashCode()       * 43 ^
+                       Timestamp.             GetHashCode()       * 41 ^
+                       TriggerReason.         GetHashCode()       * 37 ^
+                       SequenceNumber.        GetHashCode()       * 31 ^
+                       TransactionInfo.       GetHashCode()       * 29 ^
 
-                      (Offline?.           GetHashCode() ?? 0) * 19 ^
-                      (NumberOfPhasesUsed?.GetHashCode() ?? 0) * 17 ^
-                      (CableMaxCurrent?.   GetHashCode() ?? 0) * 13 ^
-                      (ReservationId?.     GetHashCode() ?? 0) * 11 ^
-                      (IdToken?.           GetHashCode() ?? 0) *  7 ^
-                      (EVSE?.              GetHashCode() ?? 0) *  5 ^
-                       MeterValues.        CalcHashCode()      *  3 ^
+                      (Offline?.              GetHashCode() ?? 0) * 23 ^
+                      (NumberOfPhasesUsed?.   GetHashCode() ?? 0) * 19 ^
+                      (CableMaxCurrent?.      GetHashCode() ?? 0) * 17 ^
+                      (ReservationId?.        GetHashCode() ?? 0) * 13 ^
+                      (IdToken?.              GetHashCode() ?? 0) * 11 ^
+                      (EVSE?.                 GetHashCode() ?? 0) *  7 ^
+                      (PreconditioningStatus?.GetHashCode() ?? 0) *  5 ^
+                       MeterValues.           CalcHashCode()      *  3 ^
 
-                       base.               GetHashCode();
+                       base.                  GetHashCode();
 
             }
         }
@@ -1204,14 +1240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-
-                   Timestamp.ToIso8601(),
-                   " ",
-                   EventType, ", ",
-                   TriggerReason.AsText()
-
-               );
+            => $"{Timestamp} {EventType}, {TriggerReason.AsText()}";
 
         #endregion
 

@@ -33,6 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           IEquatable<ChargingSchedulePeriod>
     {
 
+        //ToDo: Implement me!
+
         #region Properties
 
         /// <summary>
@@ -40,19 +42,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// This value also defines the stop time of the previous period.
         /// </summary>
         [Mandatory]
-        public TimeSpan      StartPeriod       { get; }
+        public TimeSpan      StartPeriod          { get; }
 
         /// <summary>
-        /// Power limit during the schedule period in Amperes.
+        /// Optional charging rate limit during the schedule period is given
+        /// in the applicable chargingRateUnit.
         /// </summary>
-        [Mandatory]
-        public Decimal       Limit             { get; }
+        [Optional]
+        public Decimal?      Limit                { get; }
+
+        /// <summary>
+        /// Optional charging rate limit in chargingRateUnit on phase L2.
+        /// </summary>
+        [Optional]
+        public Decimal?      Limit_L2             { get; }
+
+        /// <summary>
+        /// Optional charging rate limit in chargingRateUnit on phase L3.
+        /// </summary>
+        [Optional]
+        public Decimal?      Limit_L3             { get; }
 
         /// <summary>
         /// The number of phases that can be used for charging.
         /// </summary>
         [Optional]
-        public Byte?         NumberOfPhases    { get; }
+        public Byte?         NumberOfPhases       { get; }
 
         /// <summary>
         /// Optional electrical phase to use for charging.
@@ -62,7 +77,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// the charging station / EVSE will make the selection on its own.
         /// </summary>
         [Optional]
-        public PhasesToUse?  PhaseToUse        { get; }
+        public PhasesToUse?  PhaseToUse           { get; }
+
+
+        public Decimal?      DischargeLimit       { get; }
+
+
+        public Decimal?      DischargeLimit_L2    { get; }
+
+        public Decimal?      DischargeLimit_L3    { get; }
+
+
+        // setpoint
+        // setpoint_L2
+        // setpoint_L3
+
+        // setpointReactive
+        // setpointReactive_L2
+        // setpointReactive_L3
+
+        // preconditioningRequest
+        // operationMode
+        // v2xBaseline
+        // v2xFreqWattCurve
+        // v2xSignalWattCurve
+        // dynUpdateTime
+
 
         #endregion
 

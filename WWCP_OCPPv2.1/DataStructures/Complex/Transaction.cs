@@ -67,6 +67,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public RemoteStart_Id?  RemoteStartId        { get; }
 
+        /// <summary>
+        /// The optional operation mode that is in use at this time.
+        /// </summary>
+        public OperationModes?  OperationMode        { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -79,12 +84,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TimeSpentCharging">The optional total time that energy flowed from the EVSE to the EV during this transaction.</param>
         /// <param name="StoppedReason">The optional reason why the transaction was stopped. MAY only be omitted when reason is "Local".</param>
         /// <param name="RemoteStartId">The optional remote start identification of the related request start transaction request to match the request with this transaction.</param>
+        /// <param name="OperationMode">An optional operation mode that is in use at this time.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public Transaction(Transaction_Id   TransactionId,
                            ChargingStates?  ChargingState       = null,
                            TimeSpan?        TimeSpentCharging   = null,
                            Reasons?         StoppedReason       = null,
                            RemoteStart_Id?  RemoteStartId       = null,
+                           OperationModes?  OperationMode       = null,
                            CustomData?      CustomData          = null)
 
             : base(CustomData)
@@ -95,6 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.ChargingState      = ChargingState;
             this.TimeSpentCharging  = TimeSpentCharging;
             this.StoppedReason      = StoppedReason;
+            this.OperationMode      = OperationMode;
             this.RemoteStartId      = RemoteStartId;
 
         }
@@ -102,41 +110,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        //ToDo: Update schema documentation after the official release of OCPP v2.1!
+
         #region Documentation
 
-        // "TransactionType": {
-        //   "description": "Transaction\r\nurn:x-oca:ocpp:uid:2:233318\r\n",
-        //   "javaType": "Transaction",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "transactionId": {
-        //       "description": "This contains the Id of the transaction.\r\n",
-        //       "type": "string",
-        //       "maxLength": 36
-        //     },
-        //     "chargingState": {
-        //       "$ref": "#/definitions/ChargingStateEnumType"
-        //     },
-        //     "timeSpentCharging": {
-        //       "description": "Transaction. Time_ Spent_ Charging. Elapsed_ Time\r\nurn:x-oca:ocpp:uid:1:569415\r\nContains the total time that energy flowed from EVSE to EV during the transaction (in seconds). Note that timeSpentCharging is smaller or equal to the duration of the transaction.\r\n",
-        //       "type": "integer"
-        //     },
-        //     "stoppedReason": {
-        //       "$ref": "#/definitions/ReasonEnumType"
-        //     },
-        //     "remoteStartId": {
-        //       "description": "The ID given to remote start request (&lt;&lt;requeststarttransactionrequest, RequestStartTransactionRequest&gt;&gt;. This enables to CSMS to match the started transaction to the given start request.\r\n",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "transactionId"
-        //   ]
-        // }
 
         #endregion
 
@@ -276,6 +253,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region OperationMode        [optional]
+
+                if (JSON.ParseOptional("operationMode",
+                                       "operation mode",
+                                       OperationModesExtensions.TryParse,
+                                       out OperationModes? OperationMode,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -291,12 +282,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                Transaction = new Transaction(TransactionId,
-                                              ChargingState,
-                                              TimeSpentCharging,
-                                              StoppedReason,
-                                              RemoteStartId,
-                                              CustomData);
+                Transaction = new Transaction(
+                                  TransactionId,
+                                  ChargingState,
+                                  TimeSpentCharging,
+                                  StoppedReason,
+                                  RemoteStartId,
+                                  OperationMode,
+                                  CustomData
+                              );
 
                 if (CustomTransactionParser is not null)
                     Transaction = CustomTransactionParser(JSON,
@@ -345,6 +339,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                            RemoteStartId.HasValue
                                ? new JProperty("remoteStartId",      RemoteStartId.Value.Value)
+                               : null,
+
+                           OperationMode.HasValue
+                               ? new JProperty("operationMode",      OperationMode.Value.AsText())
                                : null,
 
                            CustomData is not null
@@ -446,7 +444,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             ((!RemoteStartId.    HasValue && !Transaction.RemoteStartId.    HasValue) ||
                RemoteStartId.    HasValue &&  Transaction.RemoteStartId.    HasValue && RemoteStartId.    Value.Equals(Transaction.RemoteStartId.    Value)) &&
 
-               base.         Equals(Transaction);
+            ((!OperationMode.    HasValue && !Transaction.OperationMode.    HasValue) ||
+               OperationMode.    HasValue &&  Transaction.OperationMode.    HasValue && OperationMode.    Value.Equals(Transaction.OperationMode.    Value)) &&
+
+               base.Equals(Transaction);
 
         #endregion
 
@@ -463,11 +464,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                return TransactionId.     GetHashCode()       * 13 ^
-                      (ChargingState?.    GetHashCode() ?? 0) * 11 ^
-                      (TimeSpentCharging?.GetHashCode() ?? 0) *  7 ^
-                      (StoppedReason?.    GetHashCode() ?? 0) *  5 ^
-                      (RemoteStartId?.    GetHashCode() ?? 0) *  3 ^
+                return TransactionId.     GetHashCode()       * 17 ^
+                      (ChargingState?.    GetHashCode() ?? 0) * 13 ^
+                      (TimeSpentCharging?.GetHashCode() ?? 0) * 11 ^
+                      (StoppedReason?.    GetHashCode() ?? 0) *  7 ^
+                      (RemoteStartId?.    GetHashCode() ?? 0) *  5 ^
+                      (OperationMode?.    GetHashCode() ?? 0) *  3 ^
 
                        base.              GetHashCode();
 
@@ -501,6 +503,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                    RemoteStartId.HasValue
                        ? ", remote start id: "     + RemoteStartId.Value.ToString()
+                       : "",
+
+                   OperationMode.HasValue
+                       ? ", operation mode: "      + OperationMode.Value.ToString()
                        : ""
 
                );

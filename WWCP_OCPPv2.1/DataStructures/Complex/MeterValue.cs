@@ -36,14 +36,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The sampled meter values.
-        /// </summary>
-        public IEnumerable<SampledValue>  SampledValues    { get; }
-
-        /// <summary>
         /// The common timestamp of all sampled meter values.
         /// </summary>
         public DateTime                   Timestamp        { get; }
+
+        /// <summary>
+        /// The sampled meter values.
+        /// </summary>
+        public IEnumerable<SampledValue>  SampledValues    { get; }
 
         #endregion
 
@@ -52,23 +52,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new meter value.
         /// </summary>
-        /// <param name="SampledValues">The sampled meter values.</param>
         /// <param name="Timestamp">The common timestamp of all sampled meter values.</param>
+        /// <param name="SampledValues">The sampled meter values.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public MeterValue(IEnumerable<SampledValue>  SampledValues,
-                          DateTime                   Timestamp,
+        public MeterValue(DateTime                   Timestamp,
+                          IEnumerable<SampledValue>  SampledValues,
                           CustomData?                CustomData   = null)
 
             : base(CustomData)
 
         {
 
-            this.SampledValues  = SampledValues.Distinct();
-            this.Timestamp      = Timestamp;
-
-            if (!this.SampledValues.Any())
+            if (!SampledValues.Any())
                 throw new ArgumentException("The given enumeration of sampled meter values must not be empty!",
                                             nameof(SampledValues));
+
+            this.Timestamp      = Timestamp;
+            this.SampledValues  = SampledValues.Distinct();
+
+            unchecked
+            {
+
+                hashCode = Timestamp.    GetHashCode()  * 5 ^
+                           SampledValues.CalcHashCode() * 3 ^
+
+                           base.         GetHashCode();
+
+            }
 
         }
 
@@ -217,9 +227,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                MeterValue = new MeterValue(SampledValues,
-                                            Timestamp,
-                                            CustomData);
+                MeterValue = new MeterValue(
+                                 Timestamp,
+                                 SampledValues,
+                                 CustomData
+                             );
 
                 if (CustomMeterValueParser is not null)
                     MeterValue = CustomMeterValueParser(JSON,
@@ -258,15 +270,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                           new JProperty("sampledValue",       new JArray(SampledValues.SafeSelect(sampledValue => sampledValue.ToJSON(CustomSampledValueSerializer,
-                                                                                                                                       CustomSignedMeterValueSerializer,
-                                                                                                                                       CustomUnitsOfMeasureSerializer,
-                                                                                                                                       CustomCustomDataSerializer)))),
+                                 new JProperty("timestamp",      Timestamp.ToIso8601()),
 
-                           new JProperty("timestamp",          Timestamp. ToIso8601()),
+                                 new JProperty("sampledValue",   new JArray(SampledValues.SafeSelect(sampledValue => sampledValue.ToJSON(CustomSampledValueSerializer,
+                                                                                                                                         CustomSignedMeterValueSerializer,
+                                                                                                                                         CustomUnitsOfMeasureSerializer,
+                                                                                                                                         CustomCustomDataSerializer)))),
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -363,21 +375,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Timestamp.    GetHashCode()  * 5 ^
-                       SampledValues.CalcHashCode() * 3 ^
-                       base.         GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -388,7 +392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Timestamp, ": ", SampledValues.AggregateWith(", "));
+            => $"{Timestamp}: {SampledValues.AggregateWith(", ")}";
 
         #endregion
 

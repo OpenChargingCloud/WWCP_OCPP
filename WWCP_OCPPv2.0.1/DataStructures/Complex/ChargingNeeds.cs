@@ -36,28 +36,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         #region Properties
 
         /// <summary>
-        /// The source of the charging needs.
+        /// The energy transfer mode requested by the EV.
         /// </summary>
         [Mandatory]
-        public EnergyTransferModes    RequestedEnergyTransfer    { get; }
+        public EnergyTransferModes    RequestedEnergyTransferMode    { get; }
 
         /// <summary>
-        /// The optional indication whether the charging needs is critical for the grid.
+        /// The optional estimated departure time of the EV.
         /// </summary>
         [Optional]
-        public DateTime?              DepartureTime              { get; }
+        public DateTime?              DepartureTime                  { get; }
 
         /// <summary>
         /// Optional EV AC charging parameters.
         /// </summary>
         [Optional]
-        public ACChargingParameters?  ACChargingParameters       { get; }
+        public ACChargingParameters?  ACChargingParameters           { get; }
 
         /// <summary>
         /// Optional EV DC charging parameters.
         /// </summary>
         [Optional]
-        public DCChargingParameters?  DCChargingParameters       { get; }
+        public DCChargingParameters?  DCChargingParameters           { get; }
 
         #endregion
 
@@ -66,12 +66,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <summary>
         /// Create a new charging needs.
         /// </summary>
-        /// <param name="RequestedEnergyTransfer">The source of the charging needs.</param>
-        /// <param name="DepartureTime">An optional indication whether the charging needs is critical for the grid.</param>
+        /// <param name="RequestedEnergyTransferMode">The energy transfer mode requested by the EV.</param>
+        /// <param name="DepartureTime">The optional estimated departure time of the EV.</param>
         /// <param name="ACChargingParameters">Optional EV AC charging parameters.</param>
         /// <param name="DCChargingParameters">Optional EV DC charging parameters.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public ChargingNeeds(EnergyTransferModes    RequestedEnergyTransfer,
+        public ChargingNeeds(EnergyTransferModes    RequestedEnergyTransferMode,
                              DateTime?              DepartureTime,
                              ACChargingParameters?  ACChargingParameters,
                              DCChargingParameters?  DCChargingParameters,
@@ -81,10 +81,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
         {
 
-            this.RequestedEnergyTransfer  = RequestedEnergyTransfer;
-            this.DepartureTime            = DepartureTime;
-            this.ACChargingParameters     = ACChargingParameters;
-            this.DCChargingParameters     = DCChargingParameters;
+            this.RequestedEnergyTransferMode  = RequestedEnergyTransferMode;
+            this.DepartureTime                = DepartureTime;
+            this.ACChargingParameters         = ACChargingParameters;
+            this.DCChargingParameters         = DCChargingParameters;
 
         }
 
@@ -188,12 +188,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 ChargingNeeds = default;
 
-                #region RequestedEnergyTransfer    [mandatory]
+                #region RequestedEnergyTransferMode    [mandatory]
 
                 if (!JSON.ParseMandatory("requestedEnergyTransfer",
                                          "requested energy transfer",
                                          EnergyTransferModesExtensions.TryParse,
-                                         out EnergyTransferModes RequestedEnergyTransfer,
+                                         out EnergyTransferModes RequestedEnergyTransferMode,
                                          out ErrorResponse))
                 {
                     return false;
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 #endregion
 
-                #region DepartureTime              [optional]
+                #region DepartureTime                  [optional]
 
                 if (JSON.ParseOptional("departureTime",
                                        "departure time",
@@ -214,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 #endregion
 
-                #region ACChargingParameters       [optional]
+                #region ACChargingParameters           [optional]
 
                 if (JSON.ParseOptionalJSON("acChargingParameters",
                                            "AC charging parameters",
@@ -228,7 +228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 #endregion
 
-                #region DCChargingParameters       [optional]
+                #region DCChargingParameters           [optional]
 
                 if (JSON.ParseOptionalJSON("dcChargingParameters",
                                            "DC charging parameters",
@@ -242,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 #endregion
 
-                #region CustomData                 [optional]
+                #region CustomData                     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -257,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                ChargingNeeds = new ChargingNeeds(RequestedEnergyTransfer,
+                ChargingNeeds = new ChargingNeeds(RequestedEnergyTransferMode,
                                                   DepartureTime,
                                                   ACChargingParameters,
                                                   DCChargingParameters,
@@ -299,24 +299,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestedEnergyTransfer",   RequestedEnergyTransfer.AsText()),
+                                 new JProperty("requestedEnergyTransfer",   RequestedEnergyTransferMode.AsText()),
 
                            DepartureTime.HasValue
-                               ? new JProperty("departureTime",             DepartureTime.Value.    ToIso8601())
+                               ? new JProperty("departureTime",             DepartureTime.Value.        ToIso8601())
                                : null,
 
                            ACChargingParameters is not null
-                               ? new JProperty("acChargingParameters",      ACChargingParameters.   ToJSON(CustomACChargingParametersSerializer,
-                                                                                                           CustomCustomDataSerializer))
+                               ? new JProperty("acChargingParameters",      ACChargingParameters.       ToJSON(CustomACChargingParametersSerializer,
+                                                                                                               CustomCustomDataSerializer))
                                : null,
 
                            DCChargingParameters is not null
-                               ? new JProperty("dcChargingParameters",      DCChargingParameters.   ToJSON(CustomDCChargingParametersSerializer,
-                                                                                                           CustomCustomDataSerializer))
+                               ? new JProperty("dcChargingParameters",      DCChargingParameters.       ToJSON(CustomDCChargingParametersSerializer,
+                                                                                                               CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",                CustomData.             ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",                CustomData.                 ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -400,7 +400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             => ChargingNeeds is not null &&
 
-               RequestedEnergyTransfer.Equals(ChargingNeeds.RequestedEnergyTransfer) &&
+               RequestedEnergyTransferMode.Equals(ChargingNeeds.RequestedEnergyTransferMode) &&
 
             ((!DepartureTime.       HasValue    && !ChargingNeeds.DepartureTime.       HasValue)    ||
               (DepartureTime.       HasValue    &&  ChargingNeeds.DepartureTime.       HasValue    && DepartureTime.Value. Equals(ChargingNeeds.DepartureTime.Value)))  &&
@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
              ((DCChargingParameters is     null && ChargingNeeds. DCChargingParameters is     null) ||
               (DCChargingParameters is not null && ChargingNeeds. DCChargingParameters is not null && DCChargingParameters.Equals(ChargingNeeds.DCChargingParameters))) &&
 
-               base.                   Equals(ChargingNeeds);
+               base.Equals(ChargingNeeds);
 
         #endregion
 
@@ -428,12 +428,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             unchecked
             {
 
-                return RequestedEnergyTransfer.GetHashCode()       * 11 ^
-                      (DepartureTime?.         GetHashCode() ?? 0) *  7 ^
-                      (ACChargingParameters?.  GetHashCode() ?? 0) *  5 ^
-                      (DCChargingParameters?.  GetHashCode() ?? 0) *  3 ^
+                return RequestedEnergyTransferMode.GetHashCode()       * 11 ^
+                      (DepartureTime?.             GetHashCode() ?? 0) *  7 ^
+                      (ACChargingParameters?.      GetHashCode() ?? 0) *  5 ^
+                      (DCChargingParameters?.      GetHashCode() ?? 0) *  3 ^
 
-                       base.                   GetHashCode();
+                       base.                       GetHashCode();
 
             }
         }
@@ -449,7 +449,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             => String.Concat(
 
-                   RequestedEnergyTransfer,
+                   RequestedEnergyTransferMode.AsText(),
 
                    DepartureTime.HasValue
                       ? ", Departure time: "       + DepartureTime.Value. ToIso8601()

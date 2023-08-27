@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Threading.Channels;
 
 #endregion
 
@@ -27,37 +28,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// A notify EV charging needs request.
+    /// A notify EV charging schedule request.
     /// </summary>
-    public class NotifyEVChargingNeedsRequest : ARequest<NotifyEVChargingNeedsRequest>
+    public class NotifyEVChargingScheduleRequest : ARequest<NotifyEVChargingScheduleRequest>
     {
 
         #region Properties
 
         /// <summary>
-        /// The EVSE and connector to which the EV is connected to.
+        /// The charging periods contained within the charging schedule
+        /// are relative to this time base.
         /// </summary>
         [Mandatory]
-        public EVSE_Id        EVSEId               { get; }
+        public DateTime          TimeBase                    { get; }
 
         /// <summary>
-        /// The characteristics of the energy delivery required.
+        /// The charging schedule applies to this EVSE.
         /// </summary>
         [Mandatory]
-        public ChargingNeeds  ChargingNeeds        { get; }
+        public EVSE_Id           EVSEId                      { get; }
 
         /// <summary>
-        /// The optional maximum schedule tuples the car supports per schedule.
+        /// Planned energy consumption of the EV over time.
+        /// Always relative to the time base.
+        /// </summary>
+        [Mandatory]
+        public ChargingSchedule  ChargingSchedule            { get; }
+
+        /// <summary>
+        /// The optional identification of the selected charging schedule
+        /// from the provided charging profile.
         /// </summary>
         [Optional]
-        public UInt16?        MaxScheduleTuples    { get; }
+        public Byte?             SelectedScheduleTupleId     { get; }
+
+        /// <summary>
+        /// True when power tolerance is accepted.
+        /// This value is taken from EVPowerProfile.PowerToleranceAcceptance in the ISO 15118-20 PowerDeliverReq message..
+        /// </summary>
+        public Boolean?          PowerToleranceAcceptance    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a notify EV charging needs request.
+        /// Create a notify EV charging schedule request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="EVSEId">The EVSE and connector to which the EV is connected to.</param>
@@ -70,17 +86,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyEVChargingNeedsRequest(ChargeBox_Id       ChargeBoxId,
-                                            EVSE_Id            EVSEId,
-                                            ChargingNeeds      ChargingNeeds,
-                                            UInt16?            MaxScheduleTuples   = null,
-                                            CustomData?        CustomData          = null,
+        public NotifyEVChargingScheduleRequest(ChargeBox_Id       ChargeBoxId,
+                                               DateTime           TimeBase,
+                                               EVSE_Id            EVSEId,
+                                               ChargingSchedule   ChargingSchedule,
+                                               CustomData?        CustomData          = null,
 
-                                            Request_Id?        RequestId           = null,
-                                            DateTime?          RequestTimestamp    = null,
-                                            TimeSpan?          RequestTimeout      = null,
-                                            EventTracking_Id?  EventTrackingId     = null,
-                                            CancellationToken  CancellationToken   = default)
+                                               Request_Id?        RequestId           = null,
+                                               DateTime?          RequestTimestamp    = null,
+                                               TimeSpan?          RequestTimeout      = null,
+                                               EventTracking_Id?  EventTrackingId     = null,
+                                               CancellationToken  CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "NotifyEVChargingNeeds",
@@ -109,19 +125,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomNotifyEVChargingNeedsRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomNotifyEVChargingScheduleRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a notify EV charging needs request.
+        /// Parse the given JSON representation of a notify EV charging schedule request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CustomNotifyEVChargingNeedsRequestParser">A delegate to parse custom notify EV charging needs requests.</param>
-        public static NotifyEVChargingNeedsRequest Parse(JObject                                                     JSON,
+        /// <param name="CustomNotifyEVChargingScheduleRequestParser">A delegate to parse custom notify EV charging schedule requests.</param>
+        public static NotifyEVChargingScheduleRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
                                                          ChargeBox_Id                                                ChargeBoxId,
-                                                         CustomJObjectParserDelegate<NotifyEVChargingNeedsRequest>?  CustomNotifyEVChargingNeedsRequestParser   = null)
+                                                         CustomJObjectParserDelegate<NotifyEVChargingScheduleRequest>?  CustomNotifyEVChargingScheduleRequestParser   = null)
         {
 
             if (TryParse(JSON,
@@ -129,41 +145,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargeBoxId,
                          out var notifyEVChargingNeedsRequest,
                          out var errorResponse,
-                         CustomNotifyEVChargingNeedsRequestParser))
+                         CustomNotifyEVChargingScheduleRequestParser))
             {
                 return notifyEVChargingNeedsRequest!;
             }
 
-            throw new ArgumentException("The given JSON representation of a notify EV charging needs request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a notify EV charging schedule request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out NotifyEVChargingNeedsRequest, out ErrorResponse, CustomNotifyEVChargingNeedsRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out NotifyEVChargingScheduleRequest, out ErrorResponse, CustomNotifyEVChargingScheduleRequestParser = null)
 
         /// <summary>
-        /// Try to parse the given JSON representation of a notify EV charging needs request.
+        /// Try to parse the given JSON representation of a notify EV charging schedule request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="NotifyEVChargingNeedsRequest">The parsed notify EV charging needs request.</param>
+        /// <param name="NotifyEVChargingScheduleRequest">The parsed notify EV charging schedule request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomNotifyEVChargingNeedsRequestParser">A delegate to parse custom notify EV charging needs requests.</param>
+        /// <param name="CustomNotifyEVChargingScheduleRequestParser">A delegate to parse custom notify EV charging schedule requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
                                        ChargeBox_Id                                                ChargeBoxId,
-                                       out NotifyEVChargingNeedsRequest?                           NotifyEVChargingNeedsRequest,
+                                       out NotifyEVChargingScheduleRequest?                           NotifyEVChargingScheduleRequest,
                                        out String?                                                 ErrorResponse,
-                                       CustomJObjectParserDelegate<NotifyEVChargingNeedsRequest>?  CustomNotifyEVChargingNeedsRequestParser)
+                                       CustomJObjectParserDelegate<NotifyEVChargingScheduleRequest>?  CustomNotifyEVChargingScheduleRequestParser)
         {
 
             try
             {
 
-                NotifyEVChargingNeedsRequest = null;
+                NotifyEVChargingScheduleRequest = null;
 
                 #region EVSEId               [mandatory]
 
@@ -181,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region ChargingNeeds        [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("chargingNeeds",
-                                             "charging needs",
+                                             "charging schedule",
                                              OCPPv2_1.ChargingNeeds.TryParse,
                                              out ChargingNeeds? ChargingNeeds,
                                              out ErrorResponse) ||
@@ -239,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                NotifyEVChargingNeedsRequest = new NotifyEVChargingNeedsRequest(
+                NotifyEVChargingScheduleRequest = new NotifyEVChargingScheduleRequest(
                                                    ChargeBoxId,
                                                    EVSEId,
                                                    ChargingNeeds,
@@ -248,17 +264,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    RequestId
                                                );
 
-                if (CustomNotifyEVChargingNeedsRequestParser is not null)
-                    NotifyEVChargingNeedsRequest = CustomNotifyEVChargingNeedsRequestParser(JSON,
-                                                                                            NotifyEVChargingNeedsRequest);
+                if (CustomNotifyEVChargingScheduleRequestParser is not null)
+                    NotifyEVChargingScheduleRequest = CustomNotifyEVChargingScheduleRequestParser(JSON,
+                                                                                            NotifyEVChargingScheduleRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                NotifyEVChargingNeedsRequest  = null;
-                ErrorResponse                 = "The given JSON representation of a notify EV charging needs request is invalid: " + e.Message;
+                NotifyEVChargingScheduleRequest  = null;
+                ErrorResponse                 = "The given JSON representation of a notify EV charging schedule request is invalid: " + e.Message;
                 return false;
             }
 
@@ -266,13 +282,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomNotifyEVChargingNeedsRequestSerializer = null, CustomChargingNeedsSerializer = null, ...)
+        #region ToJSON(CustomNotifyEVChargingScheduleRequestSerializer = null, CustomChargingNeedsSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomNotifyEVChargingNeedsRequestSerializer">A delegate to serialize custom NotifyEVChargingNeeds requests.</param>
-        /// <param name="CustomChargingNeedsSerializer">A delegate to serialize custom charging needs.</param>
+        /// <param name="CustomNotifyEVChargingScheduleRequestSerializer">A delegate to serialize custom NotifyEVChargingNeeds requests.</param>
+        /// <param name="CustomChargingNeedsSerializer">A delegate to serialize custom charging schedule.</param>
         /// <param name="CustomACChargingParametersSerializer">A delegate to serialize custom AC charging parameters.</param>
         /// <param name="CustomDCChargingParametersSerializer">A delegate to serialize custom DC charging parameters.</param>
         /// <param name="CustomV2XChargingParametersSerializer">A delegate to serialize custom V2X charging parameters.</param>
@@ -283,7 +299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomEVAbsolutePriceScheduleEntrySerializer">A delegate to serialize custom charging limits.</param>
         /// <param name="CustomEVPriceRuleSerializer">A delegate to serialize custom ev price rules.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyEVChargingNeedsRequest>?  CustomNotifyEVChargingNeedsRequestSerializer   = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyEVChargingScheduleRequest>?  CustomNotifyEVChargingScheduleRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingNeeds>?                 CustomChargingNeedsSerializer                  = null,
                               CustomJObjectSerializerDelegate<ACChargingParameters>?          CustomACChargingParametersSerializer           = null,
                               CustomJObjectSerializerDelegate<DCChargingParameters>?          CustomDCChargingParametersSerializer           = null,
@@ -321,8 +337,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ? new JProperty("customData",          CustomData.   ToJSON(CustomCustomDataSerializer))
                                : null);
 
-            return CustomNotifyEVChargingNeedsRequestSerializer is not null
-                       ? CustomNotifyEVChargingNeedsRequestSerializer(this, json)
+            return CustomNotifyEVChargingScheduleRequestSerializer is not null
+                       ? CustomNotifyEVChargingScheduleRequestSerializer(this, json)
                        : json;
 
         }
@@ -332,81 +348,81 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Operator overloading
 
-        #region Operator == (NotifyEVChargingNeedsRequest1, NotifyEVChargingNeedsRequest2)
+        #region Operator == (NotifyEVChargingScheduleRequest1, NotifyEVChargingScheduleRequest2)
 
         /// <summary>
-        /// Compares two notify EV charging needs requests for equality.
+        /// Compares two notify EV charging schedule requests for equality.
         /// </summary>
-        /// <param name="NotifyEVChargingNeedsRequest1">A notify EV charging needs request.</param>
-        /// <param name="NotifyEVChargingNeedsRequest2">Another notify EV charging needs request.</param>
+        /// <param name="NotifyEVChargingScheduleRequest1">A notify EV charging schedule request.</param>
+        /// <param name="NotifyEVChargingScheduleRequest2">Another notify EV charging schedule request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (NotifyEVChargingNeedsRequest? NotifyEVChargingNeedsRequest1,
-                                           NotifyEVChargingNeedsRequest? NotifyEVChargingNeedsRequest2)
+        public static Boolean operator == (NotifyEVChargingScheduleRequest? NotifyEVChargingScheduleRequest1,
+                                           NotifyEVChargingScheduleRequest? NotifyEVChargingScheduleRequest2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(NotifyEVChargingNeedsRequest1, NotifyEVChargingNeedsRequest2))
+            if (ReferenceEquals(NotifyEVChargingScheduleRequest1, NotifyEVChargingScheduleRequest2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (NotifyEVChargingNeedsRequest1 is null || NotifyEVChargingNeedsRequest2 is null)
+            if (NotifyEVChargingScheduleRequest1 is null || NotifyEVChargingScheduleRequest2 is null)
                 return false;
 
-            return NotifyEVChargingNeedsRequest1.Equals(NotifyEVChargingNeedsRequest2);
+            return NotifyEVChargingScheduleRequest1.Equals(NotifyEVChargingScheduleRequest2);
 
         }
 
         #endregion
 
-        #region Operator != (NotifyEVChargingNeedsRequest1, NotifyEVChargingNeedsRequest2)
+        #region Operator != (NotifyEVChargingScheduleRequest1, NotifyEVChargingScheduleRequest2)
 
         /// <summary>
-        /// Compares two notify EV charging needs requests for inequality.
+        /// Compares two notify EV charging schedule requests for inequality.
         /// </summary>
-        /// <param name="NotifyEVChargingNeedsRequest1">A notify EV charging needs request.</param>
-        /// <param name="NotifyEVChargingNeedsRequest2">Another notify EV charging needs request.</param>
+        /// <param name="NotifyEVChargingScheduleRequest1">A notify EV charging schedule request.</param>
+        /// <param name="NotifyEVChargingScheduleRequest2">Another notify EV charging schedule request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (NotifyEVChargingNeedsRequest? NotifyEVChargingNeedsRequest1,
-                                           NotifyEVChargingNeedsRequest? NotifyEVChargingNeedsRequest2)
+        public static Boolean operator != (NotifyEVChargingScheduleRequest? NotifyEVChargingScheduleRequest1,
+                                           NotifyEVChargingScheduleRequest? NotifyEVChargingScheduleRequest2)
 
-            => !(NotifyEVChargingNeedsRequest1 == NotifyEVChargingNeedsRequest2);
-
-        #endregion
+            => !(NotifyEVChargingScheduleRequest1 == NotifyEVChargingScheduleRequest2);
 
         #endregion
 
-        #region IEquatable<NotifyEVChargingNeedsRequest> Members
+        #endregion
+
+        #region IEquatable<NotifyEVChargingScheduleRequest> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two notify EV charging needs requests for equality.
+        /// Compares two notify EV charging schedule requests for equality.
         /// </summary>
-        /// <param name="Object">A notify EV charging needs request to compare with.</param>
+        /// <param name="Object">A notify EV charging schedule request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is NotifyEVChargingNeedsRequest notifyEVChargingNeedsRequest &&
+            => Object is NotifyEVChargingScheduleRequest notifyEVChargingNeedsRequest &&
                    Equals(notifyEVChargingNeedsRequest);
 
         #endregion
 
-        #region Equals(NotifyEVChargingNeedsRequest)
+        #region Equals(NotifyEVChargingScheduleRequest)
 
         /// <summary>
-        /// Compares two notify EV charging needs requests for equality.
+        /// Compares two notify EV charging schedule requests for equality.
         /// </summary>
-        /// <param name="NotifyEVChargingNeedsRequest">A notify EV charging needs request to compare with.</param>
-        public override Boolean Equals(NotifyEVChargingNeedsRequest? NotifyEVChargingNeedsRequest)
+        /// <param name="NotifyEVChargingScheduleRequest">A notify EV charging schedule request to compare with.</param>
+        public override Boolean Equals(NotifyEVChargingScheduleRequest? NotifyEVChargingScheduleRequest)
 
-            => NotifyEVChargingNeedsRequest is not null &&
+            => NotifyEVChargingScheduleRequest is not null &&
 
-               EVSEId.       Equals(NotifyEVChargingNeedsRequest.EVSEId)        &&
-               ChargingNeeds.Equals(NotifyEVChargingNeedsRequest.ChargingNeeds) &&
+               EVSEId.       Equals(NotifyEVChargingScheduleRequest.EVSEId)        &&
+               ChargingNeeds.Equals(NotifyEVChargingScheduleRequest.ChargingNeeds) &&
 
-            ((!MaxScheduleTuples.HasValue && !NotifyEVChargingNeedsRequest.MaxScheduleTuples.HasValue) ||
-               MaxScheduleTuples.HasValue &&  NotifyEVChargingNeedsRequest.MaxScheduleTuples.HasValue && MaxScheduleTuples.Value.Equals(NotifyEVChargingNeedsRequest.MaxScheduleTuples.Value)) &&
+            ((!MaxScheduleTuples.HasValue && !NotifyEVChargingScheduleRequest.MaxScheduleTuples.HasValue) ||
+               MaxScheduleTuples.HasValue &&  NotifyEVChargingScheduleRequest.MaxScheduleTuples.HasValue && MaxScheduleTuples.Value.Equals(NotifyEVChargingScheduleRequest.MaxScheduleTuples.Value)) &&
 
-               base.GenericEquals(NotifyEVChargingNeedsRequest);
+               base.GenericEquals(NotifyEVChargingScheduleRequest);
 
         #endregion
 

@@ -34,6 +34,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                     IEquatable<ChargingSchedule>
     {
 
+        //ToDo: Implement me!
+
         #region Properties
 
         /// <summary>
@@ -41,18 +43,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         [Mandatory]
         public ChargingSchedule_Id                  Id                         { get; }
-
-        /// <summary>
-        /// The unit of measure the charging limit is expressed in.
-        /// </summary>
-        [Mandatory]
-        public ChargingRateUnits                    ChargingRateUnit           { get; }
-
-        /// <summary>
-        /// The enumeration of charging schedule periods defining the maximum power or current usage over time.
-        /// </summary>
-        [Mandatory]
-        public IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods    { get; }
 
         /// <summary>
         /// The optional starting timestamp of an absolute schedule.
@@ -69,6 +59,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public TimeSpan?                            Duration                   { get; }
 
         /// <summary>
+        /// The unit of measure the charging limit is expressed in.
+        /// </summary>
+        [Mandatory]
+        public ChargingRateUnits                    ChargingRateUnit           { get; }
+
+        /// <summary>
         /// The optional minimal charging rate supported by the EV.
         /// The unit of measure is defined by the chargingRateUnit.
         /// This parameter is intended to be used by a local smart charging algorithm to optimize the power allocation for in the case a charging process is inefficient at lower charging rates.
@@ -77,11 +73,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         [Optional]
         public Decimal?                             MinChargingRate            { get; }
 
+        // limitBeyondSoC
+
+        /// <summary>
+        /// The enumeration of charging schedule periods defining the maximum power or current usage over time.
+        /// </summary>
+        [Mandatory]
+        public IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods    { get; }
+
         /// <summary>
         /// Optional sales tariff associated with this charging schedule.
         /// </summary>
         [Optional]
         public SalesTariff?                         SalesTariff                { get; }
+
+        // absolutePriceSchedule
+
+        // priceLevelSchedule
 
         #endregion
 

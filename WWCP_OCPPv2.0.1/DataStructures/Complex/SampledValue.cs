@@ -117,6 +117,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             this.SignedMeterValue  = SignedMeterValue;
             this.UnitOfMeasure     = UnitOfMeasure;
 
+            unchecked
+            {
+
+                hashCode = Value.            GetHashCode()       * 19 ^
+
+                          (Context?.         GetHashCode() ?? 0) * 17 ^
+                          (Measurand?.       GetHashCode() ?? 0) * 13 ^
+                          (Phase?.           GetHashCode() ?? 0) * 11 ^
+                          (Location?.        GetHashCode() ?? 0) *  7 ^
+                          (SignedMeterValue?.GetHashCode() ?? 0) *  5 ^
+                          (UnitOfMeasure?.   GetHashCode() ?? 0) *  3 ^
+
+                          base.              GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -309,7 +325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 #endregion
 
-                #region UnitOfMeasure
+                #region UnitOfMeasure       [optional]
 
                 if (JSON.ParseOptionalJSON("unitOfMeasure",
                                            "unit of measure",
@@ -323,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 #endregion
 
-                #region CustomData
+                #region CustomData          [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -338,14 +354,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                SampledValue = new SampledValue(Value,
-                                                Context,
-                                                Measurand,
-                                                Phase,
-                                                Location,
-                                                SignedMeterValue,
-                                                UnitOfMeasure,
-                                                CustomData);
+                SampledValue = new SampledValue(
+                                   Value,
+                                   Context,
+                                   Measurand,
+                                   Phase,
+                                   Location,
+                                   SignedMeterValue,
+                                   UnitOfMeasure,
+                                   CustomData
+                               );
 
                 if (CustomSampledValueParser is not null)
                     SampledValue = CustomSampledValueParser(JSON,
@@ -515,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             ((UnitOfMeasure    is     null && SampledValue.UnitOfMeasure    is     null) ||
              (UnitOfMeasure    is not null && SampledValue.UnitOfMeasure    is not null   && UnitOfMeasure.   Equals(SampledValue.UnitOfMeasure)))    &&
 
-              base.  Equals(SampledValue);
+              base.Equals(SampledValue);
 
         #endregion
 
@@ -523,28 +541,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Value.            GetHashCode()       * 19 ^
-
-                      (Context?.         GetHashCode() ?? 0) * 17 ^
-                      (Measurand?.       GetHashCode() ?? 0) * 13 ^
-                      (Phase?.           GetHashCode() ?? 0) * 11 ^
-                      (Location?.        GetHashCode() ?? 0) *  7 ^
-                      (SignedMeterValue?.GetHashCode() ?? 0) *  5 ^
-                      (UnitOfMeasure?.   GetHashCode() ?? 0) *  3 ^
-
-                      base.              GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -555,10 +558,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Value,
-                             UnitOfMeasure is not null
-                                 ? " " + UnitOfMeasure.Unit
-                                 : "");
+            => $"{Value}{(UnitOfMeasure is not null ? $" {UnitOfMeasure.Unit}" : "")}";
 
         #endregion
 
