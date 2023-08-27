@@ -62,9 +62,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// Create a notify EV charging schedule request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="EVSEId">The EVSE and connector to which the EV is connected to.</param>
-        /// <param name="ChargingNeeds">The characteristics of the energy delivery required.</param>
-        /// <param name="MaxScheduleTuples">The optional maximum schedule tuples the car supports per schedule.</param>
+        /// <param name="TimeBase">The charging periods contained within the charging schedule are relative to this time base.</param>
+        /// <param name="EVSEId">The charging schedule applies to this EVSE.</param>
+        /// <param name="ChargingSchedule">Planned energy consumption of the EV over time. Always relative to the time base.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -95,9 +95,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
 
         {
 
-            this.EVSEId             = EVSEId;
-            this.ChargingNeeds      = ChargingNeeds;
-            this.MaxScheduleTuples  = MaxScheduleTuples;
+            this.TimeBase          = TimeBase;
+            this.EVSEId            = EVSEId;
+            this.ChargingSchedule  = ChargingSchedule;
 
         }
 
@@ -407,10 +407,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CustomNotifyEVChargingScheduleRequestParser">A delegate to parse custom notify EV charging schedule requests.</param>
-        public static NotifyEVChargingScheduleRequest Parse(JObject                                                     JSON,
-                                                         Request_Id                                                  RequestId,
-                                                         ChargeBox_Id                                                ChargeBoxId,
-                                                         CustomJObjectParserDelegate<NotifyEVChargingScheduleRequest>?  CustomNotifyEVChargingScheduleRequestParser   = null)
+        public static NotifyEVChargingScheduleRequest Parse(JObject                                                        JSON,
+                                                            Request_Id                                                     RequestId,
+                                                            ChargeBox_Id                                                   ChargeBoxId,
+                                                            CustomJObjectParserDelegate<NotifyEVChargingScheduleRequest>?  CustomNotifyEVChargingScheduleRequestParser   = null)
         {
 
             if (TryParse(JSON,
@@ -441,11 +441,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="NotifyEVChargingScheduleRequest">The parsed notify EV charging schedule request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyEVChargingScheduleRequestParser">A delegate to parse custom notify EV charging schedule requests.</param>
-        public static Boolean TryParse(JObject                                                     JSON,
-                                       Request_Id                                                  RequestId,
-                                       ChargeBox_Id                                                ChargeBoxId,
+        public static Boolean TryParse(JObject                                                        JSON,
+                                       Request_Id                                                     RequestId,
+                                       ChargeBox_Id                                                   ChargeBoxId,
                                        out NotifyEVChargingScheduleRequest?                           NotifyEVChargingScheduleRequest,
-                                       out String?                                                 ErrorResponse,
+                                       out String?                                                    ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyEVChargingScheduleRequest>?  CustomNotifyEVChargingScheduleRequestParser)
         {
 
@@ -454,7 +454,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
 
                 NotifyEVChargingScheduleRequest = null;
 
-                #region EVSEId               [mandatory]
+                #region TimeBase            [mandatory]
+
+                if (!JSON.ParseMandatory("timeBase",
+                                         "time base",
+                                         out DateTime TimeBase,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region EVSEId              [mandatory]
 
                 if (!JSON.ParseMandatory("evseId",
                                          "EVSE identification",
@@ -467,38 +479,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
 
                 #endregion
 
-                #region ChargingNeeds        [mandatory]
+                #region ChargingSchedule    [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("chargingNeeds",
+                if (!JSON.ParseMandatoryJSON("chargingSchedule",
                                              "charging schedule",
-                                             OCPPv2_1.ChargingNeeds.TryParse,
-                                             out ChargingNeeds? ChargingNeeds,
+                                             OCPPv2_0_1.ChargingSchedule.TryParse,
+                                             out ChargingSchedule? ChargingSchedule,
                                              out ErrorResponse) ||
-                     ChargingNeeds is null)
+                     ChargingSchedule is null)
                 {
                     return false;
                 }
 
                 #endregion
 
-                #region MaxScheduleTuples    [optional]
-
-                if (JSON.ParseOptional("maxScheduleTuples",
-                                       "max schedule tuples",
-                                       out UInt16? MaxScheduleTuples,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region CustomData           [optional]
+                #region CustomData          [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPPv2_1.CustomData.TryParse,
+                                           OCPPv2_0_1.CustomData.TryParse,
                                            out CustomData CustomData,
                                            out ErrorResponse))
                 {
@@ -508,7 +507,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
 
                 #endregion
 
-                #region ChargeBoxId          [optional, OCPP_CSE]
+                #region ChargeBoxId         [optional, OCPP_CSE]
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
@@ -529,13 +528,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
 
 
                 NotifyEVChargingScheduleRequest = new NotifyEVChargingScheduleRequest(
-                                                   ChargeBoxId,
-                                                   EVSEId,
-                                                   ChargingNeeds,
-                                                   MaxScheduleTuples,
-                                                   CustomData,
-                                                   RequestId
-                                               );
+                                                      ChargeBoxId,
+                                                      TimeBase,
+                                                      EVSEId,
+                                                      ChargingSchedule,
+                                                      CustomData,
+                                                      RequestId
+                                                  );
 
                 if (CustomNotifyEVChargingScheduleRequestParser is not null)
                     NotifyEVChargingScheduleRequest = CustomNotifyEVChargingScheduleRequestParser(JSON,
@@ -561,53 +560,41 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomNotifyEVChargingScheduleRequestSerializer">A delegate to serialize custom NotifyEVChargingNeeds requests.</param>
-        /// <param name="CustomChargingNeedsSerializer">A delegate to serialize custom charging schedule.</param>
-        /// <param name="CustomACChargingParametersSerializer">A delegate to serialize custom AC charging parameters.</param>
-        /// <param name="CustomDCChargingParametersSerializer">A delegate to serialize custom DC charging parameters.</param>
-        /// <param name="CustomV2XChargingParametersSerializer">A delegate to serialize custom V2X charging parameters.</param>
-        /// <param name="CustomEVEnergyOfferSerializer">A delegate to serialize custom ev energy offers.</param>
-        /// <param name="CustomEVPowerScheduleSerializer">A delegate to serialize custom ev power schedules.</param>
-        /// <param name="CustomEVPowerScheduleEntrySerializer">A delegate to serialize custom ev power schedule entries.</param>
-        /// <param name="CustomEVAbsolutePriceScheduleSerializer">A delegate to serialize custom ev absolute price schedules.</param>
-        /// <param name="CustomEVAbsolutePriceScheduleEntrySerializer">A delegate to serialize custom charging limits.</param>
-        /// <param name="CustomEVPriceRuleSerializer">A delegate to serialize custom ev price rules.</param>
+        /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedules.</param>
+        /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
+        /// <param name="CustomSalesTariffSerializer">A delegate to serialize custom salesTariffs.</param>
+        /// <param name="CustomSalesTariffEntrySerializer">A delegate to serialize custom salesTariffEntrys.</param>
+        /// <param name="CustomRelativeTimeIntervalSerializer">A delegate to serialize custom relativeTimeIntervals.</param>
+        /// <param name="CustomConsumptionCostSerializer">A delegate to serialize custom consumptionCosts.</param>
+        /// <param name="CustomCostSerializer">A delegate to serialize custom costs.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyEVChargingScheduleRequest>?  CustomNotifyEVChargingScheduleRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<ChargingNeeds>?                 CustomChargingNeedsSerializer                  = null,
-                              CustomJObjectSerializerDelegate<ACChargingParameters>?          CustomACChargingParametersSerializer           = null,
-                              CustomJObjectSerializerDelegate<DCChargingParameters>?          CustomDCChargingParametersSerializer           = null,
-                              CustomJObjectSerializerDelegate<V2XChargingParameters>?         CustomV2XChargingParametersSerializer          = null,
-                              CustomJObjectSerializerDelegate<EVEnergyOffer>?                 CustomEVEnergyOfferSerializer                  = null,
-                              CustomJObjectSerializerDelegate<EVPowerSchedule>?               CustomEVPowerScheduleSerializer                = null,
-                              CustomJObjectSerializerDelegate<EVPowerScheduleEntry>?          CustomEVPowerScheduleEntrySerializer           = null,
-                              CustomJObjectSerializerDelegate<EVAbsolutePriceSchedule>?       CustomEVAbsolutePriceScheduleSerializer        = null,
-                              CustomJObjectSerializerDelegate<EVAbsolutePriceScheduleEntry>?  CustomEVAbsolutePriceScheduleEntrySerializer   = null,
-                              CustomJObjectSerializerDelegate<EVPriceRule>?                   CustomEVPriceRuleSerializer                    = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
+                              CustomJObjectSerializerDelegate<ChargingSchedule>?                 CustomChargingScheduleSerializer                  = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?           CustomChargingSchedulePeriodSerializer            = null,
+                              CustomJObjectSerializerDelegate<SalesTariff>?                      CustomSalesTariffSerializer                       = null,
+                              CustomJObjectSerializerDelegate<SalesTariffEntry>?                 CustomSalesTariffEntrySerializer                  = null,
+                              CustomJObjectSerializerDelegate<RelativeTimeInterval>?             CustomRelativeTimeIntervalSerializer              = null,
+                              CustomJObjectSerializerDelegate<ConsumptionCost>?                  CustomConsumptionCostSerializer                   = null,
+                              CustomJObjectSerializerDelegate<Cost>?                             CustomCostSerializer                              = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                       CustomCustomDataSerializer                        = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("evseId",              EVSEId.       Value),
+                                 new JProperty("timeBase",           TimeBase.ToIso8601()),
+                                 new JProperty("evseId",             EVSEId.  Value),
 
-                                 new JProperty("chargingNeeds",       ChargingNeeds.ToJSON(CustomChargingNeedsSerializer,
-                                                                                           CustomACChargingParametersSerializer,
-                                                                                           CustomDCChargingParametersSerializer,
-                                                                                           CustomV2XChargingParametersSerializer,
-                                                                                           CustomEVEnergyOfferSerializer,
-                                                                                           CustomEVPowerScheduleSerializer,
-                                                                                           CustomEVPowerScheduleEntrySerializer,
-                                                                                           CustomEVAbsolutePriceScheduleSerializer,
-                                                                                           CustomEVAbsolutePriceScheduleEntrySerializer,
-                                                                                           CustomEVPriceRuleSerializer,
-                                                                                           CustomCustomDataSerializer)),
-
-                           MaxScheduleTuples.HasValue
-                               ? new JProperty("maxScheduleTuples",   MaxScheduleTuples.Value)
-                               : null,
+                                 new JProperty("chargingSchedule",   ChargingSchedule.ToJSON(CustomChargingScheduleSerializer,
+                                                                                             CustomChargingSchedulePeriodSerializer,
+                                                                                             CustomSalesTariffSerializer,
+                                                                                             CustomSalesTariffEntrySerializer,
+                                                                                             CustomRelativeTimeIntervalSerializer,
+                                                                                             CustomConsumptionCostSerializer,
+                                                                                             CustomCostSerializer,
+                                                                                             CustomCustomDataSerializer)),
 
                            CustomData is not null
-                               ? new JProperty("customData",          CustomData.   ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",         CustomData.      ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomNotifyEVChargingScheduleRequestSerializer is not null
@@ -689,11 +676,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
 
             => NotifyEVChargingScheduleRequest is not null &&
 
-               EVSEId.       Equals(NotifyEVChargingScheduleRequest.EVSEId)        &&
-               ChargingNeeds.Equals(NotifyEVChargingScheduleRequest.ChargingNeeds) &&
-
-            ((!MaxScheduleTuples.HasValue && !NotifyEVChargingScheduleRequest.MaxScheduleTuples.HasValue) ||
-               MaxScheduleTuples.HasValue &&  NotifyEVChargingScheduleRequest.MaxScheduleTuples.HasValue && MaxScheduleTuples.Value.Equals(NotifyEVChargingScheduleRequest.MaxScheduleTuples.Value)) &&
+               TimeBase.        Equals(NotifyEVChargingScheduleRequest.TimeBase)         &&
+               EVSEId.          Equals(NotifyEVChargingScheduleRequest.EVSEId)           &&
+               ChargingSchedule.Equals(NotifyEVChargingScheduleRequest.ChargingSchedule) &&
 
                base.GenericEquals(NotifyEVChargingScheduleRequest);
 
@@ -712,11 +697,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
             unchecked
             {
 
-                return EVSEId.            GetHashCode()       * 7 ^
-                       ChargingNeeds.     GetHashCode()       * 5 ^
-                      (MaxScheduleTuples?.GetHashCode() ?? 0) * 3 ^
+                return TimeBase.        GetHashCode() * 7 ^
+                       EVSEId.          GetHashCode() * 5 ^
+                       ChargingSchedule.GetHashCode() * 3 ^
 
-                       base.              GetHashCode();
+                       base.            GetHashCode();
 
             }
         }
@@ -730,7 +715,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         public override String ToString()
 
-            => $"EVSE Id: {EVSEId}: {ChargingNeeds} {(MaxScheduleTuples.HasValue ? ", max schedule tuples: " + MaxScheduleTuples : "")}";
+             => $"{TimeBase} - EVSE Id: {EVSEId}: {ChargingSchedule}";
 
         #endregion
 

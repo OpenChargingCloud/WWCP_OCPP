@@ -1160,9 +1160,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                                                                     ConnectorId:         connectorId,
                                                                     CustomData:          null
                                                                 ),
-                                          MeterValues:          new MeterValue[] {
+                                          MeterValues:          new[] {
                                                                     new MeterValue(
-                                                                        SampledValues:   new SampledValue[] {
+                                                                        SampledValues:   new[] {
 
                                                                                              new SampledValue(
                                                                                                  Value:              meterStart,
@@ -1304,9 +1304,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                 };
 
                 var evseId       = EVSE_Id.Parse(1);
-                var meterValues  = new MeterValue[] {
+                var meterValues  = new[] {
                                        new MeterValue(
-                                           new SampledValue[] {
+                                           Timestamp.Now - TimeSpan.FromMinutes(5),
+                                           new[] {
                                                new SampledValue(
                                                    Value:              1.01M,
                                                    Context:            ReadingContexts.TransactionBegin,
@@ -1345,11 +1346,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                                                                        ),
                                                    CustomData:         null
                                                )
-                                           },
-                                           Timestamp.Now - TimeSpan.FromMinutes(5)
+                                           }
                                        ),
                                        new MeterValue(
-                                           new SampledValue[] {
+                                           Timestamp.Now,
+                                           new[] {
                                                new SampledValue(
                                                    Value:              2.01M,
                                                    Context:            ReadingContexts.TransactionEnd,
@@ -1388,8 +1389,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                                                                        ),
                                                    CustomData:         null
                                                )
-                                           },
-                                           Timestamp.Now
+                                           }
                                        )
                                    };
 

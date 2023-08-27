@@ -359,10 +359,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 };
 
                 var connectorId     = Connector_Id.Parse(1);
-                var meterValues     = new MeterValue[] {
+                var meterValues     = new[] {
                                           new MeterValue(
                                               Timestamp.Now - TimeSpan.FromMinutes(5),
-                                              new SampledValue[] {
+                                              new[] {
                                                   new SampledValue(
                                                       "001",
                                                       ReadingContexts.TransactionBegin,
@@ -385,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                           ),
                                           new MeterValue(
                                               Timestamp.Now,
-                                              new SampledValue[] {
+                                              new[] {
                                                   new SampledValue(
                                                       "002",
                                                       ReadingContexts.TransactionEnd,
@@ -504,10 +504,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 var meterStop        = RandomExtensions.RandomUInt64();
                 var idToken          = IdToken.NewRandom();
                 var reason           = Reasons.EVDisconnected;
-                var transactionData  = new MeterValue[] {
+                var transactionData  = new[] {
                                            new MeterValue(
                                                Timestamp.Now - TimeSpan.FromMinutes(5),
-                                               new SampledValue[] {
+                                               new[] {
                                                    new SampledValue(
                                                        "001",
                                                        ReadingContexts.TransactionBegin,
@@ -530,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                            ),
                                            new MeterValue(
                                                Timestamp.Now,
-                                               new SampledValue[] {
+                                               new[] {
                                                    new SampledValue(
                                                        "002",
                                                        ReadingContexts.TransactionEnd,

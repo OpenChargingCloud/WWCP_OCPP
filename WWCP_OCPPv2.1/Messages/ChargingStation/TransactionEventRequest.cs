@@ -135,6 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="IdToken">An optional identification token for which a transaction has to be/was started.</param>
         /// <param name="EVSE">An optional indication of the EVSE (and connector) used.</param>
         /// <param name="MeterValues">An optional enumeration of meter values.</param>
+        /// <param name="PreconditioningStatus">The optional current status of the battery management system within the EV.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>

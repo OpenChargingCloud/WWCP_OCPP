@@ -36,14 +36,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         #region Properties
 
         /// <summary>
-        /// The sampled meter values.
-        /// </summary>
-        public IEnumerable<SampledValue>  SampledValues    { get; }
-
-        /// <summary>
         /// The common timestamp of all sampled meter values.
         /// </summary>
         public DateTime                   Timestamp        { get; }
+
+        /// <summary>
+        /// The sampled meter values.
+        /// </summary>
+        public IEnumerable<SampledValue>  SampledValues    { get; }
 
         #endregion
 
@@ -55,20 +55,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="SampledValues">The sampled meter values.</param>
         /// <param name="Timestamp">The common timestamp of all sampled meter values.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public MeterValue(IEnumerable<SampledValue>  SampledValues,
-                          DateTime                   Timestamp,
+        public MeterValue(DateTime                   Timestamp,
+                          IEnumerable<SampledValue>  SampledValues,
                           CustomData?                CustomData   = null)
 
             : base(CustomData)
 
         {
 
-            this.SampledValues  = SampledValues.Distinct();
-            this.Timestamp      = Timestamp;
-
-            if (!this.SampledValues.Any())
+            if (!SampledValues.Any())
                 throw new ArgumentException("The given enumeration of sampled meter values must not be empty!",
                                             nameof(SampledValues));
+
+            this.Timestamp      = Timestamp;
+            this.SampledValues  = SampledValues.Distinct();
 
         }
 
@@ -217,9 +217,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                MeterValue = new MeterValue(SampledValues,
-                                            Timestamp,
-                                            CustomData);
+                MeterValue = new MeterValue(
+                                 Timestamp,
+                                 SampledValues,
+                                 CustomData
+                             );
 
                 if (CustomMeterValueParser is not null)
                     MeterValue = CustomMeterValueParser(JSON,

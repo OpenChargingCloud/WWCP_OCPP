@@ -135,10 +135,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
 
-        public class EnquedRequest
+        public class EnqueuedRequest
         {
 
-            public enum EnquedStatus
+            public enum EnqueuedStatus
             {
                 New,
                 Processing,
@@ -153,15 +153,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             public DateTime        EnqueTimestamp    { get; }
 
-            public EnquedStatus    Status            { get; set; }
+            public EnqueuedStatus    Status            { get; set; }
 
             public Action<Object>  ResponseAction    { get; }
 
-            public EnquedRequest(String          Command,
+            public EnqueuedRequest(String          Command,
                                  IRequest        Request,
                                  JObject         RequestJSON,
                                  DateTime        EnqueTimestamp,
-                                 EnquedStatus    Status,
+                                 EnqueuedStatus    Status,
                                  Action<Object>  ResponseAction)
             {
 
@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         private readonly            Timer                       SendHeartbeatTimer;
 
 
-        private readonly            List<EnquedRequest>         EnquedRequests;
+        private readonly            List<EnqueuedRequest>         EnqueuedRequests;
 
         public                      IHTTPAuthentication?        HTTPAuthentication          { get; }
         public                      DNSClient?                  DNSClient                   { get; }
@@ -844,7 +844,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 { "doNotChangeMe",  new ConfigurationData("never",    AccessRights.ReadOnly,  false) },
                 { "password",       new ConfigurationData("12345678", AccessRights.WriteOnly, false) }
             };
-            this.EnquedRequests           = new List<EnquedRequest>();
+            this.EnqueuedRequests           = new List<EnqueuedRequest>();
 
             this.ChargePointVendor        = ChargePointVendor;
             this.ChargePointModel         = ChargePointModel;
@@ -1934,11 +1934,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                                    connector.MeterStartValue,
                                                                                    null); // ReservationId
 
-                        EnquedRequests.Add(new EnquedRequest("StartTransaction",
+                        EnqueuedRequests.Add(new EnqueuedRequest("StartTransaction",
                                                              startTransactionRequest,
                                                              startTransactionRequest.ToJSON(),
                                                              Timestamp.Now,
-                                                             EnquedRequest.EnquedStatus.New,
+                                                             EnqueuedRequest.EnqueuedStatus.New,
                                                              response => {
                                                                  if (response is WebSockets.OCPP_WebSocket_ResponseMessage wsResponseMessage &&
                                                                      CS.StartTransactionResponse.TryParse(startTransactionRequest,
@@ -1964,11 +1964,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                                        ChargePointStatus.Charging,
                                                                                        ChargePointErrorCodes.NoError);
 
-                        EnquedRequests.Add(new EnquedRequest("StatusNotification",
+                        EnqueuedRequests.Add(new EnqueuedRequest("StatusNotification",
                                                              statusNotificationRequest,
                                                              statusNotificationRequest.ToJSON(),
                                                              Timestamp.Now,
-                                                             EnquedRequest.EnquedStatus.New,
+                                                             EnqueuedRequest.EnqueuedStatus.New,
                                                              response => {
                                                                  //if (response is WebSockets.WSResponseMessage wsResponseMessage &&
                                                                  //    CS.StartTransactionResponse.TryParse(startTransactionRequest,
@@ -2085,11 +2085,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                                 Reasons.Remote,
                                                                                 null);
 
-                        EnquedRequests.Add(new EnquedRequest("StopTransaction",
+                        EnqueuedRequests.Add(new EnqueuedRequest("StopTransaction",
                                                              stopTransactionRequest, // TransactionData
                                                              stopTransactionRequest.ToJSON(),
                                                              Timestamp.Now,
-                                                             EnquedRequest.EnquedStatus.New,
+                                                             EnqueuedRequest.EnqueuedStatus.New,
                                                              response => {
                                                                  if (response is WebSockets.OCPP_WebSocket_ResponseMessage wsResponseMessage &&
                                                                      CS.StopTransactionResponse.TryParse(stopTransactionRequest,
@@ -2108,11 +2108,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                                        ChargePointStatus.Available,
                                                                                        ChargePointErrorCodes.NoError);
 
-                        EnquedRequests.Add(new EnquedRequest("StatusNotification",
+                        EnqueuedRequests.Add(new EnqueuedRequest("StatusNotification",
                                                              statusNotificationRequest,
                                                              statusNotificationRequest.ToJSON(),
                                                              Timestamp.Now,
-                                                             EnquedRequest.EnquedStatus.New,
+                                                             EnqueuedRequest.EnqueuedStatus.New,
                                                              response => {
                                                                  //if (response is WebSockets.WSResponseMessage wsResponseMessage &&
                                                                  //    CS.StartTransactionResponse.TryParse(startTransactionRequest,
@@ -2735,7 +2735,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         protected internal virtual async Task _DoMaintenance(Object State)
         {
 
-            foreach (var enquedRequest in EnquedRequests.ToArray())
+            foreach (var enquedRequest in EnqueuedRequests.ToArray())
             {
                 if (CPClient is ChargePointWSClient wsClient)
                 {
@@ -2748,7 +2748,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     enquedRequest.ResponseAction(response);
 
-                    EnquedRequests.Remove(enquedRequest);
+                    EnqueuedRequests.Remove(enquedRequest);
 
                 }
             }

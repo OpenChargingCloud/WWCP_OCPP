@@ -343,7 +343,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("startPeriod",    (UInt32) Math.Round(StartPeriod.TotalSeconds, 0)),
-                                 new JProperty("limit",          Math.Round(Limit, 1)),
+
+                           Limit.HasValue
+                               ? new JProperty("limit",          Math.Round(Limit.Value, 1))
+                               : null,
 
                            NumberOfPhases.HasValue
                                ? new JProperty("numberPhases",   NumberOfPhases)

@@ -147,10 +147,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                        IEventSender
     {
 
-        public class EnquedRequest
+        public class EnqueuedRequest
         {
 
-            public enum EnquedStatus
+            public enum EnqueuedStatus
             {
                 New,
                 Processing,
@@ -165,15 +165,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             public DateTime        EnqueTimestamp    { get; }
 
-            public EnquedStatus    Status            { get; set; }
+            public EnqueuedStatus    Status            { get; set; }
 
             public Action<Object>  ResponseAction    { get; }
 
-            public EnquedRequest(String          Command,
+            public EnqueuedRequest(String          Command,
                                  IRequest        Request,
                                  JObject         RequestJSON,
                                  DateTime        EnqueTimestamp,
-                                 EnquedStatus    Status,
+                                 EnqueuedStatus    Status,
                                  Action<Object>  ResponseAction)
             {
 
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         private readonly            Timer                       SendHeartbeatTimer;
 
 
-        private readonly            List<EnquedRequest>         EnquedRequests;
+        private readonly            List<EnqueuedRequest>         EnqueuedRequests;
 
         public                      IHTTPAuthentication?        HTTPAuthentication          { get; }
         public                      DNSClient?                  DNSClient                   { get; }
@@ -1329,7 +1329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             //    { "doNotChangeMe",  new ConfigurationData("never",    AccessRights.ReadOnly,  false) },
             //    { "password",       new ConfigurationData("12345678", AccessRights.WriteOnly, false) }
             //};
-            this.EnquedRequests           = new List<EnquedRequest>();
+            this.EnqueuedRequests           = new List<EnqueuedRequest>();
 
             this.VendorName               = VendorName;
             this.Model                    = Model;
@@ -3928,10 +3928,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                                                 ConnectorId:   evse.Connectors.First().Id,
                                                                 CustomData:    null
                                                             ),
-                                      MeterValues:          new MeterValue[] {
+                                      MeterValues:          new[] {
                                                                 new MeterValue(
                                                                     Timestamp:       evse.StartTimestamp.Value,
-                                                                    SampledValues:   new SampledValue[] {
+                                                                    SampledValues:   new[] {
                                                                                          new SampledValue(
                                                                                              Value:              evse.MeterStartValue.Value,
                                                                                              Context:            ReadingContexts.TransactionBegin,
@@ -4081,10 +4081,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                                                 ConnectorId:   evse.Connectors.First().Id,
                                                                 CustomData:    null
                                                             ),
-                                      MeterValues:          new MeterValue[] {
+                                      MeterValues:          new[] {
                                                                 new MeterValue(
                                                                     Timestamp:       evse.StopTimestamp.Value,
-                                                                    SampledValues:   new SampledValue[] {
+                                                                    SampledValues:   new[] {
                                                                                          new SampledValue(
                                                                                              Value:              evse.MeterStopValue.Value,
                                                                                              Context:            ReadingContexts.TransactionEnd,
@@ -5129,7 +5129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         protected internal virtual async Task _DoMaintenance(Object State)
         {
 
-            foreach (var enquedRequest in EnquedRequests.ToArray())
+            foreach (var enquedRequest in EnqueuedRequests.ToArray())
             {
                 if (CSClient is ChargingStationWSClient wsClient)
                 {
@@ -5142,7 +5142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                     enquedRequest.ResponseAction(response);
 
-                    EnquedRequests.Remove(enquedRequest);
+                    EnqueuedRequests.Remove(enquedRequest);
 
                 }
             }
