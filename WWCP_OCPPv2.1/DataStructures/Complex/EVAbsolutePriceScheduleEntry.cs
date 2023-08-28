@@ -158,13 +158,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("duration",
                                          "duration",
-                                         out UInt64 duration,
+                                         out TimeSpan Duration,
                                          out ErrorResponse))
                 {
                     return false;
                 }
-
-                var Duration = TimeSpan.FromSeconds(duration);
 
                 #endregion
 
@@ -181,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region CustomData             [optional]
+                #region CustomData      [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",

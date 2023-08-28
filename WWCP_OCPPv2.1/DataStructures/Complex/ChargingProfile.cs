@@ -33,8 +33,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    IEquatable<ChargingProfile>
     {
 
-        //ToDo: Implement me!
-
         #region Properties
 
         /// <summary>
@@ -99,19 +97,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public IEnumerable<ChargingSchedule>  ChargingSchedules         { get; }
 
         /// <summary>
-        /// 
+        /// Optional period of time that this charging profile remains valid after the charging
+        /// station has gone offline. After this period the charging profile permanently becomes
+        /// invalid and the charging station reverts back to a valid profile with a lower stack level.
+        /// A value of 0 or no value means that no timeout applies and the charging profile
+        /// is valid when offline.
         /// </summary>
         [Optional]
         public TimeSpan?                      MaxOfflineDuration        { get; }
 
         /// <summary>
-        /// 
+        /// Optional period of time after receipt of last update, when to request a profile
+        /// update by sending a PullDynamicScheduleUpdateRequest message.
+        /// A value of 0 or no value means that no update interval applies.
         /// </summary>
         [Optional]
         public TimeSpan?                      UpdateInterval            { get; }
 
         /// <summary>
-        /// 
+        /// Optional Base64 encoded ISO 15118-2/20 signature for all price schedules
+        /// in charging schedules
         /// </summary>
         [Optional]
         public String?                        PriceScheduleSignature    { get; }
@@ -133,6 +138,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RecurrencyKind">An optional indication of the start point of a recurrence.</param>
         /// <param name="ValidFrom">An optional timestamp at which the profile starts to be valid. If absent, the profile is valid as soon as it is received by the charging station. Not allowed to be used when ChargingProfilePurpose is TxProfile.</param>
         /// <param name="ValidTo">An optional timestamp at which the profile stops to be valid. If absent, the profile is valid until it is replaced by another profile. Not allowed to be used when ChargingProfilePurpose is TxProfile.</param>
+        /// <param name="MaxOfflineDuration">Optional period of time that this charging profile remains valid after the charging station has gone offline.</param>
+        /// <param name="UpdateInterval">Optional period of time after receipt of last update, when to request a profile update by sending a PullDynamicScheduleUpdateRequest message.</param>
+        /// <param name="PriceScheduleSignature">Optional Base64 encoded ISO 15118-2/20 signature for all price schedules in charging schedules</param>
+        /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public ChargingProfile(ChargingProfile_Id             ChargingProfileId,
                                UInt32                         StackLevel,
@@ -140,11 +149,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ChargingProfileKinds           ChargingProfileKind,
                                IEnumerable<ChargingSchedule>  ChargingSchedules,
 
-                               Transaction_Id?                TransactionId    = null,
-                               RecurrencyKinds?               RecurrencyKind   = null,
-                               DateTime?                      ValidFrom        = null,
-                               DateTime?                      ValidTo          = null,
-                               CustomData?                    CustomData       = null)
+                               Transaction_Id?                TransactionId            = null,
+                               RecurrencyKinds?               RecurrencyKind           = null,
+                               DateTime?                      ValidFrom                = null,
+                               DateTime?                      ValidTo                  = null,
+                               TimeSpan?                      MaxOfflineDuration       = null,
+                               TimeSpan?                      UpdateInterval           = null,
+                               String?                        PriceScheduleSignature   = null,
+
+                               CustomData?                    CustomData               = null)
 
             : base(CustomData)
 
@@ -164,6 +177,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.RecurrencyKind          = RecurrencyKind;
             this.ValidFrom               = ValidFrom;
             this.ValidTo                 = ValidTo;
+            this.MaxOfflineDuration      = MaxOfflineDuration;
+            this.UpdateInterval          = UpdateInterval;
+            this.PriceScheduleSignature  = PriceScheduleSignature;
+
+            unchecked
+            {
+
+                hashCode = ChargingProfileId.       GetHashCode()       * 41 ^
+                           StackLevel.              GetHashCode()       * 37 ^
+                           ChargingProfilePurpose.  GetHashCode()       * 31 ^
+                           ChargingProfileKind.     GetHashCode()       * 29 ^
+                           ChargingSchedules.       CalcHashCode()      * 23 ^
+
+                           (TransactionId?.         GetHashCode() ?? 0) * 19 ^
+                           (RecurrencyKind?.        GetHashCode() ?? 0) * 17 ^
+                           (ValidFrom?.             GetHashCode() ?? 0) * 13 ^
+                           (ValidTo?.               GetHashCode() ?? 0) * 11 ^
+                           (MaxOfflineDuration?.    GetHashCode() ?? 0) *  7 ^
+                           (UpdateInterval?.        GetHashCode() ?? 0) *  5 ^
+                           (PriceScheduleSignature?.GetHashCode() ?? 0) *  3 ^
+
+                           base.GetHashCode();
+
+            }
 
         }
 
@@ -362,6 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+
                 #region TransactionId             [optional]
 
                 if (JSON.ParseOptional("transactionId",
@@ -416,6 +454,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region MaxOfflineDuration        [optional]
+
+                if (JSON.ParseOptional("maxOfflineDuration",
+                                       "max offline duration",
+                                       out TimeSpan? MaxOfflineDuration,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region UpdateInterval            [optional]
+
+                if (JSON.ParseOptional("updateInterval",
+                                       "update interval",
+                                       out TimeSpan? UpdateInterval,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region PriceScheduleSignature    [optional]
+
+                if (JSON.ParseOptional("priceScheduleSignature",
+                                       "price schedule signature",
+                                       out String? PriceScheduleSignature,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -431,16 +508,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                ChargingProfile = new ChargingProfile(ChargingProfileId,
-                                                      StackLevel,
-                                                      ChargingProfilePurpose,
-                                                      ChargingProfileKind,
-                                                      ChargingSchedules,
-                                                      TransactionId,
-                                                      RecurrencyKind,
-                                                      ValidFrom,
-                                                      ValidTo,
-                                                      CustomData);
+                ChargingProfile = new ChargingProfile(
+
+                                      ChargingProfileId,
+                                      StackLevel,
+                                      ChargingProfilePurpose,
+                                      ChargingProfileKind,
+                                      ChargingSchedules,
+
+                                      TransactionId,
+                                      RecurrencyKind,
+                                      ValidFrom,
+                                      ValidTo,
+                                      MaxOfflineDuration,
+                                      UpdateInterval,
+                                      PriceScheduleSignature,
+                                      CustomData
+
+                                  );
 
                 if (CustomChargingProfileParser is not null)
                     ChargingProfile = CustomChargingProfileParser(JSON,
@@ -487,7 +572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("chargingProfileId",        ChargingProfileId.Value),
+                                 new JProperty("id",                       ChargingProfileId.Value),
 
                            TransactionId is not null
                                ? new JProperty("transactionId",            TransactionId.    Value.Value)
@@ -497,15 +582,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("chargingProfilePurpose",   ChargingProfilePurpose. AsText()),
                                  new JProperty("chargingProfileKind",      ChargingProfileKind.    AsText()),
 
-                           ValidFrom.HasValue
+                           ValidFrom.             HasValue
                                ? new JProperty("validFrom",                ValidFrom.        Value.ToIso8601())
                                : null,
 
-                           ValidTo.HasValue
+                           ValidTo.               HasValue
                                ? new JProperty("validTo",                  ValidTo.          Value.ToIso8601())
                                : null,
 
-                           RecurrencyKind.HasValue
+                           RecurrencyKind.        HasValue
                                ? new JProperty("recurrencyKind",           RecurrencyKind.   Value.AsText())
                                : null,
 
@@ -517,6 +602,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                                                                                            CustomConsumptionCostSerializer,
                                                                                                                                                            CustomCostSerializer,
                                                                                                                                                            CustomCustomDataSerializer)))),
+
+                           MaxOfflineDuration.    HasValue
+                               ? new JProperty("maxOfflineDuration",       MaxOfflineDuration.Value.TotalSeconds)
+                               : null,
+
+                           UpdateInterval.        HasValue
+                               ? new JProperty("updateInterval",           UpdateInterval.Value.TotalSeconds)
+                               : null,
+
+                           PriceScheduleSignature is not null
+                               ? new JProperty("priceScheduleSignature",   PriceScheduleSignature)
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",               CustomData.             ToJSON(CustomCustomDataSerializer))
@@ -611,17 +708,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                ChargingSchedules.Count().Equals(ChargingProfile.ChargingSchedules.Count())     &&
                ChargingSchedules.All(data => ChargingProfile.ChargingSchedules.Contains(data)) &&
 
-               ((!TransactionId. HasValue && !ChargingProfile.TransactionId. HasValue) ||
-                 (TransactionId. HasValue &&  ChargingProfile.TransactionId. HasValue && TransactionId. Value.Equals(ChargingProfile.TransactionId. Value))) &&
+               ((!TransactionId.         HasValue    && !ChargingProfile.TransactionId.         HasValue)    ||
+                 (TransactionId.         HasValue    &&  ChargingProfile.TransactionId.         HasValue    && TransactionId.     Value.Equals(ChargingProfile.TransactionId.     Value))) &&
 
-               ((!RecurrencyKind.HasValue && !ChargingProfile.RecurrencyKind.HasValue) ||
-                 (RecurrencyKind.HasValue &&  ChargingProfile.RecurrencyKind.HasValue && RecurrencyKind.Value.Equals(ChargingProfile.RecurrencyKind.Value))) &&
+               ((!RecurrencyKind.        HasValue    && !ChargingProfile.RecurrencyKind.        HasValue)    ||
+                 (RecurrencyKind.        HasValue    &&  ChargingProfile.RecurrencyKind.        HasValue    && RecurrencyKind.    Value.Equals(ChargingProfile.RecurrencyKind.    Value))) &&
 
-               ((!ValidFrom.     HasValue && !ChargingProfile.ValidFrom.     HasValue) ||
-                 (ValidFrom.     HasValue &&  ChargingProfile.ValidFrom.     HasValue && ValidFrom.     Value.Equals(ChargingProfile.ValidFrom.     Value))) &&
+               ((!ValidFrom.             HasValue    && !ChargingProfile.ValidFrom.             HasValue)    ||
+                 (ValidFrom.             HasValue    &&  ChargingProfile.ValidFrom.             HasValue    && ValidFrom.         Value.Equals(ChargingProfile.ValidFrom.         Value))) &&
 
-               ((!ValidTo.       HasValue && !ChargingProfile.ValidTo.       HasValue) ||
-                 (ValidTo.       HasValue &&  ChargingProfile.ValidTo.       HasValue && ValidTo.       Value.Equals(ChargingProfile.ValidTo.       Value))) &&
+               ((!ValidTo.               HasValue    && !ChargingProfile.ValidTo.               HasValue)    ||
+                 (ValidTo.               HasValue    &&  ChargingProfile.ValidTo.               HasValue    && ValidTo.           Value.Equals(ChargingProfile.ValidTo.           Value))) &&
+
+               ((!MaxOfflineDuration.    HasValue    && !ChargingProfile.MaxOfflineDuration.    HasValue)    ||
+                 (MaxOfflineDuration.    HasValue    &&  ChargingProfile.MaxOfflineDuration.    HasValue    && MaxOfflineDuration.Value.Equals(ChargingProfile.MaxOfflineDuration.Value))) &&
+
+               ((!UpdateInterval.        HasValue    && !ChargingProfile.UpdateInterval.        HasValue)    ||
+                 (UpdateInterval.        HasValue    &&  ChargingProfile.UpdateInterval.        HasValue    && UpdateInterval.    Value.Equals(ChargingProfile.UpdateInterval.    Value))) &&
+
+                ((PriceScheduleSignature is     null &&  ChargingProfile.PriceScheduleSignature is     null) ||
+                 (PriceScheduleSignature is not null &&  ChargingProfile.PriceScheduleSignature is not null && PriceScheduleSignature.  Equals(ChargingProfile.PriceScheduleSignature)))   &&
 
                base.Equals(ChargingProfile);
 
@@ -631,30 +737,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ChargingProfileId     .GetHashCode()       * 27 ^
-                       StackLevel            .GetHashCode()       * 23 ^
-                       ChargingProfilePurpose.GetHashCode()       * 19 ^
-                       ChargingProfileKind   .GetHashCode()       * 17 ^
-                       ChargingSchedules.     CalcHashCode()      * 13 ^
-
-                       (TransactionId?.       GetHashCode() ?? 0) * 11 ^
-                       (RecurrencyKind?.      GetHashCode() ?? 0) *  7 ^
-                       (ValidFrom?.           GetHashCode() ?? 0) *  5 ^
-                       (ValidTo?.             GetHashCode() ?? 0) *  3 ^
-
-                       base.GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -665,11 +754,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-                   ChargingProfileId,
-                   " / ",
-                   StackLevel
-               );
+            => $"{ChargingProfileId} / {StackLevel}";
 
         #endregion
 

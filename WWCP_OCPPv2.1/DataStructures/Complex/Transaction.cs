@@ -212,16 +212,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("timeSpentCharging",
                                        "time spent charging",
-                                       out UInt32? timeSpentCharging,
+                                       out TimeSpan? TimeSpentCharging,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
-
-                var TimeSpentCharging = timeSpentCharging.HasValue
-                                            ? new TimeSpan?(TimeSpan.FromSeconds(timeSpentCharging.Value))
-                                            : null;
 
                 #endregion
 

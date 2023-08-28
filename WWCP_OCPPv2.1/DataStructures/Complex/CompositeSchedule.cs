@@ -230,13 +230,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("duration",
                                          "duration",
-                                         out UInt32 duration,
+                                         out TimeSpan Duration,
                                          out ErrorResponse))
                 {
                     return false;
                 }
-
-                var Duration = TimeSpan.FromSeconds(duration);
 
                 #endregion
 
@@ -293,12 +291,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                CompositeSchedule = new CompositeSchedule(EVSEId,
-                                                          Duration,
-                                                          ScheduleStart,
-                                                          ChargingRateUnit,
-                                                          ChargingSchedulePeriods,
-                                                          CustomData);
+                CompositeSchedule = new CompositeSchedule(
+                                        EVSEId,
+                                        Duration,
+                                        ScheduleStart,
+                                        ChargingRateUnit,
+                                        ChargingSchedulePeriods,
+                                        CustomData
+                                    );
 
                 if (CustomCompositeScheduleParser is not null)
                     CompositeSchedule = CustomCompositeScheduleParser(JSON,

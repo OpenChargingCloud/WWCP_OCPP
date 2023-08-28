@@ -166,13 +166,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("start",
                                          "start",
-                                         out UInt32 start,
+                                         out TimeSpan Start,
                                          out ErrorResponse))
                 {
                     return false;
                 }
-
-                var Start = TimeSpan.FromSeconds(start);
 
                 #endregion
 
@@ -180,16 +178,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("duration",
                                        "duration",
-                                       out UInt32? duration,
+                                       out TimeSpan? Duration,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
-
-                var Duration = duration.HasValue
-                                   ? new TimeSpan?(TimeSpan.FromSeconds(duration.Value))
-                                   : null;
 
                 #endregion
 
@@ -208,9 +202,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                RelativeTimeInterval = new RelativeTimeInterval(Start,
-                                                                Duration,
-                                                                CustomData);
+                RelativeTimeInterval = new RelativeTimeInterval(
+                                           Start,
+                                           Duration,
+                                           CustomData
+                                       );
 
                 if (CustomRelativeTimeIntervalParser is not null)
                     RelativeTimeInterval = CustomRelativeTimeIntervalParser(JSON,

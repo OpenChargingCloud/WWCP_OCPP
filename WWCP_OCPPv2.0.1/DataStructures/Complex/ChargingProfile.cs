@@ -17,6 +17,7 @@
 
 #region Usings
 
+using Microsoft.VisualBasic;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -468,7 +469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("chargingProfileId",        ChargingProfileId.Value),
+                                 new JProperty("id",                       ChargingProfileId.Value),
 
                            TransactionId is not null
                                ? new JProperty("transactionId",            TransactionId.    Value.Value)

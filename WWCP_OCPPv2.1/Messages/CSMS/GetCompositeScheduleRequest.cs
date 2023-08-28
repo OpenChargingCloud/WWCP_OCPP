@@ -246,13 +246,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (!JSON.ParseMandatory("duration",
                                          "duration",
-                                         out UInt32 duration,
+                                         out TimeSpan Duration,
                                          out ErrorResponse))
                 {
                     return false;
                 }
-
-                var Duration = TimeSpan.FromSeconds(duration);
 
                 #endregion
 

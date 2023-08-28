@@ -289,13 +289,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("messageTimeout",
                                          "message timeout",
-                                         out UInt32 messageTimeout,
+                                         out TimeSpan MessageTimeout,
                                          out ErrorResponse))
                 {
                     return false;
                 }
-
-                var MessageTimeout = TimeSpan.FromSeconds(messageTimeout);
 
                 #endregion
 
@@ -368,15 +366,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                NetworkConnectionProfile = new NetworkConnectionProfile(Version,
-                                                                        Transport,
-                                                                        CentralServiceURL,
-                                                                        MessageTimeout,
-                                                                        SecurityProfile,
-                                                                        NetworkInterface,
-                                                                        VPNConfiguration,
-                                                                        APNConfiguration,
-                                                                        CustomData);
+                NetworkConnectionProfile = new NetworkConnectionProfile(
+                                               Version,
+                                               Transport,
+                                               CentralServiceURL,
+                                               MessageTimeout,
+                                               SecurityProfile,
+                                               NetworkInterface,
+                                               VPNConfiguration,
+                                               APNConfiguration,
+                                               CustomData
+                                           );
 
                 if (CustomNetworkConnectionProfileParser is not null)
                     NetworkConnectionProfile = CustomNetworkConnectionProfileParser(JSON,

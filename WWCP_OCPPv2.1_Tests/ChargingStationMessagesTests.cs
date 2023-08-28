@@ -1503,7 +1503,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                                                         ChargingSchedulePeriods:   new[] {
                                                                                                        new ChargingSchedulePeriod(
                                                                                                            StartPeriod:      TimeSpan.Zero,
-                                                                                                           Limit:            20,
+                                                                                                           Limit:            ChargingRateValue.Parse(
+                                                                                                                                 20,
+                                                                                                                                 ChargingRateUnits.Watts
+                                                                                                                             ),
                                                                                                            NumberOfPhases:   3,
                                                                                                            PhaseToUse:       PhasesToUse.Three,
                                                                                                            CustomData:       null
@@ -1653,7 +1656,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                                                                                                  ChargingSchedulePeriods:   new[] {
                                                                                                                                                 new ChargingSchedulePeriod(
                                                                                                                                                     StartPeriod:      TimeSpan.Zero,
-                                                                                                                                                    Limit:            20,
+                                                                                                                                                    Limit:            ChargingRateValue.Parse(
+                                                                                                                                                                          20,
+                                                                                                                                                                          ChargingRateUnits.Watts
+                                                                                                                                                                      ),
                                                                                                                                                     NumberOfPhases:   3,
                                                                                                                                                     PhaseToUse:       PhasesToUse.Three,
                                                                                                                                                     CustomData:       null

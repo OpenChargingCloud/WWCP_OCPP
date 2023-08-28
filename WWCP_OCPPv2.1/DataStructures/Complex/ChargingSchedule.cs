@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using System.Collections.Generic;
 
 #endregion
 
@@ -73,7 +74,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         [Optional]
         public Decimal?                             MinChargingRate            { get; }
 
-        // limitBeyondSoC
+        /// <summary>
+        /// When defined, any setpoint/limit in the charging schedule must be capped by this
+        /// charging rate limit when state-of-charge measurements are greater than or equal
+        /// to the state-of-charge limit.
+        /// When absent or if state-of-charge measurements are unavailable, the EVSE
+        /// shall apply the charging schedule without additional limits.
+        /// </summary>
+        [Optional]
+        public LimitBeyondSoC?                      LimitBeyondSoC             { get; }
 
         /// <summary>
         /// The enumeration of charging schedule periods defining the maximum power or current usage over time.
@@ -91,6 +100,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // priceLevelSchedule
 
+        // signatureId
+
+        // digestValue
+
+        // powerTolerance
+
         #endregion
 
         #region Constructor(s)
@@ -104,6 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="StartSchedule">The optional starting timestamp of an absolute schedule. If absent the schedule will be relative to start of charging.</param>
         /// <param name="Duration">Optional duration of the charging schedule. If the duration is left empty, the last period will continue indefinitely or until end of the transaction if chargingProfilePurpose = TxProfile.</param>
         /// <param name="MinChargingRate">The optional minimal charging rate supported by the EV.</param>
+        /// <param name="LimitBeyondSoC"></param>
         /// <param name="SalesTariff">Optional sales tariff associated with this charging schedule.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public ChargingSchedule(ChargingSchedule_Id                  Id,
@@ -112,6 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 DateTime?                            StartSchedule     = null,
                                 TimeSpan?                            Duration          = null,
                                 Decimal?                             MinChargingRate   = null,
+                                LimitBeyondSoC?                      LimitBeyondSoC    = null,
                                 SalesTariff?                         SalesTariff       = null,
                                 CustomData?                          CustomData        = null)
 
@@ -129,6 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.StartSchedule            = StartSchedule;
             this.Duration                 = Duration;
             this.MinChargingRate          = MinChargingRate;
+            this.LimitBeyondSoC           = LimitBeyondSoC;
             this.SalesTariff              = SalesTariff;
 
         }
@@ -335,6 +353,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region LimitBeyondSoC             [optional]
+
+                if (JSON.ParseOptionalJSON("limitBeyondSoC",
+                                           "limit beyond state-of-charge",
+                                           OCPPv2_1.LimitBeyondSoC.TryParse,
+                                           out LimitBeyondSoC? LimitBeyondSoC,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region SalesTariff                [optional]
 
                 if (JSON.ParseOptionalJSON("salesTariff",
@@ -364,14 +396,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                ChargingSchedule = new ChargingSchedule(Id,
-                                                        ChargingRateUnit,
-                                                        ChargingSchedulePeriods,
-                                                        StartSchedule,
-                                                        Duration,
-                                                        MinChargingRate,
-                                                        SalesTariff,
-                                                        CustomData);
+                ChargingSchedule = new ChargingSchedule(
+                                       Id,
+                                       ChargingRateUnit,
+                                       ChargingSchedulePeriods,
+                                       StartSchedule,
+                                       Duration,
+                                       MinChargingRate,
+                                       LimitBeyondSoC,
+                                       SalesTariff,
+                                       CustomData
+                                   );
 
                 if (CustomChargingScheduleParser is not null)
                     ChargingSchedule = CustomChargingScheduleParser(JSON,

@@ -353,16 +353,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("retryInterval",
                                        "retry interval",
-                                       out UInt32? RetryIntervalUInt32,
+                                       out TimeSpan? RetryInterval,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
-
-                var RetryInterval = RetryIntervalUInt32.HasValue
-                                        ? TimeSpan.FromSeconds((Double) RetryIntervalUInt32)
-                                        : new TimeSpan?();
 
                 #endregion
 
@@ -400,14 +396,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                GetLogRequest = new GetLogRequest(ChargeBoxId,
-                                                  LogType,
-                                                  LogRequestId,
-                                                  Log,
-                                                  Retries,
-                                                  RetryInterval,
-                                                  CustomData,
-                                                  RequestId);
+                GetLogRequest = new GetLogRequest(
+                                    ChargeBoxId,
+                                    LogType,
+                                    LogRequestId,
+                                    Log,
+                                    Retries,
+                                    RetryInterval,
+                                    CustomData,
+                                    RequestId
+                                );
 
                 if (CustomGetLogRequestParser is not null)
                     GetLogRequest = CustomGetLogRequestParser(JSON,

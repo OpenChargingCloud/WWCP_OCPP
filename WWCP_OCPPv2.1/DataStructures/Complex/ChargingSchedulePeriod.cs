@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Runtime.ConstrainedExecution;
 
 #endregion
 
@@ -42,32 +43,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// This value also defines the stop time of the previous period.
         /// </summary>
         [Mandatory]
-        public TimeSpan      StartPeriod          { get; }
-
-        /// <summary>
-        /// Optional charging rate limit during the schedule period is given
-        /// in the applicable chargingRateUnit.
-        /// </summary>
-        [Optional]
-        public Decimal?      Limit                { get; }
-
-        /// <summary>
-        /// Optional charging rate limit in chargingRateUnit on phase L2.
-        /// </summary>
-        [Optional]
-        public Decimal?      Limit_L2             { get; }
-
-        /// <summary>
-        /// Optional charging rate limit in chargingRateUnit on phase L3.
-        /// </summary>
-        [Optional]
-        public Decimal?      Limit_L3             { get; }
+        public TimeSpan                         StartPeriod               { get; }
 
         /// <summary>
         /// The number of phases that can be used for charging.
         /// </summary>
         [Optional]
-        public Byte?         NumberOfPhases       { get; }
+        public Byte?                            NumberOfPhases            { get; }
 
         /// <summary>
         /// Optional electrical phase to use for charging.
@@ -77,32 +59,130 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// the charging station / EVSE will make the selection on its own.
         /// </summary>
         [Optional]
-        public PhasesToUse?  PhaseToUse           { get; }
+        public PhasesToUse?                     PhaseToUse                { get; }
 
 
-        public Decimal?      DischargeLimit       { get; }
+        /// <summary>
+        /// Optional charging rate limit during the schedule period is given
+        /// in the applicable chargingRateUnit.
+        /// </summary>
+        [Optional]
+        public ChargingRateValue?               Limit                     { get; }
+
+        /// <summary>
+        /// Optional charging rate limit in chargingRateUnit on phase L2.
+        /// </summary>
+        [Optional]
+        public ChargingRateValue?               Limit_L2                  { get; }
+
+        /// <summary>
+        /// Optional charging rate limit in chargingRateUnit on phase L3.
+        /// </summary>
+        [Optional]
+        public ChargingRateValue?               Limit_L3                  { get; }
 
 
-        public Decimal?      DischargeLimit_L2    { get; }
+        /// <summary>
+        /// Optional discharging limit in chargingRateUnit that the EV is allowed to discharge
+        /// with.Note, these are negative values in order to be consistent with setpoint, which
+        /// can be positive and negative.
+        /// For AC this field represents the sum of all phases, unless values are provided for
+        /// L2 and L3, in which case this field represents phase L1.
+        /// </summary>
+        public ChargingRateValue?               DischargeLimit            { get; }
 
-        public Decimal?      DischargeLimit_L3    { get; }
+        /// <summary>
+        /// Optional discharging limit in chargingRateUnit on phase L2.
+        /// </summary>
+        public ChargingRateValue?               DischargeLimit_L2         { get; }
+
+        /// <summary>
+        /// Optional discharging limit in chargingRateUnit on phase L3.
+        /// </summary>
+        public ChargingRateValue?               DischargeLimit_L3         { get; }
 
 
-        // setpoint
-        // setpoint_L2
-        // setpoint_L3
+        /// <summary>
+        /// Optional setpoint in chargingRateUnit that the EV should follow as close as possible.
+        /// Use negative values for discharging.
+        /// For AC this field represents the sum of all phases, unless values are provided for L2
+        /// and L3, in which case this field represents phase L1.
+        /// In LocalFrequency mode, the value of setpoint is calculated automatically based on
+        /// v2xBaseline and the power value from v2xFreqWattCurve and/or v2xSignalWattCurve.
+        /// </summary>
+        public ChargingRateValue?               Setpoint                  { get; }
 
-        // setpointReactive
-        // setpointReactive_L2
-        // setpointReactive_L3
+        /// <summary>
+        /// Optional setpoint in chargingRateUnit on phase L2.
+        /// </summary>
+        public ChargingRateValue?               Setpoint_L2               { get; }
 
-        // preconditioningRequest
-        // operationMode
-        // v2xBaseline
-        // v2xFreqWattCurve
-        // v2xSignalWattCurve
-        // dynUpdateTime
+        /// <summary>
+        /// Optional setpoint in chargingRateUnit on phase L3.
+        /// </summary>
+        public ChargingRateValue?               Setpoint_L3               { get; }
 
+
+        /// <summary>
+        /// Optional setpoint for reactive power (or current) in chargingRateUnit that the EV
+        /// should follow as close as possible. Positive values for inductive, negative for
+        /// capacitive reactive power or current.
+        /// For AC this field represents the sum of all phases, unless values are provided for
+        /// L2 and L3, in which case this field represents phase L1.
+        /// </summary>
+        public ChargingRateValue?               SetpointReactive          { get; }
+
+        /// <summary>
+        /// Optional setpoint for reactive power (or current) in chargingRateUnit on phase L2.
+        /// </summary>
+        public ChargingRateValue?               SetpointReactive_L2       { get; }
+
+        /// <summary>
+        /// Optional setpoint for reactive power (or current) in chargingRateUnit on phase L3.
+        /// </summary>
+        public ChargingRateValue?               SetpointReactive_L3       { get; }
+
+
+        /// <summary>
+        /// The optional indication whether the EV should attempt to keep its battery management system
+        /// preconditioned for this time interval, such that the EV can charge/discharge at requested power immediately.
+        /// </summary>
+        public Boolean?                         PreconditioningRequest    { get; }
+
+        /// <summary>
+        /// The optional V2X operation mode that should be used during this time interval.
+        /// When absent it defaults to "charging only".
+        /// </summary>
+        public OperationModes?                  OperationMode             { get; }
+
+        /// <summary>
+        /// The optional power baseline value that is used on top of all values of
+        /// the V2X Frequency-Watt and V2X Signal-Watt curve.
+        /// </summary>
+        public Decimal?                         V2XBaseline               { get; }
+
+        /// <summary>
+        /// The optional power frequency curve used, but not required, when operationMode = LocalFrequency.
+        /// When used it must contain at least two coordinates to specify a power frequency curve to use during this period.
+        /// The curve determines the value of setpoint power for a given frequency.
+        /// The charging rate unit must be W for local frequency control.
+        /// It allows for 20 points, instead of the normal maximum of 10 for DER curves.
+        /// </summary>
+        public IEnumerable<V2XFreqWattEntry>    V2XFreqWattCurve          { get; }
+
+        /// <summary>
+        /// The optional power frequency curve used, but not required, when operationMode = LocalFrequency.
+        /// When used it must contain at least two coordinates to specify a power frequency curve to use during this period.
+        /// The curve determines the value of setpoint power for a given signal.
+        /// The charging rate unit must be W for local frequency control.
+        /// </summary>
+        public IEnumerable<V2XSignalWattEntry>  V2XSignalWattCurve        { get; }
+
+        /// <summary>
+        /// The optional timestamp when this charging schedule period had been updated last.
+        /// Only relevant in a dynamic charging profile.
+        /// </summary>
+        public DateTime?                        DynUpdateTime             { get; }
 
         #endregion
 
@@ -115,21 +195,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Limit">Power limit during the schedule period in Amperes.</param>
         /// <param name="NumberOfPhases">The number of phases that can be used for charging.</param>
         /// <param name="PhaseToUse">Optional electrical phase to use for charging.</param>
+        /// 
+        /// <param name="Limit">Optional charging rate limit in chargingRateUnit.</param>
+        /// <param name="Limit_L2">Optional charging rate limit in chargingRateUnit on phase L2.</param>
+        /// <param name="Limit_L3">Optional charging rate limit in chargingRateUnit on phase L3.</param>
+        /// 
+        /// <param name="DischargeLimit">Optional discharging limit in chargingRateUnit.</param>
+        /// <param name="DischargeLimit_L2">Optional discharging limit in chargingRateUnit on phase L2.</param>
+        /// <param name="DischargeLimit_L3">Optional discharging limit in chargingRateUnit on phase L3.</param>
+        /// 
+        /// <param name="Setpoint">Optional setpoint in chargingRateUnit.</param>
+        /// <param name="Setpoint_L2">Optional setpoint in chargingRateUnit on phase L2.</param>
+        /// <param name="Setpoint_L3">Optional setpoint in chargingRateUnit on phase L3.</param>
+        /// 
+        /// <param name="SetpointReactive">Optional setpoint for reactive power (or current) in chargingRateUnit.</param>
+        /// <param name="SetpointReactive_L2">Optional setpoint for reactive power (or current) in chargingRateUnit on phase L2.</param>
+        /// <param name="SetpointReactive_L3">Optional setpoint for reactive power (or current) in chargingRateUnit on phase L3.</param>
+        /// 
+        /// <param name="PreconditioningRequest">The optional indication whether the EV should attempt to keep its battery management system preconditioned for this time interval, such that the EV can charge/discharge at requested power immediately.</param>
+        /// <param name="OperationMode">The optional V2X operation mode that should be used during this time interval. When absent it defaults to "charging only".</param>
+        /// <param name="V2XBaseline">The optional power baseline value that is used on top of all values of the V2X Frequency-Watt and V2X Signal-Watt curve.</param>
+        /// <param name="V2XFreqWattCurve">The optional power frequency curve used, but not required, when operationMode = LocalFrequency.</param>
+        /// <param name="V2XSignalWattCurve">An optional power frequency curve used, but not required, when operationMode = LocalFrequency.</param>
+        /// <param name="DynUpdateTime">An optional timestamp when this charging schedule period had been updated last. Only relevant in a dynamic charging profile.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public ChargingSchedulePeriod(TimeSpan      StartPeriod,
-                                      Decimal       Limit,
-                                      Byte?         NumberOfPhases   = null,
-                                      PhasesToUse?  PhaseToUse       = null,
-                                      CustomData?   CustomData       = null)
+        public ChargingSchedulePeriod(TimeSpan                          StartPeriod,
+                                      Byte?                             NumberOfPhases           = null,
+                                      PhasesToUse?                      PhaseToUse               = null,
+
+                                      ChargingRateValue?                Limit                    = null,
+                                      ChargingRateValue?                Limit_L2                 = null,
+                                      ChargingRateValue?                Limit_L3                 = null,
+
+                                      ChargingRateValue?                DischargeLimit           = null,
+                                      ChargingRateValue?                DischargeLimit_L2        = null,
+                                      ChargingRateValue?                DischargeLimit_L3        = null,
+
+                                      ChargingRateValue?                Setpoint                 = null,
+                                      ChargingRateValue?                Setpoint_L2              = null,
+                                      ChargingRateValue?                Setpoint_L3              = null,
+
+                                      ChargingRateValue?                SetpointReactive         = null,
+                                      ChargingRateValue?                SetpointReactive_L2      = null,
+                                      ChargingRateValue?                SetpointReactive_L3      = null,
+
+                                      Boolean?                          PreconditioningRequest   = null,
+                                      OperationModes?                   OperationMode            = null,
+                                      Decimal?                          V2XBaseline              = null,
+                                      IEnumerable<V2XFreqWattEntry>?    V2XFreqWattCurve         = null,
+                                      IEnumerable<V2XSignalWattEntry>?  V2XSignalWattCurve       = null,
+                                      DateTime?                         DynUpdateTime            = null,
+
+                                      CustomData?                       CustomData               = null)
 
             : base(CustomData)
 
         {
 
-            this.StartPeriod     = StartPeriod;
-            this.Limit           = Limit;
-            this.NumberOfPhases  = NumberOfPhases;
-            this.PhaseToUse      = PhaseToUse;
+            this.StartPeriod          = StartPeriod;
+            this.NumberOfPhases       = NumberOfPhases;
+            this.PhaseToUse           = PhaseToUse;
+
+            this.Limit                = Limit;
+            this.Limit_L2             = Limit_L2;
+            this.Limit_L3             = Limit_L3;
+
+            this.DischargeLimit       = DischargeLimit;
+            this.DischargeLimit_L2    = DischargeLimit_L2;
+            this.DischargeLimit_L3    = DischargeLimit_L3;
+
+            this.Setpoint             = Setpoint;
+            this.Setpoint_L2          = Setpoint_L2;
+            this.Setpoint_L3          = Setpoint_L3;
+
+            this.SetpointReactive     = SetpointReactive;
+            this.SetpointReactive_L2  = SetpointReactive_L2;
+            this.SetpointReactive_L3  = SetpointReactive_L3;
 
         }
 
@@ -240,13 +382,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("startPeriod",
                                          "start period",
-                                         out UInt32 startPeriod,
+                                         out TimeSpan StartPeriod,
                                          out ErrorResponse))
                 {
                     return false;
                 }
-
-                var StartPeriod = TimeSpan.FromSeconds(startPeriod);
 
                 #endregion
 
@@ -254,11 +394,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("limit",
                                          "power limit",
-                                         out Decimal Limit,
+                                         out Decimal limit,
                                          out ErrorResponse))
                 {
                     return false;
                 }
+
+                var Limit = ChargingRateValue.Parse(limit, ChargingRateUnits.Unknown);
 
                 #endregion
 
@@ -304,11 +446,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                ChargingSchedulePeriod = new ChargingSchedulePeriod(StartPeriod,
-                                                                    Limit,
-                                                                    NumberPhases,
-                                                                    PhaseToUse,
-                                                                    CustomData);
+                ChargingSchedulePeriod = new ChargingSchedulePeriod(
+                                             StartPeriod,
+                                             NumberPhases,
+                                             PhaseToUse,
+                                             CustomData: CustomData
+                                         );
 
                 if (CustomChargingSchedulePeriodParser is not null)
                     ChargingSchedulePeriod = CustomChargingSchedulePeriodParser(JSON,
@@ -345,7 +488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("startPeriod",    (UInt32) Math.Round(StartPeriod.TotalSeconds, 0)),
 
                            Limit.HasValue
-                               ? new JProperty("limit",          Math.Round(Limit.Value, 1))
+                               ? new JProperty("limit",          Math.Round(Limit.Value.Value, 1))
                                : null,
 
                            NumberOfPhases.HasValue
