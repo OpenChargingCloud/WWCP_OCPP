@@ -95,14 +95,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         [Optional]
         public SalesTariff?                         SalesTariff                { get; }
 
+        /// <summary>
+        /// The ISO 15118-20 absolute price schedule.
+        /// </summary>
         public AbsolutePriceSchedule?               AbsolutePriceSchedule      { get; }
 
+        /// <summary>
+        /// The ISO 15118-20 price level schedule.
+        /// </summary>
         public PriceLevelSchedule?                  PriceLevelSchedule         { get; }
 
-        public Int32?                               SignatureId                { get; }
+        /// <summary>
+        /// The identification of this element for referencing in a digital signature.
+        /// </summary>
+        public UInt32?                              SignatureId                { get; }
 
+        /// <summary>
+        /// The Base64-encoded cryptographical hash value (SHA256 for 15118-2,
+        /// SHA512 for 15118-20) of the EXI price schedule element.
+        /// </summary>
         public String?                              DigestValue                { get; }
 
+        /// <summary>
+        /// The power tolerance when following the EV power profile.
+        /// </summary>
         public Decimal?                             PowerTolerance             { get; }
 
         #endregion
@@ -118,9 +134,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="StartSchedule">The optional starting timestamp of an absolute schedule. If absent the schedule will be relative to start of charging.</param>
         /// <param name="Duration">Optional duration of the charging schedule. If the duration is left empty, the last period will continue indefinitely or until end of the transaction if chargingProfilePurpose = TxProfile.</param>
         /// <param name="MinChargingRate">The optional minimal charging rate supported by the EV.</param>
-        /// <param name="LimitBeyondSoC"></param>
+        /// <param name="LimitBeyondSoC">When defined, any setpoint/limit in the charging schedule must be capped by this charging rate limit when state-of-charge measurements are greater than or equal to the state-of-charge limit.</param>
         /// <param name="SalesTariff">Optional sales tariff associated with this charging schedule.</param>
-        /// 
+        /// <param name="AbsolutePriceSchedule">An ISO 15118-20 absolute price schedule.</param>
+        /// <param name="PriceLevelSchedule">An ISO 15118-20 price level schedule.</param>
+        /// <param name="SignatureId">An identification of this element for referencing in a digital signature.</param>
+        /// <param name="DigestValue">An Base64-encoded cryptographical hash value (SHA256 for 15118-2, SHA512 for 15118-20) of the EXI price schedule element.</param>
+        /// <param name="PowerTolerance">The power tolerance when following the EV power profile.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public ChargingSchedule(ChargingSchedule_Id                  Id,
                                 ChargingRateUnits                    ChargingRateUnit,
@@ -132,7 +152,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 SalesTariff?                         SalesTariff             = null,
                                 AbsolutePriceSchedule?               AbsolutePriceSchedule   = null,
                                 PriceLevelSchedule?                  PriceLevelSchedule      = null,
-                                Int32?                               SignatureId             = null,
+                                UInt32?                              SignatureId             = null,
                                 String?                              DigestValue             = null,
                                 Decimal?                             PowerTolerance          = null,
                                 CustomData?                          CustomData              = null)
@@ -158,6 +178,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.SignatureId              = SignatureId;
             this.DigestValue              = DigestValue;
             this.PowerTolerance           = PowerTolerance;
+
+            unchecked
+            {
+
+                hashCode = Id.                     GetHashCode()       * 47 ^
+                           ChargingRateUnit.       GetHashCode()       * 43 ^
+                           ChargingSchedulePeriods.CalcHashCode()      * 41 ^
+                          (StartSchedule?.         GetHashCode() ?? 0) * 17^
+                          (Duration?.              GetHashCode() ?? 0) * 31 ^
+                          (MinChargingRate?.       GetHashCode() ?? 0) * 29 ^
+                          (LimitBeyondSoC?.        GetHashCode() ?? 0) * 23 ^
+                          (SalesTariff?.           GetHashCode() ?? 0) * 19 ^
+                          (AbsolutePriceSchedule?. GetHashCode() ?? 0) * 13 ^
+                          (PriceLevelSchedule?.    GetHashCode() ?? 0) * 11 ^
+                          (SignatureId?.           GetHashCode() ?? 0) *  7 ^
+                          (DigestValue?.           GetHashCode() ?? 0) *  5 ^
+                          (PowerTolerance?.        GetHashCode() ?? 0) *  3 ^
+
+                           base.                   GetHashCode();
+
+            }
 
         }
 
@@ -345,6 +386,72 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region AbsolutePriceSchedule      [optional]
+
+                if (JSON.ParseOptionalJSON("absolutePriceSchedule",
+                                           "absolute price schedule",
+                                           ISO15118_20.CommonMessages.AbsolutePriceSchedule.TryParse,
+                                           out AbsolutePriceSchedule? AbsolutePriceSchedule,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region PriceLevelSchedule         [optional]
+
+                if (JSON.ParseOptionalJSON("priceLevelSchedule",
+                                           "price level schedule",
+                                           ISO15118_20.CommonMessages.PriceLevelSchedule.TryParse,
+                                           out PriceLevelSchedule? PriceLevelSchedule,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region SignatureId                [optional]
+
+                if (JSON.ParseOptional("signatureId",
+                                       "signature identification",
+                                       out UInt32? SignatureId,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region DigestValue                [optional]
+
+                if (JSON.ParseOptional("digestValue",
+                                       "price level schedule",
+                                       out String? DigestValue,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region PowerTolerance             [optional]
+
+                if (JSON.ParseOptional("powerTolerance",
+                                       "price level schedule",
+                                       out Decimal? PowerTolerance,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
 
                 #region CustomData                 [optional]
 
@@ -370,8 +477,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        MinChargingRate,
                                        LimitBeyondSoC,
                                        SalesTariff,
-
-                                       CustomData: CustomData
+                                       AbsolutePriceSchedule,
+                                       PriceLevelSchedule,
+                                       SignatureId,
+                                       DigestValue,
+                                       PowerTolerance,
+                                       CustomData
                                    );
 
                 if (CustomChargingScheduleParser is not null)
@@ -401,22 +512,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
         /// <param name="CustomV2XFreqWattEntrySerializer">A delegate to serialize custom V2X Frequency-Watt entrys.</param>
         /// <param name="CustomV2XSignalWattEntrySerializer">A delegate to serialize custom V2X Signal-Watt entrys.</param>
+        /// 
         /// <param name="CustomSalesTariffSerializer">A delegate to serialize custom salesTariffs.</param>
         /// <param name="CustomSalesTariffEntrySerializer">A delegate to serialize custom salesTariffEntrys.</param>
         /// <param name="CustomRelativeTimeIntervalSerializer">A delegate to serialize custom relativeTimeIntervals.</param>
         /// <param name="CustomConsumptionCostSerializer">A delegate to serialize custom consumptionCosts.</param>
         /// <param name="CustomCostSerializer">A delegate to serialize custom costs.</param>
+        /// 
+        /// <param name="CustomAbsolutePriceScheduleSerializer">A delegate to serialize custom absolute price schedules.</param>
+        /// <param name="CustomPriceRuleStackSerializer">A delegate to serialize custom price rule stacks.</param>
+        /// <param name="CustomPriceRuleSerializer">A delegate to serialize custom price rules.</param>
+        /// <param name="CustomTaxRuleSerializer">A delegate to serialize custom tax rules.</param>
+        /// <param name="CustomOverstayRuleListSerializer">A delegate to serialize custom overstay rule lists.</param>
+        /// <param name="CustomOverstayRuleSerializer">A delegate to serialize custom overstay rules.</param>
+        /// <param name="CustomAdditionalServiceSerializer">A delegate to serialize custom additional services.</param>
+        /// 
+        /// <param name="CustomPriceLevelScheduleSerializer">A delegate to serialize custom price level schedules.</param>
+        /// <param name="CustomPriceLevelScheduleEntrySerializer">A delegate to serialize custom price level schedule entries.</param>
+        /// 
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingSchedule>?        CustomChargingScheduleSerializer         = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?  CustomChargingSchedulePeriodSerializer   = null,
-                              CustomJObjectSerializerDelegate<V2XFreqWattEntry>?        CustomV2XFreqWattEntrySerializer         = null,
-                              CustomJObjectSerializerDelegate<V2XSignalWattEntry>?      CustomV2XSignalWattEntrySerializer       = null,
-                              CustomJObjectSerializerDelegate<SalesTariff>?             CustomSalesTariffSerializer              = null,
-                              CustomJObjectSerializerDelegate<SalesTariffEntry>?        CustomSalesTariffEntrySerializer         = null,
-                              CustomJObjectSerializerDelegate<RelativeTimeInterval>?    CustomRelativeTimeIntervalSerializer     = null,
-                              CustomJObjectSerializerDelegate<ConsumptionCost>?         CustomConsumptionCostSerializer          = null,
-                              CustomJObjectSerializerDelegate<Cost>?                    CustomCostSerializer                     = null,
-                              CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataSerializer               = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingSchedule>?         CustomChargingScheduleSerializer          = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?   CustomChargingSchedulePeriodSerializer    = null,
+                              CustomJObjectSerializerDelegate<V2XFreqWattEntry>?         CustomV2XFreqWattEntrySerializer          = null,
+                              CustomJObjectSerializerDelegate<V2XSignalWattEntry>?       CustomV2XSignalWattEntrySerializer        = null,
+
+                              CustomJObjectSerializerDelegate<SalesTariff>?              CustomSalesTariffSerializer               = null,
+                              CustomJObjectSerializerDelegate<SalesTariffEntry>?         CustomSalesTariffEntrySerializer          = null,
+                              CustomJObjectSerializerDelegate<RelativeTimeInterval>?     CustomRelativeTimeIntervalSerializer      = null,
+                              CustomJObjectSerializerDelegate<ConsumptionCost>?          CustomConsumptionCostSerializer           = null,
+                              CustomJObjectSerializerDelegate<Cost>?                     CustomCostSerializer                      = null,
+
+                              CustomJObjectSerializerDelegate<AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer     = null,
+                              CustomJObjectSerializerDelegate<PriceRuleStack>?           CustomPriceRuleStackSerializer            = null,
+                              CustomJObjectSerializerDelegate<PriceRule>?                CustomPriceRuleSerializer                 = null,
+                              CustomJObjectSerializerDelegate<TaxRule>?                  CustomTaxRuleSerializer                   = null,
+                              CustomJObjectSerializerDelegate<OverstayRuleList>?         CustomOverstayRuleListSerializer          = null,
+                              CustomJObjectSerializerDelegate<OverstayRule>?             CustomOverstayRuleSerializer              = null,
+                              CustomJObjectSerializerDelegate<AdditionalService>?        CustomAdditionalServiceSerializer         = null,
+
+                              CustomJObjectSerializerDelegate<PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer        = null,
+                              CustomJObjectSerializerDelegate<PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer   = null,
+
+                              CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
         {
 
             var json = JSONObject.Create(
@@ -441,12 +578,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            SalesTariff is not null
-                               ? new JProperty("salesTariff",              SalesTariff.        ToJSON(CustomSalesTariffSerializer,
-                                                                                                      CustomSalesTariffEntrySerializer,
-                                                                                                      CustomRelativeTimeIntervalSerializer,
-                                                                                                      CustomConsumptionCostSerializer,
-                                                                                                      CustomCostSerializer,
-                                                                                                      CustomCustomDataSerializer))
+                               ? new JProperty("salesTariff",              SalesTariff.          ToJSON(CustomSalesTariffSerializer,
+                                                                                                        CustomSalesTariffEntrySerializer,
+                                                                                                        CustomRelativeTimeIntervalSerializer,
+                                                                                                        CustomConsumptionCostSerializer,
+                                                                                                        CustomCostSerializer,
+                                                                                                        CustomCustomDataSerializer))
+                               : null,
+
+                           AbsolutePriceSchedule is not null
+                               ? new JProperty("absolutePriceSchedule",    AbsolutePriceSchedule.ToJSON(CustomAbsolutePriceScheduleSerializer,
+                                                                                                        CustomPriceRuleStackSerializer,
+                                                                                                        CustomPriceRuleSerializer,
+                                                                                                        CustomTaxRuleSerializer,
+                                                                                                        CustomOverstayRuleListSerializer,
+                                                                                                        CustomOverstayRuleSerializer,
+                                                                                                        CustomAdditionalServiceSerializer))
+                               : null,
+
+                           PriceLevelSchedule is not null
+                               ? new JProperty("priceLevelSchedule",       PriceLevelSchedule.   ToJSON(CustomPriceLevelScheduleSerializer,
+                                                                                                        CustomPriceLevelScheduleEntrySerializer))
+                               : null,
+
+                           SignatureId.HasValue
+                               ? new JProperty("signatureId",              SignatureId.Value)
+                               : null,
+
+                           DigestValue is not null
+                               ? new JProperty("digestValue",              DigestValue)
+                               : null,
+
+                           PowerTolerance.HasValue
+                               ? new JProperty("powerTolerance",           PowerTolerance.Value)
                                : null,
 
                            CustomData is not null
@@ -474,8 +638,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingSchedule1">A charging schedule.</param>
         /// <param name="ChargingSchedule2">Another charging schedule.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingSchedule ChargingSchedule1,
-                                           ChargingSchedule ChargingSchedule2)
+        public static Boolean operator == (ChargingSchedule? ChargingSchedule1,
+                                           ChargingSchedule? ChargingSchedule2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -500,8 +664,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingSchedule1">A charging schedule.</param>
         /// <param name="ChargingSchedule2">Another charging schedule.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingSchedule ChargingSchedule1,
-                                           ChargingSchedule ChargingSchedule2)
+        public static Boolean operator != (ChargingSchedule? ChargingSchedule1,
+                                           ChargingSchedule? ChargingSchedule2)
 
             => !(ChargingSchedule1 == ChargingSchedule2);
 
@@ -537,22 +701,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                Id.              Equals(ChargingSchedule.Id)               &&
                ChargingRateUnit.Equals(ChargingSchedule.ChargingRateUnit) &&
 
+             ((LimitBeyondSoC        is     null &&  ChargingSchedule.LimitBeyondSoC        is     null) ||
+              (LimitBeyondSoC        is not null &&  ChargingSchedule.LimitBeyondSoC        is not null && LimitBeyondSoC.       Equals(ChargingSchedule.LimitBeyondSoC)))           &&
+
                ChargingSchedulePeriods.Count().Equals(ChargingSchedule.ChargingSchedulePeriods.Count())     &&
                ChargingSchedulePeriods.All(chargingSchedulePeriod => ChargingSchedule.ChargingSchedulePeriods.Contains(chargingSchedulePeriod)) &&
 
-            ((!StartSchedule.  HasValue    && !ChargingSchedule.StartSchedule.  HasValue)    ||
-              (StartSchedule.  HasValue    &&  ChargingSchedule.StartSchedule.  HasValue && StartSchedule.  Value.Equals(ChargingSchedule.StartSchedule.  Value))) &&
+            ((!StartSchedule.        HasValue    && !ChargingSchedule.StartSchedule.        HasValue)    ||
+              (StartSchedule.        HasValue    &&  ChargingSchedule.StartSchedule.        HasValue    && StartSchedule.  Value.Equals(ChargingSchedule.StartSchedule.  Value))) &&
 
-            ((!Duration.       HasValue    && !ChargingSchedule.Duration.       HasValue)    ||
-              (Duration.       HasValue    &&  ChargingSchedule.Duration.       HasValue && Duration.       Value.Equals(ChargingSchedule.Duration.       Value))) &&
+            ((!Duration.             HasValue    && !ChargingSchedule.Duration.             HasValue)    ||
+              (Duration.             HasValue    &&  ChargingSchedule.Duration.             HasValue    && Duration.       Value.Equals(ChargingSchedule.Duration.       Value))) &&
 
-            ((!MinChargingRate.HasValue    && !ChargingSchedule.MinChargingRate.HasValue)    ||
-              (MinChargingRate.HasValue    &&  ChargingSchedule.MinChargingRate.HasValue && MinChargingRate.Value.Equals(ChargingSchedule.MinChargingRate.Value))) &&
+            ((!MinChargingRate.      HasValue    && !ChargingSchedule.MinChargingRate.      HasValue)    ||
+              (MinChargingRate.      HasValue    &&  ChargingSchedule.MinChargingRate.      HasValue    && MinChargingRate.Value.Equals(ChargingSchedule.MinChargingRate.Value))) &&
 
-             ((SalesTariff     is     null &&  ChargingSchedule.SalesTariff     is     null) ||
-              (SalesTariff     is not null &&  ChargingSchedule.SalesTariff     is not null && SalesTariff.       Equals(ChargingSchedule.SalesTariff)))           &&
+             ((SalesTariff           is     null &&  ChargingSchedule.SalesTariff           is     null) ||
+              (SalesTariff           is not null &&  ChargingSchedule.SalesTariff           is not null && SalesTariff.          Equals(ChargingSchedule.SalesTariff)))           &&
 
-               base.            Equals(ChargingSchedule);
+             ((AbsolutePriceSchedule is     null &&  ChargingSchedule.AbsolutePriceSchedule is     null) ||
+              (AbsolutePriceSchedule is not null &&  ChargingSchedule.AbsolutePriceSchedule is not null && AbsolutePriceSchedule.Equals(ChargingSchedule.AbsolutePriceSchedule))) &&
+
+             ((PriceLevelSchedule    is     null &&  ChargingSchedule.PriceLevelSchedule    is     null) ||
+              (PriceLevelSchedule    is not null &&  ChargingSchedule.PriceLevelSchedule    is not null && PriceLevelSchedule.   Equals(ChargingSchedule.PriceLevelSchedule)))    &&
+
+            ((!SignatureId.          HasValue    && !ChargingSchedule.SignatureId.          HasValue)    ||
+              (SignatureId.          HasValue    &&  ChargingSchedule.SignatureId.          HasValue    && SignatureId.    Value.Equals(ChargingSchedule.SignatureId.    Value))) &&
+
+             ((DigestValue           is     null &&  ChargingSchedule.DigestValue           is     null) ||
+              (DigestValue           is not null &&  ChargingSchedule.DigestValue           is not null && DigestValue.          Equals(ChargingSchedule.DigestValue)))           &&
+
+            ((!PowerTolerance.       HasValue    && !ChargingSchedule.PowerTolerance.       HasValue)    ||
+              (PowerTolerance.       HasValue    &&  ChargingSchedule.PowerTolerance.       HasValue    && PowerTolerance. Value.Equals(ChargingSchedule.PowerTolerance. Value))) &&
+
+               base.Equals(ChargingSchedule);
 
         #endregion
 
@@ -560,27 +742,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Id.                     GetHashCode()       * 19 ^
-                       ChargingRateUnit.       GetHashCode()       * 17 ^
-                       ChargingSchedulePeriods.CalcHashCode()      * 13 ^
-                      (StartSchedule?.         GetHashCode() ?? 0) * 11 ^
-                      (Duration?.              GetHashCode() ?? 0) *  7 ^
-                      (MinChargingRate?.       GetHashCode() ?? 0) *  5 ^
-                      (SalesTariff?.           GetHashCode() ?? 0) *  3 ^
-
-                       base.                   GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

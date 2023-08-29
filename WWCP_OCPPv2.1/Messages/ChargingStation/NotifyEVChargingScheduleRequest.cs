@@ -331,17 +331,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomConsumptionCostSerializer">A delegate to serialize custom consumptionCosts.</param>
         /// <param name="CustomCostSerializer">A delegate to serialize custom costs.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyEVChargingScheduleRequest>?  CustomNotifyEVChargingScheduleRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedule>?                 CustomChargingScheduleSerializer                  = null,
-                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?           CustomChargingSchedulePeriodSerializer            = null,
-                              CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                 CustomV2XFreqWattEntrySerializer                  = null,
-                              CustomJObjectSerializerDelegate<V2XSignalWattEntry>?               CustomV2XSignalWattEntrySerializer                = null,
-                              CustomJObjectSerializerDelegate<SalesTariff>?                      CustomSalesTariffSerializer                       = null,
-                              CustomJObjectSerializerDelegate<SalesTariffEntry>?                 CustomSalesTariffEntrySerializer                  = null,
-                              CustomJObjectSerializerDelegate<RelativeTimeInterval>?             CustomRelativeTimeIntervalSerializer              = null,
-                              CustomJObjectSerializerDelegate<ConsumptionCost>?                  CustomConsumptionCostSerializer                   = null,
-                              CustomJObjectSerializerDelegate<Cost>?                             CustomCostSerializer                              = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                       CustomCustomDataSerializer                        = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyEVChargingScheduleRequest>?                     CustomNotifyEVChargingScheduleRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                  = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer            = null,
+                              CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                  = null,
+                              CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer                = null,
+                              CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                       = null,
+                              CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                  = null,
+                              CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer              = null,
+                              CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                   = null,
+                              CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                              = null,
+
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer             = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                    = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                         = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                           = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                  = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                      = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                 = null,
+
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer                = null,
+                              CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer           = null,
+
+                              CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                        = null)
         {
 
             var json = JSONObject.Create(
@@ -353,11 +365,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                                                      CustomChargingSchedulePeriodSerializer,
                                                                                                      CustomV2XFreqWattEntrySerializer,
                                                                                                      CustomV2XSignalWattEntrySerializer,
+
                                                                                                      CustomSalesTariffSerializer,
                                                                                                      CustomSalesTariffEntrySerializer,
                                                                                                      CustomRelativeTimeIntervalSerializer,
                                                                                                      CustomConsumptionCostSerializer,
                                                                                                      CustomCostSerializer,
+
+                                                                                                     CustomAbsolutePriceScheduleSerializer,
+                                                                                                     CustomPriceRuleStackSerializer,
+                                                                                                     CustomPriceRuleSerializer,
+                                                                                                     CustomTaxRuleSerializer,
+                                                                                                     CustomOverstayRuleListSerializer,
+                                                                                                     CustomOverstayRuleSerializer,
+                                                                                                     CustomAdditionalServiceSerializer,
+
+                                                                                                     CustomPriceLevelScheduleSerializer,
+                                                                                                     CustomPriceLevelScheduleEntrySerializer,
+
                                                                                                      CustomCustomDataSerializer)),
 
                            SelectedScheduleTupleId.HasValue

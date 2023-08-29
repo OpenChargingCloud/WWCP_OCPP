@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
@@ -33,6 +32,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages;
 
 #endregion
 
@@ -313,6 +313,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                      CustomRelativeTimeIntervalSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<ConsumptionCost>?                           CustomConsumptionCostSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<Cost>?                                      CustomCostSerializer                                        { get; set; }
+
+        public CustomJObjectSerializerDelegate<AbsolutePriceSchedule>?                     CustomAbsolutePriceScheduleSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<PriceRuleStack>?                            CustomPriceRuleStackSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<PriceRule>?                                 CustomPriceRuleSerializer                                   { get; set; }
+        public CustomJObjectSerializerDelegate<TaxRule>?                                   CustomTaxRuleSerializer                                     { get; set; }
+        public CustomJObjectSerializerDelegate<OverstayRuleList>?                          CustomOverstayRuleListSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<OverstayRule>?                              CustomOverstayRuleSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<AdditionalService>?                         CustomAdditionalServiceSerializer                           { get; set; }
+
+        public CustomJObjectSerializerDelegate<PriceLevelSchedule>?                        CustomPriceLevelScheduleSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<PriceLevelScheduleEntry>?                   CustomPriceLevelScheduleEntrySerializer                     { get; set; }
+
         public CustomJObjectSerializerDelegate<ChargingProfile>?                           CustomChargingProfileSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<MessageInfo>?                               CustomMessageInfoSerializer                                 { get; set; }
         public CustomJObjectSerializerDelegate<MessageContent>?                            CustomMessageContentSerializer                              { get; set; }
@@ -9909,6 +9921,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                   CustomRelativeTimeIntervalSerializer,
                                                                   CustomConsumptionCostSerializer,
                                                                   CustomCostSerializer,
+
+                                                                  CustomAbsolutePriceScheduleSerializer,
+                                                                  CustomPriceRuleStackSerializer,
+                                                                  CustomPriceRuleSerializer,
+                                                                  CustomTaxRuleSerializer,
+                                                                  CustomOverstayRuleListSerializer,
+                                                                  CustomOverstayRuleSerializer,
+                                                                  CustomAdditionalServiceSerializer,
+
+                                                                  CustomPriceLevelScheduleSerializer,
+                                                                  CustomPriceLevelScheduleEntrySerializer,
+
                                                                   CustomCustomDataSerializer));
 
             if (requestMessage.NoErrors)
