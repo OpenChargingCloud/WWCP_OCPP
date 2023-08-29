@@ -120,21 +120,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="MinChargingRate">The optional minimal charging rate supported by the EV.</param>
         /// <param name="LimitBeyondSoC"></param>
         /// <param name="SalesTariff">Optional sales tariff associated with this charging schedule.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public ChargingSchedule(ChargingSchedule_Id                  Id,
                                 ChargingRateUnits                    ChargingRateUnit,
                                 IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods,
-                                DateTime?                            StartSchedule        = null,
-                                TimeSpan?                            Duration             = null,
-                                ChargingRateValue?                   MinChargingRate      = null,
-                                LimitBeyondSoC?                      LimitBeyondSoC       = null,
-                                SalesTariff?                         SalesTariff          = null,
-
-                                PriceLevelSchedule?                  PriceLevelSchedule   = null,
-                                Int32?                               SignatureId          = null,
-                                String?                              DigestValue          = null,
-                                Decimal?                             PowerTolerance       = null,
-                                CustomData?                          CustomData           = null)
+                                DateTime?                            StartSchedule           = null,
+                                TimeSpan?                            Duration                = null,
+                                ChargingRateValue?                   MinChargingRate         = null,
+                                LimitBeyondSoC?                      LimitBeyondSoC          = null,
+                                SalesTariff?                         SalesTariff             = null,
+                                AbsolutePriceSchedule?               AbsolutePriceSchedule   = null,
+                                PriceLevelSchedule?                  PriceLevelSchedule      = null,
+                                Int32?                               SignatureId             = null,
+                                String?                              DigestValue             = null,
+                                Decimal?                             PowerTolerance          = null,
+                                CustomData?                          CustomData              = null)
 
             : base(CustomData)
 
@@ -152,7 +153,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.MinChargingRate          = MinChargingRate;
             this.LimitBeyondSoC           = LimitBeyondSoC;
             this.SalesTariff              = SalesTariff;
-
+            this.AbsolutePriceSchedule    = AbsolutePriceSchedule;
+            this.PriceLevelSchedule       = PriceLevelSchedule;
             this.SignatureId              = SignatureId;
             this.DigestValue              = DigestValue;
             this.PowerTolerance           = PowerTolerance;
