@@ -16,4 +16,8 @@
     <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DataStructures\ISO15118-20\CommonTypes\Complex\" />
+  </ItemGroup>
+
 </Project>

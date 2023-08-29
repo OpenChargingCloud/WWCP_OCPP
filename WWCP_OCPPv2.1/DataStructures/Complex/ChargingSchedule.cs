@@ -22,6 +22,8 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
+using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -33,8 +35,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public class ChargingSchedule : ACustomData,
                                     IEquatable<ChargingSchedule>
     {
-
-        //ToDo: Implement me!
 
         #region Properties
 
@@ -95,9 +95,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         [Optional]
         public SalesTariff?                         SalesTariff                { get; }
 
-        // absolutePriceSchedule
+        public AbsolutePriceSchedule?               AbsolutePriceSchedule      { get; }
 
-        // priceLevelSchedule
+        public PriceLevelSchedule?                  PriceLevelSchedule         { get; }
 
         public Int32?                               SignatureId                { get; }
 
@@ -124,16 +124,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public ChargingSchedule(ChargingSchedule_Id                  Id,
                                 ChargingRateUnits                    ChargingRateUnit,
                                 IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods,
-                                DateTime?                            StartSchedule     = null,
-                                TimeSpan?                            Duration          = null,
-                                ChargingRateValue?                   MinChargingRate   = null,
-                                LimitBeyondSoC?                      LimitBeyondSoC    = null,
-                                SalesTariff?                         SalesTariff       = null,
+                                DateTime?                            StartSchedule        = null,
+                                TimeSpan?                            Duration             = null,
+                                ChargingRateValue?                   MinChargingRate      = null,
+                                LimitBeyondSoC?                      LimitBeyondSoC       = null,
+                                SalesTariff?                         SalesTariff          = null,
 
-                                Int32?                               SignatureId       = null,
-                                String?                              DigestValue       = null,
-                                Decimal?                             PowerTolerance    = null,
-                                CustomData?                          CustomData        = null)
+                                PriceLevelSchedule?                  PriceLevelSchedule   = null,
+                                Int32?                               SignatureId          = null,
+                                String?                              DigestValue          = null,
+                                Decimal?                             PowerTolerance       = null,
+                                CustomData?                          CustomData           = null)
 
             : base(CustomData)
 
@@ -383,7 +384,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 ChargingSchedule  = default;
                 ErrorResponse     = "The given JSON representation of a charging schedule is invalid: " + e.Message;
                 return false;
-
             }
 
         }
