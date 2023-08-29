@@ -1514,7 +1514,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                                                                                    },
                                                                         StartSchedule:             Timestamp.Now,
                                                                         Duration:                  TimeSpan.FromMinutes(30),
-                                                                        MinChargingRate:           6,
+                                                                        MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
                                                                         SalesTariff:               new SalesTariff(
                                                                                                        Id:                   SalesTariff_Id.NewRandom,
                                                                                                        SalesTariffEntries:   new[] {
@@ -1667,7 +1667,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                                                                                                                             },
                                                                                                                  StartSchedule:             Timestamp.Now,
                                                                                                                  Duration:                  TimeSpan.FromMinutes(30),
-                                                                                                                 MinChargingRate:           6,
+                                                                                                                 MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
                                                                                                                  SalesTariff:               new SalesTariff(
                                                                                                                                                 Id:                   SalesTariff_Id.NewRandom,
                                                                                                                                                 SalesTariffEntries:   new[] {

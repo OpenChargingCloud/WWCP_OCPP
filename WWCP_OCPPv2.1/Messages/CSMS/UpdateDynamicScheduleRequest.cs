@@ -45,76 +45,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Optional charging rate limit in chargingRateUnit.
         /// </summary>
         [Optional]
-        public Decimal?            Limit                  { get; }
+        public ChargingRateValue?  Limit                  { get; }
 
         /// <summary>
         /// Optional charging rate limit in chargingRateUnit on phase L2.
         /// </summary>
         [Optional]
-        public Decimal?            Limit_L2               { get; }
+        public ChargingRateValue?  Limit_L2               { get; }
 
         /// <summary>
         /// Optional charging rate limit in chargingRateUnit on phase L3.
         /// </summary>
         [Optional]
-        public Decimal?            Limit_L3               { get; }
+        public ChargingRateValue?  Limit_L3               { get; }
 
 
         /// <summary>
         /// Optional discharging limit in chargingRateUnit.
         /// </summary>
         [Optional]
-        public Decimal?            DischargeLimit         { get; }
+        public ChargingRateValue?  DischargeLimit         { get; }
 
         /// <summary>
         /// Optional discharging limit in chargingRateUnit on phase L2.
         /// </summary>
         [Optional]
-        public Decimal?            DischargeLimit_L2      { get; }
+        public ChargingRateValue?  DischargeLimit_L2      { get; }
 
         /// <summary>
         /// Optional discharging limit in chargingRateUnit on phase L3.
         /// </summary>
         [Optional]
-        public Decimal?            DischargeLimit_L3      { get; }
+        public ChargingRateValue?  DischargeLimit_L3      { get; }
 
 
         /// <summary>
         /// Optional setpoint in chargingRateUnit.
         /// </summary>
         [Optional]
-        public Decimal?            Setpoint               { get; }
+        public ChargingRateValue?  Setpoint               { get; }
 
         /// <summary>
         /// Optional setpoint in chargingRateUnit on phase L2.
         /// </summary>
         [Optional]
-        public Decimal?            Setpoint_L2            { get; }
+        public ChargingRateValue?  Setpoint_L2            { get; }
 
         /// <summary>
         /// Optional setpoint in chargingRateUnit on phase L3.
         /// </summary>
         [Optional]
-        public Decimal?            Setpoint_L3            { get; }
+        public ChargingRateValue?  Setpoint_L3            { get; }
 
 
         /// <summary>
         /// Optional setpoint for reactive power (or current) in chargingRateUnit.
         /// </summary>
         [Optional]
-        public Decimal?            SetpointReactive       { get; }
+        public ChargingRateValue?  SetpointReactive       { get; }
 
         /// <summary>
         /// Optional setpoint for reactive power (or current) in chargingRateUnit on phase L2.
         /// </summary>
         [Optional]
-        public Decimal?            SetpointReactive_L2    { get; }
+        public ChargingRateValue?  SetpointReactive_L2    { get; }
 
         /// <summary>
         /// Optional setpoint for reactive power (or current) in chargingRateUnit on phase L3.
         /// </summary>
         [Optional]
-        public Decimal?            SetpointReactive_L3    { get; }
+        public ChargingRateValue?  SetpointReactive_L3    { get; }
 
         #endregion
 
@@ -152,21 +152,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public UpdateDynamicScheduleRequest(ChargeBox_Id        ChargeBoxId,
                                             ChargingProfile_Id  ChargingProfileId,
 
-                                            Decimal?            Limit                 = null,
-                                            Decimal?            Limit_L2              = null,
-                                            Decimal?            Limit_L3              = null,
+                                            ChargingRateValue?  Limit                 = null,
+                                            ChargingRateValue?  Limit_L2              = null,
+                                            ChargingRateValue?  Limit_L3              = null,
 
-                                            Decimal?            DischargeLimit        = null,
-                                            Decimal?            DischargeLimit_L2     = null,
-                                            Decimal?            DischargeLimit_L3     = null,
+                                            ChargingRateValue?  DischargeLimit        = null,
+                                            ChargingRateValue?  DischargeLimit_L2     = null,
+                                            ChargingRateValue?  DischargeLimit_L3     = null,
 
-                                            Decimal?            Setpoint              = null,
-                                            Decimal?            Setpoint_L2           = null,
-                                            Decimal?            Setpoint_L3           = null,
+                                            ChargingRateValue?  Setpoint              = null,
+                                            ChargingRateValue?  Setpoint_L2           = null,
+                                            ChargingRateValue?  Setpoint_L3           = null,
 
-                                            Decimal?            SetpointReactive      = null,
-                                            Decimal?            SetpointReactive_L2   = null,
-                                            Decimal?            SetpointReactive_L3   = null,
+                                            ChargingRateValue?  SetpointReactive      = null,
+                                            ChargingRateValue?  SetpointReactive_L2   = null,
+                                            ChargingRateValue?  SetpointReactive_L3   = null,
 
                                             CustomData?         CustomData            = null,
 
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("limit",
                                        "charging rate limit",
-                                       out Decimal? Limit,
+                                       out ChargingRateValue? Limit,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -313,7 +313,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("limit_L2",
                                        "charging rate limit on phase L2",
-                                       out Decimal? Limit_L2,
+                                       out ChargingRateValue? Limit_L2,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -326,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("limit_L3",
                                        "charging rate limit on phase L3",
-                                       out Decimal? Limit_L3,
+                                       out ChargingRateValue? Limit_L3,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -340,7 +340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("dischargeLimit",
                                        "discharging rate limit",
-                                       out Decimal? DischargeLimit,
+                                       out ChargingRateValue? DischargeLimit,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -353,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("dischargeLimit_L2",
                                        "discharging rate limit on phase L2",
-                                       out Decimal? DischargeLimit_L2,
+                                       out ChargingRateValue? DischargeLimit_L2,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("dischargeLimit_L3",
                                        "discharging rate limit on phase L3",
-                                       out Decimal? DischargeLimit_L3,
+                                       out ChargingRateValue? DischargeLimit_L3,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("setpoint",
                                        "charging rate setpoint",
-                                       out Decimal? Setpoint,
+                                       out ChargingRateValue? Setpoint,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -393,7 +393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("setpoint_L2",
                                        "charging rate setpoint on phase L2",
-                                       out Decimal? Setpoint_L2,
+                                       out ChargingRateValue? Setpoint_L2,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -406,7 +406,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("setpoint_L3",
                                        "charging rate setpoint on phase L3",
-                                       out Decimal? Setpoint_L3,
+                                       out ChargingRateValue? Setpoint_L3,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -420,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("setpointReactive",
                                        "charging rate setpoint reactive",
-                                       out Decimal? SetpointReactive,
+                                       out ChargingRateValue? SetpointReactive,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -433,7 +433,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("setpointReactive_L2",
                                        "charging rate setpoint reactive on phase L2",
-                                       out Decimal? SetpointReactive_L2,
+                                       out ChargingRateValue? SetpointReactive_L2,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -446,7 +446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("setpointReactive_L3",
                                        "charging rate setpoint reactive on phase L3",
-                                       out Decimal? SetpointReactive_L3,
+                                       out ChargingRateValue? SetpointReactive_L3,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -492,29 +492,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 UpdateDynamicScheduleRequest = new UpdateDynamicScheduleRequest(
 
-                                                       ChargeBoxId,
-                                                       ChargingProfileId,
+                                                   ChargeBoxId,
+                                                   ChargingProfileId,
 
-                                                       Limit,
-                                                       Limit_L2,
-                                                       Limit_L3,
+                                                   Limit,
+                                                   Limit_L2,
+                                                   Limit_L3,
 
-                                                       DischargeLimit,
-                                                       DischargeLimit_L2,
-                                                       DischargeLimit_L3,
+                                                   DischargeLimit,
+                                                   DischargeLimit_L2,
+                                                   DischargeLimit_L3,
 
-                                                       Setpoint,
-                                                       Setpoint_L2,
-                                                       Setpoint_L3,
+                                                   Setpoint,
+                                                   Setpoint_L2,
+                                                   Setpoint_L3,
 
-                                                       SetpointReactive,
-                                                       SetpointReactive_L2,
-                                                       SetpointReactive_L3,
+                                                   SetpointReactive,
+                                                   SetpointReactive_L2,
+                                                   SetpointReactive_L3,
 
-                                                       CustomData,
-                                                       RequestId
+                                                   CustomData,
+                                                   RequestId
 
-                                                   );
+                                               );
 
                 if (CustomUpdateDynamicScheduleRequestParser is not null)
                     UpdateDynamicScheduleRequest = CustomUpdateDynamicScheduleRequestParser(JSON,
@@ -542,7 +542,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUpdateDynamicScheduleRequestSerializer">A delegate to serialize custom UpdateDynamicSchedule requests.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateDynamicScheduleRequest>?  CustomUpdateDynamicScheduleRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                         = null)
+                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
             var json = JSONObject.Create(
@@ -550,54 +550,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  new JProperty("chargingProfileId",     ChargingProfileId.ToString()),
 
                            Limit.              HasValue
-                               ? new JProperty("limit",                 Limit.              Value)
+                               ? new JProperty("limit",                 Limit.              Value.Value)
                                : null,
 
                            Limit_L2.           HasValue
-                               ? new JProperty("limit_L2",              Limit_L2.           Value)
+                               ? new JProperty("limit_L2",              Limit_L2.           Value.Value)
                                : null,
 
                            Limit_L3.           HasValue
-                               ? new JProperty("limit_L3",              Limit_L3.           Value)
+                               ? new JProperty("limit_L3",              Limit_L3.           Value.Value)
                                : null,
 
 
                            DischargeLimit.     HasValue
-                               ? new JProperty("dischargeLimit",        DischargeLimit.     Value)
+                               ? new JProperty("dischargeLimit",        DischargeLimit.     Value.Value)
                                : null,
 
                            DischargeLimit_L2.  HasValue
-                               ? new JProperty("dischargeLimit_L2",     DischargeLimit_L2.  Value)
+                               ? new JProperty("dischargeLimit_L2",     DischargeLimit_L2.  Value.Value)
                                : null,
 
                            DischargeLimit_L3.  HasValue
-                               ? new JProperty("dischargeLimit_L3",     DischargeLimit_L3.  Value)
+                               ? new JProperty("dischargeLimit_L3",     DischargeLimit_L3.  Value.Value)
                                : null,
 
 
                            Setpoint.           HasValue
-                               ? new JProperty("setpoint",              Setpoint.           Value)
+                               ? new JProperty("setpoint",              Setpoint.           Value.Value)
                                : null,
 
                            Setpoint_L2.        HasValue
-                               ? new JProperty("setpoint_L2",           Setpoint_L2.        Value)
+                               ? new JProperty("setpoint_L2",           Setpoint_L2.        Value.Value)
                                : null,
 
                            Setpoint_L3.        HasValue
-                               ? new JProperty("setpoint_L3",           Setpoint_L3.        Value)
+                               ? new JProperty("setpoint_L3",           Setpoint_L3.        Value.Value)
                                : null,
 
 
                            SetpointReactive.   HasValue
-                               ? new JProperty("setpointReactive",      SetpointReactive.   Value)
+                               ? new JProperty("setpointReactive",      SetpointReactive.   Value.Value)
                                : null,
 
                            SetpointReactive_L2.HasValue
-                               ? new JProperty("setpointReactive_L2",   SetpointReactive_L2.Value)
+                               ? new JProperty("setpointReactive_L2",   SetpointReactive_L2.Value.Value)
                                : null,
 
                            SetpointReactive_L3.HasValue
-                               ? new JProperty("setpointReactive_L3",   SetpointReactive_L3.Value)
+                               ? new JProperty("setpointReactive_L3",   SetpointReactive_L3.Value.Value)
                                : null,
 
 

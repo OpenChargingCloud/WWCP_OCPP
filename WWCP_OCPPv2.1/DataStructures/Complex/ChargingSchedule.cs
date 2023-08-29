@@ -21,7 +21,6 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using System.Collections.Generic;
 
 #endregion
 
@@ -72,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Accepts at most one digit fraction (e.g. 8.1)
         /// </summary>
         [Optional]
-        public Decimal?                             MinChargingRate            { get; }
+        public ChargingRateValue?                   MinChargingRate            { get; }
 
         /// <summary>
         /// When defined, any setpoint/limit in the charging schedule must be capped by this
@@ -100,11 +99,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // priceLevelSchedule
 
-        // signatureId
+        public Int32?                               SignatureId                { get; }
 
-        // digestValue
+        public String?                              DigestValue                { get; }
 
-        // powerTolerance
+        public Decimal?                             PowerTolerance             { get; }
 
         #endregion
 
@@ -127,9 +126,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods,
                                 DateTime?                            StartSchedule     = null,
                                 TimeSpan?                            Duration          = null,
-                                Decimal?                             MinChargingRate   = null,
+                                ChargingRateValue?                   MinChargingRate   = null,
                                 LimitBeyondSoC?                      LimitBeyondSoC    = null,
                                 SalesTariff?                         SalesTariff       = null,
+
+                                Int32?                               SignatureId       = null,
+                                String?                              DigestValue       = null,
+                                Decimal?                             PowerTolerance    = null,
                                 CustomData?                          CustomData        = null)
 
             : base(CustomData)
@@ -149,61 +152,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.LimitBeyondSoC           = LimitBeyondSoC;
             this.SalesTariff              = SalesTariff;
 
+            this.SignatureId              = SignatureId;
+            this.DigestValue              = DigestValue;
+            this.PowerTolerance           = PowerTolerance;
+
         }
 
         #endregion
 
 
+        //ToDo: Update schema documentation after the official release of OCPP v2.1!
+
         #region Documentation
 
-        // "ChargingScheduleType": {
-        //   "description": "Charging_ Schedule\r\nurn:x-oca:ocpp:uid:2:233256\r\nCharging schedule structure defines a list of charging periods, as used in: GetCompositeSchedule.conf and ChargingProfile. \r\n",
-        //   "javaType": "ChargingSchedule",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "id": {
-        //       "description": "Identifies the ChargingSchedule.\r\n",
-        //       "type": "integer"
-        //     },
-        //     "startSchedule": {
-        //       "description": "Charging_ Schedule. Start_ Schedule. Date_ Time\r\nurn:x-oca:ocpp:uid:1:569237\r\nStarting point of an absolute schedule. If absent the schedule will be relative to start of charging.\r\n",
-        //       "type": "string",
-        //       "format": "date-time"
-        //     },
-        //     "duration": {
-        //       "description": "Charging_ Schedule. Duration. Elapsed_ Time\r\nurn:x-oca:ocpp:uid:1:569236\r\nDuration of the charging schedule in seconds. If the duration is left empty, the last period will continue indefinitely or until end of the transaction if chargingProfilePurpose = TxProfile.\r\n",
-        //       "type": "integer"
-        //     },
-        //     "chargingRateUnit": {
-        //       "$ref": "#/definitions/ChargingRateUnitEnumType"
-        //     },
-        //     "chargingSchedulePeriod": {
-        //       "type": "array",
-        //       "additionalItems": false,
-        //       "items": {
-        //         "$ref": "#/definitions/ChargingSchedulePeriodType"
-        //       },
-        //       "minItems": 1,
-        //       "maxItems": 1024
-        //     },
-        //     "minChargingRate": {
-        //       "description": "Charging_ Schedule. Min_ Charging_ Rate. Numeric\r\nurn:x-oca:ocpp:uid:1:569239\r\nMinimum charging rate supported by the EV. The unit of measure is defined by the chargingRateUnit. This parameter is intended to be used by a local smart charging algorithm to optimize the power allocation for in the case a charging process is inefficient at lower charging rates. Accepts at most one digit fraction (e.g. 8.1)\r\n",
-        //       "type": "number"
-        //     },
-        //     "salesTariff": {
-        //       "$ref": "#/definitions/SalesTariffType"
-        //     }
-        //   },
-        //   "required": [
-        //     "id",
-        //     "chargingRateUnit",
-        //     "chargingSchedulePeriod"
-        //   ]
-        // }
 
         #endregion
 
@@ -344,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("minChargingRate",
                                        "minimal charging rate",
-                                       out Decimal? MinChargingRate,
+                                       out ChargingRateValue? MinChargingRate,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -381,6 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+
                 #region CustomData                 [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -405,7 +367,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        MinChargingRate,
                                        LimitBeyondSoC,
                                        SalesTariff,
-                                       CustomData
+
+                                       CustomData: CustomData
                                    );
 
                 if (CustomChargingScheduleParser is not null)
@@ -434,6 +397,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedules.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
+        /// <param name="CustomV2XFreqWattEntrySerializer">A delegate to serialize custom V2X Frequency-Watt entrys.</param>
+        /// <param name="CustomV2XSignalWattEntrySerializer">A delegate to serialize custom V2X Signal-Watt entrys.</param>
         /// <param name="CustomSalesTariffSerializer">A delegate to serialize custom salesTariffs.</param>
         /// <param name="CustomSalesTariffEntrySerializer">A delegate to serialize custom salesTariffEntrys.</param>
         /// <param name="CustomRelativeTimeIntervalSerializer">A delegate to serialize custom relativeTimeIntervals.</param>
@@ -442,6 +407,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingSchedule>?        CustomChargingScheduleSerializer         = null,
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?  CustomChargingSchedulePeriodSerializer   = null,
+                              CustomJObjectSerializerDelegate<V2XFreqWattEntry>?        CustomV2XFreqWattEntrySerializer         = null,
+                              CustomJObjectSerializerDelegate<V2XSignalWattEntry>?      CustomV2XSignalWattEntrySerializer       = null,
                               CustomJObjectSerializerDelegate<SalesTariff>?             CustomSalesTariffSerializer              = null,
                               CustomJObjectSerializerDelegate<SalesTariffEntry>?        CustomSalesTariffEntrySerializer         = null,
                               CustomJObjectSerializerDelegate<RelativeTimeInterval>?    CustomRelativeTimeIntervalSerializer     = null,
@@ -455,6 +422,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("id",                       Id.                 ToString()),
                                  new JProperty("chargingRateUnit",         ChargingRateUnit.   AsText()),
                                  new JProperty("chargingSchedulePeriod",   new JArray(ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer,
+                                                                                                                                                                             CustomV2XFreqWattEntrySerializer,
+                                                                                                                                                                             CustomV2XSignalWattEntrySerializer,
                                                                                                                                                                              CustomCustomDataSerializer)))),
 
                            StartSchedule.HasValue

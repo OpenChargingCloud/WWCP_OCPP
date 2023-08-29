@@ -306,6 +306,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public CustomJObjectSerializerDelegate<UnitsOfMeasure>?                            CustomUnitsOfMeasureSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<ChargingSchedule>?                          CustomChargingScheduleSerializer                            { get; set; }
         public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                    CustomChargingSchedulePeriodSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                          CustomV2XFreqWattEntrySerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                        CustomV2XSignalWattEntrySerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<SalesTariff>?                               CustomSalesTariffSerializer                                 { get; set; }
         public CustomJObjectSerializerDelegate<SalesTariffEntry>?                          CustomSalesTariffEntrySerializer                            { get; set; }
         public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                      CustomRelativeTimeIntervalSerializer                        { get; set; }
@@ -9900,6 +9902,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    Request.ToJSON(CustomNotifyChargingLimitRequestSerializer,
                                                                   CustomChargingScheduleSerializer,
                                                                   CustomChargingSchedulePeriodSerializer,
+                                                                  CustomV2XFreqWattEntrySerializer,
+                                                                  CustomV2XSignalWattEntrySerializer,
                                                                   CustomSalesTariffSerializer,
                                                                   CustomSalesTariffEntrySerializer,
                                                                   CustomRelativeTimeIntervalSerializer,

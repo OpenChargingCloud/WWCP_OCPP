@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomV2XFreqWattEntrySerializer">A delegate to serialize custom v2xFreqWattEntrys.</param>
+        /// <param name="CustomV2XFreqWattEntrySerializer">A delegate to serialize custom V2X Frequency-Watt entrys.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<V2XFreqWattEntry>?  CustomV2XFreqWattEntrySerializer   = null,
                               CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataSerializer         = null)

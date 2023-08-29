@@ -553,6 +553,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomChargingProfileSerializer">A delegate to serialize custom charging profiles.</param>
         /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedules.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
+        /// <param name="CustomV2XFreqWattEntrySerializer">A delegate to serialize custom V2X Frequency-Watt entrys.</param>
+        /// <param name="CustomV2XSignalWattEntrySerializer">A delegate to serialize custom V2X Signal-Watt entrys.</param>
         /// <param name="CustomSalesTariffSerializer">A delegate to serialize custom sales tariffs.</param>
         /// <param name="CustomSalesTariffEntrySerializer">A delegate to serialize custom sales tariff entries.</param>
         /// <param name="CustomRelativeTimeIntervalSerializer">A delegate to serialize custom relative time intervals.</param>
@@ -562,6 +564,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingProfile>?         CustomChargingProfileSerializer          = null,
                               CustomJObjectSerializerDelegate<ChargingSchedule>?        CustomChargingScheduleSerializer         = null,
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?  CustomChargingSchedulePeriodSerializer   = null,
+                              CustomJObjectSerializerDelegate<V2XFreqWattEntry>?        CustomV2XFreqWattEntrySerializer         = null,
+                              CustomJObjectSerializerDelegate<V2XSignalWattEntry>?      CustomV2XSignalWattEntrySerializer       = null,
                               CustomJObjectSerializerDelegate<SalesTariff>?             CustomSalesTariffSerializer              = null,
                               CustomJObjectSerializerDelegate<SalesTariffEntry>?        CustomSalesTariffEntrySerializer         = null,
                               CustomJObjectSerializerDelegate<RelativeTimeInterval>?    CustomRelativeTimeIntervalSerializer     = null,
@@ -596,6 +600,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("chargingSchedule",         new JArray(ChargingSchedules.Select(chargingSchedule => chargingSchedule.ToJSON(CustomChargingScheduleSerializer,
                                                                                                                                                            CustomChargingSchedulePeriodSerializer,
+                                                                                                                                                           CustomV2XFreqWattEntrySerializer,
+                                                                                                                                                           CustomV2XSignalWattEntrySerializer,
                                                                                                                                                            CustomSalesTariffSerializer,
                                                                                                                                                            CustomSalesTariffEntrySerializer,
                                                                                                                                                            CustomRelativeTimeIntervalSerializer,

@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Runtime.ConstrainedExecution;
 
 #endregion
 
@@ -33,8 +32,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public class ChargingSchedulePeriod : ACustomData,
                                           IEquatable<ChargingSchedulePeriod>
     {
-
-        //ToDo: Implement me!
 
         #region Properties
 
@@ -253,64 +250,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            this.StartPeriod          = StartPeriod;
-            this.NumberOfPhases       = NumberOfPhases;
-            this.PhaseToUse           = PhaseToUse;
+            this.StartPeriod             = StartPeriod;
+            this.NumberOfPhases          = NumberOfPhases;
+            this.PhaseToUse              = PhaseToUse;
 
-            this.Limit                = Limit;
-            this.Limit_L2             = Limit_L2;
-            this.Limit_L3             = Limit_L3;
+            this.Limit                   = Limit;
+            this.Limit_L2                = Limit_L2;
+            this.Limit_L3                = Limit_L3;
 
-            this.DischargeLimit       = DischargeLimit;
-            this.DischargeLimit_L2    = DischargeLimit_L2;
-            this.DischargeLimit_L3    = DischargeLimit_L3;
+            this.DischargeLimit          = DischargeLimit;
+            this.DischargeLimit_L2       = DischargeLimit_L2;
+            this.DischargeLimit_L3       = DischargeLimit_L3;
 
-            this.Setpoint             = Setpoint;
-            this.Setpoint_L2          = Setpoint_L2;
-            this.Setpoint_L3          = Setpoint_L3;
+            this.Setpoint                = Setpoint;
+            this.Setpoint_L2             = Setpoint_L2;
+            this.Setpoint_L3             = Setpoint_L3;
 
-            this.SetpointReactive     = SetpointReactive;
-            this.SetpointReactive_L2  = SetpointReactive_L2;
-            this.SetpointReactive_L3  = SetpointReactive_L3;
+            this.SetpointReactive        = SetpointReactive;
+            this.SetpointReactive_L2     = SetpointReactive_L2;
+            this.SetpointReactive_L3     = SetpointReactive_L3;
+
+            this.PreconditioningRequest  = PreconditioningRequest;
+            this.OperationMode           = OperationMode;
+            this.V2XBaseline             = V2XBaseline;
+            this.V2XFreqWattCurve        = V2XFreqWattCurve?.  Distinct() ?? Array.Empty<V2XFreqWattEntry>();
+            this.V2XSignalWattCurve      = V2XSignalWattCurve?.Distinct() ?? Array.Empty<V2XSignalWattEntry>();
+            this.DynUpdateTime           = DynUpdateTime;
+
+            unchecked
+            {
+
+                hashCode = this.StartPeriod.            GetHashCode()       * 79 ^
+                          (this.NumberOfPhases?.        GetHashCode() ?? 0) * 73 ^
+                          (this.PhaseToUse?.            GetHashCode() ?? 0) * 71 ^
+
+                          (this.Limit?.                 GetHashCode() ?? 0) * 67 ^
+                          (this.Limit_L2?.              GetHashCode() ?? 0) * 61 ^
+                          (this.Limit_L3?.              GetHashCode() ?? 0) * 59 ^
+
+                          (this.DischargeLimit?.        GetHashCode() ?? 0) * 53 ^
+                          (this.DischargeLimit_L2?.     GetHashCode() ?? 0) * 47 ^
+                          (this.DischargeLimit_L3?.     GetHashCode() ?? 0) * 43 ^
+
+                          (this.Setpoint?.              GetHashCode() ?? 0) * 41 ^
+                          (this.Setpoint_L2?.           GetHashCode() ?? 0) * 37 ^
+                          (this.Setpoint_L3?.           GetHashCode() ?? 0) * 31 ^
+
+                          (this.SetpointReactive?.      GetHashCode() ?? 0) * 29 ^
+                          (this.SetpointReactive_L2?.   GetHashCode() ?? 0) * 23 ^
+                          (this.SetpointReactive_L3?.   GetHashCode() ?? 0) * 19 ^
+
+                          (this.PreconditioningRequest?.GetHashCode() ?? 0) * 17 ^
+                          (this.OperationMode?.         GetHashCode() ?? 0) * 13 ^
+                          (this.V2XBaseline?.           GetHashCode() ?? 0) * 11 ^
+                           this.V2XFreqWattCurve.       CalcHashCode()      *  7 ^
+                           this.V2XSignalWattCurve.     CalcHashCode()      *  5 ^
+                          (this.DynUpdateTime?.         GetHashCode() ?? 0) *  3 ^
+
+                           base.                        GetHashCode();
+
+            }
 
         }
 
         #endregion
 
 
+        //ToDo: Update schema documentation after the official release of OCPP v2.1!
+
         #region Documentation
 
-        // "ChargingSchedulePeriodType": {
-        //   "description": "Charging_ Schedule_ Period\r\nurn:x-oca:ocpp:uid:2:233257\r\nCharging schedule period structure defines a time period in a charging schedule.\r\n",
-        //   "javaType": "ChargingSchedulePeriod",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "startPeriod": {
-        //       "description": "Charging_ Schedule_ Period. Start_ Period. Elapsed_ Time\r\nurn:x-oca:ocpp:uid:1:569240\r\nStart of the period, in seconds from the start of schedule. The value of StartPeriod also defines the stop time of the previous period.\r\n",
-        //       "type": "integer"
-        //     },
-        //     "limit": {
-        //       "description": "Charging_ Schedule_ Period. Limit. Measure\r\nurn:x-oca:ocpp:uid:1:569241\r\nCharging rate limit during the schedule period, in the applicable chargingRateUnit, for example in Amperes (A) or Watts (W). Accepts at most one digit fraction (e.g. 8.1).\r\n",
-        //       "type": "number"
-        //     },
-        //     "numberPhases": {
-        //       "description": "Charging_ Schedule_ Period. Number_ Phases. Counter\r\nurn:x-oca:ocpp:uid:1:569242\r\nThe number of phases that can be used for charging. If a number of phases is needed, numberPhases=3 will be assumed unless another number is given.\r\n",
-        //       "type": "integer"
-        //     },
-        //     "phaseToUse": {
-        //       "description": "Values: 1..3, Used if numberPhases=1 and if the EVSE is capable of switching the phase connected to the EV, i.e. ACPhaseSwitchingSupported is defined and true. It’s not allowed unless both conditions above are true. If both conditions are true, and phaseToUse is omitted, the Charging Station / EVSE will make the selection on its own.\r\n\r\n",
-        //       "type": "integer"
-        //     }
-        //   },
-        //   "required": [
-        //     "startPeriod",
-        //     "limit"
-        //   ]
-        // }
 
         #endregion
 
@@ -378,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ChargingSchedulePeriod = default;
 
-                #region StartPeriod     [mandatory]
+                #region StartPeriod               [mandatory]
 
                 if (!JSON.ParseMandatory("startPeriod",
                                          "start period",
@@ -390,21 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Limit           [mandatory]
-
-                if (!JSON.ParseMandatory("limit",
-                                         "power limit",
-                                         out Decimal limit,
-                                         out ErrorResponse))
-                {
-                    return false;
-                }
-
-                var Limit = ChargingRateValue.Parse(limit, ChargingRateUnits.Unknown);
-
-                #endregion
-
-                #region NumberPhases    [optional]
+                #region NumberPhases              [optional]
 
                 if (JSON.ParseOptional("numberPhases",
                                        "number of phases",
@@ -417,7 +412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region PhaseToUse      [optional]
+                #region PhaseToUse                [optional]
 
                 if (JSON.ParseOptional("phaseToUse",
                                        "electrical phase to use",
@@ -431,7 +426,250 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region CustomData      [optional]
+
+                #region Limit                     [optional]
+
+                if (JSON.ParseOptional("limit",
+                                       "charging rate limit",
+                                       out ChargingRateValue? Limit,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Limit_L2                  [optional]
+
+                if (JSON.ParseOptional("limit_L2",
+                                       "charging rate limit on phase L2",
+                                       out ChargingRateValue? Limit_L2,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Limit_L3                  [optional]
+
+                if (JSON.ParseOptional("limit_L3",
+                                       "charging rate limit on phase L3",
+                                       out ChargingRateValue? Limit_L3,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region DischargeLimit            [optional]
+
+                if (JSON.ParseOptional("dischargeLimit",
+                                       "discharging rate limit",
+                                       out ChargingRateValue? DischargeLimit,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region DischargeLimit_L2         [optional]
+
+                if (JSON.ParseOptional("dischargeLimit_L2",
+                                       "discharging rate limit on phase L2",
+                                       out ChargingRateValue? DischargeLimit_L2,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region DischargeLimit_L3         [optional]
+
+                if (JSON.ParseOptional("dischargeLimit_L3",
+                                       "discharging rate limit on phase L3",
+                                       out ChargingRateValue? DischargeLimit_L3,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region Setpoint                  [optional]
+
+                if (JSON.ParseOptional("setpoint",
+                                       "charging rate setpoint",
+                                       out ChargingRateValue? Setpoint,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Setpoint_L2               [optional]
+
+                if (JSON.ParseOptional("setpoint_L2",
+                                       "charging rate setpoint on phase L2",
+                                       out ChargingRateValue? Setpoint_L2,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Setpoint_L3               [optional]
+
+                if (JSON.ParseOptional("setpoint_L3",
+                                       "charging rate setpoint on phase L3",
+                                       out ChargingRateValue? Setpoint_L3,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region SetpointReactive          [optional]
+
+                if (JSON.ParseOptional("setpointReactive",
+                                       "charging rate setpoint reactive",
+                                       out ChargingRateValue? SetpointReactive,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region SetpointReactive_L2       [optional]
+
+                if (JSON.ParseOptional("setpointReactive_L2",
+                                       "charging rate setpoint reactive on phase L2",
+                                       out ChargingRateValue? SetpointReactive_L2,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region SetpointReactive_L3       [optional]
+
+                if (JSON.ParseOptional("setpointReactive_L3",
+                                       "charging rate setpoint reactive on phase L3",
+                                       out ChargingRateValue? SetpointReactive_L3,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region PreconditioningRequest    [optional]
+
+                if (JSON.ParseOptional("preconditioningRequest",
+                                       "preconditioning request",
+                                       out Boolean? PreconditioningRequest,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region OperationMode             [optional]
+
+                if (JSON.ParseOptional("operationMode",
+                                       "V2X operation mode",
+                                       OperationModesExtensions.TryParse,
+                                       out OperationModes? OperationMode,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region V2XBaseline               [optional]
+
+                if (JSON.ParseOptional("v2xBaseline",
+                                       "V2X baseline",
+                                       out Decimal? V2XBaseline,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region V2XFreqWattCurve          [optional]
+
+                if (JSON.ParseOptionalJSON("v2xFreqWattCurve",
+                                           "V2X Frequency-Watt curve",
+                                           V2XFreqWattEntry.TryParse,
+                                           out IEnumerable<V2XFreqWattEntry> V2XFreqWattCurve,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region V2XSignalWattCurve        [optional]
+
+                if (JSON.ParseOptionalJSON("v2xSignalWattCurve",
+                                           "V2X Signal-Watt curve",
+                                           V2XSignalWattEntry.TryParse,
+                                           out IEnumerable<V2XSignalWattEntry> V2XSignalWattCurve,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region DynUpdateTime             [optional]
+
+                if (JSON.ParseOptional("dynUpdateTime",
+                                       "dynamic update time",
+                                       out DateTime? DynUpdateTime,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region CustomData                [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -447,10 +685,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                 ChargingSchedulePeriod = new ChargingSchedulePeriod(
+
                                              StartPeriod,
                                              NumberPhases,
                                              PhaseToUse,
-                                             CustomData: CustomData
+
+                                             Limit,
+                                             Limit_L2,
+                                             Limit_L3,
+
+                                             DischargeLimit,
+                                             DischargeLimit_L2,
+                                             DischargeLimit_L3,
+
+                                             Setpoint,
+                                             Setpoint_L2,
+                                             Setpoint_L3,
+
+                                             SetpointReactive,
+                                             SetpointReactive_L2,
+                                             SetpointReactive_L3,
+
+                                             PreconditioningRequest,
+                                             OperationMode,
+                                             V2XBaseline,
+                                             V2XFreqWattCurve,
+                                             V2XSignalWattCurve,
+                                             DynUpdateTime,
+
+                                             CustomData
+
                                          );
 
                 if (CustomChargingSchedulePeriodParser is not null)
@@ -472,35 +736,115 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomChargingSchedulePeriodSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomChargingSchedulePeriodSerializer = null, CustomV2XFreqWattEntrySerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
+        /// <param name="CustomV2XFreqWattEntrySerializer">A delegate to serialize custom V2X Frequency-Watt entrys.</param>
+        /// <param name="CustomV2XSignalWattEntrySerializer">A delegate to serialize custom V2X Signal-Watt entrys.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?  CustomChargingSchedulePeriodSerializer   = null,
+                              CustomJObjectSerializerDelegate<V2XFreqWattEntry>?        CustomV2XFreqWattEntrySerializer         = null,
+                              CustomJObjectSerializerDelegate<V2XSignalWattEntry>?      CustomV2XSignalWattEntrySerializer       = null,
                               CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataSerializer               = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("startPeriod",    (UInt32) Math.Round(StartPeriod.TotalSeconds, 0)),
+                                 new JProperty("startPeriod",              (UInt32) Math.Round(StartPeriod.TotalSeconds, 0)),
 
-                           Limit.HasValue
-                               ? new JProperty("limit",          Math.Round(Limit.Value.Value, 1))
+                           NumberOfPhases.        HasValue
+                               ? new JProperty("numberPhases",             NumberOfPhases)
                                : null,
 
-                           NumberOfPhases.HasValue
-                               ? new JProperty("numberPhases",   NumberOfPhases)
+                           PhaseToUse.            HasValue
+                               ? new JProperty("phaseToUse",               PhaseToUse.            Value.AsNumber())
                                : null,
 
-                           PhaseToUse.HasValue
-                               ? new JProperty("phaseToUse",     PhaseToUse.Value.AsNumber())
+
+                           Limit.                 HasValue
+                               ? new JProperty("limit",                    Limit.                 Value.Value)
                                : null,
+
+                           Limit_L2.              HasValue
+                               ? new JProperty("limit_L2",                 Limit_L2.              Value.Value)
+                               : null,
+
+                           Limit_L3.              HasValue
+                               ? new JProperty("limit_L3",                 Limit_L3.              Value.Value)
+                               : null,
+
+
+                           DischargeLimit.        HasValue
+                               ? new JProperty("dischargeLimit",           DischargeLimit.        Value.Value)
+                               : null,
+
+                           DischargeLimit_L2.     HasValue
+                               ? new JProperty("dischargeLimit_L2",        DischargeLimit_L2.     Value.Value)
+                               : null,
+
+                           DischargeLimit_L3.     HasValue
+                               ? new JProperty("dischargeLimit_L3",        DischargeLimit_L3.     Value.Value)
+                               : null,
+
+
+                           Setpoint.              HasValue
+                               ? new JProperty("setpoint",                 Setpoint.              Value.Value)
+                               : null,
+
+                           Setpoint_L2.           HasValue
+                               ? new JProperty("setpoint_L2",              Setpoint_L2.           Value.Value)
+                               : null,
+
+                           Setpoint_L3.           HasValue
+                               ? new JProperty("setpoint_L3",              Setpoint_L3.           Value.Value)
+                               : null,
+
+
+                           SetpointReactive.      HasValue
+                               ? new JProperty("setpointReactive",         SetpointReactive.      Value.Value)
+                               : null,
+
+                           SetpointReactive_L2.   HasValue
+                               ? new JProperty("setpointReactive_L2",      SetpointReactive_L2.   Value.Value)
+                               : null,
+
+                           SetpointReactive_L3.   HasValue
+                               ? new JProperty("setpointReactive_L3",      SetpointReactive_L3.   Value.Value)
+                               : null,
+
+
+                           PreconditioningRequest.HasValue
+                               ? new JProperty("preconditioningRequest",   PreconditioningRequest.Value)
+                               : null,
+
+                           OperationMode.         HasValue
+                               ? new JProperty("operationMode",            OperationMode.         Value)
+                               : null,
+
+                           V2XBaseline.           HasValue
+                               ? new JProperty("v2xBaseline",              V2XBaseline.           Value)
+                               : null,
+
+                           V2XFreqWattCurve.      Any()
+                               ? new JProperty("v2xFreqWattCurve",         new JArray(V2XFreqWattCurve.  Select(v2xFreqWattEntry   => v2xFreqWattEntry.  ToJSON(CustomV2XFreqWattEntrySerializer,
+                                                                                                                                                                CustomCustomDataSerializer))))
+                               : null,
+
+                           V2XSignalWattCurve.    Any()
+                               ? new JProperty("v2xSignalWattCurve",       new JArray(V2XSignalWattCurve.Select(v2xSignalWattEntry => v2xSignalWattEntry.ToJSON(CustomV2XSignalWattEntrySerializer,
+                                                                                                                                                                CustomCustomDataSerializer))))
+                               : null,
+
+                           DynUpdateTime.         HasValue
+                               ? new JProperty("dynUpdateTime",            DynUpdateTime.         Value.ToIso8601())
+                               : null,
+
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",               CustomData.                  ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -585,13 +929,91 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => ChargingSchedulePeriod is not null &&
 
                StartPeriod.Equals(ChargingSchedulePeriod.StartPeriod) &&
-               Limit.      Equals(ChargingSchedulePeriod.Limit)       &&
 
-            ((!NumberOfPhases.HasValue && !ChargingSchedulePeriod.NumberOfPhases.HasValue) ||
-              (NumberOfPhases.HasValue &&  ChargingSchedulePeriod.NumberOfPhases.HasValue && NumberOfPhases.Value.Equals(ChargingSchedulePeriod.NumberOfPhases.Value))) &&
+            ((!NumberOfPhases.         HasValue && !ChargingSchedulePeriod.NumberOfPhases.        HasValue) ||
+              (NumberOfPhases.         HasValue &&  ChargingSchedulePeriod.NumberOfPhases.        HasValue &&
+               NumberOfPhases.         Value.Equals(ChargingSchedulePeriod.NumberOfPhases.        Value))) &&
 
-            ((!PhaseToUse.  HasValue && !ChargingSchedulePeriod.PhaseToUse.  HasValue) ||
-              (PhaseToUse.  HasValue &&  ChargingSchedulePeriod.PhaseToUse.  HasValue && PhaseToUse.  Value.Equals(ChargingSchedulePeriod.PhaseToUse.  Value))) &&
+            ((!PhaseToUse.             HasValue && !ChargingSchedulePeriod.PhaseToUse.            HasValue) ||
+              (PhaseToUse.             HasValue &&  ChargingSchedulePeriod.PhaseToUse.            HasValue &&
+               PhaseToUse.             Value.Equals(ChargingSchedulePeriod.PhaseToUse.            Value))) &&
+
+
+             ((!Limit.                 HasValue && !ChargingSchedulePeriod.Limit.                 HasValue) ||
+                Limit.                 HasValue &&  ChargingSchedulePeriod.Limit.                 HasValue &&
+                Limit.                 Value.Equals(ChargingSchedulePeriod.Limit.                 Value))  &&
+
+             ((!Limit_L2.              HasValue && !ChargingSchedulePeriod.Limit_L2.              HasValue) ||
+                Limit_L2.              HasValue &&  ChargingSchedulePeriod.Limit_L2.              HasValue &&
+                Limit_L2.              Value.Equals(ChargingSchedulePeriod.Limit_L2.              Value))  &&
+
+             ((!Limit_L3.              HasValue && !ChargingSchedulePeriod.Limit_L3.              HasValue) ||
+                Limit_L3.              HasValue &&  ChargingSchedulePeriod.Limit_L3.              HasValue &&
+                Limit_L3.              Value.Equals(ChargingSchedulePeriod.Limit_L3.              Value))  &&
+
+
+             ((!DischargeLimit.        HasValue && !ChargingSchedulePeriod.DischargeLimit.        HasValue) ||
+                DischargeLimit.        HasValue &&  ChargingSchedulePeriod.DischargeLimit.        HasValue &&
+                DischargeLimit.        Value.Equals(ChargingSchedulePeriod.DischargeLimit.        Value))  &&
+
+             ((!DischargeLimit_L2.     HasValue && !ChargingSchedulePeriod.DischargeLimit_L2.     HasValue) ||
+                DischargeLimit_L2.     HasValue &&  ChargingSchedulePeriod.DischargeLimit_L2.     HasValue &&
+                DischargeLimit_L2.     Value.Equals(ChargingSchedulePeriod.DischargeLimit_L2.     Value))  &&
+
+             ((!DischargeLimit_L3.     HasValue && !ChargingSchedulePeriod.DischargeLimit_L3.     HasValue) ||
+                DischargeLimit_L3.     HasValue &&  ChargingSchedulePeriod.DischargeLimit_L3.     HasValue &&
+                DischargeLimit_L3.     Value.Equals(ChargingSchedulePeriod.DischargeLimit_L3.     Value))  &&
+
+
+             ((!Setpoint.              HasValue && !ChargingSchedulePeriod.Setpoint.              HasValue) ||
+                Setpoint.              HasValue &&  ChargingSchedulePeriod.Setpoint.              HasValue &&
+                Setpoint.              Value.Equals(ChargingSchedulePeriod.Setpoint.              Value))  &&
+
+             ((!Setpoint_L2.           HasValue && !ChargingSchedulePeriod.Setpoint_L2.           HasValue) ||
+                Setpoint_L2.           HasValue &&  ChargingSchedulePeriod.Setpoint_L2.           HasValue &&
+                Setpoint_L2.           Value.Equals(ChargingSchedulePeriod.Setpoint_L2.           Value))  &&
+
+             ((!Setpoint_L3.           HasValue && !ChargingSchedulePeriod.Setpoint_L3.           HasValue) ||
+                Setpoint_L3.           HasValue &&  ChargingSchedulePeriod.Setpoint_L3.           HasValue &&
+                Setpoint_L3.           Value.Equals(ChargingSchedulePeriod.Setpoint_L3.           Value))  &&
+
+
+             ((!SetpointReactive.      HasValue && !ChargingSchedulePeriod.SetpointReactive.      HasValue) ||
+                SetpointReactive.      HasValue &&  ChargingSchedulePeriod.SetpointReactive.      HasValue &&
+                SetpointReactive.      Value.Equals(ChargingSchedulePeriod.SetpointReactive.      Value))  &&
+
+             ((!SetpointReactive_L2.   HasValue && !ChargingSchedulePeriod.SetpointReactive_L2.   HasValue) ||
+                SetpointReactive_L2.   HasValue &&  ChargingSchedulePeriod.SetpointReactive_L2.   HasValue &&
+                SetpointReactive_L2.   Value.Equals(ChargingSchedulePeriod.SetpointReactive_L2.   Value))  &&
+
+             ((!SetpointReactive_L3.   HasValue && !ChargingSchedulePeriod.SetpointReactive_L3.   HasValue) ||
+                SetpointReactive_L3.   HasValue &&  ChargingSchedulePeriod.SetpointReactive_L3.   HasValue &&
+                SetpointReactive_L3.   Value.Equals(ChargingSchedulePeriod.SetpointReactive_L3.   Value))  &&
+
+
+             ((!PreconditioningRequest.HasValue && !ChargingSchedulePeriod.PreconditioningRequest.HasValue) ||
+                PreconditioningRequest.HasValue &&  ChargingSchedulePeriod.PreconditioningRequest.HasValue &&
+                PreconditioningRequest.Value.Equals(ChargingSchedulePeriod.PreconditioningRequest.Value))  &&
+
+             ((!OperationMode.         HasValue && !ChargingSchedulePeriod.OperationMode.         HasValue) ||
+                OperationMode.         HasValue &&  ChargingSchedulePeriod.OperationMode.         HasValue &&
+                OperationMode.         Value.Equals(ChargingSchedulePeriod.OperationMode.         Value))  &&
+
+             ((!V2XBaseline.           HasValue && !ChargingSchedulePeriod.V2XBaseline.           HasValue) ||
+                V2XBaseline.           HasValue &&  ChargingSchedulePeriod.V2XBaseline.           HasValue &&
+                V2XBaseline.           Value.Equals(ChargingSchedulePeriod.V2XBaseline.           Value))  &&
+
+             ((!DynUpdateTime.         HasValue && !ChargingSchedulePeriod.DynUpdateTime.         HasValue) ||
+                DynUpdateTime.         HasValue &&  ChargingSchedulePeriod.DynUpdateTime.         HasValue &&
+                DynUpdateTime.         Value.Equals(ChargingSchedulePeriod.DynUpdateTime.         Value))  &&
+
+
+               V2XFreqWattCurve.  Count().Equals(ChargingSchedulePeriod.V2XFreqWattCurve.  Count()) &&
+               V2XFreqWattCurve.  All(v2xFreqWattEntry   => ChargingSchedulePeriod.V2XFreqWattCurve.  Contains(v2xFreqWattEntry))   &&
+
+               V2XSignalWattCurve.Count().Equals(ChargingSchedulePeriod.V2XSignalWattCurve.Count()) &&
+               V2XSignalWattCurve.All(v2xSignalWattEntry => ChargingSchedulePeriod.V2XSignalWattCurve.Contains(v2xSignalWattEntry)) &&
+
 
                base.       Equals(ChargingSchedulePeriod);
 
@@ -601,24 +1023,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return StartPeriod.  GetHashCode()       * 11 ^
-                       Limit.        GetHashCode()       *  7 ^
-                      (NumberOfPhases?.GetHashCode() ?? 0) *  5 ^
-                      (PhaseToUse?.  GetHashCode() ?? 0) *  3 ^
-
-                       base.         GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -629,17 +1040,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(StartPeriod,
-                             " / ",
-                             " with ", Limit, " Ampere",
+            => String.Concat(
 
-                             NumberOfPhases.HasValue
-                                 ? ", " + NumberOfPhases + " phases"
-                                 : "",
+                   StartPeriod,
 
-                             PhaseToUse.HasValue
-                                 ? ", using phase: " + PhaseToUse.Value.AsText()
-                                 : "");
+                   NumberOfPhases.HasValue
+                       ? ", " + NumberOfPhases + " phases"
+                       : "",
+
+                   PhaseToUse.HasValue
+                       ? ", using phase: " + PhaseToUse.Value.AsText()
+                       : ""
+
+               );
 
         #endregion
 

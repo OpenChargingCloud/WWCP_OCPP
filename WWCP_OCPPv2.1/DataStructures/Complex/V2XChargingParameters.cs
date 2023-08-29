@@ -20,8 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Drawing;
-using System.Reflection.Metadata;
 
 #endregion
 
@@ -202,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: Dynamic_SEReqControlModeType: EVMinimumV2XEnergyRequest
         /// </summary>
         [Optional]
-        public Decimal?        EVMinV2XEnergyRequest    { get; }
+        public WattHour?       EVMinV2XEnergyRequest    { get; }
 
         /// <summary>
         /// The optional energy to maximum state-of-charge for cycling (V2X) activity.
@@ -210,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: Dynamic_SEReqControlModeType: EVMaximumV2XEnergyRequest
         /// </summary>
         [Optional]
-        public Decimal?        EVMaxV2XEnergyRequest    { get; }
+        public WattHour?       EVMaxV2XEnergyRequest    { get; }
 
         /// <summary>
         /// The optional target state-of-charge at departure as a percentage.
@@ -279,8 +277,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      WattHour?       EVTargetEnergyRequest   = null,
                                      WattHour?       EVMinEnergyRequest      = null,
                                      WattHour?       EVMaxEnergyRequest      = null,
-                                     Decimal?        EVMinV2XEnergyRequest   = null,
-                                     Decimal?        EVMaxV2XEnergyRequest   = null,
+                                     WattHour?       EVMinV2XEnergyRequest   = null,
+                                     WattHour?       EVMaxV2XEnergyRequest   = null,
                                      PercentageInt?  TargetSoC               = null,
 
                                      CustomData?     CustomData              = null)
@@ -729,7 +727,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("evMinV2XEnergyRequest",
                                        "ev min V2X energy request",
-                                       out Decimal? EVMinV2XEnergyRequest,
+                                       out WattHour? EVMinV2XEnergyRequest,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -742,7 +740,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("evMaxV2XEnergyRequest",
                                        "ev max V2X energy request",
-                                       out Decimal? EVMaxV2XEnergyRequest,
+                                       out WattHour? EVMaxV2XEnergyRequest,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -935,11 +933,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            EVMinV2XEnergyRequest.HasValue
-                               ? new JProperty("evMinV2XEnergyRequest",   EVMinV2XEnergyRequest.Value)
+                               ? new JProperty("evMinV2XEnergyRequest",   EVMinV2XEnergyRequest.Value.Value)
                                : null,
 
                            EVMaxV2XEnergyRequest.HasValue
-                               ? new JProperty("evMaxV2XEnergyRequest",   EVMaxV2XEnergyRequest.Value)
+                               ? new JProperty("evMaxV2XEnergyRequest",   EVMaxV2XEnergyRequest.Value.Value)
                                : null,
 
                            TargetSoC.            HasValue
