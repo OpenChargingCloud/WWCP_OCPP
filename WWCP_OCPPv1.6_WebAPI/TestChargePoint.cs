@@ -791,30 +791,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="SendHeartbeatEvery">The time span between heartbeat requests.</param>
         /// 
         /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
-        public TestChargePoint(ChargeBox_Id            ChargeBoxId,
-                               Byte                    NumberOfConnectors,
-                               String                  ChargePointVendor,
-                               String                  ChargePointModel,
+        public TestChargePoint(ChargeBox_Id          ChargeBoxId,
+                               Byte                  NumberOfConnectors,
+                               String                ChargePointVendor,
+                               String                ChargePointModel,
 
-                               I18NString?             Description               = null,
-                               String?                 ChargePointSerialNumber   = null,
-                               String?                 ChargeBoxSerialNumber     = null,
-                               String?                 FirmwareVersion           = null,
-                               String?                 Iccid                     = null,
-                               String?                 IMSI                      = null,
-                               String?                 MeterType                 = null,
-                               String?                 MeterSerialNumber         = null,
-                               String?                 MeterPublicKey            = null,
+                               I18NString?           Description               = null,
+                               String?               ChargePointSerialNumber   = null,
+                               String?               ChargeBoxSerialNumber     = null,
+                               String?               FirmwareVersion           = null,
+                               String?               Iccid                     = null,
+                               String?               IMSI                      = null,
+                               String?               MeterType                 = null,
+                               String?               MeterSerialNumber         = null,
+                               String?               MeterPublicKey            = null,
 
-                               Boolean                 DisableSendHeartbeats     = false,
-                               TimeSpan?               SendHeartbeatEvery        = null,
+                               Boolean               DisableSendHeartbeats     = false,
+                               TimeSpan?             SendHeartbeatEvery        = null,
 
-                               Boolean                 DisableMaintenanceTasks   = false,
-                               TimeSpan?               MaintenanceEvery          = null,
+                               Boolean               DisableMaintenanceTasks   = false,
+                               TimeSpan?             MaintenanceEvery          = null,
 
-                               TimeSpan?               DefaultRequestTimeout     = null,
-                               Tuple<String, String>?  HTTPBasicAuth             = null,
-                               DNSClient?              DNSClient                 = null)
+                               TimeSpan?             DefaultRequestTimeout     = null,
+                               IHTTPAuthentication?  HTTPAuthentication        = null,
+                               DNSClient?            DNSClient                 = null)
 
         {
 
@@ -863,17 +863,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             this.DisableSendHeartbeats    = DisableSendHeartbeats;
             this.SendHeartbeatEvery       = SendHeartbeatEvery    ?? DefaultSendHeartbeatEvery;
-            this.SendHeartbeatTimer       = new Timer(DoSendHeartbeatSync,
-                                                      null,
-                                                      this.SendHeartbeatEvery,
-                                                      this.SendHeartbeatEvery);
+            this.SendHeartbeatTimer       = new Timer(
+                                                DoSendHeartbeatSync,
+                                                null,
+                                                this.SendHeartbeatEvery,
+                                                this.SendHeartbeatEvery
+                                            );
 
             this.DisableMaintenanceTasks  = DisableMaintenanceTasks;
             this.MaintenanceEvery         = MaintenanceEvery      ?? DefaultMaintenanceEvery;
-            this.MaintenanceTimer         = new Timer(DoMaintenanceSync,
-                                                      null,
-                                                      this.MaintenanceEvery,
-                                                      this.MaintenanceEvery);
+            this.MaintenanceTimer         = new Timer(
+                                                DoMaintenanceSync,
+                                                null,
+                                                this.MaintenanceEvery,
+                                                this.MaintenanceEvery
+                                            );
 
             this.HTTPAuthentication       = HTTPAuthentication;
             this.DNSClient                = DNSClient;
@@ -1025,7 +1029,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                  MaxNumberOfRetries,
                                  InternalBufferSize,
 
-                                 SecWebSocketProtocols ?? new[] { "ocpp1.6" },
+                                 SecWebSocketProtocols ?? new[] { Version.WebSocketSubProtocolId },
 
                                  DisableMaintenanceTasks,
                                  MaintenanceEvery,

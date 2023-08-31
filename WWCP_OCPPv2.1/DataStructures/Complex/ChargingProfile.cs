@@ -337,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region ChargingProfileId         [mandatory]
 
-                if (!JSON.ParseMandatory("chargingProfileId",
+                if (!JSON.ParseMandatory("id",
                                          "charging profile id",
                                          ChargingProfile_Id.TryParse,
                                          out ChargingProfile_Id ChargingProfileId,

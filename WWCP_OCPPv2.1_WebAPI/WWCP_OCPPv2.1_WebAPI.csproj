@@ -17,4 +17,10 @@
     <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ChargingStation\HTTPRoot\" />
+    <Folder Include="CSMS\HTTPRoot\" />
+    <Folder Include="NetworkingNode\HTTPRoot\" />
+  </ItemGroup>
+
 </Project>

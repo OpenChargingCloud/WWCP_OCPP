@@ -17,10 +17,9 @@
 
 #region Usings
 
-using System.Net.Security;
+using System.Collections.Concurrent;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using System.Collections.Concurrent;
 
 using Newtonsoft.Json.Linq;
 
@@ -31,7 +30,6 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
-using System.Text;
 
 #endregion
 
@@ -42,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public class ChargingStationConnector
     {
 
-        public Connector_Id       Id              { get; }
+        public Connector_Id  Id    { get; }
 
 
         public ChargingStationConnector(Connector_Id Id)
@@ -165,16 +163,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             public DateTime        EnqueTimestamp    { get; }
 
-            public EnqueuedStatus    Status            { get; set; }
+            public EnqueuedStatus  Status            { get; set; }
 
             public Action<Object>  ResponseAction    { get; }
 
             public EnqueuedRequest(String          Command,
-                                 IRequest        Request,
-                                 JObject         RequestJSON,
-                                 DateTime        EnqueTimestamp,
-                                 EnqueuedStatus    Status,
-                                 Action<Object>  ResponseAction)
+                                   IRequest        Request,
+                                   JObject         RequestJSON,
+                                   DateTime        EnqueTimestamp,
+                                   EnqueuedStatus  Status,
+                                   Action<Object>  ResponseAction)
             {
 
                 this.Command         = Command;
@@ -1345,19 +1343,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    TimeSpan?                          MaintenanceEvery          = null,
 
                                    TimeSpan?                          DefaultRequestTimeout     = null,
-                                   Tuple<String, String>?             HTTPBasicAuth             = null,
+                                   IHTTPAuthentication?               HTTPAuthentication        = null,
                                    DNSClient?                         DNSClient                 = null)
 
         {
 
             if (ChargeBoxId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ChargeBoxId),        "The given charge box identification must not be null or empty!");
+                throw new ArgumentNullException(nameof(ChargeBoxId),  "The given charge box identification must not be null or empty!");
 
             if (VendorName.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(VendorName),  "The given charging station vendor must not be null or empty!");
+                throw new ArgumentNullException(nameof(VendorName),   "The given charging station vendor must not be null or empty!");
 
             if (Model.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Model),   "The given charging station model must not be null or empty!");
+                throw new ArgumentNullException(nameof(Model),        "The given charging station model must not be null or empty!");
 
 
             this.ChargeBoxId              = ChargeBoxId;
@@ -1388,17 +1386,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.DisableSendHeartbeats    = DisableSendHeartbeats;
             this.SendHeartbeatEvery       = SendHeartbeatEvery    ?? DefaultSendHeartbeatEvery;
-            this.SendHeartbeatTimer       = new Timer(DoSendHeartbeatSync,
-                                                      null,
-                                                      this.SendHeartbeatEvery,
-                                                      this.SendHeartbeatEvery);
+            this.SendHeartbeatTimer       = new Timer(
+                                                DoSendHeartbeatSync,
+                                                null,
+                                                this.SendHeartbeatEvery,
+                                                this.SendHeartbeatEvery
+                                            );
 
             this.DisableMaintenanceTasks  = DisableMaintenanceTasks;
             this.MaintenanceEvery         = MaintenanceEvery      ?? DefaultMaintenanceEvery;
-            this.MaintenanceTimer         = new Timer(DoMaintenanceSync,
-                                                      null,
-                                                      this.MaintenanceEvery,
-                                                      this.MaintenanceEvery);
+            this.MaintenanceTimer         = new Timer(
+                                                DoMaintenanceSync,
+                                                null,
+                                                this.MaintenanceEvery,
+                                                this.MaintenanceEvery
+                                            );
 
             this.HTTPAuthentication       = HTTPAuthentication;
             this.DNSClient                = DNSClient;
@@ -1465,7 +1467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  MaxNumberOfRetries,
                                  InternalBufferSize,
 
-                                 SecWebSocketProtocols ?? new[] { "ocpp2.0.1" },
+                                 SecWebSocketProtocols ?? new[] { Version.WebSocketSubProtocolId },
 
                                  DisableWebSocketPings,
                                  WebSocketPingEvery,

@@ -27,7 +27,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <summary>
         /// The current OCPP version.
         /// </summary>
-        public const String Number = "v2.0.1";
+        public const String Number                  = "v2.0.1";
+
+        /// <summary>
+        /// The current OCPP version identification for the HTTP Websocket connection setup.
+        /// </summary>
+        public const String WebSocketSubProtocolId  = "ocpp2.0.1";
 
     }
 

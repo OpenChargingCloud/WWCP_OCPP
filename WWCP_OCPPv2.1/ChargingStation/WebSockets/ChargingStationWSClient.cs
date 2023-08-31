@@ -7753,9 +7753,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                Message
                                            );
 
-                        SendText(wsRequestMessage.
-                                     ToJSON().
-                                     ToString(JSONFormatting));
+                        await SendText(wsRequestMessage.
+                                       ToJSON().
+                                       ToString(JSONFormatting));
 
                         requests.Add(RequestId,
                                      new SendRequestState2(

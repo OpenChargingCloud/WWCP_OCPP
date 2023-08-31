@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Reflection;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -28,173 +30,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// OCPP WebAPI extention methods.
+    /// OCPP Networking Node WebAPI extentions.
     /// </summary>
-    public static class ExtentionMethods
+    public static class NetworkingNodeWebAPIExtentions
     {
-
-        #region ParseChargeBoxId(this HTTPRequest, OCPPWebAPI, out ChargeBoxId,                out HTTPResponse)
-
-        /// <summary>
-        /// Parse the given HTTP request and return the charge box identification
-        /// for the given HTTP hostname and HTTP query parameter
-        /// or an HTTP error response.
-        /// </summary>
-        /// <param name="HTTPRequest">A HTTP request.</param>
-        /// <param name="OCPPWebAPI">The OCPP WebAPI.</param>
-        /// <param name="ChargeBoxId">The parsed unique charge box identification.</param>
-        /// <param name="HTTPResponse">A HTTP error response.</param>
-        /// <returns>True, when charge box identification was found; false else.</returns>
-        public static Boolean ParseChargeBoxId(this HTTPRequest           HTTPRequest,
-                                               CSMSWebAPI                 OCPPWebAPI,
-                                               out ChargeBox_Id?          ChargeBoxId,
-                                               out HTTPResponse.Builder?  HTTPResponse)
-        {
-
-            #region Initial checks
-
-            if (HTTPRequest is null)
-                throw new ArgumentNullException(nameof(HTTPRequest),  "The given HTTP request must not be null!");
-
-            if (OCPPWebAPI  is null)
-                throw new ArgumentNullException(nameof(OCPPWebAPI),   "The given OCPP WebAPI must not be null!");
-
-            #endregion
-
-            ChargeBoxId   = null;
-            HTTPResponse  = null;
-
-            if (HTTPRequest.ParsedURLParameters.Length < 1)
-            {
-
-                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
-                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
-                    Server          = OCPPWebAPI.HTTPServerName,
-                    Date            = Timestamp.Now,
-                    Connection      = "close"
-                };
-
-                return false;
-
-            }
-
-            ChargeBoxId = ChargeBox_Id.TryParse(HTTPRequest.ParsedURLParameters[0]);
-
-            if (!ChargeBoxId.HasValue)
-            {
-
-                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
-                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
-                    Server          = OCPPWebAPI.HTTPServerName,
-                    Date            = Timestamp.Now,
-                    ContentType     = HTTPContentType.JSON_UTF8,
-                    Content         = @"{ ""description"": ""Invalid charge box identification!"" }".ToUTF8Bytes(),
-                    Connection      = "close"
-                };
-
-                return false;
-
-            }
-
-            return true;
-
-        }
-
-        #endregion
-
-        #region ParseChargeBox  (this HTTPRequest, OCPPWebAPI, out ChargeBoxId, out ChargeBox, out HTTPResponse)
-
-        /// <summary>
-        /// Parse the given HTTP request and return the charge box identification
-        /// for the given HTTP hostname and HTTP query parameter
-        /// or an HTTP error response.
-        /// </summary>
-        /// <param name="HTTPRequest">A HTTP request.</param>
-        /// <param name="OCPPWebAPI">The OCPP WebAPI.</param>
-        /// <param name="ChargeBoxId">The parsed unique charge box identification.</param>
-        /// <param name="ChargeBox">The resolved charge box.</param>
-        /// <param name="HTTPResponse">A HTTP error response.</param>
-        /// <returns>True, when charge box identification was found; false else.</returns>
-        public static Boolean ParseChargeBox(this HTTPRequest           HTTPRequest,
-                                             CSMSWebAPI                 OCPPWebAPI,
-                                             out ChargeBox_Id?          ChargeBoxId,
-                                             out ChargeBox?             ChargeBox,
-                                             out HTTPResponse.Builder?  HTTPResponse)
-        {
-
-            #region Initial checks
-
-            if (HTTPRequest is null)
-                throw new ArgumentNullException(nameof(HTTPRequest),  "The given HTTP request must not be null!");
-
-            if (OCPPWebAPI  is null)
-                throw new ArgumentNullException(nameof(OCPPWebAPI),   "The given OCPP WebAPI must not be null!");
-
-            #endregion
-
-            ChargeBoxId   = null;
-            ChargeBox     = null;
-            HTTPResponse  = null;
-
-            if (HTTPRequest.ParsedURLParameters.Length < 1) {
-
-                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
-                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
-                    Server          = OCPPWebAPI.HTTPServerName,
-                    Date            = Timestamp.Now,
-                    Connection      = "close"
-                };
-
-                return false;
-
-            }
-
-            ChargeBoxId = ChargeBox_Id.TryParse(HTTPRequest.ParsedURLParameters[0]);
-
-            if (!ChargeBoxId.HasValue) {
-
-                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
-                    HTTPStatusCode  = HTTPStatusCode.BadRequest,
-                    Server          = OCPPWebAPI.HTTPServerName,
-                    Date            = Timestamp.Now,
-                    ContentType     = HTTPContentType.JSON_UTF8,
-                    Content         = @"{ ""description"": ""Invalid charge box identification!"" }".ToUTF8Bytes(),
-                    Connection      = "close"
-                };
-
-                return false;
-
-            }
-
-            if (!OCPPWebAPI.CSMS.TryGetChargeBox(ChargeBoxId.Value, out ChargeBox)) {
-
-                HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
-                    HTTPStatusCode  = HTTPStatusCode.NotFound,
-                    Server          = OCPPWebAPI.HTTPServerName,
-                    Date            = Timestamp.Now,
-                    ContentType     = HTTPContentType.JSON_UTF8,
-                    Content         = @"{ ""description"": ""Unknown charge box identification!"" }".ToUTF8Bytes(),
-                    Connection      = "close"
-                };
-
-                return false;
-
-            }
-
-            return true;
-
-        }
-
-        #endregion
 
     }
 
 
     /// <summary>
-    /// The OCPP WebAPI.
+    /// The OCPP Networking Node WebAPI.
     /// </summary>
-    public class CSMSWebAPI : AHTTPAPIExtension,
-                              IHTTPAPIExtension
+    public class NetworkingNodeWebAPI : AHTTPAPIExtension<HTTPExtAPI>,
+                                        IHTTPAPIExtension<HTTPExtAPI>
     {
 
         #region Data
@@ -239,6 +87,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public TestCSMS                                   CSMS                { get; }
 
         /// <summary>
+        /// The HTTP realm, if HTTP Basic Authentication is used.
+        /// </summary>
+        public String?                                    HTTPRealm           { get; }
+
+        /// <summary>
+        /// An enumeration of logins for an optional HTTP Basic Authentication.
+        /// </summary>
+        public IEnumerable<KeyValuePair<String, String>>  HTTPLogins          { get; }
+
+        /// <summary>
         /// Send debug information via HTTP Server Sent Events.
         /// </summary>
         public HTTPEventSource<JObject>                   EventLog            { get; }
@@ -246,6 +104,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
         #region Constructor(s)
+
+        //public CSMSWebAPI(TestCSMS        TestCSMS
+        //                  )
+        //{
+
+
+        //}
+
+
+
 
         /// <summary>
         /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
@@ -255,26 +123,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public CSMSWebAPI(TestCSMS                                    TestCSMS,
-                          HTTPExtAPI                                  HTTPAPI,
-                          String?                                     HTTPServerName   = null,
-                          HTTPPath?                                   URLPathPrefix    = null,
-                          HTTPPath?                                   BasePath         = null,
-                          String                                      HTTPRealm        = DefaultHTTPRealm,
-                          IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
-                          String?                                     HTMLTemplate     = null)
+        public NetworkingNodeWebAPI(TestCSMS                                    TestCSMS,
+                                    HTTPExtAPI                                  HTTPAPI,
+                                    String?                                     HTTPServerName   = null,
+                                    HTTPPath?                                   URLPathPrefix    = null,
+                                    HTTPPath?                                   BasePath         = null,
+                                    String                                      HTTPRealm        = DefaultHTTPRealm,
+                                    IEnumerable<KeyValuePair<String, String>>?  HTTPLogins       = null,
+                                    String?                                     HTMLTemplate     = null)
 
             : base(HTTPAPI,
                    HTTPServerName,
                    URLPathPrefix,
                    BasePath,
-                   HTTPRealm,
-                   HTTPLogins,
                    HTMLTemplate)
 
         {
 
             this.CSMS                = TestCSMS;
+            this.HTTPRealm           = HTTPRealm;
+            this.HTTPLogins          = HTTPLogins;
 
             // Link HTTP events...
             //HTTPServer.RequestLog   += (HTTPProcessor, ServerTimestamp, Request)                                 => RequestLog. WhenAll(HTTPProcessor, ServerTimestamp, Request);
@@ -1012,9 +880,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         protected override Stream? GetResourceStream(String ResourceName)
 
             => GetResourceStream(ResourceName,
-                                 new Tuple<String, System.Reflection.Assembly>(CSMSWebAPI.HTTPRoot, typeof(CSMSWebAPI).Assembly),
-                                 new Tuple<String, System.Reflection.Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                 new Tuple<String, System.Reflection.Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+                                 new Tuple<String, Assembly>(CSMSWebAPI.HTTPRoot, typeof(CSMSWebAPI).Assembly),
+                                 new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                 new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
         #endregion
 
@@ -1023,9 +891,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         protected override MemoryStream? GetResourceMemoryStream(String ResourceName)
 
             => GetResourceMemoryStream(ResourceName,
-                                       new Tuple<String, System.Reflection.Assembly>(CSMSWebAPI.HTTPRoot, typeof(CSMSWebAPI).Assembly),
-                                       new Tuple<String, System.Reflection.Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                       new Tuple<String, System.Reflection.Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+                                       new Tuple<String, Assembly>(CSMSWebAPI.HTTPRoot, typeof(CSMSWebAPI).Assembly),
+                                       new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                       new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
         #endregion
 
@@ -1034,9 +902,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         protected override String GetResourceString(String ResourceName)
 
             => GetResourceString(ResourceName,
-                                 new Tuple<String, System.Reflection.Assembly>(CSMSWebAPI.HTTPRoot, typeof(CSMSWebAPI).Assembly),
-                                 new Tuple<String, System.Reflection.Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                 new Tuple<String, System.Reflection.Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+                                 new Tuple<String, Assembly>(CSMSWebAPI.HTTPRoot, typeof(CSMSWebAPI).Assembly),
+                                 new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                 new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
         #endregion
 
@@ -1045,9 +913,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         protected override Byte[] GetResourceBytes(String ResourceName)
 
             => GetResourceBytes(ResourceName,
-                                new Tuple<String, System.Reflection.Assembly>(CSMSWebAPI.HTTPRoot, typeof(CSMSWebAPI).Assembly),
-                                new Tuple<String, System.Reflection.Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                new Tuple<String, System.Reflection.Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+                                new Tuple<String, Assembly>(CSMSWebAPI.HTTPRoot, typeof(CSMSWebAPI).Assembly),
+                                new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
 
         #endregion
 
@@ -1056,9 +924,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         protected override String MixWithHTMLTemplate(String ResourceName)
 
             => MixWithHTMLTemplate(ResourceName,
-                                   new Tuple<String, System.Reflection.Assembly>(CSMSWebAPI.HTTPRoot, typeof(CSMSWebAPI).Assembly),
-                                   new Tuple<String, System.Reflection.Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
-                                   new Tuple<String, System.Reflection.Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+                                   new Tuple<String, Assembly>(CSMSWebAPI.HTTPRoot, typeof(CSMSWebAPI).Assembly),
+                                   new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                   new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+
+        #endregion
+
+        #region (protected override) MixWithHTMLTemplate    (ResourceName, HTMLConverter, ResourceAssemblies)
+
+        protected override String MixWithHTMLTemplate(String                ResourceName,
+                                                      Func<String, String>  HTMLConverter)
+
+            => MixWithHTMLTemplate(ResourceName,
+                                   HTMLConverter,
+                                   new Tuple<String, Assembly>(CSMSWebAPI.HTTPRoot, typeof(CSMSWebAPI).Assembly),
+                                   new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                   new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly));
+
+        #endregion
+
+        #region (protected override) MixWithHTMLTemplate    (Template, ResourceName, ResourceAssemblies)
+
+        protected override String MixWithHTMLTemplate(String   Template,
+                                                      String   ResourceName,
+                                                      String?  Content   = null)
+
+            => MixWithHTMLTemplate(Template,
+                                   ResourceName,
+                                   new[] {
+                                       new Tuple<String, Assembly>(CSMSWebAPI.HTTPRoot, typeof(CSMSWebAPI).Assembly),
+                                       new Tuple<String, Assembly>(HTTPExtAPI.HTTPRoot, typeof(HTTPExtAPI).Assembly),
+                                       new Tuple<String, Assembly>(HTTPAPI.   HTTPRoot, typeof(HTTPAPI).   Assembly)
+                                   },
+                                   Content);
 
         #endregion
 
@@ -1103,115 +1001,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            #region ~/chargeBoxIds
-
-            HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
-                                      HTTPMethod.GET,
-                                      URLPathPrefix + "chargeBoxIds",
-                                      HTTPContentType.JSON_UTF8,
-                                      HTTPDelegate: Request => {
-
-                                          return Task.FromResult(
-                                              new HTTPResponse.Builder(Request) {
-                                                  HTTPStatusCode             = HTTPStatusCode.OK,
-                                                  Server                     = HTTPServerName,
-                                                  Date                       = Timestamp.Now,
-                                                  AccessControlAllowOrigin   = "*",
-                                                  AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-                                                  AccessControlAllowHeaders  = new[] { "Authorization" },
-                                                  ContentType                = HTTPContentType.JSON_UTF8,
-                                                  Content                    = JSONArray.Create(
-                                                                                   CSMS.ChargeBoxIds.Select(chargeBoxId => new JObject(new JProperty("@id", chargeBoxId.ToString())))
-                                                                               ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
-                                                  Connection                 = "close"
-                                              }.AsImmutable);
-
-                                      });
-
-            #endregion
-
-            #region ~/chargeBoxes
-
-            HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
-                                      HTTPMethod.GET,
-                                      URLPathPrefix + "chargeBoxes",
-                                      HTTPContentType.JSON_UTF8,
-                                      HTTPDelegate: Request => {
-
-                                          return Task.FromResult(
-                                              new HTTPResponse.Builder(Request) {
-                                                  HTTPStatusCode             = HTTPStatusCode.OK,
-                                                  Server                     = HTTPServerName,
-                                                  Date                       = Timestamp.Now,
-                                                  AccessControlAllowOrigin   = "*",
-                                                  AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-                                                  AccessControlAllowHeaders  = new[] { "Authorization" },
-                                                  ContentType                = HTTPContentType.JSON_UTF8,
-                                                  Content                    = JSONArray.Create(
-                                                                                   CSMS.ChargeBoxes.Select(chargeBox => chargeBox.ToJSON())
-                                                                               ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
-                                                  Connection                 = "close"
-                                              }.AsImmutable);
-
-                                      });
-
-            #endregion
-
-
-            #region ~/chargeBoxes/{chargeBoxId}
-
-            HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
-                                      HTTPMethod.GET,
-                                      URLPathPrefix + "chargeBoxes/{chargeBoxId}",
-                                      HTTPContentType.JSON_UTF8,
-                                      HTTPDelegate: Request => {
-
-                                          #region Get HTTP user and its organizations
-
-                                          //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
-                                          //if (!TryGetHTTPUser(Request,
-                                          //                    out User                   HTTPUser,
-                                          //                    out HashSet<Organization>  HTTPOrganizations,
-                                          //                    out HTTPResponse.Builder   Response,
-                                          //                    AccessLevel:               Access_Levels.ReadOnly,
-                                          //                    Recursive:                 true))
-                                          //{
-                                          //    return Task.FromResult(Response.AsImmutable);
-                                          //}
-
-                                          #endregion
-
-                                          #region Check ChargeBoxId URL parameter
-
-                                          if (!Request.ParseChargeBox(this,
-                                                                      out ChargeBox_Id?          ChargeBoxId,
-                                                                      out ChargeBox?             ChargeBox,
-                                                                      out HTTPResponse.Builder?  Response))
-                                          {
-                                              return Task.FromResult(Response.AsImmutable);
-                                          }
-
-                                          #endregion
-
-
-                                          return Task.FromResult(
-                                              new HTTPResponse.Builder(Request) {
-                                                  HTTPStatusCode             = HTTPStatusCode.OK,
-                                                  Server                     = HTTPServerName,
-                                                  Date                       = Timestamp.Now,
-                                                  AccessControlAllowOrigin   = "*",
-                                                  AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-                                                  AccessControlAllowHeaders  = new[] { "Authorization" },
-                                                  ContentType                = HTTPContentType.JSON_UTF8,
-                                                  Content                    = ChargeBox.ToJSON().ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
-                                                  Connection                 = "close"
-                                              }.AsImmutable);
-
-                                      });
-
-            #endregion
-
-
             #region ~/events
 
             #region HTML
@@ -1242,7 +1031,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           return Task.FromResult(
                                                      new HTTPResponse.Builder(Request) {
                                                          HTTPStatusCode             = HTTPStatusCode.OK,
-                                                         Server                     = HTTPServerName,
+                                                         Server                     = HTTPServiceName,
                                                          Date                       = Timestamp.Now,
                                                          AccessControlAllowOrigin   = "*",
                                                          AccessControlAllowMethods  = new[] { "GET" },

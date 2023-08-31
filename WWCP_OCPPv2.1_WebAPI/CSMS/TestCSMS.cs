@@ -1149,13 +1149,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             Directory.CreateDirectory("HTTPSSEs");
 
             this.TestAPI                 = new HTTPExtAPI(
-                                               HTTPServerPort:        IPPort.Parse(3501),
-                                               HTTPServerName:        "GraphDefined OCPP Test Central System",
-                                               HTTPServiceName:       "GraphDefined OCPP Test Central System Service",
-                                               APIRobotEMailAddress:  EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
-                                               SMTPClient:            new NullMailer(),
-                                               DNSClient:             DNSClient,
-                                               AutoStart:             true
+                                               HTTPServerPort:         IPPort.Parse(3501),
+                                               HTTPServerName:         "GraphDefined OCPP Test Central System",
+                                               HTTPServiceName:        "GraphDefined OCPP Test Central System Service",
+                                               APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
+                                               APIRobotGPGPassphrase:  "test123",
+                                               SMTPClient:             new NullMailer(),
+                                               DNSClient:              DNSClient,
+                                               AutoStart:              true
                                            );
 
             this.TestAPI.HTTPServer.AddAuth(request => {

@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 #region ChargingProfileId         [mandatory]
 
-                if (!JSON.ParseMandatory("chargingProfileId",
+                if (!JSON.ParseMandatory("id",
                                          "charging profile id",
                                          ChargingProfile_Id.TryParse,
                                          out ChargingProfile_Id ChargingProfileId,
@@ -413,16 +413,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                ChargingProfile = new ChargingProfile(ChargingProfileId,
-                                                      StackLevel,
-                                                      ChargingProfilePurpose,
-                                                      ChargingProfileKind,
-                                                      ChargingSchedules,
-                                                      TransactionId,
-                                                      RecurrencyKind,
-                                                      ValidFrom,
-                                                      ValidTo,
-                                                      CustomData);
+                ChargingProfile = new ChargingProfile(
+                                      ChargingProfileId,
+                                      StackLevel,
+                                      ChargingProfilePurpose,
+                                      ChargingProfileKind,
+                                      ChargingSchedules,
+                                      TransactionId,
+                                      RecurrencyKind,
+                                      ValidFrom,
+                                      ValidTo,
+                                      CustomData
+                                  );
 
                 if (CustomChargingProfileParser is not null)
                     ChargingProfile = CustomChargingProfileParser(JSON,

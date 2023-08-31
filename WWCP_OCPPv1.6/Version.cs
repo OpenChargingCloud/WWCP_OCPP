@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -33,7 +27,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The current OCPP version.
         /// </summary>
-        public const String Number = "v1.6";
+        public const String Number                  = "v1.6";
+
+        /// <summary>
+        /// The current OCPP version identification for the HTTP Websocket connection setup.
+        /// </summary>
+        public const String WebSocketSubProtocolId  = "ocpp1.6";
 
     }
 

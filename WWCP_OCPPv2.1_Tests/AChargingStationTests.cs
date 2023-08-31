@@ -86,14 +86,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                                                   ICCID:   "0000",
                                                                   IMSI:    "1111"
                                                               ),
-                                    EVSEs:                    new ChargingStationEVSE[] {
+                                    EVSEs:                    new[] {
                                                                   new ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(1),
                                                                       Status:              OperationalStatus.Operative,
                                                                       MeterType:           "MT1",
                                                                       MeterSerialNumber:   "MSN1",
                                                                       MeterPublicKey:      "MPK1",
-                                                                      Connectors:          new ChargingStationConnector[] {
+                                                                      Connectors:          new[] {
                                                                                                new ChargingStationConnector(
                                                                                                    Id:    Connector_Id.Parse(1)
                                                                                                )
@@ -197,14 +197,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                                                   ICCID:   "3333",
                                                                   IMSI:    "4444"
                                                               ),
-                                    EVSEs:                    new ChargingStationEVSE[] {
+                                    EVSEs:                    new[] {
                                                                   new ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(1),
                                                                       Status:              OperationalStatus.Operative,
                                                                       MeterType:           "MT2",
                                                                       MeterSerialNumber:   "MSN2",
                                                                       MeterPublicKey:      "MPK2",
-                                                                      Connectors:          new ChargingStationConnector[] {
+                                                                      Connectors:          new[] {
                                                                                                new ChargingStationConnector(
                                                                                                    Id:    Connector_Id.Parse(1)
                                                                                                )
@@ -242,14 +242,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                                                   ICCID:   "5555",
                                                                   IMSI:    "6666"
                                                               ),
-                                    EVSEs:                    new ChargingStationEVSE[] {
+                                    EVSEs:                    new[] {
                                                                   new ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(1),
                                                                       Status:              OperationalStatus.Operative,
                                                                       MeterType:           "MT3",
                                                                       MeterSerialNumber:   "MSN3",
                                                                       MeterPublicKey:      "MPK3",
-                                                                      Connectors:          new ChargingStationConnector[] {
+                                                                      Connectors:          new[] {
                                                                                                new ChargingStationConnector(
                                                                                                    Id:    Connector_Id.Parse(1)
                                                                                                )

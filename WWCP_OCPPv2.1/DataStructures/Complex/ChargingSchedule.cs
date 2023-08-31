@@ -574,7 +574,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            MinChargingRate.HasValue
-                               ? new JProperty("minChargingRate",          MinChargingRate.Value)
+                               ? new JProperty("minChargingRate",          MinChargingRate.Value.Value)
                                : null,
 
                            SalesTariff is not null

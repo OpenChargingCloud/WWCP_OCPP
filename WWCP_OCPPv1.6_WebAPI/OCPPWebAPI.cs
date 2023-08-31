@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             this.HTTPRealm           = HTTPRealm.IsNotNullOrEmpty() ? HTTPRealm : DefaultHTTPRealm;
             this.HTTPLogins          = HTTPLogins   ?? Array.Empty<KeyValuePair<string, string>>();
-            this.HTMLTemplate        = HTMLTemplate ?? GetResourceString("template.html");
+            //this.HTMLTemplate        = HTMLTemplate ?? GetResourceString("template.html");
 
             // Link HTTP events...
             //HTTPServer.RequestLog   += (HTTPProcessor, ServerTimestamp, Request)                                 => RequestLog. WhenAll(HTTPProcessor, ServerTimestamp, Request);

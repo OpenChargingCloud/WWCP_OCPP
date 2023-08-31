@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         {
 
             this.Id                 = Id;
-            this.AdminStatus             = Status;
+            this.AdminStatus        = Status;
             this.MeterType          = MeterType;
             this.MeterSerialNumber  = MeterSerialNumber;
             this.MeterPublicKey     = MeterPublicKey;
@@ -165,16 +165,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             public DateTime        EnqueTimestamp    { get; }
 
-            public EnqueuedStatus    Status            { get; set; }
+            public EnqueuedStatus  Status            { get; set; }
 
             public Action<Object>  ResponseAction    { get; }
 
             public EnqueuedRequest(String          Command,
-                                 IRequest        Request,
-                                 JObject         RequestJSON,
-                                 DateTime        EnqueTimestamp,
-                                 EnqueuedStatus    Status,
-                                 Action<Object>  ResponseAction)
+                                   IRequest        Request,
+                                   JObject         RequestJSON,
+                                   DateTime        EnqueTimestamp,
+                                   EnqueuedStatus  Status,
+                                   Action<Object>  ResponseAction)
             {
 
                 this.Command         = Command;
@@ -1302,7 +1302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                    TimeSpan?                          MaintenanceEvery          = null,
 
                                    TimeSpan?                          DefaultRequestTimeout     = null,
-                                   Tuple<String, String>?             HTTPBasicAuth             = null,
+                                   IHTTPAuthentication?               HTTPAuthentication        = null,
                                    DNSClient?                         DNSClient                 = null)
 
         {
@@ -1345,17 +1345,21 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             this.DisableSendHeartbeats    = DisableSendHeartbeats;
             this.SendHeartbeatEvery       = SendHeartbeatEvery    ?? DefaultSendHeartbeatEvery;
-            this.SendHeartbeatTimer       = new Timer(DoSendHeartbeatSync,
-                                                      null,
-                                                      this.SendHeartbeatEvery,
-                                                      this.SendHeartbeatEvery);
+            this.SendHeartbeatTimer       = new Timer(
+                                                DoSendHeartbeatSync,
+                                                null,
+                                                this.SendHeartbeatEvery,
+                                                this.SendHeartbeatEvery
+                                            );
 
             this.DisableMaintenanceTasks  = DisableMaintenanceTasks;
             this.MaintenanceEvery         = MaintenanceEvery      ?? DefaultMaintenanceEvery;
-            this.MaintenanceTimer         = new Timer(DoMaintenanceSync,
-                                                      null,
-                                                      this.MaintenanceEvery,
-                                                      this.MaintenanceEvery);
+            this.MaintenanceTimer         = new Timer(
+                                                DoMaintenanceSync,
+                                                null,
+                                                this.MaintenanceEvery,
+                                                this.MaintenanceEvery
+                                            );
 
             this.HTTPAuthentication       = HTTPAuthentication;
             this.DNSClient                = DNSClient;
@@ -1422,7 +1426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                  MaxNumberOfRetries,
                                  InternalBufferSize,
 
-                                 SecWebSocketProtocols ?? new[] { "ocpp2.0.1" },
+                                 SecWebSocketProtocols ?? new[] { Version.WebSocketSubProtocolId },
 
                                  DisableWebSocketPings,
                                  WebSocketPingEvery,
