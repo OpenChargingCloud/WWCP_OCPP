@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public new const           String                           DefaultHTTPServerName       = "GraphDefined OCPP v1.6 Upload API";
 
         /// <summary>
-        /// The default HTTP URI prefix.
+        /// The default HTTP URL prefix.
         /// </summary>
         public new static readonly HTTPPath                         DefaultURLPathPrefix        = HTTPPath.Parse("diagnostics");
 
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Attach the OCPP UploadAPI to the given HTTP server.
         /// </summary>
         /// <param name="HTTPServer">A HTTP server.</param>
-        /// <param name="URLPathPrefix">An optional prefix for the HTTP URIs.</param>
+        /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
         public UploadAPI(TestCSMS                           TestCSMS,

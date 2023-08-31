@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         private          readonly  HTTPExtAPI                                                  TestAPI;
 
-        private          readonly  OCPPWebAPI                                                  WebAPI;
+        private          readonly  CSMSWebAPI                                                  WebAPI;
 
         protected static readonly  SemaphoreSlim                                               ChargeBoxesSemaphore    = new (1, 1);
 
@@ -1183,9 +1183,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                )
                                            );
 
-            this.WebAPI                  = new OCPPWebAPI(
+            this.WebAPI                  = new CSMSWebAPI(
                                                this,
-                                               TestAPI.HTTPServer
+                                               TestAPI
                                            );
 
             this.DNSClient               = DNSClient ?? new DNSClient(SearchForIPv6DNSServers: false);
