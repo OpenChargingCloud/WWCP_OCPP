@@ -471,6 +471,25 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
         #endregion
 
+        #region OnNotifyEVChargingSchedule
+
+        /// <summary>
+        /// An event sent whenever a NotifyEVChargingSchedule request was received.
+        /// </summary>
+        event OnNotifyEVChargingScheduleRequestDelegate    OnNotifyEVChargingScheduleRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyEVChargingSchedule was received.
+        /// </summary>
+        event OnNotifyEVChargingScheduleDelegate           OnNotifyEVChargingSchedule;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyEVChargingSchedule was sent.
+        /// </summary>
+        event OnNotifyEVChargingScheduleResponseDelegate   OnNotifyEVChargingScheduleResponse;
+
+        #endregion
+
 
         #region OnNotifyDisplayMessages
 

@@ -675,7 +675,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     #region OnNotifyEVChargingSchedule
 
     /// <summary>
-    /// A delegate called whenever a report charging profiles request will be sent to the CSMS.
+    /// A delegate called whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -685,7 +685,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                    NotifyEVChargingScheduleRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a report charging profiles request was received.
+    /// A delegate called whenever a response to a NotifyEVChargingSchedule request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>

@@ -425,6 +425,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
         #endregion
 
+        #region NotifyEVChargingSchedule
+
+        /// <summary>
+        /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
+        /// </summary>
+        public event OnNotifyEVChargingScheduleResponseDelegate?  OnNotifyEVChargingScheduleResponse;
+
+        #endregion
+
 
         #region NotifyDisplayMessages
 
@@ -1105,13 +1119,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             Directory.CreateDirectory("HTTPSSEs");
 
             this.TestAPI                 = new HTTPExtAPI(
-                                               HTTPServerPort:        IPPort.Parse(3501),
-                                               HTTPServerName:        "GraphDefined OCPP Test Central System",
-                                               HTTPServiceName:       "GraphDefined OCPP Test Central System Service",
-                                               APIRobotEMailAddress:  EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
-                                               SMTPClient:            new NullMailer(),
-                                               DNSClient:             DNSClient,
-                                               AutoStart:             true
+                                               HTTPServerPort:         IPPort.Parse(3501),
+                                               HTTPServerName:         "GraphDefined OCPP Test Central System",
+                                               HTTPServiceName:        "GraphDefined OCPP Test Central System Service",
+                                               APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
+                                               APIRobotGPGPassphrase:  "test123",
+                                               SMTPClient:             new NullMailer(),
+                                               DNSClient:              DNSClient,
+                                               AutoStart:              true
                                            );
 
             this.TestAPI.HTTPServer.AddAuth(request => {
@@ -3136,6 +3151,87 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 catch (Exception e)
                 {
                     DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnReportChargingProfilesResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnNotifyEVChargingSchedule
+
+            CSMSServer.OnNotifyEVChargingSchedule += async (LogTimestamp,
+                                                            Sender,
+                                                            Request,
+                                                            CancellationToken) => {
+
+                #region Send OnNotifyEVChargingScheduleRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyEVChargingScheduleRequest?.Invoke(startTime,
+                                                              this,
+                                                              Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyEVChargingScheduleRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnNotifyEVChargingSchedule: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new NotifyEVChargingScheduleResponse(
+                                   Request:      Request,
+                                   Status:       GenericStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+
+                #region Send OnNotifyEVChargingScheduleResponse event
+
+                try
+                {
+
+                    OnNotifyEVChargingScheduleResponse?.Invoke(Timestamp.Now,
+                                                               this,
+                                                               Request,
+                                                               response,
+                                                               Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyEVChargingScheduleResponse));
                 }
 
                 #endregion

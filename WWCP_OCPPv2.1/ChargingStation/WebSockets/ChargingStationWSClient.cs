@@ -65,7 +65,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
-                                                   IChargingStationServer
+                                                   IChargingStationServer,
+                                                   IChargingStationClientEvents
     {
 
         #region (class) SendRequestState2

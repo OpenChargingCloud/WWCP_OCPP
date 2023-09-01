@@ -65,7 +65,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
-                                                   IChargingStationServer
+                                                   IChargingStationServer,
+                                                   IChargingStationClientEvents
     {
 
         #region (class) SendRequestState2
@@ -266,6 +267,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         public CustomJObjectSerializerDelegate<ClearedChargingLimitRequest>?               CustomClearedChargingLimitRequestSerializer                 { get; set; }
 
         public CustomJObjectSerializerDelegate<ReportChargingProfilesRequest>?             CustomReportChargingProfilesRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<NotifyEVChargingScheduleRequest>?           CustomNotifyEVChargingScheduleRequestSerializer             { get; set; }
 
         public CustomJObjectSerializerDelegate<NotifyDisplayMessagesRequest>?              CustomNotifyDisplayMessagesRequestSerializer                { get; set; }
 
@@ -846,6 +849,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// An event fired whenever a response to a report charging profiles request was received.
         /// </summary>
         public event OnReportChargingProfilesResponseDelegate?    OnReportChargingProfilesResponse;
+
+        #endregion
+
+        #region OnNotifyEVChargingScheduleRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyEVChargingScheduleRequestDelegate?     OnNotifyEVChargingScheduleRequest;
+
+        /// <summary>
+        /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                       OnNotifyEVChargingScheduleWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                      OnNotifyEVChargingScheduleWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
+        /// </summary>
+        public event OnNotifyEVChargingScheduleResponseDelegate?    OnNotifyEVChargingScheduleResponse;
 
         #endregion
 
@@ -9926,6 +9953,111 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnReportChargingProfilesResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyEVChargingSchedule             (Request)
+
+        /// <summary>
+        /// Notify about an EV charging schedule.
+        /// </summary>
+        /// <param name="Request">A NotifyEVChargingSchedule request.</param>
+        public async Task<NotifyEVChargingScheduleResponse>
+
+            NotifyEVChargingSchedule(NotifyEVChargingScheduleRequest  Request)
+
+        {
+
+            #region Send OnNotifyEVChargingScheduleRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEVChargingScheduleRequest?.Invoke(startTime,
+                                                          this,
+                                                          Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyEVChargingScheduleRequest));
+            }
+
+            #endregion
+
+
+            NotifyEVChargingScheduleResponse? response = null;
+
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomNotifyEVChargingScheduleRequestSerializer,
+                                                                  CustomChargingScheduleSerializer,
+                                                                  CustomChargingSchedulePeriodSerializer,
+                                                                  CustomSalesTariffSerializer,
+                                                                  CustomSalesTariffEntrySerializer,
+                                                                  CustomRelativeTimeIntervalSerializer,
+                                                                  CustomConsumptionCostSerializer,
+                                                                  CustomCostSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
+            {
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (NotifyEVChargingScheduleResponse.TryParse(Request,
+                                                                  sendRequestState.Response,
+                                                                  out var reportChargingProfilesResponse,
+                                                                  out var errorResponse) &&
+                        reportChargingProfilesResponse is not null)
+                    {
+                        response = reportChargingProfilesResponse;
+                    }
+
+                    response ??= new NotifyEVChargingScheduleResponse(Request,
+                                                                      Result.Format(errorResponse));
+
+                }
+
+                response ??= new NotifyEVChargingScheduleResponse(Request,
+                                                                  Result.FromSendRequestState(sendRequestState));
+
+            }
+
+            response ??= new NotifyEVChargingScheduleResponse(Request,
+                                                              Result.GenericError(requestMessage.ErrorMessage));
+
+
+            #region Send OnNotifyEVChargingScheduleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEVChargingScheduleResponse?.Invoke(endTime,
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyEVChargingScheduleResponse));
             }
 
             #endregion

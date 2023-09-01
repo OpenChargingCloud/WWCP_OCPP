@@ -1794,10 +1794,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var transactionEventRequests = new List<CS.NotifyEVChargingScheduleRequest>();
+                var notifyEVChargingScheduleRequests = new List<CS.NotifyEVChargingScheduleRequest>();
 
-                testCSMS01.OnNotifyEVChargingScheduleRequest += async (timestamp, sender, transactionEventRequest) => {
-                    transactionEventRequests.Add(transactionEventRequest);
+                testCSMS01.OnNotifyEVChargingScheduleRequest += async (timestamp, sender, notifyEVChargingScheduleRequest) => {
+                    notifyEVChargingScheduleRequests.Add(notifyEVChargingScheduleRequest);
                 };
 
                 var response  = await chargingStation1.NotifyEVChargingSchedule(
@@ -1867,8 +1867,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
                 Assert.AreEqual(GenericStatus.Accepted,         response.Status);
 
-                Assert.AreEqual(1,                              transactionEventRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   transactionEventRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                              notifyEVChargingScheduleRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyEVChargingScheduleRequests.First().ChargeBoxId);
 
             }
 

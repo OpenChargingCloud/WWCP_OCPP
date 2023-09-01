@@ -660,6 +660,20 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
         #endregion
 
+        #region NotifyEVChargingSchedule
+
+        /// <summary>
+        /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
+        /// </summary>
+        public event OnNotifyEVChargingScheduleResponseDelegate?  OnNotifyEVChargingScheduleResponse;
+
+        #endregion
+
 
         #region NotifyDisplayMessages
 
@@ -7620,6 +7634,117 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnReportChargingProfilesResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyEVChargingSchedule             (NotifyEVChargingScheduleRequestId, TimeBase, EVSEId, ChargingSchedule, ...)
+
+        /// <summary>
+        /// Notify about an EV charging schedule.
+        /// </summary>
+        /// <param name="NotifyEVChargingScheduleRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting NotifyEVChargingScheduleRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
+        /// <param name="TimeBase">The charging periods contained within the charging schedule are relative to this time base.</param>
+        /// <param name="EVSEId">The charging schedule applies to this EVSE.</param>
+        /// <param name="ChargingSchedule">Planned energy consumption of the EV over time. Always relative to the time base.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.NotifyEVChargingScheduleResponse>
+
+            NotifyEVChargingSchedule(Int32              NotifyEVChargingScheduleRequestId,
+                                     DateTime           TimeBase,
+                                     EVSE_Id            EVSEId,
+                                     ChargingSchedule   ChargingSchedule,
+                                     CustomData?        CustomData          = null,
+
+                                     Request_Id?        RequestId           = null,
+                                     DateTime?          RequestTimestamp    = null,
+                                     TimeSpan?          RequestTimeout      = null,
+                                     EventTracking_Id?  EventTrackingId     = null,
+                                     CancellationToken  CancellationToken   = default)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new NotifyEVChargingScheduleRequest(
+                                 ChargeBoxId,
+                                 TimeBase,
+                                 EVSEId,
+                                 ChargingSchedule,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnNotifyEVChargingScheduleRequest event
+
+            try
+            {
+
+                OnNotifyEVChargingScheduleRequest?.Invoke(startTime,
+                                                          this,
+                                                          request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyEVChargingScheduleRequest));
+            }
+
+            #endregion
+
+
+            CSMS.NotifyEVChargingScheduleResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.NotifyEVChargingSchedule(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.NotifyEVChargingScheduleResponse(request,
+                                                                   Result.Server("Response is null!"));
+
+
+            #region Send OnNotifyEVChargingScheduleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEVChargingScheduleResponse?.Invoke(endTime,
+                                                           this,
+                                                           request,
+                                                           response,
+                                                           endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyEVChargingScheduleResponse));
             }
 
             #endregion

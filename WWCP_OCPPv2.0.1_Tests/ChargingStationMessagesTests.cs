@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
     public class ChargingStationMessagesTests : AChargingStationTests
     {
 
-        #region ChargingStation_Init_Test()
+        #region Init_Test()
 
         /// <summary>
         /// A test for creating charging stations.
@@ -69,13 +69,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_SendBootNotifications_Test()
+        #region SendBootNotifications_Test()
 
         /// <summary>
         /// A test for sending boot notifications to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_SendBootNotifications_Test()
+        public async Task SendBootNotifications_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -135,13 +135,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_SendFirmwareStatusNotification_Test()
+        #region SendFirmwareStatusNotification_Test()
 
         /// <summary>
         /// A test for sending firmware status notifications to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_SendFirmwareStatusNotification_Test()
+        public async Task SendFirmwareStatusNotification_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -183,13 +183,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_SendPublishFirmwareStatusNotification_Test()
+        #region SendPublishFirmwareStatusNotification_Test()
 
         /// <summary>
         /// A test for sending piblish firmware status notifications to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_SendPublishFirmwareStatusNotification_Test()
+        public async Task SendPublishFirmwareStatusNotification_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -234,13 +234,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_SendHeartbeats_Test()
+        #region SendHeartbeats_Test()
 
         /// <summary>
         /// A test for sending heartbeats to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_SendHeartbeats_Test()
+        public async Task SendHeartbeats_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -278,13 +278,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_NotifyEvent_Test()
+        #region NotifyEvent_Test()
 
         /// <summary>
         /// A test for notifying the CSMS about events.
         /// </summary>
         [Test]
-        public async Task ChargingStation_NotifyEvent_Test()
+        public async Task NotifyEvent_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -356,13 +356,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_SendSecurityEventNotification_Test()
+        #region SendSecurityEventNotification_Test()
 
         /// <summary>
         /// A test for sending security event notifications to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_SendSecurityEventNotification_Test()
+        public async Task SendSecurityEventNotification_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -403,13 +403,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_NotifyReport_Test()
+        #region NotifyReport_Test()
 
         /// <summary>
         /// A test for notifying the CSMS about reports.
         /// </summary>
         [Test]
-        public async Task ChargingStation_NotifyReport_Test()
+        public async Task NotifyReport_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -492,13 +492,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_NotifyMonitoringReport_Test()
+        #region NotifyMonitoringReport_Test()
 
         /// <summary>
         /// A test for notifying the CSMS about monitoring reports.
         /// </summary>
         [Test]
-        public async Task ChargingStation_NotifyMonitoringReport_Test()
+        public async Task NotifyMonitoringReport_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -570,13 +570,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_SendLogStatusNotification_Test()
+        #region SendLogStatusNotification_Test()
 
         /// <summary>
         /// A test for sending log status notifications to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_SendLogStatusNotification_Test()
+        public async Task SendLogStatusNotification_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -617,13 +617,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
         #endregion
 
 
-        #region ChargingStation_TransferTextData_Test()
+        #region TransferTextData_Test()
 
         /// <summary>
         /// A test for transfering text data to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_TransferTextData_Test()
+        public async Task TransferTextData_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -672,13 +672,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_TransferJObjectData_Test()
+        #region TransferJObjectData_Test()
 
         /// <summary>
         /// A test for transfering JObject data to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_TransferJObjectData_Test()
+        public async Task TransferJObjectData_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -734,13 +734,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_TransferJArrayData_Test()
+        #region TransferJArrayData_Test()
 
         /// <summary>
         /// A test for transfering JArray data to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_TransferJArrayData_Test()
+        public async Task TransferJArrayData_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -794,13 +794,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
         #endregion
 
 
-        #region ChargingStation_SendCertificateSigningRequest_Test()
+        #region SendCertificateSigningRequest_Test()
 
         /// <summary>
         /// A test for sending a certificate signing request to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_SendCertificateSigningRequest_Test()
+        public async Task SendCertificateSigningRequest_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -840,13 +840,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_Get15118EVCertificate_Test()
+        #region Get15118EVCertificate_Test()
 
         /// <summary>
         /// A test for receiving a 15118 EV contract certificate from the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_Get15118EVCertificate_Test()
+        public async Task Get15118EVCertificate_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -887,13 +887,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_GetCertificateStatus_Test()
+        #region GetCertificateStatus_Test()
 
         /// <summary>
         /// A test for notifying the CSMS about reports.
         /// </summary>
         [Test]
-        public async Task ChargingStation_GetCertificateStatus_Test()
+        public async Task GetCertificateStatus_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -940,13 +940,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
         #endregion
 
 
-        #region ChargingStation_SendReservationStatusUpdate_Test()
+        #region SendReservationStatusUpdate_Test()
 
         /// <summary>
         /// A test for sending reservation status updates to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_SendReservationStatusUpdate_Test()
+        public async Task SendReservationStatusUpdate_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -986,13 +986,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_Authorize_Test()
+        #region Authorize_Test()
 
         /// <summary>
         /// A test for authorizing id tokens against the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_Authorize_Test()
+        public async Task Authorize_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1031,13 +1031,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_NotifyEVChargingNeeds_Test()
+        #region NotifyEVChargingNeeds_Test()
 
         /// <summary>
         /// A test for notifying the CSMS about EV charging needs.
         /// </summary>
         [Test]
-        public async Task ChargingStation_NotifyEVChargingNeeds_Test()
+        public async Task NotifyEVChargingNeeds_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1100,13 +1100,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_SendTransactionEvent_Test()
+        #region SendTransactionEvent_Test()
 
         /// <summary>
         /// A test for sending a transaction event to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_SendTransactionEvent_Test()
+        public async Task SendTransactionEvent_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1212,13 +1212,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_SendStatusNotification_Test()
+        #region SendStatusNotification_Test()
 
         /// <summary>
         /// A test for sending status notifications to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_SendStatusNotification_Test()
+        public async Task SendStatusNotification_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1269,13 +1269,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_SendMeterValues_Test()
+        #region SendMeterValues_Test()
 
         /// <summary>
         /// A test for sending meter values to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_SendMeterValues_Test()
+        public async Task SendMeterValues_Test()
         {
 
             if (testCSMS01                                    is not null &&
@@ -1462,13 +1462,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_NotifyChargingLimit_Test()
+        #region NotifyChargingLimit_Test()
 
         /// <summary>
         /// A test for notifying the CSMS about charging limits.
         /// </summary>
         [Test]
-        public async Task ChargingStation_NotifyChargingLimit_Test()
+        public async Task NotifyChargingLimit_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1562,13 +1562,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_SendClearedChargingLimit_Test()
+        #region SendClearedChargingLimit_Test()
 
         /// <summary>
         /// A test for indicating a cleared charging limit to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_SendClearedChargingLimit_Test()
+        public async Task SendClearedChargingLimit_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1608,13 +1608,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_ReportChargingProfiles_Test()
+        #region ReportChargingProfiles_Test()
 
         /// <summary>
         /// A test for reporting charging profiles to the CSMS.
         /// </summary>
         [Test]
-        public async Task ChargingStation_ReportChargingProfiles_Test()
+        public async Task ReportChargingProfiles_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1715,14 +1715,113 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
+        #region NotifyEVChargingSchedule_Test()
 
-        #region ChargingStation_NotifyDisplayMessages_Test()
+        /// <summary>
+        /// A test for reporting charging profiles to the CSMS.
+        /// </summary>
+        [Test]
+        public async Task NotifyEVChargingSchedule_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var notifyEVChargingScheduleRequests = new List<CS.NotifyEVChargingScheduleRequest>();
+
+                testCSMS01.OnNotifyEVChargingScheduleRequest += async (timestamp, sender, notifyEVChargingScheduleRequest) => {
+                    notifyEVChargingScheduleRequests.Add(notifyEVChargingScheduleRequest);
+                };
+
+                var response  = await chargingStation1.NotifyEVChargingSchedule(
+
+                                    NotifyEVChargingScheduleRequestId:   1,
+                                    TimeBase:                            Timestamp.Now,
+                                    EVSEId:                              EVSE_Id.Parse("1"),
+                                    ChargingSchedule:                    new ChargingSchedule(
+                                                                             Id:                        ChargingSchedule_Id.NewRandom(),
+                                                                             ChargingRateUnit:          ChargingRateUnits.Watts,
+                                                                             ChargingSchedulePeriods:   new[] {
+                                                                                                            new ChargingSchedulePeriod(
+                                                                                                                StartPeriod:      TimeSpan.Zero,
+                                                                                                                Limit:            20M,
+                                                                                                                NumberOfPhases:   3,
+                                                                                                                PhaseToUse:       PhasesToUse.Three,
+                                                                                                                CustomData:       null
+                                                                                                            )
+                                                                                                        },
+                                                                             StartSchedule:             Timestamp.Now,
+                                                                             Duration:                  TimeSpan.FromMinutes(30),
+                                                                             MinChargingRate:           6M,
+                                                                             SalesTariff:               new SalesTariff(
+                                                                                                            Id:                   SalesTariff_Id.NewRandom,
+                                                                                                            SalesTariffEntries:   new[] {
+                                                                                                                                      new SalesTariffEntry(
+                                                                                                                                          RelativeTimeInterval:   new RelativeTimeInterval(
+                                                                                                                                                                      Start:        TimeSpan.Zero,
+                                                                                                                                                                      Duration:     TimeSpan.FromMinutes(30),
+                                                                                                                                                                      CustomData:   null
+                                                                                                                                                                  ),
+                                                                                                                                          EPriceLevel:            1,
+                                                                                                                                          ConsumptionCosts:       new[] {
+                                                                                                                                                                      new ConsumptionCost(
+                                                                                                                                                                          StartValue:   1,
+                                                                                                                                                                          Costs:        new[] {
+                                                                                                                                                                                            new Cost(
+                                                                                                                                                                                                CostKind:           CostKinds.CarbonDioxideEmission,
+                                                                                                                                                                                                Amount:             200,
+                                                                                                                                                                                                AmountMultiplier:   23,
+                                                                                                                                                                                                CustomData:         null
+                                                                                                                                                                                            )
+                                                                                                                                                                                        },
+                                                                                                                                                                          CustomData:   null
+                                                                                                                                                                      )
+                                                                                                                                                                  },
+                                                                                                                                          CustomData:             null
+                                                                                                                                      )
+                                                                                                                                  },
+                                                                                                            Description:          "Green Charging ++",
+                                                                                                            NumEPriceLevels:      1,
+                                                                                                            CustomData:           null
+                                                                                                        ),
+                                                                             CustomData:                null
+                                                                         ),
+
+                                    CustomData:                          null
+
+                                );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
+                Assert.AreEqual(GenericStatus.Accepted,         response.Status);
+
+                Assert.AreEqual(1,                              notifyEVChargingScheduleRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyEVChargingScheduleRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region NotifyDisplayMessages_Test()
 
         /// <summary>
         /// A test for notifying the CSMS about display messages.
         /// </summary>
         [Test]
-        public async Task ChargingStation_NotifyDisplayMessages_Test()
+        public async Task NotifyDisplayMessages_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1788,13 +1887,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region ChargingStation_NotifyCustomerInformation_Test()
+        #region NotifyCustomerInformation_Test()
 
         /// <summary>
         /// A test for notifying the CSMS about customer information.
         /// </summary>
         [Test]
-        public async Task ChargingStation_NotifyCustomerInformation_Test()
+        public async Task NotifyCustomerInformation_Test()
         {
 
             Assert.IsNotNull(testCSMS01);

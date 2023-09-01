@@ -1086,6 +1086,54 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
     #endregion
 
+    #region OnNotifyEVChargingSchedule
+
+    /// <summary>
+    /// A NotifyEVChargingSchedule request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    public delegate Task
+
+        OnNotifyEVChargingScheduleRequestDelegate(DateTime                          Timestamp,
+                                                  IEventSender                      Sender,
+                                                  NotifyEVChargingScheduleRequest   Request);
+
+
+    /// <summary>
+    /// A NotifyEVChargingSchedule at the given charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<NotifyEVChargingScheduleResponse>
+
+        OnNotifyEVChargingScheduleDelegate(DateTime                          Timestamp,
+                                           IEventSender                      Sender,
+                                           NotifyEVChargingScheduleRequest   Request,
+                                           CancellationToken                 CancellationToken);
+
+
+    /// <summary>
+    /// A NotifyEVChargingSchedule response.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="Response">The stop transaction response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task
+
+        OnNotifyEVChargingScheduleResponseDelegate(DateTime                           Timestamp,
+                                                   IEventSender                       Sender,
+                                                   NotifyEVChargingScheduleRequest    Request,
+                                                   NotifyEVChargingScheduleResponse   Response,
+                                                   TimeSpan                           Runtime);
+
+    #endregion
+
 
     #region OnNotifyDisplayMessages
 
