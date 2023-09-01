@@ -1296,6 +1296,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 //                                 "Message received: ",  requestMessage.ToJSON().ToString(Newtonsoft.Json.Formatting.Indented),   Environment.NewLine,
                 //                                 "--------------------------------------------------------------------------------------------", Environment.NewLine));
 
+                var requestTimestamp         = Timestamp.Now;
                 var requestJSON              = JArray.Parse(textPayload);
                 var cancellationTokenSource  = new CancellationTokenSource();
 
@@ -3818,11 +3819,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 }
 
                 if (OCPPResponseJSON is not null)
-                    SendText(new OCPP_WebSocket_ResponseMessage(
-                                 requestMessage.RequestId,
-                                 OCPPResponseJSON).
-                                 ToJSON().
-                                 ToString(JSONFormatting));
+                {
+
+                    await SendText(new OCPP_WebSocket_ResponseMessage(
+                                       requestMessage.RequestId,
+                                       OCPPResponseJSON).
+                                       ToJSON().
+                                       ToString(JSONFormatting));
+
+                    #region OnTextMessageResponseSent
+
+                    try
+                    {
+
+                        OnTextMessageResponseSent?.Invoke(Timestamp.Now,
+                                                          this,
+                                                          frame,
+                                                          EventTracking_Id.New,
+                                                          requestTimestamp,
+                                                          requestJSON.ToString(JSONFormatting),
+                                                          Timestamp.Now,
+                                                          OCPPResponseJSON.ToString(JSONFormatting));
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(e, nameof(ChargePointWSClient) + "." + nameof(OnTextMessageResponseSent));
+                    }
+
+                    #endregion
+
+                }
 
             }
 

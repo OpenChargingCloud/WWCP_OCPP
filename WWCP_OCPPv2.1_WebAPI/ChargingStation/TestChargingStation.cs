@@ -672,6 +672,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region NotifyEVChargingSchedule
+
+        /// <summary>
+        /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
+        /// </summary>
+        public event OnNotifyEVChargingScheduleResponseDelegate?  OnNotifyEVChargingScheduleResponse;
+
+        #endregion
+
+        #region NotifyPriorityCharging
+
+        /// <summary>
+        /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyPriorityChargingRequestDelegate?   OnNotifyPriorityChargingRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyPriorityCharging request was received.
+        /// </summary>
+        public event OnNotifyPriorityChargingResponseDelegate?  OnNotifyPriorityChargingResponse;
+
+        #endregion
+
+        #region PullDynamicScheduleUpdate
+
+        /// <summary>
+        /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
+        /// </summary>
+        public event OnPullDynamicScheduleUpdateRequestDelegate?   OnPullDynamicScheduleUpdateRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
+        /// </summary>
+        public event OnPullDynamicScheduleUpdateResponseDelegate?  OnPullDynamicScheduleUpdateResponse;
+
+        #endregion
+
 
         #region NotifyDisplayMessages
 
@@ -708,7 +750,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Reset
 
         /// <summary>
-        /// An event fired whenever a Reset request will be sent to the CSMS.
+        /// An event fired whenever a Reset request will be sent to the charging station.
         /// </summary>
         public event OnResetRequestDelegate?   OnResetRequest;
 
@@ -722,7 +764,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region UpdateFirmware
 
         /// <summary>
-        /// An event fired whenever an UpdateFirmware request will be sent to the CSMS.
+        /// An event fired whenever an UpdateFirmware request will be sent to the charging station.
         /// </summary>
         public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
@@ -736,7 +778,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region PublishFirmware
 
         /// <summary>
-        /// An event fired whenever a PublishFirmware request will be sent to the CSMS.
+        /// An event fired whenever a PublishFirmware request will be sent to the charging station.
         /// </summary>
         public event OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
 
@@ -750,7 +792,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region UnpublishFirmware
 
         /// <summary>
-        /// An event fired whenever an UnpublishFirmware request will be sent to the CSMS.
+        /// An event fired whenever an UnpublishFirmware request will be sent to the charging station.
         /// </summary>
         public event OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
 
@@ -764,7 +806,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetBaseReport
 
         /// <summary>
-        /// An event fired whenever a GetBaseReport request will be sent to the CSMS.
+        /// An event fired whenever a GetBaseReport request will be sent to the charging station.
         /// </summary>
         public event OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
 
@@ -778,7 +820,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetReport
 
         /// <summary>
-        /// An event fired whenever a GetReport request will be sent to the CSMS.
+        /// An event fired whenever a GetReport request will be sent to the charging station.
         /// </summary>
         public event OnGetReportRequestDelegate?   OnGetReportRequest;
 
@@ -792,7 +834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetLog
 
         /// <summary>
-        /// An event fired whenever a GetLog request will be sent to the CSMS.
+        /// An event fired whenever a GetLog request will be sent to the charging station.
         /// </summary>
         public event OnGetLogRequestDelegate?   OnGetLogRequest;
 
@@ -806,7 +848,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetVariables
 
         /// <summary>
-        /// An event fired whenever a SetVariables request will be sent to the CSMS.
+        /// An event fired whenever a SetVariables request will be sent to the charging station.
         /// </summary>
         public event OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
 
@@ -820,7 +862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetVariables
 
         /// <summary>
-        /// An event fired whenever a GetVariables request will be sent to the CSMS.
+        /// An event fired whenever a GetVariables request will be sent to the charging station.
         /// </summary>
         public event OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
 
@@ -834,7 +876,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetMonitoringBase
 
         /// <summary>
-        /// An event fired whenever a SetMonitoringBase request will be sent to the CSMS.
+        /// An event fired whenever a SetMonitoringBase request will be sent to the charging station.
         /// </summary>
         public event OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
 
@@ -848,7 +890,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetMonitoringReport
 
         /// <summary>
-        /// An event fired whenever a GetMonitoringReport request will be sent to the CSMS.
+        /// An event fired whenever a GetMonitoringReport request will be sent to the charging station.
         /// </summary>
         public event OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
 
@@ -862,7 +904,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetMonitoringLevel
 
         /// <summary>
-        /// An event fired whenever a SetMonitoringLevel request will be sent to the CSMS.
+        /// An event fired whenever a SetMonitoringLevel request will be sent to the charging station.
         /// </summary>
         public event OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
 
@@ -876,7 +918,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetVariableMonitoring
 
         /// <summary>
-        /// An event fired whenever a SetVariableMonitoring request will be sent to the CSMS.
+        /// An event fired whenever a SetVariableMonitoring request will be sent to the charging station.
         /// </summary>
         public event OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
 
@@ -890,7 +932,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ClearVariableMonitoring
 
         /// <summary>
-        /// An event fired whenever a ClearVariableMonitoring request will be sent to the CSMS.
+        /// An event fired whenever a ClearVariableMonitoring request will be sent to the charging station.
         /// </summary>
         public event OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
 
@@ -904,7 +946,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetNetworkProfile
 
         /// <summary>
-        /// An event fired whenever a SetNetworkProfile request will be sent to the CSMS.
+        /// An event fired whenever a SetNetworkProfile request will be sent to the charging station.
         /// </summary>
         public event OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
 
@@ -918,7 +960,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ChangeAvailability
 
         /// <summary>
-        /// An event fired whenever a ChangeAvailability request will be sent to the CSMS.
+        /// An event fired whenever a ChangeAvailability request will be sent to the charging station.
         /// </summary>
         public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
@@ -932,7 +974,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region TriggerMessage
 
         /// <summary>
-        /// An event fired whenever a TriggerMessage request will be sent to the CSMS.
+        /// An event fired whenever a TriggerMessage request will be sent to the charging station.
         /// </summary>
         public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
@@ -961,7 +1003,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SendSignedCertificate
 
         /// <summary>
-        /// An event fired whenever a SignedCertificate request will be sent to the CSMS.
+        /// An event fired whenever a SignedCertificate request will be sent to the charging station.
         /// </summary>
         public event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
 
@@ -975,7 +1017,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region InstallCertificate
 
         /// <summary>
-        /// An event fired whenever an InstallCertificate request will be sent to the CSMS.
+        /// An event fired whenever an InstallCertificate request will be sent to the charging station.
         /// </summary>
         public event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
 
@@ -989,7 +1031,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetInstalledCertificateIds
 
         /// <summary>
-        /// An event fired whenever a GetInstalledCertificateIds request will be sent to the CSMS.
+        /// An event fired whenever a GetInstalledCertificateIds request will be sent to the charging station.
         /// </summary>
         public event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
 
@@ -1003,7 +1045,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region DeleteCertificate
 
         /// <summary>
-        /// An event fired whenever a DeleteCertificate request will be sent to the CSMS.
+        /// An event fired whenever a DeleteCertificate request will be sent to the charging station.
         /// </summary>
         public event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
 
@@ -1014,11 +1056,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region NotifyCRL
+
+        /// <summary>
+        /// An event fired whenever a NotifyCRL request will be sent to the charging station.
+        /// </summary>
+        public event OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyCRL request was received.
+        /// </summary>
+        public event OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
+
+        #endregion
+
 
         #region GetLocalListVersion
 
         /// <summary>
-        /// An event fired whenever a GetLocalListVersion request will be sent to the CSMS.
+        /// An event fired whenever a GetLocalListVersion request will be sent to the charging station.
         /// </summary>
         public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
@@ -1032,7 +1088,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SendLocalList
 
         /// <summary>
-        /// An event fired whenever a SendLocalList request will be sent to the CSMS.
+        /// An event fired whenever a SendLocalList request will be sent to the charging station.
         /// </summary>
         public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
@@ -1046,7 +1102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ClearCache
 
         /// <summary>
-        /// An event fired whenever a ClearCache request will be sent to the CSMS.
+        /// An event fired whenever a ClearCache request will be sent to the charging station.
         /// </summary>
         public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
@@ -1061,7 +1117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ReserveNow
 
         /// <summary>
-        /// An event fired whenever a ReserveNow request will be sent to the CSMS.
+        /// An event fired whenever a ReserveNow request will be sent to the charging station.
         /// </summary>
         public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
 
@@ -1075,7 +1131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CancelReservation
 
         /// <summary>
-        /// An event fired whenever a CancelReservation request will be sent to the CSMS.
+        /// An event fired whenever a CancelReservation request will be sent to the charging station.
         /// </summary>
         public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
@@ -1089,7 +1145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region StartCharging
 
         /// <summary>
-        /// An event fired whenever a RequestStartTransaction request will be sent to the CSMS.
+        /// An event fired whenever a RequestStartTransaction request will be sent to the charging station.
         /// </summary>
         public event OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
 
@@ -1103,7 +1159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region StopCharging
 
         /// <summary>
-        /// An event fired whenever a RequestStopTransaction request will be sent to the CSMS.
+        /// An event fired whenever a RequestStopTransaction request will be sent to the charging station.
         /// </summary>
         public event OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
 
@@ -1117,7 +1173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetTransactionStatus
 
         /// <summary>
-        /// An event fired whenever a GetTransactionStatus request will be sent to the CSMS.
+        /// An event fired whenever a GetTransactionStatus request will be sent to the charging station.
         /// </summary>
         public event OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
 
@@ -1131,7 +1187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetChargingProfile
 
         /// <summary>
-        /// An event fired whenever a SetChargingProfile request will be sent to the CSMS.
+        /// An event fired whenever a SetChargingProfile request will be sent to the charging station.
         /// </summary>
         public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
@@ -1145,7 +1201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetChargingProfiles
 
         /// <summary>
-        /// An event fired whenever a GetChargingProfiles request will be sent to the CSMS.
+        /// An event fired whenever a GetChargingProfiles request will be sent to the charging station.
         /// </summary>
         public event OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
 
@@ -1159,7 +1215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ClearChargingProfile
 
         /// <summary>
-        /// An event fired whenever a ClearChargingProfile request will be sent to the CSMS.
+        /// An event fired whenever a ClearChargingProfile request will be sent to the charging station.
         /// </summary>
         public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
@@ -1173,7 +1229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetCompositeSchedule
 
         /// <summary>
-        /// An event fired whenever a GetCompositeSchedule request will be sent to the CSMS.
+        /// An event fired whenever a GetCompositeSchedule request will be sent to the charging station.
         /// </summary>
         public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
@@ -1187,7 +1243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region NotifyAllowedEnergyTransfer
 
         /// <summary>
-        /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the CSMS.
+        /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the charging station.
         /// </summary>
         public event OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
 
@@ -1201,7 +1257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region UnlockConnector
 
         /// <summary>
-        /// An event fired whenever an UnlockConnector request will be sent to the CSMS.
+        /// An event fired whenever an UnlockConnector request will be sent to the charging station.
         /// </summary>
         public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
@@ -1216,7 +1272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region AFRRSignal
 
         /// <summary>
-        /// An event fired whenever an AFRR signal request will be sent to the CSMS.
+        /// An event fired whenever an AFRR signal request will be sent to the charging station.
         /// </summary>
         public event OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
 
@@ -1231,7 +1287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetDisplayMessage
 
         /// <summary>
-        /// An event fired whenever a SetDisplayMessage request will be sent to the CSMS.
+        /// An event fired whenever a SetDisplayMessage request will be sent to the charging station.
         /// </summary>
         public event OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
 
@@ -1245,7 +1301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetDisplayMessages
 
         /// <summary>
-        /// An event fired whenever a GetDisplayMessages request will be sent to the CSMS.
+        /// An event fired whenever a GetDisplayMessages request will be sent to the charging station.
         /// </summary>
         public event OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
 
@@ -1259,7 +1315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ClearDisplayMessage
 
         /// <summary>
-        /// An event fired whenever a ClearDisplayMessage request will be sent to the CSMS.
+        /// An event fired whenever a ClearDisplayMessage request will be sent to the charging station.
         /// </summary>
         public event OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
 
@@ -1273,7 +1329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SendCostUpdated
 
         /// <summary>
-        /// An event fired whenever a CostUpdated request will be sent to the CSMS.
+        /// An event fired whenever a CostUpdated request will be sent to the charging station.
         /// </summary>
         public event OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
 
@@ -1287,7 +1343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region RequestCustomerInformation
 
         /// <summary>
-        /// An event fired whenever a CustomerInformation request will be sent to the CSMS.
+        /// An event fired whenever a CustomerInformation request will be sent to the charging station.
         /// </summary>
         public event OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
 
@@ -1447,47 +1503,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            var WSClient   = new ChargingStationWSClient(
-                                 ChargeBoxId,
-                                 From,
-                                 To,
+            var chargingStationWSClient = new ChargingStationWSClient(
+                                              ChargeBoxId,
+                                              From,
+                                              To,
 
-                                 RemoteURL,
-                                 VirtualHostname,
-                                 Description,
-                                 PreferIPv4,
-                                 RemoteCertificateValidator,
-                                 ClientCertificateSelector,
-                                 ClientCert,
-                                 TLSProtocol,
-                                 HTTPUserAgent,
-                                 HTTPAuthentication ?? this.HTTPAuthentication,
-                                 RequestTimeout,
-                                 TransmissionRetryDelay,
-                                 MaxNumberOfRetries,
-                                 InternalBufferSize,
+                                              RemoteURL,
+                                              VirtualHostname,
+                                              Description,
+                                              PreferIPv4,
+                                              RemoteCertificateValidator,
+                                              ClientCertificateSelector,
+                                              ClientCert,
+                                              TLSProtocol,
+                                              HTTPUserAgent,
+                                              HTTPAuthentication ?? this.HTTPAuthentication,
+                                              RequestTimeout,
+                                              TransmissionRetryDelay,
+                                              MaxNumberOfRetries,
+                                              InternalBufferSize,
 
-                                 SecWebSocketProtocols ?? new[] { Version.WebSocketSubProtocolId },
+                                              SecWebSocketProtocols ?? new[] { Version.WebSocketSubProtocolId },
 
-                                 DisableWebSocketPings,
-                                 WebSocketPingEvery,
-                                 SlowNetworkSimulationDelay,
+                                              DisableWebSocketPings,
+                                              WebSocketPingEvery,
+                                              SlowNetworkSimulationDelay,
 
-                                 DisableMaintenanceTasks,
-                                 MaintenanceEvery,
+                                              DisableMaintenanceTasks,
+                                              MaintenanceEvery,
 
-                                 LoggingPath,
-                                 LoggingContext,
-                                 LogfileCreator,
-                                 HTTPLogger,
-                                 DNSClient ?? this.DNSClient
-                             );
+                                              LoggingPath,
+                                              LoggingContext,
+                                              LogfileCreator,
+                                              HTTPLogger,
+                                              DNSClient ?? this.DNSClient
+                                          );
 
-            this.CSClient  = WSClient;
+            this.CSClient  = chargingStationWSClient;
 
-            WireEvents(WSClient);
+            WireEvents(chargingStationWSClient);
 
-            var response = await WSClient.Connect();
+            var response = await chargingStationWSClient.Connect();
 
             return response;
 
@@ -1495,7 +1551,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region WireEvents(CPServer)
+        #region WireEvents(ChargingStationServer)
 
 
         private readonly ConcurrentDictionary<DisplayMessage_Id, MessageInfo>     displayMessages   = new ();
@@ -1504,15 +1560,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         private readonly ConcurrentDictionary<Transaction_Id,    Decimal>         totalCosts        = new ();
         private readonly ConcurrentDictionary<CertificateUse,    Certificate>     certificates      = new ();
 
-        public void WireEvents(IChargingStationServer CPServer)
+        public void WireEvents(IChargingStationServer ChargingStationServer)
         {
 
             #region OnReset
 
-            CPServer.OnReset += async (LogTimestamp,
-                                       Sender,
-                                       Request,
-                                       CancellationToken) => {
+            ChargingStationServer.OnReset += async (LogTimestamp,
+                                                    Sender,
+                                                    Request,
+                                                    CancellationToken) => {
 
                 #region Send OnResetRequest event
 
@@ -1533,7 +1589,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 ResetResponse? response = null;
@@ -1585,10 +1641,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnUpdateFirmware
 
-            CPServer.OnUpdateFirmware += async (LogTimestamp,
-                                                Sender,
-                                                Request,
-                                                CancellationToken) => {
+            ChargingStationServer.OnUpdateFirmware += async (LogTimestamp,
+                                                             Sender,
+                                                             Request,
+                                                             CancellationToken) => {
 
                 #region Send OnUpdateFirmwareRequest event
 
@@ -1609,7 +1665,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 UpdateFirmwareResponse? response = null;
@@ -1667,10 +1723,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnPublishFirmware
 
-            CPServer.OnPublishFirmware += async (LogTimestamp,
-                                                 Sender,
-                                                 Request,
-                                                 CancellationToken) => {
+            ChargingStationServer.OnPublishFirmware += async (LogTimestamp,
+                                                              Sender,
+                                                              Request,
+                                                              CancellationToken) => {
 
                 #region Send OnPublishFirmwareRequest event
 
@@ -1691,7 +1747,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 PublishFirmwareResponse? response = null;
@@ -1749,10 +1805,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnUnpublishFirmware
 
-            CPServer.OnUnpublishFirmware += async (LogTimestamp,
-                                                   Sender,
-                                                   Request,
-                                                   CancellationToken) => {
+            ChargingStationServer.OnUnpublishFirmware += async (LogTimestamp,
+                                                                Sender,
+                                                                Request,
+                                                                CancellationToken) => {
 
                 #region Send OnUnpublishFirmwareRequest event
 
@@ -1773,7 +1829,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 UnpublishFirmwareResponse? response = null;
@@ -1829,10 +1885,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetBaseReport
 
-            CPServer.OnGetBaseReport += async (LogTimestamp,
-                                               Sender,
-                                               Request,
-                                               CancellationToken) => {
+            ChargingStationServer.OnGetBaseReport += async (LogTimestamp,
+                                                            Sender,
+                                                            Request,
+                                                            CancellationToken) => {
 
                 #region Send OnGetBaseReportRequest event
 
@@ -1853,7 +1909,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 GetBaseReportResponse? response = null;
@@ -1911,10 +1967,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetReport
 
-            CPServer.OnGetReport += async (LogTimestamp,
-                                           Sender,
-                                           Request,
-                                           CancellationToken) => {
+            ChargingStationServer.OnGetReport += async (LogTimestamp,
+                                                        Sender,
+                                                        Request,
+                                                        CancellationToken) => {
 
                 #region Send OnGetReportRequest event
 
@@ -1935,7 +1991,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 GetReportResponse? response = null;
@@ -1993,10 +2049,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetLog
 
-            CPServer.OnGetLog += async (LogTimestamp,
-                                        Sender,
-                                        Request,
-                                        CancellationToken) => {
+            ChargingStationServer.OnGetLog += async (LogTimestamp,
+                                                     Sender,
+                                                     Request,
+                                                     CancellationToken) => {
 
                 #region Send OnGetLogRequest event
 
@@ -2017,7 +2073,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 GetLogResponse? response = null;
@@ -2075,10 +2131,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetVariables
 
-            CPServer.OnSetVariables += async (LogTimestamp,
-                                              Sender,
-                                              Request,
-                                              CancellationToken) => {
+            ChargingStationServer.OnSetVariables += async (LogTimestamp,
+                                                           Sender,
+                                                           Request,
+                                                           CancellationToken) => {
 
                 #region Send OnSetVariablesRequest event
 
@@ -2099,7 +2155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 SetVariablesResponse? response = null;
@@ -2162,10 +2218,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetVariables
 
-            CPServer.OnGetVariables += async (LogTimestamp,
-                                              Sender,
-                                              Request,
-                                              CancellationToken) => {
+            ChargingStationServer.OnGetVariables += async (LogTimestamp,
+                                                           Sender,
+                                                           Request,
+                                                           CancellationToken) => {
 
                 #region Send OnGetVariablesRequest event
 
@@ -2186,7 +2242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 GetVariablesResponse? response = null;
@@ -2250,10 +2306,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetMonitoringBase
 
-            CPServer.OnSetMonitoringBase += async (LogTimestamp,
-                                                   Sender,
-                                                   Request,
-                                                   CancellationToken) => {
+            ChargingStationServer.OnSetMonitoringBase += async (LogTimestamp,
+                                                                Sender,
+                                                                Request,
+                                                                CancellationToken) => {
 
                 #region Send OnSetMonitoringBaseRequest event
 
@@ -2274,7 +2330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 SetMonitoringBaseResponse? response = null;
@@ -2332,10 +2388,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetMonitoringReport
 
-            CPServer.OnGetMonitoringReport += async (LogTimestamp,
-                                                     Sender,
-                                                     Request,
-                                                     CancellationToken) => {
+            ChargingStationServer.OnGetMonitoringReport += async (LogTimestamp,
+                                                                  Sender,
+                                                                  Request,
+                                                                  CancellationToken) => {
 
                 #region Send OnGetMonitoringReportRequest event
 
@@ -2356,7 +2412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 GetMonitoringReportResponse? response = null;
@@ -2414,10 +2470,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetMonitoringLevel
 
-            CPServer.OnSetMonitoringLevel += async (LogTimestamp,
-                                                    Sender,
-                                                    Request,
-                                                    CancellationToken) => {
+            ChargingStationServer.OnSetMonitoringLevel += async (LogTimestamp,
+                                                                 Sender,
+                                                                 Request,
+                                                                 CancellationToken) => {
 
                 #region Send OnSetMonitoringLevelRequest event
 
@@ -2438,7 +2494,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 SetMonitoringLevelResponse? response = null;
@@ -2496,10 +2552,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetVariableMonitoring
 
-            CPServer.OnSetVariableMonitoring += async (LogTimestamp,
-                                                       Sender,
-                                                       Request,
-                                                       CancellationToken) => {
+            ChargingStationServer.OnSetVariableMonitoring += async (LogTimestamp,
+                                                                    Sender,
+                                                                    Request,
+                                                                    CancellationToken) => {
 
                 #region Send OnSetVariableMonitoringRequest event
 
@@ -2520,7 +2576,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 SetVariableMonitoringResponse? response = null;
@@ -2585,10 +2641,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnClearVariableMonitoring
 
-            CPServer.OnClearVariableMonitoring += async (LogTimestamp,
-                                                         Sender,
-                                                         Request,
-                                                         CancellationToken) => {
+            ChargingStationServer.OnClearVariableMonitoring += async (LogTimestamp,
+                                                                      Sender,
+                                                                      Request,
+                                                                      CancellationToken) => {
 
                 #region Send OnClearVariableMonitoringRequest event
 
@@ -2609,7 +2665,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 ClearVariableMonitoringResponse? response = null;
@@ -2670,10 +2726,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetNetworkProfile
 
-            CPServer.OnSetNetworkProfile += async (LogTimestamp,
-                                                   Sender,
-                                                   Request,
-                                                   CancellationToken) => {
+            ChargingStationServer.OnSetNetworkProfile += async (LogTimestamp,
+                                                                Sender,
+                                                                Request,
+                                                                CancellationToken) => {
 
                 #region Send OnSetNetworkProfileRequest event
 
@@ -2694,7 +2750,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 SetNetworkProfileResponse? response = null;
@@ -2752,10 +2808,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnChangeAvailability
 
-            CPServer.OnChangeAvailability += async (LogTimestamp,
-                                                    Sender,
-                                                    Request,
-                                                    CancellationToken) => {
+            ChargingStationServer.OnChangeAvailability += async (LogTimestamp,
+                                                                 Sender,
+                                                                 Request,
+                                                                 CancellationToken) => {
 
                 #region Send OnChangeAvailabilityRequest event
 
@@ -2776,7 +2832,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 ChangeAvailabilityResponse? response = null;
@@ -2844,10 +2900,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTriggerMessage
 
-            CPServer.OnTriggerMessage += async (LogTimestamp,
-                                                Sender,
-                                                Request,
-                                                CancellationToken) => {
+            ChargingStationServer.OnTriggerMessage += async (LogTimestamp,
+                                                             Sender,
+                                                             Request,
+                                                             CancellationToken) => {
 
                 #region Send OnTriggerMessageRequest event
 
@@ -2868,7 +2924,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 TriggerMessageResponse? response = null;
@@ -2979,10 +3035,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnIncomingDataTransfer
 
-            CPServer.OnIncomingDataTransfer += async (LogTimestamp,
-                                                      Sender,
-                                                      Request,
-                                                      CancellationToken) => {
+            ChargingStationServer.OnIncomingDataTransfer += async (LogTimestamp,
+                                                                   Sender,
+                                                                   Request,
+                                                                   CancellationToken) => {
 
                 #region Send OnDataTransferRequest event
 
@@ -3003,7 +3059,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 DataTransferResponse? response = null;
@@ -3110,10 +3166,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnCertificateSigned
 
-            CPServer.OnCertificateSigned += async (LogTimestamp,
-                                                   Sender,
-                                                   Request,
-                                                   CancellationToken) => {
+            ChargingStationServer.OnCertificateSigned += async (LogTimestamp,
+                                                                Sender,
+                                                                Request,
+                                                                CancellationToken) => {
 
                 #region Send OnCertificateSignedRequest event
 
@@ -3134,7 +3190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 CertificateSignedResponse? response = null;
@@ -3198,10 +3254,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnInstallCertificate
 
-            CPServer.OnInstallCertificate += async (LogTimestamp,
-                                                    Sender,
-                                                    Request,
-                                                    CancellationToken) => {
+            ChargingStationServer.OnInstallCertificate += async (LogTimestamp,
+                                                                 Sender,
+                                                                 Request,
+                                                                 CancellationToken) => {
 
                 #region Send OnInstallCertificateRequest event
 
@@ -3222,7 +3278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 InstallCertificateResponse? response = null;
@@ -3290,10 +3346,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetInstalledCertificateIds
 
-            CPServer.OnGetInstalledCertificateIds += async (LogTimestamp,
-                                                            Sender,
-                                                            Request,
-                                                            CancellationToken) => {
+            ChargingStationServer.OnGetInstalledCertificateIds += async (LogTimestamp,
+                                                                         Sender,
+                                                                         Request,
+                                                                         CancellationToken) => {
 
                 #region Send OnGetInstalledCertificateIdsRequest event
 
@@ -3314,7 +3370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 GetInstalledCertificateIdsResponse? response = null;
@@ -3387,10 +3443,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnDeleteCertificate
 
-            CPServer.OnDeleteCertificate += async (LogTimestamp,
-                                                   Sender,
-                                                   Request,
-                                                   CancellationToken) => {
+            ChargingStationServer.OnDeleteCertificate += async (LogTimestamp,
+                                                                Sender,
+                                                                Request,
+                                                                CancellationToken) => {
 
                 #region Send OnDeleteCertificateRequest event
 
@@ -3411,7 +3467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 DeleteCertificateResponse? response = null;
@@ -3474,13 +3530,96 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
+            #region OnNotifyCRL
+
+            ChargingStationServer.OnNotifyCRL += async (LogTimestamp,
+                                                        Sender,
+                                                        Request,
+                                                        CancellationToken) => {
+
+                #region Send OnNotifyCRLRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyCRLRequest?.Invoke(startTime,
+                                               this,
+                                               Request);
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyCRLRequest));
+                }
+
+                #endregion
+
+
+                await Task.Delay(10, CancellationToken);
+
+
+                NotifyCRLResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid NotifyCRL request for charge box '", Request.ChargeBoxId, "'!"));
+
+                    //Note: No proper error response is defined within OCPP!
+                    response = new NotifyCRLResponse(
+                                   Request:      Request,
+                                   CustomData:   null
+                               );
+
+                }
+                else
+                {
+
+                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming NotifyCRL request accepted."));
+
+                    response = new NotifyCRLResponse(
+                                   Request:      Request,
+                                   CustomData:   null
+                               );
+
+                }
+
+
+                #region Send OnNotifyCRLResponse event
+
+                try
+                {
+
+                    var responseTimestamp = Timestamp.Now;
+
+                    OnNotifyCRLResponse?.Invoke(responseTimestamp,
+                                                this,
+                                                Request,
+                                                response,
+                                                responseTimestamp - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyCRLResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
 
             #region OnGetLocalListVersion
 
-            CPServer.OnGetLocalListVersion += async (LogTimestamp,
-                                                     Sender,
-                                                     Request,
-                                                     CancellationToken) => {
+            ChargingStationServer.OnGetLocalListVersion += async (LogTimestamp,
+                                                                  Sender,
+                                                                  Request,
+                                                                  CancellationToken) => {
 
                 #region Send OnGetLocalListVersionRequest event
 
@@ -3501,7 +3640,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 GetLocalListVersionResponse? response = null;
@@ -3555,10 +3694,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSendLocalList
 
-            CPServer.OnSendLocalList += async (LogTimestamp,
-                                               Sender,
-                                               Request,
-                                               CancellationToken) => {
+            ChargingStationServer.OnSendLocalList += async (LogTimestamp,
+                                                            Sender,
+                                                            Request,
+                                                            CancellationToken) => {
 
                 #region Send OnSendLocalListRequest event
 
@@ -3579,7 +3718,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 SendLocalListResponse? response = null;
@@ -3633,10 +3772,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnClearCache
 
-            CPServer.OnClearCache += async (LogTimestamp,
-                                            Sender,
-                                            Request,
-                                            CancellationToken) => {
+            ChargingStationServer.OnClearCache += async (LogTimestamp,
+                                                         Sender,
+                                                         Request,
+                                                         CancellationToken) => {
 
                 #region Send OnClearCacheRequest event
 
@@ -3657,7 +3796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 ClearCacheResponse? response = null;
@@ -3712,10 +3851,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnReserveNow
 
-            CPServer.OnReserveNow += async (LogTimestamp,
-                                            Sender,
-                                            Request,
-                                            CancellationToken) => {
+            ChargingStationServer.OnReserveNow += async (LogTimestamp,
+                                                         Sender,
+                                                         Request,
+                                                         CancellationToken) => {
 
                 #region Send OnReserveNowRequest event
 
@@ -3798,10 +3937,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnCancelReservation
 
-            CPServer.OnCancelReservation += async (LogTimestamp,
-                                                   Sender,
-                                                   Request,
-                                                   CancellationToken) => {
+            ChargingStationServer.OnCancelReservation += async (LogTimestamp,
+                                                                Sender,
+                                                                Request,
+                                                                CancellationToken) => {
 
                 #region Send OnCancelReservationRequest event
 
@@ -3883,10 +4022,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnRequestStartTransaction
 
-            CPServer.OnRequestStartTransaction += async (LogTimestamp,
-                                                         Sender,
-                                                         Request,
-                                                         CancellationToken) => {
+            ChargingStationServer.OnRequestStartTransaction += async (LogTimestamp,
+                                                                      Sender,
+                                                                      Request,
+                                                                      CancellationToken) => {
 
                 #region Send OnRequestStartTransactionRequest event
 
@@ -4047,10 +4186,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnRequestStopTransaction
 
-            CPServer.OnRequestStopTransaction += async (LogTimestamp,
-                                                        Sender,
-                                                        Request,
-                                                        CancellationToken) => {
+            ChargingStationServer.OnRequestStopTransaction += async (LogTimestamp,
+                                                                     Sender,
+                                                                     Request,
+                                                                     CancellationToken) => {
 
                 #region Send OnRequestStopTransactionRequest event
 
@@ -4196,10 +4335,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetTransactionStatus
 
-            CPServer.OnGetTransactionStatus += async (LogTimestamp,
-                                                      Sender,
-                                                      Request,
-                                                      CancellationToken) => {
+            ChargingStationServer.OnGetTransactionStatus += async (LogTimestamp,
+                                                                   Sender,
+                                                                   Request,
+                                                                   CancellationToken) => {
 
                 #region Send OnGetTransactionStatusRequest event
 
@@ -4301,10 +4440,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetChargingProfile
 
-            CPServer.OnSetChargingProfile += async (LogTimestamp,
-                                                    Sender,
-                                                    Request,
-                                                    CancellationToken) => {
+            ChargingStationServer.OnSetChargingProfile += async (LogTimestamp,
+                                                                 Sender,
+                                                                 Request,
+                                                                 CancellationToken) => {
 
                 #region Send OnSetChargingProfileRequest event
 
@@ -4413,10 +4552,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetChargingProfiles
 
-            CPServer.OnGetChargingProfiles += async (LogTimestamp,
-                                                     Sender,
-                                                     Request,
-                                                     CancellationToken) => {
+            ChargingStationServer.OnGetChargingProfiles += async (LogTimestamp,
+                                                                  Sender,
+                                                                  Request,
+                                                                  CancellationToken) => {
 
                 #region Send OnGetChargingProfilesRequest event
 
@@ -4493,10 +4632,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnClearChargingProfile
 
-            CPServer.OnClearChargingProfile += async (LogTimestamp,
-                                                      Sender,
-                                                      Request,
-                                                      CancellationToken) => {
+            ChargingStationServer.OnClearChargingProfile += async (LogTimestamp,
+                                                                   Sender,
+                                                                   Request,
+                                                                   CancellationToken) => {
 
                 #region Send OnClearChargingProfileRequest event
 
@@ -4551,10 +4690,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetCompositeSchedule
 
-            CPServer.OnGetCompositeSchedule += async (LogTimestamp,
-                                                      Sender,
-                                                      Request,
-                                                      CancellationToken) => {
+            ChargingStationServer.OnGetCompositeSchedule += async (LogTimestamp,
+                                                                   Sender,
+                                                                   Request,
+                                                                   CancellationToken) => {
 
                 #region Send OnGetCompositeScheduleRequest event
 
@@ -4611,10 +4750,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyAllowedEnergyTransfer
 
-            CPServer.OnNotifyAllowedEnergyTransfer += async (LogTimestamp,
-                                                             Sender,
-                                                             Request,
-                                                             CancellationToken) => {
+            ChargingStationServer.OnNotifyAllowedEnergyTransfer += async (LogTimestamp,
+                                                                          Sender,
+                                                                          Request,
+                                                                          CancellationToken) => {
 
                 #region Send OnNotifyAllowedEnergyTransferRequest event
 
@@ -4635,10 +4774,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                var response = new NotifyAllowedEnergyTransferResponse(
-                                   Request,
-                                   NotifyAllowedEnergyTransferStatus.Accepted
-                               );
+                NotifyAllowedEnergyTransferResponse? response = null;
+
+                if (Request.ChargeBoxId != ChargeBoxId)
+                {
+
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid NotifyAllowedEnergyTransfer request for charge box '{Request.ChargeBoxId}'!");
+
+                    response = new NotifyAllowedEnergyTransferResponse(Request,
+                                                                       NotifyAllowedEnergyTransferStatus.Rejected);
+
+                }
+                else
+                {
+
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming NotifyAllowedEnergyTransfer");
+
+                    response = new NotifyAllowedEnergyTransferResponse(Request,
+                                                                       NotifyAllowedEnergyTransferStatus.Accepted);
+
+                }
 
 
                 #region Send OnNotifyAllowedEnergyTransferResponse event
@@ -4670,10 +4825,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnUnlockConnector
 
-            CPServer.OnUnlockConnector += async (LogTimestamp,
-                                                 Sender,
-                                                 Request,
-                                                 CancellationToken) => {
+            ChargingStationServer.OnUnlockConnector += async (LogTimestamp,
+                                                              Sender,
+                                                              Request,
+                                                              CancellationToken) => {
 
                 #region Send OnUnlockConnectorRequest event
 
@@ -4759,10 +4914,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnAFRRSignal
 
-            CPServer.OnAFRRSignal += async (LogTimestamp,
-                                            Sender,
-                                            Request,
-                                            CancellationToken) => {
+            ChargingStationServer.OnAFRRSignal += async (LogTimestamp,
+                                                         Sender,
+                                                         Request,
+                                                         CancellationToken) => {
 
                 #region Send OnAFRRSignalRequest event
 
@@ -4841,10 +4996,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetDisplayMessage
 
-            CPServer.OnSetDisplayMessage += async (LogTimestamp,
-                                                   Sender,
-                                                   Request,
-                                                   CancellationToken) => {
+            ChargingStationServer.OnSetDisplayMessage += async (LogTimestamp,
+                                                                Sender,
+                                                                Request,
+                                                                CancellationToken) => {
 
                 #region Send OnSetDisplayMessageRequest event
 
@@ -4865,7 +5020,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 SetDisplayMessageResponse? response = null;
@@ -4929,10 +5084,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetDisplayMessages
 
-            CPServer.OnGetDisplayMessages += async (LogTimestamp,
-                                                    Sender,
-                                                    Request,
-                                                    CancellationToken) => {
+            ChargingStationServer.OnGetDisplayMessages += async (LogTimestamp,
+                                                                 Sender,
+                                                                 Request,
+                                                                 CancellationToken) => {
 
                 #region Send OnGetDisplayMessagesRequest event
 
@@ -4953,7 +5108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 GetDisplayMessagesResponse? response = null;
@@ -5025,10 +5180,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnClearDisplayMessage
 
-            CPServer.OnClearDisplayMessage += async (LogTimestamp,
-                                                     Sender,
-                                                     Request,
-                                                     CancellationToken) => {
+            ChargingStationServer.OnClearDisplayMessage += async (LogTimestamp,
+                                                                  Sender,
+                                                                  Request,
+                                                                  CancellationToken) => {
 
                 #region Send OnClearDisplayMessageRequest event
 
@@ -5049,7 +5204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 ClearDisplayMessageResponse? response = null;
@@ -5112,10 +5267,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnCostUpdated
 
-            CPServer.OnCostUpdated += async (LogTimestamp,
-                                             Sender,
-                                             Request,
-                                             CancellationToken) => {
+            ChargingStationServer.OnCostUpdated += async (LogTimestamp,
+                                                          Sender,
+                                                          Request,
+                                                          CancellationToken) => {
 
                 #region Send OnCostUpdatedRequest event
 
@@ -5136,7 +5291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 CostUpdatedResponse? response = null;
@@ -5202,10 +5357,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnCustomerInformation
 
-            CPServer.OnCustomerInformation += async (LogTimestamp,
-                                                     Sender,
-                                                     Request,
-                                                     CancellationToken) => {
+            ChargingStationServer.OnCustomerInformation += async (LogTimestamp,
+                                                                  Sender,
+                                                                  Request,
+                                                                  CancellationToken) => {
 
                 #region Send OnCustomerInformationRequest event
 
@@ -5226,7 +5381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                await Task.Delay(10);
+                await Task.Delay(10, CancellationToken);
 
 
                 CustomerInformationResponse? response = null;
@@ -7918,6 +8073,336 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnReportChargingProfilesResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyEVChargingSchedule             (NotifyEVChargingScheduleRequestId, TimeBase, EVSEId, ChargingSchedule, SelectedScheduleTupleId = null, PowerToleranceAcceptance = null, ...)
+
+        /// <summary>
+        /// Notify about an EV charging schedule.
+        /// </summary>
+        /// <param name="NotifyEVChargingScheduleRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting NotifyEVChargingScheduleRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
+        /// <param name="TimeBase">The charging periods contained within the charging schedule are relative to this time base.</param>
+        /// <param name="EVSEId">The charging schedule applies to this EVSE.</param>
+        /// <param name="ChargingSchedule">Planned energy consumption of the EV over time. Always relative to the time base.</param>
+        /// <param name="SelectedScheduleTupleId">The optional identification of the selected charging schedule from the provided charging profile.</param>
+        /// <param name="PowerToleranceAcceptance">True when power tolerance is accepted.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.NotifyEVChargingScheduleResponse>
+
+            NotifyEVChargingSchedule(Int32              NotifyEVChargingScheduleRequestId,
+                                     DateTime           TimeBase,
+                                     EVSE_Id            EVSEId,
+                                     ChargingSchedule   ChargingSchedule,
+                                     Byte?              SelectedScheduleTupleId    = null,
+                                     Boolean?           PowerToleranceAcceptance   = null,
+                                     CustomData?        CustomData                 = null,
+
+                                     Request_Id?        RequestId                  = null,
+                                     DateTime?          RequestTimestamp           = null,
+                                     TimeSpan?          RequestTimeout             = null,
+                                     EventTracking_Id?  EventTrackingId            = null,
+                                     CancellationToken  CancellationToken          = default)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new NotifyEVChargingScheduleRequest(
+                                 ChargeBoxId,
+                                 TimeBase,
+                                 EVSEId,
+                                 ChargingSchedule,
+                                 SelectedScheduleTupleId,
+                                 PowerToleranceAcceptance,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnNotifyEVChargingScheduleRequest event
+
+            try
+            {
+
+                OnNotifyEVChargingScheduleRequest?.Invoke(startTime,
+                                                          this,
+                                                          request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyEVChargingScheduleRequest));
+            }
+
+            #endregion
+
+
+            CSMS.NotifyEVChargingScheduleResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.NotifyEVChargingSchedule(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.NotifyEVChargingScheduleResponse(request,
+                                                                   Result.Server("Response is null!"));
+
+
+            #region Send OnNotifyEVChargingScheduleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEVChargingScheduleResponse?.Invoke(endTime,
+                                                           this,
+                                                           request,
+                                                           response,
+                                                           endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyEVChargingScheduleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyPriorityCharging               (NotifyPriorityChargingRequestId, TransactionId, Activated, ...)
+
+        /// <summary>
+        /// Notify about priority charging.
+        /// </summary>
+        /// <param name="NotifyPriorityChargingRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting NotifyPriorityChargingRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
+        /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
+        /// <param name="Activated">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.NotifyPriorityChargingResponse>
+
+            NotifyPriorityCharging(Int32              NotifyPriorityChargingRequestId,
+                                   Transaction_Id     TransactionId,
+                                   Boolean            Activated,
+                                   CustomData?        CustomData          = null,
+
+                                   Request_Id?        RequestId           = null,
+                                   DateTime?          RequestTimestamp    = null,
+                                   TimeSpan?          RequestTimeout      = null,
+                                   EventTracking_Id?  EventTrackingId     = null,
+                                   CancellationToken  CancellationToken   = default)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new NotifyPriorityChargingRequest(
+                                 ChargeBoxId,
+                                 TransactionId,
+                                 Activated,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnNotifyPriorityChargingRequest event
+
+            try
+            {
+
+                OnNotifyPriorityChargingRequest?.Invoke(startTime,
+                                                        this,
+                                                        request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyPriorityChargingRequest));
+            }
+
+            #endregion
+
+
+            CSMS.NotifyPriorityChargingResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.NotifyPriorityCharging(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.NotifyPriorityChargingResponse(request,
+                                                                 Result.Server("Response is null!"));
+
+
+            #region Send OnNotifyPriorityChargingResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyPriorityChargingResponse?.Invoke(endTime,
+                                                         this,
+                                                         request,
+                                                         response,
+                                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyPriorityChargingResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region PullDynamicScheduleUpdate            (PullDynamicScheduleUpdateRequestId, ChargingProfileId, ...)
+
+        /// <summary>
+        /// Report about all charging profiles.
+        /// </summary>
+        /// <param name="PullDynamicScheduleUpdateRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting PullDynamicScheduleUpdateRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
+        /// <param name="ChargingProfileId">The identification of the charging profile for which an update is requested.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.PullDynamicScheduleUpdateResponse>
+
+            PullDynamicScheduleUpdate(Int32               PullDynamicScheduleUpdateRequestId,
+                                      ChargingProfile_Id  ChargingProfileId,
+                                      CustomData?         CustomData          = null,
+
+                                      Request_Id?         RequestId           = null,
+                                      DateTime?           RequestTimestamp    = null,
+                                      TimeSpan?           RequestTimeout      = null,
+                                      EventTracking_Id?   EventTrackingId     = null,
+                                      CancellationToken   CancellationToken   = default)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new PullDynamicScheduleUpdateRequest(
+                                 ChargeBoxId,
+                                 ChargingProfileId,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnPullDynamicScheduleUpdateRequest event
+
+            try
+            {
+
+                OnPullDynamicScheduleUpdateRequest?.Invoke(startTime,
+                                                           this,
+                                                           request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnPullDynamicScheduleUpdateRequest));
+            }
+
+            #endregion
+
+
+            CSMS.PullDynamicScheduleUpdateResponse? response = null;
+
+            if (CSClient is not null)
+                response = await CSClient.PullDynamicScheduleUpdate(request);
+
+            if (response is not null)
+            {
+                
+            }
+
+            response ??= new CSMS.PullDynamicScheduleUpdateResponse(request,
+                                                                    Result.Server("Response is null!"));
+
+
+            #region Send OnPullDynamicScheduleUpdateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnPullDynamicScheduleUpdateResponse?.Invoke(endTime,
+                                                            this,
+                                                            request,
+                                                            response,
+                                                            endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnPullDynamicScheduleUpdateResponse));
             }
 
             #endregion

@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                CancellationToken  CancellationToken          = default)
 
             : base(ChargeBoxId,
-                   "NotifyEVChargingNeeds",
+                   "NotifyEVChargingSchedule",
                    CustomData,
                    RequestId,
                    RequestTimestamp,

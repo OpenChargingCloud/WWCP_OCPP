@@ -299,6 +299,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region GetCRL
+
+        /// <summary>
+        /// An event fired whenever a GetCRL request will be sent to the CSMS.
+        /// </summary>
+        public event OnGetCRLRequestDelegate?   OnGetCRLRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetCRL request was received.
+        /// </summary>
+        public event OnGetCRLResponseDelegate?  OnGetCRLResponse;
+
+        #endregion
+
 
         #region SendReservationStatusUpdate
 
@@ -423,6 +437,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event fired whenever a response to a ReportChargingProfiles request was received.
         /// </summary>
         public event OnReportChargingProfilesResponseDelegate?  OnReportChargingProfilesResponse;
+
+        #endregion
+
+        #region NotifyEVChargingSchedule
+
+        /// <summary>
+        /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
+        /// </summary>
+        public event OnNotifyEVChargingScheduleResponseDelegate?  OnNotifyEVChargingScheduleResponse;
+
+        #endregion
+
+        #region NotifyPriorityCharging
+
+        /// <summary>
+        /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyPriorityChargingRequestDelegate?   OnNotifyPriorityChargingRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyPriorityCharging request was received.
+        /// </summary>
+        public event OnNotifyPriorityChargingResponseDelegate?  OnNotifyPriorityChargingResponse;
+
+        #endregion
+
+        #region PullDynamicScheduleUpdate
+
+        /// <summary>
+        /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
+        /// </summary>
+        public event OnPullDynamicScheduleUpdateRequestDelegate?   OnPullDynamicScheduleUpdateRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
+        /// </summary>
+        public event OnPullDynamicScheduleUpdateResponseDelegate?  OnPullDynamicScheduleUpdateResponse;
 
         #endregion
 
@@ -2479,6 +2535,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
+            #region OnGetCRL
+
+            CSMSServer.OnGetCRL += async (LogTimestamp,
+                                          Sender,
+                                          Request,
+                                          CancellationToken) => {
+
+                #region Send OnGetCRLRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnGetCRLRequest?.Invoke(startTime,
+                                            this,
+                                            Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnGetCRLRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnGetCRL: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new GetCRLResponse(
+                                   Request:           Request,
+                                   GetCRLRequestId:   Request.GetCRLRequestId,
+                                   Status:            GenericStatus.Accepted,
+                                   StatusInfo:        null,
+                                   CustomData:        null
+                               );
+
+
+                #region Send OnGetCRLResponse event
+
+                try
+                {
+
+                    OnGetCRLResponse?.Invoke(Timestamp.Now,
+                                             this,
+                                             Request,
+                                             response,
+                                             Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnGetCRLResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
 
             #region OnReservationStatusUpdate
 
@@ -3162,8 +3300,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await Task.Delay(100, CancellationToken);
 
 
-                var response = new ReportChargingProfilesResponse(Request:      Request,
-                                                                  CustomData:   null);
+                var response = new ReportChargingProfilesResponse(
+                                   Request:      Request,
+                                   CustomData:   null
+                               );
 
 
                 #region Send OnReportChargingProfilesResponse event
@@ -3181,6 +3321,264 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 catch (Exception e)
                 {
                     DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnReportChargingProfilesResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnNotifyEVChargingSchedule
+
+            CSMSServer.OnNotifyEVChargingSchedule += async (LogTimestamp,
+                                                            Sender,
+                                                            Request,
+                                                            CancellationToken) => {
+
+                #region Send OnNotifyEVChargingScheduleRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyEVChargingScheduleRequest?.Invoke(startTime,
+                                                              this,
+                                                              Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyEVChargingScheduleRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnNotifyEVChargingSchedule: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new NotifyEVChargingScheduleResponse(
+                                   Request:      Request,
+                                   Status:       GenericStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+
+                #region Send OnNotifyEVChargingScheduleResponse event
+
+                try
+                {
+
+                    OnNotifyEVChargingScheduleResponse?.Invoke(Timestamp.Now,
+                                                               this,
+                                                               Request,
+                                                               response,
+                                                               Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyEVChargingScheduleResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnNotifyPriorityCharging
+
+            CSMSServer.OnNotifyPriorityCharging += async (LogTimestamp,
+                                                          Sender,
+                                                          Request,
+                                                          CancellationToken) => {
+
+                #region Send OnNotifyPriorityChargingRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnNotifyPriorityChargingRequest?.Invoke(startTime,
+                                                            this,
+                                                            Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyPriorityChargingRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnNotifyPriorityCharging: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new NotifyPriorityChargingResponse(
+                                   Request:      Request,
+                                   CustomData:   null
+                               );
+
+
+                #region Send OnNotifyPriorityChargingResponse event
+
+                try
+                {
+
+                    OnNotifyPriorityChargingResponse?.Invoke(Timestamp.Now,
+                                                             this,
+                                                             Request,
+                                                             response,
+                                                             Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnNotifyPriorityChargingResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnPullDynamicScheduleUpdate
+
+            CSMSServer.OnPullDynamicScheduleUpdate += async (LogTimestamp,
+                                                             Sender,
+                                                             Request,
+                                                             CancellationToken) => {
+
+                #region Send OnPullDynamicScheduleUpdateRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnPullDynamicScheduleUpdateRequest?.Invoke(startTime,
+                                                               this,
+                                                               Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnPullDynamicScheduleUpdateRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnPullDynamicScheduleUpdate: " + Request.ChargeBoxId);
+
+                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now));
+
+                }
+                else
+                {
+
+                    if (Sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMS, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                }
+
+
+                await Task.Delay(100, CancellationToken);
+
+
+                var response = new PullDynamicScheduleUpdateResponse(
+
+                                   Request:               Request,
+
+                                   Limit:                 ChargingRateValue.Parse( 1, ChargingRateUnits.Watts),
+                                   Limit_L2:              ChargingRateValue.Parse( 2, ChargingRateUnits.Watts),
+                                   Limit_L3:              ChargingRateValue.Parse( 3, ChargingRateUnits.Watts),
+
+                                   DischargeLimit:        ChargingRateValue.Parse(-4, ChargingRateUnits.Watts),
+                                   DischargeLimit_L2:     ChargingRateValue.Parse(-5, ChargingRateUnits.Watts),
+                                   DischargeLimit_L3:     ChargingRateValue.Parse(-6, ChargingRateUnits.Watts),
+
+                                   Setpoint:              ChargingRateValue.Parse( 7, ChargingRateUnits.Watts),
+                                   Setpoint_L2:           ChargingRateValue.Parse( 8, ChargingRateUnits.Watts),
+                                   Setpoint_L3:           ChargingRateValue.Parse( 9, ChargingRateUnits.Watts),
+
+                                   SetpointReactive:      ChargingRateValue.Parse(10, ChargingRateUnits.Watts),
+                                   SetpointReactive_L2:   ChargingRateValue.Parse(11, ChargingRateUnits.Watts),
+                                   SetpointReactive_L3:   ChargingRateValue.Parse(12, ChargingRateUnits.Watts),
+
+                                   CustomData:            null
+
+                               );
+
+
+                #region Send OnPullDynamicScheduleUpdateResponse event
+
+                try
+                {
+
+                    OnPullDynamicScheduleUpdateResponse?.Invoke(Timestamp.Now,
+                                                                this,
+                                                                Request,
+                                                                response,
+                                                                Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCSMS) + "." + nameof(OnPullDynamicScheduleUpdateResponse));
                 }
 
                 #endregion
@@ -5363,7 +5761,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region Reset                     (ChargeBoxId, ResetType, ...)
+        #region Reset                      (ChargeBoxId, ResetType, ...)
 
         /// <summary>
         /// Reset the given charging station.
@@ -5461,7 +5859,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region UpdateFirmware            (ChargeBoxId, Firmware, UpdateFirmwareRequestId, Retries = null, RetryInterval = null, ...)
+        #region UpdateFirmware             (ChargeBoxId, Firmware, UpdateFirmwareRequestId, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Initiate a firmware update of the given charging station.
@@ -5568,7 +5966,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region PublishFirmware           (ChargeBoxId, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
+        #region PublishFirmware            (ChargeBoxId, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Publish a firmware onto a local controller.
@@ -5678,7 +6076,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region UnpublishFirmware         (ChargeBoxId, MD5Checksum, ...)
+        #region UnpublishFirmware          (ChargeBoxId, MD5Checksum, ...)
 
         /// <summary>
         /// Unpublish a firmware from a local controller.
@@ -5776,7 +6174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region GetBaseReport             (ChargeBoxId, GetBaseReportRequestId, ReportBase, ...)
+        #region GetBaseReport              (ChargeBoxId, GetBaseReportRequestId, ReportBase, ...)
 
         /// <summary>
         /// Retrieve the base report from the charging station.
@@ -5877,7 +6275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region GetReport                 (ChargeBoxId, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
+        #region GetReport                  (ChargeBoxId, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
 
         /// <summary>
         /// Retrieve reports from the charging station.
@@ -5981,7 +6379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region GetLog                    (ChargeBoxId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
+        #region GetLog                     (ChargeBoxId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Retrieve log files from the charging station.
@@ -6092,7 +6490,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region SetVariables              (ChargeBoxId, VariableData, ...)
+        #region SetVariables               (ChargeBoxId, VariableData, ...)
 
         /// <summary>
         /// Set variable data on a charging station.
@@ -6190,7 +6588,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region GetVariables              (ChargeBoxId, VariableData, ...)
+        #region GetVariables               (ChargeBoxId, VariableData, ...)
 
         /// <summary>
         /// Get variable data from a charging station.
@@ -6288,7 +6686,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SetMonitoringBase         (ChargeBoxId, MonitoringBase, ...)
+        #region SetMonitoringBase          (ChargeBoxId, MonitoringBase, ...)
 
         /// <summary>
         /// Set the monitoring base of a charging station.
@@ -6386,7 +6784,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region GetMonitoringReport       (ChargeBoxId, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
+        #region GetMonitoringReport        (ChargeBoxId, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
 
         /// <summary>
         /// Get monitoring report from a charging station.
@@ -6490,7 +6888,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SetMonitoringLevel        (ChargeBoxId, Severity, ...)
+        #region SetMonitoringLevel         (ChargeBoxId, Severity, ...)
 
         /// <summary>
         /// Set the monitoring level on a charging station.
@@ -6588,7 +6986,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SetVariableMonitoring     (ChargeBoxId, MonitoringData, ...)
+        #region SetVariableMonitoring      (ChargeBoxId, MonitoringData, ...)
 
         /// <summary>
         /// Set a variable monitoring on a charging station.
@@ -6686,7 +7084,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ClearVariableMonitoring   (ChargeBoxId, VariableMonitoringIds, ...)
+        #region ClearVariableMonitoring    (ChargeBoxId, VariableMonitoringIds, ...)
 
         /// <summary>
         /// Delete a variable monitoring on a charging station.
@@ -6784,7 +7182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SetNetworkProfile         (ChargeBoxId, ConfigurationSlot, NetworkConnectionProfile, ...)
+        #region SetNetworkProfile          (ChargeBoxId, ConfigurationSlot, NetworkConnectionProfile, ...)
 
         /// <summary>
         /// Set the network profile of a charging station.
@@ -6885,7 +7283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ChangeAvailability        (ChargeBoxId, OperationalStatus, EVSE, ...)
+        #region ChangeAvailability         (ChargeBoxId, OperationalStatus, EVSE, ...)
 
         /// <summary>
         /// Change the availability of the given charge box.
@@ -6986,7 +7384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region TriggerMessage            (ChargeBoxId, RequestedMessage, EVSEId = null,...)
+        #region TriggerMessage             (ChargeBoxId, RequestedMessage, EVSEId = null,...)
 
         /// <summary>
         /// Create a trigger for the given message at the given charge box connector.
@@ -7087,7 +7485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region TransferData              (ChargeBoxId, VendorId, MessageId = null, Data = null, ...)
+        #region TransferData               (ChargeBoxId, VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Transfer the given data to the given charge box.
@@ -7192,7 +7590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region CertificateSigned         (ChargeBoxId, CertificateChain, CertificateType = null, ...)
+        #region CertificateSigned          (ChargeBoxId, CertificateChain, CertificateType = null, ...)
 
         /// <summary>
         /// Clear the local white liste cache of the given charge box.
@@ -7292,7 +7690,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region InstallCertificate        (ChargeBoxId, CertificateType, Certificate, ...)
+        #region InstallCertificate         (ChargeBoxId, CertificateType, Certificate, ...)
 
         /// <summary>
         /// Install the given certificate within the charging station.
@@ -7393,7 +7791,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region GetInstalledCertificateIds(ChargeBoxId, CertificateTypes, ...)
+        #region GetInstalledCertificateIds (ChargeBoxId, CertificateTypes, ...)
 
         /// <summary>
         /// Retrieve a list of all installed certificates within the charging station.
@@ -7491,7 +7889,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region DeleteCertificate         (ChargeBoxId, CertificateHashData, ...)
+        #region DeleteCertificate          (ChargeBoxId, CertificateHashData, ...)
 
         /// <summary>
         /// Delete the given certificate on the charging station.
@@ -7589,8 +7987,112 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region NotifyCRLAvailability      (ChargeBoxId, NotifyCRLRequestId, Availability, Location, ...)
 
-        #region GetLocalListVersion       (ChargeBoxId, ...)
+        /// <summary>
+        /// Delete the given certificate on the charging station.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NotifyCRLRequestId">An unique identification of this request.</param>
+        /// <param name="Availability">An availability status of the certificate revocation list.</param>
+        /// <param name="Location">An optional location of the certificate revocation list.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.NotifyCRLResponse>
+
+            NotifyCRLAvailability(ChargeBox_Id         ChargeBoxId,
+                                  Int32                NotifyCRLRequestId,
+                                  NotifyCRLStatus      Availability,
+                                  URL?                 Location,
+                                  CustomData?          CustomData          = null,
+
+                                  Request_Id?          RequestId           = null,
+                                  DateTime?            RequestTimestamp    = null,
+                                  TimeSpan?            RequestTimeout      = null,
+                                  EventTracking_Id?    EventTrackingId     = null,
+                                  CancellationToken    CancellationToken   = default)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new NotifyCRLRequest(
+                                 ChargeBoxId,
+                                 NotifyCRLRequestId,
+                                 Availability,
+                                 Location,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnNotifyCRLRequest event
+
+            try
+            {
+
+                OnNotifyCRLRequest?.Invoke(startTime,
+                                           this,
+                                           request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyCRLRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.NotifyCRL(request)
+
+                               : new CS.NotifyCRLResponse(request,
+                                                          Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnNotifyCRLResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyCRLResponse?.Invoke(endTime,
+                                            this,
+                                            request,
+                                            response,
+                                            endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyCRLResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        #region GetLocalListVersion        (ChargeBoxId, ...)
 
         /// <summary>
         /// Return the local white list of the given charge box.
@@ -7685,7 +8187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SendLocalList             (ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
+        #region SendLocalList              (ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
 
         /// <summary>
         /// Set the local white liste at the given charge box.
@@ -7789,7 +8291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ClearCache                (ChargeBoxId, ...)
+        #region ClearCache                 (ChargeBoxId, ...)
 
         /// <summary>
         /// Clear the local white liste cache of the given charge box.
@@ -7885,7 +8387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region ReserveNow                (ChargeBoxId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
+        #region ReserveNow                 (ChargeBoxId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
 
         /// <summary>
         /// Create a charging reservation of the given charge box connector.
@@ -7998,7 +8500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region CancelReservation         (ChargeBoxId, ReservationId, ...)
+        #region CancelReservation          (ChargeBoxId, ReservationId, ...)
 
         /// <summary>
         /// Cancel the given charging reservation at the given charge box.
@@ -8096,7 +8598,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region StartCharging             (ChargeBoxId, RequestStartTransactionRequestId, IdToken, EVSEId, ChargingProfile, GroupIdToken, ...)
+        #region StartCharging              (ChargeBoxId, RequestStartTransactionRequestId, IdToken, EVSEId, ChargingProfile, GroupIdToken, ...)
 
         /// <summary>
         /// Set the charging profile of the given charge box connector.
@@ -8206,7 +8708,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region StopCharging              (ChargeBoxId, TransactionId, ...)
+        #region StopCharging               (ChargeBoxId, TransactionId, ...)
 
         /// <summary>
         /// Set the charging profile of the given charge box connector.
@@ -8304,7 +8806,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region GetTransactionStatus      (ChargeBoxId, ConnectorId, ChargingProfile, ...)
+        #region GetTransactionStatus       (ChargeBoxId, ConnectorId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charge box connector.
@@ -8402,7 +8904,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SetChargingProfile        (ChargeBoxId, EVSEId, ChargingProfile, ...)
+        #region SetChargingProfile         (ChargeBoxId, EVSEId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charge box connector.
@@ -8503,7 +9005,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region GetChargingProfiles       (ChargeBoxId, EVSEId, ChargingProfile, ...)
+        #region GetChargingProfiles        (ChargeBoxId, EVSEId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charge box connector.
@@ -8606,7 +9108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ClearChargingProfile      (ChargeBoxId, ChargingProfileId, ChargingProfileCriteria, ...)
+        #region ClearChargingProfile       (ChargeBoxId, ChargingProfileId, ChargingProfileCriteria, ...)
 
         /// <summary>
         /// Remove the charging profile at the given charge box connector.
@@ -8707,7 +9209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region GetCompositeSchedule      (ChargeBoxId, Duration, EVSEId, ChargingRateUnit = null, ...)
+        #region GetCompositeSchedule       (ChargeBoxId, Duration, EVSEId, ChargingRateUnit = null, ...)
 
         /// <summary>
         /// Return the charging schedule of the given charge box connector.
@@ -8811,7 +9313,105 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region UnlockConnector           (ChargeBoxId, EVSEId, ConnectorId, ...)
+        #region NotifyAllowedEnergyTransfer(ChargeBoxId, AllowedEnergyTransferModes, ...)
+
+        /// <summary>
+        /// Unlock the given charge box connector.
+        /// </summary>
+        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="AllowedEnergyTransferModes">An enumeration of allowed energy transfer modes.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CS.NotifyAllowedEnergyTransferResponse>
+
+            NotifyAllowedEnergyTransfer(ChargeBox_Id                      ChargeBoxId,
+                                        IEnumerable<EnergyTransferModes>  AllowedEnergyTransferModes,
+                                        CustomData?                       CustomData          = null,
+
+                                        Request_Id?                       RequestId           = null,
+                                        DateTime?                         RequestTimestamp    = null,
+                                        TimeSpan?                         RequestTimeout      = null,
+                                        EventTracking_Id?                 EventTrackingId     = null,
+                                        CancellationToken                 CancellationToken   = default)
+
+        {
+
+            #region Create request
+
+            var startTime  = Timestamp.Now;
+
+            var request    = new NotifyAllowedEnergyTransferRequest(
+                                 ChargeBoxId,
+                                 AllowedEnergyTransferModes,
+                                 CustomData,
+
+                                 RequestId        ?? NextRequestId,
+                                 RequestTimestamp ?? startTime,
+                                 RequestTimeout   ?? DefaultRequestTimeout,
+                                 EventTrackingId,
+                                 CancellationToken
+                             );
+
+            #endregion
+
+            #region Send OnNotifyAllowedEnergyTransferRequest event
+
+            try
+            {
+
+                OnNotifyAllowedEnergyTransferRequest?.Invoke(startTime,
+                                                             this,
+                                                             request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyAllowedEnergyTransferRequest));
+            }
+
+            #endregion
+
+
+            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+
+                               ? await centralSystem.Item1.NotifyAllowedEnergyTransfer(request)
+
+                               : new CS.NotifyAllowedEnergyTransferResponse(request,
+                                                                            Result.Server("Unknown or unreachable charge box!"));
+
+
+            #region Send OnNotifyAllowedEnergyTransferResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyAllowedEnergyTransferResponse?.Invoke(endTime,
+                                                              this,
+                                                              request,
+                                                              response,
+                                                              endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyAllowedEnergyTransferResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region UnlockConnector             (ChargeBoxId, EVSEId, ConnectorId, ...)
 
         /// <summary>
         /// Unlock the given charge box connector.
@@ -8912,7 +9512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region AFRRSignal                (ChargeBoxId, ActivationTimestamp, Signal, ...)
+        #region SendAFRRSignal             (ChargeBoxId, ActivationTimestamp, Signal, ...)
 
         /// <summary>
         /// Send an aFRR signal to the charging station.
@@ -8931,16 +9531,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CS.AFRRSignalResponse>
 
-            AFRRSignal(ChargeBox_Id       ChargeBoxId,
-                       DateTime           ActivationTimestamp,
-                       AFRR_Signal        Signal,
-                       CustomData?        CustomData          = null,
+            SendAFRRSignal(ChargeBox_Id       ChargeBoxId,
+                           DateTime           ActivationTimestamp,
+                           AFRR_Signal        Signal,
+                           CustomData?        CustomData          = null,
 
-                       Request_Id?        RequestId           = null,
-                       DateTime?          RequestTimestamp    = null,
-                       TimeSpan?          RequestTimeout      = null,
-                       EventTracking_Id?  EventTrackingId     = null,
-                       CancellationToken  CancellationToken   = default)
+                           Request_Id?        RequestId           = null,
+                           DateTime?          RequestTimestamp    = null,
+                           TimeSpan?          RequestTimeout      = null,
+                           EventTracking_Id?  EventTrackingId     = null,
+                           CancellationToken  CancellationToken   = default)
 
         {
 
@@ -9016,7 +9616,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region SetDisplayMessage         (ChargeBoxId, Message, ...)
+        #region SetDisplayMessage          (ChargeBoxId, Message, ...)
 
         /// <summary>
         /// Set a display message.
@@ -9112,7 +9712,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region GetDisplayMessages        (ChargeBoxId, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null, ...)
+        #region GetDisplayMessages         (ChargeBoxId, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null, ...)
 
         /// <summary>
         /// Get all display messages.
@@ -9217,7 +9817,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ClearDisplayMessage       (ChargeBoxId, DisplayMessageId, ...)
+        #region ClearDisplayMessage        (ChargeBoxId, DisplayMessageId, ...)
 
         /// <summary>
         /// Remove a display message.
@@ -9313,7 +9913,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SendCostUpdated           (ChargeBoxId, TotalCost, TransactionId, ...)
+        #region SendCostUpdated            (ChargeBoxId, TotalCost, TransactionId, ...)
 
         /// <summary>
         /// Send updated total costs.
@@ -9412,7 +10012,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region RequestCustomerInformation(ChargeBoxId, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
+        #region RequestCustomerInformation (ChargeBoxId, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
 
         /// <summary>
         /// Request customer information.

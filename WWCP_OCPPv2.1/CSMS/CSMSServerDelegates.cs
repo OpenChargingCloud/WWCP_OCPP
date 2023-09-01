@@ -1134,6 +1134,150 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     #endregion
 
+    #region OnNotifyEVChargingSchedule
+
+    /// <summary>
+    /// A NotifyEVChargingSchedule request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    public delegate Task
+
+        OnNotifyEVChargingScheduleRequestDelegate(DateTime                          Timestamp,
+                                                  IEventSender                      Sender,
+                                                  NotifyEVChargingScheduleRequest   Request);
+
+
+    /// <summary>
+    /// A NotifyEVChargingSchedule at the given charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<NotifyEVChargingScheduleResponse>
+
+        OnNotifyEVChargingScheduleDelegate(DateTime                          Timestamp,
+                                           IEventSender                      Sender,
+                                           NotifyEVChargingScheduleRequest   Request,
+                                           CancellationToken                 CancellationToken);
+
+
+    /// <summary>
+    /// A NotifyEVChargingSchedule response.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="Response">The stop transaction response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task
+
+        OnNotifyEVChargingScheduleResponseDelegate(DateTime                           Timestamp,
+                                                   IEventSender                       Sender,
+                                                   NotifyEVChargingScheduleRequest    Request,
+                                                   NotifyEVChargingScheduleResponse   Response,
+                                                   TimeSpan                           Runtime);
+
+    #endregion
+
+    #region OnNotifyPriorityCharging
+
+    /// <summary>
+    /// A NotifyPriorityCharging request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    public delegate Task
+
+        OnNotifyPriorityChargingRequestDelegate(DateTime                        Timestamp,
+                                                IEventSender                    Sender,
+                                                NotifyPriorityChargingRequest   Request);
+
+
+    /// <summary>
+    /// A NotifyPriorityCharging at the given charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<NotifyPriorityChargingResponse>
+
+        OnNotifyPriorityChargingDelegate(DateTime                        Timestamp,
+                                         IEventSender                    Sender,
+                                         NotifyPriorityChargingRequest   Request,
+                                         CancellationToken               CancellationToken);
+
+
+    /// <summary>
+    /// A NotifyPriorityCharging response.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="Response">The stop transaction response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task
+
+        OnNotifyPriorityChargingResponseDelegate(DateTime                         Timestamp,
+                                                 IEventSender                     Sender,
+                                                 NotifyPriorityChargingRequest    Request,
+                                                 NotifyPriorityChargingResponse   Response,
+                                                 TimeSpan                         Runtime);
+
+    #endregion
+
+    #region OnPullDynamicScheduleUpdate
+
+    /// <summary>
+    /// A PullDynamicScheduleUpdate request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    public delegate Task
+
+        OnPullDynamicScheduleUpdateRequestDelegate(DateTime                           Timestamp,
+                                                   IEventSender                       Sender,
+                                                   PullDynamicScheduleUpdateRequest   Request);
+
+
+    /// <summary>
+    /// A PullDynamicScheduleUpdate at the given charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<PullDynamicScheduleUpdateResponse>
+
+        OnPullDynamicScheduleUpdateDelegate(DateTime                           Timestamp,
+                                            IEventSender                       Sender,
+                                            PullDynamicScheduleUpdateRequest   Request,
+                                            CancellationToken                  CancellationToken);
+
+
+    /// <summary>
+    /// A PullDynamicScheduleUpdate response.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The stop transaction request.</param>
+    /// <param name="Response">The stop transaction response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task
+
+        OnPullDynamicScheduleUpdateResponseDelegate(DateTime                            Timestamp,
+                                                    IEventSender                        Sender,
+                                                    PullDynamicScheduleUpdateRequest    Request,
+                                                    PullDynamicScheduleUpdateResponse   Response,
+                                                    TimeSpan                            Runtime);
+
+    #endregion
+
 
     #region OnNotifyDisplayMessages
 

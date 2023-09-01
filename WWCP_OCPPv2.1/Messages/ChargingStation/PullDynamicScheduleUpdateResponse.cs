@@ -114,20 +114,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region PullDynamicScheduleUpdateResponse(Request, Status, StatusInfo = null)
+        #region PullDynamicScheduleUpdateResponse(Request, Limit, ...)
 
         /// <summary>
         /// Create a pull dynamic schedule update response.
         /// </summary>
         /// <param name="Request">The pull dynamic schedule update request leading to this response.</param>
         /// 
-        /// <param name="Limit">Optional charging rate limit in chargingRateUnit.</param>
-        /// <param name="Limit_L2">Optional charging rate limit in chargingRateUnit on phase L2.</param>
-        /// <param name="Limit_L3">Optional charging rate limit in chargingRateUnit on phase L3.</param>
+        /// <param name="Limit">Optional charging rate limit in chargingRateUnit (&gt;= 0).</param>
+        /// <param name="Limit_L2">Optional charging rate limit in chargingRateUnit on phase L2 (&gt;= 0).</param>
+        /// <param name="Limit_L3">Optional charging rate limit in chargingRateUnit on phase L3 (&gt;= 0).</param>
         /// 
-        /// <param name="DischargeLimit">Optional discharging limit in chargingRateUnit.</param>
-        /// <param name="DischargeLimit_L2">Optional discharging limit in chargingRateUnit on phase L2.</param>
-        /// <param name="DischargeLimit_L3">Optional discharging limit in chargingRateUnit on phase L3.</param>
+        /// <param name="DischargeLimit">Optional discharging limit in chargingRateUnit (&lt;= 0).</param>
+        /// <param name="DischargeLimit_L2">Optional discharging limit in chargingRateUnit on phase L2 (&lt;= 0).</param>
+        /// <param name="DischargeLimit_L3">Optional discharging limit in chargingRateUnit on phase L3 (&lt;= 0).</param>
         /// 
         /// <param name="Setpoint">Optional setpoint in chargingRateUnit.</param>
         /// <param name="Setpoint_L2">Optional setpoint in chargingRateUnit on phase L2.</param>
@@ -163,6 +163,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CustomData)
 
         {
+
+            #region (Discharge)Limit checks
+
+            if (Limit.HasValue && Limit.Value.Value < 0)
+                throw new ArgumentException($"The given charging rate limit (for phase L1) {Limit.Value.Value} must not be negative!",
+                                            nameof(Limit));
+
+            if (Limit_L2.HasValue && Limit_L2.Value.Value < 0)
+                throw new ArgumentException($"The given charging rate limit for phase L2 {Limit_L2.Value.Value} must not be negative!",
+                                            nameof(Limit_L2));
+
+            if (Limit_L3.HasValue && Limit_L3.Value.Value < 0)
+                throw new ArgumentException($"The given charging rate limit for phase L3 {Limit_L3.Value.Value} must not be negative!",
+                                            nameof(Limit_L3));
+
+
+            if (DischargeLimit.HasValue && DischargeLimit.Value.Value > 0)
+                throw new ArgumentException($"The given discharging rate limit (for phase L1) {DischargeLimit.Value.Value} must not be positive!",
+                                            nameof(DischargeLimit));
+
+            if (DischargeLimit_L2.HasValue && DischargeLimit_L2.Value.Value > 0)
+                throw new ArgumentException($"The given discharging rate limit for phase L2 {DischargeLimit_L2.Value.Value} must not be positive!",
+                                            nameof(DischargeLimit_L2));
+
+            if (DischargeLimit_L3.HasValue && DischargeLimit_L3.Value.Value > 0)
+                throw new ArgumentException($"The given discharging rate limit for phase L3 {DischargeLimit_L3.Value.Value} must not be positive!",
+                                            nameof(DischargeLimit_L3));
+
+            #endregion
 
             this.Limit                = Limit;
             this.Limit_L2             = Limit_L2;

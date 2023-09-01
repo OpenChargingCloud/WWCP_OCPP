@@ -454,6 +454,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region OnNotifyCRL
+
+        /// <summary>
+        /// An event sent whenever a delete certificate request was received.
+        /// </summary>
+        event OnNotifyCRLRequestDelegate    OnNotifyCRLRequest;
+
+        /// <summary>
+        /// An event sent whenever a delete certificate was received.
+        /// </summary>
+        event OnNotifyCRLDelegate           OnNotifyCRL;
+
+        /// <summary>
+        /// An event sent whenever a response to a delete certificate request was sent.
+        /// </summary>
+        event OnNotifyCRLResponseDelegate   OnNotifyCRLResponse;
+
+        #endregion
+
 
         #region OnGetLocalListVersion
 

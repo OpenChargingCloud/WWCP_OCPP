@@ -2401,6 +2401,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        // UsePriorityChargingRequest
+
+        // UpdateDynamicScheduleRequest
+
         #region UnlockConnector
 
         /// <summary>
@@ -2414,11 +2418,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
 
         #endregion
-
-
-        // UsePriorityChargingRequest
-
-        // UpdateDynamicScheduleRequest
 
 
         #region AFRRSignal

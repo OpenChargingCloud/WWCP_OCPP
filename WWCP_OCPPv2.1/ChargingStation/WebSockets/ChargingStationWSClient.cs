@@ -172,51 +172,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<ResetRequest>?                       CustomResetRequestParser                         { get; set; }
-        public CustomJObjectParserDelegate<UpdateFirmwareRequest>?              CustomUpdateFirmwareRequestParser                { get; set; }
-        public CustomJObjectParserDelegate<PublishFirmwareRequest>?             CustomPublishFirmwareRequestParser               { get; set; }
-        public CustomJObjectParserDelegate<UnpublishFirmwareRequest>?           CustomUnpublishFirmwareRequestParser             { get; set; }
-        public CustomJObjectParserDelegate<GetBaseReportRequest>?               CustomGetBaseReportRequestParser                 { get; set; }
-        public CustomJObjectParserDelegate<GetReportRequest>?                   CustomGetReportRequestParser                     { get; set; }
-        public CustomJObjectParserDelegate<GetLogRequest>?                      CustomGetLogRequestParser                        { get; set; }
-        public CustomJObjectParserDelegate<SetVariablesRequest>?                CustomSetVariablesRequestParser                  { get; set; }
-        public CustomJObjectParserDelegate<GetVariablesRequest>?                CustomGetVariablesRequestParser                  { get; set; }
-        public CustomJObjectParserDelegate<SetMonitoringBaseRequest>?           CustomSetMonitoringBaseRequestParser             { get; set; }
-        public CustomJObjectParserDelegate<GetMonitoringReportRequest>?         CustomGetMonitoringReportRequestParser           { get; set; }
-        public CustomJObjectParserDelegate<SetMonitoringLevelRequest>?          CustomSetMonitoringLevelRequestParser            { get; set; }
-        public CustomJObjectParserDelegate<SetVariableMonitoringRequest>?       CustomSetVariableMonitoringRequestParser         { get; set; }
-        public CustomJObjectParserDelegate<ClearVariableMonitoringRequest>?     CustomClearVariableMonitoringRequestParser       { get; set; }
-        public CustomJObjectParserDelegate<SetNetworkProfileRequest>?           CustomSetNetworkProfileRequestParser             { get; set; }
-        public CustomJObjectParserDelegate<ChangeAvailabilityRequest>?          CustomChangeAvailabilityRequestParser            { get; set; }
-        public CustomJObjectParserDelegate<TriggerMessageRequest>?              CustomTriggerMessageRequestParser                { get; set; }
-        public CustomJObjectParserDelegate<CSMS.DataTransferRequest>?           CustomIncomingDataTransferRequestParser          { get; set; }
+        public CustomJObjectParserDelegate<ResetRequest>?                        CustomResetRequestParser                         { get; set; }
+        public CustomJObjectParserDelegate<UpdateFirmwareRequest>?               CustomUpdateFirmwareRequestParser                { get; set; }
+        public CustomJObjectParserDelegate<PublishFirmwareRequest>?              CustomPublishFirmwareRequestParser               { get; set; }
+        public CustomJObjectParserDelegate<UnpublishFirmwareRequest>?            CustomUnpublishFirmwareRequestParser             { get; set; }
+        public CustomJObjectParserDelegate<GetBaseReportRequest>?                CustomGetBaseReportRequestParser                 { get; set; }
+        public CustomJObjectParserDelegate<GetReportRequest>?                    CustomGetReportRequestParser                     { get; set; }
+        public CustomJObjectParserDelegate<GetLogRequest>?                       CustomGetLogRequestParser                        { get; set; }
+        public CustomJObjectParserDelegate<SetVariablesRequest>?                 CustomSetVariablesRequestParser                  { get; set; }
+        public CustomJObjectParserDelegate<GetVariablesRequest>?                 CustomGetVariablesRequestParser                  { get; set; }
+        public CustomJObjectParserDelegate<SetMonitoringBaseRequest>?            CustomSetMonitoringBaseRequestParser             { get; set; }
+        public CustomJObjectParserDelegate<GetMonitoringReportRequest>?          CustomGetMonitoringReportRequestParser           { get; set; }
+        public CustomJObjectParserDelegate<SetMonitoringLevelRequest>?           CustomSetMonitoringLevelRequestParser            { get; set; }
+        public CustomJObjectParserDelegate<SetVariableMonitoringRequest>?        CustomSetVariableMonitoringRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<ClearVariableMonitoringRequest>?      CustomClearVariableMonitoringRequestParser       { get; set; }
+        public CustomJObjectParserDelegate<SetNetworkProfileRequest>?            CustomSetNetworkProfileRequestParser             { get; set; }
+        public CustomJObjectParserDelegate<ChangeAvailabilityRequest>?           CustomChangeAvailabilityRequestParser            { get; set; }
+        public CustomJObjectParserDelegate<TriggerMessageRequest>?               CustomTriggerMessageRequestParser                { get; set; }
+        public CustomJObjectParserDelegate<CSMS.DataTransferRequest>?            CustomIncomingDataTransferRequestParser          { get; set; }
 
-        public CustomJObjectParserDelegate<CertificateSignedRequest>?           CustomCertificateSignedRequestParser             { get; set; }
-        public CustomJObjectParserDelegate<InstallCertificateRequest>?          CustomInstallCertificateRequestParser            { get; set; }
-        public CustomJObjectParserDelegate<GetInstalledCertificateIdsRequest>?  CustomGetInstalledCertificateIdsRequestParser    { get; set; }
-        public CustomJObjectParserDelegate<DeleteCertificateRequest>?           CustomDeleteCertificateRequestParser             { get; set; }
+        public CustomJObjectParserDelegate<CertificateSignedRequest>?            CustomCertificateSignedRequestParser             { get; set; }
+        public CustomJObjectParserDelegate<InstallCertificateRequest>?           CustomInstallCertificateRequestParser            { get; set; }
+        public CustomJObjectParserDelegate<GetInstalledCertificateIdsRequest>?   CustomGetInstalledCertificateIdsRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<DeleteCertificateRequest>?            CustomDeleteCertificateRequestParser             { get; set; }
+        public CustomJObjectParserDelegate<NotifyCRLRequest>?                    CustomNotifyCRLRequestParser                     { get; set; }
 
-        public CustomJObjectParserDelegate<GetLocalListVersionRequest>?         CustomGetLocalListVersionRequestParser           { get; set; }
-        public CustomJObjectParserDelegate<SendLocalListRequest>?               CustomSendLocalListRequestParser                 { get; set; }
-        public CustomJObjectParserDelegate<ClearCacheRequest>?                  CustomClearCacheRequestParser                    { get; set; }
+        public CustomJObjectParserDelegate<GetLocalListVersionRequest>?          CustomGetLocalListVersionRequestParser           { get; set; }
+        public CustomJObjectParserDelegate<SendLocalListRequest>?                CustomSendLocalListRequestParser                 { get; set; }
+        public CustomJObjectParserDelegate<ClearCacheRequest>?                   CustomClearCacheRequestParser                    { get; set; }
 
-        public CustomJObjectParserDelegate<ReserveNowRequest>?                  CustomReserveNowRequestParser                    { get; set; }
-        public CustomJObjectParserDelegate<CancelReservationRequest>?           CustomCancelReservationRequestParser             { get; set; }
+        public CustomJObjectParserDelegate<ReserveNowRequest>?                   CustomReserveNowRequestParser                    { get; set; }
+        public CustomJObjectParserDelegate<CancelReservationRequest>?            CustomCancelReservationRequestParser             { get; set; }
 
-        public CustomJObjectParserDelegate<RequestStartTransactionRequest>?     CustomRequestStartTransactionRequestParser       { get; set; }
-        public CustomJObjectParserDelegate<RequestStopTransactionRequest>?      CustomRequestStopTransactionRequestParser        { get; set; }
-        public CustomJObjectParserDelegate<GetTransactionStatusRequest>?        CustomGetTransactionStatusRequestParser          { get; set; }
-        public CustomJObjectParserDelegate<SetChargingProfileRequest>?          CustomSetChargingProfileRequestParser            { get; set; }
-        public CustomJObjectParserDelegate<GetChargingProfilesRequest>?         CustomGetChargingProfilesRequestParser           { get; set; }
-        public CustomJObjectParserDelegate<ClearChargingProfileRequest>?        CustomClearChargingProfileRequestParser          { get; set; }
-        public CustomJObjectParserDelegate<GetCompositeScheduleRequest>?        CustomGetCompositeScheduleRequestParser          { get; set; }
-        public CustomJObjectParserDelegate<UnlockConnectorRequest>?             CustomUnlockConnectorRequestParser               { get; set; }
+        public CustomJObjectParserDelegate<RequestStartTransactionRequest>?      CustomRequestStartTransactionRequestParser       { get; set; }
+        public CustomJObjectParserDelegate<RequestStopTransactionRequest>?       CustomRequestStopTransactionRequestParser        { get; set; }
+        public CustomJObjectParserDelegate<GetTransactionStatusRequest>?         CustomGetTransactionStatusRequestParser          { get; set; }
+        public CustomJObjectParserDelegate<SetChargingProfileRequest>?           CustomSetChargingProfileRequestParser            { get; set; }
+        public CustomJObjectParserDelegate<GetChargingProfilesRequest>?          CustomGetChargingProfilesRequestParser           { get; set; }
+        public CustomJObjectParserDelegate<ClearChargingProfileRequest>?         CustomClearChargingProfileRequestParser          { get; set; }
+        public CustomJObjectParserDelegate<GetCompositeScheduleRequest>?         CustomGetCompositeScheduleRequestParser          { get; set; }
 
-        public CustomJObjectParserDelegate<SetDisplayMessageRequest>?           CustomSetDisplayMessageRequestParser             { get; set; }
-        public CustomJObjectParserDelegate<GetDisplayMessagesRequest>?          CustomGetDisplayMessagesRequestParser            { get; set; }
-        public CustomJObjectParserDelegate<ClearDisplayMessageRequest>?         CustomClearDisplayMessageRequestParser           { get; set; }
-        public CustomJObjectParserDelegate<CostUpdatedRequest>?                 CustomCostUpdatedRequestParser                   { get; set; }
-        public CustomJObjectParserDelegate<CustomerInformationRequest>?         CustomCustomerInformationRequestParser           { get; set; }
+        public CustomJObjectParserDelegate<NotifyAllowedEnergyTransferRequest>?  CustomNotifyAllowedEnergyTransferRequestParser   { get; set; }
+        public CustomJObjectParserDelegate<UnlockConnectorRequest>?              CustomUnlockConnectorRequestParser               { get; set; }
+
+        public CustomJObjectParserDelegate<AFRRSignalRequest>?                   CustomAFRRSignalRequestParser                    { get; set; }
+
+        public CustomJObjectParserDelegate<SetDisplayMessageRequest>?            CustomSetDisplayMessageRequestParser             { get; set; }
+        public CustomJObjectParserDelegate<GetDisplayMessagesRequest>?           CustomGetDisplayMessagesRequestParser            { get; set; }
+        public CustomJObjectParserDelegate<ClearDisplayMessageRequest>?          CustomClearDisplayMessageRequestParser           { get; set; }
+        public CustomJObjectParserDelegate<CostUpdatedRequest>?                  CustomCostUpdatedRequestParser                   { get; set; }
+        public CustomJObjectParserDelegate<CustomerInformationRequest>?          CustomCustomerInformationRequestParser           { get; set; }
 
         #endregion
 
@@ -268,6 +273,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public CustomJObjectSerializerDelegate<ClearedChargingLimitRequest>?               CustomClearedChargingLimitRequestSerializer                 { get; set; }
 
         public CustomJObjectSerializerDelegate<ReportChargingProfilesRequest>?             CustomReportChargingProfilesRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<NotifyEVChargingScheduleRequest>?           CustomNotifyEVChargingScheduleRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<NotifyPriorityChargingRequest>?             CustomNotifyPriorityChargingRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<PullDynamicScheduleUpdateRequest>?          CustomPullDynamicScheduleUpdateRequestSerializer            { get; set; }
 
         public CustomJObjectSerializerDelegate<NotifyDisplayMessagesRequest>?              CustomNotifyDisplayMessagesRequestSerializer                { get; set; }
 
@@ -876,24 +887,96 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region OnReportChargingProfilesRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a report charging profiles request will be sent to the CSMS.
+        /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
         /// </summary>
         public event OnReportChargingProfilesRequestDelegate?     OnReportChargingProfilesRequest;
 
         /// <summary>
-        /// An event fired whenever a report charging profiles request will be sent to the CSMS.
+        /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                     OnReportChargingProfilesWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a report charging profiles request was received.
+        /// An event fired whenever a response to a ReportChargingProfiles request was received.
         /// </summary>
         public event ClientResponseLogHandler?                    OnReportChargingProfilesWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a report charging profiles request was received.
+        /// An event fired whenever a response to a ReportChargingProfiles request was received.
         /// </summary>
         public event OnReportChargingProfilesResponseDelegate?    OnReportChargingProfilesResponse;
+
+        #endregion
+
+        #region OnNotifyEVChargingScheduleRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyEVChargingScheduleRequestDelegate?     OnNotifyEVChargingScheduleRequest;
+
+        /// <summary>
+        /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                       OnNotifyEVChargingScheduleWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                      OnNotifyEVChargingScheduleWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
+        /// </summary>
+        public event OnNotifyEVChargingScheduleResponseDelegate?    OnNotifyEVChargingScheduleResponse;
+
+        #endregion
+
+        #region OnNotifyPriorityChargingRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
+        /// </summary>
+        public event OnNotifyPriorityChargingRequestDelegate?     OnNotifyPriorityChargingRequest;
+
+        /// <summary>
+        /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                     OnNotifyPriorityChargingWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyPriorityCharging request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                    OnNotifyPriorityChargingWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a NotifyPriorityCharging request was received.
+        /// </summary>
+        public event OnNotifyPriorityChargingResponseDelegate?    OnNotifyPriorityChargingResponse;
+
+        #endregion
+
+        #region OnPullDynamicScheduleUpdateRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
+        /// </summary>
+        public event OnPullDynamicScheduleUpdateRequestDelegate?     OnPullDynamicScheduleUpdateRequest;
+
+        /// <summary>
+        /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                        OnPullDynamicScheduleUpdateWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                       OnPullDynamicScheduleUpdateWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
+        /// </summary>
+        public event OnPullDynamicScheduleUpdateResponseDelegate?    OnPullDynamicScheduleUpdateResponse;
 
         #endregion
 
@@ -5255,6 +5338,138 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         }
                         break;
 
+                    case "NotifyCRL":
+                        {
+
+                            #region Send OnNotifyCRLWSRequest event
+
+                            try
+                            {
+
+                                OnNotifyCRLWSRequest?.Invoke(Timestamp.Now,
+                                                             this,
+                                                             requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyCRLWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (NotifyCRLRequest.TryParse(requestMessage.Message,
+                                                              requestMessage.RequestId,
+                                                              ChargeBoxIdentity,
+                                                              out var request,
+                                                              out var errorResponse,
+                                                              CustomNotifyCRLRequestParser) && request is not null) {
+
+                                    #region Send OnNotifyCRLRequest event
+
+                                    try
+                                    {
+
+                                        OnNotifyCRLRequest?.Invoke(Timestamp.Now,
+                                                                   this,
+                                                                   request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyCRLRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    NotifyCRLResponse? response = null;
+
+                                    var results = OnNotifyCRL?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnNotifyCRLDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                           this,
+                                                                                                                           request,
+                                                                                                                           cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= NotifyCRLResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnNotifyCRLResponse event
+
+                                    try
+                                    {
+
+                                        OnNotifyCRLResponse?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    request,
+                                                                    response,
+                                                                    response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyCRLResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnNotifyCRLWSResponse event
+
+                            try
+                            {
+
+                                OnNotifyCRLWSResponse?.Invoke(Timestamp.Now,
+                                                              this,
+                                                              requestJSON,
+                                                              new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                 OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyCRLWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
 
                     case "GetLocalListVersion":
                         {
@@ -6841,6 +7056,138 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         }
                         break;
 
+                    case "NotifyAllowedEnergyTransfer":
+                        {
+
+                            #region Send OnNotifyAllowedEnergyTransferWSRequest event
+
+                            try
+                            {
+
+                                OnNotifyAllowedEnergyTransferWSRequest?.Invoke(Timestamp.Now,
+                                                                               this,
+                                                                               requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyAllowedEnergyTransferWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (NotifyAllowedEnergyTransferRequest.TryParse(requestMessage.Message,
+                                                                                requestMessage.RequestId,
+                                                                                ChargeBoxIdentity,
+                                                                                out var request,
+                                                                                out var errorResponse,
+                                                                                CustomNotifyAllowedEnergyTransferRequestParser) && request is not null) {
+
+                                    #region Send OnNotifyAllowedEnergyTransferRequest event
+
+                                    try
+                                    {
+
+                                        OnNotifyAllowedEnergyTransferRequest?.Invoke(Timestamp.Now,
+                                                                                     this,
+                                                                                     request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyAllowedEnergyTransferRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    NotifyAllowedEnergyTransferResponse? response = null;
+
+                                    var results = OnNotifyAllowedEnergyTransfer?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnNotifyAllowedEnergyTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                             this,
+                                                                                                                                             request,
+                                                                                                                                             cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= NotifyAllowedEnergyTransferResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnNotifyAllowedEnergyTransferResponse event
+
+                                    try
+                                    {
+
+                                        OnNotifyAllowedEnergyTransferResponse?.Invoke(Timestamp.Now,
+                                                                                      this,
+                                                                                      request,
+                                                                                      response,
+                                                                                      response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyAllowedEnergyTransferResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnNotifyAllowedEnergyTransferWSResponse event
+
+                            try
+                            {
+
+                                OnNotifyAllowedEnergyTransferWSResponse?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                requestJSON,
+                                                                                new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                                   OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyAllowedEnergyTransferWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
                     case "UnlockConnector":
                         {
 
@@ -6966,6 +7313,139 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                             catch (Exception e)
                             {
                                 DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUnlockConnectorWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+
+                    case "AFRRSignal":
+                        {
+
+                            #region Send OnAFRRSignalWSRequest event
+
+                            try
+                            {
+
+                                OnAFRRSignalWSRequest?.Invoke(Timestamp.Now,
+                                                              this,
+                                                              requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnAFRRSignalWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (AFRRSignalRequest.TryParse(requestMessage.Message,
+                                                               requestMessage.RequestId,
+                                                               ChargeBoxIdentity,
+                                                               out var request,
+                                                               out var errorResponse,
+                                                               CustomAFRRSignalRequestParser) && request is not null) {
+
+                                    #region Send OnAFRRSignalRequest event
+
+                                    try
+                                    {
+
+                                        OnAFRRSignalRequest?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnAFRRSignalRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    AFRRSignalResponse? response = null;
+
+                                    var results = OnAFRRSignal?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnAFRRSignalDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                            this,
+                                                                                                                            request,
+                                                                                                                            cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= AFRRSignalResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnAFRRSignalResponse event
+
+                                    try
+                                    {
+
+                                        OnAFRRSignalResponse?.Invoke(Timestamp.Now,
+                                                                     this,
+                                                                     request,
+                                                                     response,
+                                                                     response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnAFRRSignalResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnAFRRSignalWSResponse event
+
+                            try
+                            {
+
+                                OnAFRRSignalWSResponse?.Invoke(Timestamp.Now,
+                                                               this,
+                                                               requestJSON,
+                                                               new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                  OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnAFRRSignalWSResponse));
                             }
 
                             #endregion
@@ -7639,12 +8119,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 if (OCPPResponseJSON is not null)
                 {
 
-                    SendText(new OCPP_WebSocket_ResponseMessage(
-                                 requestMessage.RequestId,
-                                 OCPPResponseJSON).
-                                 ToJSON().
-                                 ToString(JSONFormatting));
-
+                    await SendText(new OCPP_WebSocket_ResponseMessage(
+                                       requestMessage.RequestId,
+                                       OCPPResponseJSON).
+                                       ToJSON().
+                                       ToString(JSONFormatting));
 
                     #region OnTextMessageResponseSent
 
@@ -10144,9 +10623,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 {
 
                     if (ReportChargingProfilesResponse.TryParse(Request,
-                                                          sendRequestState.Response,
-                                                          out var reportChargingProfilesResponse,
-                                                          out var errorResponse) &&
+                                                                sendRequestState.Response,
+                                                                out var reportChargingProfilesResponse,
+                                                                out var errorResponse) &&
                         reportChargingProfilesResponse is not null)
                     {
                         response = reportChargingProfilesResponse;
@@ -10183,6 +10662,321 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnReportChargingProfilesResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyEVChargingSchedule             (Request)
+
+        /// <summary>
+        /// Notify about an EV charging schedule.
+        /// </summary>
+        /// <param name="Request">A NotifyEVChargingSchedule request.</param>
+        public async Task<NotifyEVChargingScheduleResponse>
+
+            NotifyEVChargingSchedule(NotifyEVChargingScheduleRequest  Request)
+
+        {
+
+            #region Send OnNotifyEVChargingScheduleRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEVChargingScheduleRequest?.Invoke(startTime,
+                                                          this,
+                                                          Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyEVChargingScheduleRequest));
+            }
+
+            #endregion
+
+
+            NotifyEVChargingScheduleResponse? response = null;
+
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomNotifyEVChargingScheduleRequestSerializer,
+                                                                  CustomChargingScheduleSerializer,
+                                                                  CustomChargingSchedulePeriodSerializer,
+                                                                  CustomV2XFreqWattEntrySerializer,
+                                                                  CustomV2XSignalWattEntrySerializer,
+                                                                  CustomSalesTariffSerializer,
+                                                                  CustomSalesTariffEntrySerializer,
+                                                                  CustomRelativeTimeIntervalSerializer,
+                                                                  CustomConsumptionCostSerializer,
+                                                                  CustomCostSerializer,
+
+                                                                  CustomAbsolutePriceScheduleSerializer,
+                                                                  CustomPriceRuleStackSerializer,
+                                                                  CustomPriceRuleSerializer,
+                                                                  CustomTaxRuleSerializer,
+                                                                  CustomOverstayRuleListSerializer,
+                                                                  CustomOverstayRuleSerializer,
+                                                                  CustomAdditionalServiceSerializer,
+
+                                                                  CustomPriceLevelScheduleSerializer,
+                                                                  CustomPriceLevelScheduleEntrySerializer,
+
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
+            {
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (NotifyEVChargingScheduleResponse.TryParse(Request,
+                                                                  sendRequestState.Response,
+                                                                  out var reportChargingProfilesResponse,
+                                                                  out var errorResponse) &&
+                        reportChargingProfilesResponse is not null)
+                    {
+                        response = reportChargingProfilesResponse;
+                    }
+
+                    response ??= new NotifyEVChargingScheduleResponse(Request,
+                                                                      Result.Format(errorResponse));
+
+                }
+
+                response ??= new NotifyEVChargingScheduleResponse(Request,
+                                                                  Result.FromSendRequestState(sendRequestState));
+
+            }
+
+            response ??= new NotifyEVChargingScheduleResponse(Request,
+                                                              Result.GenericError(requestMessage.ErrorMessage));
+
+
+            #region Send OnNotifyEVChargingScheduleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyEVChargingScheduleResponse?.Invoke(endTime,
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyEVChargingScheduleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region NotifyPriorityCharging               (Request)
+
+        /// <summary>
+        /// Notify about priority charging.
+        /// </summary>
+        /// <param name="Request">A NotifyPriorityCharging request.</param>
+        public async Task<NotifyPriorityChargingResponse>
+
+            NotifyPriorityCharging(NotifyPriorityChargingRequest  Request)
+
+        {
+
+            #region Send OnNotifyPriorityChargingRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyPriorityChargingRequest?.Invoke(startTime,
+                                                        this,
+                                                        Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyPriorityChargingRequest));
+            }
+
+            #endregion
+
+
+            NotifyPriorityChargingResponse? response = null;
+
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomNotifyPriorityChargingRequestSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
+            {
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (NotifyPriorityChargingResponse.TryParse(Request,
+                                                                sendRequestState.Response,
+                                                                out var reportChargingProfilesResponse,
+                                                                out var errorResponse) &&
+                        reportChargingProfilesResponse is not null)
+                    {
+                        response = reportChargingProfilesResponse;
+                    }
+
+                    response ??= new NotifyPriorityChargingResponse(Request,
+                                                                    Result.Format(errorResponse));
+
+                }
+
+                response ??= new NotifyPriorityChargingResponse(Request,
+                                                                Result.FromSendRequestState(sendRequestState));
+
+            }
+
+            response ??= new NotifyPriorityChargingResponse(Request,
+                                                            Result.GenericError(requestMessage.ErrorMessage));
+
+
+            #region Send OnNotifyPriorityChargingResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnNotifyPriorityChargingResponse?.Invoke(endTime,
+                                                         this,
+                                                         Request,
+                                                         response,
+                                                         endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyPriorityChargingResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region PullDynamicScheduleUpdate            (Request)
+
+        /// <summary>
+        /// Pull a dynamic schedule update.
+        /// </summary>
+        /// <param name="Request">A PullDynamicScheduleUpdate request.</param>
+        public async Task<PullDynamicScheduleUpdateResponse>
+
+            PullDynamicScheduleUpdate(PullDynamicScheduleUpdateRequest  Request)
+
+        {
+
+            #region Send OnPullDynamicScheduleUpdateRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnPullDynamicScheduleUpdateRequest?.Invoke(startTime,
+                                                           this,
+                                                           Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnPullDynamicScheduleUpdateRequest));
+            }
+
+            #endregion
+
+
+            PullDynamicScheduleUpdateResponse? response = null;
+
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToJSON(CustomPullDynamicScheduleUpdateRequestSerializer,
+                                                                  CustomCustomDataSerializer));
+
+            if (requestMessage.NoErrors)
+            {
+
+                var sendRequestState = await WaitForResponse(requestMessage);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
+                {
+
+                    if (PullDynamicScheduleUpdateResponse.TryParse(Request,
+                                                                   sendRequestState.Response,
+                                                                   out var reportChargingProfilesResponse,
+                                                                   out var errorResponse) &&
+                        reportChargingProfilesResponse is not null)
+                    {
+                        response = reportChargingProfilesResponse;
+                    }
+
+                    response ??= new PullDynamicScheduleUpdateResponse(Request,
+                                                                       Result.Format(errorResponse));
+
+                }
+
+                response ??= new PullDynamicScheduleUpdateResponse(Request,
+                                                                   Result.FromSendRequestState(sendRequestState));
+
+            }
+
+            response ??= new PullDynamicScheduleUpdateResponse(Request,
+                                                               Result.GenericError(requestMessage.ErrorMessage));
+
+
+            #region Send OnPullDynamicScheduleUpdateResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnPullDynamicScheduleUpdateResponse?.Invoke(endTime,
+                                                            this,
+                                                            Request,
+                                                            response,
+                                                            endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnPullDynamicScheduleUpdateResponse));
             }
 
             #endregion

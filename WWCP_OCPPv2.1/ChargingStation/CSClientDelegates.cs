@@ -647,7 +647,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     #region OnReportChargingProfiles
 
     /// <summary>
-    /// A delegate called whenever a report charging profiles request will be sent to the CSMS.
+    /// A delegate called whenever a ReportChargingProfiles request will be sent to the CSMS.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -657,7 +657,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                  ReportChargingProfilesRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a report charging profiles request was received.
+    /// A delegate called whenever a response to a ReportChargingProfiles request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -669,6 +669,90 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                   ReportChargingProfilesRequest    Request,
                                                                   ReportChargingProfilesResponse   Response,
                                                                   TimeSpan                         Runtime);
+
+    #endregion
+
+    #region OnNotifyEVChargingSchedule
+
+    /// <summary>
+    /// A delegate called whenever a report charging profiles request will be sent to the CSMS.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnNotifyEVChargingScheduleRequestDelegate(DateTime                          Timestamp,
+                                                                   IEventSender                      Sender,
+                                                                   NotifyEVChargingScheduleRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a report charging profiles request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnNotifyEVChargingScheduleResponseDelegate(DateTime                           Timestamp,
+                                                                    IEventSender                       Sender,
+                                                                    NotifyEVChargingScheduleRequest    Request,
+                                                                    NotifyEVChargingScheduleResponse   Response,
+                                                                    TimeSpan                           Runtime);
+
+    #endregion
+
+    #region OnNotifyPriorityCharging
+
+    /// <summary>
+    /// A delegate called whenever a NotifyPriorityCharging request will be sent to the CSMS.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnNotifyPriorityChargingRequestDelegate(DateTime                        Timestamp,
+                                                                 IEventSender                    Sender,
+                                                                 NotifyPriorityChargingRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a NotifyPriorityCharging request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnNotifyPriorityChargingResponseDelegate(DateTime                         Timestamp,
+                                                                  IEventSender                     Sender,
+                                                                  NotifyPriorityChargingRequest    Request,
+                                                                  NotifyPriorityChargingResponse   Response,
+                                                                  TimeSpan                         Runtime);
+
+    #endregion
+
+    #region OnPullDynamicScheduleUpdate
+
+    /// <summary>
+    /// A delegate called whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnPullDynamicScheduleUpdateRequestDelegate(DateTime                           Timestamp,
+                                                                    IEventSender                       Sender,
+                                                                    PullDynamicScheduleUpdateRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a PullDynamicScheduleUpdate request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnPullDynamicScheduleUpdateResponseDelegate(DateTime                            Timestamp,
+                                                                     IEventSender                        Sender,
+                                                                     PullDynamicScheduleUpdateRequest    Request,
+                                                                     PullDynamicScheduleUpdateResponse   Response,
+                                                                     TimeSpan                            Runtime);
 
     #endregion
 

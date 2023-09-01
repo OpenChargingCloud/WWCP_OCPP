@@ -644,11 +644,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        // NotifyEVChargingScheduleRequest
+        #region NotifyEVChargingSchedule
 
-        // NotifyPriorityChargingRequest
+        /// <summary>
+        /// Notify about an EV charging schedule.
+        /// </summary>
+        /// <param name="Request">A NotifyEVChargingSchedule request.</param>
+        public Task<NotifyEVChargingScheduleResponse> NotifyEVChargingSchedule(NotifyEVChargingScheduleRequest Request);
 
-        // PullDynamicScheduleUpdateRequest
+        #endregion
+
+        #region NotifyPriorityCharging
+
+        /// <summary>
+        /// Notify about priority charging.
+        /// </summary>
+        /// <param name="Request">A NotifyPriorityCharging request.</param>
+        public Task<NotifyPriorityChargingResponse> NotifyPriorityCharging(NotifyPriorityChargingRequest Request);
+
+        #endregion
+
+        #region PullDynamicScheduleUpdate
+
+        /// <summary>
+        /// Pull a dynamic schedule update.
+        /// </summary>
+        /// <param name="Request">A PullDynamicScheduleUpdate request.</param>
+        public Task<PullDynamicScheduleUpdateResponse> PullDynamicScheduleUpdate(PullDynamicScheduleUpdateRequest Request);
+
+        #endregion
 
 
         #region NotifyDisplayMessages

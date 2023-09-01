@@ -474,19 +474,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region OnReportChargingProfiles
 
         /// <summary>
-        /// An event sent whenever a report charging profiles request was received.
+        /// An event sent whenever a ReportChargingProfiles request was received.
         /// </summary>
         event OnReportChargingProfilesRequestDelegate    OnReportChargingProfilesRequest;
 
         /// <summary>
-        /// An event sent whenever a report charging profiles was received.
+        /// An event sent whenever a ReportChargingProfiles was received.
         /// </summary>
         event OnReportChargingProfilesDelegate           OnReportChargingProfiles;
 
         /// <summary>
-        /// An event sent whenever a response to a report charging profiles was sent.
+        /// An event sent whenever a response to a ReportChargingProfiles was sent.
         /// </summary>
         event OnReportChargingProfilesResponseDelegate   OnReportChargingProfilesResponse;
+
+        #endregion
+
+        #region OnNotifyEVChargingSchedule
+
+        /// <summary>
+        /// An event sent whenever a NotifyEVChargingSchedule request was received.
+        /// </summary>
+        event OnNotifyEVChargingScheduleRequestDelegate    OnNotifyEVChargingScheduleRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyEVChargingSchedule was received.
+        /// </summary>
+        event OnNotifyEVChargingScheduleDelegate           OnNotifyEVChargingSchedule;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyEVChargingSchedule was sent.
+        /// </summary>
+        event OnNotifyEVChargingScheduleResponseDelegate   OnNotifyEVChargingScheduleResponse;
+
+        #endregion
+
+        #region OnNotifyPriorityCharging
+
+        /// <summary>
+        /// An event sent whenever a NotifyPriorityCharging request was received.
+        /// </summary>
+        event OnNotifyPriorityChargingRequestDelegate    OnNotifyPriorityChargingRequest;
+
+        /// <summary>
+        /// An event sent whenever a NotifyPriorityCharging was received.
+        /// </summary>
+        event OnNotifyPriorityChargingDelegate           OnNotifyPriorityCharging;
+
+        /// <summary>
+        /// An event sent whenever a response to a NotifyPriorityCharging was sent.
+        /// </summary>
+        event OnNotifyPriorityChargingResponseDelegate   OnNotifyPriorityChargingResponse;
+
+        #endregion
+
+        #region OnPullDynamicScheduleUpdate
+
+        /// <summary>
+        /// An event sent whenever a PullDynamicScheduleUpdate request was received.
+        /// </summary>
+        event OnPullDynamicScheduleUpdateRequestDelegate    OnPullDynamicScheduleUpdateRequest;
+
+        /// <summary>
+        /// An event sent whenever a PullDynamicScheduleUpdate was received.
+        /// </summary>
+        event OnPullDynamicScheduleUpdateDelegate           OnPullDynamicScheduleUpdate;
+
+        /// <summary>
+        /// An event sent whenever a response to a PullDynamicScheduleUpdate was sent.
+        /// </summary>
+        event OnPullDynamicScheduleUpdateResponseDelegate   OnPullDynamicScheduleUpdateResponse;
 
         #endregion
 

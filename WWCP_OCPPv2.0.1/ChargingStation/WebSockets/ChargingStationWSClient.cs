@@ -7503,12 +7503,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                 if (OCPPResponseJSON is not null)
                 {
 
-                    SendText(new OCPP_WebSocket_ResponseMessage(
-                                 requestMessage.RequestId,
-                                 OCPPResponseJSON).
-                                 ToJSON().
-                                 ToString(JSONFormatting));
-
+                    await SendText(new OCPP_WebSocket_ResponseMessage(
+                                       requestMessage.RequestId,
+                                       OCPPResponseJSON).
+                                       ToJSON().
+                                       ToString(JSONFormatting));
 
                     #region OnTextMessageResponseSent
 
