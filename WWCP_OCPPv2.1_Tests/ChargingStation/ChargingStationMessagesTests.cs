@@ -91,10 +91,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var bootNotificationRequests = new List<CS.BootNotificationRequest>();
+                var bootNotificationRequests= new ConcurrentList<CS.BootNotificationRequest>();
 
-                testCSMS01.OnBootNotificationRequest += async (timestamp, sender, bootNotificationRequest) => {
-                    bootNotificationRequests.Add(bootNotificationRequest);
+                testCSMS01.OnBootNotificationRequest += (timestamp, sender, bootNotificationRequest) => {
+                    bootNotificationRequests.TryAdd(bootNotificationRequest);
+                    return Task.CompletedTask;
                 };
 
                 var reason     = BootReasons.PowerUp;
@@ -157,10 +158,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var firmwareStatusNotifications = new List<CS.FirmwareStatusNotificationRequest>();
+                var firmwareStatusNotificationRequests= new ConcurrentList<CS.FirmwareStatusNotificationRequest>();
 
-                testCSMS01.OnFirmwareStatusNotificationRequest += async (timestamp, sender, firmwareStatusNotification) => {
-                    firmwareStatusNotifications.Add(firmwareStatusNotification);
+                testCSMS01.OnFirmwareStatusNotificationRequest += (timestamp, sender, firmwareStatusNotificationRequest) => {
+                    firmwareStatusNotificationRequests.TryAdd(firmwareStatusNotificationRequest);
+                    return Task.CompletedTask;
                 };
 
                 var status     = FirmwareStatus.Installed;
@@ -173,9 +175,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
 
-                Assert.AreEqual(1,                              firmwareStatusNotifications.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   firmwareStatusNotifications.First().ChargeBoxId);
-                Assert.AreEqual(status,                         firmwareStatusNotifications.First().Status);
+                Assert.AreEqual(1,                              firmwareStatusNotificationRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   firmwareStatusNotificationRequests.First().ChargeBoxId);
+                Assert.AreEqual(status,                         firmwareStatusNotificationRequests.First().Status);
 
             }
 
@@ -205,10 +207,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var firmwareStatusNotifications = new List<CS.PublishFirmwareStatusNotificationRequest>();
+                var publishFirmwareStatusNotificationRequests = new ConcurrentList<CS.PublishFirmwareStatusNotificationRequest>();
 
-                testCSMS01.OnPublishFirmwareStatusNotificationRequest += async (timestamp, sender, firmwareStatusNotification) => {
-                    firmwareStatusNotifications.Add(firmwareStatusNotification);
+                testCSMS01.OnPublishFirmwareStatusNotificationRequest += (timestamp, sender, publishFirmwareStatusNotificationRequest) => {
+                    publishFirmwareStatusNotificationRequests.TryAdd(publishFirmwareStatusNotificationRequest);
+                    return Task.CompletedTask;
                 };
 
                 var status     = PublishFirmwareStatus.Published;
@@ -224,9 +227,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
 
-                Assert.AreEqual(1,                              firmwareStatusNotifications.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   firmwareStatusNotifications.First().ChargeBoxId);
-                Assert.AreEqual(status,                         firmwareStatusNotifications.First().Status);
+                Assert.AreEqual(1,                              publishFirmwareStatusNotificationRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   publishFirmwareStatusNotificationRequests.First().ChargeBoxId);
+                Assert.AreEqual(status,                         publishFirmwareStatusNotificationRequests.First().Status);
 
             }
 
@@ -256,10 +259,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var heartbeatRequests = new List<CS.HeartbeatRequest>();
+                var heartbeatRequests= new ConcurrentList<CS.HeartbeatRequest>();
 
-                testCSMS01.OnHeartbeatRequest += async (timestamp, sender, heartbeatRequest) => {
-                    heartbeatRequests.Add(heartbeatRequest);
+                testCSMS01.OnHeartbeatRequest += (timestamp, sender, heartbeatRequest) => {
+                    heartbeatRequests.TryAdd(heartbeatRequest);
+                    return Task.CompletedTask;
                 };
 
 
@@ -300,10 +304,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var notifyEventRequests = new List<CS.NotifyEventRequest>();
+                var notifyEventRequests= new ConcurrentList<CS.NotifyEventRequest>();
 
-                testCSMS01.OnNotifyEventRequest += async (timestamp, sender, notifyEventRequest) => {
-                    notifyEventRequests.Add(notifyEventRequest);
+                testCSMS01.OnNotifyEventRequest += (timestamp, sender, notifyEventRequest) => {
+                    notifyEventRequests.TryAdd(notifyEventRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await chargingStation1.NotifyEvent(
@@ -378,10 +383,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var securityEventNotificationRequests = new List<CS.SecurityEventNotificationRequest>();
+                var securityEventNotificationRequests= new ConcurrentList<CS.SecurityEventNotificationRequest>();
 
-                testCSMS01.OnSecurityEventNotificationRequest += async (timestamp, sender, securityEventNotificationRequest) => {
-                    securityEventNotificationRequests.Add(securityEventNotificationRequest);
+                testCSMS01.OnSecurityEventNotificationRequest += (timestamp, sender, securityEventNotificationRequest) => {
+                    securityEventNotificationRequests.TryAdd(securityEventNotificationRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await chargingStation1.SendSecurityEventNotification(
@@ -425,10 +431,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var notifyReportRequests = new List<CS.NotifyReportRequest>();
+                var notifyReportRequests= new ConcurrentList<CS.NotifyReportRequest>();
 
-                testCSMS01.OnNotifyReportRequest += async (timestamp, sender, notifyReportRequest) => {
-                    notifyReportRequests.Add(notifyReportRequest);
+                testCSMS01.OnNotifyReportRequest += (timestamp, sender, notifyReportRequest) => {
+                    notifyReportRequests.TryAdd(notifyReportRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await chargingStation1.NotifyReport(
@@ -514,10 +521,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var notifyMonitoringReportRequests = new List<CS.NotifyMonitoringReportRequest>();
+                var notifyMonitoringReportRequests= new ConcurrentList<CS.NotifyMonitoringReportRequest>();
 
-                testCSMS01.OnNotifyMonitoringReportRequest += async (timestamp, sender, notifyMonitoringReportRequest) => {
-                    notifyMonitoringReportRequests.Add(notifyMonitoringReportRequest);
+                testCSMS01.OnNotifyMonitoringReportRequest += (timestamp, sender, notifyMonitoringReportRequest) => {
+                    notifyMonitoringReportRequests.TryAdd(notifyMonitoringReportRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await chargingStation1.NotifyMonitoringReport(
@@ -592,10 +600,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var securityEventNotificationRequests = new List<CS.LogStatusNotificationRequest>();
+                var securityEventNotificationRequests= new ConcurrentList<CS.LogStatusNotificationRequest>();
 
-                testCSMS01.OnLogStatusNotificationRequest += async (timestamp, sender, securityEventNotificationRequest) => {
-                    securityEventNotificationRequests.Add(securityEventNotificationRequest);
+                testCSMS01.OnLogStatusNotificationRequest += (timestamp, sender, securityEventNotificationRequest) => {
+                    securityEventNotificationRequests.TryAdd(securityEventNotificationRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await chargingStation1.SendLogStatusNotification(
@@ -639,10 +648,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new List<CS.DataTransferRequest>();
+                var dataTransferRequests= new ConcurrentList<CS.DataTransferRequest>();
 
-                testCSMS01.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
-                    dataTransferRequests.Add(dataTransferRequest);
+                testCSMS01.OnIncomingDataTransferRequest += (timestamp, sender, dataTransferRequest) => {
+                    dataTransferRequests.TryAdd(dataTransferRequest);
+                    return Task.CompletedTask;
                 };
 
                 var vendorId   = "GraphDefined OEM";
@@ -694,10 +704,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new List<CS.DataTransferRequest>();
+                var dataTransferRequests= new ConcurrentList<CS.DataTransferRequest>();
 
-                testCSMS01.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
-                    dataTransferRequests.Add(dataTransferRequest);
+                testCSMS01.OnIncomingDataTransferRequest += (timestamp, sender, dataTransferRequest) => {
+                    dataTransferRequests.TryAdd(dataTransferRequest);
+                    return Task.CompletedTask;
                 };
 
                 var vendorId   = "GraphDefined OEM";
@@ -756,10 +767,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new List<CS.DataTransferRequest>();
+                var dataTransferRequests= new ConcurrentList<CS.DataTransferRequest>();
 
-                testCSMS01.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
-                    dataTransferRequests.Add(dataTransferRequest);
+                testCSMS01.OnIncomingDataTransferRequest += (timestamp, sender, dataTransferRequest) => {
+                    dataTransferRequests.TryAdd(dataTransferRequest);
+                    return Task.CompletedTask;
                 };
 
                 var vendorId   = "GraphDefined OEM";
@@ -816,10 +828,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var notifyReportRequests = new List<CS.SignCertificateRequest>();
+                var notifyReportRequests= new ConcurrentList<CS.SignCertificateRequest>();
 
-                testCSMS01.OnSignCertificateRequest += async (timestamp, sender, notifyReportRequest) => {
-                    notifyReportRequests.Add(notifyReportRequest);
+                testCSMS01.OnSignCertificateRequest += (timestamp, sender, notifyReportRequest) => {
+                    notifyReportRequests.TryAdd(notifyReportRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await chargingStation1.SendCertificateSigningRequest(
@@ -862,10 +875,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var notifyReportRequests = new List<CS.Get15118EVCertificateRequest>();
+                var notifyReportRequests= new ConcurrentList<CS.Get15118EVCertificateRequest>();
 
-                testCSMS01.OnGet15118EVCertificateRequest += async (timestamp, sender, notifyReportRequest) => {
-                    notifyReportRequests.Add(notifyReportRequest);
+                testCSMS01.OnGet15118EVCertificateRequest += (timestamp, sender, notifyReportRequest) => {
+                    notifyReportRequests.TryAdd(notifyReportRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await chargingStation1.Get15118EVCertificate(
@@ -909,10 +923,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var notifyReportRequests = new List<CS.GetCertificateStatusRequest>();
+                var notifyReportRequests= new ConcurrentList<CS.GetCertificateStatusRequest>();
 
-                testCSMS01.OnGetCertificateStatusRequest += async (timestamp, sender, notifyReportRequest) => {
-                    notifyReportRequests.Add(notifyReportRequest);
+                testCSMS01.OnGetCertificateStatusRequest += (timestamp, sender, notifyReportRequest) => {
+                    notifyReportRequests.TryAdd(notifyReportRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await chargingStation1.GetCertificateStatus(
@@ -961,10 +976,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var getCRLRequests = new List<CS.GetCRLRequest>();
+                var getCRLRequests= new ConcurrentList<CS.GetCRLRequest>();
 
-                testCSMS01.OnGetCRLRequest += async (timestamp, sender, getCRLRequest) => {
-                    getCRLRequests.Add(getCRLRequest);
+                testCSMS01.OnGetCRLRequest += (timestamp, sender, getCRLRequest) => {
+                    getCRLRequests.TryAdd(getCRLRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await chargingStation1.GetCRLRequest(
@@ -1013,10 +1029,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var securityEventNotificationRequests = new List<CS.ReservationStatusUpdateRequest>();
+                var securityEventNotificationRequests= new ConcurrentList<CS.ReservationStatusUpdateRequest>();
 
-                testCSMS01.OnReservationStatusUpdateRequest += async (timestamp, sender, securityEventNotificationRequest) => {
-                    securityEventNotificationRequests.Add(securityEventNotificationRequest);
+                testCSMS01.OnReservationStatusUpdateRequest += (timestamp, sender, securityEventNotificationRequest) => {
+                    securityEventNotificationRequests.TryAdd(securityEventNotificationRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await chargingStation1.SendReservationStatusUpdate(
@@ -1059,10 +1076,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var authorizeRequests = new List<CS.AuthorizeRequest>();
+                var authorizeRequests= new ConcurrentList<CS.AuthorizeRequest>();
 
-                testCSMS01.OnAuthorizeRequest += async (timestamp, sender, authorizeRequest) => {
-                    authorizeRequests.Add(authorizeRequest);
+                testCSMS01.OnAuthorizeRequest += (timestamp, sender, authorizeRequest) => {
+                    authorizeRequests.TryAdd(authorizeRequest);
+                    return Task.CompletedTask;
                 };
 
                 var idToken   = IdToken.NewRandomRFID();
@@ -1104,10 +1122,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var notifyEVChargingNeedsRequests = new List<CS.NotifyEVChargingNeedsRequest>();
+                var notifyEVChargingNeedsRequests= new ConcurrentList<CS.NotifyEVChargingNeedsRequest>();
 
-                testCSMS01.OnNotifyEVChargingNeedsRequest += async (timestamp, sender, notifyEVChargingNeedsRequest) => {
-                    notifyEVChargingNeedsRequests.Add(notifyEVChargingNeedsRequest);
+                testCSMS01.OnNotifyEVChargingNeedsRequest += (timestamp, sender, notifyEVChargingNeedsRequest) => {
+                    notifyEVChargingNeedsRequests.TryAdd(notifyEVChargingNeedsRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await chargingStation1.NotifyEVChargingNeeds(
@@ -1173,10 +1192,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var transactionEventRequests = new List<CS.TransactionEventRequest>();
+                var transactionEventRequests= new ConcurrentList<CS.TransactionEventRequest>();
 
-                testCSMS01.OnTransactionEventRequest += async (timestamp, sender, transactionEventRequest) => {
-                    transactionEventRequests.Add(transactionEventRequest);
+                testCSMS01.OnTransactionEventRequest += (timestamp, sender, transactionEventRequest) => {
+                    transactionEventRequests.TryAdd(transactionEventRequest);
+                    return Task.CompletedTask;
                 };
 
                 var evseId          = EVSE_Id.     Parse(1);
@@ -1286,10 +1306,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var statusNotificationRequests = new List<CS.StatusNotificationRequest>();
+                var statusNotificationRequests= new ConcurrentList<CS.StatusNotificationRequest>();
 
-                testCSMS01.OnStatusNotificationRequest += async (timestamp, sender, statusNotificationRequest) => {
-                    statusNotificationRequests.Add(statusNotificationRequest);
+                testCSMS01.OnStatusNotificationRequest += (timestamp, sender, statusNotificationRequest) => {
+                    statusNotificationRequests.TryAdd(statusNotificationRequest);
+                    return Task.CompletedTask;
                 };
 
                 var evseId           = EVSE_Id.     Parse(1);
@@ -1349,10 +1370,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
             {
 
-                var meterValuesRequests = new List<CS.MeterValuesRequest>();
+                var meterValuesRequests= new ConcurrentList<CS.MeterValuesRequest>();
 
-                testCSMS01.OnMeterValuesRequest += async (timestamp, sender, meterValuesRequest) => {
-                    meterValuesRequests.Add(meterValuesRequest);
+                testCSMS01.OnMeterValuesRequest += (timestamp, sender, meterValuesRequest) => {
+                    meterValuesRequests.TryAdd(meterValuesRequest);
+                    return Task.CompletedTask;
                 };
 
                 var evseId       = EVSE_Id.Parse(1);
@@ -1536,10 +1558,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var notifyChargingLimitRequests = new List<CS.NotifyChargingLimitRequest>();
+                var notifyChargingLimitRequests= new ConcurrentList<CS.NotifyChargingLimitRequest>();
 
-                testCSMS01.OnNotifyChargingLimitRequest += async (timestamp, sender, notifyChargingLimitRequest) => {
-                    notifyChargingLimitRequests.Add(notifyChargingLimitRequest);
+                testCSMS01.OnNotifyChargingLimitRequest += (timestamp, sender, notifyChargingLimitRequest) => {
+                    notifyChargingLimitRequests.TryAdd(notifyChargingLimitRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await chargingStation1.NotifyChargingLimit(
@@ -1639,10 +1662,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var transactionEventRequests = new List<CS.ClearedChargingLimitRequest>();
+                var transactionEventRequests= new ConcurrentList<CS.ClearedChargingLimitRequest>();
 
-                testCSMS01.OnClearedChargingLimitRequest += async (timestamp, sender, transactionEventRequest) => {
-                    transactionEventRequests.Add(transactionEventRequest);
+                testCSMS01.OnClearedChargingLimitRequest += (timestamp, sender, transactionEventRequest) => {
+                    transactionEventRequests.TryAdd(transactionEventRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response  = await chargingStation1.SendClearedChargingLimit(
@@ -1685,10 +1709,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var transactionEventRequests = new List<CS.ReportChargingProfilesRequest>();
+                var transactionEventRequests= new ConcurrentList<CS.ReportChargingProfilesRequest>();
 
-                testCSMS01.OnReportChargingProfilesRequest += async (timestamp, sender, transactionEventRequest) => {
-                    transactionEventRequests.Add(transactionEventRequest);
+                testCSMS01.OnReportChargingProfilesRequest += (timestamp, sender, transactionEventRequest) => {
+                    transactionEventRequests.TryAdd(transactionEventRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response  = await chargingStation1.ReportChargingProfiles(
@@ -1795,10 +1820,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var notifyEVChargingScheduleRequests = new List<CS.NotifyEVChargingScheduleRequest>();
+                var notifyEVChargingScheduleRequests= new ConcurrentList<CS.NotifyEVChargingScheduleRequest>();
 
-                testCSMS01.OnNotifyEVChargingScheduleRequest += async (timestamp, sender, notifyEVChargingScheduleRequest) => {
-                    notifyEVChargingScheduleRequests.Add(notifyEVChargingScheduleRequest);
+                testCSMS01.OnNotifyEVChargingScheduleRequest += (timestamp, sender, notifyEVChargingScheduleRequest) => {
+                    notifyEVChargingScheduleRequests.TryAdd(notifyEVChargingScheduleRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response  = await chargingStation1.NotifyEVChargingSchedule(
@@ -1899,10 +1925,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var notifyPriorityChargingRequests = new List<CS.NotifyPriorityChargingRequest>();
+                var notifyPriorityChargingRequests= new ConcurrentList<CS.NotifyPriorityChargingRequest>();
 
-                testCSMS01.OnNotifyPriorityChargingRequest += async (timestamp, sender, notifyPriorityChargingRequest) => {
-                    notifyPriorityChargingRequests.Add(notifyPriorityChargingRequest);
+                testCSMS01.OnNotifyPriorityChargingRequest += (timestamp, sender, notifyPriorityChargingRequest) => {
+                    notifyPriorityChargingRequests.TryAdd(notifyPriorityChargingRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response  = await chargingStation1.NotifyPriorityCharging(
@@ -1946,10 +1973,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var pullDynamicScheduleUpdateRequests = new List<CS.PullDynamicScheduleUpdateRequest>();
+                var pullDynamicScheduleUpdateRequests= new ConcurrentList<CS.PullDynamicScheduleUpdateRequest>();
 
-                testCSMS01.OnPullDynamicScheduleUpdateRequest += async (timestamp, sender, pullDynamicScheduleUpdateRequest) => {
-                    pullDynamicScheduleUpdateRequests.Add(pullDynamicScheduleUpdateRequest);
+                testCSMS01.OnPullDynamicScheduleUpdateRequest += (timestamp, sender, pullDynamicScheduleUpdateRequest) => {
+                    pullDynamicScheduleUpdateRequests.TryAdd(pullDynamicScheduleUpdateRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response  = await chargingStation1.PullDynamicScheduleUpdate(
@@ -2011,10 +2039,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var notifyDisplayMessagesRequests = new List<CS.NotifyDisplayMessagesRequest>();
+                var notifyDisplayMessagesRequests= new ConcurrentList<CS.NotifyDisplayMessagesRequest>();
 
-                testCSMS01.OnNotifyDisplayMessagesRequest += async (timestamp, sender, notifyDisplayMessagesRequest) => {
-                    notifyDisplayMessagesRequests.Add(notifyDisplayMessagesRequest);
+                testCSMS01.OnNotifyDisplayMessagesRequest += (timestamp, sender, notifyDisplayMessagesRequest) => {
+                    notifyDisplayMessagesRequests.TryAdd(notifyDisplayMessagesRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await chargingStation1.NotifyDisplayMessages(
@@ -2083,10 +2112,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var notifyCustomerInformationRequests = new List<CS.NotifyCustomerInformationRequest>();
+                var notifyCustomerInformationRequests= new ConcurrentList<CS.NotifyCustomerInformationRequest>();
 
-                testCSMS01.OnNotifyCustomerInformationRequest += async (timestamp, sender, notifyCustomerInformationRequest) => {
-                    notifyCustomerInformationRequests.Add(notifyCustomerInformationRequest);
+                testCSMS01.OnNotifyCustomerInformationRequest += (timestamp, sender, notifyCustomerInformationRequest) => {
+                    notifyCustomerInformationRequests.TryAdd(notifyCustomerInformationRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await chargingStation1.NotifyCustomerInformation(

@@ -4984,6 +4984,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         _ = Task.Run(async () => {
 
+                            await Task.Delay(500);
+
                             await SendTransactionEvent(
 
                                       EventType:            TransactionEvents.Started,
