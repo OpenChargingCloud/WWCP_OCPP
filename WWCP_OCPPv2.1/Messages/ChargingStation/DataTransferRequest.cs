@@ -41,13 +41,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public String   VendorId     { get; }
 
         /// <summary>
-        /// An optional message identification field.
+        /// The optional message identification.
         /// </summary>
         [Optional]
         public String?  MessageId    { get; }
 
         /// <summary>
-        /// Optional message data without specified length or format.
+        /// Optional vendor-specific message data (a JSON token).
         /// </summary>
         [Optional]
         public JToken?  Data         { get; }
@@ -61,8 +61,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="JSONToken">A vendor-specific JSON token.</param>
         /// <param name="MessageId">An optional message identification.</param>
+        /// <param name="Data">Optional vendor-specific message data (a JSON token).</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public DataTransferRequest(ChargeBox_Id       ChargeBoxId,
                                    String             VendorId,
                                    String?            MessageId           = null,
-                                   JToken?            JSONToken           = null,
+                                   JToken?            Data                = null,
                                    CustomData?        CustomData          = null,
 
                                    Request_Id?        RequestId           = null,
@@ -93,17 +93,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            #region Initial checks
-
-            this.VendorId = VendorId.Trim();
-
-            if (this.VendorId.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(VendorId), "The given vendor identification must not be null or empty!");
-
-            #endregion
-
-            this.Data       = JSONToken;
+            this.VendorId   = VendorId.  Trim();
             this.MessageId  = MessageId?.Trim();
+            this.Data       = Data;
 
         }
 

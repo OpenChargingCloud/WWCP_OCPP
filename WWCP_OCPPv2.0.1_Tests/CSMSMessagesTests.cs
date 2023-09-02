@@ -38,13 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
     public class CSMSMessagesTests : AChargingStationTests
     {
 
-        #region CSMS_Reset_Test()
+        #region Reset_Test()
 
         /// <summary>
         /// A test for sending a reset message to a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_Reset_Test()
+        public async Task Reset_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -86,13 +86,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_Reset_UnknownChargeBox_Test()
+        #region Reset_UnknownChargeBox_Test()
 
         /// <summary>
         /// A test for sending a reset message to a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_Reset_UnknownChargeBox_Test()
+        public async Task Reset_UnknownChargeBox_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -130,13 +130,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
         #endregion
 
 
-        #region CSMS_UpdateFirmware_Test()
+        #region UpdateFirmware_Test()
 
         /// <summary>
         /// A test for updating the firmware of a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_UpdateFirmware_Test()
+        public async Task UpdateFirmware_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -185,13 +185,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_PublishFirmware_Test()
+        #region PublishFirmware_Test()
 
         /// <summary>
         /// A test for publishing a firmware update onto a charging station/local controller.
         /// </summary>
         [Test]
-        public async Task CSMS_PublishFirmware_Test()
+        public async Task PublishFirmware_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -234,13 +234,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_UnpublishFirmware_Test()
+        #region UnpublishFirmware_Test()
 
         /// <summary>
         /// A test for unpublishing a firmware update from a charging station/local controller.
         /// </summary>
         [Test]
-        public async Task CSMS_UnpublishFirmware_Test()
+        public async Task UnpublishFirmware_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -279,13 +279,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_GetBaseReport_Test()
+        #region GetBaseReport_Test()
 
         /// <summary>
         /// A test for getting a base report from a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_GetBaseReport_Test()
+        public async Task GetBaseReport_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -325,13 +325,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_GetReport_Test()
+        #region GetReport_Test()
 
         /// <summary>
         /// A test for getting a report from a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_GetReport_Test()
+        public async Task GetReport_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -393,13 +393,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_GetLog_Test()
+        #region GetLog_Test()
 
         /// <summary>
         /// A test for getting a log file from a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_GetLog_Test()
+        public async Task GetLog_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -445,13 +445,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_SetVariables_Test()
+        #region SetVariables_Test()
 
         /// <summary>
         /// A test for setting variables of a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_SetVariables_Test()
+        public async Task SetVariables_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -511,13 +511,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_GetVariables_Test()
+        #region GetVariables_Test()
 
         /// <summary>
         /// A test for getting variables of a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_GetVariables_Test()
+        public async Task GetVariables_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -576,13 +576,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_SetMonitoringBase_Test()
+        #region SetMonitoringBase_Test()
 
         /// <summary>
         /// A test for setting the monitoring base of a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_SetMonitoringBase_Test()
+        public async Task SetMonitoringBase_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -621,13 +621,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_GetMonitoringReport_Test()
+        #region GetMonitoringReport_Test()
 
         /// <summary>
         /// A test for setting the monitoring base of a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_GetMonitoringReport_Test()
+        public async Task GetMonitoringReport_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -688,13 +688,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_SetMonitoringLevel_Test()
+        #region SetMonitoringLevel_Test()
 
         /// <summary>
         /// A test for setting the monitoring level of a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_SetMonitoringLevel_Test()
+        public async Task SetMonitoringLevel_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -733,13 +733,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_SetVariableMonitoring_Test()
+        #region SetVariableMonitoring_Test()
 
         /// <summary>
         /// A test for creating a variable monitoring at a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_SetVariableMonitoring_Test()
+        public async Task SetVariableMonitoring_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -802,13 +802,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_ClearVariableMonitoring_Test()
+        #region ClearVariableMonitoring_Test()
 
         /// <summary>
         /// A test for deleting a variable monitoring from a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_ClearVariableMonitoring_Test()
+        public async Task ClearVariableMonitoring_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -849,13 +849,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_SetNetworkProfile_Test()
+        #region SetNetworkProfile_Test()
 
         /// <summary>
         /// A test for setting the network profile of a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_SetNetworkProfile_Test()
+        public async Task SetNetworkProfile_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -923,13 +923,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_ChangeAvailability_Test()
+        #region ChangeAvailability_Test()
 
         /// <summary>
         /// A test for sending a change availability message to a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_ChangeAvailability_Test()
+        public async Task ChangeAvailability_Test()
         {
 
             if (testCSMS01                                            is not null &&
@@ -1005,13 +1005,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_TriggerMessage_Test()
+        #region TriggerMessage_Test()
 
         /// <summary>
         /// A test for triggering a message at a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_TriggerMessage_Test()
+        public async Task TriggerMessage_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1056,13 +1056,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
         #endregion
 
 
-        #region CSMS_TransferTextData_Test()
+        #region TransferTextData_Test()
 
         /// <summary>
         /// A test for transfering text data to the CSMS.
         /// </summary>
         [Test]
-        public async Task CSMS_TransferTextData_Test()
+        public async Task TransferTextData_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1112,13 +1112,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_TransferJObjectData_Test()
+        #region TransferJObjectData_Test()
 
         /// <summary>
         /// A test for transfering JObject data to the CSMS.
         /// </summary>
         [Test]
-        public async Task CSMS_TransferJObjectData_Test()
+        public async Task TransferJObjectData_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1175,13 +1175,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_TransferJArrayData_Test()
+        #region TransferJArrayData_Test()
 
         /// <summary>
         /// A test for transfering JArray data to the CSMS.
         /// </summary>
         [Test]
-        public async Task CSMS_TransferJArrayData_Test()
+        public async Task TransferJArrayData_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1235,13 +1235,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_TransferTextData_Rejected_Test()
+        #region TransferTextData_Rejected_Test()
 
         /// <summary>
         /// A test for sending data to a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_TransferTextData_Rejected_Test()
+        public async Task TransferTextData_Rejected_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1287,13 +1287,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
         #endregion
 
 
-        #region CSMS_CertificateSigned_Test()
+        #region CertificateSigned_Test()
 
         /// <summary>
         /// A test for triggering a message at a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_CertificateSigned_Test()
+        public async Task CertificateSigned_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1375,13 +1375,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_InstallCertificate_Test()
+        #region InstallCertificate_Test()
 
         /// <summary>
         /// A test for triggering a message at a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_InstallCertificate_Test()
+        public async Task InstallCertificate_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1459,13 +1459,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_GetInstalledCertificateIds_Test()
+        #region GetInstalledCertificateIds_Test()
 
         /// <summary>
         /// A test for triggering a message at a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_GetInstalledCertificateIds_Test()
+        public async Task GetInstalledCertificateIds_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1567,13 +1567,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_DeleteCertificate_Test()
+        #region DeleteCertificate_Test()
 
         /// <summary>
         /// A test for triggering a message at a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_DeleteCertificate_Test()
+        public async Task DeleteCertificate_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1724,13 +1724,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
         #endregion
 
 
-        #region CSMS_GetLocalListVersion_Test()
+        #region GetLocalListVersion_Test()
 
         /// <summary>
         /// A test for getting the local list of a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_GetLocalListVersion_Test()
+        public async Task GetLocalListVersion_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1770,13 +1770,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_SendLocalList_Test()
+        #region SendLocalList_Test()
 
         /// <summary>
         /// A test for sending a local list to a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_SendLocalList_Test()
+        public async Task SendLocalList_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1864,13 +1864,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_ClearCache_Test()
+        #region ClearCache_Test()
 
         /// <summary>
         /// A test for clearing the authorization cache of a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_ClearCache_Test()
+        public async Task ClearCache_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1911,13 +1911,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
         #endregion
 
 
-        #region CSMS_ReserveNow_Test()
+        #region ReserveNow_Test()
 
         /// <summary>
         /// A test for creating a reservation at a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_ReserveNow_Test()
+        public async Task ReserveNow_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -1992,13 +1992,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_CancelReservation_Test()
+        #region CancelReservation_Test()
 
         /// <summary>
         /// A test for creating and deleting a reservation at a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_CancelReservation_Test()
+        public async Task CancelReservation_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -2097,13 +2097,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_RequestStartStopTransaction_Test()
+        #region RequestStartStopTransaction_Test()
 
         /// <summary>
         /// A test starting and stopping a charging session/transaction.
         /// </summary>
         [Test]
-        public async Task CSMS_RequestStartStopTransaction_Test()
+        public async Task RequestStartStopTransaction_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -2182,13 +2182,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_GetTransactionStatus_Test()
+        #region GetTransactionStatus_Test()
 
         /// <summary>
         /// A test gettig the current status of a charging session/transaction.
         /// </summary>
         [Test]
-        public async Task CSMS_GetTransactionStatus_Test()
+        public async Task GetTransactionStatus_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -2229,13 +2229,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_SetChargingProfile_Test()
+        #region SetChargingProfile_Test()
 
         /// <summary>
         /// A test setting a charging profile at a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_SetChargingProfile_Test()
+        public async Task SetChargingProfile_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -2333,13 +2333,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_GetChargingProfiles_Test()
+        #region GetChargingProfiles_Test()
 
         /// <summary>
         /// A test requesting charging profiles from a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_GetChargingProfiles_Test()
+        public async Task GetChargingProfiles_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -2392,13 +2392,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_ClearChargingProfile_Test()
+        #region ClearChargingProfile_Test()
 
         /// <summary>
         /// A test deleting a charging profile from a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_ClearChargingProfile_Test()
+        public async Task ClearChargingProfile_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -2445,13 +2445,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_GetCompositeSchedule_Test()
+        #region GetCompositeSchedule_Test()
 
         /// <summary>
         /// A test requesting the composite schedule from a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_GetCompositeSchedule_Test()
+        public async Task GetCompositeSchedule_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -2494,13 +2494,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_UnlockConnector_Test()
+        #region UnlockConnector_Test()
 
         /// <summary>
         /// A test unlocking an EVSE/connector at a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_UnlockConnector_Test()
+        public async Task UnlockConnector_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -2543,13 +2543,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
         #endregion
 
 
-        #region CSMS_SetDisplayMessage_Test()
+        #region SetDisplayMessage_Test()
 
         /// <summary>
         /// A test setting the display message at a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_SetDisplayMessage_Test()
+        public async Task SetDisplayMessage_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -2609,13 +2609,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_GetDisplayMessages_Test()
+        #region GetDisplayMessages_Test()
 
         /// <summary>
         /// A test getting the display messages from a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_GetDisplayMessages_Test()
+        public async Task GetDisplayMessages_Test()
         {
 
             if (testCSMS01                                            is not null &&
@@ -2808,13 +2808,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_ClearDisplayMessage_Test()
+        #region ClearDisplayMessage_Test()
 
         /// <summary>
         /// A test removing a display message from a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_ClearDisplayMessage_Test()
+        public async Task ClearDisplayMessage_Test()
         {
 
             if (testCSMS01                                            is not null &&
@@ -2993,13 +2993,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
         #endregion
 
 
-        #region CSMS_SendCostUpdate_Test()
+        #region SendCostUpdate_Test()
 
         /// <summary>
         /// A test sending updated total costs.
         /// </summary>
         [Test]
-        public async Task CSMS_SendCostUpdate_Test()
+        public async Task SendCostUpdate_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -3046,13 +3046,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
 
         #endregion
 
-        #region CSMS_RequestCustomerInformation_Test()
+        #region RequestCustomerInformation_Test()
 
         /// <summary>
         /// A test for requesting customer information from a charging station.
         /// </summary>
         [Test]
-        public async Task CSMS_RequestCustomerInformation_Test()
+        public async Task RequestCustomerInformation_Test()
         {
 
             Assert.IsNotNull(testCSMS01);

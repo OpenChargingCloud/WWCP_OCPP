@@ -755,6 +755,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region OnUpdateDynamicSchedule
+
+        /// <summary>
+        /// An event sent whenever a UpdateDynamicSchedule request was sent.
+        /// </summary>
+        public event OnUpdateDynamicScheduleRequestDelegate?     OnUpdateDynamicScheduleRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a UpdateDynamicSchedule request was sent.
+        /// </summary>
+        public event OnUpdateDynamicScheduleResponseDelegate?    OnUpdateDynamicScheduleResponse;
+
+        #endregion
+
         #region OnNotifyAllowedEnergyTransfer
 
         /// <summary>
@@ -766,6 +780,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// An event sent whenever a response to a NotifyAllowedEnergyTransfer request was sent.
         /// </summary>
         public event OnNotifyAllowedEnergyTransferResponseDelegate?    OnNotifyAllowedEnergyTransferResponse;
+
+        #endregion
+
+        #region OnUsePriorityCharging
+
+        /// <summary>
+        /// An event sent whenever a UsePriorityCharging request was sent.
+        /// </summary>
+        public event OnUsePriorityChargingRequestDelegate?     OnUsePriorityChargingRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a UsePriorityCharging request was sent.
+        /// </summary>
+        public event OnUsePriorityChargingResponseDelegate?    OnUsePriorityChargingResponse;
 
         #endregion
 
@@ -1919,7 +1947,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?          CustomGetCompositeScheduleRequestSerializer            { get; set; }
 
+        public CustomJObjectSerializerDelegate<UpdateDynamicScheduleRequest>?         CustomUpdateDynamicScheduleRequestSerializer           { get; set; }
+
         public CustomJObjectSerializerDelegate<NotifyAllowedEnergyTransferRequest>?   CustomNotifyAllowedEnergyTransferRequestSerializer     { get; set; }
+
+        public CustomJObjectSerializerDelegate<UsePriorityChargingRequest>?           CustomUsePriorityChargingRequestSerializer             { get; set; }
 
         public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?               CustomUnlockConnectorRequestSerializer                 { get; set; }
 
@@ -9807,6 +9839,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region UpdateDynamicSchedule      (Request)
+
+
+        public async Task<UpdateDynamicScheduleResponse> UpdateDynamicSchedule(UpdateDynamicScheduleRequest Request)
+        {
+
+            #region Send OnUpdateDynamicScheduleRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateDynamicScheduleRequest?.Invoke(startTime,
+                                                       this,
+                                                       Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateDynamicScheduleRequest));
+            }
+
+            #endregion
+
+
+            UpdateDynamicScheduleResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomUpdateDynamicScheduleRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
+
+                if (UpdateDynamicScheduleResponse.TryParse(Request,
+                                                           sendRequestState.Response,
+                                                           out var getCompositeScheduleResponse,
+                                                           out var errorResponse) &&
+                    getCompositeScheduleResponse is not null)
+                {
+                    response = getCompositeScheduleResponse;
+                }
+
+                response ??= new UpdateDynamicScheduleResponse(Request,
+                                                               Result.Format(errorResponse));
+
+            }
+
+            response ??= new UpdateDynamicScheduleResponse(Request,
+                                                           Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnUpdateDynamicScheduleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateDynamicScheduleResponse?.Invoke(endTime,
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateDynamicScheduleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
         #region NotifyAllowedEnergyTransfer(Request)
 
 
@@ -9879,6 +9993,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnNotifyAllowedEnergyTransferResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region UsePriorityCharging        (Request)
+
+
+        public async Task<UsePriorityChargingResponse> UsePriorityCharging(UsePriorityChargingRequest Request)
+        {
+
+            #region Send OnUsePriorityChargingRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUsePriorityChargingRequest?.Invoke(startTime,
+                                                     this,
+                                                     Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUsePriorityChargingRequest));
+            }
+
+            #endregion
+
+
+            UsePriorityChargingResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.RequestId,
+                                                     Request.ChargeBoxId,
+                                                     Request.Action,
+                                                     Request.ToJSON(CustomUsePriorityChargingRequestSerializer),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
+
+                if (UsePriorityChargingResponse.TryParse(Request,
+                                                         sendRequestState.Response,
+                                                         out var getCompositeScheduleResponse,
+                                                         out var errorResponse) &&
+                    getCompositeScheduleResponse is not null)
+                {
+                    response = getCompositeScheduleResponse;
+                }
+
+                response ??= new UsePriorityChargingResponse(Request,
+                                                             Result.Format(errorResponse));
+
+            }
+
+            response ??= new UsePriorityChargingResponse(Request,
+                                                         Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnUsePriorityChargingResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUsePriorityChargingResponse?.Invoke(endTime,
+                                                      this,
+                                                      Request,
+                                                      response,
+                                                      endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUsePriorityChargingResponse));
             }
 
             #endregion

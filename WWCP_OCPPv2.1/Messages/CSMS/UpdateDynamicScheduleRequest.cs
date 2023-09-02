@@ -187,7 +187,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.ChargingProfileId = ChargingProfileId;
+           #region (Discharge)Limit checks
+
+            if (Limit.HasValue && Limit.Value.Value < 0)
+                throw new ArgumentException($"The given charging rate limit (for phase L1) {Limit.Value.Value} must not be negative!",
+                                            nameof(Limit));
+
+            if (Limit_L2.HasValue && Limit_L2.Value.Value < 0)
+                throw new ArgumentException($"The given charging rate limit for phase L2 {Limit_L2.Value.Value} must not be negative!",
+                                            nameof(Limit_L2));
+
+            if (Limit_L3.HasValue && Limit_L3.Value.Value < 0)
+                throw new ArgumentException($"The given charging rate limit for phase L3 {Limit_L3.Value.Value} must not be negative!",
+                                            nameof(Limit_L3));
+
+
+            if (DischargeLimit.HasValue && DischargeLimit.Value.Value > 0)
+                throw new ArgumentException($"The given discharging rate limit (for phase L1) {DischargeLimit.Value.Value} must not be positive!",
+                                            nameof(DischargeLimit));
+
+            if (DischargeLimit_L2.HasValue && DischargeLimit_L2.Value.Value > 0)
+                throw new ArgumentException($"The given discharging rate limit for phase L2 {DischargeLimit_L2.Value.Value} must not be positive!",
+                                            nameof(DischargeLimit_L2));
+
+            if (DischargeLimit_L3.HasValue && DischargeLimit_L3.Value.Value > 0)
+                throw new ArgumentException($"The given discharging rate limit for phase L3 {DischargeLimit_L3.Value.Value} must not be positive!",
+                                            nameof(DischargeLimit_L3));
+
+            #endregion
+
+            this.ChargingProfileId    = ChargingProfileId;
+
+            this.Limit                = Limit;
+            this.Limit_L2             = Limit_L2;
+            this.Limit_L3             = Limit_L3;
+
+            this.DischargeLimit       = DischargeLimit;
+            this.DischargeLimit_L2    = DischargeLimit_L2;
+            this.DischargeLimit_L3    = DischargeLimit_L3;
+
+            this.Setpoint             = Setpoint;
+            this.Setpoint_L2          = Setpoint_L2;
+            this.Setpoint_L3          = Setpoint_L3;
+
+            this.SetpointReactive     = SetpointReactive;
+            this.SetpointReactive_L2  = SetpointReactive_L2;
+            this.SetpointReactive_L3  = SetpointReactive_L3;
 
             unchecked
             {

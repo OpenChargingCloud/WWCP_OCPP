@@ -25,17 +25,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// Extention methods for all CSMS servers.
-    /// </summary>
-    public static class ICSMSServerExtensions
-    {
-
-
-
-    }
-
-
-    /// <summary>
     /// The common interface of all CSMS servers.
     /// </summary>
     public interface ICSMSServer : IEventSender

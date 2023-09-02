@@ -1009,6 +1009,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     #endregion
 
+    #region OnUpdateDynamicSchedule
+
+    /// <summary>
+    /// A delegate called whenever an UpdateDynamicSchedule request will be sent to a charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnUpdateDynamicScheduleRequestDelegate(DateTime                       Timestamp,
+                                                                IEventSender                   Sender,
+                                                                UpdateDynamicScheduleRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever an UpdateDynamicSchedule request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnUpdateDynamicScheduleResponseDelegate(DateTime                        Timestamp,
+                                                                 IEventSender                    Sender,
+                                                                 UpdateDynamicScheduleRequest    Request,
+                                                                 UpdateDynamicScheduleResponse   Response,
+                                                                 TimeSpan                        Runtime);
+
+    #endregion
+
     #region OnNotifyAllowedEnergyTransfer
 
     /// <summary>
@@ -1034,6 +1062,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                        NotifyAllowedEnergyTransferRequest    Request,
                                                                        NotifyAllowedEnergyTransferResponse   Response,
                                                                        TimeSpan                              Runtime);
+
+    #endregion
+
+    #region OnUsePriorityCharging
+
+    /// <summary>
+    /// A delegate called whenever an UsePriorityCharging request will be sent to a charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnUsePriorityChargingRequestDelegate(DateTime                      Timestamp,
+                                                              IEventSender                  Sender,
+                                                              UsePriorityChargingRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to an UsePriorityCharging request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnUsePriorityChargingResponseDelegate(DateTime                       Timestamp,
+                                                               IEventSender                   Sender,
+                                                               UsePriorityChargingRequest    Request,
+                                                               UsePriorityChargingResponse   Response,
+                                                               TimeSpan                       Runtime);
 
     #endregion
 

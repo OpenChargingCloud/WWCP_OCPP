@@ -19,17 +19,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// Extention methods for all charging station servers.
-    /// </summary>
-    public static class IChargingStationServerExtensions
-    {
-
-
-
-    }
-
-
-    /// <summary>
     /// The common interface of all charging station servers.
     /// </summary>
     public interface IChargingStationServer
@@ -703,6 +692,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region OnUpdateDynamicSchedule
+
+        /// <summary>
+        /// An event sent whenever an UpdateDynamicSchedule request was received.
+        /// </summary>
+        event OnUpdateDynamicScheduleRequestDelegate    OnUpdateDynamicScheduleRequest;
+
+        /// <summary>
+        /// An event sent whenever an UpdateDynamicSchedule was received.
+        /// </summary>
+        event OnUpdateDynamicScheduleDelegate           OnUpdateDynamicSchedule;
+
+        /// <summary>
+        /// An event sent whenever an response to a UpdateDynamicSchedule request was sent.
+        /// </summary>
+        event OnUpdateDynamicScheduleResponseDelegate   OnUpdateDynamicScheduleResponse;
+
+        #endregion
+
         #region OnNotifyAllowedEnergyTransfer
 
         /// <summary>
@@ -719,6 +727,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// An event sent whenever a response to a NotifyAllowedEnergyTransfer request was sent.
         /// </summary>
         event OnNotifyAllowedEnergyTransferResponseDelegate   OnNotifyAllowedEnergyTransferResponse;
+
+        #endregion
+
+        #region OnUsePriorityCharging
+
+        /// <summary>
+        /// An event sent whenever an UsePriorityCharging request was received.
+        /// </summary>
+        event OnUsePriorityChargingRequestDelegate    OnUsePriorityChargingRequest;
+
+        /// <summary>
+        /// An event sent whenever an UsePriorityCharging was received.
+        /// </summary>
+        event OnUsePriorityChargingDelegate           OnUsePriorityCharging;
+
+        /// <summary>
+        /// An event sent whenever a response to an UsePriorityCharging request was sent.
+        /// </summary>
+        event OnUsePriorityChargingResponseDelegate   OnUsePriorityChargingResponse;
 
         #endregion
 

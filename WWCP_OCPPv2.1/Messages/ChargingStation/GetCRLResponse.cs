@@ -36,16 +36,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Properties
 
         /// <summary>
-        /// The success or failure of the EXI message processing.
-        /// </summary>
-        [Mandatory]
-        public GenericStatus  Status             { get; }
-
-        /// <summary>
         /// The get certificate revocation list request identification.
         /// </summary>
         [Mandatory]
         public UInt32         GetCRLRequestId    { get; }
+
+        /// <summary>
+        /// The success or failure of the EXI message processing.
+        /// </summary>
+        [Mandatory]
+        public GenericStatus  Status             { get; }
 
         /// <summary>
         /// Optional detailed status information.
@@ -57,19 +57,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region GetCRLResponse(Request, Status, GetCRLRequestId, StatusInfo = null, ...)
+        #region GetCRLResponse(Request, GetCRLRequestId, Status, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new get certificate revocation list response.
         /// </summary>
         /// <param name="Request">The get certificate revocation list request leading to this response.</param>
-        /// <param name="Status">The success or failure of the EXI message processing.</param>
         /// <param name="GetCRLRequestId">The get certificate revocation list request identification.</param>
+        /// <param name="Status">The success or failure of the EXI message processing.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetCRLResponse(CS.GetCRLRequest  Request,
-                              GenericStatus     Status,
                               UInt32            GetCRLRequestId,
+                              GenericStatus     Status,
                               StatusInfo?       StatusInfo   = null,
                               CustomData?       CustomData   = null)
 
@@ -79,8 +79,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.Status           = Status;
             this.GetCRLRequestId  = GetCRLRequestId;
+            this.Status           = Status;
             this.StatusInfo       = StatusInfo;
 
         }
@@ -165,12 +165,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetCRLResponse = null;
 
-                #region Status             [mandatory]
+                #region GetCRLRequestId    [mandatory]
 
-                if (!JSON.ParseMandatory("status",
-                                         "generic status",
-                                         GenericStatus.TryParse,
-                                         out GenericStatus Status,
+                if (!JSON.ParseMandatory("requestId",
+                                         "get certificate revocation list request identification",
+                                         out UInt32 GetCRLRequestId,
                                          out ErrorResponse))
                 {
                     return false;
@@ -178,11 +177,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region GetCRLRequestId    [mandatory]
+                #region Status             [mandatory]
 
-                if (!JSON.ParseMandatory("requestId",
-                                         "get certificate revocation list request identification",
-                                         out UInt32 GetCRLRequestId,
+                if (!JSON.ParseMandatory("status",
+                                         "generic status",
+                                         GenericStatus.TryParse,
+                                         out GenericStatus Status,
                                          out ErrorResponse))
                 {
                     return false;
@@ -221,8 +221,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 GetCRLResponse = new GetCRLResponse(
                                      Request,
-                                     Status,
                                      GetCRLRequestId,
+                                     Status,
                                      StatusInfo,
                                      CustomData
                                  );

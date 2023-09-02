@@ -2555,6 +2555,73 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
         #endregion
 
+        #region UpdateDynamicSchedule_Test()
+
+        /// <summary>
+        /// A test updating the dynamic charging schedule for the given charging profile.
+        /// </summary>
+        [Test]
+        public async Task UpdateDynamicSchedule_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var updateDynamicScheduleRequests = new List<UpdateDynamicScheduleRequest>();
+
+                chargingStation1.OnUpdateDynamicScheduleRequest += async (timestamp, sender, updateDynamicScheduleRequest) => {
+                    updateDynamicScheduleRequests.Add(updateDynamicScheduleRequest);
+                };
+
+                var response1  = await testCSMS01.UpdateDynamicSchedule(
+
+                                     ChargeBoxId:           chargingStation1.ChargeBoxId,
+
+                                     ChargingProfileId:     ChargingProfile_Id.Parse(1),
+
+                                     Limit:                 ChargingRateValue. Parse( 1, ChargingRateUnits.Watts),
+                                     Limit_L2:              ChargingRateValue. Parse( 2, ChargingRateUnits.Watts),
+                                     Limit_L3:              ChargingRateValue. Parse( 3, ChargingRateUnits.Watts),
+
+                                     DischargeLimit:        ChargingRateValue. Parse(-4, ChargingRateUnits.Watts),
+                                     DischargeLimit_L2:     ChargingRateValue. Parse(-5, ChargingRateUnits.Watts),
+                                     DischargeLimit_L3:     ChargingRateValue. Parse(-6, ChargingRateUnits.Watts),
+
+                                     Setpoint:              ChargingRateValue. Parse( 7, ChargingRateUnits.Watts),
+                                     Setpoint_L2:           ChargingRateValue. Parse( 8, ChargingRateUnits.Watts),
+                                     Setpoint_L3:           ChargingRateValue. Parse( 9, ChargingRateUnits.Watts),
+
+                                     SetpointReactive:      ChargingRateValue. Parse(10, ChargingRateUnits.Watts),
+                                     SetpointReactive_L2:   ChargingRateValue. Parse(11, ChargingRateUnits.Watts),
+                                     SetpointReactive_L3:   ChargingRateValue. Parse(12, ChargingRateUnits.Watts),
+
+                                     CustomData:            null
+
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                   response1.Result.ResultCode);
+                Assert.AreEqual(ChargingProfileStatus.Accepted,   response1.Status);
+
+                Assert.AreEqual(1,                                updateDynamicScheduleRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,     updateDynamicScheduleRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
         #region NotifyAllowedEnergyTransfer_Test()
 
         /// <summary>
@@ -2579,8 +2646,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 var unlockConnectorRequests = new List<NotifyAllowedEnergyTransferRequest>();
 
-                chargingStation1.OnNotifyAllowedEnergyTransferRequest += async (timestamp, sender, unlockConnectorRequest) => {
+                chargingStation1.OnNotifyAllowedEnergyTransferRequest += (timestamp, sender, unlockConnectorRequest) => {
                     unlockConnectorRequests.Add(unlockConnectorRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await testCSMS01.NotifyAllowedEnergyTransfer(
@@ -2598,6 +2666,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 Assert.AreEqual(1,                                            unlockConnectorRequests.Count);
                 Assert.AreEqual(chargingStation1.ChargeBoxId,                 unlockConnectorRequests.First().ChargeBoxId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region UsePriorityCharging_Test()
+
+        /// <summary>
+        /// A test switching to the priority charging profile.
+        /// </summary>
+        [Test]
+        public async Task UsePriorityCharging_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var usePriorityChargingRequests = new List<UsePriorityChargingRequest>();
+
+                chargingStation1.OnUsePriorityChargingRequest += (timestamp, sender, usePriorityChargingRequest) => {
+                    usePriorityChargingRequests.Add(usePriorityChargingRequest);
+                    return Task.CompletedTask;
+                };
+
+                var response1  = await testCSMS01.UsePriorityCharging(
+                                     ChargeBoxId:     chargingStation1.ChargeBoxId,
+                                     TransactionId:   Transaction_Id.Parse("1234"),
+                                     Activate:        true,
+                                     CustomData:      null
+                                 );
+
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(GenericStatus.Accepted,         response1.Status);
+
+                Assert.AreEqual(1,                              usePriorityChargingRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   usePriorityChargingRequests.First().ChargeBoxId);
 
             }
 
@@ -2629,8 +2746,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 var unlockConnectorRequests = new List<UnlockConnectorRequest>();
 
-                chargingStation1.OnUnlockConnectorRequest += async (timestamp, sender, unlockConnectorRequest) => {
+                chargingStation1.OnUnlockConnectorRequest += (timestamp, sender, unlockConnectorRequest) => {
                     unlockConnectorRequests.Add(unlockConnectorRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await testCSMS01.UnlockConnector(
@@ -2678,8 +2796,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 var afrrSignalRequestRequests = new List<AFRRSignalRequest>();
 
-                chargingStation1.OnAFRRSignalRequest += async (timestamp, sender, afrrSignalRequestRequest) => {
+                chargingStation1.OnAFRRSignalRequest += (timestamp, sender, afrrSignalRequestRequest) => {
                     afrrSignalRequestRequests.Add(afrrSignalRequestRequest);
+                    return Task.CompletedTask;
                 };
 
                 var response1  = await testCSMS01.SendAFRRSignal(

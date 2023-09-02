@@ -28,17 +28,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// Extention methods for all charging station clients
-    /// </summary>
-    public static class IChargingStationClientExtensions
-    {
-
-        //ToDo: Implement IChargingStationClientExtensions!
-
-    }
-
-
-    /// <summary>
     /// The common interface of all charging station clients.
     /// </summary>
     public interface IChargingStationClient : IChargingStationClientEvents,

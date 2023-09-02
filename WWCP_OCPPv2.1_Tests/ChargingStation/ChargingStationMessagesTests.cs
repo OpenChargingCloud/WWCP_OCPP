@@ -1188,59 +1188,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 var response1       = await chargingStation1.SendTransactionEvent(
 
-                                          EventType:            TransactionEvents.Started,
-                                          Timestamp:            startTimestamp,
-                                          TriggerReason:        TriggerReasons.Authorized,
-                                          SequenceNumber:       0,
-                                          TransactionInfo:      new Transaction(
-                                                                    TransactionId:       Transaction_Id.NewRandom,
-                                                                    ChargingState:       ChargingStates.Charging,
-                                                                    TimeSpentCharging:   TimeSpan.FromSeconds(3),
-                                                                    StoppedReason:       null,
-                                                                    RemoteStartId:       null,
-                                                                    CustomData:          null
-                                                                ),
+                                          EventType:               TransactionEvents.Started,
+                                          Timestamp:               startTimestamp,
+                                          TriggerReason:           TriggerReasons.Authorized,
+                                          SequenceNumber:          0,
+                                          TransactionInfo:         new Transaction(
+                                                                       TransactionId:       Transaction_Id.NewRandom,
+                                                                       ChargingState:       ChargingStates.Charging,
+                                                                       TimeSpentCharging:   TimeSpan.FromSeconds(3),
+                                                                       StoppedReason:       null,
+                                                                       RemoteStartId:       null,
+                                                                       CustomData:          null
+                                                                   ),
 
-                                          Offline:              null,
-                                          NumberOfPhasesUsed:   null,
-                                          CableMaxCurrent:      null,
-                                          ReservationId:        reservationId,
-                                          IdToken:              idToken,
-                                          EVSE:                 new EVSE(
-                                                                    Id:                  evseId,
-                                                                    ConnectorId:         connectorId,
-                                                                    CustomData:          null
-                                                                ),
-                                          MeterValues:          new[] {
-                                                                    new MeterValue(
-                                                                        SampledValues:   new[] {
+                                          Offline:                 null,
+                                          NumberOfPhasesUsed:      null,
+                                          CableMaxCurrent:         null,
+                                          ReservationId:           reservationId,
+                                          IdToken:                 idToken,
+                                          EVSE:                    new EVSE(
+                                                                       Id:                  evseId,
+                                                                       ConnectorId:         connectorId,
+                                                                       CustomData:          null
+                                                                   ),
+                                          MeterValues:             new[] {
+                                                                       new MeterValue(
+                                                                           SampledValues:   new[] {
 
-                                                                                             new SampledValue(
-                                                                                                 Value:              meterStart,
-                                                                                                 Context:            ReadingContexts.TransactionBegin,
-                                                                                                 Measurand:          Measurands.Energy_Active_Export_Interval,
-                                                                                                 Phase:              Phases.L1,
-                                                                                                 Location:           MeasurementLocations.Outlet,
-                                                                                                 SignedMeterValue:   new SignedMeterValue(
-                                                                                                                         SignedMeterData:   meterStart.ToString(),
-                                                                                                                         SigningMethod:     "secp256r1",
-                                                                                                                         EncodingMethod:    "base64",
-                                                                                                                         PublicKey:         "0x1234",
-                                                                                                                         CustomData:        null
-                                                                                                                     ),
-                                                                                                 UnitOfMeasure:      UnitsOfMeasure.kW(
-                                                                                                                         Multiplier:   0,
-                                                                                                                         CustomData:   null
-                                                                                                                     ),
-                                                                                                 CustomData:         null
-                                                                                             )
+                                                                                                new SampledValue(
+                                                                                                    Value:              meterStart,
+                                                                                                    Context:            ReadingContexts.TransactionBegin,
+                                                                                                    Measurand:          Measurands.Energy_Active_Export_Interval,
+                                                                                                    Phase:              Phases.L1,
+                                                                                                    Location:           MeasurementLocations.Outlet,
+                                                                                                    SignedMeterValue:   new SignedMeterValue(
+                                                                                                                            SignedMeterData:   meterStart.ToString(),
+                                                                                                                            SigningMethod:     "secp256r1",
+                                                                                                                            EncodingMethod:    "base64",
+                                                                                                                            PublicKey:         "0x1234",
+                                                                                                                            CustomData:        null
+                                                                                                                        ),
+                                                                                                    UnitOfMeasure:      UnitsOfMeasure.kW(
+                                                                                                                            Multiplier:   0,
+                                                                                                                            CustomData:   null
+                                                                                                                        ),
+                                                                                                    CustomData:         null
+                                                                                                )
 
-                                                                                         },
-                                                                        Timestamp:       startTimestamp,
-                                                                        CustomData:      null
-                                                                    )
-                                                                },
-                                          CustomData:           null
+                                                                                            },
+                                                                           Timestamp:       startTimestamp,
+                                                                           CustomData:      null
+                                                                       )
+                                                                   },
+                                          PreconditioningStatus:   PreconditioningStatus.Ready,
+                                          CustomData:              null
 
                                       );
 

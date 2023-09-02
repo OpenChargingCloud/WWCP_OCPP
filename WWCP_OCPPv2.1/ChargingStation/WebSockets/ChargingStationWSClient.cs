@@ -212,8 +212,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public CustomJObjectParserDelegate<GetChargingProfilesRequest>?          CustomGetChargingProfilesRequestParser           { get; set; }
         public CustomJObjectParserDelegate<ClearChargingProfileRequest>?         CustomClearChargingProfileRequestParser          { get; set; }
         public CustomJObjectParserDelegate<GetCompositeScheduleRequest>?         CustomGetCompositeScheduleRequestParser          { get; set; }
-
+        public CustomJObjectParserDelegate<UpdateDynamicScheduleRequest>?        CustomUpdateDynamicScheduleRequestParser         { get; set; }
         public CustomJObjectParserDelegate<NotifyAllowedEnergyTransferRequest>?  CustomNotifyAllowedEnergyTransferRequestParser   { get; set; }
+        public CustomJObjectParserDelegate<UsePriorityChargingRequest>?          CustomUsePriorityChargingRequestParser           { get; set; }
         public CustomJObjectParserDelegate<UnlockConnectorRequest>?              CustomUnlockConnectorRequestParser               { get; set; }
 
         public CustomJObjectParserDelegate<AFRRSignalRequest>?                   CustomAFRRSignalRequestParser                    { get; set; }
@@ -2052,6 +2053,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region OnUpdateDynamicSchedule
+
+        /// <summary>
+        /// An event sent whenever an UpdateDynamicSchedule websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                  OnUpdateDynamicScheduleWSRequest;
+
+        /// <summary>
+        /// An event sent whenever an UpdateDynamicSchedule request was received.
+        /// </summary>
+        public event OnUpdateDynamicScheduleRequestDelegate?     OnUpdateDynamicScheduleRequest;
+
+        /// <summary>
+        /// An event sent whenever an UpdateDynamicSchedule request was received.
+        /// </summary>
+        public event OnUpdateDynamicScheduleDelegate?            OnUpdateDynamicSchedule;
+
+        /// <summary>
+        /// An event sent whenever a response to an UpdateDynamicSchedule request was sent.
+        /// </summary>
+        public event OnUpdateDynamicScheduleResponseDelegate?    OnUpdateDynamicScheduleResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to an UpdateDynamicSchedule request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                 OnUpdateDynamicScheduleWSResponse;
+
+        #endregion
+
         #region OnNotifyAllowedEnergyTransfer
 
         /// <summary>
@@ -2078,6 +2108,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// An event sent whenever a websocket response to a NotifyAllowedEnergyTransfer request was sent.
         /// </summary>
         public event WSClientResponseLogHandler?                       OnNotifyAllowedEnergyTransferWSResponse;
+
+        #endregion
+
+        #region OnUsePriorityCharging
+
+        /// <summary>
+        /// An event sent whenever an UsePriorityCharging websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                OnUsePriorityChargingWSRequest;
+
+        /// <summary>
+        /// An event sent whenever an UsePriorityCharging request was received.
+        /// </summary>
+        public event OnUsePriorityChargingRequestDelegate?     OnUsePriorityChargingRequest;
+
+        /// <summary>
+        /// An event sent whenever an UsePriorityCharging request was received.
+        /// </summary>
+        public event OnUsePriorityChargingDelegate?            OnUsePriorityCharging;
+
+        /// <summary>
+        /// An event sent whenever a response to an UsePriorityCharging request was sent.
+        /// </summary>
+        public event OnUsePriorityChargingResponseDelegate?    OnUsePriorityChargingResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to an UsePriorityCharging request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?               OnUsePriorityChargingWSResponse;
 
         #endregion
 
@@ -7057,6 +7116,138 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         }
                         break;
 
+                    case "UpdateDynamicSchedule":
+                        {
+
+                            #region Send OnUpdateDynamicScheduleWSRequest event
+
+                            try
+                            {
+
+                                OnUpdateDynamicScheduleWSRequest?.Invoke(Timestamp.Now,
+                                                                         this,
+                                                                         requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateDynamicScheduleWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (UpdateDynamicScheduleRequest.TryParse(requestMessage.Message,
+                                                                          requestMessage.RequestId,
+                                                                          ChargeBoxIdentity,
+                                                                          out var request,
+                                                                          out var errorResponse,
+                                                                          CustomUpdateDynamicScheduleRequestParser) && request is not null) {
+
+                                    #region Send OnUpdateDynamicScheduleRequest event
+
+                                    try
+                                    {
+
+                                        OnUpdateDynamicScheduleRequest?.Invoke(Timestamp.Now,
+                                                                               this,
+                                                                               request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateDynamicScheduleRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    UpdateDynamicScheduleResponse? response = null;
+
+                                    var results = OnUpdateDynamicSchedule?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnUpdateDynamicScheduleDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                       this,
+                                                                                                                                       request,
+                                                                                                                                       cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= UpdateDynamicScheduleResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnUpdateDynamicScheduleResponse event
+
+                                    try
+                                    {
+
+                                        OnUpdateDynamicScheduleResponse?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request,
+                                                                                response,
+                                                                                response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateDynamicScheduleResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnUpdateDynamicScheduleWSResponse event
+
+                            try
+                            {
+
+                                OnUpdateDynamicScheduleWSResponse?.Invoke(Timestamp.Now,
+                                                                          this,
+                                                                          requestJSON,
+                                                                          new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                             OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateDynamicScheduleWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
                     case "NotifyAllowedEnergyTransfer":
                         {
 
@@ -7182,6 +7373,138 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                             catch (Exception e)
                             {
                                 DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyAllowedEnergyTransferWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "UsePriorityCharging":
+                        {
+
+                            #region Send OnUsePriorityChargingWSRequest event
+
+                            try
+                            {
+
+                                OnUsePriorityChargingWSRequest?.Invoke(Timestamp.Now,
+                                                                       this,
+                                                                       requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUsePriorityChargingWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (UsePriorityChargingRequest.TryParse(requestMessage.Message,
+                                                                        requestMessage.RequestId,
+                                                                        ChargeBoxIdentity,
+                                                                        out var request,
+                                                                        out var errorResponse,
+                                                                        CustomUsePriorityChargingRequestParser) && request is not null) {
+
+                                    #region Send OnUsePriorityChargingRequest event
+
+                                    try
+                                    {
+
+                                        OnUsePriorityChargingRequest?.Invoke(Timestamp.Now,
+                                                                             this,
+                                                                             request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUsePriorityChargingRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    UsePriorityChargingResponse? response = null;
+
+                                    var results = OnUsePriorityCharging?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnUsePriorityChargingDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                     this,
+                                                                                                                                     request,
+                                                                                                                                     cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= UsePriorityChargingResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnUsePriorityChargingResponse event
+
+                                    try
+                                    {
+
+                                        OnUsePriorityChargingResponse?.Invoke(Timestamp.Now,
+                                                                              this,
+                                                                              request,
+                                                                              response,
+                                                                              response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUsePriorityChargingResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnUsePriorityChargingWSResponse event
+
+                            try
+                            {
+
+                                OnUsePriorityChargingWSResponse?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        requestJSON,
+                                                                        new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                           OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUsePriorityChargingWSResponse));
                             }
 
                             #endregion

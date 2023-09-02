@@ -61,8 +61,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="JSONToken">A vendor-specific JSON token.</param>
         /// <param name="MessageId">An optional message identification.</param>
+        /// <param name="Data">Optional vendor-specific data (a JSON token).</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public DataTransferRequest(ChargeBox_Id       ChargeBoxId,
                                    String             VendorId,
                                    String?            MessageId           = null,
-                                   JToken?            JSONToken           = null,
+                                   JToken?            Data                = null,
                                    CustomData?        CustomData          = null,
 
                                    Request_Id?        RequestId           = null,
@@ -93,17 +93,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            #region Initial checks
-
-            this.VendorId = VendorId.Trim();
-
-            if (this.VendorId.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(VendorId), "The given vendor identification must not be null or empty!");
-
-            #endregion
-
-            this.Data       = JSONToken;
+            this.VendorId   = VendorId.  Trim();
             this.MessageId  = MessageId?.Trim();
+            this.Data       = Data;
 
         }
 
@@ -297,12 +289,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                DataTransferRequest = new DataTransferRequest(ChargeBoxId,
-                                                              VendorId,
-                                                              MessageId,
-                                                              Data,
-                                                              CustomData,
-                                                              RequestId);
+                DataTransferRequest = new DataTransferRequest(
+                                          ChargeBoxId,
+                                          VendorId,
+                                          MessageId,
+                                          Data,
+                                          CustomData,
+                                          RequestId
+                                      );
 
                 if (CustomDataTransferRequestParser is not null)
                     DataTransferRequest = CustomDataTransferRequestParser(JSON,
@@ -335,18 +329,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("vendorId",    VendorId),
+                                 new JProperty("vendorId",     VendorId),
 
                            MessageId.IsNotNullOrEmpty()
-                               ? new JProperty("messageId",   MessageId)
+                               ? new JProperty("messageId",    MessageId)
                                : null,
 
                            Data is not null
-                               ? new JProperty("data",        Data)
+                               ? new JProperty("data",         Data)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

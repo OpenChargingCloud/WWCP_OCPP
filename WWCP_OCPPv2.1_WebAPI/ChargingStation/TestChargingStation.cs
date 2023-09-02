@@ -1240,6 +1240,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region UpdateDynamicSchedule
+
+        /// <summary>
+        /// An event fired whenever an UpdateDynamicSchedule request will be sent to the charging station.
+        /// </summary>
+        public event OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to an UpdateDynamicSchedule request was received.
+        /// </summary>
+        public event OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
+
+        #endregion
+
         #region NotifyAllowedEnergyTransfer
 
         /// <summary>
@@ -1251,6 +1265,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was received.
         /// </summary>
         public event OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
+
+        #endregion
+
+        #region UsePriorityCharging
+
+        /// <summary>
+        /// An event fired whenever a UsePriorityCharging request will be sent to the charging station.
+        /// </summary>
+        public event OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a UsePriorityCharging request was received.
+        /// </summary>
+        public event OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
 
         #endregion
 
@@ -1466,6 +1494,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        private Task HandleErrors(String     Module,
+                                  String     Caller,
+                                  Exception  ExceptionOccured)
+        {
+
+            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
+
+            return Task.CompletedTask;
+
+        }
+
 
         #region ConnectWebSocket(...)
 
@@ -1572,63 +1611,98 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnResetRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnResetRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnResetRequest?.Invoke(startTime,
-                                           this,
-                                           Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnResetRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnResetRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnResetRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // ResetType
 
                 ResetResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid reset request for charge box '", Request.ChargeBoxId, "'!"));
-                    response = new ResetResponse(Request:      Request,
-                                                 Status:       ResetStatus.Rejected,
-                                                 StatusInfo:   null,
-                                                 CustomData:   null);
+
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid reset request for charge box '{Request.ChargeBoxId}'!"));
+
+                    response = new ResetResponse(
+                                   Request:      Request,
+                                   Status:       ResetStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
                 }
                 else
                 {
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming '", Request.ResetType, "' reset request accepted."));
-                    response = new ResetResponse(Request:      Request,
-                                                 Status:       ResetStatus.Accepted,
-                                                 StatusInfo:   null,
-                                                 CustomData:   null);
+
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming '", Request.ResetType, "' reset request accepted."));
+
+                    response = new ResetResponse(
+                                   Request:      Request,
+                                   Status:       ResetStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
                 }
 
 
                 #region Send OnResetResponse event
 
-                try
+                var responseLogger = OnResetResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnResetResponse?.Invoke(responseTimestamp,
-                                            this,
-                                            Request,
-                                            response,
-                                            responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnResetResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnResetResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnResetResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -1648,25 +1722,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnUpdateFirmwareRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnUpdateFirmwareRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnUpdateFirmwareRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUpdateFirmwareRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnUpdateFirmwareRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUpdateFirmwareRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // Firmware,
+                // UpdateFirmwareRequestId
+                // Retries
+                // RetryIntervals
 
                 UpdateFirmwareResponse? response = null;
 
@@ -1675,10 +1764,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid UpdateFirmware request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new UpdateFirmwareResponse(Request:      Request,
-                                                          Status:       UpdateFirmwareStatus.Rejected,
-                                                          StatusInfo:   null,
-                                                          CustomData:   null);
+                    response = new UpdateFirmwareResponse(
+                                   Request:      Request,
+                                   Status:       UpdateFirmwareStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -1686,31 +1777,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming UpdateFirmware request for '" + Request.Firmware.FirmwareURL + "'.");
 
-                    response = new UpdateFirmwareResponse(Request:      Request,
-                                                          Status:       UpdateFirmwareStatus.Accepted,
-                                                          StatusInfo:   null,
-                                                          CustomData:   null);
+                    response = new UpdateFirmwareResponse(
+                                   Request:      Request,
+                                   Status:       UpdateFirmwareStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
 
 
                 #region Send OnUpdateFirmwareResponse event
 
-                try
+                var responseLogger = OnUpdateFirmwareResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnUpdateFirmwareResponse?.Invoke(responseTimestamp,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnUpdateFirmwareResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUpdateFirmwareResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUpdateFirmwareResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -1730,25 +1836,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnPublishFirmwareRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnPublishFirmwareRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnPublishFirmwareRequest?.Invoke(startTime,
-                                                     this,
-                                                     Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnPublishFirmwareRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnPublishFirmwareRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnPublishFirmwareRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // PublishFirmwareRequestId
+                // DownloadLocation
+                // MD5Checksum
+                // Retries
+                // RetryInterval
 
                 PublishFirmwareResponse? response = null;
 
@@ -1757,10 +1879,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid PublishFirmware request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new PublishFirmwareResponse(Request:      Request,
-                                                           Status:       GenericStatus.Rejected,
-                                                           StatusInfo:   null,
-                                                           CustomData:   null);
+                    response = new PublishFirmwareResponse(
+                                   Request:      Request,
+                                   Status:       GenericStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -1768,31 +1892,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming PublishFirmware request for '" + Request.DownloadLocation + "'.");
 
-                    response = new PublishFirmwareResponse(Request:      Request,
-                                                           Status:       GenericStatus.Accepted,
-                                                           StatusInfo:   null,
-                                                           CustomData:   null);
+                    response = new PublishFirmwareResponse(
+                                   Request:      Request,
+                                   Status:       GenericStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
 
 
                 #region Send OnPublishFirmwareResponse event
 
-                try
+                var responseLogger = OnPublishFirmwareResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnPublishFirmwareResponse?.Invoke(responseTimestamp,
-                                                      this,
-                                                      Request,
-                                                      response,
-                                                      responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnPublishFirmwareResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnPublishFirmwareResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnPublishFirmwareResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -1812,25 +1951,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnUnpublishFirmwareRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnUnpublishFirmwareRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnUnpublishFirmwareRequest?.Invoke(startTime,
-                                                       this,
-                                                       Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUnpublishFirmwareRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnUnpublishFirmwareRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUnpublishFirmwareRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // MD5Checksum
 
                 UnpublishFirmwareResponse? response = null;
 
@@ -1839,9 +1990,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid UnpublishFirmware request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new UnpublishFirmwareResponse(Request:      Request,
-                                                             Status:       UnpublishFirmwareStatus.Unknown,
-                                                             CustomData:   null);
+                    response = new UnpublishFirmwareResponse(
+                                   Request:      Request,
+                                   Status:       UnpublishFirmwareStatus.Unknown,
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -1849,30 +2002,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming UnpublishFirmware request for '" + Request.MD5Checksum + "'.");
 
-                    response = new UnpublishFirmwareResponse(Request:      Request,
-                                                             Status:       UnpublishFirmwareStatus.Unpublished,
-                                                             CustomData:   null);
+                    response = new UnpublishFirmwareResponse(
+                                   Request:      Request,
+                                   Status:       UnpublishFirmwareStatus.Unpublished,
+                                   CustomData:   null
+                               );
 
                 }
 
 
                 #region Send OnUnpublishFirmwareResponse event
 
-                try
+                var responseLogger = OnUnpublishFirmwareResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnUnpublishFirmwareResponse?.Invoke(responseTimestamp,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnUnpublishFirmwareResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUnpublishFirmwareResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUnpublishFirmwareResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -1892,25 +2060,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnGetBaseReportRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnGetBaseReportRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnGetBaseReportRequest?.Invoke(startTime,
-                                                   this,
-                                                   Request);
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetBaseReportRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetBaseReportRequest),
+                                  e
+                              );
+                    }
+
                 }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetBaseReportRequest));
-                }
 
-                #endregion
+                                                                #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // GetBaseReportRequestId
+                // ReportBase
 
                 GetBaseReportResponse? response = null;
 
@@ -1919,10 +2100,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetBaseReport request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new GetBaseReportResponse(Request:      Request,
-                                                         Status:       GenericDeviceModelStatus.Rejected,
-                                                         StatusInfo:   null,
-                                                         CustomData:   null);
+                    response = new GetBaseReportResponse(
+                                   Request:      Request,
+                                   Status:       GenericDeviceModelStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -1930,31 +2113,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetBaseReport request accepted.");
 
-                    response = new GetBaseReportResponse(Request:      Request,
-                                                         Status:       GenericDeviceModelStatus.Accepted,
-                                                         StatusInfo:   null,
-                                                         CustomData:   null);
+                    response = new GetBaseReportResponse(
+                                   Request:      Request,
+                                   Status:       GenericDeviceModelStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
 
 
                 #region Send OnGetBaseReportResponse event
 
-                try
+                var responseLogger = OnGetBaseReportResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnGetBaseReportResponse?.Invoke(responseTimestamp,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetBaseReportResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetBaseReportResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetBaseReportResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -1974,25 +2172,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnGetReportRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnGetReportRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnGetReportRequest?.Invoke(startTime,
-                                               this,
-                                               Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetReportRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetReportRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetReportRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // GetReportRequestId
+                // ComponentCriteria
+                // ComponentVariables
 
                 GetReportResponse? response = null;
 
@@ -2001,10 +2213,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetReport request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new GetReportResponse(Request:      Request,
-                                                     Status:       GenericDeviceModelStatus.Rejected,
-                                                     StatusInfo:   null,
-                                                     CustomData:   null);
+                    response = new GetReportResponse(
+                                   Request:      Request,
+                                   Status:       GenericDeviceModelStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -2012,31 +2226,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetReport request accepted.");
 
-                    response = new GetReportResponse(Request:      Request,
-                                                     Status:       GenericDeviceModelStatus.Accepted,
-                                                     StatusInfo:   null,
-                                                     CustomData:   null);
+                    response = new GetReportResponse(
+                                   Request:      Request,
+                                   Status:       GenericDeviceModelStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
 
 
                 #region Send OnGetReportResponse event
 
-                try
+                var responseLogger = OnGetReportResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnGetReportResponse?.Invoke(responseTimestamp,
-                                                this,
-                                                Request,
-                                                response,
-                                                responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetReportResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetReportResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetReportResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -2056,25 +2285,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnGetLogRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnGetLogRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnGetLogRequest?.Invoke(startTime,
-                                            this,
-                                            Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetLogRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetLogRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetLogRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // LogType
+                // LogRequestId
+                // Log
+                // Retries
+                // RetryInterval
 
                 GetLogResponse? response = null;
 
@@ -2083,10 +2328,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetLog request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new GetLogResponse(Request:      Request,
-                                                  Status:       LogStatus.Rejected,
-                                                  StatusInfo:   null,
-                                                  CustomData:   null);
+                    response = new GetLogResponse(
+                                   Request:      Request,
+                                   Status:       LogStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -2094,31 +2341,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetLog request accepted.");
 
-                    response = new GetLogResponse(Request:      Request,
-                                                  Status:       LogStatus.Accepted,
-                                                  StatusInfo:   null,
-                                                  CustomData:   null);
+                    response = new GetLogResponse(
+                                   Request:      Request,
+                                   Status:       LogStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
 
 
                 #region Send OnGetLogResponse event
 
-                try
+                var responseLogger = OnGetLogResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnGetLogResponse?.Invoke(responseTimestamp,
-                                             this,
-                                             Request,
-                                             response,
-                                             responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetLogResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetLogResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetLogResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -2138,25 +2400,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnSetVariablesRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnSetVariablesRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnSetVariablesRequest?.Invoke(startTime,
-                                                  this,
-                                                  Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetVariablesRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnSetVariablesRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetVariablesRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // VariableData
 
                 SetVariablesResponse? response = null;
 
@@ -2165,9 +2439,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetVariables request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new SetVariablesResponse(Request:              Request,
-                                                        SetVariableResults:   Array.Empty<SetVariableResult>(),
-                                                        CustomData:           null);
+                    response = new SetVariablesResponse(
+                                   Request:              Request,
+                                   SetVariableResults:   Array.Empty<SetVariableResult>(),
+                                   CustomData:           null
+                               );
 
                 }
                 else
@@ -2175,37 +2451,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetVariables request accepted.");
 
-                    response = new SetVariablesResponse(Request:              Request,
-                                                        SetVariableResults:   Request.VariableData.Select(variableData => new SetVariableResult(
-                                                                                                                              Status:                SetVariableStatus.Accepted,
-                                                                                                                              Component:             variableData.Component,
-                                                                                                                              Variable:              variableData.Variable,
-                                                                                                                              AttributeType:         variableData.AttributeType,
-                                                                                                                              AttributeStatusInfo:   null,
-                                                                                                                              CustomData:            null
-                                                                                                                          )),
-                                                        CustomData:           null);
+                    response = new SetVariablesResponse(
+                                   Request:              Request,
+                                   SetVariableResults:   Request.VariableData.Select(variableData => new SetVariableResult(
+                                                                                                         Status:                SetVariableStatus.Accepted,
+                                                                                                         Component:             variableData.Component,
+                                                                                                         Variable:              variableData.Variable,
+                                                                                                         AttributeType:         variableData.AttributeType,
+                                                                                                         AttributeStatusInfo:   null,
+                                                                                                         CustomData:            null
+                                                                                                     )),
+                                   CustomData:           null
+                               );
 
                 }
 
 
                 #region Send OnSetVariablesResponse event
 
-                try
+                var responseLogger = OnSetVariablesResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnSetVariablesResponse?.Invoke(responseTimestamp,
-                                                   this,
-                                                   Request,
-                                                   response,
-                                                   responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnSetVariablesResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetVariablesResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetVariablesResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -2225,25 +2516,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnGetVariablesRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnGetVariablesRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnGetVariablesRequest?.Invoke(startTime,
-                                                  this,
-                                                  Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetVariablesRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetVariablesRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetVariablesRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // VariableData
 
                 GetVariablesResponse? response = null;
 
@@ -2252,9 +2555,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetVariables request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new GetVariablesResponse(Request:      Request,
-                                                        Results:      Array.Empty<GetVariableResult>(),
-                                                        CustomData:   null);
+                    response = new GetVariablesResponse(
+                                   Request:      Request,
+                                   Results:      Array.Empty<GetVariableResult>(),
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -2262,38 +2567,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetVariables request accepted.");
 
-                    response = new GetVariablesResponse(Request:      Request,
-                                                        Results:      Request.VariableData.Select(variableData => new GetVariableResult(
-                                                                                                                      AttributeStatus:       GetVariableStatus.Accepted,
-                                                                                                                      Component:             variableData.Component,
-                                                                                                                      Variable:              variableData.Variable,
-                                                                                                                      AttributeValue:        "",
-                                                                                                                      AttributeType:         variableData.AttributeType,
-                                                                                                                      AttributeStatusInfo:   null,
-                                                                                                                      CustomData:            null
-                                                                                                                  )),
-                                                        CustomData:   null);
+                    response = new GetVariablesResponse(
+                                   Request:      Request,
+                                   Results:      Request.VariableData.Select(variableData => new GetVariableResult(
+                                                                                                 AttributeStatus:       GetVariableStatus.Accepted,
+                                                                                                 Component:             variableData.Component,
+                                                                                                 Variable:              variableData.Variable,
+                                                                                                 AttributeValue:        "",
+                                                                                                 AttributeType:         variableData.AttributeType,
+                                                                                                 AttributeStatusInfo:   null,
+                                                                                                 CustomData:            null
+                                                                                             )),
+                                   CustomData:   null
+                               );
 
                 }
 
 
                 #region Send OnGetVariablesResponse event
 
-                try
+                var responseLogger = OnGetVariablesResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnGetVariablesResponse?.Invoke(responseTimestamp,
-                                                   this,
-                                                   Request,
-                                                   response,
-                                                   responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetVariablesResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetVariablesResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetVariablesResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -2313,25 +2633,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnSetMonitoringBaseRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnSetMonitoringBaseRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnSetMonitoringBaseRequest?.Invoke(startTime,
-                                                       this,
-                                                       Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetMonitoringBaseRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnSetMonitoringBaseRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetMonitoringBaseRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // MonitoringBase
 
                 SetMonitoringBaseResponse? response = null;
 
@@ -2340,10 +2672,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetMonitoringBase request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new SetMonitoringBaseResponse(Request:      Request,
-                                                             Status:       GenericDeviceModelStatus.Rejected,
-                                                             StatusInfo:   null,
-                                                             CustomData:   null);
+                    response = new SetMonitoringBaseResponse(
+                                   Request:      Request,
+                                   Status:       GenericDeviceModelStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -2351,31 +2685,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetMonitoringBase request accepted.");
 
-                    response = new SetMonitoringBaseResponse(Request:      Request,
-                                                             Status:       GenericDeviceModelStatus.Accepted,
-                                                             StatusInfo:   null,
-                                                             CustomData:   null);
+                    response = new SetMonitoringBaseResponse(
+                                   Request:      Request,
+                                   Status:       GenericDeviceModelStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
 
 
                 #region Send OnSetMonitoringBaseResponse event
 
-                try
+                var responseLogger = OnSetMonitoringBaseResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnSetMonitoringBaseResponse?.Invoke(responseTimestamp,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnSetMonitoringBaseResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetMonitoringBaseResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetMonitoringBaseResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -2395,25 +2744,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnGetMonitoringReportRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnGetMonitoringReportRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnGetMonitoringReportRequest?.Invoke(startTime,
-                                                         this,
-                                                         Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetMonitoringReportRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetMonitoringReportRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetMonitoringReportRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // GetMonitoringReportRequestId
+                // MonitoringCriteria
+                // ComponentVariables
 
                 GetMonitoringReportResponse? response = null;
 
@@ -2422,10 +2785,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetMonitoringReport request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new GetMonitoringReportResponse(Request:      Request,
-                                                               Status:       GenericDeviceModelStatus.Rejected,
-                                                               StatusInfo:   null,
-                                                               CustomData:   null);
+                    response = new GetMonitoringReportResponse(
+                                   Request:      Request,
+                                   Status:       GenericDeviceModelStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -2433,31 +2798,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetMonitoringReport request accepted.");
 
-                    response = new GetMonitoringReportResponse(Request:      Request,
-                                                               Status:       GenericDeviceModelStatus.Accepted,
-                                                               StatusInfo:   null,
-                                                               CustomData:   null);
+                    response = new GetMonitoringReportResponse(
+                                   Request:      Request,
+                                   Status:       GenericDeviceModelStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
 
 
                 #region Send OnGetMonitoringReportResponse event
 
-                try
+                var responseLogger = OnGetMonitoringReportResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnGetMonitoringReportResponse?.Invoke(responseTimestamp,
-                                                          this,
-                                                          Request,
-                                                          response,
-                                                          responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetMonitoringReportResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetMonitoringReportResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetMonitoringReportResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -2477,25 +2857,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnSetMonitoringLevelRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnSetMonitoringLevelRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnSetMonitoringLevelRequest?.Invoke(startTime,
-                                                        this,
-                                                        Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetMonitoringLevelRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnSetMonitoringLevelRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetMonitoringLevelRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // Severity
 
                 SetMonitoringLevelResponse? response = null;
 
@@ -2504,10 +2896,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetMonitoringLevel request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new SetMonitoringLevelResponse(Request:      Request,
-                                                              Status:       GenericStatus.Rejected,
-                                                              StatusInfo:   null,
-                                                              CustomData:   null);
+                    response = new SetMonitoringLevelResponse(
+                                   Request:      Request,
+                                   Status:       GenericStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -2515,31 +2909,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetMonitoringLevel request accepted.");
 
-                    response = new SetMonitoringLevelResponse(Request:      Request,
-                                                              Status:       GenericStatus.Accepted,
-                                                              StatusInfo:   null,
-                                                              CustomData:   null);
+                    response = new SetMonitoringLevelResponse(
+                                   Request:      Request,
+                                   Status:       GenericStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
 
 
                 #region Send OnSetMonitoringLevelResponse event
 
-                try
+                var responseLogger = OnSetMonitoringLevelResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnSetMonitoringLevelResponse?.Invoke(responseTimestamp,
-                                                         this,
-                                                         Request,
-                                                         response,
-                                                         responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnSetMonitoringLevelResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetMonitoringLevelResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetMonitoringLevelResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -2559,25 +2968,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnSetVariableMonitoringRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnSetVariableMonitoringRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnSetVariableMonitoringRequest?.Invoke(startTime,
-                                                           this,
-                                                           Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetVariableMonitoringRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnSetVariableMonitoringRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetVariableMonitoringRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // MonitoringData
 
                 SetVariableMonitoringResponse? response = null;
 
@@ -2586,9 +3007,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetVariableMonitoring request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new SetVariableMonitoringResponse(Request:                Request,
-                                                                 SetMonitoringResults:   Array.Empty<SetMonitoringResult>(),
-                                                                 CustomData:             null);
+                    response = new SetVariableMonitoringResponse(
+                                   Request:                Request,
+                                   SetMonitoringResults:   Array.Empty<SetMonitoringResult>(),
+                                   CustomData:             null
+                               );
 
                 }
                 else
@@ -2596,39 +3019,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetVariableMonitoring request accepted.");
 
-                    response = new SetVariableMonitoringResponse(Request:                Request,
-                                                                 SetMonitoringResults:   Request.MonitoringData.Select(setMonitoringData => new SetMonitoringResult(
-                                                                                                                                                Status:                 SetMonitoringStatus.Accepted,
-                                                                                                                                                MonitorType:            setMonitoringData.MonitorType,
-                                                                                                                                                Severity:               setMonitoringData.Severity,
-                                                                                                                                                Component:              setMonitoringData.Component,
-                                                                                                                                                Variable:               setMonitoringData.Variable,
-                                                                                                                                                VariableMonitoringId:   setMonitoringData.VariableMonitoringId,
-                                                                                                                                                StatusInfo:             null,
-                                                                                                                                                CustomData:             null
-                                                                                                                                            )),
-                                                                 CustomData:             null);
+                    response = new SetVariableMonitoringResponse(
+                                   Request:                Request,
+                                   SetMonitoringResults:   Request.MonitoringData.Select(setMonitoringData => new SetMonitoringResult(
+                                                                                                                  Status:                 SetMonitoringStatus.Accepted,
+                                                                                                                  MonitorType:            setMonitoringData.MonitorType,
+                                                                                                                  Severity:               setMonitoringData.Severity,
+                                                                                                                  Component:              setMonitoringData.Component,
+                                                                                                                  Variable:               setMonitoringData.Variable,
+                                                                                                                  VariableMonitoringId:   setMonitoringData.VariableMonitoringId,
+                                                                                                                  StatusInfo:             null,
+                                                                                                                  CustomData:             null
+                                                                                                              )),
+                                   CustomData:             null
+                               );
 
                 }
 
 
                 #region Send OnSetVariableMonitoringResponse event
 
-                try
+                var responseLogger = OnSetVariableMonitoringResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnSetVariableMonitoringResponse?.Invoke(responseTimestamp,
-                                                            this,
-                                                            Request,
-                                                            response,
-                                                            responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnSetVariableMonitoringResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetVariableMonitoringResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetVariableMonitoringResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -2648,25 +3086,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnClearVariableMonitoringRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnClearVariableMonitoringRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnClearVariableMonitoringRequest?.Invoke(startTime,
-                                                             this,
-                                                             Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearVariableMonitoringRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnClearVariableMonitoringRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnClearVariableMonitoringRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // VariableMonitoringIds
 
                 ClearVariableMonitoringResponse? response = null;
 
@@ -2675,9 +3125,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid ClearVariableMonitoring request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new ClearVariableMonitoringResponse(Request:                  Request,
-                                                                   ClearMonitoringResults:   Array.Empty<ClearMonitoringResult>(),
-                                                                   CustomData:               null);
+                    response = new ClearVariableMonitoringResponse(
+                                   Request:                  Request,
+                                   ClearMonitoringResults:   Array.Empty<ClearMonitoringResult>(),
+                                   CustomData:               null
+                               );
 
                 }
                 else
@@ -2685,35 +3137,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming ClearVariableMonitoring request accepted.");
 
-                    response = new ClearVariableMonitoringResponse(Request:                  Request,
-                                                                   ClearMonitoringResults:   Request.VariableMonitoringIds.Select(variableMonitoringId => new ClearMonitoringResult(
-                                                                                                                                                              Status:       ClearMonitoringStatus.Accepted,
-                                                                                                                                                              Id:           variableMonitoringId,
-                                                                                                                                                              StatusInfo:   null,
-                                                                                                                                                              CustomData:   null
-                                                                                                                                                          )),
-                                                                   CustomData:               null);
+                    response = new ClearVariableMonitoringResponse(
+                                   Request:                  Request,
+                                   ClearMonitoringResults:   Request.VariableMonitoringIds.Select(variableMonitoringId => new ClearMonitoringResult(
+                                                                                                                              Status:       ClearMonitoringStatus.Accepted,
+                                                                                                                              Id:           variableMonitoringId,
+                                                                                                                              StatusInfo:   null,
+                                                                                                                              CustomData:   null
+                                                                                                                          )),
+                                   CustomData:               null
+                               );
 
                 }
 
 
                 #region Send OnClearVariableMonitoringResponse event
 
-                try
+                var responseLogger = OnClearVariableMonitoringResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnClearVariableMonitoringResponse?.Invoke(responseTimestamp,
-                                                              this,
-                                                              Request,
-                                                              response,
-                                                              responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnClearVariableMonitoringResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearVariableMonitoringResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnClearVariableMonitoringResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -2733,25 +3200,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnSetNetworkProfileRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnSetNetworkProfileRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnSetNetworkProfileRequest?.Invoke(startTime,
-                                                       this,
-                                                       Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetNetworkProfileRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnSetNetworkProfileRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetNetworkProfileRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // ConfigurationSlot
+                // NetworkConnectionProfile
 
                 SetNetworkProfileResponse? response = null;
 
@@ -2760,10 +3240,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetNetworkProfile request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new SetNetworkProfileResponse(Request:      Request,
-                                                             Status:       SetNetworkProfileStatus.Rejected,
-                                                             StatusInfo:   null,
-                                                             CustomData:   null);
+                    response = new SetNetworkProfileResponse(
+                                   Request:      Request,
+                                   Status:       SetNetworkProfileStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -2771,31 +3253,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetNetworkProfile request accepted.");
 
-                    response = new SetNetworkProfileResponse(Request:      Request,
-                                                             Status:       SetNetworkProfileStatus.Accepted,
-                                                             StatusInfo:   null,
-                                                             CustomData:   null);
+                    response = new SetNetworkProfileResponse(
+                                   Request:      Request,
+                                   Status:       SetNetworkProfileStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
 
 
                 #region Send OnSetNetworkProfileResponse event
 
-                try
+                var responseLogger = OnSetNetworkProfileResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnSetNetworkProfileResponse?.Invoke(responseTimestamp,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnSetNetworkProfileResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetNetworkProfileResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetNetworkProfileResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -2815,41 +3312,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnChangeAvailabilityRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnChangeAvailabilityRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnChangeAvailabilityRequest?.Invoke(startTime,
-                                                        this,
-                                                        Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnChangeAvailabilityRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnChangeAvailabilityRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnChangeAvailabilityRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // OperationalStatus
+                // EVSE
 
                 ChangeAvailabilityResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid ChangeAvailability request for charge box '", Request.ChargeBoxId, "'!"));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid ChangeAvailability request for charge box '{Request.ChargeBoxId}'!"));
 
-                    response = new ChangeAvailabilityResponse(Request,
-                                                              ChangeAvailabilityStatus.Rejected);
+                    response = new ChangeAvailabilityResponse(
+                                   Request,
+                                   ChangeAvailabilityStatus.Rejected
+                               );
 
                 }
                 else
                 {
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming ChangeAvailability '", Request.OperationalStatus, "' request for EVSE '", Request.EVSE?.Id.ToString() ?? "?", "'."));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming ChangeAvailability '", Request.OperationalStatus, "' request for EVSE '", Request.EVSE?.Id.ToString() ?? "?", "'."));
 
                     if (Request.EVSE is not null &&
                         evses.ContainsKey(Request.EVSE.Id))
@@ -2866,28 +3378,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     }
                     else
-                        response = new ChangeAvailabilityResponse(Request,
-                                                                  ChangeAvailabilityStatus.Rejected);
+                        response = new ChangeAvailabilityResponse(
+                                       Request,
+                                       ChangeAvailabilityStatus.Rejected
+                                   );
                 }
 
 
                 #region Send OnChangeAvailabilityResponse event
 
-                try
+                var responseLogger = OnChangeAvailabilityResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnChangeAvailabilityResponse?.Invoke(responseTimestamp,
-                                            this,
-                                            Request,
-                                            response,
-                                            responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnChangeAvailabilityResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnChangeAvailabilityResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnChangeAvailabilityResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -2907,25 +3434,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnTriggerMessageRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnTriggerMessageRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnTriggerMessageRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnTriggerMessageRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnTriggerMessageRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnTriggerMessageRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // RequestedMessage
+                // EVSEId
 
                 TriggerMessageResponse? response = null;
 
@@ -2934,8 +3474,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid TriggerMessage request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new TriggerMessageResponse(Request,
-                                                          TriggerMessageStatus.Rejected);
+                    response = new TriggerMessageResponse(
+                                   Request,
+                                   TriggerMessageStatus.Rejected
+                               );
 
                 }
                 else
@@ -2987,20 +3529,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    MessageTriggers.Heartbeat                     or
                                    MessageTriggers.SignChargePointCertificate
 
-                                       => new TriggerMessageResponse(Request,
-                                                                     TriggerMessageStatus.Accepted),
+                                       => new TriggerMessageResponse(
+                                              Request,
+                                              TriggerMessageStatus.Accepted
+                                          ),
 
 
                                    MessageTriggers.MeterValues or
                                    MessageTriggers.StatusNotification
 
                                        => Request.EVSEId.HasValue
-                                              ? new TriggerMessageResponse(Request, TriggerMessageStatus.Accepted)
-                                              : new TriggerMessageResponse(Request, TriggerMessageStatus.Rejected),
+                                              ? new TriggerMessageResponse(
+                                                    Request,
+                                                    TriggerMessageStatus.Accepted
+                                                )
+                                              : new TriggerMessageResponse(
+                                                    Request,
+                                                    TriggerMessageStatus.Rejected
+                                                ),
 
 
-                                   _   => new TriggerMessageResponse(Request,
-                                                                     TriggerMessageStatus.Rejected),
+                                   _   => new TriggerMessageResponse(
+                                              Request,
+                                              TriggerMessageStatus.Rejected
+                                          ),
 
                                };
                 }
@@ -3008,21 +3560,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnTriggerMessageResponse event
 
-                try
+                var responseLogger = OnTriggerMessageResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnTriggerMessageResponse?.Invoke(responseTimestamp,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnTriggerMessageResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnTriggerMessageResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnTriggerMessageResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -3042,32 +3607,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnDataTransferRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnIncomingDataTransferRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnIncomingDataTransferRequest?.Invoke(startTime,
-                                                          this,
-                                                          Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDataTransferRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnIncomingDataTransferRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnIncomingDataTransferRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // VendorId
+                // MessageId
+                // Data
 
                 DataTransferResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid data transfer request for charge box '", Request.ChargeBoxId, "'!"));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid data transfer request for charge box '{Request.ChargeBoxId}'!"));
 
                     response = new DataTransferResponse(
                                    Request,
@@ -3078,7 +3657,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming data transfer request: ", Request.VendorId, ".", Request.MessageId ?? "-", ": ", Request.Data ?? "-"));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming data transfer request: ", Request.VendorId, ".", Request.MessageId ?? "-", ": ", Request.Data ?? "-"));
 
                     var responseData = Request.Data;
 
@@ -3138,21 +3717,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnDataTransferResponse event
 
-                try
+                var responseLogger = OnIncomingDataTransferResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnIncomingDataTransferResponse?.Invoke(responseTimestamp,
-                                                           this,
-                                                           Request,
-                                                           response,
-                                                           responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnIncomingDataTransferResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDataTransferResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnIncomingDataTransferResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -3173,32 +3765,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnCertificateSignedRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnCertificateSignedRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnCertificateSignedRequest?.Invoke(startTime,
-                                                       this,
-                                                       Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCertificateSignedRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnCertificateSignedRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnCertificateSignedRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // CertificateChain
+                // CertificateType
 
                 CertificateSignedResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid CertificateSigned request for charge box '", Request.ChargeBoxId, "'!"));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid CertificateSigned request for charge box '{Request.ChargeBoxId}'!"));
 
                     response = new CertificateSignedResponse(
                                    Request:      Request,
@@ -3211,7 +3816,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming CertificateSigned request accepted."));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming CertificateSigned request accepted."));
 
                     response = new CertificateSignedResponse(
                                    Request:      Request,
@@ -3227,21 +3832,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnCertificateSignedResponse event
 
-                try
+                var responseLogger = OnCertificateSignedResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnCertificateSignedResponse?.Invoke(responseTimestamp,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnCertificateSignedResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCertificateSignedResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnCertificateSignedResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -3261,32 +3879,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnInstallCertificateRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnInstallCertificateRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnInstallCertificateRequest?.Invoke(startTime,
-                                                        this,
-                                                        Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnInstallCertificateRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnInstallCertificateRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnInstallCertificateRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // CertificateType
+                // Certificate
 
                 InstallCertificateResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid InstallCertificate request for charge box '", Request.ChargeBoxId, "'!"));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid InstallCertificate request for charge box '{Request.ChargeBoxId}'!"));
 
                     response = new InstallCertificateResponse(
                                    Request:      Request,
@@ -3299,10 +3930,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming InstallCertificate request accepted."));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming InstallCertificate request accepted."));
 
                     var success = certificates.AddOrUpdate(Request.CertificateType,
-                                                           a     => Request.Certificate,
+                                                            a    => Request.Certificate,
                                                            (b,c) => Request.Certificate);
 
                     response = new InstallCertificateResponse(
@@ -3319,21 +3950,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnInstallCertificateResponse event
 
-                try
+                var responseLogger = OnInstallCertificateResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnInstallCertificateResponse?.Invoke(responseTimestamp,
-                                                         this,
-                                                         Request,
-                                                         response,
-                                                         responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnInstallCertificateResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnInstallCertificateResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnInstallCertificateResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -3353,31 +3997,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnGetInstalledCertificateIdsRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnGetInstalledCertificateIdsRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnGetInstalledCertificateIdsRequest?.Invoke(startTime,
-                                                                this,
-                                                                Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetInstalledCertificateIdsRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetInstalledCertificateIdsRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetInstalledCertificateIdsRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // CertificateTypes
 
                 GetInstalledCertificateIdsResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid GetInstalledCertificateIds request for charge box '", Request.ChargeBoxId, "'!"));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid GetInstalledCertificateIds request for charge box '{Request.ChargeBoxId}'!"));
                     response = new GetInstalledCertificateIdsResponse(Request:                    Request,
                                                                       Status:                     GetInstalledCertificateStatus.NotFound,
                                                                       CertificateHashDataChain:   Array.Empty<CertificateHashData>(),
@@ -3387,7 +4043,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming GetInstalledCertificateIds request accepted."));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming GetInstalledCertificateIds request accepted."));
 
                     var certs = new List<CertificateHashData>();
 
@@ -3405,32 +4061,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     }
 
-                    response = new GetInstalledCertificateIdsResponse(Request:                    Request,
-                                                                      Status:                     GetInstalledCertificateStatus.Accepted,
-                                                                      CertificateHashDataChain:   certs,
-                                                                      StatusInfo:                 null,
-                                                                      CustomData:                 null);
+                    response = new GetInstalledCertificateIdsResponse(
+                                   Request:                    Request,
+                                   Status:                     GetInstalledCertificateStatus.Accepted,
+                                   CertificateHashDataChain:   certs,
+                                   StatusInfo:                 null,
+                                   CustomData:                 null
+                               );
 
                 }
 
 
                 #region Send OnGetInstalledCertificateIdsResponse event
 
-                try
+                var responseLogger = OnGetInstalledCertificateIdsResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnGetInstalledCertificateIdsResponse?.Invoke(responseTimestamp,
-                                                                 this,
-                                                                 Request,
-                                                                 response,
-                                                                 responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetInstalledCertificateIdsResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetInstalledCertificateIdsResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetInstalledCertificateIdsResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -3450,31 +4121,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnDeleteCertificateRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnDeleteCertificateRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnDeleteCertificateRequest?.Invoke(startTime,
-                                                       this,
-                                                       Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteCertificateRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnDeleteCertificateRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteCertificateRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // CertificateHashData
 
                 DeleteCertificateResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid DeleteCertificate request for charge box '", Request.ChargeBoxId, "'!"));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid DeleteCertificate request for charge box '{Request.ChargeBoxId}'!"));
                     response = new DeleteCertificateResponse(
                                    Request:      Request,
                                    Status:       DeleteCertificateStatus.Failed,
@@ -3485,7 +4168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming DeleteCertificate request accepted."));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming DeleteCertificate request accepted."));
 
                     var certKV  = certificates.FirstOrDefault(certificateKV => Request.CertificateHashData.SerialNumber == certificateKV.Value.Parsed?.SerialNumber);
 
@@ -3505,21 +4188,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnDeleteCertificateResponse event
 
-                try
+                var responseLogger = OnDeleteCertificateResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnDeleteCertificateResponse?.Invoke(responseTimestamp,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnDeleteCertificateResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteCertificateResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteCertificateResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -3539,32 +4235,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnNotifyCRLRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnNotifyCRLRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnNotifyCRLRequest?.Invoke(startTime,
-                                               this,
-                                               Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyCRLRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnNotifyCRLRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnNotifyCRLRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // NotifyCRLRequestId
+                // Availability
+                // Location
 
                 NotifyCRLResponse? response = null;
 
                 if (Request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Invalid NotifyCRL request for charge box '", Request.ChargeBoxId, "'!"));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid NotifyCRL request for charge box '{Request.ChargeBoxId}'!"));
 
                     //Note: No proper error response is defined within OCPP!
                     response = new NotifyCRLResponse(
@@ -3576,7 +4286,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming NotifyCRL request accepted."));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming NotifyCRL request accepted."));
 
                     response = new NotifyCRLResponse(
                                    Request:      Request,
@@ -3588,21 +4298,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnNotifyCRLResponse event
 
-                try
+                var responseLogger = OnNotifyCRLResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnNotifyCRLResponse?.Invoke(responseTimestamp,
-                                                this,
-                                                Request,
-                                                response,
-                                                responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnNotifyCRLResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyCRLResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnNotifyCRLResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -3623,25 +4346,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnGetLocalListVersionRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnGetLocalListVersionRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnGetLocalListVersionRequest?.Invoke(startTime,
-                                                         this,
-                                                         Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetLocalListVersionRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetLocalListVersionRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetLocalListVersionRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // none
 
                 GetLocalListVersionResponse? response = null;
 
@@ -3650,8 +4385,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetLocalListVersion request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new GetLocalListVersionResponse(Request,
-                                                               0);
+                    response = new GetLocalListVersionResponse(
+                                   Request,
+                                   0
+                               );
 
                 }
                 else
@@ -3659,29 +4396,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetLocalListVersion request.");
 
-                    response = new GetLocalListVersionResponse(Request,
-                                                               0);
+                    response = new GetLocalListVersionResponse(
+                                   Request,
+                                   0
+                               );
 
                 }
 
 
                 #region Send OnGetLocalListVersionResponse event
 
-                try
+                var responseLogger = OnGetLocalListVersionResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnGetLocalListVersionResponse?.Invoke(responseTimestamp,
-                                                          this,
-                                                          Request,
-                                                          response,
-                                                          responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetLocalListVersionResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetLocalListVersionResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetLocalListVersionResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -3701,25 +4453,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnSendLocalListRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnSendLocalListRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnSendLocalListRequest?.Invoke(startTime,
-                                                   this,
-                                                   Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSendLocalListRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnSendLocalListRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSendLocalListRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // VersionNumber
+                // UpdateType
+                // LocalAuthorizationList
 
                 SendLocalListResponse? response = null;
 
@@ -3728,8 +4494,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SendLocalList request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new SendLocalListResponse(Request,
-                                                         SendLocalListStatus.NotSupported);
+                    response = new SendLocalListResponse(
+                                   Request,
+                                   SendLocalListStatus.NotSupported
+                               );
 
                 }
                 else
@@ -3737,29 +4505,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SendLocalList request: '" + Request.UpdateType + "' version '" + Request.VersionNumber + "'.");
 
-                    response = new SendLocalListResponse(Request,
-                                                         SendLocalListStatus.Accepted);
+                    response = new SendLocalListResponse(
+                                   Request,
+                                   SendLocalListStatus.Accepted
+                               );
 
                 }
 
 
                 #region Send OnSendLocalListResponse event
 
-                try
+                var responseLogger = OnSendLocalListResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnSendLocalListResponse?.Invoke(responseTimestamp,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnSendLocalListResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSendLocalListResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSendLocalListResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -3779,25 +4562,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnClearCacheRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnClearCacheRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnClearCacheRequest?.Invoke(startTime,
-                                                this,
-                                                Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearCacheRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnClearCacheRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnClearCacheRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // none
 
                 ClearCacheResponse? response = null;
 
@@ -3806,8 +4601,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid ClearCache request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new ClearCacheResponse(Request,
-                                                      ClearCacheStatus.Rejected);
+                    response = new ClearCacheResponse(
+                                   Request,
+                                   ClearCacheStatus.Rejected
+                               );
 
                 }
                 else
@@ -3815,29 +4612,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming ClearCache request.");
 
-                    response = new ClearCacheResponse(Request,
-                                                      ClearCacheStatus.Accepted);
+                    response = new ClearCacheResponse(
+                                   Request,
+                                   ClearCacheStatus.Accepted
+                               );
 
                 }
 
 
                 #region Send OnClearCacheResponse event
 
-                try
+                var responseLogger = OnClearCacheResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnClearCacheResponse?.Invoke(responseTimestamp,
-                                                 this,
-                                                 Request,
-                                                 response,
-                                                 responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnClearCacheResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearCacheResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnClearCacheResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -3858,22 +4670,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnReserveNowRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnReserveNowRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnReserveNowRequest?.Invoke(startTime,
-                                                this,
-                                                Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnReserveNowRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnReserveNowRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnReserveNowRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
+                // ReservationId
+                // ExpiryDate
+                // IdToken
+                // ConnectorType
+                // EVSEId
+                // GroupIdToken
 
                 ReserveNowResponse? response = null;
 
@@ -3882,10 +4714,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid ReserveNow request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new ReserveNowResponse(Request:      Request,
-                                                      Status:       ReservationStatus.Rejected,
-                                                      StatusInfo:   null,
-                                                      CustomData:   null);
+                    response = new ReserveNowResponse(
+                                   Request:      Request,
+                                   Status:       ReservationStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -3895,36 +4729,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                       Request.ReservationId);
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming ReserveNow request " + (success
-                                                                                                    ? "accepted"
-                                                                                                    : "rejected") + ".");
+                                                                                               ? "accepted"
+                                                                                               : "rejected") + ".");
 
-                    response = new ReserveNowResponse(Request:      Request,
-                                                      Status:       success
-                                                                        ? ReservationStatus.Accepted
-                                                                        : ReservationStatus.Rejected,
-                                                      StatusInfo:   null,
-                                                      CustomData:   null);
+                    response = new ReserveNowResponse(
+                                   Request:      Request,
+                                   Status:       success
+                                                     ? ReservationStatus.Accepted
+                                                     : ReservationStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
 
 
                 #region Send OnReserveNowResponse event
 
-                try
+                var responseLogger = OnReserveNowResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnReserveNowResponse?.Invoke(responseTimestamp,
-                                                 this,
-                                                 Request,
-                                                 response,
-                                                 responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnReserveNowResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnReserveNowResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnReserveNowResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -3944,22 +4793,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnCancelReservationRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnCancelReservationRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnCancelReservationRequest?.Invoke(startTime,
-                                                       this,
-                                                       Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCancelReservationRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnCancelReservationRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnCancelReservationRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
+                // ReservationId
 
                 CancelReservationResponse? response = null;
 
@@ -3968,10 +4832,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid CancelReservation request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new CancelReservationResponse(Request:      Request,
-                                                             Status:       CancelReservationStatus.Rejected,
-                                                             StatusInfo:   null,
-                                                             CustomData:   null);
+                    response = new CancelReservationResponse(
+                                   Request:      Request,
+                                   Status:       CancelReservationStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -3983,33 +4849,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                                            ? "accepted"
                                                                                                            : "rejected") + ".");
 
-                    response = new CancelReservationResponse(Request:      Request,
-                                                             Status:       success
-                                                                               ? CancelReservationStatus.Accepted
-                                                                               : CancelReservationStatus.Rejected,
-                                                             StatusInfo:   null,
-                                                             CustomData:   null);
+                    response = new CancelReservationResponse(
+                                   Request:      Request,
+                                   Status:       success
+                                                     ? CancelReservationStatus.Accepted
+                                                     : CancelReservationStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
 
 
                 #region Send OnCancelReservationResponse event
 
-                try
+                var responseLogger = OnCancelReservationResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnCancelReservationResponse?.Invoke(responseTimestamp,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnCancelReservationResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCancelReservationResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnCancelReservationResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -4029,18 +4910,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnRequestStartTransactionRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnRequestStartTransactionRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnRequestStartTransactionRequest?.Invoke(startTime,
-                                                             this,
-                                                             Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnRequestStartTransactionRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnRequestStartTransactionRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnRequestStartTransactionRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -4053,8 +4948,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid RequestStartTransaction request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new RequestStartTransactionResponse(Request,
-                                                                   RequestStartStopStatus.Rejected);
+                    response = new RequestStartTransactionResponse(
+                                   Request,
+                                   RequestStartStopStatus.Rejected
+                               );
 
                 }
                 else
@@ -4147,33 +5044,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        Status:          RequestStartStopStatus.Accepted,
                                        TransactionId:   evse.TransactionId,
                                        StatusInfo:      null,
-                                       CustomData:      null);
+                                       CustomData:      null
+                                   );
 
                     }
                     else
-                        response = new RequestStartTransactionResponse(Request,
-                                                                       RequestStartStopStatus.Rejected);
+                        response = new RequestStartTransactionResponse(
+                                       Request,
+                                       RequestStartStopStatus.Rejected
+                                   );
 
                 }
 
 
                 #region Send OnRequestStartTransactionResponse event
 
-                try
+                var responseLogger = OnRequestStartTransactionResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnRequestStartTransactionResponse?.Invoke(responseTimestamp,
-                                                              this,
-                                                              Request,
-                                                              response,
-                                                              responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnRequestStartTransactionResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnRequestStartTransactionResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnRequestStartTransactionResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -4193,22 +5106,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnRequestStopTransactionRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnRequestStopTransactionRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnRequestStopTransactionRequest?.Invoke(startTime,
-                                                            this,
-                                                            Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnRequestStopTransactionRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnRequestStopTransactionRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnRequestStopTransactionRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
+                // TransactionId
 
                 RequestStopTransactionResponse? response = null;
 
@@ -4217,8 +5145,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid RequestStopTransaction request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new RequestStopTransactionResponse(Request,
-                                                                  RequestStartStopStatus.Rejected);
+                    response = new RequestStopTransactionResponse(
+                                   Request,
+                                   RequestStartStopStatus.Rejected
+                               );
 
                 }
                 else
@@ -4232,11 +5162,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     if (evse is not null)
                     {
 
-                        evse.IsCharging              = false;
+                        evse.IsCharging             = false;
 
-                        evse.StopTimestamp           = Timestamp.Now;
-                        evse.MeterStopValue          = 123;
-                        evse.SignedStopMeterValue    = "123";
+                        evse.StopTimestamp          = Timestamp.Now;
+                        evse.MeterStopValue         = 123;
+                        evse.SignedStopMeterValue   = "123";
 
                         _ = Task.Run(async () => {
 
@@ -4295,34 +5225,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         },
                         CancellationToken.None);
 
-                        response = new RequestStopTransactionResponse(Request,
-                                                                      RequestStartStopStatus.Accepted);
+                        response = new RequestStopTransactionResponse(
+                                       Request,
+                                       RequestStartStopStatus.Accepted
+                                   );
 
                     }
                     else
-                        response = new RequestStopTransactionResponse(Request,
-                                                                      RequestStartStopStatus.Rejected);
+                        response = new RequestStopTransactionResponse(
+                                       Request,
+                                       RequestStartStopStatus.Rejected
+                                   );
 
                 }
 
 
                 #region Send OnRequestStopTransactionResponse event
 
-                try
+                var responseLogger = OnRequestStopTransactionResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnRequestStopTransactionResponse?.Invoke(responseTimestamp,
-                                                             this,
-                                                             Request,
-                                                             response,
-                                                             responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnRequestStopTransactionResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnRequestStopTransactionResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnRequestStopTransactionResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -4342,22 +5289,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnGetTransactionStatusRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnGetTransactionStatusRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnGetTransactionStatusRequest?.Invoke(startTime,
-                                                          this,
-                                                          Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetTransactionStatusRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetTransactionStatusRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetTransactionStatusRequest),
+                                  e
+                              );
+                    }
+
                 }
 
-                                                          #endregion
+                #endregion
 
+                // TransactionId
 
                 GetTransactionStatusResponse? response = null;
 
@@ -4366,9 +5328,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetTransactionStatus request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new GetTransactionStatusResponse(Request,
-                                                                MessagesInQueue:    false,
-                                                                OngoingIndicator:   true);
+                    response = new GetTransactionStatusResponse(
+                                   Request,
+                                   MessagesInQueue:    false,
+                                   OngoingIndicator:   true
+                               );
 
                 }
                 else
@@ -4384,17 +5348,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         if (foundEVSE is not null)
                         {
 
-                            response = new GetTransactionStatusResponse(Request,
-                                                                        MessagesInQueue:    false,
-                                                                        OngoingIndicator:   true);
+                            response = new GetTransactionStatusResponse(
+                                           Request,
+                                           MessagesInQueue:    false,
+                                           OngoingIndicator:   true
+                                       );
 
                         }
                         else
                         {
 
-                            response = new GetTransactionStatusResponse(Request,
-                                                                        MessagesInQueue:    false,
-                                                                        OngoingIndicator:   true);
+                            response = new GetTransactionStatusResponse(
+                                           Request,
+                                           MessagesInQueue:    false,
+                                           OngoingIndicator:   true
+                                       );
 
                         }
 
@@ -4402,9 +5370,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     else
                     {
 
-                        response = new GetTransactionStatusResponse(Request,
-                                                                    MessagesInQueue:    false,
-                                                                    OngoingIndicator:   true);
+                        response = new GetTransactionStatusResponse(
+                                       Request,
+                                       MessagesInQueue:    false,
+                                       OngoingIndicator:   true
+                                   );
 
                     }
 
@@ -4413,21 +5383,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnGetTransactionStatusResponse event
 
-                try
+                var responseLogger = OnGetTransactionStatusResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnGetTransactionStatusResponse?.Invoke(responseTimestamp,
-                                                           this,
-                                                           Request,
-                                                           response,
-                                                           responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetTransactionStatusResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetTransactionStatusResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetTransactionStatusResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -4447,22 +5430,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnSetChargingProfileRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnSetChargingProfileRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnSetChargingProfileRequest?.Invoke(startTime,
-                                                        this,
-                                                        Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetChargingProfileRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnSetChargingProfileRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetChargingProfileRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
+                // EVSEId
+                // ChargingProfile
 
                 SetChargingProfileResponse? response = null;
 
@@ -4471,15 +5470,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetChargingProfile request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new SetChargingProfileResponse(Request,
-                                                              ChargingProfileStatus.Rejected);
+                    response = new SetChargingProfileResponse(
+                                   Request,
+                                   ChargingProfileStatus.Rejected
+                               );
 
                 }
                 else if (Request.ChargingProfile is null)
                 {
 
-                    response = new SetChargingProfileResponse(Request,
-                                                              ChargingProfileStatus.Rejected);
+                    response = new SetChargingProfileResponse(
+                                   Request,
+                                   ChargingProfileStatus.Rejected
+                               );
 
                 }
                 else
@@ -4503,8 +5506,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         }
 
-                        response = new SetChargingProfileResponse(Request,
-                                                                  ChargingProfileStatus.Accepted);
+                        response = new SetChargingProfileResponse(
+                                       Request,
+                                       ChargingProfileStatus.Accepted
+                                   );
 
                     }
                     else if (evses.ContainsKey(Request.EVSEId))
@@ -4512,34 +5517,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         evses[Request.EVSEId].ChargingProfile = Request.ChargingProfile;
 
-                        response = new SetChargingProfileResponse(Request,
-                                                                  ChargingProfileStatus.Accepted);
+                        response = new SetChargingProfileResponse(
+                                       Request,
+                                       ChargingProfileStatus.Accepted
+                                   );
 
                     }
                     else
-                        response = new SetChargingProfileResponse(Request,
-                                                                  ChargingProfileStatus.Rejected);
+                        response = new SetChargingProfileResponse(
+                                       Request,
+                                       ChargingProfileStatus.Rejected
+                                   );
 
                 }
 
 
                 #region Send OnSetChargingProfileResponse event
 
-                try
+                var responseLogger = OnSetChargingProfileResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnSetChargingProfileResponse?.Invoke(responseTimestamp,
-                                                         this,
-                                                         Request,
-                                                         response,
-                                                         responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnSetChargingProfileResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetChargingProfileResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetChargingProfileResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -4559,18 +5581,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnGetChargingProfilesRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnGetChargingProfilesRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnGetChargingProfilesRequest?.Invoke(startTime,
-                                                         this,
-                                                         Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetChargingProfilesRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetChargingProfilesRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetChargingProfilesRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -4586,8 +5622,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetChargingProfiles request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new GetChargingProfilesResponse(Request,
-                                                               GetChargingProfileStatus.Unknown);
+                    response = new GetChargingProfilesResponse(
+                                   Request,
+                                   GetChargingProfileStatus.Unknown
+                               );
 
                 }
                 else if (Request.EVSEId.HasValue && evses.ContainsKey(Request.EVSEId.Value))
@@ -4595,31 +5633,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     //evses[Request.EVSEId.Value].ChargingProfile = Request.ChargingProfile;
 
-                    response = new GetChargingProfilesResponse(Request,
-                                                               GetChargingProfileStatus.Accepted);
+                    response = new GetChargingProfilesResponse(
+                                   Request,
+                                   GetChargingProfileStatus.Accepted
+                               );
 
                 }
                 else
-                   response = new GetChargingProfilesResponse(Request,
-                                                              GetChargingProfileStatus.Unknown);
+                   response = new GetChargingProfilesResponse(
+                                  Request,
+                                  GetChargingProfileStatus.Unknown
+                              );
+
 
                 #region Send OnGetChargingProfilesResponse event
 
-                try
+                var responseLogger = OnGetChargingProfilesResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnGetChargingProfilesResponse?.Invoke(responseTimestamp,
-                                                          this,
-                                                          Request,
-                                                          response,
-                                                          responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetChargingProfilesResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetChargingProfilesResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetChargingProfilesResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -4639,18 +5695,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnClearChargingProfileRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnClearChargingProfileRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnClearChargingProfileRequest?.Invoke(startTime,
-                                                          this,
-                                                          Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearChargingProfileRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnClearChargingProfileRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnClearChargingProfileRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -4658,26 +5728,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // ChargingProfileId
                 // ChargingProfileCriteria
 
-                var response = new ClearChargingProfileResponse(Request,
-                                                                ClearChargingProfileStatus.Accepted);
+                var response = new ClearChargingProfileResponse(
+                                   Request:      Request,
+                                   Status:       ClearChargingProfileStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
 
                 #region Send OnClearChargingProfileResponse event
 
-                try
+                var responseLogger = OnClearChargingProfileResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnClearChargingProfileResponse?.Invoke(responseTimestamp,
-                                                           this,
-                                                           Request,
-                                                           response,
-                                                           responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnClearChargingProfileResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearChargingProfileResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnClearChargingProfileResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -4697,47 +5785,183 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnGetCompositeScheduleRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnGetCompositeScheduleRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnGetCompositeScheduleRequest?.Invoke(startTime,
-                                                          this,
-                                                          Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetCompositeScheduleRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetCompositeScheduleRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetCompositeScheduleRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-                // Status
-                // Schedule
-                // StatusInfo
+                // Duration,
+                // EVSEId,
+                // ChargingRateUnit
 
-                var response = new GetCompositeScheduleResponse(Request,
-                                                                Status:     GenericStatus.Accepted,
-                                                                Schedule:   null);
+                var response = new GetCompositeScheduleResponse(
+                                   Request:      Request,
+                                   Status:       GenericStatus.Accepted,
+                                   Schedule:     null,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 #region Send OnGetCompositeScheduleResponse event
 
-                try
+                var responseLogger = OnGetCompositeScheduleResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnGetCompositeScheduleResponse?.Invoke(responseTimestamp,
-                                                           this,
-                                                           Request,
-                                                           response,
-                                                           responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetCompositeScheduleResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetCompositeScheduleResponse),
+                                  e
+                              );
+                    }
 
                 }
-                catch (Exception e)
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnUpdateDynamicSchedule
+
+            ChargingStationServer.OnUpdateDynamicSchedule += async (LogTimestamp,
+                                                                    Sender,
+                                                                    Request,
+                                                                    CancellationToken) => {
+
+                #region Send OnUpdateDynamicScheduleRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnUpdateDynamicScheduleRequest;
+                if (requestLogger is not null)
                 {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetCompositeScheduleResponse));
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnUpdateDynamicScheduleRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUpdateDynamicScheduleRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                // ChargingProfileId
+
+                // Limit
+                // Limit_L2
+                // Limit_L3
+
+                // DischargeLimit
+                // DischargeLimit_L2
+                // DischargeLimit_L3
+
+                // Setpoint
+                // Setpoint_L2
+                // Setpoint_L3
+
+                // SetpointReactive
+                // SetpointReactive_L2
+                // SetpointReactive_L3
+
+                var response = new UpdateDynamicScheduleResponse(
+                                   Request:      Request,
+                                   Status:       ChargingProfileStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+
+                #region Send OnUpdateDynamicScheduleResponse event
+
+                var responseLogger = OnUpdateDynamicScheduleResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnUpdateDynamicScheduleResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUpdateDynamicScheduleResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -4757,22 +5981,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnNotifyAllowedEnergyTransferRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnNotifyAllowedEnergyTransferRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnNotifyAllowedEnergyTransferRequest?.Invoke(startTime,
-                                                                 this,
-                                                                 Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyAllowedEnergyTransferRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnNotifyAllowedEnergyTransferRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnNotifyAllowedEnergyTransferRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
+                // AllowedEnergyTransferModes
 
                 NotifyAllowedEnergyTransferResponse? response = null;
 
@@ -4781,8 +6020,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid NotifyAllowedEnergyTransfer request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new NotifyAllowedEnergyTransferResponse(Request,
-                                                                       NotifyAllowedEnergyTransferStatus.Rejected);
+                    response = new NotifyAllowedEnergyTransferResponse(
+                                   Request:      Request,
+                                   Status:       NotifyAllowedEnergyTransferStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -4790,29 +6033,136 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming NotifyAllowedEnergyTransfer");
 
-                    response = new NotifyAllowedEnergyTransferResponse(Request,
-                                                                       NotifyAllowedEnergyTransferStatus.Accepted);
+                    response = new NotifyAllowedEnergyTransferResponse(
+                                   Request:      Request,
+                                   Status:       NotifyAllowedEnergyTransferStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
 
 
                 #region Send OnNotifyAllowedEnergyTransferResponse event
 
-                try
+                var responseLogger = OnNotifyAllowedEnergyTransferResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnNotifyAllowedEnergyTransferResponse?.Invoke(responseTimestamp,
-                                                                  this,
-                                                                  Request,
-                                                                  response,
-                                                                  responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnNotifyAllowedEnergyTransferResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnNotifyAllowedEnergyTransferResponse),
+                                  e
+                              );
+                    }
 
                 }
-                catch (Exception e)
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnUsePriorityCharging
+
+            ChargingStationServer.OnUsePriorityCharging += async (LogTimestamp,
+                                                                  Sender,
+                                                                  Request,
+                                                                  CancellationToken) => {
+
+                #region Send OnUsePriorityChargingRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnUsePriorityChargingRequest;
+                if (requestLogger is not null)
                 {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnNotifyAllowedEnergyTransferResponse));
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnUsePriorityChargingRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUsePriorityChargingRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                // TransactionId
+                // Activate
+
+                var response = new UsePriorityChargingResponse(
+                                   Request:      Request,
+                                   Status:       GenericStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
+
+
+                #region Send OnUsePriorityChargingResponse event
+
+                var responseLogger = OnUsePriorityChargingResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnUsePriorityChargingResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUsePriorityChargingResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -4832,22 +6182,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnUnlockConnectorRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnUnlockConnectorRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnUnlockConnectorRequest?.Invoke(startTime,
-                                                     this,
-                                                     Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUnlockConnectorRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnUnlockConnectorRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUnlockConnectorRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
+                // EVSEId
+                // ConnectorId
 
                 UnlockConnectorResponse? response = null;
 
@@ -4856,8 +6222,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid UnlockConnector request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new UnlockConnectorResponse(Request,
-                                                           UnlockStatus.UnlockFailed);
+                    response = new UnlockConnectorResponse(
+                                   Request:      Request,
+                                   Status:       UnlockStatus.UnlockFailed,
+                                   StatusInfo:   null,
+                                   CustomData:   null
+                               );
 
                 }
                 else
@@ -4873,34 +6243,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         // What to do here?!
 
-                        response = new UnlockConnectorResponse(Request,
-                                                               UnlockStatus.Unlocked);
+                        response = new UnlockConnectorResponse(
+                                       Request:      Request,
+                                       Status:       UnlockStatus.Unlocked,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
 
                     }
                     else
-                        response = new UnlockConnectorResponse(Request,
-                                                               UnlockStatus.UnlockFailed);
+                        response = new UnlockConnectorResponse(
+                                       Request:      Request,
+                                       Status:       UnlockStatus.UnlockFailed,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
 
                 }
 
 
                 #region Send OnUnlockConnectorResponse event
 
-                try
+                var responseLogger = OnUnlockConnectorResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnUnlockConnectorResponse?.Invoke(responseTimestamp,
-                                                      this,
-                                                      Request,
-                                                      response,
-                                                      responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnUnlockConnectorResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUnlockConnectorResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUnlockConnectorResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -4921,22 +6312,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnAFRRSignalRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnAFRRSignalRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnAFRRSignalRequest?.Invoke(startTime,
-                                                this,
-                                                Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnAFRRSignalRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnAFRRSignalRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnAFRRSignalRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
+                // ActivationTimestamp
+                // Signal
 
                 AFRRSignalResponse? response = null;
 
@@ -4946,8 +6353,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid AFRRSignal request for charge box '{Request.ChargeBoxId}'!");
 
                     response = new AFRRSignalResponse(
-                                   Request,
-                                   GenericStatus.Rejected
+                                   Request:      Request,
+                                   Status:       GenericStatus.Rejected,
+                                   StatusInfo:   null,
+                                   CustomData:   null
                                );
 
                 }
@@ -4957,10 +6366,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming AFRRSignal '{Request.Signal}' @ '{Request.ActivationTimestamp}'.");
 
                     response = new AFRRSignalResponse(
-                                   Request,
-                                   Request.ActivationTimestamp < Timestamp.Now - TimeSpan.FromDays(1)
-                                       ? GenericStatus.Rejected
-                                       : GenericStatus.Accepted
+                                   Request:      Request,
+                                   Status:       Request.ActivationTimestamp < Timestamp.Now - TimeSpan.FromDays(1)
+                                                     ? GenericStatus.Rejected
+                                                     : GenericStatus.Accepted,
+                                   StatusInfo:   null,
+                                   CustomData:   null
                                );
 
                 }
@@ -4968,21 +6379,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnAFRRSignalResponse event
 
-                try
+                var responseLogger = OnAFRRSignalResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnAFRRSignalResponse?.Invoke(responseTimestamp,
-                                                 this,
-                                                 Request,
-                                                 response,
-                                                 responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnAFRRSignalResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnAFRRSignalResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnAFRRSignalResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -5003,25 +6427,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnSetDisplayMessageRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnSetDisplayMessageRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnSetDisplayMessageRequest?.Invoke(startTime,
-                                                       this,
-                                                       Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetDisplayMessageRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnSetDisplayMessageRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetDisplayMessageRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // Message
 
                 SetDisplayMessageResponse? response = null;
 
@@ -5030,8 +6466,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetDisplayMessage request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new SetDisplayMessageResponse(Request,
-                                                             Result.GenericError(""));
+                    response = new SetDisplayMessageResponse(
+                                   Request:   Request,
+                                   Result:    Result.GenericError("")
+                               );
 
                 }
                 else
@@ -5039,39 +6477,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetDisplayMessage request.");
 
-
                     if (displayMessages.TryAdd(Request.Message.Id,
                                                Request.Message)) {
 
-                        response = new SetDisplayMessageResponse(Request,
-                                                                 DisplayMessageStatus.Accepted);
+                        response = new SetDisplayMessageResponse(
+                                       Request:      Request,
+                                       Status:       DisplayMessageStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
 
                     }
 
                     else
-                        response = new SetDisplayMessageResponse(Request,
-                                                                 DisplayMessageStatus.Rejected);
+                        response = new SetDisplayMessageResponse(
+                                       Request:      Request,
+                                       Status:       DisplayMessageStatus.Rejected,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
 
                 }
 
 
                 #region Send OnSetDisplayMessageResponse event
 
-                try
+                var responseLogger = OnSetDisplayMessageResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnSetDisplayMessageResponse?.Invoke(responseTimestamp,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnSetDisplayMessageResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetDisplayMessageResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetDisplayMessageResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -5091,25 +6549,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnGetDisplayMessagesRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnGetDisplayMessagesRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnGetDisplayMessagesRequest?.Invoke(startTime,
-                                                        this,
-                                                        Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetDisplayMessagesRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetDisplayMessagesRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetDisplayMessagesRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // GetDisplayMessagesRequestId
+                // Ids
+                // Priority
+                // State
 
                 GetDisplayMessagesResponse? response = null;
 
@@ -5118,8 +6591,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetDisplayMessages request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new GetDisplayMessagesResponse(Request,
-                                                              Result.GenericError(""));
+                    response = new GetDisplayMessagesResponse(
+                                   Request,
+                                   Result.GenericError("")
+                               );
 
                 }
                 else
@@ -5145,29 +6620,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     },
                     CancellationToken.None);
 
-                    response = new GetDisplayMessagesResponse(Request,
-                                                              GetDisplayMessagesStatus.Accepted);
+                    response = new GetDisplayMessagesResponse(
+                                   Request,
+                                   GetDisplayMessagesStatus.Accepted
+                               );
 
                 }
 
 
                 #region Send OnGetDisplayMessagesResponse event
 
-                try
+                var responseLogger = OnGetDisplayMessagesResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnGetDisplayMessagesResponse?.Invoke(responseTimestamp,
-                                                         this,
-                                                         Request,
-                                                         response,
-                                                         responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetDisplayMessagesResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetDisplayMessagesResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetDisplayMessagesResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -5187,25 +6677,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnClearDisplayMessageRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnClearDisplayMessageRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnClearDisplayMessageRequest?.Invoke(startTime,
-                                                         this,
-                                                         Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearDisplayMessageRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnClearDisplayMessageRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnClearDisplayMessageRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // DisplayMessageId
 
                 ClearDisplayMessageResponse? response = null;
 
@@ -5214,8 +6716,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid ClearDisplayMessage request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new ClearDisplayMessageResponse(Request,
-                                                               Result.GenericError(""));
+                    response = new ClearDisplayMessageResponse(
+                                   Request,
+                                   Result.GenericError("")
+                               );
 
                 }
                 else
@@ -5226,35 +6730,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     if (displayMessages.TryGetValue(Request.DisplayMessageId, out var messageInfo) &&
                         displayMessages.TryRemove(new KeyValuePair<DisplayMessage_Id, MessageInfo>(Request.DisplayMessageId, messageInfo))) {
 
-                        response = new ClearDisplayMessageResponse(Request,
-                                                                   ClearMessageStatus.Accepted);
+                        response = new ClearDisplayMessageResponse(
+                                       Request,
+                                       ClearMessageStatus.Accepted
+                                   );
 
                     }
 
                     else
-                        response = new ClearDisplayMessageResponse(Request,
-                                                                   ClearMessageStatus.Unknown);
+                        response = new ClearDisplayMessageResponse(
+                                       Request,
+                                       ClearMessageStatus.Unknown
+                                   );
 
                 }
 
 
                 #region Send OnClearDisplayMessageResponse event
 
-                try
+                var responseLogger = OnClearDisplayMessageResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnClearDisplayMessageResponse?.Invoke(responseTimestamp,
-                                                          this,
-                                                          Request,
-                                                          response,
-                                                          responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnClearDisplayMessageResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnClearDisplayMessageResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnClearDisplayMessageResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -5274,25 +6795,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnCostUpdatedRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnCostUpdatedRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnCostUpdatedRequest?.Invoke(startTime,
-                                                 this,
-                                                 Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCostUpdatedRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnCostUpdatedRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnCostUpdatedRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // TotalCost
+                // TransactionId
 
                 CostUpdatedResponse? response = null;
 
@@ -5301,8 +6835,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid CostUpdated request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new CostUpdatedResponse(Request,
-                                                       Result.GenericError(""));
+                    response = new CostUpdatedResponse(
+                                   Request,
+                                   Result.GenericError("")
+                               );
 
                 }
                 else
@@ -5317,34 +6853,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                Request.TotalCost,
                                                (transactionId, totalCost) => Request.TotalCost);
 
-                        response = new CostUpdatedResponse(Request);
+                        response = new CostUpdatedResponse(
+                                       Request
+                                   );
 
                     }
 
                     else
-                        response = new CostUpdatedResponse(Request,
-                                                           Result.GenericError($"Unknown transaction identification '{Request.TransactionId}'!"));
+                        response = new CostUpdatedResponse(
+                                       Request,
+                                       Result.GenericError($"Unknown transaction identification '{Request.TransactionId}'!")
+                                   );
 
                 }
 
 
                 #region Send OnCostUpdatedResponse event
 
-                try
+                var responseLogger = OnCostUpdatedResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnCostUpdatedResponse?.Invoke(responseTimestamp,
-                                                  this,
-                                                  Request,
-                                                  response,
-                                                  responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnCostUpdatedResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCostUpdatedResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnCostUpdatedResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -5364,25 +6917,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnCustomerInformationRequest event
 
-                var startTime = Timestamp.Now;
+                var startTime      = Timestamp.Now;
 
-                try
+                var requestLogger  = OnCustomerInformationRequest;
+                if (requestLogger is not null)
                 {
 
-                    OnCustomerInformationRequest?.Invoke(startTime,
-                                                         this,
-                                                         Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCustomerInformationRequest));
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnCustomerInformationRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             Request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnCustomerInformationRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
-
-                await Task.Delay(10, CancellationToken);
-
+                // CustomerInformationRequestId
+                // Report,
+                // Clear,
+                // CustomerIdentifier
+                // IdToken
+                // CustomerCertificate
 
                 CustomerInformationResponse? response = null;
 
@@ -5391,8 +6961,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid CustomerInformation request for charge box '{Request.ChargeBoxId}'!");
 
-                    response = new CustomerInformationResponse(Request,
-                                                               Result.GenericError(""));
+                    response = new CustomerInformationResponse(
+                                   Request,
+                                   Result.GenericError("")
+                               );
 
                 }
                 else
@@ -5421,29 +6993,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     },
                     CancellationToken.None);
 
-                    response = new CustomerInformationResponse(Request,
-                                                               CustomerInformationStatus.Accepted);
+                    response = new CustomerInformationResponse(
+                                   Request,
+                                   CustomerInformationStatus.Accepted
+                               );
 
                 }
 
 
                 #region Send OnCustomerInformationResponse event
 
-                try
+                var responseLogger = OnCustomerInformationResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnCustomerInformationResponse?.Invoke(responseTimestamp,
-                                                          this,
-                                                          Request,
-                                                          response,
-                                                          responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnCustomerInformationResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                Request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCustomerInformationResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnCustomerInformationResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion

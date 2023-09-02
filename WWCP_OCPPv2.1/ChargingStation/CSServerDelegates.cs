@@ -1709,6 +1709,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
+    #region OnUpdateDynamicSchedule
+
+    /// <summary>
+    /// A UpdateDynamicSchedule request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnUpdateDynamicScheduleRequestDelegate(DateTime                       Timestamp,
+                                               IEventSender                   Sender,
+                                               UpdateDynamicScheduleRequest   Request);
+
+
+    /// <summary>
+    /// A UpdateDynamicSchedule request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<UpdateDynamicScheduleResponse>
+
+        OnUpdateDynamicScheduleDelegate(DateTime                       Timestamp,
+                                        IEventSender                   Sender,
+                                        UpdateDynamicScheduleRequest   Request,
+                                        CancellationToken              CancellationToken);
+
+
+    /// <summary>
+    /// A UpdateDynamicSchedule response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnUpdateDynamicScheduleResponseDelegate(DateTime                        Timestamp,
+                                                IEventSender                    Sender,
+                                                UpdateDynamicScheduleRequest    Request,
+                                                UpdateDynamicScheduleResponse   Response,
+                                                TimeSpan                        Runtime);
+
+    #endregion
+
     #region OnNotifyAllowedEnergyTransfer
 
     /// <summary>
@@ -1754,6 +1802,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       NotifyAllowedEnergyTransferRequest    Request,
                                                       NotifyAllowedEnergyTransferResponse   Response,
                                                       TimeSpan                              Runtime);
+
+    #endregion
+
+    #region OnUsePriorityCharging
+
+    /// <summary>
+    /// A UsePriorityCharging request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnUsePriorityChargingRequestDelegate(DateTime                     Timestamp,
+                                             IEventSender                 Sender,
+                                             UsePriorityChargingRequest   Request);
+
+
+    /// <summary>
+    /// A UsePriorityCharging request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<UsePriorityChargingResponse>
+
+        OnUsePriorityChargingDelegate(DateTime                     Timestamp,
+                                      IEventSender                 Sender,
+                                      UsePriorityChargingRequest   Request,
+                                      CancellationToken            CancellationToken);
+
+
+    /// <summary>
+    /// A UsePriorityCharging response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The reserve now request.</param>
+    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnUsePriorityChargingResponseDelegate(DateTime                      Timestamp,
+                                              IEventSender                  Sender,
+                                              UsePriorityChargingRequest    Request,
+                                              UsePriorityChargingResponse   Response,
+                                              TimeSpan                      Runtime);
 
     #endregion
 
