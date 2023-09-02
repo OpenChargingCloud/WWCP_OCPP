@@ -17,23 +17,11 @@
 
 #region Usings
 
-using System.Collections;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Net;
 using System.Xml.Linq;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using System.Net.NetworkInformation;
-using Org.BouncyCastle.Crypto.Tls;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using static cloud.charging.open.protocols.OCPPv1_6.ConfigurationKey;
-using System.Configuration;
-using System.Security.Policy;
 
 #endregion
 
