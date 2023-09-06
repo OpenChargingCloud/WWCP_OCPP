@@ -1108,7 +1108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             if (CSMSId.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(CSMSId), "The given central system identification must not be null or empty!");
 
-            this.CSMSId         = CSMSId;
+            this.CSMSId                  = CSMSId;
             this.RequireAuthentication   = RequireAuthentication;
             this.DefaultRequestTimeout   = DefaultRequestTimeout ?? defaultRequestTimeout;
             this.HTTPUploadPort          = HTTPUploadPort        ?? DefaultHTTPUploadPort;

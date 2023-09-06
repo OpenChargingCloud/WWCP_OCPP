@@ -1222,7 +1222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (CSMSId.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(CSMSId), "The given central system identification must not be null or empty!");
 
-            this.CSMSId         = CSMSId;
+            this.CSMSId                  = CSMSId;
             this.RequireAuthentication   = RequireAuthentication;
             this.DefaultRequestTimeout   = DefaultRequestTimeout ?? defaultRequestTimeout;
             this.HTTPUploadPort          = HTTPUploadPort        ?? DefaultHTTPUploadPort;
@@ -1233,7 +1233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             Directory.CreateDirectory("HTTPSSEs");
 
             this.TestAPI                 = new HTTPExtAPI(
-                                               HTTPServerPort:         IPPort.Parse(3501),
+                                               HTTPServerPort:         IPPort.Parse(3502),
                                                HTTPServerName:         "GraphDefined OCPP Test Central System",
                                                HTTPServiceName:        "GraphDefined OCPP Test Central System Service",
                                                APIRobotEMailAddress:   EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
