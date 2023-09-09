@@ -400,8 +400,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                MeterValue = new MeterValue(Timestamp,
-                                            SampledValues);
+                MeterValue = new MeterValue(
+                                 Timestamp,
+                                 SampledValues
+                             );
 
                 if (CustomMeterValueParser is not null)
                     MeterValue = CustomMeterValueParser(JSON,
@@ -451,8 +453,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         {
 
             var json = JSONObject.Create(
-                           new JProperty("timestamp",    Timestamp.ToIso8601()),
-                           new JProperty("sampledValue", new JArray(SampledValues.Select(sampledValue => sampledValue.ToJSON(CustomSampledValueSerializer))))
+                           new JProperty("timestamp",      Timestamp.ToIso8601()),
+                           new JProperty("sampledValue",   new JArray(SampledValues.Select(sampledValue => sampledValue.ToJSON(CustomSampledValueSerializer))))
                        );
 
             return CustomMeterValueSerializer is not null

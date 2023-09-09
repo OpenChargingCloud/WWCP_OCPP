@@ -299,12 +299,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                SecurityEventNotificationRequest = new SecurityEventNotificationRequest(ChargeBoxId,
-                                                                                        SecurityEvent,
-                                                                                        Timestamp,
-                                                                                        TechInfo,
-                                                                                        CustomData,
-                                                                                        RequestId);
+                SecurityEventNotificationRequest = new SecurityEventNotificationRequest(
+                                                       ChargeBoxId,
+                                                       SecurityEvent,
+                                                       Timestamp,
+                                                       TechInfo,
+                                                       CustomData,
+                                                       RequestId
+                                                   );
 
                 if (CustomSecurityEventNotificationRequestParser is not null)
                     SecurityEventNotificationRequest = CustomSecurityEventNotificationRequestParser(JSON,
@@ -337,9 +339,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                           new JProperty("type",               Type.      ToString()),
+                                 new JProperty("type",         Type.      ToString()),
 
-                           new JProperty("timestamp",          Timestamp. ToIso8601()),
+                                 new JProperty("timestamp",    Timestamp. ToIso8601()),
 
                            TechInfo is not null
                                ? new JProperty("techInfo",     TechInfo)

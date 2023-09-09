@@ -214,9 +214,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                AdditionalInfo = new AdditionalInfo(AdditionalIdToken.Trim(),
-                                                    Type.             Trim(),
-                                                    CustomData);
+                AdditionalInfo = new AdditionalInfo(
+                                     AdditionalIdToken.Trim(),
+                                     Type.             Trim(),
+                                     CustomData
+                                 );
 
                 if (CustomAdditionalInfoParser is not null)
                     AdditionalInfo = CustomAdditionalInfoParser(JSON,

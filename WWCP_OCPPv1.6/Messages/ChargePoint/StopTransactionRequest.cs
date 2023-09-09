@@ -632,14 +632,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                StopTransactionRequest = new StopTransactionRequest(ChargeBoxId,
-                                                                    TransactionId,
-                                                                    Timestamp,
-                                                                    MeterStop,
-                                                                    IdTag,
-                                                                    Reason,
-                                                                    TransactionData,
-                                                                    RequestId);
+                StopTransactionRequest = new StopTransactionRequest(
+                                             ChargeBoxId,
+                                             TransactionId,
+                                             Timestamp,
+                                             MeterStop,
+                                             IdTag,
+                                             Reason,
+                                             TransactionData,
+                                             RequestId
+                                         );
 
                 if (CustomStopTransactionRequestParser is not null)
                     StopTransactionRequest = CustomStopTransactionRequestParser(JSON,
@@ -704,21 +706,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             var json = JSONObject.Create(
 
-                           new JProperty("transactionId",          TransactionId.Value),
-                           new JProperty("timestamp",              StopTimestamp.    ToIso8601()),
-                           new JProperty("meterStop",              MeterStop),
+                                 new JProperty("transactionId",     TransactionId.Value),
+                                 new JProperty("timestamp",         StopTimestamp.ToIso8601()),
+                                 new JProperty("meterStop",         MeterStop),
 
                            IdTag.HasValue
-                               ? new JProperty("idTag",            IdTag.Value.  ToString())
+                               ? new JProperty("idTag",             IdTag.Value.  ToString())
                                : null,
 
                            Reason.HasValue
-                               ? new JProperty("reason",           Reason.Value. ToString())
+                               ? new JProperty("reason",            Reason.Value. ToString())
                                : null,
 
                            TransactionData.SafeAny()
-                               ? new JProperty("transactionData",  new JArray(TransactionData.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
-                                                                                                                                     CustomSampledValueSerializer))))
+                               ? new JProperty("transactionData",   new JArray(TransactionData.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
+                                                                                                                                      CustomSampledValueSerializer))))
                                : null
 
                        );

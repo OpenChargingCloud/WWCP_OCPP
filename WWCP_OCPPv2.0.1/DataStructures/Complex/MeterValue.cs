@@ -175,6 +175,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 MeterValue = default;
 
+                #region Timestamp        [mandatory]
+
+                if (!JSON.ParseMandatory("timestamp",
+                                         "common timestamp",
+                                         out DateTime Timestamp,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
                 #region SampledValues    [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("sampledValue",
@@ -182,18 +194,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                              SampledValue.TryParse,
                                              out IEnumerable<SampledValue> SampledValues,
                                              out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region Timestamp        [mandatory]
-
-                if (!JSON.ParseMandatory("timestamp",
-                                         "common timestamp",
-                                         out DateTime Timestamp,
-                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -260,15 +260,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             var json = JSONObject.Create(
 
-                           new JProperty("sampledValue",       new JArray(SampledValues.SafeSelect(sampledValue => sampledValue.ToJSON(CustomSampledValueSerializer,
-                                                                                                                                       CustomSignedMeterValueSerializer,
-                                                                                                                                       CustomUnitsOfMeasureSerializer,
-                                                                                                                                       CustomCustomDataSerializer)))),
+                                 new JProperty("timestamp",      Timestamp. ToIso8601()),
 
-                           new JProperty("timestamp",          Timestamp. ToIso8601()),
+                                 new JProperty("sampledValue",   new JArray(SampledValues.SafeSelect(sampledValue => sampledValue.ToJSON(CustomSampledValueSerializer,
+                                                                                                                                         CustomSignedMeterValueSerializer,
+                                                                                                                                         CustomUnitsOfMeasureSerializer,
+                                                                                                                                         CustomCustomDataSerializer)))),
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

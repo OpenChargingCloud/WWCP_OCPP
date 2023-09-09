@@ -337,14 +337,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                NotifyCustomerInformationRequest = new NotifyCustomerInformationRequest(ChargeBoxId,
-                                                                                        NotifyCustomerInformationRequestId,
-                                                                                        Data,
-                                                                                        SequenceNumber,
-                                                                                        GeneratedAt,
-                                                                                        ToBeContinued,
-                                                                                        CustomData,
-                                                                                        RequestId);
+                NotifyCustomerInformationRequest = new NotifyCustomerInformationRequest(
+                                                       ChargeBoxId,
+                                                       NotifyCustomerInformationRequestId,
+                                                       Data,
+                                                       SequenceNumber,
+                                                       GeneratedAt,
+                                                       ToBeContinued,
+                                                       CustomData,
+                                                       RequestId
+                                                   );
 
                 if (CustomNotifyCustomerInformationRequestParser is not null)
                     NotifyCustomerInformationRequest = CustomNotifyCustomerInformationRequestParser(JSON,

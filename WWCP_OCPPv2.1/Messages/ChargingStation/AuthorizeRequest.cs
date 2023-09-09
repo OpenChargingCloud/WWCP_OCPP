@@ -414,12 +414,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                AuthorizeRequest = new AuthorizeRequest(ChargeBoxId,
-                                                        IdToken,
-                                                        Certificate,
-                                                        ISO15118CertificateHashData,
-                                                        CustomData,
-                                                        RequestId);
+                AuthorizeRequest = new AuthorizeRequest(
+                                       ChargeBoxId,
+                                       IdToken,
+                                       Certificate,
+                                       ISO15118CertificateHashData,
+                                       CustomData,
+                                       RequestId
+                                   );
 
                 if (CustomAuthorizeRequestParser is not null)
                     AuthorizeRequest = CustomAuthorizeRequestParser(JSON,
@@ -458,21 +460,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                           new JProperty("idToken",                            IdToken.    ToJSON(CustomIdTokenSerializer,
-                                                                                                  CustomAdditionalInfoSerializer,
-                                                                                                  CustomCustomDataSerializer)),
+                                 new JProperty("idToken",                       IdToken.    ToJSON(CustomIdTokenSerializer,
+                                                                                                   CustomAdditionalInfoSerializer,
+                                                                                                   CustomCustomDataSerializer)),
 
                            Certificate is not null
-                               ? new JProperty("certificate",                  Certificate.ToString())
+                               ? new JProperty("certificate",                   Certificate.ToString())
                                : null,
 
                            ISO15118CertificateHashData is not null && ISO15118CertificateHashData.Any()
-                               ? new JProperty("iso15118CertificateHashData",  new JArray(ISO15118CertificateHashData.SafeSelect(hashData => hashData.ToJSON(CustomOCSPRequestDataSerializer,
-                                                                                                                                                             CustomCustomDataSerializer))))
+                               ? new JProperty("iso15118CertificateHashData",   new JArray(ISO15118CertificateHashData.SafeSelect(ocspRequestData => ocspRequestData.ToJSON(CustomOCSPRequestDataSerializer,
+                                                                                                                                                                            CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",                   CustomData. ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",                    CustomData. ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

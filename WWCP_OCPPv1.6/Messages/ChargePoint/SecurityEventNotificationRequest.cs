@@ -257,11 +257,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                SecurityEventNotificationRequest = new SecurityEventNotificationRequest(ChargeBoxId,
-                                                                                        SecurityEvent,
-                                                                                        Timestamp,
-                                                                                        TechInfo,
-                                                                                        RequestId);
+                SecurityEventNotificationRequest = new SecurityEventNotificationRequest(
+                                                       ChargeBoxId,
+                                                       SecurityEvent,
+                                                       Timestamp,
+                                                       TechInfo,
+                                                       RequestId
+                                                   );
 
                 if (CustomSecurityEventNotificationRequestParser is not null)
                     SecurityEventNotificationRequest = CustomSecurityEventNotificationRequestParser(JSON,
@@ -292,12 +294,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             var json = JSONObject.Create(
 
-                           new JProperty("type",            Type.     ToString()),
+                                 new JProperty("type",        Type.     ToString()),
 
-                           new JProperty("timestamp",       Timestamp.ToIso8601()),
+                                 new JProperty("timestamp",   Timestamp.ToIso8601()),
 
                            TechInfo is not null
-                               ? new JProperty("techInfo",  TechInfo)
+                               ? new JProperty("techInfo",    TechInfo)
                                : null
 
                        );

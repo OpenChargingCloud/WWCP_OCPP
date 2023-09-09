@@ -475,12 +475,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                TransactionEventResponse = new TransactionEventResponse(Request,
-                                                                        TotalCost,
-                                                                        ChargingPriority,
-                                                                        IdTokenInfo,
-                                                                        UpdatedPersonalMessage,
-                                                                        CustomData);
+                TransactionEventResponse = new TransactionEventResponse(
+                                               Request,
+                                               TotalCost,
+                                               ChargingPriority,
+                                               IdTokenInfo,
+                                               UpdatedPersonalMessage,
+                                               CustomData
+                                           );
 
                 if (CustomTransactionEventResponseParser is not null)
                     TransactionEventResponse = CustomTransactionEventResponseParser(JSON,

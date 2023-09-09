@@ -438,10 +438,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                AuthorizeResponse = new AuthorizeResponse(Request,
-                                                          IdTokenInfo,
-                                                          CertificateStatus,
-                                                          CustomData);
+                AuthorizeResponse = new AuthorizeResponse(
+                                        Request,
+                                        IdTokenInfo,
+                                        CertificateStatus,
+                                        CustomData
+                                    );
 
                 if (CustomAuthorizeResponseParser is not null)
                     AuthorizeResponse = CustomAuthorizeResponseParser(JSON,

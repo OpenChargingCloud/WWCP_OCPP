@@ -318,12 +318,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                 #endregion
 
 
-                Get15118EVCertificateRequest = new Get15118EVCertificateRequest(ChargeBoxId,
-                                                                                ISO15118SchemaVersion,
-                                                                                CertificateAction,
-                                                                                EXIRequest,
-                                                                                CustomData,
-                                                                                RequestId);
+                Get15118EVCertificateRequest = new Get15118EVCertificateRequest(
+                                                   ChargeBoxId,
+                                                   ISO15118SchemaVersion,
+                                                   CertificateAction,
+                                                   EXIRequest,
+                                                   CustomData,
+                                                   RequestId
+                                               );
 
                 if (CustomGet15118EVCertificateRequestParser is not null)
                     Get15118EVCertificateRequest = CustomGet15118EVCertificateRequestParser(JSON,
@@ -356,12 +358,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("iso15118SchemaVersion",  ISO15118SchemaVersion.ToString()),
-                                 new JProperty("action",                 CertificateAction.    ToString()),
-                                 new JProperty("exiRequest",             EXIRequest.           ToString()),
+                                 new JProperty("iso15118SchemaVersion",   ISO15118SchemaVersion.ToString()),
+                                 new JProperty("action",                  CertificateAction.    ToString()),
+                                 new JProperty("exiRequest",              EXIRequest.           ToString()),
 
                            CustomData is not null
-                               ? new JProperty("customData",             CustomData.           ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",              CustomData.           ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

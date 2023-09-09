@@ -297,8 +297,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                AuthorizeResponse = new AuthorizeResponse(Request,
-                                                          IdTagInfo);
+                AuthorizeResponse = new AuthorizeResponse(
+                                        Request,
+                                        IdTagInfo
+                                    );
 
                 if (CustomAuthorizeResponseParser is not null)
                     AuthorizeResponse = CustomAuthorizeResponseParser(JSON,
@@ -343,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             var json = JSONObject.Create(
-                           new JProperty("idTagInfo",  IdTagInfo.ToJSON(CustomIdTagInfoResponseSerializer))
+                           new JProperty("idTagInfo",   IdTagInfo.ToJSON(CustomIdTagInfoResponseSerializer))
                        );
 
             return CustomAuthorizeResponseSerializer is not null

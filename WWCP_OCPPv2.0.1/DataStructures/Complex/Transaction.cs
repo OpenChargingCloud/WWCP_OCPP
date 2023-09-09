@@ -329,26 +329,26 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("transactionId",      TransactionId.Value),
+                                 new JProperty("transactionId",       TransactionId.Value),
 
                            ChargingState.HasValue
-                               ? new JProperty("chargingState",      ChargingState.Value.AsText())
+                               ? new JProperty("chargingState",       ChargingState.Value.AsText())
                                : null,
 
                            TimeSpentCharging.HasValue
-                               ? new JProperty("timeSpentCharging",  (UInt32) Math.Round(TimeSpentCharging.Value.TotalSeconds, 0))
+                               ? new JProperty("timeSpentCharging",   (UInt32) Math.Round(TimeSpentCharging.Value.TotalSeconds, 0))
                                : null,
 
                            StoppedReason.HasValue
-                               ? new JProperty("stoppedReason",      StoppedReason.Value.AsText())
+                               ? new JProperty("stoppedReason",       StoppedReason.Value.AsText())
                                : null,
 
                            RemoteStartId.HasValue
-                               ? new JProperty("remoteStartId",      RemoteStartId.Value.Value)
+                               ? new JProperty("remoteStartId",       RemoteStartId.Value.Value)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",         CustomData.         ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",          CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

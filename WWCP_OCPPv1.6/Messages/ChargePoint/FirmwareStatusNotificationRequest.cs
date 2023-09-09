@@ -311,9 +311,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                FirmwareStatusNotificationRequest = new FirmwareStatusNotificationRequest(ChargeBoxId,
-                                                                                          Status,
-                                                                                          RequestId);
+                FirmwareStatusNotificationRequest = new FirmwareStatusNotificationRequest(
+                                                        ChargeBoxId,
+                                                        Status,
+                                                        RequestId
+                                                    );
 
                 if (CustomFirmwareStatusNotificationRequestParser is not null)
                     FirmwareStatusNotificationRequest = CustomFirmwareStatusNotificationRequestParser(JSON,
@@ -356,7 +358,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         {
 
             var json = JSONObject.Create(
-                           new JProperty("status", Status.AsText())
+                           new JProperty("status",   Status.AsText())
                        );
 
             return CustomFirmwareStatusNotificationRequestSerializer is not null

@@ -384,9 +384,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             var json = JSONObject.Create(
-                           new JProperty("status",       Status.AsText()),
-                           new JProperty("currentTime",  CurrentTime.ToIso8601()),
-                           new JProperty("interval",     (UInt32) HeartbeatInterval.TotalSeconds)
+                           new JProperty("status",        Status.AsText()),
+                           new JProperty("currentTime",   CurrentTime.ToIso8601()),
+                           new JProperty("interval",      (UInt32) HeartbeatInterval.TotalSeconds)
                        );
 
             return CustomBootNotificationResponseSerializer is not null

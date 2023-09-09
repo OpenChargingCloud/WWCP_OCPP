@@ -255,8 +255,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                HeartbeatResponse = new HeartbeatResponse(Request,
-                                                          CurrentTime);
+                HeartbeatResponse = new HeartbeatResponse(
+                                        Request,
+                                        CurrentTime
+                                    );
 
                 if (CustomHeartbeatResponseParser is not null)
                     HeartbeatResponse = CustomHeartbeatResponseParser(JSON,
@@ -299,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             var json = JSONObject.Create(
-                           new JProperty("currentTime",  CurrentTime.ToIso8601())
+                           new JProperty("currentTime",   CurrentTime.ToIso8601())
                        );
 
             return CustomHeartbeatResponseSerializer is not null

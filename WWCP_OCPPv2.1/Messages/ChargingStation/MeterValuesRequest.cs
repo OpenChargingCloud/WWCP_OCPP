@@ -502,11 +502,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                MeterValuesRequest = new MeterValuesRequest(ChargeBoxId,
-                                                            EVSEId,
-                                                            MeterValues,
-                                                            CustomData,
-                                                            RequestId);
+                MeterValuesRequest = new MeterValuesRequest(
+                                         ChargeBoxId,
+                                         EVSEId,
+                                         MeterValues,
+                                         CustomData,
+                                         RequestId
+                                     );
 
                 if (CustomMeterValuesRequestParser is not null)
                     MeterValuesRequest = CustomMeterValuesRequestParser(JSON,

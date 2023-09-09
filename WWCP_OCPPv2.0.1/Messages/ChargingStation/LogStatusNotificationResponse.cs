@@ -172,8 +172,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 #endregion
 
 
-                LogStatusNotificationResponse  = new LogStatusNotificationResponse(Request,
-                                                                                   CustomData);
+                LogStatusNotificationResponse  = new LogStatusNotificationResponse(
+                                                     Request,
+                                                     CustomData
+                                                 );
 
                 if (CustomLogStatusNotificationResponseParser is not null)
                     LogStatusNotificationResponse = CustomLogStatusNotificationResponseParser(JSON,

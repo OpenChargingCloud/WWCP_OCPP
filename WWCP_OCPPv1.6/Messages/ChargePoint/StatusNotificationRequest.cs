@@ -519,16 +519,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                StatusNotificationRequest = new StatusNotificationRequest(ChargeBoxId,
-                                                                          ConnectorId,
-                                                                          Status,
-                                                                          ErrorCode,
+                StatusNotificationRequest = new StatusNotificationRequest(
+                                                ChargeBoxId,
+                                                ConnectorId,
+                                                Status,
+                                                ErrorCode,
 
-                                                                          Info,
-                                                                          Timestamp,
-                                                                          VendorId,
-                                                                          VendorErrorCode,
-                                                                          RequestId);
+                                                Info,
+                                                Timestamp,
+                                                VendorId,
+                                                VendorErrorCode,
+                                                RequestId
+                                            );
 
                 if (CustomStatusNotificationRequestParser is not null)
                     StatusNotificationRequest = CustomStatusNotificationRequestParser(JSON,
@@ -592,9 +594,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             var json = JSONObject.Create(
 
-                           new JProperty("connectorId",             ConnectorId.Value),
-                           new JProperty("status",                  Status.     AsText()),
-                           new JProperty("errorCode",               ErrorCode.  AsText()),
+                                 new JProperty("connectorId",       ConnectorId.Value),
+                                 new JProperty("status",            Status.     AsText()),
+                                 new JProperty("errorCode",         ErrorCode.  AsText()),
 
                            Info.IsNotNullOrEmpty()
                                ? new JProperty("info",              Info)

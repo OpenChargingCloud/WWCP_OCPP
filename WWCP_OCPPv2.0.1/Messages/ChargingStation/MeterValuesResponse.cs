@@ -174,8 +174,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 #endregion
 
 
-                MeterValuesResponse = new MeterValuesResponse(Request,
-                                                              CustomData);
+                MeterValuesResponse = new MeterValuesResponse(
+                                          Request,
+                                          CustomData
+                                      );
 
                 if (CustomMeterValuesResponseParser is not null)
                     MeterValuesResponse = CustomMeterValuesResponseParser(JSON,

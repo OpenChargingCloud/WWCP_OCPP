@@ -171,8 +171,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                CustomData = new CustomData(VendorId,
-                                            JSON);
+                CustomData = new CustomData(
+                                 VendorId,
+                                 JSON
+                             );
 
                 if (CustomCustomDataParser is not null)
                     CustomData = CustomCustomDataParser(JSON,

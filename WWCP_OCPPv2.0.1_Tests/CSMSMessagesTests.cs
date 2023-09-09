@@ -1084,7 +1084,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                     dataTransferRequests.Add(dataTransferRequest);
                 };
 
-                var vendorId   = "GraphDefined OEM";
+                var vendorId   = Vendor_Id.       Parse       ("GraphDefined OEM");
                 var messageId  = RandomExtensions.RandomString(10);
                 var data       = RandomExtensions.RandomString(40);
 
@@ -1140,7 +1140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                     dataTransferRequests.Add(dataTransferRequest);
                 };
 
-                var vendorId   = "GraphDefined OEM";
+                var vendorId   = Vendor_Id.       Parse       ("GraphDefined OEM");
                 var messageId  = RandomExtensions.RandomString(10);
                 var data       = new JObject(
                                      new JProperty(
@@ -1203,7 +1203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                     dataTransferRequests.Add(dataTransferRequest);
                 };
 
-                var vendorId   = "GraphDefined OEM";
+                var vendorId   = Vendor_Id.       Parse       ("GraphDefined OEM");
                 var messageId  = RandomExtensions.RandomString(10);
                 var data       = new JArray(
                                      RandomExtensions.RandomString(40)
@@ -1263,7 +1263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                     dataTransferRequests.Add(dataTransferRequest);
                 };
 
-                var vendorId   = "ACME Inc.";
+                var vendorId   = Vendor_Id.Parse("ACME Inc.");
                 var messageId  = "hello";
                 var data       = "world!";
                 var response1  = await testCSMS01.TransferData(chargingStation1.ChargeBoxId,

@@ -296,12 +296,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                OCSPRequestData = new OCSPRequestData(HashAlgorithm,
-                                                      IssuerNameHash.Trim(),
-                                                      IssuerKeyHash. Trim(),
-                                                      SerialNumber.  Trim(),
-                                                      ResponderURL,
-                                                      CustomData);
+                OCSPRequestData = new OCSPRequestData(
+                                      HashAlgorithm,
+                                      IssuerNameHash.Trim(),
+                                      IssuerKeyHash. Trim(),
+                                      SerialNumber.  Trim(),
+                                      ResponderURL,
+                                      CustomData
+                                  );
 
                 if (CustomOCSPRequestDataParser is not null)
                     OCSPRequestData = CustomOCSPRequestDataParser(JSON,

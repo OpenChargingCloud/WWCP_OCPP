@@ -270,12 +270,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                ChargingStation = new ChargingStation(Model,
-                                                      VendorName,
-                                                      SerialNumber,
-                                                      Modem,
-                                                      FirmwareVersion,
-                                                      CustomData);
+                ChargingStation = new ChargingStation(
+                                      Model,
+                                      VendorName,
+                                      SerialNumber,
+                                      Modem,
+                                      FirmwareVersion,
+                                      CustomData
+                                  );
 
                 if (CustomChargingStationParser is not null)
                     ChargingStation = CustomChargingStationParser(JSON,

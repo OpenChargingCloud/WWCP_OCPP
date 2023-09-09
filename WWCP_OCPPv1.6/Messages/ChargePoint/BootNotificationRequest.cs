@@ -600,8 +600,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             var json = JSONObject.Create(
 
-                           new JProperty("chargePointVendor",               ChargePointVendor),
-                           new JProperty("chargePointModel",                ChargePointModel),
+                                 new JProperty("chargePointVendor",         ChargePointVendor),
+                                 new JProperty("chargePointModel",          ChargePointModel),
 
                            ChargePointSerialNumber.IsNotNullOrEmpty()
                                ? new JProperty("chargePointSerialNumber",   ChargePointSerialNumber)

@@ -427,13 +427,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                StartTransactionRequest = new StartTransactionRequest(ChargeBoxId,
-                                                                      ConnectorId,
-                                                                      IdTag,
-                                                                      Timestamp,
-                                                                      MeterStart,
-                                                                      ReservationId,
-                                                                      RequestId);
+                StartTransactionRequest = new StartTransactionRequest(
+                                              ChargeBoxId,
+                                              ConnectorId,
+                                              IdTag,
+                                              Timestamp,
+                                              MeterStart,
+                                              ReservationId,
+                                              RequestId
+                                          );
 
                 if (CustomStartTransactionRequestParser is not null)
                     StartTransactionRequest = CustomStartTransactionRequestParser(JSON,
@@ -486,13 +488,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             var json = JSONObject.Create(
 
-                           new JProperty("connectorId",          ConnectorId.        Value),
-                           new JProperty("idTag",                IdTag.              ToString()),
-                           new JProperty("timestamp",            StartTimestamp.     ToIso8601()),
-                           new JProperty("meterStart",           MeterStart),
+                                 new JProperty("connectorId",     ConnectorId.        Value),
+                                 new JProperty("idTag",           IdTag.              ToString()),
+                                 new JProperty("timestamp",       StartTimestamp.     ToIso8601()),
+                                 new JProperty("meterStart",      MeterStart),
 
                            ReservationId.HasValue
-                               ? new JProperty("reservationId",  ReservationId.Value.ToString())
+                               ? new JProperty("reservationId",   ReservationId.Value.ToString())
                                : null
 
                        );

@@ -191,9 +191,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                 #endregion
 
 
-                HeartbeatRequest = new HeartbeatRequest(ChargeBoxId,
-                                                        CustomData,
-                                                        RequestId);
+                HeartbeatRequest = new HeartbeatRequest(
+                                       ChargeBoxId,
+                                       CustomData,
+                                       RequestId
+                                   );
 
                 if (CustomHeartbeatRequestParser is not null)
                     HeartbeatRequest = CustomHeartbeatRequestParser(JSON,

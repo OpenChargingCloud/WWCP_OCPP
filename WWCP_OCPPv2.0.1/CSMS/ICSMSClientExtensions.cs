@@ -771,7 +771,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<CS.DataTransferResponse> TransferData(this ICSMSClient   ICSMSClient,
                                                                  ChargeBox_Id       ChargeBoxId,
-                                                                 String             VendorId,
+                                                                 Vendor_Id          VendorId,
                                                                  String             MessageId,
                                                                  String             Data,
                                                                  CustomData?        CustomData          = null,

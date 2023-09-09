@@ -3491,7 +3491,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                             case MessageTriggers.BootNotification:
                                 await SendBootNotification(
-                                          BootReason:   BootReasons.Triggered,
+                                          BootReason:   BootReason.Triggered,
                                           CustomData:   null
                                       );
                                 break;
@@ -3698,7 +3698,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     }
 
-                    if (Request.VendorId == "GraphDefined OEM")
+                    if (Request.VendorId.ToString() == "GraphDefined OEM")
                     {
                         response = new DataTransferResponse(
                                        Request,
@@ -7164,7 +7164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.BootNotificationResponse>
 
-            SendBootNotification(BootReasons        BootReason,
+            SendBootNotification(BootReason         BootReason,
                                  CustomData?        CustomData          = null,
 
                                  Request_Id?        RequestId           = null,
@@ -8157,7 +8157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.DataTransferResponse>
 
-            TransferData(String             VendorId,
+            TransferData(Vendor_Id          VendorId,
                          String?            MessageId           = null,
                          JToken?            Data                = null,
                          CustomData?        CustomData          = null,

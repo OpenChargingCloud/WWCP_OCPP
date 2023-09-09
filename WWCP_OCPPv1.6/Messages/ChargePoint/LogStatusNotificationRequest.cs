@@ -251,14 +251,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                LogStatusNotificationRequest = new LogStatusNotificationRequest(ChargeBoxId,
-                                                                                Status,
-                                                                                LogRequestId,
-                                                                                RequestId);
+                LogStatusNotificationRequest = new LogStatusNotificationRequest(
+                                                   ChargeBoxId,
+                                                   Status,
+                                                   LogRequestId,
+                                                   RequestId
+                                               );
 
                 if (CustomLogStatusNotificationRequestParser is not null)
                     LogStatusNotificationRequest = CustomLogStatusNotificationRequestParser(JSON,
-                                                                          LogStatusNotificationRequest);
+                                                                                            LogStatusNotificationRequest);
 
                 return true;
 

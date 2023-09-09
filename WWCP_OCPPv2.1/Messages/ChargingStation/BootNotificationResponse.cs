@@ -338,12 +338,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                BootNotificationResponse = new BootNotificationResponse(Request,
-                                                                        RegistrationStatus,
-                                                                        CurrentTime,
-                                                                        Interval,
-                                                                        StatusInfo,
-                                                                        CustomData);
+                BootNotificationResponse = new BootNotificationResponse(
+                                               Request,
+                                               RegistrationStatus,
+                                               CurrentTime,
+                                               Interval,
+                                               StatusInfo,
+                                               CustomData
+                                           );
 
                 if (CustomBootNotificationResponseParser is not null)
                     BootNotificationResponse = CustomBootNotificationResponseParser(JSON,

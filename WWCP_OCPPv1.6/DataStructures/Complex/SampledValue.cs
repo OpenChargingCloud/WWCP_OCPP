@@ -512,13 +512,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                SampledValue = new SampledValue(Value,
-                                                Context,
-                                                Format,
-                                                Measurand,
-                                                Phase,
-                                                Location,
-                                                Unit);
+                SampledValue = new SampledValue(
+                                   Value,
+                                   Context,
+                                   Format,
+                                   Measurand,
+                                   Phase,
+                                   Location,
+                                   Unit
+                               );
 
                 if (CustomSampledValueParser is not null)
                     SampledValue = CustomSampledValueParser(JSON,
@@ -575,18 +577,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var json = JSONObject.Create(
 
-                           new JProperty("value",        Value),
+                                 new JProperty("value",       Value),
 
-                           new JProperty("context",      Context.        AsText()),
-                           new JProperty("format",       Format.         AsText()),
-                           new JProperty("measurand",    Measurand.      AsText()),
+                                 new JProperty("context",     Context.    AsText()),
+                                 new JProperty("format",      Format.     AsText()),
+                                 new JProperty("measurand",   Measurand.  AsText()),
 
                            Phase.HasValue
-                               ? new JProperty("phase",  Phase.    Value.AsText())
+                               ? new JProperty("phase",       Phase.Value.AsText())
                                : null,
 
-                           new JProperty("location",     Location.       AsText()),
-                           new JProperty("unit",         Unit.           AsText())
+                                 new JProperty("location",    Location.   AsText()),
+                                 new JProperty("unit",        Unit.       AsText())
 
                        );
 

@@ -38,19 +38,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// The vendor identification or namespace of the given message.
         /// </summary>
         [Mandatory]
-        public String   VendorId     { get; }
+        public Vendor_Id  VendorId     { get; }
 
         /// <summary>
         /// An optional message identification field.
         /// </summary>
         [Optional]
-        public String?  MessageId    { get; }
+        public String?    MessageId    { get; }
 
         /// <summary>
         /// Optional message data without specified length or format.
         /// </summary>
         [Optional]
-        public JToken?  Data         { get; }
+        public JToken?    Data         { get; }
 
         #endregion
 
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public DataTransferRequest(ChargeBox_Id       ChargeBoxId,
-                                   String             VendorId,
+                                   Vendor_Id          VendorId,
                                    String?            MessageId           = null,
                                    JToken?            JSONToken           = null,
                                    CustomData?        CustomData          = null,
@@ -93,17 +93,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
         {
 
-            #region Initial checks
-
-            this.VendorId = VendorId.Trim();
-
-            if (this.VendorId.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(VendorId), "The given vendor identification must not be null or empty!");
-
-            #endregion
-
-            this.Data       = JSONToken;
+            this.VendorId   = VendorId;
             this.MessageId  = MessageId?.Trim();
+            this.Data       = JSONToken;
 
         }
 
@@ -241,10 +233,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                 #region VendorId        [mandatory]
 
-                if (!JSON.ParseMandatoryText("vendorId",
-                                             "vendor identification",
-                                             out String VendorId,
-                                             out ErrorResponse))
+                if (!JSON.ParseMandatory("vendorId",
+                                         "vendor identification",
+                                         Vendor_Id.TryParse,
+                                         out Vendor_Id VendorId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -297,12 +290,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 #endregion
 
 
-                DataTransferRequest = new DataTransferRequest(ChargeBoxId,
-                                                              VendorId,
-                                                              MessageId,
-                                                              Data,
-                                                              CustomData,
-                                                              RequestId);
+                DataTransferRequest = new DataTransferRequest(
+                                          ChargeBoxId,
+                                          VendorId,
+                                          MessageId,
+                                          Data,
+                                          CustomData,
+                                          RequestId
+                                      );
 
                 if (CustomDataTransferRequestParser is not null)
                     DataTransferRequest = CustomDataTransferRequestParser(JSON,
@@ -335,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("vendorId",    VendorId),
+                                 new JProperty("vendorId",    VendorId.  ToString()),
 
                            MessageId.IsNotNullOrEmpty()
                                ? new JProperty("messageId",   MessageId)

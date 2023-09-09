@@ -355,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         {
 
             var json = JSONObject.Create(
-                           new JProperty("status",  Status.AsText())
+                           new JProperty("status",   Status.AsText())
                        );
 
             return CustomDiagnosticsStatusNotificationRequestSerializer is not null

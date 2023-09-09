@@ -183,8 +183,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                SignCertificateResponse = new SignCertificateResponse(Request,
-                                                                      Status);
+                SignCertificateResponse = new SignCertificateResponse(
+                                              Request,
+                                              Status
+                                          );
 
                 if (CustomSignCertificateResponseParser is not null)
                     SignCertificateResponse = CustomSignCertificateResponseParser(JSON,
@@ -214,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             var json = JSONObject.Create(
-                           new JProperty("status", Status.AsText())
+                           new JProperty("status",   Status.AsText())
                        );
 
             return CustomSignCertificateResponseSerializer is not null

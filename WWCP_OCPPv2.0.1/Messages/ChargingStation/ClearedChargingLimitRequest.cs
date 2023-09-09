@@ -267,11 +267,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                 #endregion
 
 
-                ClearedChargingLimitRequest = new ClearedChargingLimitRequest(ChargeBoxId,
-                                                                              ChargingLimitSource,
-                                                                              EVSEId,
-                                                                              CustomData,
-                                                                              RequestId);
+                ClearedChargingLimitRequest = new ClearedChargingLimitRequest(
+                                                  ChargeBoxId,
+                                                  ChargingLimitSource,
+                                                  EVSEId,
+                                                  CustomData,
+                                                  RequestId
+                                              );
 
                 if (CustomClearedChargingLimitRequestParser is not null)
                     ClearedChargingLimitRequest = CustomClearedChargingLimitRequestParser(JSON,

@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var reason     = BootReasons.PowerUp;
+                var reason     = BootReason.PowerUp;
                 var response1  = await chargingStation1.SendBootNotification(reason);
 
                 Assert.AreEqual (ResultCodes.OK,                         response1.Result.ResultCode);
@@ -655,7 +655,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var vendorId   = "GraphDefined OEM";
+                var vendorId   = Vendor_Id.       Parse       ("GraphDefined OEM");
                 var messageId  = RandomExtensions.RandomString(10);
                 var data       = RandomExtensions.RandomString(40);
 
@@ -711,7 +711,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var vendorId   = "GraphDefined OEM";
+                var vendorId   = Vendor_Id.       Parse       ("GraphDefined OEM");
                 var messageId  = RandomExtensions.RandomString(10);
                 var data       = new JObject(
                                      new JProperty(
@@ -774,7 +774,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var vendorId   = "GraphDefined OEM";
+                var vendorId   = Vendor_Id.       Parse       ("GraphDefined OEM");
                 var messageId  = RandomExtensions.RandomString(10);
                 var data       = new JArray(
                                      RandomExtensions.RandomString(40)

@@ -295,11 +295,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 #endregion
 
 
-                GetCertificateStatusResponse = new GetCertificateStatusResponse(Request,
-                                                                                Status,
-                                                                                OCSPResult,
-                                                                                StatusInfo,
-                                                                                CustomData);
+                GetCertificateStatusResponse = new GetCertificateStatusResponse(
+                                                   Request,
+                                                   Status,
+                                                   OCSPResult,
+                                                   StatusInfo,
+                                                   CustomData
+                                               );
 
                 if (CustomGetCertificateStatusResponseParser is not null)
                     GetCertificateStatusResponse = CustomGetCertificateStatusResponseParser(JSON,

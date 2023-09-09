@@ -36,16 +36,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The unit of the measured value. 20
+        /// The unit of the measured value.
         /// </summary>
         [Mandatory]
-        public String  Unit          { get; }
+        public UnitOfMeasure  Unit          { get; }
 
         /// <summary>
         /// Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.
         /// </summary>
         [Mandatory]
-        public Int32   Multiplier    { get; }
+        public Int32          Multiplier    { get; }
 
         #endregion
 
@@ -57,19 +57,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Unit">The unit of the measured value.</param>
         /// <param name="Multiplier">Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public UnitsOfMeasure(String       Unit,
-                              Int32        Multiplier,
-                              CustomData?  CustomData   = null)
+        public UnitsOfMeasure(UnitOfMeasure  Unit,
+                              Int32          Multiplier,
+                              CustomData?    CustomData   = null)
 
             : base(CustomData)
 
         {
 
-            this.Unit        = Unit.Trim();
+            this.Unit        = Unit;
             this.Multiplier  = Multiplier;
-
-            if (this.Unit.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Unit), "The given unit of measure must not be null or empty!");
 
         }
 
@@ -172,10 +169,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Unit          [mandatory]
 
-                if (!JSON.ParseMandatoryText("unit",
-                                             "unit measure",
-                                             out String Unit,
-                                             out ErrorResponse))
+                if (!JSON.ParseMandatory("unit",
+                                         "unit measure",
+                                         UnitOfMeasure.TryParse,
+                                         out UnitOfMeasure Unit,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -209,9 +207,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                UnitsOfMeasure = new UnitsOfMeasure(Unit.Trim(),
-                                                    Multiplier,
-                                                    CustomData);
+                UnitsOfMeasure = new UnitsOfMeasure(
+                                     Unit,
+                                     Multiplier,
+                                     CustomData
+                                 );
 
                 if (CustomUnitsOfMeasureParser is not null)
                     UnitsOfMeasure = CustomUnitsOfMeasureParser(JSON,
@@ -244,11 +244,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                           new JProperty("unit",              Unit),
-                           new JProperty("multiplier",        Multiplier),
+                                 new JProperty("unit",         Unit.      ToString()),
+                                 new JProperty("multiplier",   Multiplier),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure Celsius(Int32        Multiplier,
                                              CustomData?  CustomData   = null)
 
-            => new ("Celsius",
+            => new (UnitOfMeasure.Celsius,
                     Multiplier,
                     CustomData);
 
@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure Fahrenheit(Int32        Multiplier,
                                                 CustomData?  CustomData   = null)
 
-            => new ("Fahrenheit",
+            => new (UnitOfMeasure.Fahrenheit,
                     Multiplier,
                     CustomData);
 
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure Wh(Int32        Multiplier,
                                         CustomData?  CustomData   = null)
 
-            => new ("Wh",
+            => new (UnitOfMeasure.Wh,
                     Multiplier,
                     CustomData);
 
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure kWh(Int32        Multiplier,
                                          CustomData?  CustomData   = null)
 
-            => new ("kWh",
+            => new (UnitOfMeasure.kWh,
                     Multiplier,
                     CustomData);
 
@@ -310,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure varh(Int32        Multiplier,
                                           CustomData?  CustomData   = null)
 
-            => new ("varh",
+            => new (UnitOfMeasure.varh,
                     Multiplier,
                     CustomData);
 
@@ -320,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure kvarh(Int32        Multiplier,
                                            CustomData?  CustomData   = null)
 
-            => new ("kvarh",
+            => new (UnitOfMeasure.kvarh,
                     Multiplier,
                     CustomData);
 
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure Watts(Int32        Multiplier,
                                            CustomData?  CustomData   = null)
 
-            => new ("Watts",
+            => new (UnitOfMeasure.Watts,
                     Multiplier,
                     CustomData);
 
@@ -340,7 +340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure kW(Int32        Multiplier,
                                         CustomData?  CustomData   = null)
 
-            => new ("kW",
+            => new (UnitOfMeasure.kW,
                     Multiplier,
                     CustomData);
 
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure VoltAmpere(Int32        Multiplier,
                                                 CustomData?  CustomData   = null)
 
-            => new ("VoltAmpere",
+            => new (UnitOfMeasure.VoltAmpere,
                     Multiplier,
                     CustomData);
 
@@ -360,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure kVA(Int32        Multiplier,
                                          CustomData?  CustomData   = null)
 
-            => new ("kVA",
+            => new (UnitOfMeasure.kVA,
                     Multiplier,
                     CustomData);
 
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure var(Int32        Multiplier,
                                          CustomData?  CustomData   = null)
 
-            => new ("var",
+            => new (UnitOfMeasure.var,
                     Multiplier,
                     CustomData);
 
@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure kvar(Int32        Multiplier,
                                           CustomData?  CustomData   = null)
 
-            => new ("kvar",
+            => new (UnitOfMeasure.kvar,
                     Multiplier,
                     CustomData);
 
@@ -390,7 +390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure Amperes(Int32        Multiplier,
                                              CustomData?  CustomData   = null)
 
-            => new ("Amperes",
+            => new (UnitOfMeasure.Amperes,
                     Multiplier,
                     CustomData);
 
@@ -400,7 +400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure Voltage(Int32        Multiplier,
                                              CustomData?  CustomData   = null)
 
-            => new ("Voltage",
+            => new (UnitOfMeasure.Voltage,
                     Multiplier,
                     CustomData);
 
@@ -410,7 +410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure Kelvin(Int32        Multiplier,
                                             CustomData?  CustomData   = null)
 
-            => new ("Kelvin",
+            => new (UnitOfMeasure.Kelvin,
                     Multiplier,
                     CustomData);
 
@@ -420,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UnitsOfMeasure Percent(Int32        Multiplier,
                                              CustomData?  CustomData   = null)
 
-            => new ("Percent",
+            => new (UnitOfMeasure.Percent,
                     Multiplier,
                     CustomData);
 
@@ -482,8 +482,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A unit of measure to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is UnitsOfMeasure unitOfMeasure &&
-                   Equals(unitOfMeasure);
+            => Object is UnitsOfMeasure unitsOfMeasure &&
+                   Equals(unitsOfMeasure);
 
         #endregion
 
@@ -497,10 +497,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => UnitsOfMeasure is not null &&
 
-               String.    Equals(Unit,
-                                 UnitsOfMeasure.Unit,
-                                 StringComparison.OrdinalIgnoreCase) &&
-
+               Unit.      Equals(UnitsOfMeasure.Unit)       &&
                Multiplier.Equals(UnitsOfMeasure.Multiplier) &&
 
                base.      Equals(UnitsOfMeasure);
@@ -537,7 +534,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Unit, " ( *10^", Multiplier, " )");
+            => $"{Unit} ( *10^{Multiplier} )";
 
         #endregion
 

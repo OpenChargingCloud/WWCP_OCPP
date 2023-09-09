@@ -285,9 +285,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                DataTransferResponse = new DataTransferResponse(Request,
-                                                                DataTransferStatus,
-                                                                Data);
+                DataTransferResponse = new DataTransferResponse(
+                                           Request,
+                                           DataTransferStatus,
+                                           Data
+                                       );
 
                 if (CustomDataTransferResponseParser is not null)
                     DataTransferResponse = CustomDataTransferResponseParser(JSON,
@@ -337,10 +339,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var json = JSONObject.Create(
 
-                           new JProperty("status",      DataTransferStatusExtensions.AsText(Status)),
+                                 new JProperty("status",   DataTransferStatusExtensions.AsText(Status)),
 
                            Data.IsNotNullOrEmpty()
-                               ? new JProperty("data",  Data)
+                               ? new JProperty("data",     Data)
                                : null
 
                        );

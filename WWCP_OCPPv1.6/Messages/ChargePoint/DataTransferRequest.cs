@@ -417,14 +417,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             var json = JSONObject.Create(
 
-                           new JProperty("vendorId",         VendorId),
+                                 new JProperty("vendorId",    VendorId),
 
                            MessageId.IsNotNullOrEmpty()
-                               ? new JProperty("messageId",  MessageId)
+                               ? new JProperty("messageId",   MessageId)
                                : null,
 
                            Data.IsNotNullOrEmpty()
-                               ? new JProperty("data",       Data)
+                               ? new JProperty("data",        Data)
                                : null
 
                        );

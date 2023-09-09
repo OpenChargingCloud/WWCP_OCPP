@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Xml.Linq;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -303,9 +304,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                AuthorizeRequest = new AuthorizeRequest(ChargeBoxId,
-                                                        IdTag,
-                                                        RequestId);
+                AuthorizeRequest = new AuthorizeRequest(
+                                       ChargeBoxId,
+                                       IdTag,
+                                       RequestId
+                                   );
 
                 if (CustomAuthorizeRequestParser is not null)
                     AuthorizeRequest = CustomAuthorizeRequestParser(JSON,
@@ -350,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         {
 
             var json = JSONObject.Create(
-                           new JProperty("idTag",  IdTag.ToString())
+                           new JProperty("idTag",   IdTag.ToString())
                        );
 
             return CustomAuthorizeRequestSerializer is not null

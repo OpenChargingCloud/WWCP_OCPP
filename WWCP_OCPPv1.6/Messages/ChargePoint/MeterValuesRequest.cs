@@ -529,11 +529,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 #endregion
 
 
-                MeterValuesRequest = new MeterValuesRequest(ChargeBoxId,
-                                                            ConnectorId,
-                                                            MeterValues,
-                                                            TransactionId,
-                                                            RequestId);
+                MeterValuesRequest = new MeterValuesRequest(
+                                         ChargeBoxId,
+                                         ConnectorId,
+                                         MeterValues,
+                                         TransactionId,
+                                         RequestId
+                                     );
 
                 if (CustomMeterValuesRequestParser is not null)
                     MeterValuesRequest = CustomMeterValuesRequestParser(JSON,
@@ -591,15 +593,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             var json = JSONObject.Create(
 
-                           new JProperty("connectorId",          ConnectorId.  Value.ToString()),
+                                 new JProperty("connectorId",     ConnectorId.  Value.ToString()),
 
                            TransactionId.HasValue
-                               ? new JProperty("transactionId",  TransactionId.Value.ToString())
+                               ? new JProperty("transactionId",   TransactionId.Value.ToString())
                                : null,
 
                            MeterValues.SafeAny()
-                               ? new JProperty("meterValue",     new JArray(MeterValues.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
-                                                                                                                               CustomSampledValueSerializer))))
+                               ? new JProperty("meterValue",      new JArray(MeterValues.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
+                                                                                                                                CustomSampledValueSerializer))))
                                : null
 
                        );

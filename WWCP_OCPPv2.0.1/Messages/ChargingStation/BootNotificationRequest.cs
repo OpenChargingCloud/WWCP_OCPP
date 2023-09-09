@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// The the reason for sending this boot notification to the CSMS.
         /// </summary>
         [Mandatory]
-        public BootReasons      Reason             { get; }
+        public BootReason       Reason             { get; }
 
         #endregion
 
@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public BootNotificationRequest(ChargeBox_Id       ChargeBoxId,
                                        ChargingStation    ChargingStation,
-                                       BootReasons        Reason,
+                                       BootReason         Reason,
                                        CustomData?        CustomData          = null,
 
                                        Request_Id?        RequestId           = null,
@@ -293,8 +293,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
 
                 if (!JSON.ParseMandatory("reason",
                                          "boot reason",
-                                         BootReasonsExtensions.TryParse,
-                                         out BootReasons Reason,
+                                         BootReason.TryParse,
+                                         out BootReason Reason,
                                          out ErrorResponse))
                 {
                     return false;
@@ -317,11 +317,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                 #endregion
 
 
-                BootNotificationRequest = new BootNotificationRequest(ChargeBoxId,
-                                                                      ChargingStation,
-                                                                      Reason,
-                                                                      CustomData,
-                                                                      RequestId);
+                BootNotificationRequest = new BootNotificationRequest(
+                                              ChargeBoxId,
+                                              ChargingStation,
+                                              Reason,
+                                              CustomData,
+                                              RequestId
+                                          );
 
                 if (CustomBootNotificationRequestParser is not null)
                     BootNotificationRequest = CustomBootNotificationRequestParser(JSON,
@@ -357,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
             var json = JSONObject.Create(
 
                                  new JProperty("chargingStation",   ChargingStation.ToJSON(CustomChargingStationSerializer)),
-                                 new JProperty("reason",            Reason.         AsText()),
+                                 new JProperty("reason",            Reason.         ToString()),
 
                            CustomData is not null
                                ? new JProperty("customData",        CustomData.     ToJSON(CustomCustomDataSerializer))
@@ -481,7 +483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat("Boot reason: " + Reason.AsText());
+            => $"Boot reason: {Reason}";
 
         #endregion
 

@@ -253,10 +253,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                IdToken = new IdToken(Value.Trim(),
-                                      Type,
-                                      AdditionalInfos,
-                                      CustomData);
+                IdToken = new IdToken(
+                              Value.Trim(),
+                              Type,
+                              AdditionalInfos,
+                              CustomData
+                          );
 
                 if (CustomIdTokenParser is not null)
                     IdToken = CustomIdTokenParser(JSON,
@@ -291,16 +293,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("idToken",         Value),
-                                 new JProperty("type",            Type.      AsText()),
+                                 new JProperty("idToken",          Value),
+                                 new JProperty("type",             Type.      AsText()),
 
                            AdditionalInfos.Any()
-                               ? new JProperty("additionalInfo",  new JArray(AdditionalInfos.Select(additionalInfo => additionalInfo.ToJSON(CustomAdditionalInfoSerializer,
-                                                                                                                                            CustomCustomDataSerializer))))
+                               ? new JProperty("additionalInfo",   new JArray(AdditionalInfos.Select(additionalInfo => additionalInfo.ToJSON(CustomAdditionalInfoSerializer,
+                                                                                                                                             CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

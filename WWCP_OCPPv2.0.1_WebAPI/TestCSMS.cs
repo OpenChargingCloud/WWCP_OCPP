@@ -2166,7 +2166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 }
 
-                var response =  Request.VendorId == "GraphDefined OEM"
+                var response =  Request.VendorId.ToString() == "GraphDefined OEM"
 
                                     ? new DataTransferResponse(
                                           Request:      Request,
@@ -7157,7 +7157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         public async Task<CS.DataTransferResponse>
 
             TransferData(ChargeBox_Id       ChargeBoxId,
-                         String             VendorId,
+                         Vendor_Id          VendorId,
                          String?            MessageId           = null,
                          JToken?            Data                = null,
                          CustomData?        CustomData          = null,

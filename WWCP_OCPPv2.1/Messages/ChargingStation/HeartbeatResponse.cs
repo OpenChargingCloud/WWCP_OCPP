@@ -211,9 +211,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                HeartbeatResponse = new HeartbeatResponse(Request,
-                                                          CurrentTime,
-                                                          CustomData);
+                HeartbeatResponse = new HeartbeatResponse(
+                                        Request,
+                                        CurrentTime,
+                                        CustomData
+                                    );
 
                 if (CustomHeartbeatResponseParser is not null)
                     HeartbeatResponse = CustomHeartbeatResponseParser(JSON,

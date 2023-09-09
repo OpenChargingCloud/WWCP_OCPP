@@ -293,8 +293,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                StopTransactionResponse = new StopTransactionResponse(Request,
-                                                                      IdTagInfo);
+                StopTransactionResponse = new StopTransactionResponse(
+                                              Request,
+                                              IdTagInfo
+                                          );
 
                 if (CustomStopTransactionResponseParser is not null)
                     StopTransactionResponse = CustomStopTransactionResponseParser(JSON,
@@ -345,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             var json = JSONObject.Create(
 
                            IdTagInfo.HasValue
-                               ? new JProperty("idTagInfo",  IdTagInfo.Value.ToJSON(CustomIdTagInfoResponseSerializer))
+                               ? new JProperty("idTagInfo",   IdTagInfo.Value.ToJSON(CustomIdTagInfoResponseSerializer))
                                : null
 
                        );

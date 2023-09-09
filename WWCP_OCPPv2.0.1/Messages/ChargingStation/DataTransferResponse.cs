@@ -292,11 +292,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 #endregion
 
 
-                DataTransferResponse = new DataTransferResponse(Request,
-                                                                DataTransferStatus,
-                                                                Data,
-                                                                StatusInfo,
-                                                                CustomData);
+                DataTransferResponse = new DataTransferResponse(
+                                           Request,
+                                           DataTransferStatus,
+                                           Data,
+                                           StatusInfo,
+                                           CustomData
+                                       );
 
                 if (CustomDataTransferResponseParser is not null)
                     DataTransferResponse = CustomDataTransferResponseParser(JSON,

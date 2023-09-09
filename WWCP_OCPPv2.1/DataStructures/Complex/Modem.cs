@@ -202,9 +202,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                Modem = new Modem(ICCID?.Trim(),
-                                  IMSI?. Trim(),
-                                  CustomData);
+                Modem = new Modem(
+                            ICCID?.Trim(),
+                            IMSI?. Trim(),
+                            CustomData
+                        );
 
                 if (CustomModemParser is not null)
                     Modem = CustomModemParser(JSON,
@@ -244,15 +246,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                            IMSI is not null
-                               ? new JProperty("iccid",       ICCID)
+                               ? new JProperty("iccid",        ICCID)
                                : null,
 
                            IMSI is not null
-                               ? new JProperty("imsi",        IMSI)
+                               ? new JProperty("imsi",         IMSI)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -86,82 +86,82 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     {
 
         /// <summary>
-        /// Degrees (temperature).
+        /// Degrees (temperature)
         /// </summary>
         Celsius,
 
         /// <summary>
-        /// Degrees (temperature).
+        /// Degrees (temperature)
         /// </summary>
         Fahrenheit,
 
         /// <summary>
-        /// Watt-hours (energy).
+        /// Watt-hours (energy)
         /// </summary>
         Wh,
 
         /// <summary>
-        /// kiloWatt-hours (energy).
+        /// kiloWatt-hours (energy)
         /// </summary>
         kWh,
 
         /// <summary>
-        /// Var-hours (reactive energy).
+        /// Var-hours (reactive energy)
         /// </summary>
         varh,
 
         /// <summary>
-        /// kilovar-hours (reactive energy).
+        /// kilovar-hours (reactive energy)
         /// </summary>
         kvarh,
 
         /// <summary>
-        /// Watts (power).
+        /// Watts (power)
         /// </summary>
         Watts,
 
         /// <summary>
-        /// kiloWatts (power).
+        /// kiloWatts (power)
         /// </summary>
         kW,
 
         /// <summary>
-        /// VoltAmpere (apparent power).
+        /// VoltAmpere (apparent power)
         /// </summary>
         VoltAmpere,
 
         /// <summary>
-        /// kiloVolt Ampere (apparent power).
+        /// kiloVolt Ampere (apparent power)
         /// </summary>
         kVA,
 
         /// <summary>
-        /// Vars (reactive power).
+        /// Vars (reactive power)
         /// </summary>
         var,
 
         /// <summary>
-        /// kilovars (reactive power).
+        /// kilovars (reactive power)
         /// </summary>
         kvar,
 
         /// <summary>
-        /// Amperes (current).
+        /// Amperes (current)
         /// </summary>
         Amperes,
 
         /// <summary>
-        /// Voltage (r.m.s. AC).
+        /// Voltage (r.m.s. AC)
         /// </summary>
         Voltage,
 
         /// <summary>
-        /// Degrees Kelvin (temperature).
+        /// Degrees Kelvin (temperature)
         /// </summary>
         Kelvin,
 
         /// <summary>
-        /// Percentage.
+        /// Percentage
         /// </summary>
         Percent
 
