@@ -47,6 +47,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         [Optional]
         public Boolean?              IsGridCritical         { get; }
 
+        /// <summary>
+        /// Optional indication whether the reported limit concerns local generation
+        /// that is provides extra capacity, instead of a limitation.
+        /// </summary>
+        [Optional]
+        public Boolean?              IsLocalGeneration      { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -56,9 +63,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="ChargingLimitSource">The source of the charging limit.</param>
         /// <param name="IsGridCritical">Optional indication whether the charging limit is critical for the grid.</param>
+        /// <param name="IsLocalGeneration">Optional indication whether the reported limit concerns local generation that is provides extra capacity, instead of a limitation.</param>
         public ChargingLimit(ChargingLimitSources  ChargingLimitSource,
-                             Boolean?              IsGridCritical,
-                             CustomData?           CustomData   = null)
+                             Boolean?              IsGridCritical      = null,
+                             Boolean?              IsLocalGeneration   = null,
+                             CustomData?           CustomData          = null)
 
             : base(CustomData)
 
@@ -66,11 +75,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.ChargingLimitSource  = ChargingLimitSource;
             this.IsGridCritical       = IsGridCritical;
+            this.IsLocalGeneration    = IsLocalGeneration;
 
         }
 
         #endregion
 
+
+        //ToDo: Update schema documentation after the official release of OCPP v2.1!
 
         #region Documentation
 
@@ -188,6 +200,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region IsLocalGeneration      [optional]
+
+                if (JSON.ParseOptional("isLocalGeneration",
+                                       "is local generation",
+                                       out Boolean? IsLocalGeneration,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData             [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -203,9 +228,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                ChargingLimit = new ChargingLimit(ChargingLimitSource,
-                                                  IsGridCritical,
-                                                  CustomData);
+                ChargingLimit = new ChargingLimit(
+                                    ChargingLimitSource,
+                                    IsGridCritical,
+                                    IsLocalGeneration,
+                                    CustomData
+                                );
 
                 if (CustomChargingLimitParser is not null)
                     ChargingLimit = CustomChargingLimitParser(JSON,
@@ -239,14 +267,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                           new JProperty("chargingLimitSource",    ChargingLimitSource.AsText()),
+                                 new JProperty("chargingLimitSource",   ChargingLimitSource.AsText()),
 
                            IsGridCritical.HasValue
-                               ? new JProperty("isGridCritical",   IsGridCritical)
+                               ? new JProperty("isGridCritical",        IsGridCritical)
+                               : null,
+
+                           IsLocalGeneration.HasValue
+                               ? new JProperty("isLocalGeneration",     IsLocalGeneration)
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",            CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -332,8 +364,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                ChargingLimitSource.Equals(ChargingLimit.ChargingLimitSource) &&
 
-            ((!IsGridCritical.HasValue && !ChargingLimit.IsGridCritical.HasValue) ||
-              (IsGridCritical.HasValue &&  ChargingLimit.IsGridCritical.HasValue && IsGridCritical.Value.Equals(ChargingLimit.IsGridCritical.Value))) &&
+            ((!IsGridCritical.   HasValue && !ChargingLimit.IsGridCritical.   HasValue) ||
+              (IsGridCritical.   HasValue &&  ChargingLimit.IsGridCritical.   HasValue && IsGridCritical.   Value.Equals(ChargingLimit.IsGridCritical.   Value))) &&
+
+            ((!IsLocalGeneration.HasValue && !ChargingLimit.IsLocalGeneration.HasValue) ||
+              (IsLocalGeneration.HasValue &&  ChargingLimit.IsLocalGeneration.HasValue && IsLocalGeneration.Value.Equals(ChargingLimit.IsLocalGeneration.Value))) &&
 
                base.Equals(ChargingLimit);
 
@@ -352,8 +387,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                return ChargingLimitSource.GetHashCode()       * 5 ^
-                      (IsGridCritical?.    GetHashCode() ?? 0) * 3 ^
+                return ChargingLimitSource.GetHashCode()       * 7 ^
+                      (IsGridCritical?.    GetHashCode() ?? 0) * 5 ^
+                      (IsLocalGeneration?. GetHashCode() ?? 0) * 3 ^
 
                        base.               GetHashCode();
 
@@ -369,13 +405,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(ChargingLimitSource,
+            => String.Concat(
 
-                             IsGridCritical.HasValue
-                                 ? IsGridCritical.Value
-                                       ? ", grid critical"
-                                       : ""
-                                 : "");
+                   ChargingLimitSource,
+
+                   IsGridCritical.HasValue
+                       ? IsGridCritical.Value
+                             ? ", grid critical"
+                             : ""
+                       : "",
+
+                   IsLocalGeneration.HasValue
+                       ? IsLocalGeneration.Value
+                             ? ", local generation"
+                             : ""
+                       : ""
+
+               );
 
         #endregion
 

@@ -238,10 +238,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                MessageContent = new MessageContent(Content.Trim(),
-                                                    Format,
-                                                    Language,
-                                                    CustomData);
+                MessageContent = new MessageContent(
+                                     Content.Trim(),
+                                     Format,
+                                     Language,
+                                     CustomData
+                                 );
 
                 if (CustomMessageContentParser is not null)
                     MessageContent = CustomMessageContentParser(JSON,

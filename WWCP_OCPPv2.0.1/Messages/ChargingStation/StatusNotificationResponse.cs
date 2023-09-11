@@ -172,8 +172,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 #endregion
 
 
-                StatusNotificationResponse = new StatusNotificationResponse(Request,
-                                                                            CustomData);
+                StatusNotificationResponse = new StatusNotificationResponse(
+                                                 Request,
+                                                 CustomData
+                                             );
 
                 if (CustomStatusNotificationResponseParser is not null)
                     StatusNotificationResponse = CustomStatusNotificationResponseParser(JSON,

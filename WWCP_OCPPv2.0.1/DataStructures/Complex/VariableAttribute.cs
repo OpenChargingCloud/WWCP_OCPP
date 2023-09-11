@@ -282,12 +282,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                VariableAttribute = new VariableAttribute(AttributeType,
-                                                          Value,
-                                                          Mutability,
-                                                          Persistent,
-                                                          Constant,
-                                                          CustomData);
+                VariableAttribute = new VariableAttribute(
+                                        AttributeType,
+                                        Value,
+                                        Mutability,
+                                        Persistent,
+                                        Constant,
+                                        CustomData
+                                    );
 
                 if (CustomVariableAttributeParser is not null)
                     VariableAttribute = CustomVariableAttributeParser(JSON,

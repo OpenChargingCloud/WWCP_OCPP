@@ -289,12 +289,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                VariableMonitoring = new VariableMonitoring(Id,
-                                                            Transaction,
-                                                            Value,
-                                                            Type,
-                                                            Severity!.Value,
-                                                            CustomData);
+                VariableMonitoring = new VariableMonitoring(
+                                         Id,
+                                         Transaction,
+                                         Value,
+                                         Type,
+                                         Severity!.Value,
+                                         CustomData
+                                     );
 
                 if (CustomVariableMonitoringParser is not null)
                     VariableMonitoring = CustomVariableMonitoringParser(JSON,

@@ -229,10 +229,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                Cost = new Cost(CostKind,
-                                Amount,
-                                AmountMultiplier,
-                                CustomData);
+                Cost = new Cost(
+                           CostKind,
+                           Amount,
+                           AmountMultiplier,
+                           CustomData
+                       );
 
                 if (CustomCostParser is not null)
                     Cost = CustomCostParser(JSON,

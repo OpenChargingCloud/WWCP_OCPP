@@ -257,11 +257,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                ChargingNeeds = new ChargingNeeds(RequestedEnergyTransferMode,
-                                                  DepartureTime,
-                                                  ACChargingParameters,
-                                                  DCChargingParameters,
-                                                  CustomData);
+                ChargingNeeds = new ChargingNeeds(
+                                    RequestedEnergyTransferMode,
+                                    DepartureTime,
+                                    ACChargingParameters,
+                                    DCChargingParameters,
+                                    CustomData
+                                );
 
                 if (CustomChargingNeedsParser is not null)
                     ChargingNeeds = CustomChargingNeedsParser(JSON,

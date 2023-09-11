@@ -566,12 +566,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                 #endregion
 
 
-                NotifyChargingLimitRequest = new NotifyChargingLimitRequest(ChargeBoxId,
-                                                                            ChargingLimit,
-                                                                            ChargingSchedules,
-                                                                            EVSEId,
-                                                                            CustomData,
-                                                                            RequestId);
+                NotifyChargingLimitRequest = new NotifyChargingLimitRequest(
+                                                 ChargeBoxId,
+                                                 ChargingLimit,
+                                                 ChargingSchedules,
+                                                 EVSEId,
+                                                 CustomData,
+                                                 RequestId
+                                             );
 
                 if (CustomNotifyChargingLimitRequestParser is not null)
                     NotifyChargingLimitRequest = CustomNotifyChargingLimitRequestParser(JSON,

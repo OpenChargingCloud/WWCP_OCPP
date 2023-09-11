@@ -215,9 +215,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                ConsumptionCost = new ConsumptionCost(StartValue,
-                                                      Costs,
-                                                      CustomData);
+                ConsumptionCost = new ConsumptionCost(
+                                      StartValue,
+                                      Costs,
+                                      CustomData
+                                  );
 
                 if (CustomConsumptionCostParser is not null)
                     ConsumptionCost = CustomConsumptionCostParser(JSON,

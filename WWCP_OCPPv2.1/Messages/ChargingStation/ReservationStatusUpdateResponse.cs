@@ -174,8 +174,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                ReservationStatusUpdateResponse = new ReservationStatusUpdateResponse(Request,
-                                                                                      CustomData);
+                ReservationStatusUpdateResponse = new ReservationStatusUpdateResponse(
+                                                      Request,
+                                                      CustomData
+                                                  );
 
                 if (CustomReservationStatusUpdateResponseParser is not null)
                     ReservationStatusUpdateResponse = CustomReservationStatusUpdateResponseParser(JSON,

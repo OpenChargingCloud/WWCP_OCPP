@@ -318,6 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public CustomJObjectSerializerDelegate<SignedMeterValue>?                          CustomSignedMeterValueSerializer                            { get; set; }
         public CustomJObjectSerializerDelegate<UnitsOfMeasure>?                            CustomUnitsOfMeasureSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<ChargingSchedule>?                          CustomChargingScheduleSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<LimitBeyondSoC>?                            CustomLimitBeyondSoCSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                    CustomChargingSchedulePeriodSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                          CustomV2XFreqWattEntrySerializer                            { get; set; }
         public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                        CustomV2XSignalWattEntrySerializer                          { get; set; }
@@ -10716,6 +10717,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    Request.RequestId,
                                                    Request.ToJSON(CustomNotifyChargingLimitRequestSerializer,
                                                                   CustomChargingScheduleSerializer,
+                                                                  CustomLimitBeyondSoCSerializer,
                                                                   CustomChargingSchedulePeriodSerializer,
                                                                   CustomV2XFreqWattEntrySerializer,
                                                                   CustomV2XSignalWattEntrySerializer,
@@ -10748,9 +10750,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 {
 
                     if (NotifyChargingLimitResponse.TryParse(Request,
-                                                          sendRequestState.Response,
-                                                          out var notifyChargingLimitResponse,
-                                                          out var errorResponse) &&
+                                                             sendRequestState.Response,
+                                                             out var notifyChargingLimitResponse,
+                                                             out var errorResponse) &&
                         notifyChargingLimitResponse is not null)
                     {
                         response = notifyChargingLimitResponse;
@@ -10933,8 +10935,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    Request.RequestId,
                                                    Request.ToJSON(CustomReportChargingProfilesRequestSerializer,
                                                                   CustomChargingProfileSerializer,
+                                                                  CustomLimitBeyondSoCSerializer,
                                                                   CustomChargingScheduleSerializer,
                                                                   CustomChargingSchedulePeriodSerializer,
+                                                                  CustomV2XFreqWattEntrySerializer,
+                                                                  CustomV2XSignalWattEntrySerializer,
+                                                                  CustomSalesTariffSerializer,
+                                                                  CustomSalesTariffEntrySerializer,
+                                                                  CustomRelativeTimeIntervalSerializer,
+                                                                  CustomConsumptionCostSerializer,
+                                                                  CustomCostSerializer,
+
+                                                                  CustomAbsolutePriceScheduleSerializer,
+                                                                  CustomPriceRuleStackSerializer,
+                                                                  CustomPriceRuleSerializer,
+                                                                  CustomTaxRuleSerializer,
+                                                                  CustomOverstayRuleListSerializer,
+                                                                  CustomOverstayRuleSerializer,
+                                                                  CustomAdditionalServiceSerializer,
+
+                                                                  CustomPriceLevelScheduleSerializer,
+                                                                  CustomPriceLevelScheduleEntrySerializer,
+
                                                                   CustomCustomDataSerializer));
 
             if (requestMessage.NoErrors)
@@ -11034,6 +11056,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    Request.RequestId,
                                                    Request.ToJSON(CustomNotifyEVChargingScheduleRequestSerializer,
                                                                   CustomChargingScheduleSerializer,
+                                                                  CustomLimitBeyondSoCSerializer,
                                                                   CustomChargingSchedulePeriodSerializer,
                                                                   CustomV2XFreqWattEntrySerializer,
                                                                   CustomV2XSignalWattEntrySerializer,

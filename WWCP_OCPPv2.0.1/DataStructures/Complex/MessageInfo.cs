@@ -363,15 +363,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                MessageInfo = new MessageInfo(Id,
-                                              Priority,
-                                              Message,
-                                              State,
-                                              StartTimestamp,
-                                              EndTimestamp,
-                                              TransactionId,
-                                              Display,
-                                              CustomData);
+                MessageInfo = new MessageInfo(
+                                  Id,
+                                  Priority,
+                                  Message,
+                                  State,
+                                  StartTimestamp,
+                                  EndTimestamp,
+                                  TransactionId,
+                                  Display,
+                                  CustomData
+                              );
 
                 if (CustomMessageInfoParser is not null)
                     MessageInfo = CustomMessageInfoParser(JSON,

@@ -30,13 +30,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given text as a stop transaction reason.
         /// </summary>
         /// <param name="Text">A text representation of a stop transaction reason.</param>
-        public static Reasons Parse(String Text)
+        public static StopTransactionReasons Parse(String Text)
         {
 
             if (TryParse(Text, out var reason))
                 return reason;
 
-            return Reasons.Unknown;
+            return StopTransactionReasons.Unknown;
 
         }
 
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given text as a stop transaction reason.
         /// </summary>
         /// <param name="Text">A text representation of a stop transaction reason.</param>
-        public static Reasons? TryParse(String Text)
+        public static StopTransactionReasons? TryParse(String Text)
         {
 
             if (TryParse(Text, out var reason))
@@ -67,89 +67,89 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Text">A text representation of a stop transaction reason.</param>
         /// <param name="Reason">The parsed stop transaction reason.</param>
-        public static Boolean TryParse(String Text, out Reasons Reason)
+        public static Boolean TryParse(String Text, out StopTransactionReasons Reason)
         {
             switch (Text.Trim())
             {
 
                 case "ChargingNeedsNotAccepted":
-                    Reason = Reasons.ChargingNeedsNotAccepted;
+                    Reason = StopTransactionReasons.ChargingNeedsNotAccepted;
                     return true;
 
                 case "DeAuthorized":
-                    Reason = Reasons.DeAuthorized;
+                    Reason = StopTransactionReasons.DeAuthorized;
                     return true;
 
                 case "EmergencyStop":
-                    Reason = Reasons.EmergencyStop;
+                    Reason = StopTransactionReasons.EmergencyStop;
                     return true;
 
                 case "EnergyLimitReached":
-                    Reason = Reasons.EnergyLimitReached;
+                    Reason = StopTransactionReasons.EnergyLimitReached;
                     return true;
 
                 case "EVDisconnected":
-                    Reason = Reasons.EVDisconnected;
+                    Reason = StopTransactionReasons.EVDisconnected;
                     return true;
 
                 case "GroundFault":
-                    Reason = Reasons.GroundFault;
+                    Reason = StopTransactionReasons.GroundFault;
                     return true;
 
                 case "ImmediateReset":
-                    Reason = Reasons.ImmediateReset;
+                    Reason = StopTransactionReasons.ImmediateReset;
                     return true;
 
                 case "LocalOutOfCredit":
-                    Reason = Reasons.LocalOutOfCredit;
+                    Reason = StopTransactionReasons.LocalOutOfCredit;
                     return true;
 
                 case "MasterPass":
-                    Reason = Reasons.MasterPass;
+                    Reason = StopTransactionReasons.MasterPass;
                     return true;
 
                 case "Other":
-                    Reason = Reasons.Other;
+                    Reason = StopTransactionReasons.Other;
                     return true;
 
                 case "OvercurrentFault":
-                    Reason = Reasons.OvercurrentFault;
+                    Reason = StopTransactionReasons.OvercurrentFault;
                     return true;
 
                 case "PowerLoss":
-                    Reason = Reasons.PowerLoss;
+                    Reason = StopTransactionReasons.PowerLoss;
                     return true;
 
                 case "PowerQuality":
-                    Reason = Reasons.PowerQuality;
+                    Reason = StopTransactionReasons.PowerQuality;
                     return true;
 
                 case "Reboot":
-                    Reason = Reasons.Reboot;
+                    Reason = StopTransactionReasons.Reboot;
                     return true;
 
                 case "Remote":
-                    Reason = Reasons.Remote;
+                    Reason = StopTransactionReasons.Remote;
                     return true;
 
                 case "SOCLimitReached":
-                    Reason = Reasons.SOCLimitReached;
+                    Reason = StopTransactionReasons.SOCLimitReached;
                     return true;
 
                 case "StoppedByEV":
-                    Reason = Reasons.StoppedByEV;
+                    Reason = StopTransactionReasons.StoppedByEV;
                     return true;
 
                 case "TimeLimitReached":
-                    Reason = Reasons.TimeLimitReached;
+                    Reason = StopTransactionReasons.TimeLimitReached;
                     return true;
 
                 case "Timeout":
-                    Reason = Reasons.Timeout;
+                    Reason = StopTransactionReasons.Timeout;
                     return true;
 
                 default:
-                    Reason = Reasons.Unknown;
+                    Reason = StopTransactionReasons.Unknown;
                     return false;
 
             }
@@ -159,30 +159,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region AsText  (this Reason)
 
-        public static String AsText(this Reasons Reason)
+        public static String AsText(this StopTransactionReasons Reason)
 
             => Reason switch {
-                   Reasons.ChargingNeedsNotAccepted  => "ChargingNeedsNotAccepted",
-                   Reasons.DeAuthorized              => "DeAuthorized",
-                   Reasons.EmergencyStop             => "EmergencyStop",
-                   Reasons.EnergyLimitReached        => "EnergyLimitReached",
-                   Reasons.EVDisconnected            => "EVDisconnected",
-                   Reasons.GroundFault               => "GroundFault",
-                   Reasons.ImmediateReset            => "ImmediateReset",
-                   Reasons.Local                     => "Local",
-                   Reasons.LocalOutOfCredit          => "LocalOutOfCredit",
-                   Reasons.MasterPass                => "MasterPass",
-                   Reasons.Other                     => "Other",
-                   Reasons.OvercurrentFault          => "OvercurrentFault",
-                   Reasons.PowerLoss                 => "PowerLoss",
-                   Reasons.PowerQuality              => "PowerQuality",
-                   Reasons.Reboot                    => "Reboot",
-                   Reasons.Remote                    => "Remote",
-                   Reasons.SOCLimitReached           => "SOCLimitReached",
-                   Reasons.StoppedByEV               => "StoppedByEV",
-                   Reasons.TimeLimitReached          => "TimeLimitReached",
-                   Reasons.Timeout                   => "Timeout",
-                   _                                 => "Unknown"
+                   StopTransactionReasons.ChargingNeedsNotAccepted  => "ChargingNeedsNotAccepted",
+                   StopTransactionReasons.DeAuthorized              => "DeAuthorized",
+                   StopTransactionReasons.EmergencyStop             => "EmergencyStop",
+                   StopTransactionReasons.EnergyLimitReached        => "EnergyLimitReached",
+                   StopTransactionReasons.EVDisconnected            => "EVDisconnected",
+                   StopTransactionReasons.GroundFault               => "GroundFault",
+                   StopTransactionReasons.ImmediateReset            => "ImmediateReset",
+                   StopTransactionReasons.Local                     => "Local",
+                   StopTransactionReasons.LocalOutOfCredit          => "LocalOutOfCredit",
+                   StopTransactionReasons.MasterPass                => "MasterPass",
+                   StopTransactionReasons.Other                     => "Other",
+                   StopTransactionReasons.OvercurrentFault          => "OvercurrentFault",
+                   StopTransactionReasons.PowerLoss                 => "PowerLoss",
+                   StopTransactionReasons.PowerQuality              => "PowerQuality",
+                   StopTransactionReasons.Reboot                    => "Reboot",
+                   StopTransactionReasons.Remote                    => "Remote",
+                   StopTransactionReasons.SOCLimitReached           => "SOCLimitReached",
+                   StopTransactionReasons.StoppedByEV               => "StoppedByEV",
+                   StopTransactionReasons.TimeLimitReached          => "TimeLimitReached",
+                   StopTransactionReasons.Timeout                   => "Timeout",
+                   _                                                => "Unknown"
                };
 
         #endregion
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// Stop transaction reasons.
     /// </summary>
-    public enum Reasons
+    public enum StopTransactionReasons
     {
 
         /// <summary>

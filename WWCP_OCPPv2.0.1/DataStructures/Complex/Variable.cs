@@ -216,9 +216,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                Variable = new Variable(Name,
-                                        Instance,
-                                        CustomData);
+                Variable = new Variable(
+                               Name,
+                               Instance,
+                               CustomData
+                           );
 
                 if (CustomVariableParser is not null)
                     Variable = CustomVariableParser(JSON,

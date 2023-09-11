@@ -39,38 +39,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The unique identification of the transaction.
         /// </summary>
         [Mandatory]
-        public Transaction_Id   TransactionId        { get; }
+        public Transaction_Id           TransactionId        { get; }
 
         /// <summary>
         /// The optional current charging state.
         /// </summary>
         [Optional]
-        public ChargingStates?  ChargingState        { get; }
+        public ChargingStates?          ChargingState        { get; }
 
         /// <summary>
         /// The optional total time that energy flowed from the EVSE to the EV during this transaction.
         /// Note: TimeSpentCharging must be smaller or equal to the duration of the transaction.
         /// </summary>
         [Optional]
-        public TimeSpan?        TimeSpentCharging    { get; }
+        public TimeSpan?                TimeSpentCharging    { get; }
 
         /// <summary>
         /// The optional reason why the transaction was stopped.
         /// MAY only be omitted when reason is "Local".
         /// </summary>
         [Optional]
-        public Reasons?         StoppedReason        { get; }
+        public StopTransactionReasons?  StoppedReason        { get; }
 
         /// <summary>
         /// The optional remote start identification of the related request start transaction
         /// request to match the request with this transaction.
         /// </summary>
-        public RemoteStart_Id?  RemoteStartId        { get; }
+        public RemoteStart_Id?          RemoteStartId        { get; }
 
         /// <summary>
         /// The optional operation mode that is in use at this time.
         /// </summary>
-        public OperationModes?  OperationMode        { get; }
+        public OperationModes?          OperationMode        { get; }
 
         #endregion
 
@@ -86,13 +86,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RemoteStartId">The optional remote start identification of the related request start transaction request to match the request with this transaction.</param>
         /// <param name="OperationMode">An optional operation mode that is in use at this time.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public Transaction(Transaction_Id   TransactionId,
-                           ChargingStates?  ChargingState       = null,
-                           TimeSpan?        TimeSpentCharging   = null,
-                           Reasons?         StoppedReason       = null,
-                           RemoteStart_Id?  RemoteStartId       = null,
-                           OperationModes?  OperationMode       = null,
-                           CustomData?      CustomData          = null)
+        public Transaction(Transaction_Id           TransactionId,
+                           ChargingStates?          ChargingState       = null,
+                           TimeSpan?                TimeSpentCharging   = null,
+                           StopTransactionReasons?  StoppedReason       = null,
+                           RemoteStart_Id?          RemoteStartId       = null,
+                           OperationModes?          OperationMode       = null,
+                           CustomData?              CustomData          = null)
 
             : base(CustomData)
 
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (JSON.ParseOptional("stoppedReason",
                                        "stopped reason",
                                        ReasonsExtensions.TryParse,
-                                       out Reasons? StoppedReason,
+                                       out StopTransactionReasons? StoppedReason,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

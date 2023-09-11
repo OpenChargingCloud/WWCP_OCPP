@@ -174,8 +174,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 #endregion
 
 
-                NotifyMonitoringReportResponse = new NotifyMonitoringReportResponse(Request,
-                                                                                    CustomData);
+                NotifyMonitoringReportResponse = new NotifyMonitoringReportResponse(
+                                                     Request,
+                                                     CustomData
+                                                 );
 
                 if (CustomNotifyMonitoringReportResponseParser is not null)
                     NotifyMonitoringReportResponse = CustomNotifyMonitoringReportResponseParser(JSON,

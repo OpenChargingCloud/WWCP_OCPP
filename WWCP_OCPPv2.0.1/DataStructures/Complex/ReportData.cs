@@ -267,11 +267,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                ReportData = new ReportData(Component,
-                                            Variable,
-                                            VariableAttributes,
-                                            VariableCharacteristics,
-                                            CustomData);
+                ReportData = new ReportData(
+                                 Component,
+                                 Variable,
+                                 VariableAttributes,
+                                 VariableCharacteristics,
+                                 CustomData
+                             );
 
                 if (CustomReportDataParser is not null)
                     ReportData = CustomReportDataParser(JSON,

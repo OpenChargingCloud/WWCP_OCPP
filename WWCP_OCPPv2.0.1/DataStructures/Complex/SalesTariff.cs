@@ -263,11 +263,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                SalesTariff = new SalesTariff(SalesTariffId,
-                                              SalesTariffEntries,
-                                              Description,
-                                              NumEPriceLevels,
-                                              CustomData);
+                SalesTariff = new SalesTariff(
+                                  SalesTariffId,
+                                  SalesTariffEntries,
+                                  Description,
+                                  NumEPriceLevels,
+                                  CustomData
+                              );
 
                 if (CustomSalesTariffParser is not null)
                     SalesTariff = CustomSalesTariffParser(JSON,

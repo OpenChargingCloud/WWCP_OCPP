@@ -289,11 +289,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                 #endregion
 
 
-                SignCertificateRequest = new SignCertificateRequest(ChargeBoxId,
-                                                                    CSR,
-                                                                    CertificateType,
-                                                                    CustomData,
-                                                                    RequestId);
+                SignCertificateRequest = new SignCertificateRequest(
+                                             ChargeBoxId,
+                                             CSR,
+                                             CertificateType,
+                                             CustomData,
+                                             RequestId
+                                         );
 
                 if (CustomSignCertificateRequestParser is not null)
                     SignCertificateRequest = CustomSignCertificateRequestParser(JSON,
@@ -326,14 +328,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("csr",              CSR),
+                                 new JProperty("csr",               CSR),
 
                            CertificateType.HasValue
-                               ? new JProperty("certificateType",  CertificateType.Value.AsText())
+                               ? new JProperty("certificateType",   CertificateType.Value.AsText())
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
 

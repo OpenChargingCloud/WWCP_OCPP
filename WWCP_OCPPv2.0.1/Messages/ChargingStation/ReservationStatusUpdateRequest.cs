@@ -263,11 +263,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                 #endregion
 
 
-                ReservationStatusUpdateRequest = new ReservationStatusUpdateRequest(ChargeBoxId,
-                                                                                    ReservationId,
-                                                                                    ReservationUpdateStatus,
-                                                                                    CustomData,
-                                                                                    RequestId);
+                ReservationStatusUpdateRequest = new ReservationStatusUpdateRequest(
+                                                     ChargeBoxId,
+                                                     ReservationId,
+                                                     ReservationUpdateStatus,
+                                                     CustomData,
+                                                     RequestId
+                                                 );
 
                 if (CustomReservationStatusUpdateRequestParser is not null)
                     ReservationStatusUpdateRequest = CustomReservationStatusUpdateRequestParser(JSON,
@@ -300,11 +302,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("reservationId",            ReservationId.          Value),
-                                 new JProperty("reservationUpdateStatus",  ReservationUpdateStatus.AsText()),
+                                 new JProperty("reservationId",             ReservationId.          Value),
+                                 new JProperty("reservationUpdateStatus",   ReservationUpdateStatus.AsText()),
 
                            CustomData is not null
-                               ? new JProperty("customData",               CustomData.             ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",                CustomData.             ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomReservationStatusUpdateRequestSerializer is not null

@@ -299,11 +299,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                FirmwareStatusNotificationRequest = new FirmwareStatusNotificationRequest(ChargeBoxId,
-                                                                                          Status,
-                                                                                          UpdateFirmwareRequestId,
-                                                                                          CustomData,
-                                                                                          RequestId);
+                FirmwareStatusNotificationRequest = new FirmwareStatusNotificationRequest(
+                                                        ChargeBoxId,
+                                                        Status,
+                                                        UpdateFirmwareRequestId,
+                                                        CustomData,
+                                                        RequestId
+                                                    );
 
                 if (CustomFirmwareStatusNotificationRequestParser is not null)
                     FirmwareStatusNotificationRequest = CustomFirmwareStatusNotificationRequestParser(JSON,

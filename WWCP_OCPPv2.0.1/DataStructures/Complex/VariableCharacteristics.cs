@@ -255,11 +255,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 #region Unit                  [optional]
 
-                var unit  = JSON.GetString("unit");
+                if (JSON.ParseOptional("unit",
+                                       "unit of measure",
+                                       UnitOfMeasure.TryParse,
+                                       out UnitOfMeasure? unit,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
-                var Unit  = unit is not null && unit.IsNotNullOrEmpty()
-                                ? new UnitsOfMeasure(unit, 1)
-                                : null;
+                var Unit = unit.HasValue
+                               ? new UnitsOfMeasure(unit.Value, 1)
+                               : null;
 
                 #endregion
 
@@ -318,13 +326,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                VariableCharacteristics = new VariableCharacteristics(DataType,
-                                                                      SupportsMonitoring,
-                                                                      Unit,
-                                                                      MinLimit,
-                                                                      MaxLimit,
-                                                                      ValuesList,
-                                                                      CustomData);
+                VariableCharacteristics = new VariableCharacteristics(
+                                              DataType,
+                                              SupportsMonitoring,
+                                              Unit,
+                                              MinLimit,
+                                              MaxLimit,
+                                              ValuesList,
+                                              CustomData
+                                          );
 
                 if (CustomVariableCharacteristicsParser is not null)
                     VariableCharacteristics = CustomVariableCharacteristicsParser(JSON,

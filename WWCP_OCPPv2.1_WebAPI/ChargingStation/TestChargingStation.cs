@@ -5182,7 +5182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                 TransactionId:       evse.TransactionId!.Value,
                                                                 ChargingState:       ChargingStates.Idle,
                                                                 TimeSpentCharging:   evse.StopTimestamp - evse.StartTimestamp,
-                                                                StoppedReason:       Reasons.Remote,
+                                                                StoppedReason:       StopTransactionReasons.Remote,
                                                                 RemoteStartId:       evse.RemoteStartId,
                                                                 CustomData:          null
                                                             ),
@@ -7715,7 +7715,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.SecurityEventNotificationResponse>
 
-            SendSecurityEventNotification(SecurityEvent      Type,
+            SendSecurityEventNotification(SecurityEventType      Type,
                                           DateTime           Timestamp,
                                           String?            TechInfo            = null,
                                           CustomData?        CustomData          = null,
@@ -7816,6 +7816,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
         /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
         /// <param name="ReportData">The enumeration of report data. A single report data element contains only the component, variable and variable report data that caused the event.</param>
+        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the report follows in an upcoming NotifyReportRequest message. Default value when omitted is false.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -7829,6 +7830,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          UInt32                   SequenceNumber,
                          DateTime                 GeneratedAt,
                          IEnumerable<ReportData>  ReportData,
+                         Boolean?                 ToBeContinued       = null,
                          CustomData?              CustomData          = null,
 
                          Request_Id?              RequestId           = null,
@@ -7849,6 +7851,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  SequenceNumber,
                                  GeneratedAt,
                                  ReportData,
+                                 ToBeContinued,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -8887,14 +8890,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region NotifyEVChargingNeeds                (EVSEId, ChargingNeeds, MaxScheduleTuples = null, ...)
+        #region NotifyEVChargingNeeds                (EVSEId, ChargingNeeds, ReceivedTimestamp = null, MaxScheduleTuples = null, ...)
 
         /// <summary>
         /// Notify about EV charging needs.
         /// </summary>
         /// <param name="EVSEId">The EVSE and connector to which the EV is connected to.</param>
         /// <param name="ChargingNeeds">The characteristics of the energy delivery required.</param>
-        /// <param name="MaxScheduleTuples">The optional maximum schedule tuples the car supports per schedule.</param>
+        /// <param name="ReceivedTimestamp">An optional timestamp when the EV charging needs had been received, e.g. when the charging station was offline.</param>
+        /// <param name="MaxScheduleTuples">The optional maximum number of schedule tuples per schedule the car supports.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -8906,6 +8910,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             NotifyEVChargingNeeds(EVSE_Id            EVSEId,
                                   ChargingNeeds      ChargingNeeds,
+                                  DateTime?          ReceivedTimestamp   = null,
                                   UInt16?            MaxScheduleTuples   = null,
                                   CustomData?        CustomData          = null,
 
@@ -8925,6 +8930,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  ChargeBoxId,
                                  EVSEId,
                                  ChargingNeeds,
+                                 ReceivedTimestamp,
                                  MaxScheduleTuples,
                                  CustomData,
 

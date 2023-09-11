@@ -38,19 +38,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Type of the security event.
         /// </summary>
         [Mandatory]
-        public SecurityEvent  Type         { get; }
+        public SecurityEventType  Type         { get; }
 
         /// <summary>
         /// The timestamp of the security event.
         /// </summary>
         [Mandatory]
-        public DateTime       Timestamp    { get; }
+        public DateTime           Timestamp    { get; }
 
         /// <summary>
         /// Optional additional information about the occurred security event.
         /// </summary>
         [Optional]
-        public String?        TechInfo     { get; }
+        public String?            TechInfo     { get; }
 
         #endregion
 
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public SecurityEventNotificationRequest(ChargeBox_Id       ChargeBoxId,
-                                                SecurityEvent      Type,
+                                                SecurityEventType  Type,
                                                 DateTime           Timestamp,
                                                 String?            TechInfo            = null,
                                                 CustomData?        CustomData          = null,
@@ -234,12 +234,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 SecurityEventNotificationRequest = null;
 
-                #region SecurityEvent    [mandatory]
+                #region Type           [mandatory]
 
                 if (!JSON.ParseMandatory("type",
-                                         "type",
-                                         OCPPv2_1.SecurityEvent.TryParse,
-                                         out SecurityEvent SecurityEvent,
+                                         "security event type",
+                                         OCPPv2_1.SecurityEventType.TryParse,
+                                         out SecurityEventType Type,
                                          out ErrorResponse))
                 {
                     return false;
@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region Timestamp        [mandatory]
+                #region Timestamp      [mandatory]
 
                 if (!JSON.ParseMandatory("timestamp",
                                          "timestamp",
@@ -259,13 +259,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region TechInfo         [optional]
+                #region TechInfo       [optional]
 
                 var TechInfo = JSON.GetOptional("techInfo");
 
                 #endregion
 
-                #region CustomData       [optional]
+                #region CustomData     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargeBoxId      [optional, OCPP_CSE]
+                #region ChargeBoxId    [optional, OCPP_CSE]
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 SecurityEventNotificationRequest = new SecurityEventNotificationRequest(
                                                        ChargeBoxId,
-                                                       SecurityEvent,
+                                                       Type,
                                                        Timestamp,
                                                        TechInfo,
                                                        CustomData,

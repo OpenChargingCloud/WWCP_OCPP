@@ -208,9 +208,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                RelativeTimeInterval = new RelativeTimeInterval(Start,
-                                                                Duration,
-                                                                CustomData);
+                RelativeTimeInterval = new RelativeTimeInterval(
+                                           Start,
+                                           Duration,
+                                           CustomData
+                                       );
 
                 if (CustomRelativeTimeIntervalParser is not null)
                     RelativeTimeInterval = CustomRelativeTimeIntervalParser(JSON,

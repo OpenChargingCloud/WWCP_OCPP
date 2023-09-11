@@ -481,7 +481,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                                  new JProperty("id",                          Id.               ToString()),
                                  new JProperty("timeAnchor",                  TimeAnchor.       ToIso8601()),
-                                 new JProperty("priceScheduleId",             PriceScheduleId.  ToString()),
+                                 new JProperty("priceScheduleId",             PriceScheduleId.Value),
                                  new JProperty("currency",                    Currency.ISOCode),
                                  new JProperty("language",                    Language),
                                  new JProperty("priceAlgorithmId",            PriceAlgorithmId. ToString()),

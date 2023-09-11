@@ -406,12 +406,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                 #endregion
 
 
-                NotifyEVChargingNeedsRequest = new NotifyEVChargingNeedsRequest(ChargeBoxId,
-                                                                                EVSEId,
-                                                                                ChargingNeeds,
-                                                                                MaxScheduleTuples,
-                                                                                CustomData,
-                                                                                RequestId);
+                NotifyEVChargingNeedsRequest = new NotifyEVChargingNeedsRequest(
+                                                   ChargeBoxId,
+                                                   EVSEId,
+                                                   ChargingNeeds,
+                                                   MaxScheduleTuples,
+                                                   CustomData,
+                                                   RequestId
+                                               );
 
                 if (CustomNotifyEVChargingNeedsRequestParser is not null)
                     NotifyEVChargingNeedsRequest = CustomNotifyEVChargingNeedsRequestParser(JSON,

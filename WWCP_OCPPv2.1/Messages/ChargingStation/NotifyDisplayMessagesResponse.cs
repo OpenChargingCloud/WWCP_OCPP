@@ -174,8 +174,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                NotifyDisplayMessagesResponse = new NotifyDisplayMessagesResponse(Request,
-                                                                                  CustomData);
+                NotifyDisplayMessagesResponse = new NotifyDisplayMessagesResponse(
+                                                    Request,
+                                                    CustomData
+                                                );
 
                 if (CustomNotifyDisplayMessagesResponseParser is not null)
                     NotifyDisplayMessagesResponse = CustomNotifyDisplayMessagesResponseParser(JSON,

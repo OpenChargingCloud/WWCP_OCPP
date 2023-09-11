@@ -174,8 +174,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                NotifyEventResponse = new NotifyEventResponse(Request,
-                                                              CustomData);
+                NotifyEventResponse = new NotifyEventResponse(
+                                          Request,
+                                          CustomData
+                                      );
 
                 if (CustomNotifyEventResponseParser is not null)
                     NotifyEventResponse = CustomNotifyEventResponseParser(JSON,

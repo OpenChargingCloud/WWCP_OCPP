@@ -307,12 +307,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                PublishFirmwareStatusNotificationRequest = new PublishFirmwareStatusNotificationRequest(ChargeBoxId,
-                                                                                                        Status,
-                                                                                                        PublishFirmwareStatusNotificationRequestId,
-                                                                                                        DownloadLocations,
-                                                                                                        CustomData,
-                                                                                                        RequestId);
+                PublishFirmwareStatusNotificationRequest = new PublishFirmwareStatusNotificationRequest(
+                                                               ChargeBoxId,
+                                                               Status,
+                                                               PublishFirmwareStatusNotificationRequestId,
+                                                               DownloadLocations,
+                                                               CustomData,
+                                                               RequestId
+                                                           );
 
                 if (CustomPublishFirmwareStatusNotificationRequestParser is not null)
                     PublishFirmwareStatusNotificationRequest = CustomPublishFirmwareStatusNotificationRequestParser(JSON,
@@ -345,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",       Status.                                    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            PublishFirmwareStatusNotificationRequestId.HasValue
                                ? new JProperty("requestId",    PublishFirmwareStatusNotificationRequestId)
@@ -356,7 +358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.                                ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomPublishFirmwareStatusNotificationRequestSerializer is not null

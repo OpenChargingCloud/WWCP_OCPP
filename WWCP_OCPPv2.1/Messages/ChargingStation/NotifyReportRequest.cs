@@ -61,6 +61,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         [Mandatory]
         public IEnumerable<ReportData>  ReportData           { get; }
 
+        /// <summary>
+        /// The optional "to be continued" indicator whether another part of the report
+        /// follows in an upcoming NotifyReportRequest message.
+        /// Default value when omitted is false.
+        /// </summary>
+        [Optional]
+        public Boolean?                     ToBeContinued                      { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -73,6 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
         /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
         /// <param name="ReportData">The enumeration of report data. A single report data element contains only the component, variable and variable report data that caused the event.</param>
+        /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the report follows in an upcoming NotifyReportRequest message. Default value when omitted is false.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -85,6 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    UInt32                   SequenceNumber,
                                    DateTime                 GeneratedAt,
                                    IEnumerable<ReportData>  ReportData,
+                                   Boolean?                 ToBeContinued       = null,
                                    CustomData?              CustomData          = null,
 
                                    Request_Id?              RequestId           = null,
@@ -112,6 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.SequenceNumber         = SequenceNumber;
             this.GeneratedAt            = GeneratedAt;
             this.ReportData             = ReportData.Distinct();
+            this.ToBeContinued          = ToBeContinued;
 
         }
 
@@ -507,6 +518,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region ToBeContinued            [optional]
+
+                if (JSON.ParseOptional("tbc",
+                                       "to be continued",
+                                       out Boolean? ToBeContinued,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData               [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -541,13 +565,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                NotifyReportRequest = new NotifyReportRequest(ChargeBoxId,
-                                                              NotifyReportRequestId,
-                                                              SequenceNumber,
-                                                              GeneratedAt,
-                                                              ReportData,
-                                                              CustomData,
-                                                              RequestId);
+                NotifyReportRequest = new NotifyReportRequest(
+                                          ChargeBoxId,
+                                          NotifyReportRequestId,
+                                          SequenceNumber,
+                                          GeneratedAt,
+                                          ReportData,
+                                          ToBeContinued,
+                                          CustomData,
+                                          RequestId
+                                      );
 
                 if (CustomNotifyReportRequestParser is not null)
                     NotifyReportRequest = CustomNotifyReportRequestParser(JSON,
@@ -596,13 +623,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  new JProperty("seqNo",         SequenceNumber),
                                  new JProperty("generatedAt",   GeneratedAt.          ToIso8601()),
 
-                                 new JProperty("reportData",    new JArray(ReportData.Select(monitoringData => monitoringData.ToJSON(CustomReportDataSerializer,
-                                                                                                                                     CustomComponentSerializer,
-                                                                                                                                     CustomEVSESerializer,
-                                                                                                                                     CustomVariableSerializer,
-                                                                                                                                     CustomVariableAttributeSerializer,
-                                                                                                                                     CustomVariableCharacteristicsSerializer,
-                                                                                                                                     CustomCustomDataSerializer)))),
+                                 new JProperty("reportData",    new JArray(ReportData.Select(reportData => reportData.ToJSON(CustomReportDataSerializer,
+                                                                                                                             CustomComponentSerializer,
+                                                                                                                             CustomEVSESerializer,
+                                                                                                                             CustomVariableSerializer,
+                                                                                                                             CustomVariableAttributeSerializer,
+                                                                                                                             CustomVariableCharacteristicsSerializer,
+                                                                                                                             CustomCustomDataSerializer)))),
+
+                           ToBeContinued.HasValue
+                               ? new JProperty("tbc",           ToBeContinued.Value)
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",    CustomData.           ToJSON(CustomCustomDataSerializer))
@@ -694,6 +725,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                ReportData.Count().Equals(NotifyReportRequest.ReportData.Count())       &&
                ReportData.All(data => NotifyReportRequest.ReportData.Contains(data))   &&
 
+            ((!ToBeContinued.HasValue && !NotifyReportRequest.ToBeContinued.HasValue) ||
+               ToBeContinued.HasValue &&  NotifyReportRequest.ToBeContinued.HasValue && ToBeContinued.Value.Equals(NotifyReportRequest.ToBeContinued.Value)) &&
+
                base.          GenericEquals(NotifyReportRequest);
 
         #endregion
@@ -711,10 +745,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             unchecked
             {
 
-                return NotifyReportRequestId.GetHashCode()       * 13 ^
-                       SequenceNumber.       GetHashCode()       * 11 ^
-                       GeneratedAt.          GetHashCode()       *  7 ^
-                       ReportData.           CalcHashCode()      *  5 ^
+                return NotifyReportRequestId.GetHashCode()       * 17 ^
+                       SequenceNumber.       GetHashCode()       * 13 ^
+                       GeneratedAt.          GetHashCode()       * 11 ^
+                       ReportData.           CalcHashCode()      *  7 ^
+                      (ToBeContinued?.       GetHashCode() ?? 0) *  5 ^
                       (CustomData?.          GetHashCode() ?? 0) *  3 ^
 
                        base.                 GetHashCode();
@@ -731,13 +766,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-
-                   NotifyReportRequestId,
-                   ": ",
-                   GeneratedAt.ToIso8601()
-
-               );
+            => $"{NotifyReportRequestId}: {GeneratedAt.ToIso8601()}";
 
         #endregion
 

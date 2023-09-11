@@ -131,6 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="EventNotificationType">The event notification type of the message.</param>
         /// <param name="Component">The component for which event is notified.</param>
         /// <param name="Variable">The variable for which event is notified.</param>
+        /// 
         /// <param name="Cause">An optional event identification that is considered to be the cause for this event.</param>
         /// <param name="TechCode">An optional technical (error) code as reported by the component.</param>
         /// <param name="TechInfo">An optional technical detail information as reported by the component.</param>
@@ -145,6 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                          EventNotificationTypes  EventNotificationType,
                          Component               Component,
                          Variable                Variable,
+
                          Event_Id?               Cause                  = null,
                          String?                 TechCode               = null,
                          String?                 TechInfo               = null,
@@ -164,12 +166,35 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             this.EventNotificationType  = EventNotificationType;
             this.Component              = Component;
             this.Variable               = Variable;
+
             this.Cause                  = Cause;
             this.TechCode               = TechCode;
             this.TechInfo               = TechInfo;
             this.Cleared                = Cleared;
             this.TransactionId          = TransactionId;
             this.VariableMonitoringId   = VariableMonitoringId;
+
+            unchecked
+            {
+
+                hashCode = EventId.              GetHashCode()       * 47 ^
+                           Timestamp.            GetHashCode()       * 43 ^
+                           Trigger.              GetHashCode()       * 41 ^
+                           ActualValue.          GetHashCode()       * 37 ^
+                           EventNotificationType.GetHashCode()       * 31 ^
+                           Component.            GetHashCode()       * 29 ^
+                           Variable.             GetHashCode()       * 23 ^
+
+                          (Cause?.               GetHashCode() ?? 0) * 19 ^
+                          (TechCode?.            GetHashCode() ?? 0) * 17 ^
+                          (TechInfo?.            GetHashCode() ?? 0) * 11 ^
+                          (Cleared?.             GetHashCode() ?? 0) *  7 ^
+                          (TransactionId?.       GetHashCode() ?? 0) *  5 ^
+                          (VariableMonitoringId?.GetHashCode() ?? 0) *  3 ^
+
+                           base.                 GetHashCode();
+
+            }
 
         }
 
@@ -491,20 +516,22 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                EventData = new EventData(EventId,
-                                          Timestamp,
-                                          Trigger,
-                                          ActualValue,
-                                          EventNotificationType,
-                                          Component,
-                                          Variable,
-                                          Cause,
-                                          TechCode,
-                                          TechInfo,
-                                          Cleared,
-                                          TransactionId,
-                                          VariableMonitoringId,
-                                          CustomData);
+                EventData = new EventData(
+                                EventId,
+                                Timestamp,
+                                Trigger,
+                                ActualValue,
+                                EventNotificationType,
+                                Component,
+                                Variable,
+                                Cause,
+                                TechCode,
+                                TechInfo,
+                                Cleared,
+                                TransactionId,
+                                VariableMonitoringId,
+                                CustomData
+                            );
 
                 if (CustomEventDataParser is not null)
                     EventData = CustomEventDataParser(JSON,
@@ -671,12 +698,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                EventNotificationType.Equals(EventData.EventNotificationType)                        &&
                Component.            Equals(EventData.Component)                                    &&
                Variable.             Equals(EventData.Variable)                                     &&
-               Cause.                Equals(EventData.Cause)                                        &&
-               String.               Equals(TechCode, EventData.TechCode, StringComparison.Ordinal) &&
-               String.               Equals(TechInfo, EventData.TechInfo, StringComparison.Ordinal) &&
-               Cleared.              Equals(EventData.Cleared)                                      &&
-               TransactionId.        Equals(EventData.TransactionId)                                &&
-               VariableMonitoringId. Equals(EventData.VariableMonitoringId)                         &&
+
+            ((!Cause.               HasValue    && !EventData.Cause.               HasValue) ||
+              (Cause.               HasValue    &&  EventData.Cause.               HasValue    && Cause.               Value.Equals(EventData.Cause.               Value))) &&
+
+             ((TechCode             is null     &&  EventData.TechCode             is null)  ||
+              (TechCode             is not null &&  EventData.TechCode             is not null && TechCode.                  Equals(EventData.TechCode)))                   &&
+
+             ((TechInfo             is null     &&  EventData.TechInfo             is null)  ||
+              (TechInfo             is not null &&  EventData.TechInfo             is not null && TechInfo.                  Equals(EventData.TechInfo)))                   &&
+
+            ((!Cleared.             HasValue    && !EventData.Cleared.             HasValue) ||
+              (Cleared.             HasValue    &&  EventData.Cleared.             HasValue    && Cleared.             Value.Equals(EventData.Cleared.             Value))) &&
+
+            ((!TransactionId.       HasValue    && !EventData.TransactionId.       HasValue) ||
+              (TransactionId.       HasValue    &&  EventData.TransactionId.       HasValue    && TransactionId.       Value.Equals(EventData.TransactionId.       Value))) &&
+
+            ((!VariableMonitoringId.HasValue    && !EventData.VariableMonitoringId.HasValue) ||
+              (VariableMonitoringId.HasValue    &&  EventData.VariableMonitoringId.HasValue    && VariableMonitoringId.Value.Equals(EventData.VariableMonitoringId.Value))) &&
+
+             ((CustomData           is null     &&  EventData.CustomData           is null) ||
+              (CustomData           is not null &&  EventData.CustomData           is not null && CustomData.                Equals(EventData.CustomData)))                 &&
+
 
                base.                 Equals(EventData);
 
@@ -686,33 +729,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return EventId.              GetHashCode()       * 47 ^
-                       Timestamp.            GetHashCode()       * 43 ^
-                       Trigger.              GetHashCode()       * 41 ^
-                       ActualValue.          GetHashCode()       * 37 ^
-                       EventNotificationType.GetHashCode()       * 31 ^
-                       Component.            GetHashCode()       * 29 ^
-                       Variable.             GetHashCode()       * 23 ^
-                      (Cause?.               GetHashCode() ?? 0) * 19 ^
-                      (TechCode?.            GetHashCode() ?? 0) * 17 ^
-                      (TechInfo?.            GetHashCode() ?? 0) * 11 ^
-                      (Cleared?.             GetHashCode() ?? 0) *  7 ^
-                      (TransactionId?.       GetHashCode() ?? 0) *  5 ^
-                      (VariableMonitoringId?.GetHashCode() ?? 0) *  3 ^
-
-                       base.                 GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

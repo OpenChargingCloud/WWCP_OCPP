@@ -448,12 +448,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                NotifyDisplayMessagesRequest = new NotifyDisplayMessagesRequest(ChargeBoxId,
-                                                                                NotifyDisplayMessagesRequestId,
-                                                                                MessageInfos,
-                                                                                ToBeContinued,
-                                                                                CustomData,
-                                                                                RequestId);
+                NotifyDisplayMessagesRequest = new NotifyDisplayMessagesRequest(
+                                                   ChargeBoxId,
+                                                   NotifyDisplayMessagesRequestId,
+                                                   MessageInfos,
+                                                   ToBeContinued,
+                                                   CustomData,
+                                                   RequestId
+                                               );
 
                 if (CustomNotifyDisplayMessagesRequestParser is not null)
                     NotifyDisplayMessagesRequest = CustomNotifyDisplayMessagesRequestParser(JSON,

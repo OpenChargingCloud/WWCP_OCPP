@@ -356,14 +356,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                ChargingSchedule = new ChargingSchedule(Id,
-                                                        ChargingRateUnit,
-                                                        ChargingSchedulePeriods,
-                                                        StartSchedule,
-                                                        Duration,
-                                                        MinChargingRate,
-                                                        SalesTariff,
-                                                        CustomData);
+                ChargingSchedule = new ChargingSchedule(
+                                       Id,
+                                       ChargingRateUnit,
+                                       ChargingSchedulePeriods,
+                                       StartSchedule,
+                                       Duration,
+                                       MinChargingRate,
+                                       SalesTariff,
+                                       CustomData
+                                   );
 
                 if (CustomChargingScheduleParser is not null)
                     ChargingSchedule = CustomChargingScheduleParser(JSON,

@@ -269,10 +269,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 #endregion
 
 
-                SignCertificateResponse = new SignCertificateResponse(Request,
-                                                                      Status,
-                                                                      StatusInfo,
-                                                                      CustomData);
+                SignCertificateResponse = new SignCertificateResponse(
+                                              Request,
+                                              Status,
+                                              StatusInfo,
+                                              CustomData
+                                          );
 
                 if (CustomSignCertificateResponseParser is not null)
                     SignCertificateResponse = CustomSignCertificateResponseParser(JSON,

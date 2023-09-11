@@ -489,13 +489,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                NotifyEventRequest = new NotifyEventRequest(ChargeBoxId,
-                                                            GeneratedAt,
-                                                            SequenceNumber,
-                                                            EventData,
-                                                            ToBeContinued,
-                                                            CustomData,
-                                                            RequestId);
+                NotifyEventRequest = new NotifyEventRequest(
+                                         ChargeBoxId,
+                                         GeneratedAt,
+                                         SequenceNumber,
+                                         EventData,
+                                         ToBeContinued,
+                                         CustomData,
+                                         RequestId
+                                     );
 
                 if (CustomNotifyEventRequestParser is not null)
                     NotifyEventRequest = CustomNotifyEventRequestParser(JSON,

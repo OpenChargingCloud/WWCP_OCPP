@@ -47,7 +47,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public ChargingNeeds  ChargingNeeds        { get; }
 
         /// <summary>
-        /// The optional maximum schedule tuples the car supports per schedule.
+        /// An optional timestamp when the EV charging needs had been received,
+        /// e.g. when the charging station was offline.
+        /// </summary>
+        [Optional]
+        public DateTime?      ReceivedTimestamp    { get; }
+
+        /// <summary>
+        /// The optional maximum number of schedule tuples per schedule the car supports.
         /// </summary>
         [Optional]
         public UInt16?        MaxScheduleTuples    { get; }
@@ -62,7 +69,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="EVSEId">The EVSE and connector to which the EV is connected to.</param>
         /// <param name="ChargingNeeds">The characteristics of the energy delivery required.</param>
-        /// <param name="MaxScheduleTuples">The optional maximum schedule tuples the car supports per schedule.</param>
+        /// <param name="ReceivedTimestamp">An optional timestamp when the EV charging needs had been received, e.g. when the charging station was offline.</param>
+        /// <param name="MaxScheduleTuples">An optional maximum number of schedule tuples per schedule the car supports.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -73,6 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public NotifyEVChargingNeedsRequest(ChargeBox_Id       ChargeBoxId,
                                             EVSE_Id            EVSEId,
                                             ChargingNeeds      ChargingNeeds,
+                                            DateTime?          ReceivedTimestamp   = null,
                                             UInt16?            MaxScheduleTuples   = null,
                                             CustomData?        CustomData          = null,
 
@@ -95,6 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             this.EVSEId             = EVSEId;
             this.ChargingNeeds      = ChargingNeeds;
+            this.ReceivedTimestamp  = ReceivedTimestamp;
             this.MaxScheduleTuples  = MaxScheduleTuples;
 
         }
@@ -192,6 +202,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region ReceivedTimestamp    [optional]
+
+                if (JSON.ParseOptional("timestamp",
+                                       "received timestamp",
+                                       out DateTime? ReceivedTimestamp,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region MaxScheduleTuples    [optional]
 
                 if (JSON.ParseOptional("maxScheduleTuples",
@@ -243,6 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    ChargeBoxId,
                                                    EVSEId,
                                                    ChargingNeeds,
+                                                   ReceivedTimestamp,
                                                    MaxScheduleTuples,
                                                    CustomData,
                                                    RequestId
@@ -312,6 +336,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                                            CustomEVAbsolutePriceScheduleEntrySerializer,
                                                                                            CustomEVPriceRuleSerializer,
                                                                                            CustomCustomDataSerializer)),
+
+                           ReceivedTimestamp.HasValue
+                               ? new JProperty("timestamp",           ReceivedTimestamp.Value.ToIso8601())
+                               : null,
 
                            MaxScheduleTuples.HasValue
                                ? new JProperty("maxScheduleTuples",   MaxScheduleTuples.Value)
@@ -403,6 +431,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                EVSEId.       Equals(NotifyEVChargingNeedsRequest.EVSEId)        &&
                ChargingNeeds.Equals(NotifyEVChargingNeedsRequest.ChargingNeeds) &&
 
+            ((!ReceivedTimestamp.HasValue && !NotifyEVChargingNeedsRequest.ReceivedTimestamp.HasValue) ||
+               ReceivedTimestamp.HasValue &&  NotifyEVChargingNeedsRequest.ReceivedTimestamp.HasValue && ReceivedTimestamp.Value.Equals(NotifyEVChargingNeedsRequest.ReceivedTimestamp.Value)) &&
+
             ((!MaxScheduleTuples.HasValue && !NotifyEVChargingNeedsRequest.MaxScheduleTuples.HasValue) ||
                MaxScheduleTuples.HasValue &&  NotifyEVChargingNeedsRequest.MaxScheduleTuples.HasValue && MaxScheduleTuples.Value.Equals(NotifyEVChargingNeedsRequest.MaxScheduleTuples.Value)) &&
 
@@ -423,9 +454,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             unchecked
             {
 
-                return EVSEId.            GetHashCode()       * 7 ^
-                       ChargingNeeds.     GetHashCode()       * 5 ^
-                      (MaxScheduleTuples?.GetHashCode() ?? 0) * 3 ^
+                return EVSEId.            GetHashCode()       * 11 ^
+                       ChargingNeeds.     GetHashCode()       *  7 ^
+                      (ReceivedTimestamp?.GetHashCode() ?? 0) *  5 ^
+                      (MaxScheduleTuples?.GetHashCode() ?? 0) *  3 ^
 
                        base.              GetHashCode();
 
@@ -441,7 +473,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => $"EVSE Id: {EVSEId}: {ChargingNeeds} {(MaxScheduleTuples.HasValue ? ", max schedule tuples: " + MaxScheduleTuples : "")}";
+            => $"EVSE Id: {EVSEId}: {ChargingNeeds}{(ReceivedTimestamp.HasValue ? ", received: " + ReceivedTimestamp : "")}{(MaxScheduleTuples.HasValue ? ", max schedule tuples: " + MaxScheduleTuples : "")}";
 
         #endregion
 

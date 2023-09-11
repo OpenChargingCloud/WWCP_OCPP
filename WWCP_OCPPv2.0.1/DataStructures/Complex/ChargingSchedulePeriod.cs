@@ -264,11 +264,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                ChargingSchedulePeriod = new ChargingSchedulePeriod(StartPeriod,
-                                                                    Limit,
-                                                                    NumberPhases,
-                                                                    PhaseToUse,
-                                                                    CustomData);
+                ChargingSchedulePeriod = new ChargingSchedulePeriod(
+                                             StartPeriod,
+                                             Limit,
+                                             NumberPhases,
+                                             PhaseToUse,
+                                             CustomData
+                                         );
 
                 if (CustomChargingSchedulePeriodParser is not null)
                     ChargingSchedulePeriod = CustomChargingSchedulePeriodParser(JSON,

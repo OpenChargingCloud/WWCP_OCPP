@@ -302,10 +302,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                GetCertificateStatusRequest = new GetCertificateStatusRequest(ChargeBoxId,
-                                                                              OCSPRequestData,
-                                                                              CustomData,
-                                                                              RequestId);
+                GetCertificateStatusRequest = new GetCertificateStatusRequest(
+                                                  ChargeBoxId,
+                                                  OCSPRequestData,
+                                                  CustomData,
+                                                  RequestId
+                                              );
 
                 if (CustomGetCertificateStatusRequestParser is not null)
                     GetCertificateStatusRequest = CustomGetCertificateStatusRequestParser(JSON,

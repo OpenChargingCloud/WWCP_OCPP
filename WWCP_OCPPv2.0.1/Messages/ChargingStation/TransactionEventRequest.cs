@@ -944,24 +944,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                 #endregion
 
 
-                TransactionEventRequest = new TransactionEventRequest(ChargeBoxId,
+                TransactionEventRequest = new TransactionEventRequest(
 
-                                                                      EventType,
-                                                                      Timestamp,
-                                                                      TriggerReason,
-                                                                      SequenceNumber,
-                                                                      Transaction,
+                                              ChargeBoxId,
 
-                                                                      Offline,
-                                                                      NumberOfPhasesUsed,
-                                                                      CableMaxCurrent,
-                                                                      ReservationId,
-                                                                      IdToken,
-                                                                      EVSE,
-                                                                      MeterValues,
+                                              EventType,
+                                              Timestamp,
+                                              TriggerReason,
+                                              SequenceNumber,
+                                              Transaction,
 
-                                                                      CustomData,
-                                                                      RequestId);
+                                              Offline,
+                                              NumberOfPhasesUsed,
+                                              CableMaxCurrent,
+                                              ReservationId,
+                                              IdToken,
+                                              EVSE,
+                                              MeterValues,
+
+                                              CustomData,
+                                              RequestId
+
+                                          );
 
                 if (CustomTransactionEventRequestParser is not null)
                     TransactionEventRequest = CustomTransactionEventRequestParser(JSON,

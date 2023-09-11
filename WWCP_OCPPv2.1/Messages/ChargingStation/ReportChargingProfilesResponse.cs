@@ -174,8 +174,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                ReportChargingProfilesResponse = new ReportChargingProfilesResponse(Request,
-                                                                                    CustomData);
+                ReportChargingProfilesResponse = new ReportChargingProfilesResponse(
+                                                     Request,
+                                                     CustomData
+                                                 );
 
                 if (CustomReportChargingProfilesResponseParser is not null)
                     ReportChargingProfilesResponse = CustomReportChargingProfilesResponseParser(JSON,

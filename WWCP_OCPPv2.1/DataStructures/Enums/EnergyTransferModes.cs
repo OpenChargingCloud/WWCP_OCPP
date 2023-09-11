@@ -103,11 +103,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this EnergyTransferModes EnergyTransferMode)
 
             => EnergyTransferMode switch {
-                   EnergyTransferModes.DC               => "ApplicationReset",
+                   EnergyTransferModes.DC              => "DC",
                    EnergyTransferModes.AC_SinglePhase  => "AC_single_phase",
-                   EnergyTransferModes.AC_TwoPhases     => "AC_two_phase",
-                   EnergyTransferModes.AC_ThreePhases   => "AC_three_phase",
-                   _                                    => "Unknown"
+                   EnergyTransferModes.AC_TwoPhases    => "AC_two_phase",
+                   EnergyTransferModes.AC_ThreePhases  => "AC_three_phase",
+                   _                                   => "Unknown"
                };
 
         #endregion

@@ -17,7 +17,6 @@
 
 #region Usings
 
-using Microsoft.VisualBasic;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;

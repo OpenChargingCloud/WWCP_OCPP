@@ -174,8 +174,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 #endregion
 
 
-                NotifyCustomerInformationResponse = new NotifyCustomerInformationResponse(Request,
-                                                                                          CustomData);
+                NotifyCustomerInformationResponse = new NotifyCustomerInformationResponse(
+                                                        Request,
+                                                        CustomData
+                                                    );
 
                 if (CustomNotifyCustomerInformationResponseParser is not null)
                     NotifyCustomerInformationResponse = CustomNotifyCustomerInformationResponseParser(JSON,

@@ -241,10 +241,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                MonitoringData = new MonitoringData(Component,
-                                                    Variable,
-                                                    VariableMonitorings,
-                                                    CustomData);
+                MonitoringData = new MonitoringData(
+                                     Component,
+                                     Variable,
+                                     VariableMonitorings,
+                                     CustomData
+                                 );
 
                 if (CustomMonitoringDataParser is not null)
                     MonitoringData = CustomMonitoringDataParser(JSON,

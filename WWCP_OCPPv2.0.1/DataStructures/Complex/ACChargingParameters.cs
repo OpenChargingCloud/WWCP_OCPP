@@ -274,11 +274,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                ACChargingParameters = new ACChargingParameters(EnergyAmount,
-                                                                EVMinCurrent,
-                                                                EVMaxCurrent,
-                                                                EVMaxVoltage,
-                                                                CustomData);
+                ACChargingParameters = new ACChargingParameters(
+                                           EnergyAmount,
+                                           EVMinCurrent,
+                                           EVMaxCurrent,
+                                           EVMaxVoltage,
+                                           CustomData
+                                       );
 
                 if (CustomACChargingParametersParser is not null)
                     ACChargingParameters = CustomACChargingParametersParser(JSON,

@@ -692,14 +692,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                 #endregion
 
 
-                ReportChargingProfilesRequest = new ReportChargingProfilesRequest(ChargeBoxId,
-                                                                                  ReportChargingProfilesRequestId,
-                                                                                  ChargingLimitSource,
-                                                                                  EVSEId,
-                                                                                  ChargingProfiles,
-                                                                                  ToBeContinued,
-                                                                                  CustomData,
-                                                                                  RequestId);
+                ReportChargingProfilesRequest = new ReportChargingProfilesRequest(
+                                                    ChargeBoxId,
+                                                    ReportChargingProfilesRequestId,
+                                                    ChargingLimitSource,
+                                                    EVSEId,
+                                                    ChargingProfiles,
+                                                    ToBeContinued,
+                                                    CustomData,
+                                                    RequestId
+                                                );
 
                 if (CustomReportChargingProfilesRequestParser is not null)
                     ReportChargingProfilesRequest = CustomReportChargingProfilesRequestParser(JSON,

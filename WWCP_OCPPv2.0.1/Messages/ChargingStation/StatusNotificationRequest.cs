@@ -322,13 +322,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                 #endregion
 
 
-                StatusNotificationRequest = new StatusNotificationRequest(ChargeBoxId,
-                                                                          Timestamp,
-                                                                          ConnectorStatus,
-                                                                          EVSEId,
-                                                                          ConnectorId,
-                                                                          CustomData,
-                                                                          RequestId);
+                StatusNotificationRequest = new StatusNotificationRequest(
+                                                ChargeBoxId,
+                                                Timestamp,
+                                                ConnectorStatus,
+                                                EVSEId,
+                                                ConnectorId,
+                                                CustomData,
+                                                RequestId
+                                            );
 
                 if (CustomStatusNotificationRequestParser is not null)
                     StatusNotificationRequest = CustomStatusNotificationRequestParser(JSON,

@@ -172,8 +172,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                FirmwareStatusNotificationResponse = new FirmwareStatusNotificationResponse(Request,
-                                                                                            CustomData);
+                FirmwareStatusNotificationResponse = new FirmwareStatusNotificationResponse(
+                                                         Request,
+                                                         CustomData
+                                                     );
 
                 if (CustomFirmwareStatusNotificationResponseResponseParser is not null)
                     FirmwareStatusNotificationResponse = CustomFirmwareStatusNotificationResponseResponseParser(JSON,

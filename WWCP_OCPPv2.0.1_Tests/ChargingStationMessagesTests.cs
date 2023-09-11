@@ -385,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                 };
 
                 var response1  = await chargingStation1.SendSecurityEventNotification(
-                                           Type:         SecurityEvent.MemoryExhaustion,
+                                           Type:         SecurityEventType.MemoryExhaustion,
                                            Timestamp:    Timestamp.Now,
                                            TechInfo:     "Too many open TCP sockets!",
                                            CustomData:   null

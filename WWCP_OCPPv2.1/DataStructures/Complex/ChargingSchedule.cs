@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 #endregion
 
@@ -74,6 +75,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public ChargingRateValue?                   MinChargingRate            { get; }
 
         /// <summary>
+        /// Optional indication whether to ignore the time zone offset in the dateTime fields
+        /// of the charging schedule and to use the unqualified local time at the charging
+        /// station instead.
+        /// This allows the same absolute or recurring charging profile to be used in both summer and winter time.
+        /// </summary>
+        public Boolean?                             UseLocalTime               { get; }
+
+        /// <summary>
+        /// Optional indication whether to delay the start of each charging schedule period
+        /// by a randomly chosen number of seconds between 0 and randomizedDelay.
+        /// Only allowed for TxProfile and TxDefaultProfile.
+        /// </summary>
+        public TimeSpan?                            RandomizedDelay            { get; }
+
+        /// <summary>
         /// When defined, any setpoint/limit in the charging schedule must be capped by this
         /// charging rate limit when state-of-charge measurements are greater than or equal
         /// to the state-of-charge limit.
@@ -82,12 +98,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         [Optional]
         public LimitBeyondSoC?                      LimitBeyondSoC             { get; }
-
-        /// <summary>
-        /// The enumeration of charging schedule periods defining the maximum power or current usage over time.
-        /// </summary>
-        [Mandatory]
-        public IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods    { get; }
 
         /// <summary>
         /// Optional sales tariff associated with this charging schedule.
@@ -121,6 +131,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public Decimal?                             PowerTolerance             { get; }
 
+        /// <summary>
+        /// The enumeration of charging schedule periods defining the maximum power or current usage over time.
+        /// </summary>
+        [Mandatory]
+        public IEnumerable<ChargingSchedulePeriod>  ChargingSchedulePeriods    { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -134,6 +150,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="StartSchedule">The optional starting timestamp of an absolute schedule. If absent the schedule will be relative to start of charging.</param>
         /// <param name="Duration">Optional duration of the charging schedule. If the duration is left empty, the last period will continue indefinitely or until end of the transaction if chargingProfilePurpose = TxProfile.</param>
         /// <param name="MinChargingRate">The optional minimal charging rate supported by the EV.</param>
+        /// <param name="UseLocalTime">Optional indication whether to ignore the time zone offset in the dateTime fields of the charging schedule and to use the unqualified local time at the charging station instead.</param>
+        /// <param name="RandomizedDelay">Optional indication whether to delay the start of each charging schedule period by a randomly chosen number of seconds between 0 and randomizedDelay.</param>
         /// <param name="LimitBeyondSoC">When defined, any setpoint/limit in the charging schedule must be capped by this charging rate limit when state-of-charge measurements are greater than or equal to the state-of-charge limit.</param>
         /// <param name="SalesTariff">Optional sales tariff associated with this charging schedule.</param>
         /// <param name="AbsolutePriceSchedule">An ISO 15118-20 absolute price schedule.</param>
@@ -148,6 +166,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 DateTime?                            StartSchedule           = null,
                                 TimeSpan?                            Duration                = null,
                                 ChargingRateValue?                   MinChargingRate         = null,
+                                Boolean?                             UseLocalTime            = null,
+                                TimeSpan?                            RandomizedDelay         = null,
                                 LimitBeyondSoC?                      LimitBeyondSoC          = null,
                                 SalesTariff?                         SalesTariff             = null,
                                 AbsolutePriceSchedule?               AbsolutePriceSchedule   = null,
@@ -171,6 +191,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.StartSchedule            = StartSchedule;
             this.Duration                 = Duration;
             this.MinChargingRate          = MinChargingRate;
+            this.UseLocalTime             = UseLocalTime;
+            this.RandomizedDelay          = RandomizedDelay;
             this.LimitBeyondSoC           = LimitBeyondSoC;
             this.SalesTariff              = SalesTariff;
             this.AbsolutePriceSchedule    = AbsolutePriceSchedule;
@@ -185,9 +207,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 hashCode = Id.                     GetHashCode()       * 47 ^
                            ChargingRateUnit.       GetHashCode()       * 43 ^
                            ChargingSchedulePeriods.CalcHashCode()      * 41 ^
-                          (StartSchedule?.         GetHashCode() ?? 0) * 17^
+                          (StartSchedule?.         GetHashCode() ?? 0) * 17 ^
                           (Duration?.              GetHashCode() ?? 0) * 31 ^
                           (MinChargingRate?.       GetHashCode() ?? 0) * 29 ^
+
+                          (UseLocalTime?.          GetHashCode() ?? 0) * 31 ^
+                          (RandomizedDelay?.       GetHashCode() ?? 0) * 29 ^
                           (LimitBeyondSoC?.        GetHashCode() ?? 0) * 23 ^
                           (SalesTariff?.           GetHashCode() ?? 0) * 19 ^
                           (AbsolutePriceSchedule?. GetHashCode() ?? 0) * 13 ^
@@ -358,6 +383,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region UseLocalTime               [optional]
+
+                if (JSON.ParseOptional("useLocalTime",
+                                       "use local time",
+                                       out Boolean? UseLocalTime,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region RandomizedDelay            [optional]
+
+                if (JSON.ParseOptional("randomizedDelay",
+                                       "randomized delay",
+                                       out TimeSpan? RandomizedDelay,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region LimitBeyondSoC             [optional]
 
                 if (JSON.ParseOptionalJSON("limitBeyondSoC",
@@ -475,6 +526,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        StartSchedule,
                                        Duration,
                                        MinChargingRate,
+                                       UseLocalTime,
+                                       RandomizedDelay,
                                        LimitBeyondSoC,
                                        SalesTariff,
                                        AbsolutePriceSchedule,
@@ -503,12 +556,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomChargingScheduleSerializer = null, CustomChargingSchedulePeriodSerializer = null, ...)
+        #region ToJSON(CustomChargingScheduleSerializer = null, CustomLimitBeyondSoCSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedules.</param>
+        /// <param name="CustomLimitBeyondSoCSerializer">A delegate to serialize custom charging schedules.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
         /// <param name="CustomV2XFreqWattEntrySerializer">A delegate to serialize custom V2X Frequency-Watt entrys.</param>
         /// <param name="CustomV2XSignalWattEntrySerializer">A delegate to serialize custom V2X Signal-Watt entrys.</param>
@@ -532,6 +586,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// 
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingSchedule>?         CustomChargingScheduleSerializer          = null,
+                              CustomJObjectSerializerDelegate<LimitBeyondSoC>?           CustomLimitBeyondSoCSerializer            = null,
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?   CustomChargingSchedulePeriodSerializer    = null,
                               CustomJObjectSerializerDelegate<V2XFreqWattEntry>?         CustomV2XFreqWattEntrySerializer          = null,
                               CustomJObjectSerializerDelegate<V2XSignalWattEntry>?       CustomV2XSignalWattEntrySerializer        = null,
@@ -559,11 +614,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("id",                       Id.                 ToString()),
-                                 new JProperty("chargingRateUnit",         ChargingRateUnit.   AsText()),
-                                 new JProperty("chargingSchedulePeriod",   new JArray(ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer,
-                                                                                                                                                                             CustomV2XFreqWattEntrySerializer,
-                                                                                                                                                                             CustomV2XSignalWattEntrySerializer,
-                                                                                                                                                                             CustomCustomDataSerializer)))),
 
                            StartSchedule.HasValue
                                ? new JProperty("startSchedule",            StartSchedule.Value.ToIso8601())
@@ -573,8 +623,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? new JProperty("duration",                 (UInt64) Math.Round(Duration.Value.TotalSeconds, 0))
                                : null,
 
+                                 new JProperty("chargingRateUnit",         ChargingRateUnit.   AsText()),
+
                            MinChargingRate.HasValue
                                ? new JProperty("minChargingRate",          MinChargingRate.Value.Value)
+                               : null,
+
+                           UseLocalTime.HasValue
+                               ? new JProperty("useLocalTime",             UseLocalTime.Value)
+                               : null,
+
+                           RandomizedDelay.HasValue
+                               ? new JProperty("randomizedDelay",          (Int32) RandomizedDelay.Value.TotalSeconds)
+                               : null,
+
+                           LimitBeyondSoC is not null
+                               ? new JProperty("limitBeyondSoC",           LimitBeyondSoC.       ToJSON(CustomLimitBeyondSoCSerializer,
+                                                                                                        CustomCustomDataSerializer))
                                : null,
 
                            SalesTariff is not null
@@ -612,6 +677,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            PowerTolerance.HasValue
                                ? new JProperty("powerTolerance",           PowerTolerance.Value)
                                : null,
+
+                                 new JProperty("chargingSchedulePeriod",   new JArray(ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer,
+                                                                                                                                                                             CustomV2XFreqWattEntrySerializer,
+                                                                                                                                                                             CustomV2XSignalWattEntrySerializer,
+                                                                                                                                                                             CustomCustomDataSerializer)))),
 
                            CustomData is not null
                                ? new JProperty("customData",               CustomData.         ToJSON(CustomCustomDataSerializer))

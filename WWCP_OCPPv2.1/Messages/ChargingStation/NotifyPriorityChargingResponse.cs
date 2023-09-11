@@ -148,8 +148,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                NotifyPriorityChargingResponse = new NotifyPriorityChargingResponse(Request,
-                                                                                    CustomData);
+                NotifyPriorityChargingResponse = new NotifyPriorityChargingResponse(
+                                                     Request,
+                                                     CustomData
+                                                 );
 
                 if (CustomNotifyPriorityChargingResponseParser is not null)
                     NotifyPriorityChargingResponse = CustomNotifyPriorityChargingResponseParser(JSON,

@@ -242,10 +242,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                Component = new Component(Name,
-                                          Instance,
-                                          EVSE,
-                                          CustomData);
+                Component = new Component(
+                                Name,
+                                Instance,
+                                EVSE,
+                                CustomData
+                            );
 
                 if (CustomComponentParser is not null)
                     Component = CustomComponentParser(JSON,

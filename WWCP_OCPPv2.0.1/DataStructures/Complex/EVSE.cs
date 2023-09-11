@@ -204,9 +204,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                 #endregion
 
 
-                EVSE = new EVSE(EVSEId,
-                                ConnectorId,
-                                CustomData);
+                EVSE = new EVSE(
+                           EVSEId,
+                           ConnectorId,
+                           CustomData
+                       );
 
                 if (CustomEVSEParser is not null)
                     EVSE = CustomEVSEParser(JSON,

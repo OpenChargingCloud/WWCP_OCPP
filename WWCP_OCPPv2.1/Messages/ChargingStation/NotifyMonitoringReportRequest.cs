@@ -514,14 +514,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                NotifyMonitoringReportRequest = new NotifyMonitoringReportRequest(ChargeBoxId,
-                                                                                  NotifyMonitoringReportRequestId,
-                                                                                  SequenceNumber,
-                                                                                  GeneratedAt,
-                                                                                  MonitoringData,
-                                                                                  ToBeContinued,
-                                                                                  CustomData,
-                                                                                  RequestId);
+                NotifyMonitoringReportRequest = new NotifyMonitoringReportRequest(
+                                                    ChargeBoxId,
+                                                    NotifyMonitoringReportRequestId,
+                                                    SequenceNumber,
+                                                    GeneratedAt,
+                                                    MonitoringData,
+                                                    ToBeContinued,
+                                                    CustomData,
+                                                    RequestId
+                                                );
 
                 if (CustomNotifyMonitoringReportRequestParser is not null)
                     NotifyMonitoringReportRequest = CustomNotifyMonitoringReportRequestParser(JSON,
@@ -697,13 +699,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-
-                   NotifyMonitoringReportRequestId,
-                   ": ",
-                   GeneratedAt.ToIso8601()
-
-               );
+            => $"{NotifyMonitoringReportRequestId}: {GeneratedAt.ToIso8601()}";
 
         #endregion
 
