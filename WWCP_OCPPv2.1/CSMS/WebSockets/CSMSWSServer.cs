@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   JArray                      Response);
 
     public delegate Task OnNewCSMSWSConnectionDelegate           (DateTime                    Timestamp,
-                                                                  ICSMS                       CSMS,
+                                                                  ICSMSChannel                       CSMS,
                                                                   WebSocketServerConnection   NewWebSocketConnection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   CancellationToken           CancellationToken);
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
     public class CSMSWSServer : WebSocketServer,
-                                ICSMS
+                                ICSMSChannel
     {
 
         #region (enum)  SendJSONResults
@@ -8781,7 +8781,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Notify the charging station about the status of a certificate revocation list.
         /// </summary>
         /// <param name="Request">A delete certificate request.</param>
-        public async Task<NotifyCRLResponse> NotifyCRL(NotifyCRLRequest Request)
+        public async Task<NotifyCRLResponse> NotifyCRLAvailability(NotifyCRLRequest Request)
         {
 
             #region Send OnNotifyCRLRequest event
@@ -10169,7 +10169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region AFRRSignal                 (Request)
 
-        public async Task<AFRRSignalResponse> AFRRSignal(AFRRSignalRequest Request)
+        public async Task<AFRRSignalResponse> SendAFRRSignal(AFRRSignalRequest Request)
         {
 
             #region Send OnAFRRSignalRequest event

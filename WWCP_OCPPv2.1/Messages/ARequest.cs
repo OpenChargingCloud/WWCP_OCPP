@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The request identification.
         /// </summary>
         [Mandatory]
-        public Request_Id         RequestId            { get; }
+        public Request_Id         RequestId            { get; set; }
 
         /// <summary>
         /// The timestamp of the request message creation.

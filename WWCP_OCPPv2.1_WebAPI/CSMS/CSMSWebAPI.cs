@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -238,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Properties
 
-        public TestCSMS                                   CSMS                { get; }
+        public ICSMS3                                     CSMS                { get; }
 
         /// <summary>
         /// The HTTP realm, if HTTP Basic Authentication is used.
@@ -277,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public CSMSWebAPI(TestCSMS                                    TestCSMS,
+        public CSMSWebAPI(ICSMS3                                      TestCSMS,
                           HTTPExtAPI                                  HTTPAPI,
                           String?                                     HTTPServerName   = null,
                           HTTPPath?                                   URLPathPrefix    = null,
@@ -316,11 +317,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             RegisterURITemplates();
 
+        }
+
+        #endregion
+
+
+        public void Attach(ICSMSChannel CSMSChannel)
+        {
+
             #region HTTP-SSEs: ChargePoint   -> CSMS
 
             #region OnBootNotificationRequest/-Response
 
-            this.CSMS.OnBootNotificationRequest += async (logTimestamp,
+            CSMSChannel.OnBootNotificationRequest += async (logTimestamp,
                                                                    sender,
                                                                    request) =>
 
@@ -333,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnBootNotificationResponse += async (logTimestamp,
+            CSMSChannel.OnBootNotificationResponse += async (logTimestamp,
                                                                     sender,
                                                                     request,
                                                                     response,
@@ -353,7 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnHeartbeatRequest/-Response
 
-            this.CSMS.OnHeartbeatRequest += async (logTimestamp,
+            CSMSChannel.OnHeartbeatRequest += async (logTimestamp,
                                                             sender,
                                                             request) =>
 
@@ -365,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
-            this.CSMS.OnHeartbeatResponse += async (logTimestamp,
+            CSMSChannel.OnHeartbeatResponse += async (logTimestamp,
                                                              sender,
                                                              request,
                                                              response,
@@ -386,7 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnAuthorizeRequest/-Response
 
-            this.CSMS.OnAuthorizeRequest += async (logTimestamp,
+            CSMSChannel.OnAuthorizeRequest += async (logTimestamp,
                                                             sender,
                                                             request) =>
 
@@ -399,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnAuthorizeResponse += async (logTimestamp,
+            CSMSChannel.OnAuthorizeResponse += async (logTimestamp,
                                                              sender,
                                                              request,
                                                              response,
@@ -419,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnStatusNotificationRequest/-Response
 
-            this.CSMS.OnStatusNotificationRequest += async (logTimestamp,
+            CSMSChannel.OnStatusNotificationRequest += async (logTimestamp,
                                                                      sender,
                                                                      request) =>
 
@@ -432,7 +441,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnStatusNotificationResponse += async (logTimestamp,
+            CSMSChannel.OnStatusNotificationResponse += async (logTimestamp,
                                                                       sender,
                                                                       request,
                                                                       response,
@@ -452,7 +461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnMeterValuesRequest/-Response
 
-            this.CSMS.OnMeterValuesRequest += async (logTimestamp,
+            CSMSChannel.OnMeterValuesRequest += async (logTimestamp,
                                                               sender,
                                                               request) =>
 
@@ -465,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnMeterValuesResponse += async (logTimestamp,
+            CSMSChannel.OnMeterValuesResponse += async (logTimestamp,
                                                                sender,
                                                                request,
                                                                response,
@@ -486,7 +495,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnIncomingDataTransferRequest/-Response
 
-            this.CSMS.OnIncomingDataTransferRequest += async (logTimestamp,
+            CSMSChannel.OnIncomingDataTransferRequest += async (logTimestamp,
                                                                        sender,
                                                                        request) =>
 
@@ -499,7 +508,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnIncomingDataTransferResponse += async (logTimestamp,
+            CSMSChannel.OnIncomingDataTransferResponse += async (logTimestamp,
                                                                         sender,
                                                                         request,
                                                                         response,
@@ -519,7 +528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnFirmwareStatusNotificationRequest/-Response
 
-            this.CSMS.OnFirmwareStatusNotificationRequest += async (logTimestamp,
+            CSMSChannel.OnFirmwareStatusNotificationRequest += async (logTimestamp,
                                                                              sender,
                                                                              request) =>
 
@@ -532,7 +541,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnFirmwareStatusNotificationResponse += async (logTimestamp,
+            CSMSChannel.OnFirmwareStatusNotificationResponse += async (logTimestamp,
                                                                               sender,
                                                                               request,
                                                                               response,
@@ -556,7 +565,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnResetRequest/-Response
 
-            this.CSMS.OnResetRequest += async (logTimestamp,
+            CSMSChannel.OnResetRequest += async (logTimestamp,
                                                         sender,
                                                         request) =>
 
@@ -569,7 +578,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnResetResponse += async (logTimestamp,
+            CSMSChannel.OnResetResponse += async (logTimestamp,
                                                          sender,
                                                          request,
                                                          response,
@@ -589,7 +598,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnChangeAvailabilityRequest/-Response
 
-            this.CSMS.OnChangeAvailabilityRequest += async (logTimestamp,
+            CSMSChannel.OnChangeAvailabilityRequest += async (logTimestamp,
                                                                      sender,
                                                                      request) =>
 
@@ -602,7 +611,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnChangeAvailabilityResponse += async (logTimestamp,
+            CSMSChannel.OnChangeAvailabilityResponse += async (logTimestamp,
                                                                       sender,
                                                                       request,
                                                                       response,
@@ -622,7 +631,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnDataTransferRequest/-Response
 
-            this.CSMS.OnDataTransferRequest += async (logTimestamp,
+            CSMSChannel.OnDataTransferRequest += async (logTimestamp,
                                                                sender,
                                                                request) =>
 
@@ -635,7 +644,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnDataTransferResponse += async (logTimestamp,
+            CSMSChannel.OnDataTransferResponse += async (logTimestamp,
                                                                 sender,
                                                                 request,
                                                                 response,
@@ -655,7 +664,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTriggerMessageRequest/-Response
 
-            this.CSMS.OnTriggerMessageRequest += async (logTimestamp,
+            CSMSChannel.OnTriggerMessageRequest += async (logTimestamp,
                                                                  sender,
                                                                  request) =>
 
@@ -668,7 +677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnTriggerMessageResponse += async (logTimestamp,
+            CSMSChannel.OnTriggerMessageResponse += async (logTimestamp,
                                                                   sender,
                                                                   request,
                                                                   response,
@@ -688,7 +697,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnUpdateFirmwareRequest/-Response
 
-            this.CSMS.OnUpdateFirmwareRequest += async (logTimestamp,
+            CSMSChannel.OnUpdateFirmwareRequest += async (logTimestamp,
                                                                  sender,
                                                                  request) =>
 
@@ -701,7 +710,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnUpdateFirmwareResponse += async (logTimestamp,
+            CSMSChannel.OnUpdateFirmwareResponse += async (logTimestamp,
                                                                   sender,
                                                                   request,
                                                                   response,
@@ -722,7 +731,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnReserveNowRequest/-Response
 
-            this.CSMS.OnReserveNowRequest += async (logTimestamp,
+            CSMSChannel.OnReserveNowRequest += async (logTimestamp,
                                                              sender,
                                                              request) =>
 
@@ -735,7 +744,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnReserveNowResponse += async (logTimestamp,
+            CSMSChannel.OnReserveNowResponse += async (logTimestamp,
                                                               sender,
                                                               request,
                                                               response,
@@ -755,7 +764,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnCancelReservationRequest/-Response
 
-            this.CSMS.OnCancelReservationRequest += async (logTimestamp,
+            CSMSChannel.OnCancelReservationRequest += async (logTimestamp,
                                                                     sender,
                                                                     request) =>
 
@@ -768,7 +777,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnCancelReservationResponse += async (logTimestamp,
+            CSMSChannel.OnCancelReservationResponse += async (logTimestamp,
                                                                      sender,
                                                                      request,
                                                                      response,
@@ -788,7 +797,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetChargingProfileRequest/-Response
 
-            this.CSMS.OnSetChargingProfileRequest += async (logTimestamp,
+            CSMSChannel.OnSetChargingProfileRequest += async (logTimestamp,
                                                                      sender,
                                                                      request) =>
 
@@ -801,7 +810,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnSetChargingProfileResponse += async (logTimestamp,
+            CSMSChannel.OnSetChargingProfileResponse += async (logTimestamp,
                                                                       sender,
                                                                       request,
                                                                       response,
@@ -821,7 +830,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnClearChargingProfileRequest/-Response
 
-            this.CSMS.OnClearChargingProfileRequest += async (logTimestamp,
+            CSMSChannel.OnClearChargingProfileRequest += async (logTimestamp,
                                                                        sender,
                                                                        request) =>
 
@@ -834,7 +843,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnClearChargingProfileResponse += async (logTimestamp,
+            CSMSChannel.OnClearChargingProfileResponse += async (logTimestamp,
                                                                         sender,
                                                                         request,
                                                                         response,
@@ -854,7 +863,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetCompositeScheduleRequest/-Response
 
-            this.CSMS.OnGetCompositeScheduleRequest += async (logTimestamp,
+            CSMSChannel.OnGetCompositeScheduleRequest += async (logTimestamp,
                                                                        sender,
                                                                        request) =>
 
@@ -867,7 +876,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnGetCompositeScheduleResponse += async (logTimestamp,
+            CSMSChannel.OnGetCompositeScheduleResponse += async (logTimestamp,
                                                                         sender,
                                                                         request,
                                                                         response,
@@ -887,7 +896,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnUnlockConnectorRequest/-Response
 
-            this.CSMS.OnUnlockConnectorRequest += async (logTimestamp,
+            CSMSChannel.OnUnlockConnectorRequest += async (logTimestamp,
                                                                   sender,
                                                                   request) =>
 
@@ -900,7 +909,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnUnlockConnectorResponse += async (logTimestamp,
+            CSMSChannel.OnUnlockConnectorResponse += async (logTimestamp,
                                                                    sender,
                                                                    request,
                                                                    response,
@@ -921,7 +930,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetLocalListVersionRequest/-Response
 
-            this.CSMS.OnGetLocalListVersionRequest += async (logTimestamp,
+            CSMSChannel.OnGetLocalListVersionRequest += async (logTimestamp,
                                                                       sender,
                                                                       request) =>
 
@@ -934,7 +943,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnGetLocalListVersionResponse += async (logTimestamp,
+            CSMSChannel.OnGetLocalListVersionResponse += async (logTimestamp,
                                                                        sender,
                                                                        request,
                                                                        response,
@@ -954,7 +963,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSendLocalListRequest/-Response
 
-            this.CSMS.OnSendLocalListRequest += async (logTimestamp,
+            CSMSChannel.OnSendLocalListRequest += async (logTimestamp,
                                                                 sender,
                                                                 request) =>
 
@@ -967,7 +976,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnSendLocalListResponse += async (logTimestamp,
+            CSMSChannel.OnSendLocalListResponse += async (logTimestamp,
                                                                  sender,
                                                                  request,
                                                                  response,
@@ -987,7 +996,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnClearCacheRequest/-Response
 
-            this.CSMS.OnClearCacheRequest += async (logTimestamp,
+            CSMSChannel.OnClearCacheRequest += async (logTimestamp,
                                                              sender,
                                                              request) =>
 
@@ -1000,7 +1009,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            this.CSMS.OnClearCacheResponse += async (logTimestamp,
+            CSMSChannel.OnClearCacheResponse += async (logTimestamp,
                                                               sender,
                                                               request,
                                                               response,
@@ -1022,7 +1031,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         }
 
-        #endregion
 
 
         #region (private) RegisterURLTemplates()

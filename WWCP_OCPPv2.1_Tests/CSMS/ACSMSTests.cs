@@ -93,20 +93,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
             csmsWebSocketTextMessagesSent              = new List<LogData1>();
             csmsWebSocketTextMessageResponsesReceived  = new List<LogData2>();
 
-            testBackendWebSockets01.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage) => {
+            testBackendWebSockets01.OnTextMessageReceived         += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage) => {
                 csmsWebSocketTextMessagesReceived.        Add(new LogData1(timestamp, requestMessage));
+                return Task.CompletedTask;
             };
 
-            testBackendWebSockets01.OnTextMessageResponseSent     += async (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
+            testBackendWebSockets01.OnTextMessageResponseSent     += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
                 csmsWebSocketTextMessageResponsesSent.    Add(new LogData2(requestTimestamp, requestMessage, responseTimestamp, responseMessage ?? "-"));
+                return Task.CompletedTask;
             };
 
-            testBackendWebSockets01.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage) => {
+            testBackendWebSockets01.OnTextMessageSent             += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage) => {
                 csmsWebSocketTextMessagesSent.            Add(new LogData1(timestamp, requestMessage));
+                return Task.CompletedTask;
             };
 
-            testBackendWebSockets01.OnTextMessageResponseReceived += async (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
+            testBackendWebSockets01.OnTextMessageResponseReceived += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
                 csmsWebSocketTextMessageResponsesReceived.Add(new LogData2(requestTimestamp, requestMessage, responseTimestamp, responseMessage ?? "-"));
+                return Task.CompletedTask;
             };
 
         }

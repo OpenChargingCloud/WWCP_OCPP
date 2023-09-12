@@ -30,9 +30,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public interface ICSMSClient : ICSMSClientEvents
     {
 
-        ChargeBox_Id                            ChargeBoxIdentity    { get; }
-        String                                  From                 { get; }
-        String                                  To                   { get; }
+        //ChargeBox_Id                            ChargeBoxIdentity    { get; }
+        //String                                  From                 { get; }
+        //String                                  To                   { get; }
 
         //     CSMSSOAPClient.CSClientLogger  Logger               { get; }
 
@@ -258,13 +258,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region NotifyCRL
+        #region NotifyCRLAvailability
 
         /// <summary>
         /// Notify the charging station about the status of a certificate revocation list.
         /// </summary>
         /// <param name="Request">A NotifyCRL request.</param>
-        Task<NotifyCRLResponse> NotifyCRL(NotifyCRLRequest Request);
+        Task<NotifyCRLResponse> NotifyCRLAvailability(NotifyCRLRequest Request);
 
         #endregion
 
@@ -431,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region AFRRSignal
+        #region SendAFRRSignal
 
         /// <summary>
         /// Send an aFRR signal to the charging station.
@@ -439,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// from the v2xSignalWattCurve in the charging schedule period.
         /// </summary>
         /// <param name="Request">An unlock connector request.</param>
-        Task<AFRRSignalResponse> AFRRSignal(AFRRSignalRequest Request);
+        Task<AFRRSignalResponse> SendAFRRSignal(AFRRSignalRequest Request);
 
         #endregion
 

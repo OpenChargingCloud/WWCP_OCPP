@@ -1339,7 +1339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
 
-                var response1  = await testCSMS01.CertificateSigned(
+                var response1  = await testCSMS01.SendSignedCertificate(
                                            ChargeBoxId:        chargingStation1.ChargeBoxId,
                                            CertificateChain:   new CertificateChain(
                                                                    Certificates:   new[] {
@@ -2034,12 +2034,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 var reservationId   = Reservation_Id.NewRandom;
                 var evseId          = EVSE_Id.       Parse(1);
-                var connectorId     = Connector_Id.  Parse(1);
+                //var connectorId     = Connector_Id.  Parse(1);
                 var connectorType   = ConnectorTypes.sType2;
 
                 var response1       = await testCSMS01.ReserveNow(
                                                 ChargeBoxId:     chargingStation1.ChargeBoxId,
-                                                ConnectorId:     connectorId,
+                                                //ConnectorId:     connectorId,
                                                 ReservationId:   reservationId,
                                                 ExpiryDate:      Timestamp.Now + TimeSpan.FromHours(2),
                                                 IdToken:         new IdToken(
@@ -2116,40 +2116,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 var reservationId   = Reservation_Id.NewRandom;
                 var evseId          = EVSE_Id.       Parse(1);
-                var connectorId     = Connector_Id.  Parse(1);
-                var connectorType   = ConnectorTypes.sType2;
 
-                var response1       = await testCSMS01.ReserveNow(
+                var response1       = await testCSMS01.CancelReservation(
                                                 ChargeBoxId:     chargingStation1.ChargeBoxId,
-                                                ConnectorId:     connectorId,
                                                 ReservationId:   reservationId,
-                                                ExpiryDate:      Timestamp.Now + TimeSpan.FromHours(2),
-                                                IdToken:         new IdToken(
-                                                                     Value:             "22334455",
-                                                                     Type:              IdTokenTypes.ISO14443,
-                                                                     AdditionalInfos:   new[] {
-                                                                                            new AdditionalInfo(
-                                                                                                AdditionalIdToken:   "123",
-                                                                                                Type:                "typetype",
-                                                                                                CustomData:          null
-                                                                                            )
-                                                                                        },
-                                                                     CustomData:        null
-                                                                 ),
-                                                ConnectorType:   connectorType,
-                                                EVSEId:          evseId,
-                                                GroupIdToken:    new IdToken(
-                                                                     Value:             "55667788",
-                                                                     Type:              IdTokenTypes.ISO14443,
-                                                                     AdditionalInfos:   new[] {
-                                                                                            new AdditionalInfo(
-                                                                                                AdditionalIdToken:   "567",
-                                                                                                Type:                "type2type2",
-                                                                                                CustomData:          null
-                                                                                            )
-                                                                                        },
-                                                                     CustomData:        null
-                                                                 ),
                                                 CustomData:      null
                                             );
 

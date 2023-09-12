@@ -28,25 +28,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The common interface of all central systems channels.
-    /// CSMS might have multiple channels, e.g. a SOAP and a WebSockets channels.
-    /// </summary>
-    public interface ICSMSChannel : ICSMSClient, ICSMSServer
-    {
-
-
-    }
-
-    /// <summary>
     /// The common interface of all central systems.
     /// </summary>
-    public interface ICSMS : ICSMSClient
+    public interface ICSMS3 : ICSMS
     {
 
-        TimeSpan    DefaultRequestTimeout    { get; }
 
-        Request_Id  NextRequestId            { get; }
+        IEnumerable<ChargeBox> ChargeBoxes { get; }
 
+        IEnumerable<ChargeBox_Id> ChargeBoxIds { get; }
+
+        Boolean TryGetChargeBox(ChargeBox_Id ChargeBoxId, out ChargeBox? ChargeBox);
 
     }
 
