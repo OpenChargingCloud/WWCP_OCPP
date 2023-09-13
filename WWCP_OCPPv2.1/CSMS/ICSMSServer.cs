@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
@@ -30,16 +31,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public interface ICSMSServer : ICSMSServerLogger,
                                    IEventSender
     {
-
-        #region Properties
-
-        /// <summary>
-        /// The unique identifications of all connected charge boxes.
-        /// </summary>
-        IEnumerable<ChargeBox_Id>  ChargeBoxIds    { get; }
-
-        #endregion
-
 
         #region OnBootNotification
 
@@ -314,6 +305,93 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         IEnumerable<ChargeBox_Id>  ChargeBoxIds    { get; }
 
         #endregion
+
+
+        /// <summary>
+        /// An event sent whenever the HTTP web socket server started.
+        /// </summary>
+        public event OnServerStartedDelegate?                 OnServerStarted;
+
+        /// <summary>
+        /// An event sent whenever a new TCP connection was accepted.
+        /// </summary>
+        public event OnNewTCPConnectionDelegate?              OnNewTCPConnection;
+
+        /// <summary>
+        /// An event sent whenever a HTTP request was received.
+        /// </summary>
+        public event HTTPRequestLogDelegate?                  OnHTTPRequest;
+
+        /// <summary>
+        /// An event sent whenever the HTTP connection switched successfully to web socket.
+        /// </summary>
+        public event OnNewWebSocketConnectionDelegate?        OnNewWebSocketConnection;
+
+        /// <summary>
+        /// An event sent whenever a reponse to a HTTP request was sent.
+        /// </summary>
+        public event HTTPResponseLogDelegate?                 OnHTTPResponse;
+
+
+        ///// <summary>
+        ///// An event sent whenever a web socket frame was received.
+        ///// </summary>
+        //public event OnWebSocketFrameDelegate?                OnWebSocketFrameReceived;
+
+        ///// <summary>
+        ///// An event sent whenever a web socket frame was sent.
+        ///// </summary>
+        //public event OnWebSocketFrameDelegate?                OnWebSocketFrameSent;
+
+
+        ///// <summary>
+        ///// An event sent whenever a text message was received.
+        ///// </summary>
+        //public event OnWebSocketTextMessageDelegate?          OnTextMessageReceived;
+
+        ///// <summary>
+        ///// An event sent whenever a web socket frame was sent.
+        ///// </summary>
+        //public event OnWebSocketTextMessageDelegate?          OnTextMessageSent;
+
+
+        ///// <summary>
+        ///// An event sent whenever a binary message was received.
+        ///// </summary>
+        //public event OnWebSocketBinaryMessageDelegate?        OnBinaryMessageReceived;
+
+        ///// <summary>
+        ///// An event sent whenever a web socket frame was sent.
+        ///// </summary>
+        //public event OnWebSocketBinaryMessageDelegate?        OnBinaryMessageSent;
+
+
+        ///// <summary>
+        ///// An event sent whenever a web socket ping frame was received.
+        ///// </summary>
+        //public event OnWebSocketFrameDelegate?                OnPingMessageReceived;
+
+        ///// <summary>
+        ///// An event sent whenever a web socket ping frame was sent.
+        ///// </summary>
+        //public event OnWebSocketFrameDelegate?                OnPingMessageSent;
+
+        ///// <summary>
+        ///// An event sent whenever a web socket pong frame was received.
+        ///// </summary>
+        //public event OnWebSocketFrameDelegate?                OnPongMessageReceived;
+
+
+        /// <summary>
+        /// An event sent whenever a web socket close frame was received.
+        /// </summary>
+        public event OnCloseMessageDelegate?                  OnCloseMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a TCP connection was closed.
+        /// </summary>
+        public event OnTCPConnectionClosedDelegate?           OnTCPConnectionClosed;
+
 
 
         #region OnBootNotification

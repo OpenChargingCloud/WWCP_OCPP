@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   JArray                      Response);
 
     public delegate Task OnNewCSMSWSConnectionDelegate           (DateTime                    Timestamp,
-                                                                  ICSMSChannel                       CSMS,
+                                                                  ICSMSChannel                CSMS,
                                                                   WebSocketServerConnection   NewWebSocketConnection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   CancellationToken           CancellationToken);

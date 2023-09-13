@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The unique identifications of all connected or reachable charge boxes.
         /// </summary>
         public IEnumerable<ChargeBox_Id> ChargeBoxIds
-            => reachableChargingBoxes.Values.SelectMany(box => box.Item1.ChargeBoxIds);
+            => reachableChargingBoxes.Values.SelectMany(csmsChannel => csmsChannel.Item1.ChargeBoxIds);
 
 
         public Dictionary<String, Transaction_Id> TransactionIds = new ();
@@ -1236,7 +1236,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region OnCloseMessage
 
-        public event OnCloseMessageDelegate?                     OnCloseMessage;
+        /// <summary>
+        /// An event sent whenever a web socket close frame was received.
+        /// </summary>
+        public event OnCloseMessageDelegate?                  OnCloseMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a TCP connection was closed.
+        /// </summary>
+        public event OnTCPConnectionClosedDelegate?           OnTCPConnectionClosed;
 
         #endregion
 
@@ -1464,18 +1472,95 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnCloseMessageReceived
 
-            //centralSystemServer.OnCloseMessageReceived += async (timestamp,
-            //                                                     server,
-            //                                                     connection,
-            //                                                     message,
-            //                                                     eventTrackingId) => {
+            centralSystemServer.OnCloseMessageReceived += async (timestamp,
+                                                                 server,
+                                                                 connection,
+                                                                 eventTrackingId,
+                                                                 statusCode,
+                                                                 reason) => {
 
-            //    DebugX.Log(String.Concat("HTTP web socket server on ",
-            //                             server.IPSocket,
-            //                             " closed connection to ",
-            //                             connection.RemoteSocket));
+                #region Send OnCloseMessageReceived event
 
-            //};
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnCloseMessageReceived;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnCloseMessageDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                                             server,
+                                                                                                             connection,
+                                                                                                             eventTrackingId,
+                                                                                                             statusCode,
+                                                                                                             reason)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnCloseMessageReceived),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+            };
+
+            #endregion
+
+            #region OnTCPConnectionClosed
+
+            centralSystemServer.OnTCPConnectionClosed += async (timestamp,
+                                                                server,
+                                                                connection,
+                                                                reason,
+                                                                eventTrackingId) => {
+
+                #region Send OnTCPConnectionClosed event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnTCPConnectionClosed;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnTCPConnectionClosedDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                                             server,
+                                                                                                             connection,
+                                                                                                             reason,
+                                                                                                             eventTrackingId)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnTCPConnectionClosed),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+            };
 
             #endregion
 

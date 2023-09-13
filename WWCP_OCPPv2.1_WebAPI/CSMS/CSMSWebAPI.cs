@@ -340,6 +340,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.csmss.TryAdd(CSMS.Id, CSMS);
 
+            CSMS.OnNewTCPConnection += async (logTimestamp,
+                                              sender,
+                                              connection,
+                                              eventTrackingId,
+                                              cancellationToken) =>
+
+                await this.EventLog.SubmitEvent("OnNewTCPConnection",
+                                                JSONObject.Create(
+                                                    new JProperty("connection", connection.ToString())
+                                                ));
+
+            CSMS.OnTCPConnectionClosed += async (logTimestamp,
+                                                 sender,
+                                                 connection,
+                                                 reason,
+                                                 eventTrackingId) =>
+
+                await this.EventLog.SubmitEvent("OnTCPConnectionClosed",
+                                                JSONObject.Create(
+                                                    new JProperty("connection",  connection.ToString()),
+                                                    new JProperty("reason",      reason)
+                                                ));
+
+
+            #region OnBootNotification (-Request/-Response)
+
             CSMS.OnBootNotificationRequest += async (logTimestamp,
                                                      sender,
                                                      request) =>
@@ -363,6 +389,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomStatusInfoSerializer,
                                                                                         CustomCustomDataSerializer)));
 
+            #endregion
+
             //foreach (var csmsChannel in CSMS.CSMSChannels)
             //    Attach(csmsChannel);
 
@@ -372,39 +400,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             #region HTTP-SSEs: ChargePoint   -> CSMS
-
-            #region OnBootNotification (-Request/-Response)
-
-            CSMSChannel.OnBootNotificationRequest += async (logTimestamp,
-                                                            sender,
-                                                            request) =>
-
-                await this.EventLog.SubmitEvent("OnBootNotificationRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
-                                                    new JProperty("request",          request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            CSMSChannel.OnBootNotificationResponse += async (logTimestamp,
-                                                             sender,
-                                                             request,
-                                                             response,
-                                                             runtime) =>
-
-                await this.EventLog.SubmitEvent("OnBootNotificationResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
-                                                    new JProperty("request",          request.                ToJSON()),
-                                                    new JProperty("response",         response.               ToJSON()),
-                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
 
             #region OnHeartbeat (-Request/-Response)
 
