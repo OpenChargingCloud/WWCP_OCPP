@@ -17,6 +17,8 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -60,7 +62,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          Result       Result,
                          CustomData?  CustomData   = null)
 
+            : this(Request,
+                   Result,
+                   Timestamp.Now,
+                   CustomData)
+
+        { }
+
+
+        /// <summary>
+        /// Create a new generic response.
+        /// </summary>
+        /// <param name="Request">The request leading to this result.</param>
+        /// <param name="Result">A generic result.</param>
+        /// <param name="Timestamp">An optional response timestamp.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        public AResponse(TRequest     Request,
+                         Result       Result,
+                         DateTime?    Timestamp    = null,
+                         CustomData?  CustomData   = null)
+
             : base(Result,
+                   Timestamp,
                    CustomData)
 
         {
@@ -91,6 +114,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                base.BaseGenericEquals(AResponse);
 
         #endregion
+
+
+        public JObject ToAbstractJSON(JObject RequestData, JObject ResponseData)
+        {
+
+            var json = JSONObject.Create(
+
+                           new JProperty("chargeBoxId",   Request.ChargeBoxId.ToString()),
+
+                           new JProperty("request",       JSONObject.Create(
+                               new JProperty("id",                Request.RequestId.       ToString()),
+                               new JProperty("timestamp",         Request.RequestTimestamp.ToIso8601()),
+                               new JProperty("timeout",           Request.RequestTimeout.  TotalSeconds),
+                               new JProperty("eventTrackingId",   Request.EventTrackingId. ToString()),
+                               new JProperty("action",            Request.Action),
+                               new JProperty("data",              RequestData)
+                           )),
+
+                           new JProperty("response", JSONObject.Create(
+                               new JProperty("timestamp",         ResponseTimestamp.       ToIso8601()),
+                               new JProperty("runtime",           Runtime.TotalMilliseconds),
+                               new JProperty("data",              ResponseData)
+                           ))
+
+                       );
+
+            return json;
+
+        }
 
 
         #region (override) GetHashCode()
@@ -152,13 +204,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new generic response.
         /// </summary>
         /// <param name="Result">A generic result.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="Timestamp">An optional response timestamp.</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public AResponse(Result       Result,
+                         DateTime?    Timestamp    = null,
                          CustomData?  CustomData   = null)
         {
 
             this.Result             = Result;
-            this.ResponseTimestamp  = Timestamp.Now;
+            this.ResponseTimestamp  = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             this.CustomData         = CustomData;
 
         }

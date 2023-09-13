@@ -17,6 +17,8 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -136,6 +138,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         #endregion
+
+
+        public JObject ToAbstractJSON(JObject RequestData)
+        {
+
+            var json = JSONObject.Create(
+                           new JProperty("chargeBoxId",        ChargeBoxId.     ToString()),
+                           new JProperty("requestId",          RequestId.       ToString()),
+                           new JProperty("requestTimestamp",   RequestTimestamp.ToIso8601()),
+                           new JProperty("requestTimeout",     RequestTimeout.  TotalSeconds),
+                           new JProperty("eventTrackingId",    EventTrackingId. ToString()),
+                           new JProperty("action",             Action),
+                           new JProperty("data",               RequestData)
+                       );
+
+            return json;
+
+        }
 
 
         #region IEquatable<TRequest> Members

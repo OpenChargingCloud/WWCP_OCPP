@@ -40,12 +40,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The common interface of all central systems.
     /// </summary>
-    public interface ICSMS : ICSMSClient
+    public interface ICSMS : ICSMSClient, ICSMSServerLogger
     {
+
+        CSMS_Id     Id                       { get; }
 
         TimeSpan    DefaultRequestTimeout    { get; }
 
         Request_Id  NextRequestId            { get; }
+
+
+        IEnumerable<ICSMSChannel> CSMSChannels { get; }
 
 
     }

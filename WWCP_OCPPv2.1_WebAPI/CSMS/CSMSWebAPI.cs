@@ -18,11 +18,13 @@
 #region Usings
 
 using System.Reflection;
+using System.Collections.Concurrent;
 
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
@@ -169,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             }
 
-            if (!OCPPWebAPI.CSMS.TryGetChargeBox(ChargeBoxId.Value, out ChargeBox)) {
+            if (!OCPPWebAPI.TryGetChargeBox(ChargeBoxId.Value, out ChargeBox)) {
 
                 HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
                     HTTPStatusCode  = HTTPStatusCode.NotFound,
@@ -239,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Properties
 
-        public ICSMS3                                     CSMS                { get; }
+        //public ICSMS3                                     CSMS                { get; }
 
         /// <summary>
         /// The HTTP realm, if HTTP Basic Authentication is used.
@@ -256,19 +258,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public HTTPEventSource<JObject>                   EventLog            { get; }
 
+
+        private ConcurrentDictionary<CSMS_Id, ICSMS3> csmss = new();
+
+        public IEnumerable<ICSMS3> CSMSs
+            => csmss.Values;
+
+
+        public IEnumerable<ChargeBox> ChargeBoxes
+
+            => csmss.Values.SelectMany(c => c.ChargeBoxes);
+
+        #endregion
+
+        #region Serializers
+
+        public CustomJObjectSerializerDelegate<CS.BootNotificationRequest>?  CustomBootNotificationRequestSerializer     { get; }
+        public CustomJObjectSerializerDelegate<BootNotificationResponse>?    CustomBootNotificationResponseSerializer    { get; }
+
+
+        public CustomJObjectSerializerDelegate<ChargingStation>?             CustomChargingStationSerializer             { get; }
+        public CustomJObjectSerializerDelegate<StatusInfo>?                  CustomStatusInfoSerializer                  { get; }
+        public CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                  { get; }
+
         #endregion
 
         #region Constructor(s)
-
-        //public CSMSWebAPI(TestCSMS        TestCSMS
-        //                  )
-        //{
-
-
-        //}
-
-
-
 
         /// <summary>
         /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
@@ -278,8 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public CSMSWebAPI(ICSMS3                                      TestCSMS,
-                          HTTPExtAPI                                  HTTPAPI,
+        public CSMSWebAPI(HTTPExtAPI                                  HTTPAPI,
                           String?                                     HTTPServerName   = null,
                           HTTPPath?                                   URLPathPrefix    = null,
                           HTTPPath?                                   BasePath         = null,
@@ -295,7 +309,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            this.CSMS                = TestCSMS;
             this.HTTPRealm           = HTTPRealm;
             this.HTTPLogins          = HTTPLogins;
 
@@ -322,16 +335,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        public void AttachCSMS(ICSMS3 CSMS)
+        {
+
+            this.csmss.TryAdd(CSMS.Id, CSMS);
+
+            CSMS.OnBootNotificationRequest += async (logTimestamp,
+                                                     sender,
+                                                     request) =>
+
+                await this.EventLog.SubmitEvent("OnBootNotificationRequest",
+                                                request.ToAbstractJSON(request.ToJSON(CustomBootNotificationRequestSerializer,
+                                                                                      CustomChargingStationSerializer,
+                                                                                      CustomCustomDataSerializer)));
+
+            CSMS.OnBootNotificationResponse += async (logTimestamp,
+                                                      sender,
+                                                      request,
+                                                      response,
+                                                      runtime) =>
+
+                await this.EventLog.SubmitEvent("OnBootNotificationResponse",
+                                                response.ToAbstractJSON(request. ToJSON(CustomBootNotificationRequestSerializer,
+                                                                                        CustomChargingStationSerializer,
+                                                                                        CustomCustomDataSerializer),
+                                                                        response.ToJSON(CustomBootNotificationResponseSerializer,
+                                                                                        CustomStatusInfoSerializer,
+                                                                                        CustomCustomDataSerializer)));
+
+            //foreach (var csmsChannel in CSMS.CSMSChannels)
+            //    Attach(csmsChannel);
+
+        }
+
         public void Attach(ICSMSChannel CSMSChannel)
         {
 
             #region HTTP-SSEs: ChargePoint   -> CSMS
 
-            #region OnBootNotificationRequest/-Response
+            #region OnBootNotification (-Request/-Response)
 
             CSMSChannel.OnBootNotificationRequest += async (logTimestamp,
-                                                                   sender,
-                                                                   request) =>
+                                                            sender,
+                                                            request) =>
 
                 await this.EventLog.SubmitEvent("OnBootNotificationRequest",
                                                 new JObject(
@@ -343,10 +389,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             CSMSChannel.OnBootNotificationResponse += async (logTimestamp,
-                                                                    sender,
-                                                                    request,
-                                                                    response,
-                                                                    runtime) =>
+                                                             sender,
+                                                             request,
+                                                             response,
+                                                             runtime) =>
 
                 await this.EventLog.SubmitEvent("OnBootNotificationResponse",
                                                 new JObject(
@@ -360,7 +406,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnHeartbeatRequest/-Response
+            #region OnHeartbeat (-Request/-Response)
 
             CSMSChannel.OnHeartbeatRequest += async (logTimestamp,
                                                             sender,
@@ -393,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            #region OnAuthorizeRequest/-Response
+            #region OnAuthorize (-Request/-Response)
 
             CSMSChannel.OnAuthorizeRequest += async (logTimestamp,
                                                             sender,
@@ -426,7 +472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnStatusNotificationRequest/-Response
+            #region OnStatusNotification (-Request/-Response)
 
             CSMSChannel.OnStatusNotificationRequest += async (logTimestamp,
                                                                      sender,
@@ -459,7 +505,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnMeterValuesRequest/-Response
+            #region OnMeterValues (-Request/-Response)
 
             CSMSChannel.OnMeterValuesRequest += async (logTimestamp,
                                                               sender,
@@ -493,7 +539,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            #region OnIncomingDataTransferRequest/-Response
+            #region OnIncomingDataTransfer (-Request/-Response)
 
             CSMSChannel.OnIncomingDataTransferRequest += async (logTimestamp,
                                                                        sender,
@@ -526,7 +572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnFirmwareStatusNotificationRequest/-Response
+            #region OnFirmwareStatusNotification (-Request/-Response)
 
             CSMSChannel.OnFirmwareStatusNotificationRequest += async (logTimestamp,
                                                                              sender,
@@ -563,7 +609,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region HTTP-SSEs: CSMS -> ChargePoint
 
-            #region OnResetRequest/-Response
+            #region OnReset (-Request/-Response)
 
             CSMSChannel.OnResetRequest += async (logTimestamp,
                                                         sender,
@@ -596,7 +642,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnChangeAvailabilityRequest/-Response
+            #region OnChangeAvailability (-Request/-Response)
 
             CSMSChannel.OnChangeAvailabilityRequest += async (logTimestamp,
                                                                      sender,
@@ -629,7 +675,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnDataTransferRequest/-Response
+            #region OnDataTransfer (-Request/-Response)
 
             CSMSChannel.OnDataTransferRequest += async (logTimestamp,
                                                                sender,
@@ -662,7 +708,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnTriggerMessageRequest/-Response
+            #region OnTriggerMessage (-Request/-Response)
 
             CSMSChannel.OnTriggerMessageRequest += async (logTimestamp,
                                                                  sender,
@@ -695,7 +741,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnUpdateFirmwareRequest/-Response
+            #region OnUpdateFirmware (-Request/-Response)
 
             CSMSChannel.OnUpdateFirmwareRequest += async (logTimestamp,
                                                                  sender,
@@ -729,7 +775,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            #region OnReserveNowRequest/-Response
+            #region OnReserveNow (-Request/-Response)
 
             CSMSChannel.OnReserveNowRequest += async (logTimestamp,
                                                              sender,
@@ -762,7 +808,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnCancelReservationRequest/-Response
+            #region OnCancelReservation (-Request/-Response)
 
             CSMSChannel.OnCancelReservationRequest += async (logTimestamp,
                                                                     sender,
@@ -795,7 +841,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnSetChargingProfileRequest/-Response
+            #region OnSetChargingProfile (-Request/-Response)
 
             CSMSChannel.OnSetChargingProfileRequest += async (logTimestamp,
                                                                      sender,
@@ -828,7 +874,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnClearChargingProfileRequest/-Response
+            #region OnClearChargingProfile (-Request/-Response)
 
             CSMSChannel.OnClearChargingProfileRequest += async (logTimestamp,
                                                                        sender,
@@ -861,7 +907,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnGetCompositeScheduleRequest/-Response
+            #region OnGetCompositeSchedule (-Request/-Response)
 
             CSMSChannel.OnGetCompositeScheduleRequest += async (logTimestamp,
                                                                        sender,
@@ -894,7 +940,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnUnlockConnectorRequest/-Response
+            #region OnUnlockConnector (-Request/-Response)
 
             CSMSChannel.OnUnlockConnectorRequest += async (logTimestamp,
                                                                   sender,
@@ -928,7 +974,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            #region OnGetLocalListVersionRequest/-Response
+            #region OnGetLocalListVersion (-Request/-Response)
 
             CSMSChannel.OnGetLocalListVersionRequest += async (logTimestamp,
                                                                       sender,
@@ -961,7 +1007,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnSendLocalListRequest/-Response
+            #region OnSendLocalList (-Request/-Response)
 
             CSMSChannel.OnSendLocalListRequest += async (logTimestamp,
                                                                 sender,
@@ -994,7 +1040,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnClearCacheRequest/-Response
+            #region OnClearCache (-Request/-Response)
 
             CSMSChannel.OnClearCacheRequest += async (logTimestamp,
                                                              sender,
@@ -1028,6 +1074,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
             #endregion
+
+        }
+
+
+        public Boolean TryGetChargeBox(ChargeBox_Id ChargeBoxId, out ChargeBox? ChargeBox)
+        {
+
+            foreach (var csms in csmss.Values)
+            {
+                if (csms.TryGetChargeBox(ChargeBoxId, out ChargeBox))
+                    return true;
+            }
+
+            ChargeBox = null;
+            return false;
 
         }
 
@@ -1127,6 +1188,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         private void RegisterURITemplates()
         {
 
+            HTTPBaseAPI.HTTPServer.AddAuth  (request => {
+
+                #region Allow some URLs for anonymous access...
+
+                if (request.Path.StartsWith(URLPathPrefix + "/chargeBoxes"))
+                {
+                    return HTTPExtAPI.Anonymous;
+                }
+
+                #endregion
+
+                return null;
+
+            });
+
+
             #region / (HTTPRoot)
 
             //HTTPBaseAPI.RegisterResourcesFolder(this,
@@ -1166,54 +1243,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region ~/chargeBoxIds
 
             HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
-                                      HTTPMethod.GET,
-                                      URLPathPrefix + "chargeBoxIds",
-                                      HTTPContentType.JSON_UTF8,
-                                      HTTPDelegate: Request => {
+                                          HTTPMethod.GET,
+                                          URLPathPrefix + "chargeBoxIds",
+                                          HTTPContentType.JSON_UTF8,
+                                          HTTPDelegate: Request => {
 
-                                          return Task.FromResult(
-                                              new HTTPResponse.Builder(Request) {
-                                                  HTTPStatusCode             = HTTPStatusCode.OK,
-                                                  Server                     = HTTPServiceName,
-                                                  Date                       = Timestamp.Now,
-                                                  AccessControlAllowOrigin   = "*",
-                                                  AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-                                                  AccessControlAllowHeaders  = new[] { "Authorization" },
-                                                  ContentType                = HTTPContentType.JSON_UTF8,
-                                                  Content                    = JSONArray.Create(
-                                                                                   CSMS.ChargeBoxIds.Select(chargeBoxId => new JObject(new JProperty("@id", chargeBoxId.ToString())))
-                                                                               ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
-                                                  Connection                 = "close"
-                                              }.AsImmutable);
+                                              return Task.FromResult(
+                                                  new HTTPResponse.Builder(Request) {
+                                                      HTTPStatusCode             = HTTPStatusCode.OK,
+                                                      Server                     = HTTPServiceName,
+                                                      Date                       = Timestamp.Now,
+                                                      AccessControlAllowOrigin   = "*",
+                                                      AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
+                                                      AccessControlAllowHeaders  = new[] { "Authorization" },
+                                                      ContentType                = HTTPContentType.JSON_UTF8,
+                                                      Content                    = JSONArray.Create(
+                                                                                       ChargeBoxes.Select(chargeBox => new JObject(new JProperty("@id", chargeBox.Id.ToString())))
+                                                                                   ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
+                                                      Connection                 = "close"
+                                                  }.AsImmutable);
 
-                                      });
+                                          });
 
             #endregion
 
             #region ~/chargeBoxes
 
             HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
-                                      HTTPMethod.GET,
-                                      URLPathPrefix + "chargeBoxes",
-                                      HTTPContentType.JSON_UTF8,
-                                      HTTPDelegate: Request => {
+                                          HTTPMethod.GET,
+                                          URLPathPrefix + "chargeBoxes",
+                                          HTTPContentType.JSON_UTF8,
+                                          HTTPDelegate: Request => {
 
-                                          return Task.FromResult(
-                                              new HTTPResponse.Builder(Request) {
-                                                  HTTPStatusCode             = HTTPStatusCode.OK,
-                                                  Server                     = HTTPServiceName,
-                                                  Date                       = Timestamp.Now,
-                                                  AccessControlAllowOrigin   = "*",
-                                                  AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-                                                  AccessControlAllowHeaders  = new[] { "Authorization" },
-                                                  ContentType                = HTTPContentType.JSON_UTF8,
-                                                  Content                    = JSONArray.Create(
-                                                                                   CSMS.ChargeBoxes.Select(chargeBox => chargeBox.ToJSON())
-                                                                               ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
-                                                  Connection                 = "close"
-                                              }.AsImmutable);
+                                              return Task.FromResult(
+                                                  new HTTPResponse.Builder(Request) {
+                                                      HTTPStatusCode             = HTTPStatusCode.OK,
+                                                      Server                     = HTTPServiceName,
+                                                      Date                       = Timestamp.Now,
+                                                      AccessControlAllowOrigin   = "*",
+                                                      AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
+                                                      AccessControlAllowHeaders  = new[] { "Authorization" },
+                                                      ContentType                = HTTPContentType.JSON_UTF8,
+                                                      Content                    = JSONArray.Create(
+                                                                                       ChargeBoxes.Select(chargeBox => chargeBox.ToJSON())
+                                                                                   ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
+                                                      Connection                 = "close"
+                                                  }.AsImmutable);
 
-                                      });
+                                          });
 
             #endregion
 

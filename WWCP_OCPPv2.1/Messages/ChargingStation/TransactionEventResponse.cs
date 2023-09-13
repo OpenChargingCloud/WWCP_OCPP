@@ -118,7 +118,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         Result                      Result)
 
             : base(Request,
-                   Result)
+                   Result,
+                   Timestamp.Now)
 
         { }
 
