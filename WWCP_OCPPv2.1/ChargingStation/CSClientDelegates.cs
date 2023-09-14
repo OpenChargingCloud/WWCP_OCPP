@@ -26,7 +26,7 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    #region OnBootNotification
+    #region OnBootNotification                     (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a boot notification request will be sent to the CSMS.
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnFirmwareStatusNotification
+    #region OnFirmwareStatusNotification           (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a firmware status notification request will be sent to the CSMS.
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnPublishFirmwareStatusNotification
+    #region OnPublishFirmwareStatusNotification    (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a publish firmware status notification request will be sent to the CSMS.
@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnHeartbeat
+    #region OnHeartbeat                            (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a heartbeat request will be sent to the CSMS.
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnNotifyEvent
+    #region OnNotifyEvent                          (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a notify event request will be sent to the CSMS.
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnSecurityEventNotification
+    #region OnSecurityEventNotification            (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a security event notification request will be sent to the CSMS.
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnNotifyReport
+    #region OnNotifyReport                         (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a notify report request will be sent to the CSMS.
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnNotifyMonitoringReport
+    #region OnNotifyMonitoringReport               (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a notify monitoring report request will be sent to the CSMS.
@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnLogStatusNotification
+    #region OnLogStatusNotification                (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a log status notification request will be sent to the CSMS.
@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnDataTransfer
+    #region OnDataTransfer                         (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a data transfer request will be sent to the CSMS.
@@ -307,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     #endregion
 
 
-    #region OnSignCertificate
+    #region OnSignCertificate                      (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a sign certificate request will be sent to the CSMS.
@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnGet15118EVCertificate
+    #region OnGet15118EVCertificate                (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a get 15118 EV certificate request will be sent to the CSMS.
@@ -363,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnGetCertificateStatus
+    #region OnGetCertificateStatus                 (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a get certificate status request will be sent to the CSMS.
@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnGetCRL
+    #region OnGetCRL                               (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a get certificate revocation list request will be sent to the CSMS.
@@ -420,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     #endregion
 
 
-    #region OnReservationStatusUpdate
+    #region OnReservationStatusUpdate              (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a reservation status update request will be sent to the CSMS.
@@ -448,7 +448,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnAuthorize
+    #region OnAuthorize                            (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever an authorize request will be sent to the CSMS.
@@ -476,7 +476,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnNotifyEVChargingNeeds
+    #region OnNotifyEVChargingNeeds                (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a notify EV charging needs request will be sent to the CSMS.
@@ -504,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnTransactionEvent
+    #region OnTransactionEvent                     (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a transaction event request will be sent to the CSMS.
@@ -532,7 +532,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnStatusNotification
+    #region OnStatusNotification                   (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a status notification request will be sent to the CSMS.
@@ -560,7 +560,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnMeterValues
+    #region OnMeterValues                          (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a meter values request will be sent to the CSMS.
@@ -588,7 +588,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnNotifyChargingLimit
+    #region OnNotifyChargingLimit                  (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a notify charging limit request will be sent to the CSMS.
@@ -616,7 +616,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnClearedChargingLimit
+    #region OnClearedChargingLimit                 (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a cleared charging limit request will be sent to the CSMS.
@@ -644,7 +644,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnReportChargingProfiles
+    #region OnReportChargingProfiles               (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a ReportChargingProfiles request will be sent to the CSMS.
@@ -672,7 +672,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnNotifyEVChargingSchedule
+    #region OnNotifyEVChargingSchedule             (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
@@ -700,7 +700,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnNotifyPriorityCharging
+    #region OnNotifyPriorityCharging               (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a NotifyPriorityCharging request will be sent to the CSMS.
@@ -728,7 +728,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnPullDynamicScheduleUpdate
+    #region OnPullDynamicScheduleUpdate            (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
@@ -757,7 +757,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     #endregion
 
 
-    #region OnNotifyDisplayMessages
+    #region OnNotifyDisplayMessages                (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a notify display messages request will be sent to the CSMS.
@@ -785,7 +785,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
-    #region OnNotifyCustomerInformation
+    #region OnNotifyCustomerInformation            (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a notify customer information request will be sent to the CSMS.

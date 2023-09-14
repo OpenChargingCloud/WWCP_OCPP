@@ -308,11 +308,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                ChangeAvailabilityRequest = new ChangeAvailabilityRequest(ChargeBoxId,
-                                                                          OperationalStatus,
-                                                                          EVSE,
-                                                                          CustomData,
-                                                                          RequestId);
+                ChangeAvailabilityRequest = new ChangeAvailabilityRequest(
+                                                ChargeBoxId,
+                                                OperationalStatus,
+                                                EVSE,
+                                                CustomData,
+                                                RequestId
+                                            );
 
                 if (CustomChangeAvailabilityRequestParser is not null)
                     ChangeAvailabilityRequest = CustomChangeAvailabilityRequestParser(JSON,
@@ -347,15 +349,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                           new JProperty("operationalStatus",  OperationalStatus.AsText()),
+                                 new JProperty("operationalStatus",   OperationalStatus.AsText()),
 
                            EVSE is not null
-                               ? new JProperty("evse",         EVSE.             ToJSON(CustomEVSESerializer,
-                                                                                        CustomCustomDataSerializer))
+                               ? new JProperty("evse",                EVSE.             ToJSON(CustomEVSESerializer,
+                                                                                               CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.       ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",          CustomData.       ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

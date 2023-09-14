@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         //     CSMSSOAPClient.CSClientLogger  Logger               { get; }
 
 
-        #region Reset
+        #region Reset                      (Request)
 
         /// <summary>
         /// Reset the given charge box.
@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UpdateFirmware
+        #region UpdateFirmware             (Request)
 
         /// <summary>
         /// Initiate a firmware download from the given location at the given charge box.
@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region PublishFirmware
+        #region PublishFirmware            (Request)
 
         /// <summary>
         /// Publish a firmware.
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetInstalledCertificateIds
+        #region GetInstalledCertificateIds (Request)
 
         /// <summary>
         /// Retrieve a list of all installed certificates within the charging station.

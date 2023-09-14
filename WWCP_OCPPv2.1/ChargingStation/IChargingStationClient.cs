@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         String? ClientCloseMessage { get; }
 
 
-        #region SendBootNotification
+        #region SendBootNotification                  (Request)
 
         /// <summary>
         /// Send a boot notification.
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendFirmwareStatusNotification
+        #region SendFirmwareStatusNotification        (Request)
 
         /// <summary>
         /// Send a firmware status notification.
@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendPublishFirmwareStatusNotification
+        #region SendPublishFirmwareStatusNotification (Request)
 
         /// <summary>
         /// Send a publish firmware status notification.

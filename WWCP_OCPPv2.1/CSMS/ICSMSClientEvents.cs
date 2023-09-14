@@ -24,7 +24,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public interface ICSMSClientEvents
     {
 
-        #region Reset
+        #region Reset                          (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a Reset request will be sent to the CSMS.
@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UpdateFirmware
+        #region UpdateFirmware                 (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever an UpdateFirmware request will be sent to the CSMS.
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region PublishFirmware
+        #region PublishFirmware                (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a PublishFirmware request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UnpublishFirmware
+        #region UnpublishFirmware              (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever an UnpublishFirmware request will be sent to the CSMS.
@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetBaseReport
+        #region GetBaseReport                  (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetBaseReport request will be sent to the CSMS.
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region TransferData
+        #region DataTransfer
 
         /// <summary>
         /// An event fired whenever a DataTransfer request will be sent to the CSMS.
@@ -531,7 +531,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region NotifyAllowedEnergyTransfer
+        #region NotifyAllowedEnergyTransfer    (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the CSMS.

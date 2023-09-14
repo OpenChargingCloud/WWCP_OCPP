@@ -24,7 +24,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public interface IChargingStationClientEvents
     {
 
-        #region SendBootNotification
+        #region SendBootNotification                     (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a BootNotification request will be sent to the CSMS.
@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendFirmwareStatusNotification
+        #region SendFirmwareStatusNotification           (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a FirmwareStatusNotification request will be sent to the CSMS.
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendPublishFirmwareStatusNotification
+        #region SendPublishFirmwareStatusNotification    (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a PublishFirmwareStatusNotification request will be sent to the CSMS.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendHeartbeat
+        #region SendHeartbeat                            (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a Heartbeat request will be sent to the CSMS.
@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyEvent
+        #region NotifyEvent                              (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a NotifyEvent request will be sent to the CSMS.

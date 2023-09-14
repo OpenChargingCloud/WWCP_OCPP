@@ -29,6 +29,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
@@ -128,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
             };
 
             testBackendWebSockets01.OnValidateTCPConnection       += (timestamp, server, connection, eventTrackingId, cancellationToken) => {
-                return Task.FromResult<Boolean?>(true);
+                return Task.FromResult(ConnectionFilterResponse.Accepted());
             };
 
             testBackendWebSockets01.OnNewTCPConnection            += (timestamp, server, connection, eventTrackingId, cancellationToken) => {

@@ -318,11 +318,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                TriggerMessageRequest = new TriggerMessageRequest(ChargeBoxId,
-                                                                  MessageTriggers,
-                                                                  EVSEId,
-                                                                  CustomData,
-                                                                  RequestId);
+                TriggerMessageRequest = new TriggerMessageRequest(
+                                            ChargeBoxId,
+                                            MessageTriggers,
+                                            EVSEId,
+                                            CustomData,
+                                            RequestId
+                                        );
 
                 if (CustomTriggerMessageRequestParser is not null)
                     TriggerMessageRequest = CustomTriggerMessageRequestParser(JSON,
@@ -348,15 +350,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomTriggerMessageRequestSerializer">A delegate to serialize custom trigger message requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<TriggerMessageRequest>? CustomTriggerMessageRequestSerializer = null)
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataSerializer              = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("requestedMessage",  RequestedMessage.AsText()),
+                                 new JProperty("requestedMessage",   RequestedMessage.AsText()),
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",      EVSEId.Value.Value)
+                               ? new JProperty("evseId",             EVSEId.Value.Value)
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",         CustomData.      ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -22,6 +22,8 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
@@ -38,22 +40,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// The unique request identification.
         /// </summary>
-        public Request_Id                 RequestId           { get; }
+        public Request_Id   RequestId           { get; }
 
         /// <summary>
         /// The OCPP error code.
         /// </summary>
-        public ResultCodes              ErrorCode           { get; }
+        public ResultCodes  ErrorCode           { get; }
 
         /// <summary>
         /// The optional error description.
         /// </summary>
-        public String                     ErrorDescription    { get; }
+        public String       ErrorDescription    { get; }
 
         /// <summary>
         /// Optional error details.
         /// </summary>
-        public JObject                    ErrorDetails        { get; }
+        public JObject      ErrorDetails        { get; }
 
         #endregion
 
@@ -66,10 +68,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <param name="ErrorCode">An OCPP error code.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
         /// <param name="ErrorDetails">Optional error details.</param>
-        public OCPP_WebSocket_ErrorMessage(Request_Id     RequestId,
+        public OCPP_WebSocket_ErrorMessage(Request_Id   RequestId,
                                            ResultCodes  ErrorCode,
-                                           String?        ErrorDescription   = null,
-                                           JObject?       ErrorDetails       = null)
+                                           String?      ErrorDescription   = null,
+                                           JObject?     ErrorDetails       = null)
 
         {
 
@@ -83,55 +85,163 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #endregion
 
 
-        #region (static) CouldNotParse     (RequestId, Action, JSONPayload, ErrorResponse)
+        #region (static) CouldNotParse     (RequestId, Action, JSONObjectRequest, ErrorResponse = null)
 
         public static OCPP_WebSocket_ErrorMessage CouldNotParse(Request_Id  RequestId,
                                                                 String      Action,
-                                                                JObject     JSONPayload,
-                                                                String?     ErrorResponse)
+                                                                JObject     JSONObjectRequest,
+                                                                String?     ErrorResponse   = null)
 
             => new (RequestId,
                     ResultCodes.FormationViolation,
-                    "Processing the given '" + Action + "' request could not be parsed!",
-                    new JObject(
-                        new JProperty("request",  JSONPayload)
+                    $"Processing the given '{Action}' request could not be parsed!",
+                    JSONObject.Create(
+
+                              new JProperty("request",   JSONObjectRequest),
+
+                        ErrorResponse is not null
+                            ? new JProperty("error",     ErrorResponse)
+                            : null
+
                     ));
 
         #endregion
 
-        #region (static) CouldNotParse     (RequestId, Action, JSONPayload)
+        #region (static) CouldNotParse     (RequestId, Action, JSONArrayRequest,  ErrorResponse = null)
 
         public static OCPP_WebSocket_ErrorMessage CouldNotParse(Request_Id  RequestId,
                                                                 String      Action,
-                                                                JArray?     JSONPayload)
+                                                                JArray      JSONArrayRequest,
+                                                                String?     ErrorResponse   = null)
 
             => new (RequestId,
                     ResultCodes.FormationViolation,
-                    "Processing the given '" + Action + "' request could not be parsed!",
-                    new JObject(
-                        new JProperty("request",  JSONPayload)
+                    $"Processing the given '{Action}' request could not be parsed!",
+                    JSONObject.Create(
+
+                              new JProperty("request",   JSONArrayRequest),
+
+                        ErrorResponse is not null
+                            ? new JProperty("error",     ErrorResponse)
+                            : null
+
                     ));
 
         #endregion
 
-        #region (static) FormationViolation(RequestId, Action, JSONPayload, Exception)
+
+        #region (static) FormationViolation(RequestId, Action, JSONObjectRequest, Exception)
 
         public static OCPP_WebSocket_ErrorMessage FormationViolation(Request_Id  RequestId,
                                                                      String      Action,
-                                                                     JArray?     JSONPayload,
+                                                                     JObject     JSONObjectRequest,
                                                                      Exception   Exception)
 
             => new (RequestId,
                     ResultCodes.FormationViolation,
-                    "Processing the given '" + Action + "' request led to an exception!",
+                    $"Processing the given '{Action}' request led to an exception!",
                     new JObject(
-                        new JProperty("request",    JSONPayload),
-                        new JProperty("exception",  Exception.Message),
-                        new JProperty("stacktrace", Exception.StackTrace)
+                        new JProperty("request",      JSONObjectRequest),
+                        new JProperty("exception",    Exception.Message),
+                        new JProperty("stacktrace",   Exception.StackTrace)
                     ));
 
         #endregion
 
+        #region (static) FormationViolation(RequestId, Action, JSONArrayRequest,  Exception)
+
+        public static OCPP_WebSocket_ErrorMessage FormationViolation(Request_Id  RequestId,
+                                                                     String      Action,
+                                                                     JArray      JSONArrayRequest,
+                                                                     Exception   Exception)
+
+            => new (RequestId,
+                    ResultCodes.FormationViolation,
+                    $"Processing the given '{Action}' request led to an exception!",
+                    new JObject(
+                        new JProperty("request",     JSONArrayRequest),
+                        new JProperty("exception",   Exception.Message),
+                        new JProperty("stacktrace",  Exception.StackTrace)
+                    ));
+
+        #endregion
+
+
+        #region TryParse(Text, out ErrorMessage)
+
+        /// <summary>
+        /// Try to parse the given text representation of an error message.
+        /// </summary>
+        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="ErrorMessage">The parsed OCPP WebSocket error message.</param>
+        public static Boolean TryParse(String Text, out OCPP_WebSocket_ErrorMessage? ErrorMessage)
+        {
+
+            ErrorMessage = null;
+
+            if (Text is null)
+                return false;
+
+            // [
+            //     4,
+            //    "100007",
+            //    "InternalError",
+            //    "An internal error occurred and the receiver was not able to process the requested action successfully",
+            //    {}
+            // ]
+
+            // [
+            //     2,                  // MessageType: CALL (Client-to-Server)
+            //    "19223201",          // RequestId
+            //    "BootNotification",  // Action
+            //    {
+            //        "chargePointVendor": "VendorX",
+            //        "chargePointModel":  "SingleSocketCharger"
+            //    }
+            // ]
+
+            try
+            {
+
+                var json = JArray.Parse(Text);
+
+                if (json.Count != 5)
+                    return false;
+
+                if (!Byte.       TryParse(json[0]. Value<String>(),       out var messageType))
+                    return false;
+
+                if (!Request_Id. TryParse(json[1]?.Value<String>() ?? "", out var requestId))
+                    return false;
+
+                if (!ResultCodes.TryParse(json[2]?.Value<String>() ?? "", out var wsErrorCode))
+                    return false;
+
+                var description = json[3]?.Value<String>();
+                if (description is null)
+                    return false;
+
+                if (json[4] is not JObject details)
+                    return false;
+
+                ErrorMessage = new OCPP_WebSocket_ErrorMessage(
+                                   requestId,
+                                   wsErrorCode,
+                                   description,
+                                   details
+                               );
+
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
+        #endregion
 
         #region ToJSON()
 
@@ -184,81 +294,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #endregion
 
 
-        #region TryParse(Text, out ErrorMessage)
-
-        /// <summary>
-        /// Try to parse the given text representation of an error message.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="ErrorMessage">The parsed OCPP WebSocket error message.</param>
-        public static Boolean TryParse(String Text, out OCPP_WebSocket_ErrorMessage? ErrorMessage)
-        {
-
-            ErrorMessage = null;
-
-            if (Text is null)
-                return false;
-
-            // [
-            //     4,
-            //    "100007",
-            //    "InternalError",
-            //    "An internal error occurred and the receiver was not able to process the requested action successfully",
-            //    {}
-            // ]
-
-            // [
-            //     2,                  // MessageType: CALL (Client-to-Server)
-            //    "19223201",          // RequestId
-            //    "BootNotification",  // Action
-            //    {
-            //        "chargePointVendor": "VendorX",
-            //        "chargePointModel":  "SingleSocketCharger"
-            //    }
-            // ]
-
-            try
-            {
-
-                var json = JArray.Parse(Text);
-
-                if (json.Count != 5)
-                    return false;
-
-                if (!Byte.TryParse(json[0].Value<String>(), out Byte messageType))
-                    return false;
-
-                if (!Request_Id.TryParse(json[1]?.Value<String>() ?? "", out var requestId))
-                    return false;
-
-                if (!ResultCodes.TryParse(json[2]?.Value<String>() ?? "", out var wsErrorCode))
-                    return false;
-
-                var description = json[3]?.Value<String>();
-                if (description is null)
-                    return false;
-
-                if (json[4] is not JObject details)
-                    return false;
-
-                ErrorMessage = new OCPP_WebSocket_ErrorMessage(requestId,
-                                                               wsErrorCode,
-                                                               description,
-                                                               details);
-
-                return true;
-
-            }
-            catch
-            {
-                return false;
-            }
-
-        }
-
-        #endregion
-
-
         #region (override) ToString()
 
         /// <summary>
@@ -266,9 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// </summary>
         public override String ToString()
 
-            => String.Concat(RequestId,
-                             " => ",
-                             ErrorCode.ToString());
+            => $"{RequestId} => {ErrorCode}";
 
         #endregion
 

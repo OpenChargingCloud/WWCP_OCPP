@@ -1269,14 +1269,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (protected) ValidateTCPConnection        (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
-        private Task<Boolean?> ValidateTCPConnection(DateTime                      LogTimestamp,
-                                                     AWebSocketServer              Server,
-                                                     System.Net.Sockets.TcpClient  Connection,
-                                                     EventTracking_Id              EventTrackingId,
-                                                     CancellationToken             CancellationToken)
+        private Task<ConnectionFilterResponse> ValidateTCPConnection(DateTime                      LogTimestamp,
+                                                                     AWebSocketServer              Server,
+                                                                     System.Net.Sockets.TcpClient  Connection,
+                                                                     EventTracking_Id              EventTrackingId,
+                                                                     CancellationToken             CancellationToken)
         {
 
-            return Task.FromResult<Boolean?>(true);
+            return Task.FromResult(ConnectionFilterResponse.Accepted());
 
         }
 

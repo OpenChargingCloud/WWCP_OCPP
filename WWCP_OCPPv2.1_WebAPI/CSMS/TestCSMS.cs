@@ -119,7 +119,129 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Events
 
-        #region CSMS <- Charging Station
+        #region WebSocket connections
+
+        /// <summary>
+        /// An event sent whenever the HTTP web socket server started.
+        /// </summary>
+        public event OnServerStartedDelegate?                 OnServerStarted;
+
+        /// <summary>
+        /// An event sent whenever a new TCP connection was accepted.
+        /// </summary>
+        public event OnValidateTCPConnectionDelegate?         OnValidateTCPConnection;
+
+        /// <summary>
+        /// An event sent whenever a new TCP connection was accepted.
+        /// </summary>
+        public event OnNewTCPConnectionDelegate?              OnNewTCPConnection;
+
+        /// <summary>
+        /// An event sent whenever a HTTP request was received.
+        /// </summary>
+        public event HTTPRequestLogDelegate?                  OnHTTPRequest;
+
+        /// <summary>
+        /// An event sent whenever the HTTP headers of a new web socket connection
+        /// need to be validated or filtered by an upper layer application logic.
+        /// </summary>
+        public event OnValidateWebSocketConnectionDelegate?   OnValidateWebSocketConnection;
+
+        /// <summary>
+        /// An event sent whenever the HTTP connection switched successfully to web socket.
+        /// </summary>
+        public event OnNewWebSocketConnectionDelegate?        OnNewWebSocketConnection;
+
+        /// <summary>
+        /// An event sent whenever a reponse to a HTTP request was sent.
+        /// </summary>
+        public event HTTPResponseLogDelegate?                 OnHTTPResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket close frame was received.
+        /// </summary>
+        public event OnCloseMessageDelegate?                  OnCloseMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a TCP connection was closed.
+        /// </summary>
+        public event OnTCPConnectionClosedDelegate?           OnTCPConnectionClosed;
+
+        #endregion
+
+
+        #region Generic Text Messages
+
+        /// <summary>
+        /// An event sent whenever a text message request was received.
+        /// </summary>
+        public event OnWebSocketTextMessageRequestDelegate?     OnTextMessageRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever the response to a text message request was received.
+        /// </summary>
+        public event OnWebSocketTextMessageResponseDelegate?    OnTextMessageResponseReceived;
+
+        /// <summary>
+        /// An event sent whenever an error response to a text message request was received.
+        /// </summary>
+        public event OnWebSocketTextErrorResponseDelegate?      OnTextErrorResponseReceived;
+
+
+        /// <summary>
+        /// An event sent whenever a text message request was sent.
+        /// </summary>
+        public event OnWebSocketTextMessageRequestDelegate?     OnTextMessageRequestSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a text message was sent.
+        /// </summary>
+        public event OnWebSocketTextMessageResponseDelegate?    OnTextMessageResponseSent;
+
+        /// <summary>
+        /// An event sent whenever the error response to a text message was sent.
+        /// </summary>
+        public event OnWebSocketTextErrorResponseDelegate?      OnTextErrorResponseSent;
+
+        #endregion
+
+        #region Generic Binary Messages
+
+        /// <summary>
+        /// An event sent whenever a binary message request was received.
+        /// </summary>
+        public event OnWebSocketBinaryMessageDelegate?            OnBinaryMessageRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever the response to a binary message request was received.
+        /// </summary>
+        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
+
+        /// <summary>
+        /// An event sent whenever the error response to a binary message request was sent.
+        /// </summary>
+        public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
+
+
+        /// <summary>
+        /// An event sent whenever a binary message request was sent.
+        /// </summary>
+        public event OnWebSocketBinaryMessageDelegate?            OnBinaryMessageRequestSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a binary message was sent.
+        /// </summary>
+        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
+
+        /// <summary>
+        /// An event sent whenever the error response to a binary message was sent.
+        /// </summary>
+        public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
+
+        #endregion
+
+
+        #region CSMS <- Charging Station Messages
 
         #region OnBootNotification (-Request/-Response)
 
@@ -518,7 +640,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region CSMS -> Charging Station
+        #region CSMS -> Charging Station Messages
 
         #region OnReset (-Request/-Response)
 
@@ -1157,99 +1279,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-
-        #region WebSocket events
-
-        #region WebSocket connections
-
-        /// <summary>
-        /// An event sent whenever the HTTP web socket server started.
-        /// </summary>
-        public event OnServerStartedDelegate?                 OnServerStarted;
-
-        /// <summary>
-        /// An event sent whenever a new TCP connection was accepted.
-        /// </summary>
-        public event OnValidateTCPConnectionDelegate?         OnValidateTCPConnection;
-
-        /// <summary>
-        /// An event sent whenever a new TCP connection was accepted.
-        /// </summary>
-        public event OnNewTCPConnectionDelegate?              OnNewTCPConnection;
-
-        /// <summary>
-        /// An event sent whenever a HTTP request was received.
-        /// </summary>
-        public event HTTPRequestLogDelegate?                  OnHTTPRequest;
-
-        /// <summary>
-        /// An event sent whenever the HTTP headers of a new web socket connection
-        /// need to be validated or filtered by an upper layer application logic.
-        /// </summary>
-        public event OnValidateWebSocketConnectionDelegate?   OnValidateWebSocketConnection;
-
-        /// <summary>
-        /// An event sent whenever the HTTP connection switched successfully to web socket.
-        /// </summary>
-        public event OnNewWebSocketConnectionDelegate?        OnNewWebSocketConnection;
-
-        /// <summary>
-        /// An event sent whenever a reponse to a HTTP request was sent.
-        /// </summary>
-        public event HTTPResponseLogDelegate?                 OnHTTPResponse;
-
-        #endregion
-
-        #region OnMessage
-
-        //public event OnWebSocketMessageDelegate                 OnMessage;
-
-        #endregion
-
-        #region OnTextMessage   (-Request/-Response)
-
-        public event OnWebSocketTextMessageDelegate?             OnTextMessageRequest;
-
-        //public event OnWebSocketTextMessageDelegate             OnTextMessage;
-
-        public event OnWebSocketTextMessageResponseDelegate?     OnTextMessageResponse;
-
-        #endregion
-
-        #region OnBinaryMessage (-Request/-Response)
-
-        public event OnWebSocketBinaryMessageDelegate?           OnBinaryMessageRequest;
-
-        //public event OnWebSocketBinaryMessageDelegate           OnBinaryMessage;
-
-        public event OnWebSocketBinaryMessageResponseDelegate?   OnBinaryMessageResponse;
-
-        #endregion
-
-        #region On(Ping/Pong)Message
-
-        //public event OnWebSocketMessageDelegate                 OnPingMessage;
-
-        //public event OnWebSocketMessageDelegate                 OnPongMessage;
-
-        #endregion
-
-        #region OnCloseMessage
-
-        /// <summary>
-        /// An event sent whenever a web socket close frame was received.
-        /// </summary>
-        public event OnCloseMessageDelegate?                  OnCloseMessageReceived;
-
-        /// <summary>
-        /// An event sent whenever a TCP connection was closed.
-        /// </summary>
-        public event OnTCPConnectionClosedDelegate?           OnTCPConnectionClosed;
-
-        #endregion
-
-        #endregion
-
         #endregion
 
         #region Constructor(s)
@@ -1372,14 +1401,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           AutoStart: false
                                       );
 
-            Attach(centralSystemServer);
+            AttachCSMSChannel(centralSystemServer);
 
+            if (AutoStart)
+                centralSystemServer.Start();
+
+            return centralSystemServer;
+
+        }
+
+        #endregion
+
+        #region (private) AttachCSMSChannel(CSMSChannel)
+
+        private void AttachCSMSChannel(ICSMSChannel CSMSChannel)
+        {
+
+
+            centralSystemServers.Add(CSMSChannel);
+
+
+            if (CSMSChannel is CSMSWSServer centralSystemWSServer)
+            {
+                centralSystemWSServer.OnNewCSMSWSConnection += async (LogTimestamp,
+                                                                      CSMS,
+                                                                      Connection,
+                                                                      EventTrackingId,
+                                                                      CancellationToken) =>
+                {
+
+                    if (Connection.TryGetCustomDataAs("chargeBoxId", out ChargeBox_Id chargeBoxId))
+                    {
+                        if (!reachableChargingBoxes.ContainsKey(chargeBoxId))
+                            reachableChargingBoxes.TryAdd(chargeBoxId, new Tuple<ICSMSChannel, DateTime>(CSMS, Timestamp.Now));
+                        else
+                            reachableChargingBoxes[chargeBoxId] = new Tuple<ICSMSChannel, DateTime>(CSMS, Timestamp.Now);
+                    }
+
+                };
+            }
+
+
+            #region WebSocket related
 
             #region OnServerStarted
 
-            centralSystemServer.OnServerStarted += async (Timestamp,
-                                                          server,
-                                                          eventTrackingId) => {
+            CSMSChannel.OnServerStarted += async (Timestamp,
+                                                  server,
+                                                  eventTrackingId) => {
 
                 DebugX.Log("OCPP " + Version.Number + " web socket server has started on " + server.IPSocket);
 
@@ -1387,20 +1456,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-
             #region OnNewTCPConnection
 
-            centralSystemServer.OnNewTCPConnection += async (Timestamp,
-                                                             WebSocketServer,
-                                                             NewWebSocketConnection,
-                                                             EventTrackingId,
-                                                             CancellationToken) => {
+            CSMSChannel.OnNewTCPConnection += async (timestamp,
+                                                     webSocketServer,
+                                                     newWebSocketConnection,
+                                                     eventTrackingId,
+                                                     cancellationToken) => {
 
-                OnNewTCPConnection?.Invoke(Timestamp,
-                                           WebSocketServer,
-                                           NewWebSocketConnection,
-                                           EventTrackingId,
-                                           CancellationToken);
+                var logger = OnNewTCPConnection;
+                if (logger is not null)
+                {
+
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnNewTCPConnectionDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                               webSocketServer,
+                                                                                               newWebSocketConnection,
+                                                                                               eventTrackingId,
+                                                                                               cancellationToken)).
+                                             ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(loggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnNewTCPConnection),
+                                  e
+                              );
+                    }
+
+                }
 
             };
 
@@ -1408,98 +1498,70 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNewWebSocketConnection
 
-            centralSystemServer.OnNewWebSocketConnection += async (Timestamp,
-                                                                   WebSocketServer,
-                                                                   NewWebSocketConnection,
-                                                                   EventTrackingId,
-                                                                   CancellationToken) => {
+            CSMSChannel.OnNewWebSocketConnection += async (timestamp,
+                                                           webSocketServer,
+                                                           newWebSocketConnection,
+                                                           eventTrackingId,
+                                                           cancellationToken) => {
 
-                OnNewWebSocketConnection?.Invoke(Timestamp,
-                                                 WebSocketServer,
-                                                 NewWebSocketConnection,
-                                                 EventTrackingId,
-                                                 CancellationToken);
-
-            };
-
-            #endregion
-
-
-            #region OnTextMessageRequest
-
-            centralSystemServer.OnTextMessageReceived += async (timestamp,
-                                                                webSocketServer,
-                                                                webSocketConnection,
-                                                                eventTrackingId,
-                                                                requestMessage) => {
-
-                if (OnTextMessageRequest is not null)
-                    await OnTextMessageRequest.Invoke(timestamp,
-                                                      webSocketServer,
-                                                      webSocketConnection,
-                                                      eventTrackingId,
-                                                      requestMessage);
-
-            };
-
-            #endregion
-
-            #region OnTextMessageResponse
-
-            centralSystemServer.OnTextMessageResponseSent += async (timestamp,
-                                                                    webSocketServer,
-                                                                    webSocketConnection,
-                                                                    eventTrackingId,
-                                                                    requestTimestamp,
-                                                                    requestMessage,
-                                                                    responseTimestamp,
-                                                                    responseMessage) => {
-
-                if (OnTextMessageResponse is not null)
-                    await OnTextMessageResponse.Invoke(timestamp,
-                                                       webSocketServer,
-                                                       webSocketConnection,
-                                                       eventTrackingId,
-                                                       requestTimestamp,
-                                                       requestMessage,
-                                                       responseTimestamp,
-                                                       responseMessage);
-
-            };
-
-            #endregion
-
-
-            #region OnCloseMessageReceived
-
-            centralSystemServer.OnCloseMessageReceived += async (timestamp,
-                                                                 server,
-                                                                 connection,
-                                                                 eventTrackingId,
-                                                                 statusCode,
-                                                                 reason) => {
-
-                #region Send OnCloseMessageReceived event
-
-                var startTime      = Timestamp.Now;
-
-                var requestLogger  = OnCloseMessageReceived;
-                if (requestLogger is not null)
+                var logger = OnNewWebSocketConnection;
+                if (logger is not null)
                 {
 
-                    var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                           OfType <OnCloseMessageDelegate>().
-                                                           Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                             server,
-                                                                                                             connection,
-                                                                                                             eventTrackingId,
-                                                                                                             statusCode,
-                                                                                                             reason)).
-                                                           ToArray();
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnNewWebSocketConnectionDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                               webSocketServer,
+                                                                                               newWebSocketConnection,
+                                                                                               eventTrackingId,
+                                                                                               cancellationToken)).
+                                             ToArray();
 
                     try
                     {
-                        await Task.WhenAll(requestLoggerTasks);
+                        await Task.WhenAll(loggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnNewWebSocketConnection),
+                                  e
+                              );
+                    }
+
+                }
+
+            };
+
+            #endregion
+
+            #region OnCloseMessageReceived
+
+            CSMSChannel.OnCloseMessageReceived += async (timestamp,
+                                                         server,
+                                                         connection,
+                                                         eventTrackingId,
+                                                         statusCode,
+                                                         reason) => {
+
+                var logger = OnCloseMessageReceived;
+                if (logger is not null)
+                {
+
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnCloseMessageDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                               server,
+                                                                                               connection,
+                                                                                               eventTrackingId,
+                                                                                               statusCode,
+                                                                                               reason)).
+                                             ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(loggerTasks);
                     }
                     catch (Exception e)
                     {
@@ -1512,40 +1574,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                #endregion
-
             };
 
             #endregion
 
             #region OnTCPConnectionClosed
 
-            centralSystemServer.OnTCPConnectionClosed += async (timestamp,
-                                                                server,
-                                                                connection,
-                                                                reason,
-                                                                eventTrackingId) => {
+            CSMSChannel.OnTCPConnectionClosed += async (timestamp,
+                                                        server,
+                                                        connection,
+                                                        reason,
+                                                        eventTrackingId) => {
 
-                #region Send OnTCPConnectionClosed event
-
-                var startTime      = Timestamp.Now;
-
-                var requestLogger  = OnTCPConnectionClosed;
-                if (requestLogger is not null)
+                var logger = OnTCPConnectionClosed;
+                if (logger is not null)
                 {
 
-                    var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                           OfType <OnTCPConnectionClosedDelegate>().
-                                                           Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                                             server,
-                                                                                                             connection,
-                                                                                                             reason,
-                                                                                                             eventTrackingId)).
-                                                           ToArray();
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnTCPConnectionClosedDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                               server,
+                                                                                               connection,
+                                                                                               reason,
+                                                                                               eventTrackingId)).
+                                             ToArray();
 
                     try
                     {
-                        await Task.WhenAll(requestLoggerTasks);
+                        await Task.WhenAll(loggerTasks);
                     }
                     catch (Exception e)
                     {
@@ -1558,68 +1614,296 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                #endregion
+            };
+
+            #endregion
+
+            // Failed (Charging Station) Authentication
+
+            // (Generic) Error Handling
+
+            #endregion
+
+
+            #region OnTextMessageRequestReceived
+
+            CSMSChannel.OnTextMessageRequestReceived += async (timestamp,
+                                                               webSocketServer,
+                                                               webSocketConnection,
+                                                               eventTrackingId,
+                                                               requestTimestamp,
+                                                               requestMessage) => {
+
+                var logger = OnTextMessageRequestReceived;
+                if (logger is not null)
+                {
+
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnWebSocketTextMessageDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                               webSocketServer,
+                                                                                               webSocketConnection,
+                                                                                               eventTrackingId,
+                                                                                               requestMessage)).
+                                             ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(loggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnTextMessageRequestReceived),
+                                  e
+                              );
+                    }
+
+                }
+
+            };
+
+            #endregion
+
+            #region OnTextMessageResponseSent
+
+            CSMSChannel.OnTextMessageResponseSent += async (timestamp,
+                                                            webSocketServer,
+                                                            webSocketConnection,
+                                                            eventTrackingId,
+                                                            requestTimestamp,
+                                                            requestMessage,
+                                                            responseTimestamp,
+                                                            responseMessage) => {
+
+
+                var logger = OnTextMessageResponseSent;
+                if (logger is not null)
+                {
+
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnWebSocketTextMessageResponseDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                               webSocketServer,
+                                                                                               webSocketConnection,
+                                                                                               eventTrackingId,
+                                                                                               requestTimestamp,
+                                                                                               requestMessage,
+                                                                                               responseTimestamp,
+                                                                                               responseMessage)).
+                                             ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(loggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnTextMessageResponseSent),
+                                  e
+                              );
+                    }
+
+                }
+
+            };
+
+            #endregion
+
+            #region OnTextErrorResponseSent
+
+            CSMSChannel.OnTextErrorResponseSent += async (timestamp,
+                                                          webSocketServer,
+                                                          webSocketConnection,
+                                                          eventTrackingId,
+                                                          requestTimestamp,
+                                                          requestMessage,
+                                                          responseTimestamp,
+                                                          responseMessage) => {
+
+                var logger = OnTextErrorResponseSent;
+                if (logger is not null)
+                {
+
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnWebSocketTextErrorResponseDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                               webSocketServer,
+                                                                                               webSocketConnection,
+                                                                                               eventTrackingId,
+                                                                                               requestTimestamp,
+                                                                                               requestMessage,
+                                                                                               responseTimestamp,
+                                                                                               responseMessage)).
+                                             ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(loggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnTextErrorResponseSent),
+                                  e
+                              );
+                    }
+
+                }
 
             };
 
             #endregion
 
 
-            if (AutoStart)
-                centralSystemServer.Start();
+            #region OnTextMessageRequestSent
 
-            return centralSystemServer;
+            CSMSChannel.OnTextMessageRequestSent += async (timestamp,
+                                                           webSocketServer,
+                                                           webSocketConnection,
+                                                           eventTrackingId,
+                                                           requestTimestamp,
+                                                           requestMessage) => {
 
-        }
 
-        #endregion
+                var logger = OnTextMessageRequestSent;
+                if (logger is not null)
+                {
 
-        #region (private) Attach(CSMSServer)
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnWebSocketTextMessageDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                               webSocketServer,
+                                                                                               webSocketConnection,
+                                                                                               eventTrackingId,
+                                                                                               requestMessage)).
+                                             ToArray();
 
-        private void Attach(ICSMSChannel CSMSServer)
-        {
+                    try
+                    {
+                        await Task.WhenAll(loggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnTextMessageRequestSent),
+                                  e
+                              );
+                    }
 
-            #region Initial checks
+                }
 
-            if (CSMSServer is null)
-                throw new ArgumentNullException(nameof(CSMSServer), "The given central system must not be null!");
+            };
+
+            #endregion
+
+            #region OnTextMessageResponseReceived
+
+            CSMSChannel.OnTextMessageResponseReceived += async (timestamp,
+                                                                webSocketServer,
+                                                                webSocketConnection,
+                                                                eventTrackingId,
+                                                                requestTimestamp,
+                                                                requestMessage,
+                                                                responseTimestamp,
+                                                                responseMessage) => {
+
+
+                var logger = OnTextMessageResponseReceived;
+                if (logger is not null)
+                {
+
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnWebSocketTextMessageResponseDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                               webSocketServer,
+                                                                                               webSocketConnection,
+                                                                                               eventTrackingId,
+                                                                                               requestTimestamp,
+                                                                                               requestMessage,
+                                                                                               responseTimestamp,
+                                                                                               responseMessage)).
+                                             ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(loggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnTextMessageResponseReceived),
+                                  e
+                              );
+                    }
+
+                }
+
+            };
+
+            #endregion
+
+            #region OnTextErrorResponseReceived
+
+            CSMSChannel.OnTextErrorResponseReceived += async (timestamp,
+                                                              webSocketServer,
+                                                              webSocketConnection,
+                                                              eventTrackingId,
+                                                              requestTimestamp,
+                                                              requestMessage,
+                                                              responseTimestamp,
+                                                              responseMessage) => {
+
+                var logger = OnTextErrorResponseReceived;
+                if (logger is not null)
+                {
+
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnWebSocketTextErrorResponseDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                               webSocketServer,
+                                                                                               webSocketConnection,
+                                                                                               eventTrackingId,
+                                                                                               requestTimestamp,
+                                                                                               requestMessage,
+                                                                                               responseTimestamp,
+                                                                                               responseMessage)).
+                                             ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(loggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnTextErrorResponseReceived),
+                                  e
+                              );
+                    }
+
+                }
+
+            };
 
             #endregion
 
 
-            centralSystemServers.Add(CSMSServer);
-
-
-            if (CSMSServer is CSMSWSServer centralSystemWSServer)
-            {
-                centralSystemWSServer.OnNewCSMSWSConnection += async (LogTimestamp,
-                                                                      CSMS,
-                                                                      Connection,
-                                                                      EventTrackingId,
-                                                                      CancellationToken) =>
-                {
-
-                    if (Connection.TryGetCustomDataAs("chargeBoxId", out ChargeBox_Id chargeBoxId))
-                    {
-                        //ToDo: lock(...)
-                        if (!reachableChargingBoxes.ContainsKey(chargeBoxId))
-                            reachableChargingBoxes.TryAdd(chargeBoxId, new Tuple<ICSMSChannel, DateTime>(CSMS, Timestamp.Now));
-                        else
-                            reachableChargingBoxes[chargeBoxId]   = new Tuple<ICSMSChannel, DateTime>(CSMS, Timestamp.Now);
-                    }
-
-                };
-            }
-
-
-            // Incoming messages and responses...
+            #region Incoming OCPP messages and their responses...
 
             #region OnBootNotification
 
-            CSMSServer.OnBootNotification += async (LogTimestamp,
-                                                    Sender,
-                                                    Request,
-                                                    CancellationToken) => {
+            CSMSChannel.OnBootNotification += async (timestamp,
+                                                     sender,
+                                                     request,
+                                                     cancellationToken) => {
 
                 #region Send OnBootNotificationRequest event
 
@@ -1633,7 +1917,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnBootNotificationRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -1656,7 +1940,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // ChargingStation
                 // Reason
 
-                DebugX.Log($"OnBootNotification: {Request.ChargingStation?.SerialNumber ?? "-"} ({Request.ChargeBoxId})");
+                DebugX.Log($"OnBootNotification: {request.ChargingStation?.SerialNumber ?? "-"} ({request.ChargeBoxId})");
 
 
                 //await AddChargeBoxIfNotExists(new ChargeBox(Request.ChargeBoxId,
@@ -1673,11 +1957,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 //                                            Request.MeterSerialNumber));
 
 
-                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                if (!reachableChargingBoxes.ContainsKey(request.ChargeBoxId))
                 {
 
-                    if (Sender is CSMSWSServer centralSystemWSServer)
-                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
+                    if (sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.TryAdd(request.ChargeBoxId, new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
 
                     //if (Sender is CSMSSOAPServer centralSystemSOAPServer)
 
@@ -1685,8 +1969,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (Sender is CSMSWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
+                    if (sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[request.ChargeBoxId] = new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
 
                     //if (Sender is CSMSSOAPServer centralSystemSOAPServer)
 
@@ -1694,7 +1978,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                 var response = new BootNotificationResponse(
-                                   Request:       Request,
+                                   Request:       request,
                                    Status:        RegistrationStatus.Accepted,
                                    CurrentTime:   Timestamp.Now,
                                    Interval:      TimeSpan.FromMinutes(5),
@@ -1715,7 +1999,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnBootNotificationResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -1745,10 +2029,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnFirmwareStatusNotification
 
-            CSMSServer.OnFirmwareStatusNotification += async (LogTimestamp,
-                                                              Sender,
-                                                              Request,
-                                                              CancellationToken) => {
+            CSMSChannel.OnFirmwareStatusNotification += async (timestamp,
+                                                               sender,
+                                                               request,
+                                                               cancellationToken) => {
 
                 #region Send OnFirmwareStatusNotificationRequest event
 
@@ -1762,7 +2046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnFirmwareStatusNotificationRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -1785,21 +2069,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 // Status
                 // UpdateFirmwareRequestId
 
-                DebugX.Log("OnFirmwareStatus: " + Request.Status);
+                DebugX.Log("OnFirmwareStatus: " + request.Status);
 
-                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                if (!reachableChargingBoxes.ContainsKey(request.ChargeBoxId))
                 {
-                    if (Sender is CSMSWSServer centralSystemWSServer)
-                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
+                    if (sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes.TryAdd(request.ChargeBoxId, new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
                 }
                 else
                 {
-                    if (Sender is CSMSWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
+                    if (sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingBoxes[request.ChargeBoxId] = new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
                 var response = new FirmwareStatusNotificationResponse(
-                                   Request:      Request,
+                                   Request:      request,
                                    CustomData:   null
                                );
 
@@ -1816,7 +2100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnFirmwareStatusNotificationResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -1846,10 +2130,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnPublishFirmwareStatusNotification
 
-            CSMSServer.OnPublishFirmwareStatusNotification += async (LogTimestamp,
-                                                                     Sender,
-                                                                     Request,
-                                                                     CancellationToken) => {
+            CSMSChannel.OnPublishFirmwareStatusNotification += async (LogTimestamp,
+                                                                      Sender,
+                                                                      Request,
+                                                                      CancellationToken) => {
 
                 #region Send OnPublishFirmwareStatusNotificationRequest event
 
@@ -1952,10 +2236,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnHeartbeat
 
-            CSMSServer.OnHeartbeat += async (LogTimestamp,
-                                             Sender,
-                                             Request,
-                                             CancellationToken) => {
+            CSMSChannel.OnHeartbeat += async (LogTimestamp,
+                                              Sender,
+                                              Request,
+                                              CancellationToken) => {
 
                 #region Send OnHeartbeatRequest event
 
@@ -2057,10 +2341,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyEvent
 
-            CSMSServer.OnNotifyEvent += async (LogTimestamp,
-                                               Sender,
-                                               Request,
-                                               CancellationToken) => {
+            CSMSChannel.OnNotifyEvent += async (LogTimestamp,
+                                                Sender,
+                                                Request,
+                                                CancellationToken) => {
 
                 #region Send OnNotifyEventRequest event
 
@@ -2164,10 +2448,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSecurityEventNotification
 
-            CSMSServer.OnSecurityEventNotification += async (LogTimestamp,
-                                                             Sender,
-                                                             Request,
-                                                             CancellationToken) => {
+            CSMSChannel.OnSecurityEventNotification += async (LogTimestamp,
+                                                              Sender,
+                                                              Request,
+                                                              CancellationToken) => {
 
                 #region Send OnSecurityEventNotificationRequest event
 
@@ -2270,10 +2554,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyReport
 
-            CSMSServer.OnNotifyReport += async (LogTimestamp,
-                                                Sender,
-                                                Request,
-                                                CancellationToken) => {
+            CSMSChannel.OnNotifyReport += async (LogTimestamp,
+                                                 Sender,
+                                                 Request,
+                                                 CancellationToken) => {
 
                 #region Send OnNotifyReportRequest event
 
@@ -2377,10 +2661,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyMonitoringReport
 
-            CSMSServer.OnNotifyMonitoringReport += async (LogTimestamp,
-                                                          Sender,
-                                                          Request,
-                                                          CancellationToken) => {
+            CSMSChannel.OnNotifyMonitoringReport += async (LogTimestamp,
+                                                           Sender,
+                                                           Request,
+                                                           CancellationToken) => {
 
                 #region Send OnNotifyMonitoringReportRequest event
 
@@ -2485,7 +2769,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnLogStatusNotification
 
-            CSMSServer.OnLogStatusNotification += async (LogTimestamp,
+            CSMSChannel.OnLogStatusNotification += async (LogTimestamp,
                                                          Sender,
                                                          Request,
                                                          CancellationToken) => {
@@ -2590,7 +2874,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnIncomingDataTransfer
 
-            CSMSServer.OnIncomingDataTransfer += async (LogTimestamp,
+            CSMSChannel.OnIncomingDataTransfer += async (LogTimestamp,
                                                         Sender,
                                                         Request,
                                                         CancellationToken) => {
@@ -2748,7 +3032,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSignCertificate
 
-            CSMSServer.OnSignCertificate += async (LogTimestamp,
+            CSMSChannel.OnSignCertificate += async (LogTimestamp,
                                                    Sender,
                                                    Request,
                                                    CancellationToken) => {
@@ -2855,7 +3139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGet15118EVCertificate
 
-            CSMSServer.OnGet15118EVCertificate += async (LogTimestamp,
+            CSMSChannel.OnGet15118EVCertificate += async (LogTimestamp,
                                                          Sender,
                                                          Request,
                                                          CancellationToken) => {
@@ -2967,7 +3251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetCertificateStatus
 
-            CSMSServer.OnGetCertificateStatus += async (LogTimestamp,
+            CSMSChannel.OnGetCertificateStatus += async (LogTimestamp,
                                                         Sender,
                                                         Request,
                                                         CancellationToken) => {
@@ -3074,7 +3358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetCRL
 
-            CSMSServer.OnGetCRL += async (LogTimestamp,
+            CSMSChannel.OnGetCRL += async (LogTimestamp,
                                           Sender,
                                           Request,
                                           CancellationToken) => {
@@ -3183,7 +3467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnReservationStatusUpdate
 
-            CSMSServer.OnReservationStatusUpdate += async (LogTimestamp,
+            CSMSChannel.OnReservationStatusUpdate += async (LogTimestamp,
                                                            Sender,
                                                            Request,
                                                            CancellationToken) => {
@@ -3288,7 +3572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnAuthorize
 
-            CSMSServer.OnAuthorize += async (LogTimestamp,
+            CSMSChannel.OnAuthorize += async (LogTimestamp,
                                                       Sender,
                                                       Request,
                                                       CancellationToken) => {
@@ -3404,7 +3688,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyEVChargingNeeds
 
-            CSMSServer.OnNotifyEVChargingNeeds += async (LogTimestamp,
+            CSMSChannel.OnNotifyEVChargingNeeds += async (LogTimestamp,
                                                          Sender,
                                                          Request,
                                                          CancellationToken) => {
@@ -3512,7 +3796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTransactionEvent
 
-            CSMSServer.OnTransactionEvent += async (LogTimestamp,
+            CSMSChannel.OnTransactionEvent += async (LogTimestamp,
                                                     Sender,
                                                     Request,
                                                     CancellationToken) => {
@@ -3639,7 +3923,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnStatusNotification
 
-            CSMSServer.OnStatusNotification += async (LogTimestamp,
+            CSMSChannel.OnStatusNotification += async (LogTimestamp,
                                                       Sender,
                                                       Request,
                                                       CancellationToken) => {
@@ -3742,7 +4026,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnMeterValues
 
-            CSMSServer.OnMeterValues += async (LogTimestamp,
+            CSMSChannel.OnMeterValues += async (LogTimestamp,
                                                         Sender,
                                                         Request,
                                                         CancellationToken) => {
@@ -3846,7 +4130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyChargingLimit
 
-            CSMSServer.OnNotifyChargingLimit += async (LogTimestamp,
+            CSMSChannel.OnNotifyChargingLimit += async (LogTimestamp,
                                                        Sender,
                                                        Request,
                                                        CancellationToken) => {
@@ -3952,7 +4236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnClearedChargingLimit
 
-            CSMSServer.OnClearedChargingLimit += async (LogTimestamp,
+            CSMSChannel.OnClearedChargingLimit += async (LogTimestamp,
                                                         Sender,
                                                         Request,
                                                         CancellationToken) => {
@@ -4057,7 +4341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnReportChargingProfiles
 
-            CSMSServer.OnReportChargingProfiles += async (LogTimestamp,
+            CSMSChannel.OnReportChargingProfiles += async (LogTimestamp,
                                                           Sender,
                                                           Request,
                                                           CancellationToken) => {
@@ -4165,7 +4449,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyEVChargingSchedule
 
-            CSMSServer.OnNotifyEVChargingSchedule += async (LogTimestamp,
+            CSMSChannel.OnNotifyEVChargingSchedule += async (LogTimestamp,
                                                             Sender,
                                                             Request,
                                                             CancellationToken) => {
@@ -4275,7 +4559,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyPriorityCharging
 
-            CSMSServer.OnNotifyPriorityCharging += async (LogTimestamp,
+            CSMSChannel.OnNotifyPriorityCharging += async (LogTimestamp,
                                                           Sender,
                                                           Request,
                                                           CancellationToken) => {
@@ -4380,7 +4664,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnPullDynamicScheduleUpdate
 
-            CSMSServer.OnPullDynamicScheduleUpdate += async (LogTimestamp,
+            CSMSChannel.OnPullDynamicScheduleUpdate += async (LogTimestamp,
                                                              Sender,
                                                              Request,
                                                              CancellationToken) => {
@@ -4504,7 +4788,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyDisplayMessages
 
-            CSMSServer.OnNotifyDisplayMessages += async (LogTimestamp,
+            CSMSChannel.OnNotifyDisplayMessages += async (LogTimestamp,
                                                          Sender,
                                                          Request,
                                                          CancellationToken) => {
@@ -4609,7 +4893,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyCustomerInformation
 
-            CSMSServer.OnNotifyCustomerInformation += async (LogTimestamp,
+            CSMSChannel.OnNotifyCustomerInformation += async (LogTimestamp,
                                                              Sender,
                                                              Request,
                                                              CancellationToken) => {
@@ -4714,6 +4998,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             };
 
             #endregion
+
+            #endregion
+
+
+            // Firmware API download messages
+            // Logdata API upload messages
+            // Diagnostics API upload messages
 
         }
 
