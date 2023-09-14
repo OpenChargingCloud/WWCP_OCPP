@@ -577,7 +577,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.csmss.TryAdd(CSMS.Id, CSMS);
 
-            // WebSocket related
+            #region WebSocket connections
 
             #region OnNewTCPConnection
 
@@ -644,7 +644,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
             // Failed (Charging Station) Authentication
+
             // (Generic) Error Handling
+
+            #endregion
 
 
             #region Generic Text Messages
@@ -756,6 +759,121 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 JSONObject.Create(
                                                     new JProperty("connection",   webSocketConnection.ToString()),
                                                     new JProperty("message",      responseMessage)
+                                                ));
+
+            #endregion
+
+            #endregion
+
+            #region Generic Binary Messages
+
+            #region OnBinaryMessageRequestReceived
+
+            CSMS.OnBinaryMessageRequestReceived += async (timestamp,
+                                                          webSocketServer,
+                                                          webSocketConnection,
+                                                          eventTrackingId,
+                                                          requestTimestamp,
+                                                          requestMessage) =>
+
+                await this.EventLog.SubmitEvent("OnBinaryMessageRequestReceived",
+                                                JSONObject.Create(
+                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("message",      requestMessage)  // BASE64 encoded string!
+                                                ));
+
+            #endregion
+
+            #region OnBinaryMessageResponseSent
+
+            CSMS.OnBinaryMessageResponseSent += async (timestamp,
+                                                       webSocketServer,
+                                                       webSocketConnection,
+                                                       eventTrackingId,
+                                                       requestTimestamp,
+                                                       requestMessage,
+                                                       responseTimestamp,
+                                                       responseMessage) =>
+
+                await this.EventLog.SubmitEvent("OnBinaryMessageResponseSent",
+                                                JSONObject.Create(
+                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("message",      responseMessage)  // BASE64 encoded string!
+                                                ));
+
+            #endregion
+
+            #region OnBinaryErrorResponseSent
+
+            CSMS.OnBinaryErrorResponseSent += async (timestamp,
+                                                     webSocketServer,
+                                                     webSocketConnection,
+                                                     eventTrackingId,
+                                                     requestTimestamp,
+                                                     requestMessage,
+                                                     responseTimestamp,
+                                                     responseMessage) =>
+
+                await this.EventLog.SubmitEvent("OnBinaryErrorResponseSent",
+                                                JSONObject.Create(
+                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("message",      responseMessage)  // BASE64 encoded string!
+                                                ));
+
+            #endregion
+
+
+            #region OnBinaryMessageRequestSent
+
+            CSMS.OnBinaryMessageRequestSent += async (timestamp,
+                                                      webSocketServer,
+                                                      webSocketConnection,
+                                                      eventTrackingId,
+                                                      requestTimestamp,
+                                                      requestMessage) =>
+
+                await this.EventLog.SubmitEvent("OnBinaryMessageRequestSent",
+                                                JSONObject.Create(
+                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("message",      requestMessage)  // BASE64 encoded string!
+                                                ));
+
+            #endregion
+
+            #region OnBinaryMessageResponseReceived
+
+            CSMS.OnBinaryMessageResponseReceived += async (timestamp,
+                                                           webSocketServer,
+                                                           webSocketConnection,
+                                                           eventTrackingId,
+                                                           requestTimestamp,
+                                                           requestMessage,
+                                                           responseTimestamp,
+                                                           responseMessage) =>
+
+                await this.EventLog.SubmitEvent("OnBinaryMessageResponseReceived",
+                                                JSONObject.Create(
+                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("message",      responseMessage)  // BASE64 encoded string!
+                                                ));
+
+            #endregion
+
+            #region OnBinaryErrorResponseReceived
+
+            CSMS.OnBinaryErrorResponseReceived += async (timestamp,
+                                                         webSocketServer,
+                                                         webSocketConnection,
+                                                         eventTrackingId,
+                                                         requestTimestamp,
+                                                         requestMessage,
+                                                         responseTimestamp,
+                                                         responseMessage) =>
+
+                await this.EventLog.SubmitEvent("OnBinaryErrorResponseReceived",
+                                                JSONObject.Create(
+                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("message",      responseMessage)  // BASE64 encoded string!
                                                 ));
 
             #endregion
@@ -2931,7 +3049,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
 
-
         #region (private) RegisterURLTemplates()
 
         #region Manage HTTP Resources
@@ -3238,7 +3355,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         #endregion
-
 
 
     }

@@ -83,7 +83,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   String?                     ResponseMessage);
 
 
-
     public delegate Task OnWebSocketBinaryMessageRequestDelegate (DateTime                    Timestamp,
                                                                   CSMSWSServer                Server,
                                                                   WebSocketServerConnection   Connection,

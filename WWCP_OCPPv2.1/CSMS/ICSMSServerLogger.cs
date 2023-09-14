@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region WebSocket related
+        #region WebSocket connection
 
         /// <summary>
         /// An event sent whenever the HTTP web socket server started.
@@ -68,16 +68,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         event HTTPResponseLogDelegate?                 OnHTTPResponse;
 
+        /// <summary>
+        /// An event sent whenever a web socket close frame was received.
+        /// </summary>
+        event OnCloseMessageDelegate?                  OnCloseMessageReceived;
 
-        ///// <summary>
-        ///// An event sent whenever a web socket frame was received.
-        ///// </summary>
-        //event OnWebSocketFrameDelegate?                OnWebSocketFrameReceived;
+        /// <summary>
+        /// An event sent whenever a TCP connection was closed.
+        /// </summary>
+        event OnTCPConnectionClosedDelegate?           OnTCPConnectionClosed;
 
-        ///// <summary>
-        ///// An event sent whenever a web socket frame was sent.
-        ///// </summary>
-        //event OnWebSocketFrameDelegate?                OnWebSocketFrameSent;
+        #endregion
 
 
         #region OnTextMessage   (-Received/-ResponseSent/-ErrorResponseSent)
@@ -97,49 +98,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region OnBinaryMessage (-Received/-ResponseSent/-ErrorResponseSent)
 
-        ///// <summary>
-        ///// An event sent whenever a web socket frame was sent.
-        ///// </summary>
-        //event OnWebSocketTextMessageDelegate?          OnTextMessageSent;
+        event OnWebSocketBinaryMessageRequestDelegate?    OnBinaryMessageRequestReceived;
 
+        event OnWebSocketBinaryMessageResponseDelegate?   OnBinaryMessageResponseSent;
 
-        ///// <summary>
-        ///// An event sent whenever a binary message was received.
-        ///// </summary>
-        //event OnWebSocketBinaryMessageDelegate?        OnBinaryMessageReceived;
-
-        ///// <summary>
-        ///// An event sent whenever a web socket frame was sent.
-        ///// </summary>
-        //event OnWebSocketBinaryMessageDelegate?        OnBinaryMessageSent;
+        event OnWebSocketBinaryErrorResponseDelegate?     OnBinaryErrorResponseSent;
 
 
-        ///// <summary>
-        ///// An event sent whenever a web socket ping frame was received.
-        ///// </summary>
-        //event OnWebSocketFrameDelegate?                OnPingMessageReceived;
+        event OnWebSocketBinaryMessageRequestDelegate?    OnBinaryMessageRequestSent;
 
-        ///// <summary>
-        ///// An event sent whenever a web socket ping frame was sent.
-        ///// </summary>
-        //event OnWebSocketFrameDelegate?                OnPingMessageSent;
+        event OnWebSocketBinaryMessageResponseDelegate?   OnBinaryMessageResponseReceived;
 
-        ///// <summary>
-        ///// An event sent whenever a web socket pong frame was received.
-        ///// </summary>
-        //event OnWebSocketFrameDelegate?                OnPongMessageReceived;
-
-
-        /// <summary>
-        /// An event sent whenever a web socket close frame was received.
-        /// </summary>
-        event OnCloseMessageDelegate?                  OnCloseMessageReceived;
-
-        /// <summary>
-        /// An event sent whenever a TCP connection was closed.
-        /// </summary>
-        event OnTCPConnectionClosedDelegate?           OnTCPConnectionClosed;
+        event OnWebSocketBinaryErrorResponseDelegate?     OnBinaryErrorResponseReceived;
 
         #endregion
 

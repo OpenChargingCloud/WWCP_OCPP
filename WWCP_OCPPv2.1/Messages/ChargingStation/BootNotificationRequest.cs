@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Runtime.CompilerServices;
 
 #endregion
 
@@ -327,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     BootNotificationRequest = CustomBootNotificationRequestParser(JSON,
                                                                                   BootNotificationRequest);
 
-                return true;
+                return false;
 
             }
             catch (Exception e)

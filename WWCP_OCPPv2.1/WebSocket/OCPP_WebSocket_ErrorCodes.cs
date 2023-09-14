@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Requested Action is recognized but not supported by the receiver.
         /// </summary>
-        public static readonly ResultCodes NotSupported                    = new("NotSupported");
+        public static readonly ResultCodes NotSupported                    = new ("NotSupported");
 
         /// <summary>
         /// An internal error occurred and the receiver was not able to process the requested Action successfully.
@@ -199,42 +199,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Payload for Action is incomplete.
         /// </summary>
-        public static readonly ResultCodes ProtocolError                   = new("ProtocolError");
+        public static readonly ResultCodes ProtocolError                   = new ("ProtocolError");
 
         /// <summary>
         /// During the processing of Action a security issue occurred preventing receiver from completing the Action successfully.
         /// </summary>
-        public static readonly ResultCodes SecurityError                   = new("SecurityError");
+        public static readonly ResultCodes SecurityError                   = new ("SecurityError");
 
         /// <summary>
         /// Payload for Action is syntactically incorrect or not conform the PDU structure for Action.
         /// </summary>
-        public static readonly ResultCodes FormationViolation              = new("FormationViolation");
+        public static readonly ResultCodes FormationViolation              = new ("FormationViolation");
 
         /// <summary>
         /// Payload is syntactically correct but at least one field contains an invalid value.
         /// </summary>
-        public static readonly ResultCodes PropertyConstraintViolation     = new("PropertyConstraintViolation");
+        public static readonly ResultCodes PropertyConstraintViolation     = new ("PropertyConstraintViolation");
 
         /// <summary>
         /// Payload for Action is syntactically correct but at least one of the fields violates occurence constraints.
         /// </summary>
-        public static readonly ResultCodes OccurenceConstraintViolation    = new("OccurenceConstraintViolation");
+        public static readonly ResultCodes OccurenceConstraintViolation    = new ("OccurenceConstraintViolation");
 
         /// <summary>
         /// Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12).
         /// </summary>
-        public static readonly ResultCodes TypeConstraintViolation         = new("TypeConstraintViolation");
+        public static readonly ResultCodes TypeConstraintViolation         = new ("TypeConstraintViolation");
 
         /// <summary>
         /// Any other error not covered by the previous ones.
         /// </summary>
-        public static readonly ResultCodes GenericError                    = new("GenericError");
+        public static readonly ResultCodes GenericError                    = new ("GenericError");
 
 
-        public static readonly ResultCodes UnknownClient                   = new("UnknownClient");
-        public static readonly ResultCodes NetworkError                    = new("NetworkError");
-        public static readonly ResultCodes Timeout                         = new("Timeout");
+        public static readonly ResultCodes UnknownClient                   = new ("UnknownClient");
+        public static readonly ResultCodes NetworkError                    = new ("NetworkError");
+        public static readonly ResultCodes Timeout                         = new ("Timeout");
 
 
 

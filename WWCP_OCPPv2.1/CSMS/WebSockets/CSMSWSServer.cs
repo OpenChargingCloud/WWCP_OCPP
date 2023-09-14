@@ -201,22 +201,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public event OnWebSocketTextMessageRequestDelegate?     OnTextMessageRequestReceived;
 
         /// <summary>
-        /// An event sent whenever the response to a text message request was received.
-        /// </summary>
-        public event OnWebSocketTextMessageResponseDelegate?    OnTextMessageResponseReceived;
-
-        /// <summary>
-        /// An event sent whenever an error response to a text message request was received.
-        /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?      OnTextErrorResponseReceived;
-
-
-        /// <summary>
-        /// An event sent whenever a text message request was sent.
-        /// </summary>
-        public event OnWebSocketTextMessageRequestDelegate?     OnTextMessageRequestSent;
-
-        /// <summary>
         /// An event sent whenever the response to a text message was sent.
         /// </summary>
         public event OnWebSocketTextMessageResponseDelegate?    OnTextMessageResponseSent;
@@ -226,6 +210,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public event OnWebSocketTextErrorResponseDelegate?      OnTextErrorResponseSent;
 
+
+        /// <summary>
+        /// An event sent whenever a text message request was sent.
+        /// </summary>
+        public event OnWebSocketTextMessageRequestDelegate?     OnTextMessageRequestSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a text message request was received.
+        /// </summary>
+        public event OnWebSocketTextMessageResponseDelegate?    OnTextMessageResponseReceived;
+
+        /// <summary>
+        /// An event sent whenever an error response to a text message request was received.
+        /// </summary>
+        public event OnWebSocketTextErrorResponseDelegate?      OnTextErrorResponseReceived;
+
         #endregion
 
         #region Generic Binary Messages
@@ -233,23 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a binary message request was received.
         /// </summary>
-        public event OnWebSocketBinaryMessageDelegate?            OnBinaryMessageRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
-
-        /// <summary>
-        /// An event sent whenever the error response to a binary message request was sent.
-        /// </summary>
-        public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
-
-
-        /// <summary>
-        /// An event sent whenever a binary message request was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageDelegate?            OnBinaryMessageRequestSent;
+        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
 
         /// <summary>
         /// An event sent whenever the response to a binary message was sent.
@@ -260,6 +244,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// An event sent whenever the error response to a binary message was sent.
         /// </summary>
         public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
+
+
+        /// <summary>
+        /// An event sent whenever a binary message request was sent.
+        /// </summary>
+        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a binary message request was received.
+        /// </summary>
+        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
+
+        /// <summary>
+        /// An event sent whenever the error response to a binary message request was sent.
+        /// </summary>
+        public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
 
         #endregion
 
@@ -2070,6 +2070,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
+        #region AddOrUpdateHTTPBasicAuth(ChargeBoxId, Password)
+
+        /// <summary>
+        /// Add the given HTTP Basic Authentication password for the given charge box.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of the charge box.</param>
+        /// <param name="Password">The password of the charge box.</param>
+        public void AddOrUpdateHTTPBasicAuth(ChargeBox_Id  ChargeBoxId,
+                                             String        Password)
+        {
+
+            ChargingBoxLogins.AddOrUpdate(ChargeBoxId,
+                                          Password,
+                                          (chargeBoxId, password) => Password);
+
+        }
+
+        #endregion
+
+        #region RemoveHTTPBasicAuth     (ChargeBoxId)
+
+        /// <summary>
+        /// Remove the given HTTP Basic Authentication for the given charge box.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of the charge box.</param>
+        public void RemoveHTTPBasicAuth(ChargeBox_Id ChargeBoxId)
+        {
+            ChargingBoxLogins.TryRemove(ChargeBoxId, out _);
+        }
+
+        #endregion
+
+
         #region (protected) ValidateTCPConnection        (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         private Task<ConnectionFilterResponse> ValidateTCPConnection(DateTime                      LogTimestamp,
@@ -2254,13 +2287,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            String?                           Reason)
         {
 
-            lock (connectedChargingBoxes)
+            if (Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId", out var chargeBoxId))
             {
-                if (Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId", out var chargeBoxId))
-                {
-                    //DebugX.Log(nameof(CSMSWSServer), " Charge box " + chargeBoxId + " disconnected!");
-                    connectedChargingBoxes.TryRemove(chargeBoxId, out _);
-                }
+                //DebugX.Log(nameof(CSMSWSServer), " Charge box " + chargeBoxId + " disconnected!");
+                connectedChargingBoxes.TryRemove(chargeBoxId, out _);
             }
 
             return Task.CompletedTask;
@@ -2287,30 +2317,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                     CancellationToken          CancellationToken)
         {
 
-            if (OCPPTextMessage.Trim().IsNullOrEmpty())
-            {
-
-                DebugX.Log(nameof(CSMSWSServer) + " The given OCPP message must not be null or empty!");
-
-                // "No response" to the charging station!
-                return new WebSocketTextMessageResponse(
-                           RequestTimestamp,
-                           OCPPTextMessage,
-                           Timestamp.Now,
-                           new JArray().ToString(JSONFormatting),
-                           EventTrackingId
-                       );
-
-            }
-
             OCPP_WebSocket_ResponseMessage? OCPPResponse        = null;
             OCPP_WebSocket_ErrorMessage?    OCPPErrorResponse   = null;
+
+            var eventTrackingId = EventTracking_Id.New;
 
             try
             {
 
-                var eventTrackingId  = EventTracking_Id.New;
-                var json             = JArray.Parse(OCPPTextMessage);
+                var json = JArray.Parse(OCPPTextMessage);
 
                 #region MessageType 2: CALL        (A request  from a charging station)
 
@@ -2359,7 +2374,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
 
                     #endregion
-
 
                     #region Initial checks
 
@@ -6579,7 +6593,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         }
 
-
                     #region OnTextMessageResponseSent
 
                     var now = Timestamp.Now;
@@ -6614,42 +6627,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             catch (Exception e)
                             {
                                 DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTextMessageResponseSent));
-                            }
-
-                        }
-
-                    }
-
-                    #endregion
-
-                    #region OnTextErrorResponseSent
-
-                    if (OCPPErrorResponse is not null)
-                    {
-
-                        var logger = OnTextErrorResponseSent;
-                        if (logger is not null)
-                        {
-
-                            var loggerTasks = logger.GetInvocationList().
-                                                     OfType <OnWebSocketTextMessageResponseDelegate>().
-                                                     Select (loggingDelegate => loggingDelegate.Invoke(now,
-                                                                                                       this,
-                                                                                                       Connection,
-                                                                                                       eventTrackingId,
-                                                                                                       RequestTimestamp,
-                                                                                                       json.ToString(JSONFormatting),
-                                                                                                       now,
-                                                                                                       (OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON())?.ToString(JSONFormatting))).
-                                                     ToArray();
-
-                            try
-                            {
-                                await Task.WhenAll(loggerTasks);
-                            }
-                            catch (Exception e)
-                            {
-                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTextErrorResponseSent));
                             }
 
                         }
@@ -6718,7 +6695,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region MessageType 4: CALLERROR   (A charging station reports an error on a received request)
+                #region MessageType 4: CALLERROR   (A charging station reports an error for a received request)
 
                 // [
                 //     4,                         // MessageType: CALLERROR
@@ -6796,75 +6773,96 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Unknown message structure
+
                 else
                 {
 
-                    // It does not make much sense to send this error to a charging station as no one will read it there!
-                    DebugX.Log(nameof(CSMSWSServer) + " The OCPP message '" + OCPPTextMessage + "' is invalid!");
+                    OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                            Request_Id.Zero,
+                                            ResultCodes.InternalError,
+                                            $"{nameof(CSMSWSServer)} The OCPP message '{OCPPTextMessage}' is invalid!",
+                                            new JObject(
+                                                new JProperty("request", OCPPTextMessage)
+                                            )
+                                        );
 
-                    //new WSErrorMessage(Request_Id.Parse(JSON.Count >= 2 ? JSON[1]?.Value<String>()?.Trim() : "unknown"),
-                    //                                  WSErrorCodes.FormationViolation,
-                    //                                  "The given OCPP request message is invalid!",
-                    //                                  new JObject(
-                    //                                      new JProperty("request", TextMessage)
-                    //                                 ));
-
-                    //// No response to the charging station!
-                    //return null;
+                    DebugX.Log(OCPPErrorResponse.ErrorDescription);
 
                 }
+
+                #endregion
 
             }
             catch (Exception e)
             {
+                #region Handle exception
 
-                // It does not make much sense to send this error to a charging station as no one will read it there!
-                DebugX.LogException(e, "The OCPP message '" + OCPPTextMessage + "' received in " + nameof(CSMSWSServer) + " led to an exception!");
+                OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                        Request_Id.Zero,
+                                        ResultCodes.InternalError,
+                                        $"The OCPP message '{OCPPTextMessage}' received in " + nameof(CSMSWSServer) + " led to an exception!",
+                                        new JObject(
+                                            new JProperty("request",      OCPPTextMessage),
+                                            new JProperty("exception",    e.Message),
+                                            new JProperty("stacktrace",   e.StackTrace)
+                                        )
+                                    );
 
-                //ErrorMessage = new WSErrorMessage(Request_Id.Parse(JSON != null && JSON.Count >= 2
-                //                                                       ? JSON?[1].Value<String>()?.Trim()
-                //                                                       : "Unknown request identification"),
-                //                                  WSErrorCodes.FormationViolation,
-                //                                  "Processing the given OCPP request message led to an exception!",
-                //                                  new JObject(
-                //                                      new JProperty("request",     TextMessage),
-                //                                      new JProperty("exception",   e.Message),
-                //                                      new JProperty("stacktrace",  e.StackTrace)
-                //                                  ));
+                DebugX.LogException(e, OCPPErrorResponse.ErrorDescription);
+
+                #endregion
+            }
+
+
+            #region OnTextErrorResponseSent
+
+            if (OCPPErrorResponse is not null)
+            {
+
+                var now    = Timestamp.Now;
+                var logger = OnTextErrorResponseSent;
+                if (logger is not null)
+                {
+
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnWebSocketTextErrorResponseDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(now,
+                                                                                               this,
+                                                                                               Connection,
+                                                                                               eventTrackingId,
+                                                                                               RequestTimestamp,
+                                                                                               OCPPTextMessage,
+                                                                                               now,
+                                                                                               (OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON())?.ToString(JSONFormatting))).
+                                             ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(loggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnTextErrorResponseSent));
+                    }
+
+                }
 
             }
 
-            // The response to the charging station...
+            #endregion
+
+
+            // The response to the charging station... might be empty!
             return new WebSocketTextMessageResponse(
                        RequestTimestamp,
                        OCPPTextMessage,
                        Timestamp.Now,
                        (OCPPResponse?.     ToJSON() ??
-                        OCPPErrorResponse?.ToJSON())?.ToString(JSONFormatting)
-                           ?? String.Empty,
+                        OCPPErrorResponse?.ToJSON())?.ToString(JSONFormatting) ?? String.Empty,
                        EventTrackingId
                    );
 
-        }
-
-        #endregion
-
-
-        #region AddHTTPBasicAuth(ChargeBoxId, Password)
-
-        /// <summary>
-        /// Add the given HTTP Basic Authentication password for the given charge box.
-        /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of the charge box.</param>
-        /// <param name="Password">The password of the charge box.</param>
-        public void AddHTTPBasicAuth(ChargeBox_Id  ChargeBoxId,
-                                     String        Password)
-        {
-            lock (ChargingBoxLogins)
-            {
-                ChargingBoxLogins.TryRemove(ChargeBoxId, out _);
-                ChargingBoxLogins.TryAdd   (ChargeBoxId, Password);
-            }
         }
 
         #endregion
@@ -7079,6 +7077,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+
+        #region CSMS -> Charging Station Messages
 
         #region Reset                      (Request)
 
@@ -10820,6 +10820,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             return response;
 
         }
+
+        #endregion
 
         #endregion
 

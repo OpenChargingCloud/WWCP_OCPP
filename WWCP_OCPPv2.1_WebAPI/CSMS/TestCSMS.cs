@@ -178,22 +178,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public event OnWebSocketTextMessageRequestDelegate?     OnTextMessageRequestReceived;
 
         /// <summary>
-        /// An event sent whenever the response to a text message request was received.
-        /// </summary>
-        public event OnWebSocketTextMessageResponseDelegate?    OnTextMessageResponseReceived;
-
-        /// <summary>
-        /// An event sent whenever an error response to a text message request was received.
-        /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?      OnTextErrorResponseReceived;
-
-
-        /// <summary>
-        /// An event sent whenever a text message request was sent.
-        /// </summary>
-        public event OnWebSocketTextMessageRequestDelegate?     OnTextMessageRequestSent;
-
-        /// <summary>
         /// An event sent whenever the response to a text message was sent.
         /// </summary>
         public event OnWebSocketTextMessageResponseDelegate?    OnTextMessageResponseSent;
@@ -203,6 +187,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public event OnWebSocketTextErrorResponseDelegate?      OnTextErrorResponseSent;
 
+
+        /// <summary>
+        /// An event sent whenever a text message request was sent.
+        /// </summary>
+        public event OnWebSocketTextMessageRequestDelegate?     OnTextMessageRequestSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a text message request was received.
+        /// </summary>
+        public event OnWebSocketTextMessageResponseDelegate?    OnTextMessageResponseReceived;
+
+        /// <summary>
+        /// An event sent whenever an error response to a text message request was received.
+        /// </summary>
+        public event OnWebSocketTextErrorResponseDelegate?      OnTextErrorResponseReceived;
+
         #endregion
 
         #region Generic Binary Messages
@@ -210,23 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever a binary message request was received.
         /// </summary>
-        public event OnWebSocketBinaryMessageDelegate?            OnBinaryMessageRequestReceived;
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
-
-        /// <summary>
-        /// An event sent whenever the error response to a binary message request was sent.
-        /// </summary>
-        public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
-
-
-        /// <summary>
-        /// An event sent whenever a binary message request was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageDelegate?            OnBinaryMessageRequestSent;
+        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
 
         /// <summary>
         /// An event sent whenever the response to a binary message was sent.
@@ -237,6 +221,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event sent whenever the error response to a binary message was sent.
         /// </summary>
         public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
+
+
+        /// <summary>
+        /// An event sent whenever a binary message request was sent.
+        /// </summary>
+        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a binary message request was received.
+        /// </summary>
+        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
+
+        /// <summary>
+        /// An event sent whenever the error response to a binary message request was sent.
+        /// </summary>
+        public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
 
         #endregion
 
@@ -1351,18 +1351,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         #endregion
-
-
-        private Task HandleErrors(String     Module,
-                                  String     Caller,
-                                  Exception  ExceptionOccured)
-        {
-
-            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
-
-            return Task.CompletedTask;
-
-        }
 
 
         #region CreateWebSocketService(...)
@@ -5011,7 +4999,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region CSMS to Charging Station Messages
+        #region CSMS -> Charging Station Messages
 
         #region NextRequestId
 
@@ -7878,27 +7866,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-
-
-        #region AddHTTPBasicAuth(ChargeBoxId, Password)
+        #region AddOrUpdateHTTPBasicAuth(ChargeBoxId, Password)
 
         /// <summary>
         /// Add the given HTTP Basic Authentication password for the given charge box.
         /// </summary>
         /// <param name="ChargeBoxId">The unique identification of the charge box.</param>
         /// <param name="Password">The password of the charge box.</param>
-        public void AddHTTPBasicAuth(ChargeBox_Id  ChargeBoxId,
-                                     String        Password)
+        public void AddOrUpdateHTTPBasicAuth(ChargeBox_Id  ChargeBoxId,
+                                             String        Password)
         {
 
             foreach (var centralSystemServer in centralSystemServers)
             {
                 if (centralSystemServer is CSMSWSServer centralSystemWSServer)
                 {
-
-                    centralSystemWSServer.AddHTTPBasicAuth(ChargeBoxId,
-                                                           Password);
-
+                    centralSystemWSServer.AddOrUpdateHTTPBasicAuth(ChargeBoxId, Password);
                 }
             }
 
@@ -7906,6 +7889,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region RemoveHTTPBasicAuth(ChargeBoxId)
+
+        /// <summary>
+        /// Remove the given HTTP Basic Authentication for the given charge box.
+        /// </summary>
+        /// <param name="ChargeBoxId">The unique identification of the charge box.</param>
+        public void RemoveHTTPBasicAuth(ChargeBox_Id ChargeBoxId)
+        {
+
+            foreach (var centralSystemServer in centralSystemServers)
+            {
+                if (centralSystemServer is CSMSWSServer centralSystemWSServer)
+                {
+                    centralSystemWSServer.RemoveHTTPBasicAuth(ChargeBoxId);
+                }
+            }
+
+        }
+
+        #endregion
 
         #region ChargeBoxes
 
@@ -9849,6 +9852,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
         #endregion
+
+
+        private Task HandleErrors(String     Module,
+                                  String     Caller,
+                                  Exception  ExceptionOccured)
+        {
+
+            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
+
+            return Task.CompletedTask;
+
+        }
 
 
     }

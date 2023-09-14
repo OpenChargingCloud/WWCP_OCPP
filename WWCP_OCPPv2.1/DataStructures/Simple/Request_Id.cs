@@ -103,6 +103,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         // Maximum of 36 characters, to allow for GUIDs
         // Sometimes called: messageId?!?!
 
+        #region (static) Zero
+
+        /// <summary>
+        /// Zero
+        /// </summary>
+        public static Request_Id Zero
+            => Parse("0");
+
+        #endregion
+
         #region (static) NewRandom(Length = 30, IsLocal = false)
 
         /// <summary>
@@ -130,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var requestId))
                 return requestId;
 
-            throw new ArgumentException("Invalid text representation of a request identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a request identification: '{Text}'!",
                                         nameof(Text));
 
         }

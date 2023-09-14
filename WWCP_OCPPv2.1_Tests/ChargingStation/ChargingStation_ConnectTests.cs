@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
             if (testBackendWebSockets01 is not null)
             {
 
-                testCSMS01.AddHTTPBasicAuth(ChargeBox_Id.Parse("test01"), "1234abcd");
+                testCSMS01.AddOrUpdateHTTPBasicAuth(ChargeBox_Id.Parse("test01"), "1234abcd");
 
                 var response1 = chargingStation1.ConnectWebSocket(
                                                      From:                    "From:GD001",
