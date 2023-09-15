@@ -1,0 +1,482 @@
+﻿@import "../defaults/defaults.scss";
+
+
+#eventsFilterDiv {
+
+    padding:                30px 0 11px 0;
+    text-align:             right;
+    font-size:              9pt;
+
+    #group {
+
+        width:              30%;
+        margin-left:        auto;
+        margin-right:       0;
+        position:           relative;
+
+        #filter {
+            padding:            4px 6px 4px 23px;
+            width:              calc(100% - 29px);
+            border:             0;
+            border-radius:      4px;
+        }
+
+        #sign {
+            position:           absolute;
+            top:                4px;
+            right:              calc(100% - 18px);
+            font-size:          10pt;
+            color:              #AAAAAA;
+        }
+
+    }
+
+}
+
+
+#EventsDiv {
+    font-size:              14px;
+    padding-top:            5px;
+    display:                table;
+    border-spacing:         0px 1px;
+}
+
+
+.logLine {
+
+    display:                table-row;
+    width:                  100%;
+    padding:                6px 4px;
+    margin:                 1px 0px;
+    border-radius:          4px;
+
+    .timestamp {
+        display:                     table-cell;
+        vertical-align:              top;
+        font-size:                   80%;
+        padding:                     4px 6px;
+        border-top-left-radius:      4px;
+        border-bottom-left-radius:   4px;
+        white-space:                 nowrap;
+    }
+
+    .roamingNetwork {
+        display:                     table-cell;
+        vertical-align:              top;
+        font-size:                   80%;
+        padding:                     4px 6px;
+        white-space:                 nowrap;
+    }
+
+    .eventTrackingId {
+        display:                     none;
+        vertical-align:              top;
+        font-size:                   80%;
+        padding:                     4px 6px;
+        white-space:                 nowrap;
+    }
+
+    .command {
+        display:                     table-cell;
+        vertical-align:              top;
+        font-size:                   80%;
+        padding:                     4px 6px;
+        white-space:                 nowrap;
+    }
+
+    .message {
+
+        display:                     table-cell;
+        vertical-align:              top;
+        padding:                     4px 15px;
+        border-top-right-radius:     4px;
+        border-bottom-right-radius:  4px;
+        width:                       inherit;
+
+        .authentication {
+            border:             1px solid rgba(0, 0, 0, 0.4);
+            display:            inline-block;
+            border-radius:      3px;
+            padding:            1px 3px;
+        }
+
+        .providerId {
+            border:             1px solid rgba(0, 120, 0, 0.4);
+            display:            inline-block;
+            border-radius:      3px;
+            padding:            1px 3px;
+        }
+
+        .CSORoamingProviderId {
+            border:             1px solid rgba(0, 120, 0, 0.4);
+            display:            inline-block;
+            border-radius:      3px;
+            padding:            1px 3px;
+        }
+
+        .EMPRoamingProviderId {
+            border:             1px solid rgba(0, 120, 0, 0.4);
+            display:            inline-block;
+            border-radius:      3px;
+            padding:            1px 3px;
+        }
+
+        .authorizatorId {
+            border:             1px solid rgba(0, 120, 0, 0.4);
+            display:            inline-block;
+            border-radius:      3px;
+            padding:            1px 3px;
+        }
+
+        .location {
+            border:             1px solid rgba(0, 120, 0, 0.4);
+            display:            inline-block;
+            border-radius:      3px;
+            padding:            1px 3px;
+        }
+
+        .duration {
+            border:             1px solid rgba(0, 120, 0, 0.4);
+            display:            inline-block;
+            border-radius:      3px;
+            padding:            1px 3px;
+        }
+
+        .consumedEnergy {
+            border:             1px solid rgba(0, 120, 0, 0.4);
+            display:            inline-block;
+            border-radius:      3px;
+            padding:            1px 3px;
+        }
+
+        .reservationHandling {
+            border:             1px solid rgba(0, 120, 0, 0.4);
+            display:            inline-block;
+            border-radius:      3px;
+            padding:            1px 3px;
+        }
+
+
+
+        .EVSEStatus {
+            border:             1px solid rgba(0, 0, 120, 0.4);
+            display:            inline-block;
+            border-radius:      3px;
+            padding:            1px 3px;
+        }
+
+
+
+        .status_Available {
+            display:            inline-block;
+            background-image:   linear-gradient(to bottom, #B3DB92, #73B53E);
+            color:              #52842b;
+            font-size:          75%;
+            padding:            4px 6px;
+            border-radius:      4px;
+            text-align:         center;
+        }
+
+        .status_Available:before {
+            content:            "Available";
+        }
+
+        .status_Reserved {
+            display:            inline-block;
+            background-image:   linear-gradient(to bottom, #FFE07F, #E2C264);
+            color:              #ac881d;
+            font-size:          75%;
+            padding:            4px 6px;
+            border-radius:      4px;
+            text-align:         center;
+        }
+
+        .status_Reserved:before {
+            content:            "Reserved";
+        }
+
+        .status_Charging {
+            display:            inline-block;
+            background-image:   linear-gradient(to bottom, #E87D7D, #BD3535);
+            color:              #7b3232;
+            font-size:          75%;
+            padding:            4px 6px;
+            border-radius:      4px;
+            text-align:         center;
+        }
+
+        .status_Charging:before {
+            content:            "Charging";
+        }
+
+        .status_OutOfService {
+            display:            inline-block;
+            background-image:   linear-gradient(to bottom, #cdcdcd, #b3b3b3);
+            color:              #777777;
+            font-size:          75%;
+            padding:            4px 6px;
+            border-radius:      4px;
+            text-align:         center;
+        }
+
+        .status_OutOfService:before {
+            content:            "Out-Of-Service";
+        }
+
+
+        .status_Faulted {
+            display:            inline-block;
+            background-image:   linear-gradient(to bottom, #cdcdcd, #b3b3b3);
+            color:              #777777;
+            font-size:          75%;
+            padding:            4px 6px;
+            border-radius:      4px;
+            text-align:         center;
+        }
+
+        .status_Faulted:before {
+            content:            "Faulted";
+        }
+
+        .status_Offline {
+            display:            inline-block;
+            background-image:   linear-gradient(to bottom, #6d6d6d, #262626);
+            color:              #d1d1d1;
+            font-size:          75%;
+            padding:            4px 6px;
+            border-radius:      4px;
+            text-align:         center;
+        }
+
+        .status_Offline:before {
+            content:            "Offline";
+        }
+
+        .status_Unspecified {
+            display:            inline-block;
+            background-image:   linear-gradient(to bottom, #729fd8, #4174b3);
+            color:              #134078;
+            font-size:          75%;
+            padding:            4px 6px;
+            border-radius:      4px;
+            text-align:         center;
+        }
+
+        .status_Unspecified:before {
+            content:            "Unspecified";
+        }
+
+
+    }
+
+}
+
+
+
+/* Comment here */
+
+/*span.Timestamp {
+    display:            inline-block;
+    width:              140px;
+    vertical-align:     top;
+}
+
+.LogLine {
+    padding:            2px 5px 2px 5px;
+    background:         #F6F6F6;
+}*/
+
+
+
+/* Event types */
+
+/*span.OnStarted {
+    display:            inline-block;
+    color:              #C0C0C0;
+    width:              140px;
+    vertical-align:     top;
+    padding-top:        1px;
+}
+
+span.OnTCPPortAdded {
+    display:            inline-block;
+    color:              #C0C0C0;
+    width:              140px;
+    vertical-align:     top;
+    padding-top:        1px;
+}
+
+span.OnTCPPortRemoved {
+    display:            inline-block;
+    color:              #C0C0C0;
+    width:              140px;
+    vertical-align:     top;
+    padding-top:        1px;
+}
+
+span.RoamingNetwork {
+    display:            inline-block;
+    width:              100px;
+    color:              #888888;
+    font-size:          11px;
+    vertical-align:     top;
+    padding-top:        1px;
+}
+
+span.OnNewConnection {
+    display:            inline-block;
+    width:              140px;
+    color:              #888888;
+    font-size:          11px;
+    vertical-align:     top;
+    padding-top:        1px;
+}
+
+span.OnDataAvailable {
+    display:            inline-block;
+    width:              140px;
+    font-size:          11px;
+    vertical-align:     top;
+    padding-top:        1px;
+}
+
+span.OnUnknownDataStream {
+    display:            inline-block;
+    width:              140px;
+    color:              #B30F28;
+    font-size:          11px;
+    vertical-align:     top;
+    padding-top:        1px;
+}
+
+span.OnResult {
+    display:            inline-block;
+    width:              140px;
+    font-size:          11px;
+    vertical-align:     top;
+    padding-top:        1px;
+}
+
+span.OnTimeoutStarted {
+    display:            inline-block;
+    color:              #E2B115;
+    width:              140px;
+    font-size:          11px;
+    vertical-align:     top;
+    padding-top:        1px;
+}
+
+span.OnTimeout {
+    display:            inline-block;
+    color:              #E2B115;
+    width:              140px;
+    vertical-align:     top;
+    padding-top:        1px;
+}
+
+span.OnConnectionClosed {
+    display:            inline-block;
+    width:              140px;
+    color:              #888888;
+    font-size:          11px;
+    vertical-align:     top;
+    padding-top:        1px;
+}
+
+span.OnError {
+    display:            inline-block;
+    color:              #B30F28;
+    width:              140px;
+    font-size:          11px;
+    vertical-align:     top;
+    padding-top:        1px;
+}
+*/
+
+// Event messages
+
+/*
+span.OnStartedMessage {
+    display:            inline-block;
+    word-wrap:          break-word;
+    white-space:        pre;
+    width:              calc(100% - 390px);
+}
+
+span.OnTCPPortAddedMessage {
+    display:            inline-block;
+    word-wrap:          break-word;
+    white-space:        pre;
+    width:              calc(100% - 390px);
+}
+
+span.OnTCPPortRemovedMessage {
+    display:            inline-block;
+    word-wrap:          break-word;
+    white-space:        pre;
+    width:              calc(100% - 390px);
+}
+
+span.OnNewConnectionMessage {
+    display:            inline-block;
+    word-wrap:          break-word;
+    white-space:        pre;
+    width:              calc(100% - 390px);
+    color:              #888888;
+}
+
+span.OnDataAvailableMessage {
+    display:            inline-block;
+    word-wrap:          break-word;
+    white-space:        pre;
+    width:              calc(100% - 390px);
+}
+
+span.OnUnknownDataStreamMessage {
+    display:            inline-block;
+    word-wrap:          break-word;
+    white-space:        pre;
+    width:              calc(100% - 390px);
+    color:              #B30F28;
+}
+
+span.OnResultMessage {
+    display:            inline-block;
+    word-wrap:          break-word;
+    white-space:        pre;
+    width:              calc(100% - 390px);
+}
+
+span.OnTimeoutStartedMessage {
+    display:            inline-block;
+    word-wrap:          break-word;
+    white-space:        pre;
+    width:              calc(100% - 390px);
+    color:              #E2B115;
+}
+
+span.OnTimeoutMessage {
+    display:            inline-block;
+    word-wrap:          break-word;
+    white-space:        pre;
+    width:              calc(100% - 390px);
+    color:              #E2B115;
+}
+
+span.OnConnectionClosedMessage {
+    display:            inline-block;
+    word-wrap:          break-word;
+    white-space:        pre;
+    width:              calc(100% - 390px);
+    color:              #888888;
+}
+
+span.OnErrorMessage {
+    display:            inline-block;
+    word-wrap:          break-word;
+    white-space:        pre;
+    width:              calc(100% - 390px);
+    color:              #B30F28;
+}
+*/
+

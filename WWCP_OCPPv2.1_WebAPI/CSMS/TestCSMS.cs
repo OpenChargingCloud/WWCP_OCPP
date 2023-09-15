@@ -1434,11 +1434,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnServerStarted
 
-            CSMSChannel.OnServerStarted += async (Timestamp,
-                                                  server,
-                                                  eventTrackingId) => {
+            CSMSChannel.OnServerStarted += (Timestamp,
+                                            server,
+                                            eventTrackingId) => {
 
-                DebugX.Log("OCPP " + Version.Number + " web socket server has started on " + server.IPSocket);
+                DebugX.Log($"OCPP {Version.String} web socket server has started on {server.IPSocket}!");
+                return Task.CompletedTask;
 
             };
 

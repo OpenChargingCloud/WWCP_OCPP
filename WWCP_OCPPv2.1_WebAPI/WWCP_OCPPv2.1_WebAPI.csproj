@@ -8,6 +8,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="CSMS\HTTPRoot\css\events\events.css" />
+    <None Remove="CSMS\HTTPRoot\css\events\events.min.css" />
+    <None Remove="CSMS\HTTPRoot\defaults\defaults.scss" />
+    <None Remove="CSMS\HTTPRoot\defaults\defaults.ts" />
+    <None Remove="CSMS\HTTPRoot\events\events.scss" />
+    <None Remove="CSMS\HTTPRoot\events\index.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="CSMS\HTTPRoot\css\events\events.css" />
+    <EmbeddedResource Include="CSMS\HTTPRoot\css\events\events.min.css" />
+    <EmbeddedResource Include="CSMS\HTTPRoot\defaults\defaults.scss" />
+    <EmbeddedResource Include="CSMS\HTTPRoot\defaults\defaults.ts" />
+    <EmbeddedResource Include="CSMS\HTTPRoot\events\events.scss" />
+    <EmbeddedResource Include="CSMS\HTTPRoot\events\index.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
@@ -19,7 +37,6 @@
 
   <ItemGroup>
     <Folder Include="ChargingStation\HTTPRoot\" />
-    <Folder Include="CSMS\HTTPRoot\" />
     <Folder Include="NetworkingNode\HTTPRoot\" />
   </ItemGroup>
 

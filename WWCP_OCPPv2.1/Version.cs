@@ -25,14 +25,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     {
 
         /// <summary>
-        /// The current OCPP version.
+        /// This OCPP version 2.1 as text "v2.1".
         /// </summary>
-        public const String Number = "v2.1";
+        public const            String      String                   = "v2.1";
+
+        /// <summary>
+        /// This OCPP version "2.1" as version identification.
+        /// </summary>
+        public readonly static  Version_Id  Id                       = Version_Id.Parse(String[1..]);
 
         /// <summary>
         /// The current OCPP version identification for the HTTP Websocket connection setup.
         /// </summary>
-        public const String WebSocketSubProtocolId = "ocpp2.1";
+        public const            String      WebSocketSubProtocolId   = "ocpp2.1";
 
     }
 

@@ -128,11 +128,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The default HTTP user agent string.
         /// </summary>
-        public  new const  String    DefaultHTTPUserAgent    = "GraphDefined OCPP " + Version.Number + " CP WebSocket Client";
+        public new const       String    DefaultHTTPUserAgent    = $"GraphDefined OCPP {Version.String} CP WebSocket Client";
 
-        private     const  String    LogfileName             = "ChargePointWSClient.log";
+        private const          String    LogfileName             = "ChargePointWSClient.log";
 
-        public static      TimeSpan  DefaultRequestTimeout   = TimeSpan.FromSeconds(30);
+        public static readonly TimeSpan  DefaultRequestTimeout   = TimeSpan.FromSeconds(30);
 
         #endregion
 

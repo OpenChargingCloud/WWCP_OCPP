@@ -105,16 +105,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Constructor(s)
 
-        //public CSMSWebAPI(TestCSMS        TestCSMS
-        //                  )
-        //{
-
-
-        //}
-
-
-
-
         /// <summary>
         /// Attach the given OCPP charging station management system WebAPI to the given HTTP API.
         /// </summary>
@@ -133,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      String?                                     HTMLTemplate     = null)
 
             : base(HTTPAPI,
-                   HTTPServerName,
+                   HTTPServerName ?? $"OCPP {Version.String} Charging Station Web API",
                    URLPathPrefix,
                    BasePath,
                    HTMLTemplate)
@@ -142,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.CSMS                = TestCSMS;
             this.HTTPRealm           = HTTPRealm;
-            this.HTTPLogins          = HTTPLogins;
+            this.HTTPLogins          = HTTPLogins ?? Array.Empty<KeyValuePair<String, String>>();
 
             // Link HTTP events...
             //HTTPServer.RequestLog   += (HTTPProcessor, ServerTimestamp, Request)                                 => RequestLog. WhenAll(HTTPProcessor, ServerTimestamp, Request);
@@ -1052,7 +1042,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         #endregion
-
 
 
     }

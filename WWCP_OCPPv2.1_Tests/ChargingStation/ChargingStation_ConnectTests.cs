@@ -246,10 +246,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     // Sec-WebSocket-Version:   13
 
                     Assert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    response1.HTTPStatusCode);
-                    Assert.AreEqual($"GraphDefined OCPP {Version.Number} HTTP/WebSocket/JSON CSMS API",   response1.Server);
+                    Assert.AreEqual($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API",   response1.Server);
                     Assert.AreEqual("Upgrade",                                                            response1.Connection);
                     Assert.AreEqual("websocket",                                                          response1.Upgrade);
-                    Assert.IsTrue  (response1.SecWebSocketProtocol.Contains($"ocpp{Version.Number[1..]}"));
+                    Assert.IsTrue  (response1.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
                     Assert.AreEqual("13",                                                                 response1.SecWebSocketVersion);
 
                 }

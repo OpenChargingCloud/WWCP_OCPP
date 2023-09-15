@@ -539,7 +539,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                           String?                                     HTMLTemplate     = null)
 
             : base(HTTPAPI,
-                   HTTPServerName,
+                   HTTPServerName ?? $"OCPP {Version.String} CSMS Web API",
                    URLPathPrefix,
                    BasePath,
                    HTMLTemplate)
@@ -547,7 +547,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             this.HTTPRealm           = HTTPRealm;
-            this.HTTPLogins          = HTTPLogins;
+            this.HTTPLogins          = HTTPLogins ?? Array.Empty<KeyValuePair<String, String>>();
 
             // Link HTTP events...
             //HTTPServer.RequestLog   += (HTTPProcessor, ServerTimestamp, Request)                                 => RequestLog. WhenAll(HTTPProcessor, ServerTimestamp, Request);
@@ -3157,6 +3157,128 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return null;
 
             });
+
+
+            #region / (HTTPRoot)
+
+            HTTPBaseAPI.AddMethodCallback(
+                HTTPHostname.Any,
+                HTTPMethod.GET,
+                new HTTPPath[] {
+                    HTTPPath.Parse("/index.html"),
+                    HTTPPath.Parse("/"),
+                    HTTPPath.Parse("/{FileName}")
+                },
+                HTTPContentType.HTML_UTF8,
+                HTTPDelegate: Request => {
+
+                    var FilePath = (Request.ParsedURLParameters != null && Request.ParsedURLParameters.Length > 0)
+                                       ? Request.ParsedURLParameters.Last().Replace("/", ".")
+                                       : "index.html";
+
+                    if (FilePath.EndsWith(".", StringComparison.Ordinal))
+                        FilePath += "index.shtml";
+
+
+                    if (FilePath.EndsWith(".shtml", StringComparison.Ordinal))
+                    {
+
+                        var file = MixWithHTMLTemplate(FilePath);
+
+                        if (file.IsNullOrEmpty())
+                            return Task.FromResult(
+                                new HTTPResponse.Builder(Request) {
+                                    HTTPStatusCode  = HTTPStatusCode.NotFound,
+                                    Server          = HTTPServiceName,
+                                    Date            = Timestamp.Now,
+                                    CacheControl    = "public, max-age=300",
+                                    Connection      = "close"
+                                }.AsImmutable);
+
+                        else
+                            return Task.FromResult(
+                                new HTTPResponse.Builder(Request) {
+                                    HTTPStatusCode  = HTTPStatusCode.OK,
+                                    ContentType     = HTTPContentType.HTML_UTF8,
+                                    Content         = file.ToUTF8Bytes(),
+                                    Connection      = "close"
+                                }.AsImmutable);
+
+                    }
+
+                    else
+                    {
+
+                        var _MemoryStream  = new MemoryStream();
+                        var _FileStream    = GetResourceStream(FilePath);//this.GetType().Assembly.GetManifestResourceStream(HTTPRoot + "" + FilePath);
+
+                        #region File not found!
+
+                        if (_FileStream is null)
+                            return Task.FromResult(
+                                new HTTPResponse.Builder(Request) {
+                                    HTTPStatusCode  = HTTPStatusCode.NotFound,
+                                    Server          = HTTPServiceName,
+                                    Date            = Timestamp.Now,
+                                    CacheControl    = "public, max-age=300",
+                                    Connection      = "close"
+                                }.AsImmutable);
+
+                        #endregion
+
+                        _FileStream.SeekAndCopyTo(_MemoryStream, 0);
+
+                        #region Choose HTTP Content Type based on the file name extention...
+
+                        HTTPContentType ResponseContentType = null;
+
+                        var FileName = FilePath.Substring(FilePath.LastIndexOf("/") + 1);
+
+                        // Get the appropriate content type based on the suffix of the requested resource
+                        switch (FileName.Remove(0, FileName.LastIndexOf(".") + 1))
+                        {
+                            case "htm" : ResponseContentType = HTTPContentType.HTML_UTF8;       break;
+                            case "html": ResponseContentType = HTTPContentType.HTML_UTF8;       break;
+                            case "css" : ResponseContentType = HTTPContentType.CSS_UTF8;        break;
+                            case "gif" : ResponseContentType = HTTPContentType.GIF;             break;
+                            case "jpg" : ResponseContentType = HTTPContentType.JPEG;            break;
+                            case "jpeg": ResponseContentType = HTTPContentType.JPEG;            break;
+                            case "svg" : ResponseContentType = HTTPContentType.SVG;             break;
+                            case "png" : ResponseContentType = HTTPContentType.PNG;             break;
+                            case "ico" : ResponseContentType = HTTPContentType.ICO;             break;
+                            case "swf" : ResponseContentType = HTTPContentType.SWF;             break;
+                            case "js"  : ResponseContentType = HTTPContentType.JAVASCRIPT_UTF8; break;
+                            case "txt" : ResponseContentType = HTTPContentType.TEXT_UTF8;       break;
+                            case "xml" : ResponseContentType = HTTPContentType.XMLTEXT_UTF8;    break;
+                            default:     ResponseContentType = HTTPContentType.OCTETSTREAM;     break;
+                        }
+
+                        #endregion
+
+                        #region Create HTTP Response
+
+                        return Task.FromResult(
+                            new HTTPResponse.Builder(Request) {
+                                HTTPStatusCode  = HTTPStatusCode.OK,
+                                Server          = HTTPServiceName,
+                                Date            = Timestamp.Now,
+                                ContentType     = ResponseContentType,
+                                Content         = _MemoryStream.ToArray(),
+//                                CacheControl    = "public, max-age=300",
+                                //Expires          = "Mon, 25 Jun 2015 21:31:12 GMT",
+//                                KeepAlive       = new KeepAliveType(TimeSpan.FromMinutes(5), 500),
+//                                Connection      = "Keep-Alive",
+                                Connection      = "close"
+                            }.AsImmutable);
+
+                        #endregion
+
+                    }
+
+                });
+
+            #endregion
+
 
 
             #region / (HTTPRoot)
