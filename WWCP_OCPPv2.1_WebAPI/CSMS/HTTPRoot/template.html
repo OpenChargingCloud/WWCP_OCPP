@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Open Charging Cloud</title>
+
+    <meta name="description" content="Open Charging Cloud">
+    <meta name="author"      content="Achim Friedland, GraphDefined GmbH // Open Charging Cloud">
+    <meta name="viewport"    content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/styles.min.css"              type="text/css"  />
+    <link rel="stylesheet" href="/css/fontawesome-all.min.css" type="text/css"  />
+    <link rel="icon"       href="/login/images/favicon.png"    type="image/png" />
+
+    <script type="text/javascript" src="/shared/UsersAPI/defaults/defaults.js"></script>
+    <script type="text/javascript" src="/defaults/defaults.js"></script>
+    <script type="text/javascript" src="/shared/UsersAPI/login/SignInOut.js"></script>
+
+</head>
+
+<body>
+
+    <div id="app">
+
+        <div id="top">
+
+            <div id="logo">
+                <a href="/"><img src="/images/OCCloud_Logo_small.png" id="logopic" /></a>
+            </div>
+
+            <div id="center">
+            
+            </div>
+
+            <div id="right">
+
+                <a id="userFrame" href="/profile/profile.shtml" title="show your user profile">
+                    <div id="username"></div>
+                    <div id="userIcon"><i class="fas fa-user  fa-2x topicons"></i></div>
+                </a>
+
+                <a id="astronautFrame" href="javascript:Depersonate()" title="end impersonation">
+                    <div id="astronaut"></div>
+                    <div id="astronautIcon"><i class="fas fa-user-astronaut  fa-2x topicons"></i></div>
+                </a>
+
+                <a href="/admin/" id="admin" title="Admin area">
+                    <i class="fas fa-wrench  fa-2x topicons"></i>
+                </a>
+
+                <!--<a href="/maintenance"           id="maintenance" title="maintenance" ><i class="fa fa-bell         fa-2x topicons"></i><div id="mt">19</div></a>-->
+
+                <a href="javascript:SignOut()" id="signout" title="sign out">
+                    <i class="fas fa-sign-out-alt  fa-2x topicons"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+        <div id="bottom">
+
+            <div id="navigation">
+
+                <div id="navtop">
+
+                    <ul>
+                        <li id="ItemDashboard"     class="internal"><a href="javascript:MenuHighlight('Dashboard')"     title="Dashboard"    ><i class="fas fa-chart-bar   fa-2x menuicons"></i></a></li>
+                        <li id="ItemMaps"                          ><a href="javascript:MenuHighlight('Maps')"          title="Maps"         ><i class="fas fa-globe       fa-2x menuicons"></i></a></li>
+                        <li id="ItemLists"                         ><a href="javascript:MenuHighlight('Lists')"         title="Lists"        ><i class="fas fa-list-ul     fa-2x menuicons"></i></a></li>
+                        <li id="ItemTariffs"       class="internal"><a href="javascript:MenuHighlight('Tariffs')"       title="Tariffs"      ><i class="fas fa-euro-sign   fa-2x menuicons"></i></a></li>
+                        <li id="ItemEvents"        class="internal"><a href="javascript:MenuHighlight('Events')"        title="Events"       ><i class="fas fa-bell        fa-2x menuicons"></i></a></li>
+                        <li id="ItemAdapters"      class="internal"><a href="javascript:MenuHighlight('Adapters')"      title="Adapters"     ><i class="fas fa-link        fa-2x menuicons"></i></a></li>
+                        <li id="ItemDocumentation"                 ><a href="javascript:MenuHighlight('Documentation')" title="Documentation"><i class="fas fa-university  fa-2x menuicons"></i></a></li>
+                        <!--<li id="ItemSettings" ><a href="javascript:MenuHighlight('Settings')"  title="Settings" ><i class="fa fa-gears     fa-2x menuicons"></i></a></li>-->
+                    </ul>
+
+                </div>
+
+                <div id="navbottom">
+
+                    <ul>
+                        <li id="ItemAdapters"      class="internal"><a href="javascript:MenuHighlight('Adapters')"      title="Adapters"     ><i class="fas fa-link        fa-2x menuicons"></i></a></li>
+                        <li id="ItemDocumentation"                 ><a href="javascript:MenuHighlight('Documentation')" title="Documentation"><i class="fas fa-university  fa-2x menuicons"></i></a></li>
+                    </ul>
+
+                </div>
+
+            </div>
+
+            <div id="subnavigation">
+
+                <div id="MenuAdmin" class="subnavigation">
+                    <ul>
+                        <li><a href="/admin/index.shtml">Administration</a></li>
+                    </ul>
+                </div>
+
+                <div id="profilemenu" class="subnavigation">
+                    <ul>
+                        <li><a href="/profile/profile.shtml">Your profile</a></li>
+                        <li><a href="/profile/notifications.shtml">Notifications</a></li>
+                    </ul>
+                </div>
+
+                <div id="MenuDashboard" class="subnavigation">
+                    <ul>
+                        <li><a href="/dashboard/index.shtml">Overview</a></li>
+                    </ul>
+                </div>
+
+                <div id="MenuMaps" class="subnavigation">
+                    <ul>
+                        <li><a href="/maps/ChargingPools.shtml"   >Charging Pools</a></li>
+                        <li><a href="/maps/ChargingStations.shtml">Charging Stations</a></li>
+                        <li><a href="/maps/EVSEs.shtml"           >EVSEs</a></li>
+                    </ul>
+                </div>
+
+                <div id="MenuLists" class="subnavigation">
+                    <ul>
+                        <li><a href="/lists/RoamingNetworks.shtml"         >Roaming Networks</a></li>
+                        <li><a href="/lists/ChargingStationOperators.shtml">Operators</a></li>
+                        <li><a href="/lists/ChargingPools.shtml"           >Charging Pools</a></li>
+                        <li><a href="/lists/ChargingStations.shtml"        >Charging Stations</a></li>
+                        <li><a href="/lists/EVSEs.shtml"                   >EVSEs</a></li>
+                        <li><a href="/lists/NewEVSEIds.shtml"              >Neue EVSE Ids</a></li>
+                    </ul>
+                </div>
+
+                <div id="MenuTariffs" class="subnavigation">
+                    <ul>
+                        <li><a href="/tariffs/tariffs.shtml"         >All tariffs</a></li>
+                    </ul>
+                </div>
+
+                <div id="MenuEvents" class="subnavigation">
+                    <ul>
+
+                        <li><a href="/events/index.shtml">Produktiv</a></li>
+
+                        <li><a href="/events/hubject.shtml">Hubject</a></li>
+                        <li><a href="/events/plugsurfing.shtml">PlugSurfing</a></li>
+                        <li><a href="/events/eclearing.shtml">e-Clearing</a></li>
+                        <li><a href="/events/gireve.shtml">Gireve</a></li>
+
+                    </ul>
+                </div>
+
+                <div id="MenuAdapters" class="subnavigation">
+                    <ul>
+                        <li><a href="/adapters/index.shtml">chargeIT</a></li>
+                        <!--<li><a href="/adapters/index.shtml">HubjectCPO QA</a></li>-->
+                        <li><a href="/adapters/index.shtml">HubjectCPO Produktiv</a></li>
+                        <!--<li class="small"><a href="/adapters/index.shtml">HubjectCPO Produktiv</a></li>-->
+                        <li><a href="/RNs/Prod/IO/Gireve/WebAPI">Gireve CPO WebAPI</a></li>
+                    </ul>
+                </div>
+
+                <div id="MenuSettings" class="subnavigation">
+                    <ul>
+                        <li><a href="/maps/maps.shtml">Maps</a></li>
+                        <li><a href="/maps/lists.shtml">Lists</a></li>
+                        <li><a href="/maps/events.shtml">Notifications</a></li>
+                    </ul>
+                </div>
+
+                <div id="MenuDocumentation" class="subnavigation">
+                    <ul>
+                        <li id="ItemDocumentation/Overview"      ><a href="/documentation/index.shtml"         >Overview</a></li>
+                        <li id="ItemDocumentation/NetworkAccess" ><a href="/documentation/NetworkAccess.shtml" >Network access</a></li>
+                        <li id="ItemDocumentation/Identificators"><a href="/documentation/Identificators.shtml">Identificators</a></li>
+                        <li id="ItemDocumentation/WhereToCharge" ><a href="/documentation/WhereToCharge.shtml" >Where to charge</a></li>
+                        <li id="ItemDocumentation/RealtimeData"  ><a href="/documentation/RealtimeData.shtml"  >Realtime data</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div id="text"><%= content %></div>
+
+        </div>
+
+    </div>
+
+<script>
+
+    window.onload = function () {
+
+        checkSignedIn();
+
+    }
+
+</script>
+
+</body>
+
+</html>

@@ -2,5 +2,9 @@
   {
     "outputFile": "CSMS/HTTPRoot/css/events/events.css",
     "inputFile": "CSMS/HTTPRoot/events/events.scss"
+  },
+  {
+    "outputFile": "CSMS/HTTPRoot/css/template.css",
+    "inputFile": "CSMS/HTTPRoot/template.scss"
   }
 ]

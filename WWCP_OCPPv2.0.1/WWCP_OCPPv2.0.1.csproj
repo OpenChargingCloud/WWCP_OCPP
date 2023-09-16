@@ -4,6 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>cloud.charging.open.protocols.OCPPv2_0_1</AssemblyName>
+    <RootNamespace>cloud.charging.open.protocols.OCPPv2_0_1</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

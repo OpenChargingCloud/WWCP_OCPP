@@ -2,9 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <RootNamespace>WWCP_OCPPv2._1_Tests</RootNamespace>
+    <RootNamespace>cloud.charging.open.protocols.OCPPv2_1.tests</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>cloud.charging.open.protocols.OCPPv2_1.Tests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

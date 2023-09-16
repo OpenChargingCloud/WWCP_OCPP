@@ -150,6 +150,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            LogfilePrefix:            LogfilePrefix
                                        );
 
+            this.HTMLTemplate = HTMLTemplate ?? GetResourceString("template.html");
+
             RegisterURITemplates();
 
             #region HTTP-SSEs: ChargePoint   -> CSMS

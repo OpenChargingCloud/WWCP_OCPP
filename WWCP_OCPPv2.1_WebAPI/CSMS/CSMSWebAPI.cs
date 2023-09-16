@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public const String                        HTTPRoot                    = "cloud.charging.open.protocols.OCPPv2_1.WebAPI.HTTPRoot.";
+        public const String                        HTTPRoot                    = "cloud.charging.open.protocols.OCPPv2_1.WebAPI.CSMS.HTTPRoot.";
 
 
         //ToDo: http://www.iana.org/form/media-types
@@ -564,6 +564,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            EnableLogging:            true,
                                            LogfilePrefix:            LogfilePrefix
                                        );
+
+            this.HTMLTemplate = HTMLTemplate ?? GetResourceString("template.html");
 
             RegisterURITemplates();
 
@@ -3147,7 +3149,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Allow some URLs for anonymous access...
 
-                if (request.Path.StartsWith(URLPathPrefix + "/chargeBoxes"))
+                if (request.Path.StartsWith(URLPathPrefix + "/events")    ||
+                    request.Path.StartsWith(URLPathPrefix + "/chargeBox") ||
+                    request.Path.StartsWith(URLPathPrefix + "/chargeBoxes"))
                 {
                     return HTTPExtAPI.Anonymous;
                 }
@@ -3169,21 +3173,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     HTTPPath.Parse("/"),
                     HTTPPath.Parse("/{FileName}")
                 },
-                HTTPContentType.HTML_UTF8,
+                //HTTPContentType.HTML_UTF8,
                 HTTPDelegate: Request => {
 
-                    var FilePath = (Request.ParsedURLParameters != null && Request.ParsedURLParameters.Length > 0)
+                    var filePath = (Request.ParsedURLParameters is not null && Request.ParsedURLParameters.Length > 0)
                                        ? Request.ParsedURLParameters.Last().Replace("/", ".")
                                        : "index.html";
 
-                    if (FilePath.EndsWith(".", StringComparison.Ordinal))
-                        FilePath += "index.shtml";
+                    if (filePath.EndsWith(".",      StringComparison.Ordinal))
+                        filePath += "index.shtml";
 
 
-                    if (FilePath.EndsWith(".shtml", StringComparison.Ordinal))
+                    if (filePath.EndsWith(".shtml", StringComparison.Ordinal))
                     {
 
-                        var file = MixWithHTMLTemplate(FilePath);
+                        var file = MixWithHTMLTemplate(filePath);
 
                         if (file.IsNullOrEmpty())
                             return Task.FromResult(
@@ -3209,12 +3213,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     else
                     {
 
-                        var _MemoryStream  = new MemoryStream();
-                        var _FileStream    = GetResourceStream(FilePath);//this.GetType().Assembly.GetManifestResourceStream(HTTPRoot + "" + FilePath);
+                        var fileStream = GetResourceMemoryStream(filePath);//this.GetType().Assembly.GetManifestResourceStream(HTTPRoot + "" + FilePath);
 
                         #region File not found!
 
-                        if (_FileStream is null)
+                        if (fileStream is null)
                             return Task.FromResult(
                                 new HTTPResponse.Builder(Request) {
                                     HTTPStatusCode  = HTTPStatusCode.NotFound,
@@ -3226,32 +3229,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         #endregion
 
-                        _FileStream.SeekAndCopyTo(_MemoryStream, 0);
-
                         #region Choose HTTP Content Type based on the file name extention...
 
-                        HTTPContentType ResponseContentType = null;
-
-                        var FileName = FilePath.Substring(FilePath.LastIndexOf("/") + 1);
-
-                        // Get the appropriate content type based on the suffix of the requested resource
-                        switch (FileName.Remove(0, FileName.LastIndexOf(".") + 1))
-                        {
-                            case "htm" : ResponseContentType = HTTPContentType.HTML_UTF8;       break;
-                            case "html": ResponseContentType = HTTPContentType.HTML_UTF8;       break;
-                            case "css" : ResponseContentType = HTTPContentType.CSS_UTF8;        break;
-                            case "gif" : ResponseContentType = HTTPContentType.GIF;             break;
-                            case "jpg" : ResponseContentType = HTTPContentType.JPEG;            break;
-                            case "jpeg": ResponseContentType = HTTPContentType.JPEG;            break;
-                            case "svg" : ResponseContentType = HTTPContentType.SVG;             break;
-                            case "png" : ResponseContentType = HTTPContentType.PNG;             break;
-                            case "ico" : ResponseContentType = HTTPContentType.ICO;             break;
-                            case "swf" : ResponseContentType = HTTPContentType.SWF;             break;
-                            case "js"  : ResponseContentType = HTTPContentType.JAVASCRIPT_UTF8; break;
-                            case "txt" : ResponseContentType = HTTPContentType.TEXT_UTF8;       break;
-                            case "xml" : ResponseContentType = HTTPContentType.XMLTEXT_UTF8;    break;
-                            default:     ResponseContentType = HTTPContentType.OCTETSTREAM;     break;
-                        }
+                        var fileName             = filePath[(filePath.LastIndexOf("/") + 1)..];
+                        var responseContentType  = fileName.Remove(0, fileName.LastIndexOf(".") + 1) switch {
+                                                       "htm"   => HTTPContentType.HTML_UTF8,
+                                                       "html"  => HTTPContentType.HTML_UTF8,
+                                                       "css"   => HTTPContentType.CSS_UTF8,
+                                                       "gif"   => HTTPContentType.GIF,
+                                                       "jpg"   => HTTPContentType.JPEG,
+                                                       "jpeg"  => HTTPContentType.JPEG,
+                                                       "svg"   => HTTPContentType.SVG,
+                                                       "png"   => HTTPContentType.PNG,
+                                                       "ico"   => HTTPContentType.ICO,
+                                                       "swf"   => HTTPContentType.SWF,
+                                                       "js"    => HTTPContentType.JAVASCRIPT_UTF8,
+                                                       "txt"   => HTTPContentType.TEXT_UTF8,
+                                                       "xml"   => HTTPContentType.XMLTEXT_UTF8,
+                                                       _       => HTTPContentType.OCTETSTREAM,
+                                                   };
 
                         #endregion
 
@@ -3262,8 +3258,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 HTTPStatusCode  = HTTPStatusCode.OK,
                                 Server          = HTTPServiceName,
                                 Date            = Timestamp.Now,
-                                ContentType     = ResponseContentType,
-                                Content         = _MemoryStream.ToArray(),
+                                ContentType     = responseContentType,
+                                Content         = fileStream.ToArray(),
 //                                CacheControl    = "public, max-age=300",
                                 //Expires          = "Mon, 25 Jun 2015 21:31:12 GMT",
 //                                KeepAlive       = new KeepAliveType(TimeSpan.FromMinutes(5), 500),
@@ -3278,8 +3274,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 });
 
             #endregion
-
-
 
             #region / (HTTPRoot)
 
@@ -3434,10 +3428,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             // curl -v -H "Accept: application/json" http://127.0.0.1:3001/events
             // --------------------------------------------------------------------
             HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
-                                      HTTPMethod.GET,
-                                      URLPathPrefix + "events",
-                                      HTTPContentType.HTML_UTF8,
-                                      HTTPDelegate: Request => {
+                                          HTTPMethod.GET,
+                                          URLPathPrefix + "events",
+                                          HTTPContentType.HTML_UTF8,
+                                          HTTPDelegate: Request => {
 
                                           #region Get HTTP user and its organizations
 
@@ -3462,7 +3456,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                          AccessControlAllowMethods  = new[] { "GET" },
                                                          AccessControlAllowHeaders  = new[] { "Content-Type", "Accept", "Authorization" },
                                                          ContentType                = HTTPContentType.HTML_UTF8,
-                                                         Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
+                                                         Content                    = MixWithHTMLTemplate("events.index.shtml").ToUTF8Bytes(),
                                                          Connection                 = "close",
                                                          Vary                       = "Accept"
                                                      }.AsImmutable);

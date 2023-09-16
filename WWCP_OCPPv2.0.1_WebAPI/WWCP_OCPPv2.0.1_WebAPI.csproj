@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <RootNamespace>cloud.charging.open.protocols.OCPPv2_0.WebAPI</RootNamespace>
+    <RootNamespace>cloud.charging.open.protocols.OCPPv2_0_1.WebAPI</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>cloud.charging.open.protocols.OCPPv2_0.WebAPI</AssemblyName>
+    <AssemblyName>cloud.charging.open.protocols.OCPPv2_0_1.WebAPI</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

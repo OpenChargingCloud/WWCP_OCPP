@@ -1,0 +1,14 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "module": "system",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "allowJs": false,
+    "target": "ES2018"
+  },
+  "files": [
+    "CSMS/HTTPRoot/defaults/defaults.ts",
+    "CSMS/HTTPRoot/events/events.ts"
+  ]
+}
