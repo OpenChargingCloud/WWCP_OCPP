@@ -591,7 +591,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnNewTCPConnection",
                                                 JSONObject.Create(
-                                                    new JProperty("connection", connection.ToString())
+                                                    new JProperty("timestamp",    logTimestamp.ToIso8601()),
+                                                    new JProperty("connection",   connection.  ToJSON())
                                                 ));
 
             #endregion
@@ -606,7 +607,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnNewWebSocketConnection",
                                                 JSONObject.Create(
-                                                    new JProperty("connection", connection.ToString())
+                                                    new JProperty("timestamp",    logTimestamp.ToIso8601()),
+                                                    new JProperty("connection",   connection.  ToJSON())
                                                 ));
 
             #endregion
@@ -622,8 +624,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnCloseMessageReceived",
                                                 JSONObject.Create(
-                                                    new JProperty("connection",   connection.ToString()),
-                                                    new JProperty("statusCode",   statusCode.ToString()),
+                                                    new JProperty("timestamp",    logTimestamp.ToIso8601()),
+                                                    new JProperty("connection",   connection.  ToJSON()),
+                                                    new JProperty("statusCode",   statusCode.  ToString()),
                                                     new JProperty("reason",       reason)
                                                 ));
 
@@ -639,8 +642,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnTCPConnectionClosed",
                                                 JSONObject.Create(
-                                                    new JProperty("connection",  connection.ToString()),
-                                                    new JProperty("reason",      reason)
+                                                    new JProperty("timestamp",    logTimestamp.ToIso8601()),
+                                                    new JProperty("connection",   connection.  ToJSON()),
+                                                    new JProperty("reason",       reason)
                                                 ));
 
             #endregion
@@ -665,7 +669,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnTextMessageRequestReceived",
                                                 JSONObject.Create(
-                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
                                                     new JProperty("message",      requestMessage)
                                                 ));
 
@@ -684,7 +689,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnTextMessageResponseSent",
                                                 JSONObject.Create(
-                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
                                                     new JProperty("message",      responseMessage)
                                                 ));
 
@@ -703,7 +709,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnTextErrorResponseSent",
                                                 JSONObject.Create(
-                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
                                                     new JProperty("message",      responseMessage)
                                                 ));
 
@@ -721,7 +728,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnTextMessageRequestSent",
                                                 JSONObject.Create(
-                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
                                                     new JProperty("message",      requestMessage)
                                                 ));
 
@@ -740,7 +748,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnTextMessageResponseReceived",
                                                 JSONObject.Create(
-                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
                                                     new JProperty("message",      responseMessage)
                                                 ));
 
@@ -759,7 +768,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnTextErrorResponseReceived",
                                                 JSONObject.Create(
-                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
                                                     new JProperty("message",      responseMessage)
                                                 ));
 
@@ -780,7 +790,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnBinaryMessageRequestReceived",
                                                 JSONObject.Create(
-                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
                                                     new JProperty("message",      requestMessage)  // BASE64 encoded string!
                                                 ));
 
@@ -799,7 +810,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnBinaryMessageResponseSent",
                                                 JSONObject.Create(
-                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
                                                     new JProperty("message",      responseMessage)  // BASE64 encoded string!
                                                 ));
 
@@ -818,7 +830,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnBinaryErrorResponseSent",
                                                 JSONObject.Create(
-                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
                                                     new JProperty("message",      responseMessage)  // BASE64 encoded string!
                                                 ));
 
@@ -836,7 +849,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnBinaryMessageRequestSent",
                                                 JSONObject.Create(
-                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
                                                     new JProperty("message",      requestMessage)  // BASE64 encoded string!
                                                 ));
 
@@ -855,7 +869,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnBinaryMessageResponseReceived",
                                                 JSONObject.Create(
-                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
                                                     new JProperty("message",      responseMessage)  // BASE64 encoded string!
                                                 ));
 
@@ -874,7 +889,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 await this.EventLog.SubmitEvent("OnBinaryErrorResponseReceived",
                                                 JSONObject.Create(
-                                                    new JProperty("connection",   webSocketConnection.ToString()),
+                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
+                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
                                                     new JProperty("message",      responseMessage)  // BASE64 encoded string!
                                                 ));
 
@@ -887,13 +903,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnBootNotification                      (-Request/-Response)
 
-            CSMS.OnBootNotificationRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnBootNotificationRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnBootNotificationRequest",
-                                                request.ToAbstractJSON(request.ToJSON(CustomBootNotificationRequestSerializer,
+                                                request.ToAbstractJSON(connection,
+                                                                       request.ToJSON(CustomBootNotificationRequestSerializer,
                                                                                       CustomChargingStationSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnBootNotificationResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnBootNotificationResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnBootNotificationResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomBootNotificationRequestSerializer,
                                                                                         CustomChargingStationSerializer,
@@ -3149,7 +3166,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Allow some URLs for anonymous access...
 
-                if (request.Path.StartsWith(URLPathPrefix + "/events")    ||
+                if (request.Path.StartsWith(URLPathPrefix + "/js")        ||
+                    request.Path.StartsWith(URLPathPrefix + "/events")    ||
                     request.Path.StartsWith(URLPathPrefix + "/chargeBox") ||
                     request.Path.StartsWith(URLPathPrefix + "/chargeBoxes"))
                 {
@@ -3161,6 +3179,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return null;
 
             });
+
+
+            #region /shared/UsersAPI
+
+            //HTTPBaseAPI.RegisterResourcesFolder(this,
+            //                                    HTTPHostname.Any,
+            //                                    URLPathPrefix + "shared/UsersAPI",
+            //                                    HTTPRoot.Substring(0, HTTPRoot.Length - 1),
+            //                                    typeof(UsersAPI).Assembly);
+
+            #endregion
 
 
             #region / (HTTPRoot)

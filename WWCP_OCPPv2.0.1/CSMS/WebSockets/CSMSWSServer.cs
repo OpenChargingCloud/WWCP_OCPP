@@ -2003,7 +2003,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
             {
 
                 // Add the chargeBoxId to the WebSocket connection
-                Connection.AddCustomData("chargeBoxId", chargeBoxId);
+                Connection.TryAddCustomData("chargeBoxId", chargeBoxId);
 
                 lock (connectedChargingBoxes)
                 {

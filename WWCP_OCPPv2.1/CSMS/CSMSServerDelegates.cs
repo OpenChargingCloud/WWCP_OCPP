@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
@@ -33,12 +34,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the boot notification request.</param>
     /// <param name="Sender">The sender of the boot notification request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The boot notification request.</param>
     public delegate Task
 
-        OnBootNotificationRequestDelegate(DateTime                  Timestamp,
-                                          IEventSender              Sender,
-                                          BootNotificationRequest   Request);
+        OnBootNotificationRequestDelegate(DateTime                    Timestamp,
+                                          IEventSender                Sender,
+                                          WebSocketServerConnection   Connection,
+                                          BootNotificationRequest     Request);
 
 
     /// <summary>
@@ -46,14 +49,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the boot notification request.</param>
     /// <param name="Sender">The sender of the boot notification request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The boot notification request.</param>
     /// <param name="CancellationToken">A token to cancel this boot notification request.</param>
     public delegate Task<BootNotificationResponse>
 
-        OnBootNotificationDelegate(DateTime                  Timestamp,
-                                   IEventSender              Sender,
-                                   BootNotificationRequest   Request,
-                                   CancellationToken         CancellationToken);
+        OnBootNotificationDelegate(DateTime                    Timestamp,
+                                   IEventSender                Sender,
+                                   WebSocketServerConnection   Connection,
+                                   BootNotificationRequest     Request,
+                                   CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -61,16 +66,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the boot notification response.</param>
     /// <param name="Sender">The sender of the boot notification response.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The boot notification request.</param>
     /// <param name="Response">The boot notification response.</param>
     /// <param name="Runtime">The runtime of the boot notification response.</param>
     public delegate Task
 
-        OnBootNotificationResponseDelegate(DateTime                   Timestamp,
-                                           IEventSender               Sender,
-                                           BootNotificationRequest    Request,
-                                           BootNotificationResponse   Response,
-                                           TimeSpan                   Runtime);
+        OnBootNotificationResponseDelegate(DateTime                    Timestamp,
+                                           IEventSender                Sender,
+                                           WebSocketServerConnection   Connection,
+                                           BootNotificationRequest     Request,
+                                           BootNotificationResponse    Response,
+                                           TimeSpan                    Runtime);
 
     #endregion
 

@@ -1391,7 +1391,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 // Add the chargeBoxId to the web socket connection
-                Connection.AddCustomData("chargeBoxId", chargeBoxId);
+                Connection.TryAddCustomData("chargeBoxId", chargeBoxId);
 
                 lock (connectedChargingBoxes)
                 {

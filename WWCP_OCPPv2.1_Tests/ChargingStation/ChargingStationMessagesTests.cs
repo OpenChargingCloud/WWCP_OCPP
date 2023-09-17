@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 var bootNotificationRequests= new ConcurrentList<CS.BootNotificationRequest>();
 
-                testCSMS01.OnBootNotificationRequest += (timestamp, sender, bootNotificationRequest) => {
+                testCSMS01.OnBootNotificationRequest += (timestamp, sender, connection, bootNotificationRequest) => {
                     bootNotificationRequests.TryAdd(bootNotificationRequest);
                     return Task.CompletedTask;
                 };

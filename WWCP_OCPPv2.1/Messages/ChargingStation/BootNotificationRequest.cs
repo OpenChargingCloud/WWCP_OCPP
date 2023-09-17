@@ -328,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     BootNotificationRequest = CustomBootNotificationRequestParser(JSON,
                                                                                   BootNotificationRequest);
 
-                return false;
+                return true;
 
             }
             catch (Exception e)

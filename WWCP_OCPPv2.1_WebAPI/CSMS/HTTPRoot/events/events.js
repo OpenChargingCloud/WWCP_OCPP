@@ -70,39 +70,99 @@ function StartEventsSSE() {
         eventsSource.onerror = function (event) {
             console.debug(event);
         };
-        eventsSource.addEventListener('AUTHSTARTRequest', function (event) {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+        eventsSource.addEventListener('OnNewTCPConnection', function (event) {
+            var _a, _b;
             try {
                 const request = JSON.parse(event.data);
-                const authentication = (_m = (_k = (_h = (_f = (_d = (_b = (_a = request.authentication) === null || _a === void 0 ? void 0 : _a.authToken) !== null && _b !== void 0 ? _b : (_c = request.authentication) === null || _c === void 0 ? void 0 : _c.QRCodeIdentification) !== null && _d !== void 0 ? _d : (_e = request.authentication) === null || _e === void 0 ? void 0 : _e.plugAndChargeIdentification) !== null && _f !== void 0 ? _f : (_g = request.authentication) === null || _g === void 0 ? void 0 : _g.remoteIdentification) !== null && _h !== void 0 ? _h : (_j = request.authentication) === null || _j === void 0 ? void 0 : _j.PIN) !== null && _k !== void 0 ? _k : (_l = request.authentication) === null || _l === void 0 ? void 0 : _l.publicKey) !== null && _m !== void 0 ? _m : null;
-                const location = (_v = (_t = (_r = (_p = (_o = request.chargingLocation) === null || _o === void 0 ? void 0 : _o.EVSEId) !== null && _p !== void 0 ? _p : (_q = request.chargingLocation) === null || _q === void 0 ? void 0 : _q.chargingStationId) !== null && _r !== void 0 ? _r : (_s = request.chargingLocation) === null || _s === void 0 ? void 0 : _s.chargingPoolId) !== null && _t !== void 0 ? _t : (_u = request.chargingLocation) === null || _u === void 0 ? void 0 : _u.chargingStationOperatorId) !== null && _v !== void 0 ? _v : null;
-                const operatorId = request.operatorId && (location === null || location === void 0 ? void 0 : location.indexOf(request.operatorId)) < 0 ? request.operatorId : null;
-                CreateLogEntry(request.timestamp, request.roamingNetworkId, request.eventTrackingId, "AUTHSTART", "<div class=\"authentication\">" + authentication + "</div>" +
-                    (location ? " at <div class=\"location\">" + location + "</div>" : "") +
-                    (operatorId ? "    <div class=\"operatorId\">" + operatorId + "</div>" : "") +
-                    "<span class=\"hidden\">(partnerSessionId " + request.partnerSessionId + ")</span>", request.EVSEId // ConnectionColorKey
+                CreateLogEntry(request.timestamp, (_b = (_a = request.connection.customData) === null || _a === void 0 ? void 0 : _a.chargeBoxId) !== null && _b !== void 0 ? _b : "-", request.eventTrackingId, "OnNewTCPConnection", request.connection.remoteSocket, request.connection.remoteSocket // ConnectionColorKey
                 );
             }
             catch (exception) {
                 console.debug(exception);
             }
         }, false);
-        eventsSource.addEventListener('AUTHSTARTResponse', function (event) {
+        eventsSource.addEventListener('OnNewWebSocketConnection', function (event) {
+            var _a, _b;
             try {
-                const response = JSON.parse(event.data);
-                const result = response.result;
-                AppendLogEntry(response.timestamp, response.roamingNetwork, 
+                const request = JSON.parse(event.data);
+                CreateLogEntry(request.timestamp, (_b = (_a = request.connection.customData) === null || _a === void 0 ? void 0 : _a.chargeBoxId) !== null && _b !== void 0 ? _b : "-", request.eventTrackingId, "OnNewWebSocketConnection", request.connection.remoteSocket, request.connection.remoteSocket // ConnectionColorKey
+                );
+            }
+            catch (exception) {
+                console.debug(exception);
+            }
+        }, false);
+        eventsSource.addEventListener('OnTextMessageRequestReceived', function (event) {
+            try {
+                const request = JSON.parse(event.data);
+                CreateLogEntry(request.timestamp, request.connection.customData.chargeBoxId, request.eventTrackingId, "OnTextMessageRequestReceived", request.message, request.connection.remoteSocket // ConnectionColorKey
+                );
+            }
+            catch (exception) {
+                console.debug(exception);
+            }
+        }, false);
+        eventsSource.addEventListener('OnTextMessageResponseSent', function (event) {
+            try {
+                const request = JSON.parse(event.data);
+                CreateLogEntry(request.timestamp, request.connection.customData.chargeBoxId, request.eventTrackingId, "OnTextMessageResponseSent", request.message, request.connection.remoteSocket // ConnectionColorKey
+                );
+            }
+            catch (exception) {
+                console.debug(exception);
+            }
+        }, false);
+        eventsSource.addEventListener('OnTextMessageErrorSent', function (event) {
+            try {
+                const request = JSON.parse(event.data);
+                CreateLogEntry(request.timestamp, request.connection.customData.chargeBoxId, request.eventTrackingId, "OnTextMessageErrorSent", JSON.stringify(request), request.connection.remoteSocket // ConnectionColorKey
+                );
+            }
+            catch (exception) {
+                console.debug(exception);
+            }
+        }, false);
+        eventsSource.addEventListener('OnClosesMessageReceived', function (event) {
+            try {
+                const request = JSON.parse(event.data);
+                CreateLogEntry(request.timestamp, request.connection.customData.chargeBoxId, request.eventTrackingId, "OnClosesMessageReceived", request.connection.remoteSocket, request.connection.remoteSocket // ConnectionColorKey
+                );
+            }
+            catch (exception) {
+                console.debug(exception);
+            }
+        }, false);
+        eventsSource.addEventListener('OnTCPConnectionClosed', function (event) {
+            try {
+                const request = JSON.parse(event.data);
+                CreateLogEntry(request.timestamp, request.connection.customData.chargeBoxId, request.eventTrackingId, "OnTCPConnectionClosed", request.connection.remoteSocket, request.connection.remoteSocket // ConnectionColorKey
+                );
+            }
+            catch (exception) {
+                console.debug(exception);
+            }
+        }, false);
+        eventsSource.addEventListener('OnBootNotificationRequest', function (event) {
+            try {
+                const request = JSON.parse(event.data);
+                CreateLogEntry(request.timestamp, request.chargeBoxId, request.eventTrackingId, "OnBootNotification", JSON.stringify(request.data), request.connection.remoteSocket // ConnectionColorKey
+                );
+            }
+            catch (exception) {
+                console.debug(exception);
+            }
+        }, false);
+        eventsSource.addEventListener('OnBootNotificationResponse', function (event) {
+            try {
+                const data = JSON.parse(event.data);
+                const request = data.request;
+                const response = data.response;
+                AppendLogEntry(response.timestamp, data.chargeBoxId, 
                 // 1) Search for a logline with this command
-                "AUTHSTART", 
+                "OnBootNotification", 
                 // 2) Search for a logline with this pattern
-                "\"eventTrackingId\">" + response.eventTrackingId, " &rArr; " + result.result +
-                    (result.description ? " '" + result.description["eng"] + "'" : "") +
-                    (result.providerId ? " by <div class=\"providerId\">" + result.providerId + "</div>" : "") +
-                    (result.authorizatorId ? " via <div class=\"authorizatorId\">" + result.authorizatorId + "</div>" : "") +
-                    (result.EMPRoamingProviderId ? " via <div class=\"EMPRoamingProviderId\">" + result.EMPRoamingProviderId + "</div>" : "") +
-                    (result.CSORoamingProviderId ? " via <div class=\"CSORoamingProviderId\">" + result.CSORoamingProviderId + "</div>" : "") +
-                    (result.sessionId ? " <a href=\"../RNs/" + response.roamingNetworkId + "/chargingSessions/" + result.sessionId + "\" class=\"sessionId\"><i class=\"fas fa-file-contract\"></i></a>" : "") +
-                    " [" + response.runtime + " ms]");
+                "\"eventTrackingId\">" + data.eventTrackingId, " &rArr; " +
+                    response.data.status + " (" + response.data.currentTime + ", " + response.data.interval + " sec) " + response.runtime + " ms");
             }
             catch (exception) {
                 console.debug(exception);

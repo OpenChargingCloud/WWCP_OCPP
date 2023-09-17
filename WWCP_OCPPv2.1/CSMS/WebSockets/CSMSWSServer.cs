@@ -2223,11 +2223,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (!Connection.HasCustomData("chargeBoxId") &&
                 Connection.HTTPRequest is not null &&
-                ChargeBox_Id.TryParse(Connection.HTTPRequest.Path.ToString().Substring(Connection.HTTPRequest.Path.ToString().LastIndexOf("/") + 1), out var chargeBoxId))
+                ChargeBox_Id.TryParse(Connection.HTTPRequest.Path.ToString()[(Connection.HTTPRequest.Path.ToString().LastIndexOf("/") + 1)..], out var chargeBoxId))
             {
 
                 // Add the chargeBoxId to the WebSocket connection
-                Connection.AddCustomData("chargeBoxId", chargeBoxId);
+                Connection.TryAddCustomData("chargeBoxId", chargeBoxId);
 
                 if (!connectedChargingBoxes.ContainsKey(chargeBoxId))
                     connectedChargingBoxes.TryAdd(chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
@@ -2235,7 +2235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 else
                 {
 
-                    DebugX.Log(nameof(CSMSWSServer) + " Duplicate charge box '" + chargeBoxId + "' detected");
+                    DebugX.Log($"{nameof(CSMSWSServer)} Duplicate charge box '{chargeBoxId}' detected");
 
                     var oldChargingBox_WebSocketConnection = connectedChargingBoxes[chargeBoxId].Item1;
 
@@ -2248,7 +2248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(nameof(CSMSWSServer) + " Closing old WebSocket connection failed: " + e.Message);
+                        DebugX.Log($"{nameof(CSMSWSServer)} Closing old HTTP WebSocket connection failed: {e.Message}");
                     }
 
                 }
@@ -2354,11 +2354,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     {
 
                         var loggerTasks = requestLogger.GetInvocationList().
-                                                        OfType <OnWebSocketTextMessageDelegate>().
+                                                        OfType <OnWebSocketTextMessageRequestDelegate>().
                                                         Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                                           this,
                                                                                                           Connection,
                                                                                                           eventTrackingId,
+                                                                                                          Timestamp.Now,
                                                                                                           OCPPTextMessage)).
                                                         ToArray();
 
@@ -2467,6 +2468,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                                 OnBootNotificationRequest?.Invoke(Timestamp.Now,
                                                                                   this,
+                                                                                  Connection,
                                                                                   request);
 
                                             }
@@ -2485,6 +2487,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                     GetInvocationList()?.
                                                                     SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                                 this,
+                                                                                                                                                Connection,
                                                                                                                                                 request,
                                                                                                                                                 CancellationToken)).
                                                                     ToArray();
@@ -2506,6 +2509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                                 OnBootNotificationResponse?.Invoke(Timestamp.Now,
                                                                                    this,
+                                                                                   Connection,
                                                                                    request,
                                                                                    response,
                                                                                    response.Runtime);

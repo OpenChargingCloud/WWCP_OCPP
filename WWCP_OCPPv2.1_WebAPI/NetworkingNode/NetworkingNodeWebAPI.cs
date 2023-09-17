@@ -167,32 +167,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region OnBootNotificationRequest/-Response
 
             this.CSMS.OnBootNotificationRequest += async (logTimestamp,
-                                                                   sender,
-                                                                   request) =>
+                                                          sender,
+                                                          connection,
+                                                          request) =>
 
                 await this.EventLog.SubmitEvent("OnBootNotificationRequest",
                                                 new JObject(
-                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
-                                                    new JProperty("request",          request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                    new JProperty("timestamp",         logTimestamp.           ToIso8601()),
+                                                    new JProperty("connection",        connection.             ToJSON()),
+                                                    new JProperty("request",           request.                ToJSON()),
+                                                    new JProperty("chargeBoxId",       request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",   request.EventTrackingId.ToString())
                                                 ));
 
 
             this.CSMS.OnBootNotificationResponse += async (logTimestamp,
-                                                                    sender,
-                                                                    request,
-                                                                    response,
-                                                                    runtime) =>
+                                                           sender,
+                                                           connection,
+                                                           request,
+                                                           response,
+                                                           runtime) =>
 
                 await this.EventLog.SubmitEvent("OnBootNotificationResponse",
                                                 new JObject(
-                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
-                                                    new JProperty("request",          request.                ToJSON()),
-                                                    new JProperty("response",         response.               ToJSON()),
-                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                    new JProperty("timestamp",         logTimestamp.           ToIso8601()),
+                                                    new JProperty("eventTrackingId",   request.EventTrackingId.ToString()),
+                                                    new JProperty("connection",        connection.             ToJSON()),
+                                                    new JProperty("chargeBoxId",       request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",           request.                ToJSON()),
+                                                    new JProperty("response",          response.               ToJSON()),
+                                                    new JProperty("runtime",           runtime.TotalMilliseconds)
                                                 ));
 
             #endregion

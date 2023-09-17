@@ -21,13 +21,14 @@
     <None Remove="CSMS\HTTPRoot\css\events\events.min.css" />
     <None Remove="CSMS\HTTPRoot\css\template.css" />
     <None Remove="CSMS\HTTPRoot\css\template.min.css" />
-    <None Remove="CSMS\HTTPRoot\defaults\defaults.scss" />
     <None Remove="CSMS\HTTPRoot\defaults\defaults.ts" />
+    <None Remove="CSMS\HTTPRoot\defaults\_defaults.scss" />
     <None Remove="CSMS\HTTPRoot\events\events.js" />
     <None Remove="CSMS\HTTPRoot\events\events.js.map" />
     <None Remove="CSMS\HTTPRoot\events\events.scss" />
     <None Remove="CSMS\HTTPRoot\events\events.ts" />
     <None Remove="CSMS\HTTPRoot\events\index.shtml" />
+    <None Remove="CSMS\HTTPRoot\js\date.format.js" />
     <None Remove="CSMS\HTTPRoot\template.html" />
     <None Remove="CSMS\HTTPRoot\template.scss" />
   </ItemGroup>
@@ -45,13 +46,14 @@
     <EmbeddedResource Include="CSMS\HTTPRoot\css\events\events.min.css" />
     <EmbeddedResource Include="CSMS\HTTPRoot\css\template.css" />
     <EmbeddedResource Include="CSMS\HTTPRoot\css\template.min.css" />
-    <EmbeddedResource Include="CSMS\HTTPRoot\defaults\defaults.scss" />
+    <EmbeddedResource Include="CSMS\HTTPRoot\defaults\_defaults.scss" />
     <EmbeddedResource Include="CSMS\HTTPRoot\defaults\defaults.ts" />
     <EmbeddedResource Include="CSMS\HTTPRoot\events\events.js" />
     <EmbeddedResource Include="CSMS\HTTPRoot\events\events.js.map" />
     <EmbeddedResource Include="CSMS\HTTPRoot\events\events.scss" />
     <EmbeddedResource Include="CSMS\HTTPRoot\events\events.ts" />
     <EmbeddedResource Include="CSMS\HTTPRoot\events\index.shtml" />
+    <EmbeddedResource Include="CSMS\HTTPRoot\js\date.format.js" />
     <EmbeddedResource Include="CSMS\HTTPRoot\template.html" />
     <EmbeddedResource Include="CSMS\HTTPRoot\template.scss" />
   </ItemGroup>

@@ -1628,11 +1628,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 {
 
                     var loggerTasks = logger.GetInvocationList().
-                                             OfType <OnWebSocketTextMessageDelegate>().
+                                             OfType <OnWebSocketTextMessageRequestDelegate>().
                                              Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
                                                                                                webSocketServer,
                                                                                                webSocketConnection,
                                                                                                eventTrackingId,
+                                                                                               requestTimestamp,
                                                                                                requestMessage)).
                                              ToArray();
 
@@ -1891,6 +1892,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnBootNotification += async (timestamp,
                                                      sender,
+                                                     connection,
                                                      request,
                                                      cancellationToken) => {
 
@@ -1906,6 +1908,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnBootNotificationRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -1988,6 +1991,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnBootNotificationResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).

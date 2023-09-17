@@ -18,7 +18,7 @@
 #region Usings
 
 using Newtonsoft.Json.Linq;
-
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -140,17 +140,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        public JObject ToAbstractJSON(JObject RequestData)
+        public JObject ToAbstractJSON(Object RequestData)
+
+            => ToAbstractJSON(null, RequestData);
+
+        public JObject ToAbstractJSON(WebSocketServerConnection  Connection,
+                                      Object                     RequestData)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("chargeBoxId",        ChargeBoxId.     ToString()),
-                           new JProperty("requestId",          RequestId.       ToString()),
-                           new JProperty("requestTimestamp",   RequestTimestamp.ToIso8601()),
-                           new JProperty("requestTimeout",     RequestTimeout.  TotalSeconds),
-                           new JProperty("eventTrackingId",    EventTrackingId. ToString()),
-                           new JProperty("action",             Action),
-                           new JProperty("data",               RequestData)
+                           new JProperty("id",                RequestId.       ToString()),
+                           new JProperty("timestamp",         RequestTimestamp.ToIso8601()),
+                           new JProperty("eventTrackingId",   EventTrackingId. ToString()),
+                           new JProperty("connection",        Connection?.     ToJSON()),
+                           new JProperty("chargeBoxId",       ChargeBoxId.     ToString()),
+                           new JProperty("timeout",           RequestTimeout.  TotalSeconds),
+                           new JProperty("action",            Action),
+                           new JProperty("data",              RequestData)
                        );
 
             return json;
