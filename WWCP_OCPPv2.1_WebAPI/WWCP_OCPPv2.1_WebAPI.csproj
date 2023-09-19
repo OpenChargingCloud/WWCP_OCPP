@@ -11,10 +11,17 @@
   <ItemGroup>
     <None Remove="ChargingStation\HTTPRoot\css\events\events.css" />
     <None Remove="ChargingStation\HTTPRoot\css\events\events.min.css" />
+    <None Remove="ChargingStation\HTTPRoot\css\template.css" />
+    <None Remove="ChargingStation\HTTPRoot\css\template.min.css" />
     <None Remove="ChargingStation\HTTPRoot\defaults\defaults.scss" />
     <None Remove="ChargingStation\HTTPRoot\defaults\defaults.ts" />
+    <None Remove="ChargingStation\HTTPRoot\defaults\_defaults.scss" />
+    <None Remove="ChargingStation\HTTPRoot\events\events.js" />
+    <None Remove="ChargingStation\HTTPRoot\events\events.js.map" />
     <None Remove="ChargingStation\HTTPRoot\events\events.scss" />
+    <None Remove="ChargingStation\HTTPRoot\events\events.ts" />
     <None Remove="ChargingStation\HTTPRoot\events\index.shtml" />
+    <None Remove="ChargingStation\HTTPRoot\js\date.format.js" />
     <None Remove="ChargingStation\HTTPRoot\template.html" />
     <None Remove="ChargingStation\HTTPRoot\template.scss" />
     <None Remove="CSMS\HTTPRoot\css\events\events.css" />
@@ -31,15 +38,36 @@
     <None Remove="CSMS\HTTPRoot\js\date.format.js" />
     <None Remove="CSMS\HTTPRoot\template.html" />
     <None Remove="CSMS\HTTPRoot\template.scss" />
+    <None Remove="NetworkingNode\HTTPRoot\css\events\events.css" />
+    <None Remove="NetworkingNode\HTTPRoot\css\events\events.min.css" />
+    <None Remove="NetworkingNode\HTTPRoot\css\template.css" />
+    <None Remove="NetworkingNode\HTTPRoot\css\template.min.css" />
+    <None Remove="NetworkingNode\HTTPRoot\defaults\defaults.ts" />
+    <None Remove="NetworkingNode\HTTPRoot\defaults\_defaults.scss" />
+    <None Remove="NetworkingNode\HTTPRoot\events\events.js" />
+    <None Remove="NetworkingNode\HTTPRoot\events\events.js.map" />
+    <None Remove="NetworkingNode\HTTPRoot\events\events.scss" />
+    <None Remove="NetworkingNode\HTTPRoot\events\events.ts" />
+    <None Remove="NetworkingNode\HTTPRoot\events\index.shtml" />
+    <None Remove="NetworkingNode\HTTPRoot\js\date.format.js" />
+    <None Remove="NetworkingNode\HTTPRoot\template.html" />
+    <None Remove="NetworkingNode\HTTPRoot\template.scss" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="ChargingStation\HTTPRoot\css\events\events.css" />
     <EmbeddedResource Include="ChargingStation\HTTPRoot\css\events\events.min.css" />
+    <EmbeddedResource Include="ChargingStation\HTTPRoot\css\template.css" />
+    <EmbeddedResource Include="ChargingStation\HTTPRoot\css\template.min.css" />
     <EmbeddedResource Include="ChargingStation\HTTPRoot\defaults\defaults.scss" />
     <EmbeddedResource Include="ChargingStation\HTTPRoot\defaults\defaults.ts" />
+    <EmbeddedResource Include="ChargingStation\HTTPRoot\defaults\_defaults.scss" />
+    <EmbeddedResource Include="ChargingStation\HTTPRoot\events\events.js" />
+    <EmbeddedResource Include="ChargingStation\HTTPRoot\events\events.js.map" />
     <EmbeddedResource Include="ChargingStation\HTTPRoot\events\events.scss" />
+    <EmbeddedResource Include="ChargingStation\HTTPRoot\events\events.ts" />
     <EmbeddedResource Include="ChargingStation\HTTPRoot\events\index.shtml" />
+    <EmbeddedResource Include="ChargingStation\HTTPRoot\js\date.format.js" />
     <EmbeddedResource Include="ChargingStation\HTTPRoot\template.html" />
     <EmbeddedResource Include="ChargingStation\HTTPRoot\template.scss" />
     <EmbeddedResource Include="CSMS\HTTPRoot\css\events\events.css" />
@@ -56,6 +84,20 @@
     <EmbeddedResource Include="CSMS\HTTPRoot\js\date.format.js" />
     <EmbeddedResource Include="CSMS\HTTPRoot\template.html" />
     <EmbeddedResource Include="CSMS\HTTPRoot\template.scss" />
+    <EmbeddedResource Include="NetworkingNode\HTTPRoot\css\events\events.css" />
+    <EmbeddedResource Include="NetworkingNode\HTTPRoot\css\events\events.min.css" />
+    <EmbeddedResource Include="NetworkingNode\HTTPRoot\css\template.css" />
+    <EmbeddedResource Include="NetworkingNode\HTTPRoot\css\template.min.css" />
+    <EmbeddedResource Include="NetworkingNode\HTTPRoot\defaults\defaults.ts" />
+    <EmbeddedResource Include="NetworkingNode\HTTPRoot\defaults\_defaults.scss" />
+    <EmbeddedResource Include="NetworkingNode\HTTPRoot\events\events.js" />
+    <EmbeddedResource Include="NetworkingNode\HTTPRoot\events\events.js.map" />
+    <EmbeddedResource Include="NetworkingNode\HTTPRoot\events\events.scss" />
+    <EmbeddedResource Include="NetworkingNode\HTTPRoot\events\events.ts" />
+    <EmbeddedResource Include="NetworkingNode\HTTPRoot\events\index.shtml" />
+    <EmbeddedResource Include="NetworkingNode\HTTPRoot\js\date.format.js" />
+    <EmbeddedResource Include="NetworkingNode\HTTPRoot\template.html" />
+    <EmbeddedResource Include="NetworkingNode\HTTPRoot\template.scss" />
   </ItemGroup>
 
   <ItemGroup>
@@ -66,10 +108,6 @@
     <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj" />
     <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="NetworkingNode\HTTPRoot\" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

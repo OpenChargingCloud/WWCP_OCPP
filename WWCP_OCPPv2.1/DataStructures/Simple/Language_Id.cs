@@ -185,6 +185,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        #region Statics
+
+        /// <summary>
+        /// EN
+        /// </summary>
+        public static readonly Language_Id EN
+            = new ("en");
+
+        /// <summary>
+        /// DE
+        /// </summary>
+        public static readonly Language_Id DE
+            = new ("de");
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (LanguageId1, LanguageId2)
