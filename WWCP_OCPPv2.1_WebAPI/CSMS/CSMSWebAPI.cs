@@ -208,17 +208,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The default HTTP URL prefix.
         /// </summary>
-        public readonly HTTPPath                   DefaultURLPathPrefix        = HTTPPath.Parse("webapi");
+        public readonly HTTPPath                   DefaultURLPathPrefix      = HTTPPath.Parse("webapi");
 
         /// <summary>
         /// The default HTTP realm, if HTTP Basic Authentication is used.
         /// </summary>
-        public const String                        DefaultHTTPRealm            = "Open Charging Cloud OCPP WebAPI";
+        public const String                        DefaultHTTPRealm          = "Open Charging Cloud OCPP WebAPI";
 
         /// <summary>
         /// The HTTP root for embedded ressources.
         /// </summary>
-        public const String                        HTTPRoot                    = "cloud.charging.open.protocols.OCPPv2_1.WebAPI.CSMS.HTTPRoot.";
+        public const String                        HTTPRoot                  = "cloud.charging.open.protocols.OCPPv2_1.WebAPI.CSMS.HTTPRoot.";
 
 
         //ToDo: http://www.iana.org/form/media-types
@@ -226,23 +226,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The HTTP content type for serving OCPP+ XML data.
         /// </summary>
-        public static readonly HTTPContentType     OCPPPlusJSONContentType     = new HTTPContentType("application", "vnd.OCPPPlus+json", "utf-8", null, null);
+        public static readonly HTTPContentType     OCPPPlusJSONContentType   = new ("application", "vnd.OCPPPlus+json", "utf-8", null, null);
 
         /// <summary>
         /// The HTTP content type for serving OCPP+ HTML data.
         /// </summary>
-        public static readonly HTTPContentType     OCPPPlusHTMLContentType     = new HTTPContentType("application", "vnd.OCPPPlus+html", "utf-8", null, null);
+        public static readonly HTTPContentType     OCPPPlusHTMLContentType   = new ("application", "vnd.OCPPPlus+html", "utf-8", null, null);
 
         /// <summary>
         /// The unique identification of the OCPP HTTP SSE event log.
         /// </summary>
-        public static readonly HTTPEventSource_Id  EventLogId                  = HTTPEventSource_Id.Parse("OCPPEvents");
+        public static readonly HTTPEventSource_Id  EventLogId                = HTTPEventSource_Id.Parse("OCPPEvents");
 
         #endregion
 
         #region Properties
-
-        //public ICSMS3                                     CSMS                { get; }
 
         /// <summary>
         /// The HTTP realm, if HTTP Basic Authentication is used.
@@ -573,6 +571,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region AttachCSMS       (CSMS)
 
         public void AttachCSMS(ICSMS3 CSMS)
         {
@@ -2579,16 +2579,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         }
 
-        public void Attach(ICSMSChannel CSMSChannel)
+        #endregion
+
+        #region AttachCSMSChannel(CSMSChannel)
+
+        public void AttachCSMSChannel(ICSMSChannel CSMSChannel)
         {
 
-            #region HTTP-SSEs: CSMS -> ChargePoint
+            // HTTP-SSEs: CSMS -> ChargePoint
 
-            #region OnReset (-Request/-Response)
+            #region OnReset                       (-Request/-Response)
 
             CSMSChannel.OnResetRequest += async (logTimestamp,
-                                                        sender,
-                                                        request) =>
+                                                 sender,
+                                                 request) =>
 
                 await this.EventLog.SubmitEvent("OnResetRequest",
                                                 new JObject(
@@ -2600,10 +2604,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             CSMSChannel.OnResetResponse += async (logTimestamp,
-                                                         sender,
-                                                         request,
-                                                         response,
-                                                         runtime) =>
+                                                  sender,
+                                                  request,
+                                                  response,
+                                                  runtime) =>
 
                 await this.EventLog.SubmitEvent("OnResetResponse",
                                                 new JObject(
@@ -2617,110 +2621,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnChangeAvailability (-Request/-Response)
-
-            CSMSChannel.OnChangeAvailabilityRequest += async (logTimestamp,
-                                                                     sender,
-                                                                     request) =>
-
-                await this.EventLog.SubmitEvent("OnChangeAvailabilityRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
-                                                    new JProperty("request",          request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            CSMSChannel.OnChangeAvailabilityResponse += async (logTimestamp,
-                                                                      sender,
-                                                                      request,
-                                                                      response,
-                                                                      runtime) =>
-
-                await this.EventLog.SubmitEvent("OnChangeAvailabilityResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
-                                                    new JProperty("request",          request.                ToJSON()),
-                                                    new JProperty("response",         response.               ToJSON()),
-                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
-
-            #region OnDataTransfer (-Request/-Response)
-
-            CSMSChannel.OnDataTransferRequest += async (logTimestamp,
-                                                               sender,
-                                                               request) =>
-
-                await this.EventLog.SubmitEvent("OnDataTransferRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
-                                                    new JProperty("request",          request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            CSMSChannel.OnDataTransferResponse += async (logTimestamp,
-                                                                sender,
-                                                                request,
-                                                                response,
-                                                                runtime) =>
-
-                await this.EventLog.SubmitEvent("OnDataTransferResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
-                                                    new JProperty("request",          request.                ToJSON()),
-                                                    new JProperty("response",         response.               ToJSON()),
-                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
-
-            #region OnTriggerMessage (-Request/-Response)
-
-            CSMSChannel.OnTriggerMessageRequest += async (logTimestamp,
-                                                                 sender,
-                                                                 request) =>
-
-                await this.EventLog.SubmitEvent("OnTriggerMessageRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
-                                                    new JProperty("request",          request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            CSMSChannel.OnTriggerMessageResponse += async (logTimestamp,
-                                                                  sender,
-                                                                  request,
-                                                                  response,
-                                                                  runtime) =>
-
-                await this.EventLog.SubmitEvent("OnTriggerMessageResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
-                                                    new JProperty("request",          request.                ToJSON()),
-                                                    new JProperty("response",         response.               ToJSON()),
-                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
-
-            #region OnUpdateFirmware (-Request/-Response)
+            #region OnUpdateFirmware              (-Request/-Response)
 
             CSMSChannel.OnUpdateFirmwareRequest += async (logTimestamp,
-                                                                 sender,
-                                                                 request) =>
+                                                          sender,
+                                                          request) =>
 
                 await this.EventLog.SubmitEvent("OnUpdateFirmwareRequest",
                                                 new JObject(
@@ -2732,10 +2637,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             CSMSChannel.OnUpdateFirmwareResponse += async (logTimestamp,
-                                                                  sender,
-                                                                  request,
-                                                                  response,
-                                                                  runtime) =>
+                                                           sender,
+                                                           request,
+                                                           response,
+                                                           runtime) =>
 
                 await this.EventLog.SubmitEvent("OnUpdateFirmwareResponse",
                                                 new JObject(
@@ -2749,12 +2654,806 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
+            #region OnPublishFirmware             (-Request/-Response)
 
-            #region OnReserveNow (-Request/-Response)
+            CSMSChannel.OnPublishFirmwareRequest += async (logTimestamp,
+                                                           sender,
+                                                           request) =>
 
-            CSMSChannel.OnReserveNowRequest += async (logTimestamp,
+                await this.EventLog.SubmitEvent("OnPublishFirmwareRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnPublishFirmwareResponse += async (logTimestamp,
+                                                            sender,
+                                                            request,
+                                                            response,
+                                                            runtime) =>
+
+                await this.EventLog.SubmitEvent("OnPublishFirmwareResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnUnpublishFirmware           (-Request/-Response)
+
+            CSMSChannel.OnUnpublishFirmwareRequest += async (logTimestamp,
                                                              sender,
                                                              request) =>
+
+                await this.EventLog.SubmitEvent("OnUnpublishFirmwareRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnUnpublishFirmwareResponse += async (logTimestamp,
+                                                              sender,
+                                                              request,
+                                                              response,
+                                                              runtime) =>
+
+                await this.EventLog.SubmitEvent("OnUnpublishFirmwareResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnGetBaseReport               (-Request/-Response)
+
+            CSMSChannel.OnGetBaseReportRequest += async (logTimestamp,
+                                                         sender,
+                                                         request) =>
+
+                await this.EventLog.SubmitEvent("OnGetBaseReportRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnGetBaseReportResponse += async (logTimestamp,
+                                                          sender,
+                                                          request,
+                                                          response,
+                                                          runtime) =>
+
+                await this.EventLog.SubmitEvent("OnGetBaseReportResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnGetReport                   (-Request/-Response)
+
+            CSMSChannel.OnGetReportRequest += async (logTimestamp,
+                                                     sender,
+                                                     request) =>
+
+                await this.EventLog.SubmitEvent("OnGetReportRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnGetReportResponse += async (logTimestamp,
+                                                      sender,
+                                                      request,
+                                                      response,
+                                                      runtime) =>
+
+                await this.EventLog.SubmitEvent("OnGetReportResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnGetLog                      (-Request/-Response)
+
+            CSMSChannel.OnGetLogRequest += async (logTimestamp,
+                                                  sender,
+                                                  request) =>
+
+                await this.EventLog.SubmitEvent("OnGetLogRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnGetLogResponse += async (logTimestamp,
+                                                   sender,
+                                                   request,
+                                                   response,
+                                                   runtime) =>
+
+                await this.EventLog.SubmitEvent("OnGetLogResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnSetVariables                (-Request/-Response)
+
+            CSMSChannel.OnSetVariablesRequest += async (logTimestamp,
+                                                        sender,
+                                                        request) =>
+
+                await this.EventLog.SubmitEvent("OnSetVariablesRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnSetVariablesResponse += async (logTimestamp,
+                                                         sender,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
+
+                await this.EventLog.SubmitEvent("OnSetVariablesResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnGetVariables                (-Request/-Response)
+
+            CSMSChannel.OnGetVariablesRequest += async (logTimestamp,
+                                                        sender,
+                                                        request) =>
+
+                await this.EventLog.SubmitEvent("OnGetVariablesRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnGetVariablesResponse += async (logTimestamp,
+                                                         sender,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
+
+                await this.EventLog.SubmitEvent("OnGetVariablesResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnSetMonitoringBase           (-Request/-Response)
+
+            CSMSChannel.OnSetMonitoringBaseRequest += async (logTimestamp,
+                                                             sender,
+                                                             request) =>
+
+                await this.EventLog.SubmitEvent("OnSetMonitoringBaseRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnSetMonitoringBaseResponse += async (logTimestamp,
+                                                              sender,
+                                                              request,
+                                                              response,
+                                                              runtime) =>
+
+                await this.EventLog.SubmitEvent("OnSetMonitoringBaseResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnGetMonitoringReport         (-Request/-Response)
+
+            CSMSChannel.OnGetMonitoringReportRequest += async (logTimestamp,
+                                                               sender,
+                                                               request) =>
+
+                await this.EventLog.SubmitEvent("OnGetMonitoringReportRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnGetMonitoringReportResponse += async (logTimestamp,
+                                                                sender,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
+
+                await this.EventLog.SubmitEvent("OnGetMonitoringReportResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnSetMonitoringLevel          (-Request/-Response)
+
+            CSMSChannel.OnSetMonitoringLevelRequest += async (logTimestamp,
+                                                              sender,
+                                                              request) =>
+
+                await this.EventLog.SubmitEvent("OnSetMonitoringLevelRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnSetMonitoringLevelResponse += async (logTimestamp,
+                                                               sender,
+                                                               request,
+                                                               response,
+                                                               runtime) =>
+
+                await this.EventLog.SubmitEvent("OnSetMonitoringLevelResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnSetVariableMonitoring       (-Request/-Response)
+
+            CSMSChannel.OnSetVariableMonitoringRequest += async (logTimestamp,
+                                                                 sender,
+                                                                 request) =>
+
+                await this.EventLog.SubmitEvent("OnSetVariableMonitoringRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnSetVariableMonitoringResponse += async (logTimestamp,
+                                                                  sender,
+                                                                  request,
+                                                                  response,
+                                                                  runtime) =>
+
+                await this.EventLog.SubmitEvent("OnSetVariableMonitoringResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnClearVariableMonitoring     (-Request/-Response)
+
+            CSMSChannel.OnClearVariableMonitoringRequest += async (logTimestamp,
+                                                                   sender,
+                                                                   request) =>
+
+                await this.EventLog.SubmitEvent("OnClearVariableMonitoringRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnClearVariableMonitoringResponse += async (logTimestamp,
+                                                                    sender,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
+
+                await this.EventLog.SubmitEvent("OnClearVariableMonitoringResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnSetNetworkProfile           (-Request/-Response)
+
+            CSMSChannel.OnSetNetworkProfileRequest += async (logTimestamp,
+                                                             sender,
+                                                             request) =>
+
+                await this.EventLog.SubmitEvent("OnSetNetworkProfileRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnSetNetworkProfileResponse += async (logTimestamp,
+                                                              sender,
+                                                              request,
+                                                              response,
+                                                              runtime) =>
+
+                await this.EventLog.SubmitEvent("OnSetNetworkProfileResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnChangeAvailability          (-Request/-Response)
+
+            CSMSChannel.OnChangeAvailabilityRequest += async (logTimestamp,
+                                                              sender,
+                                                              request) =>
+
+                await this.EventLog.SubmitEvent("OnChangeAvailabilityRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnChangeAvailabilityResponse += async (logTimestamp,
+                                                               sender,
+                                                               request,
+                                                               response,
+                                                               runtime) =>
+
+                await this.EventLog.SubmitEvent("OnChangeAvailabilityResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnTriggerMessage              (-Request/-Response)
+
+            CSMSChannel.OnTriggerMessageRequest += async (logTimestamp,
+                                                          sender,
+                                                          request) =>
+
+                await this.EventLog.SubmitEvent("OnTriggerMessageRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnTriggerMessageResponse += async (logTimestamp,
+                                                           sender,
+                                                           request,
+                                                           response,
+                                                           runtime) =>
+
+                await this.EventLog.SubmitEvent("OnTriggerMessageResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnDataTransfer                (-Request/-Response)
+
+            CSMSChannel.OnDataTransferRequest += async (logTimestamp,
+                                                        sender,
+                                                        request) =>
+
+                await this.EventLog.SubmitEvent("OnDataTransferRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnDataTransferResponse += async (logTimestamp,
+                                                         sender,
+                                                         request,
+                                                         response,
+                                                         runtime) =>
+
+                await this.EventLog.SubmitEvent("OnDataTransferResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+
+            #region OnCertificateSignedRequest    (-Request/-Response)
+
+            CSMSChannel.OnCertificateSignedRequest += async (logTimestamp,
+                                                             sender,
+                                                             request) =>
+
+                await this.EventLog.SubmitEvent("OnCertificateSignedRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnCertificateSignedResponse += async (logTimestamp,
+                                                              sender,
+                                                              request,
+                                                              response,
+                                                              runtime) =>
+
+                await this.EventLog.SubmitEvent("OnCertificateSignedResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnInstallCertificate          (-Request/-Response)
+
+            CSMSChannel.OnInstallCertificateRequest += async (logTimestamp,
+                                                              sender,
+                                                              request) =>
+
+                await this.EventLog.SubmitEvent("OnInstallCertificateRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnInstallCertificateResponse += async (logTimestamp,
+                                                               sender,
+                                                               request,
+                                                               response,
+                                                               runtime) =>
+
+                await this.EventLog.SubmitEvent("OnInstallCertificateResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnGetInstalledCertificateIds  (-Request/-Response)
+
+            CSMSChannel.OnGetInstalledCertificateIdsRequest += async (logTimestamp,
+                                                                      sender,
+                                                                      request) =>
+
+                await this.EventLog.SubmitEvent("OnGetInstalledCertificateIdsRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnGetInstalledCertificateIdsResponse += async (logTimestamp,
+                                                                       sender,
+                                                                       request,
+                                                                       response,
+                                                                       runtime) =>
+
+                await this.EventLog.SubmitEvent("OnGetInstalledCertificateIdsResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnDeleteCertificate           (-Request/-Response)
+
+            CSMSChannel.OnDeleteCertificateRequest += async (logTimestamp,
+                                                             sender,
+                                                             request) =>
+
+                await this.EventLog.SubmitEvent("OnDeleteCertificateRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnDeleteCertificateResponse += async (logTimestamp,
+                                                              sender,
+                                                              request,
+                                                              response,
+                                                              runtime) =>
+
+                await this.EventLog.SubmitEvent("OnDeleteCertificateResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnNotifyCRLRequest            (-Request/-Response)
+
+            CSMSChannel.OnNotifyCRLRequest += async (logTimestamp,
+                                                     sender,
+                                                     request) =>
+
+                await this.EventLog.SubmitEvent("OnNotifyCRLRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnNotifyCRLResponse += async (logTimestamp,
+                                                      sender,
+                                                      request,
+                                                      response,
+                                                      runtime) =>
+
+                await this.EventLog.SubmitEvent("OnNotifyCRLResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+
+            #region OnGetLocalListVersion         (-Request/-Response)
+
+            CSMSChannel.OnGetLocalListVersionRequest += async (logTimestamp,
+                                                               sender,
+                                                               request) =>
+
+                await this.EventLog.SubmitEvent("OnGetLocalListVersionRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnGetLocalListVersionResponse += async (logTimestamp,
+                                                                sender,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
+
+                await this.EventLog.SubmitEvent("OnGetLocalListVersionResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnSendLocalList               (-Request/-Response)
+
+            CSMSChannel.OnSendLocalListRequest += async (logTimestamp,
+                                                         sender,
+                                                         request) =>
+
+                await this.EventLog.SubmitEvent("OnSendLocalListRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnSendLocalListResponse += async (logTimestamp,
+                                                          sender,
+                                                          request,
+                                                          response,
+                                                          runtime) =>
+
+                await this.EventLog.SubmitEvent("OnSendLocalListResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnClearCache                  (-Request/-Response)
+
+            CSMSChannel.OnClearCacheRequest += async (logTimestamp,
+                                                      sender,
+                                                      request) =>
+
+                await this.EventLog.SubmitEvent("OnClearCacheRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnClearCacheResponse += async (logTimestamp,
+                                                       sender,
+                                                       request,
+                                                       response,
+                                                       runtime) =>
+
+                await this.EventLog.SubmitEvent("OnClearCacheResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+
+            #region OnReserveNow                  (-Request/-Response)
+
+            CSMSChannel.OnReserveNowRequest += async (logTimestamp,
+                                                      sender,
+                                                      request) =>
 
                 await this.EventLog.SubmitEvent("OnReserveNowRequest",
                                                 new JObject(
@@ -2766,10 +3465,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             CSMSChannel.OnReserveNowResponse += async (logTimestamp,
-                                                              sender,
-                                                              request,
-                                                              response,
-                                                              runtime) =>
+                                                       sender,
+                                                       request,
+                                                       response,
+                                                       runtime) =>
 
                 await this.EventLog.SubmitEvent("OnReserveNowResponse",
                                                 new JObject(
@@ -2783,11 +3482,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnCancelReservation (-Request/-Response)
+            #region OnCancelReservation           (-Request/-Response)
 
             CSMSChannel.OnCancelReservationRequest += async (logTimestamp,
-                                                                    sender,
-                                                                    request) =>
+                                                             sender,
+                                                             request) =>
 
                 await this.EventLog.SubmitEvent("OnCancelReservationRequest",
                                                 new JObject(
@@ -2799,10 +3498,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             CSMSChannel.OnCancelReservationResponse += async (logTimestamp,
-                                                                     sender,
-                                                                     request,
-                                                                     response,
-                                                                     runtime) =>
+                                                              sender,
+                                                              request,
+                                                              response,
+                                                              runtime) =>
 
                 await this.EventLog.SubmitEvent("OnCancelReservationResponse",
                                                 new JObject(
@@ -2816,11 +3515,110 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnSetChargingProfile (-Request/-Response)
+            #region OnRequestStartTransaction     (-Request/-Response)
+
+            CSMSChannel.OnRequestStartTransactionRequest += async (logTimestamp,
+                                                                   sender,
+                                                                   request) =>
+
+                await this.EventLog.SubmitEvent("OnRequestStartTransactionRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnRequestStartTransactionResponse += async (logTimestamp,
+                                                                    sender,
+                                                                    request,
+                                                                    response,
+                                                                    runtime) =>
+
+                await this.EventLog.SubmitEvent("OnRequestStartTransactionResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnRequestStopTransaction      (-Request/-Response)
+
+            CSMSChannel.OnRequestStopTransactionRequest += async (logTimestamp,
+                                                                  sender,
+                                                                  request) =>
+
+                await this.EventLog.SubmitEvent("OnRequestStopTransactionRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnRequestStopTransactionResponse += async (logTimestamp,
+                                                                   sender,
+                                                                   request,
+                                                                   response,
+                                                                   runtime) =>
+
+                await this.EventLog.SubmitEvent("OnRequestStopTransactionResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnGetTransactionStatus        (-Request/-Response)
+
+            CSMSChannel.OnGetTransactionStatusRequest += async (logTimestamp,
+                                                                sender,
+                                                                request) =>
+
+                await this.EventLog.SubmitEvent("OnGetTransactionStatusRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnGetTransactionStatusResponse += async (logTimestamp,
+                                                                 sender,
+                                                                 request,
+                                                                 response,
+                                                                 runtime) =>
+
+                await this.EventLog.SubmitEvent("OnGetTransactionStatusResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnSetChargingProfile          (-Request/-Response)
 
             CSMSChannel.OnSetChargingProfileRequest += async (logTimestamp,
-                                                                     sender,
-                                                                     request) =>
+                                                              sender,
+                                                              request) =>
 
                 await this.EventLog.SubmitEvent("OnSetChargingProfileRequest",
                                                 new JObject(
@@ -2832,10 +3630,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             CSMSChannel.OnSetChargingProfileResponse += async (logTimestamp,
-                                                                      sender,
-                                                                      request,
-                                                                      response,
-                                                                      runtime) =>
+                                                               sender,
+                                                               request,
+                                                               response,
+                                                               runtime) =>
 
                 await this.EventLog.SubmitEvent("OnSetChargingProfileResponse",
                                                 new JObject(
@@ -2849,11 +3647,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnClearChargingProfile (-Request/-Response)
+            #region OnGetChargingProfiles         (-Request/-Response)
+
+            CSMSChannel.OnGetChargingProfilesRequest += async (logTimestamp,
+                                                               sender,
+                                                               request) =>
+
+                await this.EventLog.SubmitEvent("OnGetChargingProfilesRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnGetChargingProfilesResponse += async (logTimestamp,
+                                                                sender,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
+
+                await this.EventLog.SubmitEvent("OnGetChargingProfilesResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnClearChargingProfile        (-Request/-Response)
 
             CSMSChannel.OnClearChargingProfileRequest += async (logTimestamp,
-                                                                       sender,
-                                                                       request) =>
+                                                                sender,
+                                                                request) =>
 
                 await this.EventLog.SubmitEvent("OnClearChargingProfileRequest",
                                                 new JObject(
@@ -2865,10 +3696,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             CSMSChannel.OnClearChargingProfileResponse += async (logTimestamp,
-                                                                        sender,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                 sender,
+                                                                 request,
+                                                                 response,
+                                                                 runtime) =>
 
                 await this.EventLog.SubmitEvent("OnClearChargingProfileResponse",
                                                 new JObject(
@@ -2882,11 +3713,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnGetCompositeSchedule (-Request/-Response)
+            #region OnGetCompositeSchedule        (-Request/-Response)
 
             CSMSChannel.OnGetCompositeScheduleRequest += async (logTimestamp,
-                                                                       sender,
-                                                                       request) =>
+                                                                sender,
+                                                                request) =>
 
                 await this.EventLog.SubmitEvent("OnGetCompositeScheduleRequest",
                                                 new JObject(
@@ -2898,10 +3729,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             CSMSChannel.OnGetCompositeScheduleResponse += async (logTimestamp,
-                                                                        sender,
-                                                                        request,
-                                                                        response,
-                                                                        runtime) =>
+                                                                 sender,
+                                                                 request,
+                                                                 response,
+                                                                 runtime) =>
 
                 await this.EventLog.SubmitEvent("OnGetCompositeScheduleResponse",
                                                 new JObject(
@@ -2915,11 +3746,110 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnUnlockConnector (-Request/-Response)
+            #region OnUpdateDynamicSchedule       (-Request/-Response)
+
+            CSMSChannel.OnUpdateDynamicScheduleRequest += async (logTimestamp,
+                                                                 sender,
+                                                                 request) =>
+
+                await this.EventLog.SubmitEvent("OnUpdateDynamicScheduleRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnUpdateDynamicScheduleResponse += async (logTimestamp,
+                                                                  sender,
+                                                                  request,
+                                                                  response,
+                                                                  runtime) =>
+
+                await this.EventLog.SubmitEvent("OnUpdateDynamicScheduleResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnNotifyAllowedEnergyTransfer (-Request/-Response)
+
+            CSMSChannel.OnNotifyAllowedEnergyTransferRequest += async (logTimestamp,
+                                                                       sender,
+                                                                       request) =>
+
+                await this.EventLog.SubmitEvent("OnNotifyAllowedEnergyTransferRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnNotifyAllowedEnergyTransferResponse += async (logTimestamp,
+                                                                        sender,
+                                                                        request,
+                                                                        response,
+                                                                        runtime) =>
+
+                await this.EventLog.SubmitEvent("OnNotifyAllowedEnergyTransferResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnUsePriorityCharging         (-Request/-Response)
+
+            CSMSChannel.OnUsePriorityChargingRequest += async (logTimestamp,
+                                                               sender,
+                                                               request) =>
+
+                await this.EventLog.SubmitEvent("OnUsePriorityChargingRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnUsePriorityChargingResponse += async (logTimestamp,
+                                                                sender,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
+
+                await this.EventLog.SubmitEvent("OnUsePriorityChargingResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnUnlockConnector             (-Request/-Response)
 
             CSMSChannel.OnUnlockConnectorRequest += async (logTimestamp,
-                                                                  sender,
-                                                                  request) =>
+                                                           sender,
+                                                           request) =>
 
                 await this.EventLog.SubmitEvent("OnUnlockConnectorRequest",
                                                 new JObject(
@@ -2931,10 +3861,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             CSMSChannel.OnUnlockConnectorResponse += async (logTimestamp,
-                                                                   sender,
-                                                                   request,
-                                                                   response,
-                                                                   runtime) =>
+                                                            sender,
+                                                            request,
+                                                            response,
+                                                            runtime) =>
 
                 await this.EventLog.SubmitEvent("OnUnlockConnectorResponse",
                                                 new JObject(
@@ -2949,13 +3879,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            #region OnGetLocalListVersion (-Request/-Response)
+            #region OnSendAFRRSignal              (-Request/-Response)
 
-            CSMSChannel.OnGetLocalListVersionRequest += async (logTimestamp,
-                                                                      sender,
-                                                                      request) =>
+            CSMSChannel.OnAFRRSignalRequest += async (logTimestamp,
+                                                      sender,
+                                                      request) =>
 
-                await this.EventLog.SubmitEvent("OnGetLocalListVersionRequest",
+                await this.EventLog.SubmitEvent("OnAFRRSignalRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
                                                     new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
@@ -2964,13 +3894,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            CSMSChannel.OnGetLocalListVersionResponse += async (logTimestamp,
-                                                                       sender,
-                                                                       request,
-                                                                       response,
-                                                                       runtime) =>
+            CSMSChannel.OnAFRRSignalResponse += async (logTimestamp,
+                                                       sender,
+                                                       request,
+                                                       response,
+                                                       runtime) =>
 
-                await this.EventLog.SubmitEvent("OnGetLocalListVersionResponse",
+                await this.EventLog.SubmitEvent("OnAFRRSignalResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
                                                     new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
@@ -2982,46 +3912,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnSendLocalList (-Request/-Response)
 
-            CSMSChannel.OnSendLocalListRequest += async (logTimestamp,
-                                                                sender,
-                                                                request) =>
+            #region OnSetDisplayMessage           (-Request/-Response)
 
-                await this.EventLog.SubmitEvent("OnSendLocalListRequest",
-                                                new JObject(
-                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
-                                                    new JProperty("request",          request.                ToJSON()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
-                                                ));
-
-
-            CSMSChannel.OnSendLocalListResponse += async (logTimestamp,
-                                                                 sender,
-                                                                 request,
-                                                                 response,
-                                                                 runtime) =>
-
-                await this.EventLog.SubmitEvent("OnSendLocalListResponse",
-                                                new JObject(
-                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
-                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
-                                                    new JProperty("request",          request.                ToJSON()),
-                                                    new JProperty("response",         response.               ToJSON()),
-                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
-                                                ));
-
-            #endregion
-
-            #region OnClearCache (-Request/-Response)
-
-            CSMSChannel.OnClearCacheRequest += async (logTimestamp,
+            CSMSChannel.OnSetDisplayMessageRequest += async (logTimestamp,
                                                              sender,
                                                              request) =>
 
-                await this.EventLog.SubmitEvent("OnClearCacheRequest",
+                await this.EventLog.SubmitEvent("OnSetDisplayMessageRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
                                                     new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
@@ -3030,13 +3928,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                 ));
 
 
-            CSMSChannel.OnClearCacheResponse += async (logTimestamp,
+            CSMSChannel.OnSetDisplayMessageResponse += async (logTimestamp,
                                                               sender,
                                                               request,
                                                               response,
                                                               runtime) =>
 
-                await this.EventLog.SubmitEvent("OnClearCacheResponse",
+                await this.EventLog.SubmitEvent("OnSetDisplayMessageResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
                                                     new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
@@ -3048,24 +3946,142 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
+            #region OnGetDisplayMessages          (-Request/-Response)
+
+            CSMSChannel.OnGetDisplayMessagesRequest += async (logTimestamp,
+                                                              sender,
+                                                              request) =>
+
+                await this.EventLog.SubmitEvent("OnGetDisplayMessagesRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnGetDisplayMessagesResponse += async (logTimestamp,
+                                                               sender,
+                                                               request,
+                                                               response,
+                                                               runtime) =>
+
+                await this.EventLog.SubmitEvent("OnGetDisplayMessagesResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
             #endregion
 
+            #region OnClearDisplayMessage         (-Request/-Response)
+
+            CSMSChannel.OnClearDisplayMessageRequest += async (logTimestamp,
+                                                               sender,
+                                                               request) =>
+
+                await this.EventLog.SubmitEvent("OnClearDisplayMessageRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnClearDisplayMessageResponse += async (logTimestamp,
+                                                                sender,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
+
+                await this.EventLog.SubmitEvent("OnClearDisplayMessageResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnCostUpdated                 (-Request/-Response)
+
+            CSMSChannel.OnCostUpdatedRequest += async (logTimestamp,
+                                                       sender,
+                                                       request) =>
+
+                await this.EventLog.SubmitEvent("OnCostUpdatedRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnCostUpdatedResponse += async (logTimestamp,
+                                                        sender,
+                                                        request,
+                                                        response,
+                                                        runtime) =>
+
+                await this.EventLog.SubmitEvent("OnCostUpdatedResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+            #region OnCustomerInformation         (-Request/-Response)
+
+            CSMSChannel.OnCustomerInformationRequest += async (logTimestamp,
+                                                               sender,
+                                                               request) =>
+
+                await this.EventLog.SubmitEvent("OnCustomerInformationRequest",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
+                                                ));
+
+
+            CSMSChannel.OnCustomerInformationResponse += async (logTimestamp,
+                                                                sender,
+                                                                request,
+                                                                response,
+                                                                runtime) =>
+
+                await this.EventLog.SubmitEvent("OnCustomerInformationResponse",
+                                                new JObject(
+                                                    new JProperty("timestamp",        logTimestamp.           ToIso8601()),
+                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
+                                                    new JProperty("request",          request.                ToJSON()),
+                                                    new JProperty("response",         response.               ToJSON()),
+                                                    new JProperty("runtime",          runtime.TotalMilliseconds)
+                                                ));
+
+            #endregion
+
+
         }
 
-
-        public Boolean TryGetChargeBox(ChargeBox_Id ChargeBoxId, out ChargeBox? ChargeBox)
-        {
-
-            foreach (var csms in csmss.Values)
-            {
-                if (csms.TryGetChargeBox(ChargeBoxId, out ChargeBox))
-                    return true;
-            }
-
-            ChargeBox = null;
-            return false;
-
-        }
+        #endregion
 
 
         #region (private) RegisterURLTemplates()
@@ -3496,6 +4512,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
+
+        }
+
+        #endregion
+
+
+        #region TryGetChargeBox(ChargeBoxId, out ChargeBox)
+
+        public Boolean TryGetChargeBox(ChargeBox_Id ChargeBoxId, out ChargeBox? ChargeBox)
+        {
+
+            foreach (var csms in csmss.Values)
+            {
+                if (csms.TryGetChargeBox(ChargeBoxId, out ChargeBox))
+                    return true;
+            }
+
+            ChargeBox = null;
+            return false;
 
         }
 
