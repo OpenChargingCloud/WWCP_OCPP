@@ -154,6 +154,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         String IEventSender.Id
             => HTTPServiceName;
 
+        /// <summary>
+        /// The enumeration of all connected charging stations.
+        /// </summary>
         public IEnumerable<ChargeBox_Id> ChargeBoxIds
             => connectedChargingBoxes.Keys;
 
@@ -165,26 +168,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Logins and passwords for HTTP Basic Authentication.
         /// </summary>
-        public ConcurrentDictionary<ChargeBox_Id, String?>  ChargingBoxLogins        { get; }   = new();
-
-        public ChargeBox_Id ChargeBoxIdentity
-            => throw new NotImplementedException();
-
-        public String                             From
-            => "";
-
-        public String                             To
-            => "";
+        public ConcurrentDictionary<ChargeBox_Id, String?>  ChargingBoxLogins        { get; }
+            = new();
 
         /// <summary>
         /// The JSON formatting to use.
         /// </summary>
-        public Formatting                         JSONFormatting           { get; set; } = Formatting.None;
+        public Formatting                                   JSONFormatting           { get; set; }
+            = Formatting.None;
 
-        public TimeSpan?                          RequestTimeout           { get; set; }
-
-        //public CentralSystemSOAPClient.CSClientLogger Logger
-        //    => throw new NotImplementedException();
+        /// <summary>
+        /// The request timeout for messages sent by this HTTP WebSocket server.
+        /// </summary>
+        public TimeSpan?                                    RequestTimeout           { get; set; }
 
         #endregion
 
@@ -2031,7 +2027,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    TCPPort ?? IPPort.Parse(8000),
                    HTTPServiceName,
 
-                   new[] { $"ocpp{Version.Id}" },
+                   new[] {
+                      "ocpp2.0.1",
+                       Version.WebSocketSubProtocolId
+                   },
                    DisableWebSocketPings,
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
@@ -2150,10 +2149,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            }.AsImmutable);
 
             }
-            else if (Connection.HTTPRequest?.SecWebSocketProtocol.Contains($"ocpp{Version.Id}") == false)
+            else if (!SecWebSocketProtocols.Overlaps(Connection.HTTPRequest?.SecWebSocketProtocol ?? Array.Empty<String>()))
             {
 
-                DebugX.Log($"This WebSocket service only supports 'ocpp{Version.Id}'!");
+                var error = $"This WebSocket service only supports {(SecWebSocketProtocols.Select(id => $"'{id}'").AggregateWith(", "))}!";
+
+                DebugX.Log(error);
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder() {
@@ -2164,7 +2165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                Content         = JSONObject.Create(
                                                      new JProperty("description",
                                                          JSONObject.Create(
-                                                             new JProperty("en", $"This WebSocket service only supports 'ocpp{Version.Id}'!")
+                                                             new JProperty("en", error)
                                                      ))).ToUTF8Bytes(),
                                Connection      = "close"
                            }.AsImmutable);
