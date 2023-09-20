@@ -268,6 +268,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
+            #region GET  ~/*
+
+            // curl -X GET http://127.0.0.1:9901/fw/test.fw
+            AddMethodCallback(HTTPHostname.Any,
+                              HTTPMethod.GET,
+                              URLPathPrefix + "fw/{file}",
+                              HTTPDelegate: async Request => {
+
+                                  try
+                                  {
+
+                                      var filepath  = Request.Path.ToString().Replace("..", "");
+                                      var filename  = filepath.Substring(filepath.LastIndexOf("/") + 1);
+                                      var data      = File.ReadAllBytes("fw/" + filename);
+
+                                      DebugX.Log("FirmwareAPI: Fetching file '" + filename + "'!");
+
+
+                                      return new HTTPResponse.Builder(Request) {
+                                                 HTTPStatusCode             = HTTPStatusCode.Created,
+                                                 Server                     = DefaultHTTPServerName,
+                                                 Date                       = Timestamp.Now,
+                                                 AccessControlAllowOrigin   = "*",
+                                                 AccessControlAllowMethods  = new[] { "GET" },
+                                                 ContentType                = HTTPContentType.OCTETSTREAM,
+                                                 Content                    = data,
+                                                 Connection                 = "close"
+                                             };
+
+                                  }
+                                  catch (Exception e)
+                                  {
+
+                                      DebugX.Log("FirmwareAPI: Could not fetch file: " + e.Message);
+
+                                      return new HTTPResponse.Builder(Request) {
+                                                 HTTPStatusCode             = HTTPStatusCode.InternalServerError,
+                                                 Server                     = DefaultHTTPServerName,
+                                                 Date                       = Timestamp.Now,
+                                                 AccessControlAllowOrigin   = "*",
+                                                 AccessControlAllowMethods  = new[] { "PUT" },
+                                                 ContentType                = HTTPContentType.TEXT_UTF8,
+                                                 Content                    = e.Message.ToUTF8Bytes(),
+                                                 Connection                 = "close"
+                                             };
+
+                                  }
+
+                              });
+
+            #endregion
+
         }
 
         #endregion

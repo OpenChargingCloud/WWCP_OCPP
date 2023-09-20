@@ -33,13 +33,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public static class ICSMSExtensions
     {
 
-        #region Reset                      (this CSMS, ChargeBoxId, ResetType, ...)
+        #region Reset                      (this CSMS, ChargeBoxId, ResetType, EVSEId = null, ...)
 
         /// <summary>
         /// Reset the given charging station.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ResetType">The type of reset that the charging station should perform.</param>
+        /// <param name="EVSEId">An optional EVSE identification.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -52,6 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             Reset(this ICSMS         CSMS,
                   ChargeBox_Id       ChargeBoxId,
                   ResetTypes         ResetType,
+                  EVSE_Id?           EVSEId              = null,
                   CustomData?        CustomData          = null,
 
                   Request_Id?        RequestId           = null,
@@ -64,6 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 => CSMS.Reset(new ResetRequest(
                                   ChargeBoxId,
                                   ResetType,
+                                  EVSEId,
                                   CustomData,
 
                                   RequestId        ?? CSMS.NextRequestId,
@@ -767,7 +770,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
-        /// <param name="EVSEId">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
+        /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -780,7 +783,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             TriggerMessage(this ICSMS         CSMS,
                            ChargeBox_Id       ChargeBoxId,
                            MessageTriggers    RequestedMessage,
-                           EVSE_Id?           EVSEId              = null,
+                           EVSE?              EVSE                = null,
                            CustomData?        CustomData          = null,
 
                            Request_Id?        RequestId           = null,
@@ -793,7 +796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 => CSMS.TriggerMessage(new TriggerMessageRequest(
                                            ChargeBoxId,
                                            RequestedMessage,
-                                           EVSEId,
+                                           EVSE,
                                            CustomData,
 
                                            RequestId        ?? CSMS.NextRequestId,

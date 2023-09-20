@@ -17,8 +17,6 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -62,25 +60,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The unit of measure.
         /// </summary>
-        public String  Text    { get; }
+        public String   Text    { get; }
 
 
         /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
-        public Boolean IsNullOrEmpty
+        public Boolean  IsNullOrEmpty
             => Text.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
-        public Boolean IsNotNullOrEmpty
+        public Boolean  IsNotNullOrEmpty
             => Text.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the unit of measure.
         /// </summary>
-        public UInt64 Length
+        public UInt64   Length
             => (UInt64) (Text?.Length ?? 0);
 
         #endregion
@@ -111,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var unitOfMeasure))
                 return unitOfMeasure;
 
-            throw new ArgumentException("Invalid text representation of a unit of measure: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a unit of measure: '{Text}'!",
                                         nameof(Text));
 
         }
@@ -235,49 +233,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// VoltAmpere
         /// </summary>
         public readonly static UnitOfMeasure VoltAmpere
-            = new("VoltAmpere");
+            = new ("VoltAmpere");
 
         /// <summary>
         /// kVA
         /// </summary>
         public readonly static UnitOfMeasure kVA
-            = new("kVA");
+            = new ("kVA");
 
         /// <summary>
         /// var
         /// </summary>
         public readonly static UnitOfMeasure var
-            = new("var");
+            = new ("var");
 
         /// <summary>
         /// kvar
         /// </summary>
         public readonly static UnitOfMeasure kvar
-            = new("kvar");
+            = new ("kvar");
 
         /// <summary>
         /// Amperes
         /// </summary>
         public readonly static UnitOfMeasure Amperes
-            = new("Amperes");
+            = new ("Amperes");
 
         /// <summary>
         /// Voltage
         /// </summary>
         public readonly static UnitOfMeasure Voltage
-            = new("Voltage");
+            = new ("Voltage");
 
         /// <summary>
         /// Kelvin
         /// </summary>
         public readonly static UnitOfMeasure Kelvin
-            = new("Kelvin");
+            = new ("Kelvin");
 
         /// <summary>
         /// Percent
         /// </summary>
         public readonly static UnitOfMeasure Percent
-            = new("Percent");
+            = new ("Percent");
 
         #endregion
 

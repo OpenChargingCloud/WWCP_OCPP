@@ -371,7 +371,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("supportsMonitoring",   SupportsMonitoring),
 
                            Unit is not null
-                               ? new JProperty("unit",                 Unit.Unit)
+                               ? new JProperty("unit",                 Unit.Unit. ToString())
                                : null,
 
                            MinLimit.HasValue

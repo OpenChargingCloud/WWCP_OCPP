@@ -3483,7 +3483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming TriggerMessage request for '" + Request.RequestedMessage + "' at EVSE '" + Request.EVSEId + "'.");
+                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming TriggerMessage request for '" + Request.RequestedMessage + "' at EVSE '" + (Request.EVSE?.Id.ToString() ?? "-") + "'.");
 
                     _ = Task.Run(async () => {
 
@@ -3503,12 +3503,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 break;
 
                             case MessageTriggers.StatusNotification:
-                                if (!Request.EVSEId.HasValue)
+                                if (Request.EVSE is not null)
                                     await SendStatusNotification(
-                                              EVSEId:        Request.EVSEId!.Value,
+                                              EVSEId:        Request.EVSE.Id,
                                               ConnectorId:   Connector_Id.Parse(1),
                                               Timestamp:     Timestamp.Now,
-                                              Status:        evses[Request.EVSEId!.Value].Status,
+                                              Status:        evses[Request.EVSE.Id].Status,
                                               CustomData:    null
                                           );
                                 break;
@@ -3527,7 +3527,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    MessageTriggers.DiagnosticsStatusNotification or
                                    MessageTriggers.FirmwareStatusNotification    or
                                    MessageTriggers.Heartbeat                     or
-                                   MessageTriggers.SignChargePointCertificate
+                                   MessageTriggers.SignChargingStationCertificate
 
                                        => new TriggerMessageResponse(
                                               Request,
@@ -3538,7 +3538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    MessageTriggers.MeterValues or
                                    MessageTriggers.StatusNotification
 
-                                       => Request.EVSEId.HasValue
+                                       => Request.EVSE is not null
                                               ? new TriggerMessageResponse(
                                                     Request,
                                                     TriggerMessageStatus.Accepted

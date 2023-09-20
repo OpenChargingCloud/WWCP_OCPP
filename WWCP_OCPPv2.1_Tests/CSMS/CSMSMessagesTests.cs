@@ -1057,7 +1057,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var response1       = await testCSMS01.TriggerMessage(
                                                 ChargeBoxId:        chargingStation1.ChargeBoxId,
                                                 RequestedMessage:   messageTrigger,
-                                                EVSEId:             evseId,
+                                                EVSE:               new EVSE(
+                                                                        evseId
+                                                                    ),
                                                 CustomData:         null
                                             );
 

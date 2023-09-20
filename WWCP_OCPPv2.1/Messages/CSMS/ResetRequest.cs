@@ -40,6 +40,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         [Mandatory]
         public ResetTypes  ResetType    { get; }
 
+        /// <summary>
+        /// The optional EVSE identification.
+        /// </summary>
+        [Optional]
+        public EVSE_Id?    EVSEId       { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -49,6 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ResetType">The type of reset that the charging station should perform.</param>
+        /// <param name="EVSEId">An optional EVSE identification.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -58,6 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ResetRequest(ChargeBox_Id       ChargeBoxId,
                             ResetTypes         ResetType,
+                            EVSE_Id?           EVSEId              = null,
                             CustomData?        CustomData          = null,
 
                             Request_Id?        RequestId           = null,
@@ -79,6 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         {
 
             this.ResetType  = ResetType;
+            this.EVSEId     = EVSEId;
 
         }
 
@@ -231,6 +240,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region EVSEId         [optional]
+
+                if (JSON.ParseOptional("evseID",
+                                       "evse identification",
+                                       EVSE_Id.TryParse,
+                                       out EVSE_Id? EVSEId,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -265,10 +288,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                ResetRequest = new ResetRequest(ChargeBoxId,
-                                                ResetType,
-                                                CustomData,
-                                                RequestId);
+                ResetRequest = new ResetRequest(
+                                   ChargeBoxId,
+                                   ResetType,
+                                   EVSEId,
+                                   CustomData,
+                                   RequestId
+                               );
 
                 if (CustomResetRequestParser is not null)
                     ResetRequest = CustomResetRequestParser(JSON,
@@ -301,10 +327,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("type",        ResetType. AsText()),
+                                 new JProperty("type",         ResetType. AsText()),
+
+                           EVSEId.HasValue
+                               ? new JProperty("evseId",       EVSEId.Value.Value)
+                               : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -388,7 +418,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             => ResetRequest is not null &&
 
-               ResetType.  Equals(ResetRequest.ResetType) &&
+               ResetType.Equals(ResetRequest.ResetType) &&
+
+            ((!EVSEId.HasValue && !ResetRequest.EVSEId.HasValue) ||
+               EVSEId.HasValue &&  ResetRequest.EVSEId.HasValue && EVSEId.Value.Equals(ResetRequest.EVSEId.Value)) &&
 
                base.GenericEquals(ResetRequest);
 
@@ -407,7 +440,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             unchecked
             {
 
-                return ResetType.GetHashCode() * 3 ^
+                return ResetType.GetHashCode()       * 5 ^
+                      (EVSEId?.  GetHashCode() ?? 0) * 3 ^
                        base.     GetHashCode();
 
             }
@@ -422,7 +456,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => ResetType.ToString();
+            => $"{ResetType}{(EVSEId.HasValue ? $" for EVSE '{EVSEId}'" : "")}";
 
         #endregion
 

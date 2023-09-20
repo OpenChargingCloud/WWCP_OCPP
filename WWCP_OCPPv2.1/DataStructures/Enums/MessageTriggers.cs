@@ -94,8 +94,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     MessageTrigger = MessageTriggers.MeterValues;
                     return true;
 
-                case "SignChargePointCertificate":
-                    MessageTrigger = MessageTriggers.SignChargePointCertificate;
+                case "SignChargingStationCertificate":
+                    MessageTrigger = MessageTriggers.SignChargingStationCertificate;
                     return true;
 
                 case "StatusNotification":
@@ -117,15 +117,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this MessageTriggers MessageTrigger)
 
             => MessageTrigger switch {
-                   MessageTriggers.BootNotification               => "BootNotification",
-                   MessageTriggers.LogStatusNotification          => "LogStatusNotification",
-                   MessageTriggers.DiagnosticsStatusNotification  => "DiagnosticsStatusNotification",
-                   MessageTriggers.FirmwareStatusNotification     => "FirmwareStatusNotification",
-                   MessageTriggers.Heartbeat                      => "Heartbeat",
-                   MessageTriggers.MeterValues                    => "MeterValues",
-                   MessageTriggers.SignChargePointCertificate     => "SignChargePointCertificate",
-                   MessageTriggers.StatusNotification             => "StatusNotification",
-                   _                                              => "Unknown"
+                   MessageTriggers.BootNotification                => "BootNotification",
+                   MessageTriggers.LogStatusNotification           => "LogStatusNotification",
+                   MessageTriggers.DiagnosticsStatusNotification   => "DiagnosticsStatusNotification",
+                   MessageTriggers.FirmwareStatusNotification      => "FirmwareStatusNotification",
+                   MessageTriggers.Heartbeat                       => "Heartbeat",
+                   MessageTriggers.MeterValues                     => "MeterValues",
+                   MessageTriggers.SignChargingStationCertificate  => "SignChargingStationCertificate",
+                   MessageTriggers.StatusNotification              => "StatusNotification",
+                   _                                               => "Unknown"
                };
 
         #endregion
@@ -175,9 +175,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         MeterValues,
 
         /// <summary>
-        /// To trigger a SignCertificate.req with certificateType: ChargePointCertificate.
+        /// To trigger a SignCertificate.req with certificateType: SignChargingStationCertificate.
         /// </summary>
-        SignChargePointCertificate,
+        SignChargingStationCertificate,
 
         /// <summary>
         /// To trigger a StatusNotification request.

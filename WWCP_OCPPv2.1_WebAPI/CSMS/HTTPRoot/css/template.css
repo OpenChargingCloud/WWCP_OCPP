@@ -1,7 +1,6 @@
 ﻿body {
   margin: 0px;
   font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  overflow: hidden;
 }
 body #page {
   display: flex;

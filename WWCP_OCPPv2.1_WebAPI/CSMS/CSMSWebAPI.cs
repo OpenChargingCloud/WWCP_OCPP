@@ -1944,11 +1944,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.OnTriggerMessageRequest += async (logTimestamp, sender, request) =>
                 await this.EventLog.SubmitEvent("OnTriggerMessageRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomTriggerMessageRequestSerializer,
+                                                                                      CustomEVSESerializer,
                                                                                       CustomCustomDataSerializer)));
 
             CSMS.OnTriggerMessageResponse += async (logTimestamp, sender, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnTriggerMessageResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomTriggerMessageRequestSerializer,
+                                                                                        CustomEVSESerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomTriggerMessageResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
