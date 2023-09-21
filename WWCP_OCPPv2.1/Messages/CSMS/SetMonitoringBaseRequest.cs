@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region MonitoringBase    [mandatory]
 
-                if (!JSON.ParseMandatory("message",
+                if (!JSON.ParseMandatory("monitoringBase",
                                          "display message",
                                          MonitoringBases.TryParse,
                                          out MonitoringBases MonitoringBase,
@@ -261,10 +261,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                SetMonitoringBaseRequest = new SetMonitoringBaseRequest(ChargeBoxId,
-                                                                        MonitoringBase,
-                                                                        CustomData,
-                                                                        RequestId);
+                SetMonitoringBaseRequest = new SetMonitoringBaseRequest(
+                                               ChargeBoxId,
+                                               MonitoringBase,
+                                               CustomData,
+                                               RequestId
+                                           );
 
                 if (CustomSetMonitoringBaseRequestParser is not null)
                     SetMonitoringBaseRequest = CustomSetMonitoringBaseRequestParser(JSON,
@@ -297,10 +299,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("message",     MonitoringBase.AsText()),
+                                 new JProperty("monitoringBase",   MonitoringBase.AsText()),
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.    ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",       CustomData.    ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

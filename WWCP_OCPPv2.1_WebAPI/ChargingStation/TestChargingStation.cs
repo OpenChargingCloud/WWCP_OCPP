@@ -4725,8 +4725,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    var success = reservations.TryAdd(Request.ReservationId,
-                                                      Request.ReservationId);
+                    var success = reservations.TryAdd(Request.Id,
+                                                      Request.Id);
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming ReserveNow request " + (success
                                                                                                ? "accepted"

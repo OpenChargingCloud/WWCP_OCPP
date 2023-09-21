@@ -251,10 +251,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                CancelReservationRequest = new CancelReservationRequest(ChargeBoxId,
-                                                                        ReservationId,
-                                                                        CustomData,
-                                                                        RequestId);
+                CancelReservationRequest = new CancelReservationRequest(
+                                               ChargeBoxId,
+                                               ReservationId,
+                                               CustomData,
+                                               RequestId
+                                           );
 
                 if (CustomCancelReservationRequestParser is not null)
                     CancelReservationRequest = CustomCancelReservationRequestParser(JSON,

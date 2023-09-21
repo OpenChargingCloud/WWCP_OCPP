@@ -613,7 +613,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("id",                       Id.                 ToString()),
+                                 new JProperty("id",                       Id.Value),
 
                            StartSchedule.HasValue
                                ? new JProperty("startSchedule",            StartSchedule.Value.ToIso8601())
