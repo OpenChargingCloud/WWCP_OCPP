@@ -65,6 +65,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Duration">The length of requested schedule.</param>
         /// <param name="EVSEId">The EVSE identification for which the schedule is requested. EVSE identification is 0, the charging station will calculate the expected consumption for the grid connection.</param>
         /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -72,20 +74,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetCompositeScheduleRequest(ChargeBox_Id        ChargeBoxId,
-                                           TimeSpan            Duration,
-                                           EVSE_Id             EVSEId,
-                                           ChargingRateUnits?  ChargingRateUnit    = null,
-                                           CustomData?         CustomData          = null,
+        public GetCompositeScheduleRequest(ChargeBox_Id             ChargeBoxId,
+                                           TimeSpan                 Duration,
+                                           EVSE_Id                  EVSEId,
+                                           ChargingRateUnits?       ChargingRateUnit    = null,
 
-                                           Request_Id?         RequestId           = null,
-                                           DateTime?           RequestTimestamp    = null,
-                                           TimeSpan?           RequestTimeout      = null,
-                                           EventTracking_Id?   EventTrackingId     = null,
-                                           CancellationToken   CancellationToken   = default)
+                                           IEnumerable<Signature>?  Signatures          = null,
+                                           CustomData?              CustomData          = null,
+
+                                           Request_Id?              RequestId           = null,
+                                           DateTime?                RequestTimestamp    = null,
+                                           TimeSpan?                RequestTimeout      = null,
+                                           EventTracking_Id?        EventTrackingId     = null,
+                                           CancellationToken        CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "GetCompositeSchedule",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -281,6 +286,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures          [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData          [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -315,12 +334,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                GetCompositeScheduleRequest = new GetCompositeScheduleRequest(ChargeBoxId,
-                                                                              Duration,
-                                                                              EVSEId,
-                                                                              ChargingRateUnit,
-                                                                              CustomData,
-                                                                              RequestId);
+                GetCompositeScheduleRequest = new GetCompositeScheduleRequest(
+                                                  ChargeBoxId,
+                                                  Duration,
+                                                  EVSEId,
+                                                  ChargingRateUnit,
+                                                  Signatures,
+                                                  CustomData,
+                                                  RequestId
+                                              );
 
                 if (CustomGetCompositeScheduleRequestParser is not null)
                     GetCompositeScheduleRequest = CustomGetCompositeScheduleRequestParser(JSON,
@@ -340,14 +362,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomGetCompositeScheduleRequestSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomGetCompositeScheduleRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetCompositeScheduleRequestSerializer">A delegate to serialize custom get composite schedule requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?  CustomGetCompositeScheduleRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                    CustomSignatureSerializer                     = null,
                               CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataSerializer                    = null)
         {
 
@@ -358,6 +382,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            ChargingRateUnit.HasValue
                                ? new JProperty("chargingRateUnit",   ChargingRateUnit. Value.AsText())
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",         new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

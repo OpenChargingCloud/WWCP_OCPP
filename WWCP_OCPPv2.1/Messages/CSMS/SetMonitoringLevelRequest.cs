@@ -50,6 +50,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Severity">The charging station SHALL only report events with a severity number lower than or equal to this severity.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -57,18 +59,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetMonitoringLevelRequest(ChargeBox_Id       ChargeBoxId,
-                                         Severities         Severity,
-                                         CustomData?        CustomData          = null,
+        public SetMonitoringLevelRequest(ChargeBox_Id             ChargeBoxId,
+                                         Severities               Severity,
 
-                                         Request_Id?        RequestId           = null,
-                                         DateTime?          RequestTimestamp    = null,
-                                         TimeSpan?          RequestTimeout      = null,
-                                         EventTracking_Id?  EventTrackingId     = null,
-                                         CancellationToken  CancellationToken   = default)
+                                         IEnumerable<Signature>?  Signatures          = null,
+                                         CustomData?              CustomData          = null,
+
+                                         Request_Id?              RequestId           = null,
+                                         DateTime?                RequestTimestamp    = null,
+                                         TimeSpan?                RequestTimeout      = null,
+                                         EventTracking_Id?        EventTrackingId     = null,
+                                         CancellationToken        CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "SetMonitoringLevel",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -222,6 +227,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures     [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -256,10 +275,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                SetMonitoringLevelRequest = new SetMonitoringLevelRequest(ChargeBoxId,
-                                                                          Severity.Value,
-                                                                          CustomData,
-                                                                          RequestId);
+                SetMonitoringLevelRequest = new SetMonitoringLevelRequest(
+                                                ChargeBoxId,
+                                                Severity.Value,
+                                                Signatures,
+                                                CustomData,
+                                                RequestId
+                                            );
 
                 if (CustomSetMonitoringLevelRequestParser is not null)
                     SetMonitoringLevelRequest = CustomSetMonitoringLevelRequestParser(JSON,
@@ -279,23 +301,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomSetMonitoringLevelRequestSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomSetMonitoringLevelRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomSetMonitoringLevelRequestSerializer">A delegate to serialize custom set monitoring level requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SetMonitoringLevelRequest>?  CustomSetMonitoringLevelRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("severity",    Severity.  AsNumber()),
+                                 new JProperty("severity",     Severity.  AsNumber()),
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

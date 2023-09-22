@@ -70,6 +70,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="VersionNumber">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
         /// <param name="UpdateType">The type of update (full or differential).</param>
         /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charge point. Maximum number of authorization data elements is available in the configuration key: SendLocalListMaxLength.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -81,6 +83,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     UInt64                           VersionNumber,
                                     UpdateTypes                      UpdateType,
                                     IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
+
+                                    IEnumerable<Signature>?          Signatures               = null,
                                     CustomData?                      CustomData               = null,
 
                                     Request_Id?                      RequestId                = null,
@@ -91,6 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "SendLocalList",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -490,6 +495,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures                [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -524,12 +543,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                SendLocalListRequest = new SendLocalListRequest(ChargeBoxId,
-                                                                VersionNumber,
-                                                                UpdateType,
-                                                                LocalAuthorizationList,
-                                                                CustomData,
-                                                                RequestId);
+                SendLocalListRequest = new SendLocalListRequest(
+                                           ChargeBoxId,
+                                           VersionNumber,
+                                           UpdateType,
+                                           LocalAuthorizationList,
+                                           Signatures,
+                                           CustomData,
+                                           RequestId
+                                       );
 
                 if (CustomSendLocalListRequestParser is not null)
                     SendLocalListRequest = CustomSendLocalListRequestParser(JSON,
@@ -560,6 +582,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomIdTokenInfoSerializer">A delegate to serialize custom identification tokens infos.</param>
         /// <param name="CustomMessageContentSerializer">A delegate to serialize custom message contents.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SendLocalListRequest>?  CustomSendLocalListRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<AuthorizationData>?     CustomAuthorizationDataSerializer      = null,
@@ -567,6 +590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CustomJObjectSerializerDelegate<AdditionalInfo>?        CustomAdditionalInfoSerializer         = null,
                               CustomJObjectSerializerDelegate<IdTokenInfo>?           CustomIdTokenInfoSerializer            = null,
                               CustomJObjectSerializerDelegate<MessageContent>?        CustomMessageContentSerializer         = null,
+                              CustomJObjectSerializerDelegate<Signature>?             CustomSignatureSerializer              = null,
                               CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
         {
 
@@ -576,12 +600,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  new JProperty("updateType",               UpdateType.AsText()),
 
                            LocalAuthorizationList.IsNeitherNullNorEmpty()
-                               ? new JProperty("localAuthorizationList",   new JArray(LocalAuthorizationList.Select(item => item.ToJSON(CustomAuthorizationDataSerializer,
-                                                                                                                                        CustomIdTokenSerializer,
-                                                                                                                                        CustomAdditionalInfoSerializer,
-                                                                                                                                        CustomIdTokenInfoSerializer,
-                                                                                                                                        CustomMessageContentSerializer,
-                                                                                                                                        CustomCustomDataSerializer))))
+                               ? new JProperty("localAuthorizationList",   new JArray(LocalAuthorizationList.Select(item      => item.     ToJSON(CustomAuthorizationDataSerializer,
+                                                                                                                                                  CustomIdTokenSerializer,
+                                                                                                                                                  CustomAdditionalInfoSerializer,
+                                                                                                                                                  CustomIdTokenInfoSerializer,
+                                                                                                                                                  CustomMessageContentSerializer,
+                                                                                                                                                  CustomCustomDataSerializer))))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",               new JArray(Signatures.            Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                                  CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

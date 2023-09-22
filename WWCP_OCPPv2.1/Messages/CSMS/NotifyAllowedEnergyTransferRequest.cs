@@ -49,6 +49,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="AllowedEnergyTransferModes">An enumeration of allowed energy transfer modes.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -58,6 +60,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public NotifyAllowedEnergyTransferRequest(ChargeBox_Id                      ChargeBoxId,
                                                   IEnumerable<EnergyTransferModes>  AllowedEnergyTransferModes,
+
+                                                  IEnumerable<Signature>?           Signatures          = null,
                                                   CustomData?                       CustomData          = null,
 
                                                   Request_Id?                       RequestId           = null,
@@ -68,6 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "NotifyAllowedEnergyTransfer",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -188,6 +193,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures                    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -225,6 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 NotifyAllowedEnergyTransferRequest = new NotifyAllowedEnergyTransferRequest(
                                                          ChargeBoxId,
                                                          AllowedEnergyTransferModes,
+                                                         Signatures,
                                                          CustomData,
                                                          RequestId
                                                      );
@@ -247,20 +267,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomNotifyAllowedEnergyTransferRequestSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomNotifyAllowedEnergyTransferRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomNotifyAllowedEnergyTransferRequestSerializer">A delegate to serialize custom notify allowed energy transfer requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyAllowedEnergyTransferRequest>?  CustomNotifyAllowedEnergyTransferRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataSerializer                    = null)
+                              CustomJObjectSerializerDelegate<Signature>?                           CustomSignatureSerializer                            = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                          CustomCustomDataSerializer                           = null)
         {
 
             var json = JSONObject.Create(
 
                                  new JProperty("allowedEnergyTransfer",   new JArray(AllowedEnergyTransferModes.Select(allowedEnergyTransferMode => allowedEnergyTransferMode.AsText()))),
+
+                           Signatures is not null
+                               ? new JProperty("signatures",              new JArray(Signatures.                Select(signature                 => signature.                ToJSON(CustomSignatureSerializer,
+                                                                                                                                                                                     CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",              CustomData.ToJSON(CustomCustomDataSerializer))

@@ -50,6 +50,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware image as a hexadecimal string of length 32.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -57,18 +59,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UnpublishFirmwareRequest(ChargeBox_Id       ChargeBoxId,
-                                        String             MD5Checksum,
-                                        CustomData?        CustomData          = null,
+        public UnpublishFirmwareRequest(ChargeBox_Id             ChargeBoxId,
+                                        String                   MD5Checksum,
 
-                                        Request_Id?        RequestId           = null,
-                                        DateTime?          RequestTimestamp    = null,
-                                        TimeSpan?          RequestTimeout      = null,
-                                        EventTracking_Id?  EventTrackingId     = null,
-                                        CancellationToken  CancellationToken   = default)
+                                        IEnumerable<Signature>?  Signatures          = null,
+                                        CustomData?              CustomData          = null,
+
+                                        Request_Id?              RequestId           = null,
+                                        DateTime?                RequestTimestamp    = null,
+                                        TimeSpan?                RequestTimeout      = null,
+                                        EventTracking_Id?        EventTrackingId     = null,
+                                        CancellationToken        CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "UnpublishFirmware",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -218,6 +223,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures     [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -252,10 +271,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                UnpublishFirmwareRequest = new UnpublishFirmwareRequest(ChargeBoxId,
-                                                                        MD5Checksum,
-                                                                        CustomData,
-                                                                        RequestId);
+                UnpublishFirmwareRequest = new UnpublishFirmwareRequest(
+                                               ChargeBoxId,
+                                               MD5Checksum,
+                                               Signatures,
+                                               CustomData,
+                                               RequestId
+                                           );
 
                 if (CustomUnpublishFirmwareRequestParser is not null)
                     UnpublishFirmwareRequest = CustomUnpublishFirmwareRequestParser(JSON,
@@ -281,17 +303,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomUnpublishFirmwareRequestSerializer">A delegate to serialize custom start transaction requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<UnpublishFirmwareRequest>?  CustomUnpublishFirmwareRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                  = null,
                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("checksum",    MD5Checksum),
+                                 new JProperty("checksum",     MD5Checksum),
+
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

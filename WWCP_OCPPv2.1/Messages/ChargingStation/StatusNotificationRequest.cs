@@ -70,6 +70,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ConnectorStatus">The current status of the connector.</param>
         /// <param name="EVSEId">The identification of the EVSE to which the connector belongs for which the the status is reported.</param>
         /// <param name="ConnectorId">The identification of the connector within the EVSE for which the status is reported.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -77,21 +79,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public StatusNotificationRequest(ChargeBox_Id       ChargeBoxId,
-                                         DateTime           Timestamp,
-                                         ConnectorStatus    ConnectorStatus,
-                                         EVSE_Id            EVSEId,
-                                         Connector_Id       ConnectorId,
-                                         CustomData?        CustomData          = null,
+        public StatusNotificationRequest(ChargeBox_Id             ChargeBoxId,
+                                         DateTime                 Timestamp,
+                                         ConnectorStatus          ConnectorStatus,
+                                         EVSE_Id                  EVSEId,
+                                         Connector_Id             ConnectorId,
 
-                                         Request_Id?        RequestId           = null,
-                                         DateTime?          RequestTimestamp    = null,
-                                         TimeSpan?          RequestTimeout      = null,
-                                         EventTracking_Id?  EventTrackingId     = null,
-                                         CancellationToken  CancellationToken   = default)
+                                         IEnumerable<Signature>?  Signatures          = null,
+                                         CustomData?              CustomData          = null,
+
+                                         Request_Id?              RequestId           = null,
+                                         DateTime?                RequestTimestamp    = null,
+                                         TimeSpan?                RequestTimeout      = null,
+                                         EventTracking_Id?        EventTrackingId     = null,
+                                         CancellationToken        CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "StatusNotification",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -286,6 +291,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures         [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData         [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -328,6 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 ConnectorStatus,
                                                 EVSEId,
                                                 ConnectorId,
+                                                Signatures,
                                                 CustomData,
                                                 RequestId
                                             );
@@ -350,14 +370,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomStatusNotificationRequestSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomStatusNotificationRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomStatusNotificationRequestSerializer">A delegate to serialize custom StatusNotification requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
@@ -367,6 +389,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  new JProperty("connectorStatus",   ConnectorStatus.AsText()),
                                  new JProperty("evseId",            EVSEId.         Value),
                                  new JProperty("connectorId",       ConnectorId.    Value),
+
+                           Signatures is not null
+                               ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                               CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",        CustomData.     ToJSON(CustomCustomDataSerializer))

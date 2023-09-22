@@ -71,6 +71,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ChargingNeeds">The characteristics of the energy delivery required.</param>
         /// <param name="ReceivedTimestamp">An optional timestamp when the EV charging needs had been received, e.g. when the charging station was offline.</param>
         /// <param name="MaxScheduleTuples">An optional maximum number of schedule tuples per schedule the car supports.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -78,21 +80,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyEVChargingNeedsRequest(ChargeBox_Id       ChargeBoxId,
-                                            EVSE_Id            EVSEId,
-                                            ChargingNeeds      ChargingNeeds,
-                                            DateTime?          ReceivedTimestamp   = null,
-                                            UInt16?            MaxScheduleTuples   = null,
-                                            CustomData?        CustomData          = null,
+        public NotifyEVChargingNeedsRequest(ChargeBox_Id             ChargeBoxId,
+                                            EVSE_Id                  EVSEId,
+                                            ChargingNeeds            ChargingNeeds,
+                                            DateTime?                ReceivedTimestamp   = null,
+                                            UInt16?                  MaxScheduleTuples   = null,
 
-                                            Request_Id?        RequestId           = null,
-                                            DateTime?          RequestTimestamp    = null,
-                                            TimeSpan?          RequestTimeout      = null,
-                                            EventTracking_Id?  EventTrackingId     = null,
-                                            CancellationToken  CancellationToken   = default)
+                                            IEnumerable<Signature>?  Signatures          = null,
+                                            CustomData?              CustomData          = null,
+
+                                            Request_Id?              RequestId           = null,
+                                            DateTime?                RequestTimestamp    = null,
+                                            TimeSpan?                RequestTimeout      = null,
+                                            EventTracking_Id?        EventTrackingId     = null,
+                                            CancellationToken        CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "NotifyEVChargingNeeds",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -228,6 +233,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures           [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -268,6 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    ChargingNeeds,
                                                    ReceivedTimestamp,
                                                    MaxScheduleTuples,
+                                                   Signatures,
                                                    CustomData,
                                                    RequestId
                                                );
@@ -306,6 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomEVAbsolutePriceScheduleSerializer">A delegate to serialize custom ev absolute price schedules.</param>
         /// <param name="CustomEVAbsolutePriceScheduleEntrySerializer">A delegate to serialize custom charging limits.</param>
         /// <param name="CustomEVPriceRuleSerializer">A delegate to serialize custom ev price rules.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyEVChargingNeedsRequest>?  CustomNotifyEVChargingNeedsRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingNeeds>?                 CustomChargingNeedsSerializer                  = null,
@@ -318,6 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                               CustomJObjectSerializerDelegate<EVAbsolutePriceSchedule>?       CustomEVAbsolutePriceScheduleSerializer        = null,
                               CustomJObjectSerializerDelegate<EVAbsolutePriceScheduleEntry>?  CustomEVAbsolutePriceScheduleEntrySerializer   = null,
                               CustomJObjectSerializerDelegate<EVPriceRule>?                   CustomEVPriceRuleSerializer                    = null,
+                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer                      = null,
                               CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
@@ -343,6 +365,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                            MaxScheduleTuples.HasValue
                                ? new JProperty("maxScheduleTuples",   MaxScheduleTuples.Value)
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",          new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                 CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

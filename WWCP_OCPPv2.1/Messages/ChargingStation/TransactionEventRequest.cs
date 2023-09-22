@@ -136,6 +136,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EVSE">An optional indication of the EVSE (and connector) used.</param>
         /// <param name="MeterValues">An optional enumeration of meter values.</param>
         /// <param name="PreconditioningStatus">The optional current status of the battery management system within the EV.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -158,6 +160,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        EVSE?                     EVSE                    = null,
                                        IEnumerable<MeterValue>?  MeterValues             = null,
                                        PreconditioningStatus?    PreconditioningStatus   = null,
+
+                                       IEnumerable<Signature>?   Signatures              = null,
                                        CustomData?               CustomData              = null,
 
                                        Request_Id?               RequestId               = null,
@@ -168,6 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             : base(ChargeBoxId,
                    "TransactionEvent",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -933,6 +938,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
+                #region Signatures               [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData               [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -968,6 +987,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 TransactionEventRequest = new TransactionEventRequest(
+
                                               ChargeBoxId,
 
                                               EventType,
@@ -985,8 +1005,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               MeterValues,
                                               PreconditioningStatus,
 
+                                              Signatures,
                                               CustomData,
                                               RequestId
+
                                           );
 
                 if (CustomTransactionEventRequestParser is not null)
@@ -1021,6 +1043,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
         /// <param name="CustomSignedMeterValueSerializer">A delegate to serialize custom signed meter values.</param>
         /// <param name="CustomUnitsOfMeasureSerializer">A delegate to serialize custom units of measure.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<TransactionEventRequest>?  CustomTransactionEventRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Transaction>?              CustomTransactionSerializer               = null,
@@ -1031,6 +1054,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                               CustomJObjectSerializerDelegate<SampledValue>?             CustomSampledValueSerializer              = null,
                               CustomJObjectSerializerDelegate<SignedMeterValue>?         CustomSignedMeterValueSerializer          = null,
                               CustomJObjectSerializerDelegate<UnitsOfMeasure>?           CustomUnitsOfMeasureSerializer            = null,
+                              CustomJObjectSerializerDelegate<Signature>?                CustomSignatureSerializer                 = null,
                               CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
         {
 
@@ -1080,6 +1104,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                            PreconditioningStatus.HasValue
                                ? new JProperty("preconditioningStatus",   PreconditioningStatus.Value.AsText())
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",              new JArray(Signatures. Select(signature  => signature. ToJSON(CustomSignatureSerializer,
+                                                                                                                                        CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

@@ -57,6 +57,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="TotalCost">The current total cost, based on the information known by the CSMS, of the transaction including taxes. In the currency configured with the configuration Variable: [Currency]</param>
         /// <param name="TransactionId">The unique transaction identification the costs are asked for.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -64,19 +66,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public CostUpdatedRequest(ChargeBox_Id       ChargeBoxId,
-                                  Decimal            TotalCost,
-                                  Transaction_Id     TransactionId,
-                                  CustomData?        CustomData          = null,
+        public CostUpdatedRequest(ChargeBox_Id             ChargeBoxId,
+                                  Decimal                  TotalCost,
+                                  Transaction_Id           TransactionId,
 
-                                  Request_Id?        RequestId           = null,
-                                  DateTime?          RequestTimestamp    = null,
-                                  TimeSpan?          RequestTimeout      = null,
-                                  EventTracking_Id?  EventTrackingId     = null,
-                                  CancellationToken  CancellationToken   = default)
+                                  IEnumerable<Signature>?  Signatures          = null,
+                                  CustomData?              CustomData          = null,
+
+                                  Request_Id?              RequestId           = null,
+                                  DateTime?                RequestTimestamp    = null,
+                                  TimeSpan?                RequestTimeout      = null,
+                                  EventTracking_Id?        EventTrackingId     = null,
+                                  CancellationToken        CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "CostUpdated",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -245,6 +250,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures       [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData       [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -279,11 +298,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                CostUpdatedRequest = new CostUpdatedRequest(ChargeBoxId,
-                                                            TotalCost,
-                                                            TransactionId,
-                                                            CustomData,
-                                                            RequestId);
+                CostUpdatedRequest = new CostUpdatedRequest(
+                                         ChargeBoxId,
+                                         TotalCost,
+                                         TransactionId,
+                                         Signatures,
+                                         CustomData,
+                                         RequestId
+                                     );
 
                 if (CustomCostUpdatedRequestParser is not null)
                     CostUpdatedRequest = CustomCostUpdatedRequestParser(JSON,
@@ -303,14 +325,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomCostUpdatedRequestSerializer = null, CustomCustomDataSerializer = null, ...)
+        #region ToJSON(CustomCostUpdatedRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomCostUpdatedRequestSerializer">A delegate to serialize custom cost updated requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<CostUpdatedRequest>?  CustomCostUpdatedRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?           CustomSignatureSerializer            = null,
                               CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
         {
 
@@ -318,6 +342,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                  new JProperty("totalCost",       TotalCost),
                                  new JProperty("transactionId",   TransactionId.Value),
+
+                           Signatures is not null
+                               ? new JProperty("signatures",      new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                             CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))

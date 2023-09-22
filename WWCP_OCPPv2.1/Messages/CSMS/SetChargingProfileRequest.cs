@@ -58,6 +58,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="EVSEId">The EVSE identification to which the charging profile applies.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -65,19 +67,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetChargingProfileRequest(ChargeBox_Id       ChargeBoxId,
-                                         EVSE_Id            EVSEId,
-                                         ChargingProfile    ChargingProfile,
-                                         CustomData?        CustomData          = null,
+        public SetChargingProfileRequest(ChargeBox_Id             ChargeBoxId,
+                                         EVSE_Id                  EVSEId,
+                                         ChargingProfile          ChargingProfile,
 
-                                         Request_Id?        RequestId           = null,
-                                         DateTime?          RequestTimestamp    = null,
-                                         TimeSpan?          RequestTimeout      = null,
-                                         EventTracking_Id?  EventTrackingId     = null,
-                                         CancellationToken  CancellationToken   = default)
+                                         IEnumerable<Signature>?  Signatures          = null,
+                                         CustomData?              CustomData          = null,
+
+                                         Request_Id?              RequestId           = null,
+                                         DateTime?                RequestTimestamp    = null,
+                                         TimeSpan?                RequestTimeout      = null,
+                                         EventTracking_Id?        EventTrackingId     = null,
+                                         CancellationToken        CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "SetChargingProfile",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -582,6 +587,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures         [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData         [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -616,11 +635,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                SetChargingProfileRequest = new SetChargingProfileRequest(ChargeBoxId,
-                                                                          EVSEId,
-                                                                          ChargingProfile,
-                                                                          CustomData,
-                                                                          RequestId);
+                SetChargingProfileRequest = new SetChargingProfileRequest(
+                                                ChargeBoxId,
+                                                EVSEId,
+                                                ChargingProfile,
+                                                Signatures,
+                                                CustomData,
+                                                RequestId
+                                            );
 
                 if (CustomSetChargingProfileRequestParser is not null)
                     SetChargingProfileRequest = CustomSetChargingProfileRequestParser(JSON,
@@ -669,6 +691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomPriceLevelScheduleSerializer">A delegate to serialize custom price level schedules.</param>
         /// <param name="CustomPriceLevelScheduleEntrySerializer">A delegate to serialize custom price level schedule entries.</param>
         /// 
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SetChargingProfileRequest>?                           CustomSetChargingProfileRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer             = null,
@@ -694,6 +717,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer          = null,
                               CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer     = null,
 
+                              CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                  = null)
         {
 
@@ -724,6 +748,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                            CustomPriceLevelScheduleEntrySerializer,
 
                                                                                            CustomCustomDataSerializer)),
+
+                           Signatures is not null
+                               ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                               CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",        CustomData.     ToJSON(CustomCustomDataSerializer))

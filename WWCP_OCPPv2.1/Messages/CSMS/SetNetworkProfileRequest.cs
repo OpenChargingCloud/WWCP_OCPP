@@ -55,6 +55,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ConfigurationSlot">The slot in which the configuration should be stored.</param>
         /// <param name="NetworkConnectionProfile">The network connection configuration.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -65,6 +67,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public SetNetworkProfileRequest(ChargeBox_Id              ChargeBoxId,
                                         Int32                     ConfigurationSlot,
                                         NetworkConnectionProfile  NetworkConnectionProfile,
+
+                                        IEnumerable<Signature>?   Signatures          = null,
                                         CustomData?               CustomData          = null,
 
                                         Request_Id?               RequestId           = null,
@@ -75,6 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "SetNetworkProfile",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -444,6 +449,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures                  [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                  [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -478,11 +497,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                SetNetworkProfileRequest = new SetNetworkProfileRequest(ChargeBoxId,
-                                                                        ConfigurationSlot,
-                                                                        NetworkConnectionProfile,
-                                                                        CustomData,
-                                                                        RequestId);
+                SetNetworkProfileRequest = new SetNetworkProfileRequest(
+                                               ChargeBoxId,
+                                               ConfigurationSlot,
+                                               NetworkConnectionProfile,
+                                               Signatures,
+                                               CustomData,
+                                               RequestId
+                                           );
 
                 if (CustomSetNetworkProfileRequestParser is not null)
                     SetNetworkProfileRequest = CustomSetNetworkProfileRequestParser(JSON,
@@ -511,11 +533,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNetworkConnectionProfileSerializer">A delegate to serialize custom network connection profiles.</param>
         /// <param name="CustomVPNConfigurationSerializer">A delegate to serialize custom VPN configurations.</param>
         /// <param name="CustomAPNConfigurationSerializer">A delegate to serialize custom APN configurations.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SetNetworkProfileRequest>?  CustomSetNetworkProfileRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<NetworkConnectionProfile>?  CustomNetworkConnectionProfileSerializer   = null,
                               CustomJObjectSerializerDelegate<VPNConfiguration>?          CustomVPNConfigurationSerializer           = null,
                               CustomJObjectSerializerDelegate<APNConfiguration>?          CustomAPNConfigurationSerializer           = null,
+                              CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                  = null,
                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
 
@@ -527,6 +551,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                                      CustomVPNConfigurationSerializer,
                                                                                                      CustomAPNConfigurationSerializer,
                                                                                                      CustomCustomDataSerializer)),
+
+                           Signatures is not null
+                               ? new JProperty("signatures",         new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",         CustomData.              ToJSON(CustomCustomDataSerializer))

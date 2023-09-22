@@ -65,6 +65,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NotifyDisplayMessagesRequestId">The unique identification of the notify display messages request.</param>
         /// <param name="MessageInfos">The requested display messages as configured in the charging station.</param>
         /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyDisplayMessagesRequest message. Default value when omitted is false.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -76,6 +78,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             Int32                     NotifyDisplayMessagesRequestId,
                                             IEnumerable<MessageInfo>  MessageInfos,
                                             Boolean?                  ToBeContinued       = null,
+
+                                            IEnumerable<Signature>?   Signatures          = null,
                                             CustomData?               CustomData          = null,
 
                                             Request_Id?               RequestId           = null,
@@ -86,6 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             : base(ChargeBoxId,
                    "NotifyDisplayMessages",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -414,6 +419,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures                        [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                        [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -453,6 +472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    NotifyDisplayMessagesRequestId,
                                                    MessageInfos,
                                                    ToBeContinued,
+                                                   Signatures,
                                                    CustomData,
                                                    RequestId
                                                );
@@ -485,12 +505,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomMessageContentSerializer">A delegate to serialize custom MessageContent objects.</param>
         /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyDisplayMessagesRequest>?  CustomNotifyDisplayMessagesRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<MessageInfo>?                   CustomMessageInfoSerializer                    = null,
                               CustomJObjectSerializerDelegate<MessageContent>?                CustomMessageContentSerializer                 = null,
                               CustomJObjectSerializerDelegate<Component>?                     CustomComponentSerializer                      = null,
                               CustomJObjectSerializerDelegate<EVSE>?                          CustomEVSESerializer                           = null,
+                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer                      = null,
                               CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
@@ -505,6 +527,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                            ToBeContinued.HasValue
                                ? new JProperty("tbc",           ToBeContinued)
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",    new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                           CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

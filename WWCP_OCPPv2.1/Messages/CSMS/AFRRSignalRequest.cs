@@ -56,6 +56,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ActivationTimestamp">The time when the signal becomes active.</param>
         /// <param name="Signal">The value of the AFRR signal in v2xSignalWattCurve. Usually between -1 and 1.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -63,19 +65,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public AFRRSignalRequest(ChargeBox_Id       ChargeBoxId,
-                                 DateTime           ActivationTimestamp,
-                                 AFRR_Signal        Signal,
-                                 CustomData?        CustomData          = null,
+        public AFRRSignalRequest(ChargeBox_Id             ChargeBoxId,
+                                 DateTime                 ActivationTimestamp,
+                                 AFRR_Signal              Signal,
 
-                                 Request_Id?        RequestId           = null,
-                                 DateTime?          RequestTimestamp    = null,
-                                 TimeSpan?          RequestTimeout      = null,
-                                 EventTracking_Id?  EventTrackingId     = null,
-                                 CancellationToken  CancellationToken   = default)
+                                 IEnumerable<Signature>?  Signatures          = null,
+                                 CustomData?              CustomData          = null,
+
+                                 Request_Id?              RequestId           = null,
+                                 DateTime?                RequestTimestamp    = null,
+                                 TimeSpan?                RequestTimeout      = null,
+                                 EventTracking_Id?        EventTrackingId     = null,
+                                 CancellationToken        CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "AFRRSignal",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -215,6 +220,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures             [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData             [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -253,6 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         ChargeBoxId,
                                         ActivationTimestamp,
                                         Signal,
+                                        Signatures,
                                         CustomData,
                                         RequestId
                                     );
@@ -275,15 +295,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomAFRRSignalRequestSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomAFRRSignalRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomAFRRSignalRequestSerializer">A delegate to serialize custom AFRR signal requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<AFRRSignalRequest>?  CustomAFRRSignalRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataSerializer               = null)
+                              CustomJObjectSerializerDelegate<Signature>?          CustomSignatureSerializer           = null,
+                              CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
             var json = JSONObject.Create(
@@ -291,6 +313,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  new JProperty("timestamp",    ActivationTimestamp.ToIso8601()),
 
                                  new JProperty("signal",       Signal.             Value),
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",   CustomData.         ToJSON(CustomCustomDataSerializer))

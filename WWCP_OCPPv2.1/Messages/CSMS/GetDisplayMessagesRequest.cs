@@ -71,6 +71,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Ids">An optional filter on display message identifications. This field SHALL NOT contain more ids than set in NumberOfDisplayMessages.maxLimit.</param>
         /// <param name="Priority">The optional filter on message priorities.</param>
         /// <param name="State">The optional filter on message states.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -83,6 +85,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          IEnumerable<DisplayMessage_Id>?  Ids                 = null,
                                          MessagePriorities?               Priority            = null,
                                          MessageStates?                   State               = null,
+
+                                         IEnumerable<Signature>?          Signatures          = null,
                                          CustomData?                      CustomData          = null,
 
                                          Request_Id?                      RequestId           = null,
@@ -93,6 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "GetDisplayMessages",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -324,6 +329,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures                     [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -358,13 +377,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                GetDisplayMessagesRequest = new GetDisplayMessagesRequest(ChargeBoxId,
-                                                                          GetDisplayMessagesRequestId,
-                                                                          Ids,
-                                                                          Priority,
-                                                                          State,
-                                                                          CustomData,
-                                                                          RequestId);
+                GetDisplayMessagesRequest = new GetDisplayMessagesRequest(
+                                                ChargeBoxId,
+                                                GetDisplayMessagesRequestId,
+                                                Ids,
+                                                Priority,
+                                                State,
+                                                Signatures,
+                                                CustomData,
+                                                RequestId
+                                            );
 
                 if (CustomGetDisplayMessagesRequestParser is not null)
                     GetDisplayMessagesRequest = CustomGetDisplayMessagesRequestParser(JSON,
@@ -384,35 +406,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomGetDisplayMessagesRequestSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomGetDisplayMessagesRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetDisplayMessagesRequestSerializer">A delegate to serialize custom get display messages requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetDisplayMessagesRequest>?  CustomGetDisplayMessagesRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestId",   GetDisplayMessagesRequestId),
+                                 new JProperty("requestId",    GetDisplayMessagesRequestId),
 
                            Ids.Any()
-                               ? new JProperty("id",          new JArray(Ids.Select(id => id.Value)))
+                               ? new JProperty("id",           new JArray(Ids.Select(id => id.Value)))
                                : null,
 
                            Priority.HasValue
-                               ? new JProperty("priority",    Priority.Value.AsText())
+                               ? new JProperty("priority",     Priority.Value.AsText())
                                : null,
 
                            State.HasValue
-                               ? new JProperty("state",       State.   Value.AsText())
+                               ? new JProperty("state",        State.   Value.AsText())
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.    ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.    ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

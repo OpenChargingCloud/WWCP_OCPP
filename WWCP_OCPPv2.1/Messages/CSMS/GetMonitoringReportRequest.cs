@@ -63,6 +63,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="GetMonitoringReportRequestId">The charge box identification.</param>
         /// <param name="MonitoringCriteria">An optional enumeration of criteria for components for which a monitoring report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a monitoring report is requested.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -74,6 +76,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           Int32                            GetMonitoringReportRequestId,
                                           IEnumerable<MonitoringCriteria>  MonitoringCriteria,
                                           IEnumerable<ComponentVariable>   ComponentVariables,
+
+                                          IEnumerable<Signature>?          Signatures          = null,
                                           CustomData?                      CustomData          = null,
 
                                           Request_Id?                      RequestId           = null,
@@ -84,6 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "GetMonitoringReport",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -389,6 +394,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures                      [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                      [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -423,12 +442,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                GetMonitoringReportRequest = new GetMonitoringReportRequest(ChargeBoxId,
-                                                                            GetMonitoringReportRequestId,
-                                                                            MonitoringCriteria,
-                                                                            ComponentVariables,
-                                                                            CustomData,
-                                                                            RequestId);
+                GetMonitoringReportRequest = new GetMonitoringReportRequest(
+                                                 ChargeBoxId,
+                                                 GetMonitoringReportRequestId,
+                                                 MonitoringCriteria,
+                                                 ComponentVariables,
+                                                 Signatures,
+                                                 CustomData,
+                                                 RequestId
+                                             );
 
                 if (CustomGetMonitoringReportRequestParser is not null)
                     GetMonitoringReportRequest = CustomGetMonitoringReportRequestParser(JSON,
@@ -458,12 +480,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomVariableSerializer">A delegate to serialize custom variables.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetMonitoringReportRequest>?  CustomGetMonitoringReportRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ComponentVariable>?           CustomComponentVariableSerializer            = null,
                               CustomJObjectSerializerDelegate<Component>?                   CustomComponentSerializer                    = null,
                               CustomJObjectSerializerDelegate<EVSE>?                        CustomEVSESerializer                         = null,
                               CustomJObjectSerializerDelegate<Variable>?                    CustomVariableSerializer                     = null,
+                              CustomJObjectSerializerDelegate<Signature>?                   CustomSignatureSerializer                    = null,
                               CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {
 
@@ -478,6 +502,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                                                                                              CustomEVSESerializer,
                                                                                                                                                              CustomVariableSerializer,
                                                                                                                                                              CustomCustomDataSerializer)))),
+
+                           Signatures is not null
+                               ? new JProperty("signatures",          new JArray(Signatures.        Select(signature           => signature.          ToJSON(CustomSignatureSerializer,
+                                                                                                                                                             CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",          CustomData.ToJSON(CustomCustomDataSerializer))

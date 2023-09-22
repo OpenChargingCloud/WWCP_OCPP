@@ -81,6 +81,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ChargingSchedule">Planned energy consumption of the EV over time. Always relative to the time base.</param>
         /// <param name="SelectedScheduleTupleId">The optional identification of the selected charging schedule from the provided charging profile.</param>
         /// <param name="PowerToleranceAcceptance">True when power tolerance is accepted.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -88,22 +90,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyEVChargingScheduleRequest(ChargeBox_Id       ChargeBoxId,
-                                               DateTime           TimeBase,
-                                               EVSE_Id            EVSEId,
-                                               ChargingSchedule   ChargingSchedule,
-                                               Byte?              SelectedScheduleTupleId    = null,
-                                               Boolean?           PowerToleranceAcceptance   = null,
-                                               CustomData?        CustomData                 = null,
+        public NotifyEVChargingScheduleRequest(ChargeBox_Id             ChargeBoxId,
+                                               DateTime                 TimeBase,
+                                               EVSE_Id                  EVSEId,
+                                               ChargingSchedule         ChargingSchedule,
+                                               Byte?                    SelectedScheduleTupleId    = null,
+                                               Boolean?                 PowerToleranceAcceptance   = null,
 
-                                               Request_Id?        RequestId                  = null,
-                                               DateTime?          RequestTimestamp           = null,
-                                               TimeSpan?          RequestTimeout             = null,
-                                               EventTracking_Id?  EventTrackingId            = null,
-                                               CancellationToken  CancellationToken          = default)
+                                               IEnumerable<Signature>?  Signatures                 = null,
+                                               CustomData?              CustomData                 = null,
+
+                                               Request_Id?              RequestId                  = null,
+                                               DateTime?                RequestTimestamp           = null,
+                                               TimeSpan?                RequestTimeout             = null,
+                                               EventTracking_Id?        EventTrackingId            = null,
+                                               CancellationToken        CancellationToken          = default)
 
             : base(ChargeBoxId,
                    "NotifyEVChargingSchedule",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -252,6 +257,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures                  [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                  [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -293,6 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       ChargingSchedule,
                                                       SelectedScheduleTupleId,
                                                       PowerToleranceAcceptance,
+                                                      Signatures,
                                                       CustomData,
                                                       RequestId
                                                   );
@@ -331,6 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomRelativeTimeIntervalSerializer">A delegate to serialize custom relativeTimeIntervals.</param>
         /// <param name="CustomConsumptionCostSerializer">A delegate to serialize custom consumptionCosts.</param>
         /// <param name="CustomCostSerializer">A delegate to serialize custom costs.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyEVChargingScheduleRequest>?                     CustomNotifyEVChargingScheduleRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                  = null,
@@ -355,6 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                               CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer                = null,
                               CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer           = null,
 
+                              CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                         = null,
                               CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                        = null)
         {
 
@@ -394,6 +416,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                            PowerToleranceAcceptance.HasValue
                                ? new JProperty("powerToleranceAcceptance",   PowerToleranceAcceptance.Value)
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",                 new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                        CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

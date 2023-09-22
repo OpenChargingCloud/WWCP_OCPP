@@ -57,6 +57,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -64,19 +66,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public TriggerMessageRequest(ChargeBox_Id       ChargeBoxId,
-                                     MessageTriggers    RequestedMessage,
-                                     EVSE?              EVSE                = null,
-                                     CustomData?        CustomData          = null,
+        public TriggerMessageRequest(ChargeBox_Id             ChargeBoxId,
+                                     MessageTriggers          RequestedMessage,
+                                     EVSE?                    EVSE                = null,
 
-                                     Request_Id?        RequestId           = null,
-                                     DateTime?          RequestTimestamp    = null,
-                                     TimeSpan?          RequestTimeout      = null,
-                                     EventTracking_Id?  EventTrackingId     = null,
-                                     CancellationToken  CancellationToken   = default)
+                                     IEnumerable<Signature>?  Signatures          = null,
+                                     CustomData?              CustomData          = null,
+
+                                     Request_Id?              RequestId           = null,
+                                     DateTime?                RequestTimestamp    = null,
+                                     TimeSpan?                RequestTimeout      = null,
+                                     EventTracking_Id?        EventTrackingId     = null,
+                                     CancellationToken        CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "TriggerMessage",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -284,6 +289,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures         [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData         [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -322,6 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             ChargeBoxId,
                                             MessageTriggers,
                                             EVSE,
+                                            Signatures,
                                             CustomData,
                                             RequestId
                                         );
@@ -344,16 +364,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomTriggerMessageRequestSerializer = null)
+        #region ToJSON(CustomTriggerMessageRequestSerializer = null, CustomEVSESerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomTriggerMessageRequestSerializer">A delegate to serialize custom trigger message requests.</param>
-        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<EVSE>?                   CustomEVSESerializer                    = null,
+                              CustomJObjectSerializerDelegate<Signature>?              CustomSignatureSerializer               = null,
                               CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataSerializer              = null)
         {
 
@@ -364,6 +386,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            EVSE is not null
                                ? new JProperty("evse",               EVSE.            ToJSON(CustomEVSESerializer,
                                                                                              CustomCustomDataSerializer))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",         new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

@@ -7193,6 +7193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      )
                                  ),
                                  BootReason,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -7317,6 +7318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  ChargeBoxId,
                                  Status,
                                  UpdateFirmwareRequestId,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -7421,6 +7423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  Status,
                                  PublishFirmwareStatusNotificationRequestId,
                                  DownloadLocations,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -7516,6 +7519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var request    = new HeartbeatRequest(
                                  ChargeBoxId,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -7628,6 +7632,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  SequenceNumber,
                                  EventData,
                                  ToBeContinued,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -7737,6 +7742,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  Type,
                                  Timestamp,
                                  TechInfo,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -7852,6 +7858,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  GeneratedAt,
                                  ReportData,
                                  ToBeContinued,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -7967,6 +7974,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  GeneratedAt,
                                  MonitoringData,
                                  ToBeContinued,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -8073,6 +8081,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  ChargeBoxId,
                                  Status,
                                  LogRequestId,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -8182,6 +8191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  VendorId,
                                  MessageId,
                                  Data,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -8284,6 +8294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  ChargeBoxId,
                                  CSR,
                                  CertificateType,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -8399,6 +8410,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  EXIRequest,
                                  MaximumContractCertificateChains,
                                  PrioritizedEMAIds,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -8502,6 +8514,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var request    = new GetCertificateStatusRequest(
                                  ChargeBoxId,
                                  OCSPRequestData,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -8609,6 +8622,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  ChargeBoxId,
                                  GetCRLRequestId,
                                  CertificateHashData,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -8716,6 +8730,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  ChargeBoxId,
                                  ReservationId,
                                  ReservationUpdateStatus,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -8825,6 +8840,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  IdToken,
                                  Certificate,
                                  ISO15118CertificateHashData,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -8932,6 +8948,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  ChargingNeeds,
                                  ReceivedTimestamp,
                                  MaxScheduleTuples,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -9075,6 +9092,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  EVSE,
                                  MeterValues,
                                  PreconditioningStatus,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -9182,6 +9200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  Status,
                                  EVSEId,
                                  ConnectorId,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -9283,6 +9302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  ChargeBoxId,
                                  EVSEId,
                                  MeterValues,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -9387,6 +9407,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  ChargingLimit,
                                  ChargingSchedules,
                                  EVSEId,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -9493,6 +9514,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  ChargeBoxId,
                                  ChargingLimitSource,
                                  EVSEId,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -9608,6 +9630,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  EVSEId,
                                  ChargingProfiles,
                                  ToBeContinued,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -9725,6 +9748,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  ChargingSchedule,
                                  SelectedScheduleTupleId,
                                  PowerToleranceAcceptance,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -9833,6 +9857,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  ChargeBoxId,
                                  TransactionId,
                                  Activated,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -9938,6 +9963,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var request    = new PullDynamicScheduleUpdateRequest(
                                  ChargeBoxId,
                                  ChargingProfileId,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -10048,6 +10074,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  NotifyDisplayMessagesRequestId,
                                  MessageInfos,
                                  ToBeContinued,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -10158,6 +10185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  SequenceNumber,
                                  GeneratedAt,
                                  ToBeContinued,
+                                 null,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,

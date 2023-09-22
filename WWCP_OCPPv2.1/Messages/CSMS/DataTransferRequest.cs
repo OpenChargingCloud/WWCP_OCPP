@@ -63,6 +63,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification.</param>
         /// <param name="Data">Optional vendor-specific data (a JSON token).</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -70,20 +72,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public DataTransferRequest(ChargeBox_Id       ChargeBoxId,
-                                   Vendor_Id          VendorId,
-                                   String?            MessageId           = null,
-                                   JToken?            Data                = null,
-                                   CustomData?        CustomData          = null,
+        public DataTransferRequest(ChargeBox_Id             ChargeBoxId,
+                                   Vendor_Id                VendorId,
+                                   String?                  MessageId           = null,
+                                   JToken?                  Data                = null,
 
-                                   Request_Id?        RequestId           = null,
-                                   DateTime?          RequestTimestamp    = null,
-                                   TimeSpan?          RequestTimeout      = null,
-                                   EventTracking_Id?  EventTrackingId     = null,
-                                   CancellationToken  CancellationToken   = default)
+                                   IEnumerable<Signature>?  Signatures          = null,
+                                   CustomData?              CustomData          = null,
+
+                                   Request_Id?              RequestId           = null,
+                                   DateTime?                RequestTimestamp    = null,
+                                   TimeSpan?                RequestTimeout      = null,
+                                   EventTracking_Id?        EventTrackingId     = null,
+                                   CancellationToken        CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "DataTransfer",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -256,6 +261,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures      [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData      [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -295,6 +314,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           VendorId,
                                           MessageId,
                                           Data,
+                                          Signatures,
                                           CustomData,
                                           RequestId
                                       );
@@ -317,14 +337,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomDataTransferRequestSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomDataTransferRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomDataTransferRequestSerializer">A delegate to serialize custom data transfer requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
                               CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
         {
 
@@ -338,6 +360,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            Data is not null
                                ? new JProperty("data",         Data)
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

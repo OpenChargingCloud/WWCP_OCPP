@@ -52,48 +52,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The charge box identification.
         /// </summary>
         [Mandatory]
-        public ChargeBox_Id       ChargeBoxId          { get; }
+        public ChargeBox_Id            ChargeBoxId          { get; }
 
         /// <summary>
         /// The request identification.
         /// </summary>
         [Mandatory]
-        public Request_Id         RequestId            { get; set; }
+        public Request_Id              RequestId            { get; set; }
 
         /// <summary>
         /// The timestamp of the request message creation.
         /// </summary>
         [Mandatory]
-        public DateTime           RequestTimestamp     { get; }
+        public DateTime                RequestTimestamp     { get; }
 
         /// <summary>
         /// The timeout of this request.
         /// </summary>
         [Mandatory]
-        public TimeSpan           RequestTimeout       { get; }
+        public TimeSpan                RequestTimeout       { get; }
 
         /// <summary>
         /// An event tracking identification for correlating this request with other events.
         /// </summary>
         [Mandatory]
-        public EventTracking_Id   EventTrackingId      { get; }
+        public EventTracking_Id        EventTrackingId      { get; }
 
         /// <summary>
         /// The OCPP HTTP Web Socket action.
         /// </summary>
         [Mandatory]
-        public String             Action               { get; }
+        public String                  Action               { get; }
 
         /// <summary>
         /// The custom data object to allow to store any kind of customer specific data.
         /// </summary>
         [Optional]
-        public CustomData?        CustomData           { get; }
+        public CustomData?             CustomData           { get; }
+
+        /// <summary>
+        /// The optional enumeration of cryptographic signatures for this message.
+        /// </summary>
+        [Optional]
+        public IEnumerable<Signature>  Signatures           { get; }
 
         /// <summary>
         /// An optional token to cancel this request.
         /// </summary>
-        public CancellationToken  CancellationToken    { get; }
+        public CancellationToken       CancellationToken    { get; }
 
         #endregion
 
@@ -105,6 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Action">The OCPP HTTP Web Socket action.</param>
         /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -112,21 +119,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ARequest(ChargeBox_Id       ChargeBoxId,
-                        String             Action,
+        public ARequest(ChargeBox_Id             ChargeBoxId,
+                        String                   Action,
 
-                        CustomData?        CustomData          = null,
+                        IEnumerable<Signature>?  Signatures          = null,
+                        CustomData?              CustomData          = null,
 
-                        Request_Id?        RequestId           = null,
-                        DateTime?          RequestTimestamp    = null,
-                        TimeSpan?          RequestTimeout      = null,
-                        EventTracking_Id?  EventTrackingId     = null,
-                        CancellationToken  CancellationToken   = default)
+                        Request_Id?              RequestId           = null,
+                        DateTime?                RequestTimestamp    = null,
+                        TimeSpan?                RequestTimeout      = null,
+                        EventTracking_Id?        EventTrackingId     = null,
+                        CancellationToken        CancellationToken   = default)
+
         {
 
             this.ChargeBoxId        = ChargeBoxId;
             this.Action             = Action;
 
+            this.Signatures         = Signatures?.Distinct() ?? Array.Empty<Signature>();
             this.CustomData         = CustomData;
 
             this.RequestId          = RequestId        ?? Request_Id.NewRandom();

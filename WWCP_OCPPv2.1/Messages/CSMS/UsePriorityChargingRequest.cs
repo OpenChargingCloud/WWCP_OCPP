@@ -57,6 +57,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
         /// <param name="Activate">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -64,19 +66,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UsePriorityChargingRequest(ChargeBox_Id       ChargeBoxId,
-                                          Transaction_Id     TransactionId,
-                                          Boolean            Activate,
-                                          CustomData?        CustomData          = null,
+        public UsePriorityChargingRequest(ChargeBox_Id             ChargeBoxId,
+                                          Transaction_Id           TransactionId,
+                                          Boolean                  Activate,
 
-                                          Request_Id?        RequestId           = null,
-                                          DateTime?          RequestTimestamp    = null,
-                                          TimeSpan?          RequestTimeout      = null,
-                                          EventTracking_Id?  EventTrackingId     = null,
-                                          CancellationToken  CancellationToken   = default)
+                                          IEnumerable<Signature>?  Signatures          = null,
+                                          CustomData?              CustomData          = null,
+
+                                          Request_Id?              RequestId           = null,
+                                          DateTime?                RequestTimestamp    = null,
+                                          TimeSpan?                RequestTimeout      = null,
+                                          EventTracking_Id?        EventTrackingId     = null,
+                                          CancellationToken        CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "UsePriorityCharging",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -192,6 +197,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures       [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData       [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -230,6 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  ChargeBoxId,
                                                  TransactionId,
                                                  Activate,
+                                                 Signatures,
                                                  CustomData,
                                                  RequestId
                                              );
@@ -258,15 +278,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomUsePriorityChargingRequestSerializer">A delegate to serialize custom UsePriorityCharging requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<UsePriorityChargingRequest>?  CustomUsePriorityChargingRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                      = null)
+                              CustomJObjectSerializerDelegate<Signature>?                   CustomSignatureSerializer                    = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {
 
             var json = JSONObject.Create(
 
                                  new JProperty("transactionId",    TransactionId.ToString()),
                                  new JProperty("activate",         Activate),
+
+                           Signatures is not null
+                               ? new JProperty("signatures",       new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                              CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",       CustomData.   ToJSON(CustomCustomDataSerializer))

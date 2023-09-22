@@ -57,6 +57,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="Status">The status of the firmware installation.</param>
         /// <param name="UpdateFirmwareRequestId">The (optional) request id that was provided in the UpdateFirmwareRequest that started this firmware update.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -64,19 +66,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public FirmwareStatusNotificationRequest(ChargeBox_Id       ChargeBoxId,
-                                                 FirmwareStatus     Status,
-                                                 Int64?             UpdateFirmwareRequestId   = null,
-                                                 CustomData?        CustomData                = null,
+        public FirmwareStatusNotificationRequest(ChargeBox_Id             ChargeBoxId,
+                                                 FirmwareStatus           Status,
+                                                 Int64?                   UpdateFirmwareRequestId   = null,
 
-                                                 Request_Id?        RequestId                 = null,
-                                                 DateTime?          RequestTimestamp          = null,
-                                                 TimeSpan?          RequestTimeout            = null,
-                                                 EventTracking_Id?  EventTrackingId           = null,
-                                                 CancellationToken  CancellationToken         = default)
+                                                 IEnumerable<Signature>?  Signatures                = null,
+                                                 CustomData?              CustomData                = null,
+
+                                                 Request_Id?              RequestId                 = null,
+                                                 DateTime?                RequestTimestamp          = null,
+                                                 TimeSpan?                RequestTimeout            = null,
+                                                 EventTracking_Id?        EventTrackingId           = null,
+                                                 CancellationToken        CancellationToken         = default)
 
             : base(ChargeBoxId,
                    "FirmwareStatusNotification",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -265,6 +270,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures                 [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                 [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -303,6 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                         ChargeBoxId,
                                                         Status,
                                                         UpdateFirmwareRequestId,
+                                                        Signatures,
                                                         CustomData,
                                                         RequestId
                                                     );
@@ -325,14 +345,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomFirmwareStatusNotificationRequestSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomFirmwareStatusNotificationRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomFirmwareStatusNotificationRequestSerializer">A delegate to serialize custom firmware status notification requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<FirmwareStatusNotificationRequest>?  CustomFirmwareStatusNotificationRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                          CustomSignatureSerializer                           = null,
                               CustomJObjectSerializerDelegate<CustomData>?                         CustomCustomDataSerializer                          = null)
         {
 
@@ -342,6 +364,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                            UpdateFirmwareRequestId.HasValue
                                ? new JProperty("requestId",    UpdateFirmwareRequestId.Value)
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

@@ -79,6 +79,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
         /// <param name="Retries">This specifies how many times the Charge Point must try to upload the log before giving up. If this field is not present, it is left to Charge Point to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to Charge Point to decide how long to wait between attempts.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -86,22 +88,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetLogRequest(ChargeBox_Id       ChargeBoxId,
-                             LogTypes           LogType,
-                             Int32              LogRequestId,
-                             LogParameters      Log,
-                             Byte?              Retries             = null,
-                             TimeSpan?          RetryInterval       = null,
-                             CustomData?        CustomData          = null,
+        public GetLogRequest(ChargeBox_Id             ChargeBoxId,
+                             LogTypes                 LogType,
+                             Int32                    LogRequestId,
+                             LogParameters            Log,
+                             Byte?                    Retries             = null,
+                             TimeSpan?                RetryInterval       = null,
 
-                             Request_Id?        RequestId           = null,
-                             DateTime?          RequestTimestamp    = null,
-                             TimeSpan?          RequestTimeout      = null,
-                             EventTracking_Id?  EventTrackingId     = null,
-                             CancellationToken  CancellationToken   = default)
+                             IEnumerable<Signature>?  Signatures          = null,
+                             CustomData?              CustomData          = null,
+
+                             Request_Id?              RequestId           = null,
+                             DateTime?                RequestTimestamp    = null,
+                             TimeSpan?                RequestTimeout      = null,
+                             EventTracking_Id?        EventTrackingId     = null,
+                             CancellationToken        CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "GetLog",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -362,6 +367,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures      [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData      [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -403,6 +422,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     Log,
                                     Retries,
                                     RetryInterval,
+                                    Signatures,
                                     CustomData,
                                     RequestId
                                 );
@@ -432,27 +452,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="CustomGetLogRequestSerializer">A delegate to serialize custom get log requests.</param>
         /// <param name="CustomLogParametersSerializer">A delegate to serialize custom log parameters.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetLogRequest>?  CustomGetLogRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<LogParameters>?  CustomLogParametersSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?      CustomSignatureSerializer       = null,
                               CustomJObjectSerializerDelegate<CustomData>?     CustomCustomDataSerializer      = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("logType",              LogType.   AsText()),
-                           new JProperty("requestId",            LogRequestId),
-                           new JProperty("log",                  Log.       ToJSON(CustomLogParametersSerializer)),
+
+                                 new JProperty("logType",         LogType.   AsText()),
+                                 new JProperty("requestId",       LogRequestId),
+                                 new JProperty("log",             Log.       ToJSON(CustomLogParametersSerializer)),
 
                            Retries.HasValue
-                               ? new JProperty("retries",        Retries.Value)
+                               ? new JProperty("retries",         Retries.Value)
                                : null,
 
                            RetryInterval.HasValue
-                               ? new JProperty("retryInterval",  (Int32) Math.Round(RetryInterval.Value.TotalSeconds, 0))
+                               ? new JProperty("retryInterval",   (Int32) Math.Round(RetryInterval.Value.TotalSeconds, 0))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",      new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                             CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

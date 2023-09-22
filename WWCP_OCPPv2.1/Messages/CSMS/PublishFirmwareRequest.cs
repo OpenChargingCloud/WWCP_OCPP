@@ -83,6 +83,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
         /// <param name="Retries">The optional number of retries of a charging station for trying to download the firmware before giving up. If this field is not present, it is left to the charging station to decide how many times it wants to retry.</param>
         /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charging station to decide how long to wait between attempts.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -90,22 +92,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public PublishFirmwareRequest(ChargeBox_Id       ChargeBoxId,
-                                      Int32              PublishFirmwareRequestId,
-                                      URL                DownloadLocation,
-                                      String             MD5Checksum,
-                                      Byte?              Retries             = null,
-                                      TimeSpan?          RetryInterval       = null,
-                                      CustomData?        CustomData          = null,
+        public PublishFirmwareRequest(ChargeBox_Id             ChargeBoxId,
+                                      Int32                    PublishFirmwareRequestId,
+                                      URL                      DownloadLocation,
+                                      String                   MD5Checksum,
+                                      Byte?                    Retries             = null,
+                                      TimeSpan?                RetryInterval       = null,
 
-                                      Request_Id?        RequestId           = null,
-                                      DateTime?          RequestTimestamp    = null,
-                                      TimeSpan?          RequestTimeout      = null,
-                                      EventTracking_Id?  EventTrackingId     = null,
-                                      CancellationToken  CancellationToken   = default)
+                                      IEnumerable<Signature>?  Signatures          = null,
+                                      CustomData?              CustomData          = null,
+
+                                      Request_Id?              RequestId           = null,
+                                      DateTime?                RequestTimestamp    = null,
+                                      TimeSpan?                RequestTimeout      = null,
+                                      EventTracking_Id?        EventTrackingId     = null,
+                                      CancellationToken        CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "PublishFirmware",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -329,6 +334,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures                  [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                  [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -363,14 +382,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                PublishFirmwareRequest = new PublishFirmwareRequest(ChargeBoxId,
-                                                                    PublishFirmwareRequestId,
-                                                                    DownloadLocation,
-                                                                    MD5Checksum,
-                                                                    Retries,
-                                                                    RetryInterval,
-                                                                    CustomData,
-                                                                    RequestId);
+                PublishFirmwareRequest = new PublishFirmwareRequest(
+                                             ChargeBoxId,
+                                             PublishFirmwareRequestId,
+                                             DownloadLocation,
+                                             MD5Checksum,
+                                             Retries,
+                                             RetryInterval,
+                                             Signatures,
+                                             CustomData,
+                                             RequestId
+                                         );
 
                 if (CustomPublishFirmwareRequestParser is not null)
                     PublishFirmwareRequest = CustomPublishFirmwareRequestParser(JSON,
@@ -396,8 +418,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomPublishFirmwareRequestSerializer">A delegate to serialize custom publish firmware requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<PublishFirmwareRequest>?  CustomPublishFirmwareRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?               CustomSignatureSerializer                = null,
                               CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataSerializer               = null)
         {
 
@@ -413,6 +437,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            RetryInterval.HasValue
                                ? new JProperty("retryInterval",  (UInt64) RetryInterval.Value.TotalSeconds)
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",     new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                            CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

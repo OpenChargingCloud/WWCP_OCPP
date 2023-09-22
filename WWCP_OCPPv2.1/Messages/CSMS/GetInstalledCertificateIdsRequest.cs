@@ -49,6 +49,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="CertificateTypes">An optional enumeration of certificate types requested.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -58,6 +60,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public GetInstalledCertificateIdsRequest(ChargeBox_Id                  ChargeBoxId,
                                                  IEnumerable<CertificateUse>?  CertificateTypes    = null,
+
+                                                 IEnumerable<Signature>?       Signatures          = null,
                                                  CustomData?                   CustomData          = null,
 
                                                  Request_Id?                   RequestId           = null,
@@ -68,6 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "GetInstalledCertificateIds",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -232,6 +237,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures          [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData          [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -266,10 +285,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                GetInstalledCertificateIdsRequest = new GetInstalledCertificateIdsRequest(ChargeBoxId,
-                                                                                          CertificateTypes,
-                                                                                          CustomData,
-                                                                                          RequestId);
+                GetInstalledCertificateIdsRequest = new GetInstalledCertificateIdsRequest(
+                                                        ChargeBoxId,
+                                                        CertificateTypes,
+                                                        Signatures,
+                                                        CustomData,
+                                                        RequestId
+                                                    );
 
                 if (CustomGetInstalledCertificateIdsRequestParser is not null)
                     GetInstalledCertificateIdsRequest = CustomGetInstalledCertificateIdsRequestParser(JSON,
@@ -289,14 +311,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomGetInstalledCertificateIdsRequestSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomGetInstalledCertificateIdsRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetInstalledCertificateIdsRequestSerializer">A delegate to serialize custom get installed certificate ids requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?  CustomGetInstalledCertificateIdsRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                          CustomSignatureSerializer                           = null,
                               CustomJObjectSerializerDelegate<CustomData>?                         CustomCustomDataSerializer                          = null)
         {
 
@@ -304,6 +328,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            CertificateTypes.Any()
                                ? new JProperty("certificateType",   new JArray(CertificateTypes.Select(certificateType => certificateType.AsText())))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",        new JArray(Signatures.      Select(signature       => signature.      ToJSON(CustomSignatureSerializer,
+                                                                                                                                                 CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

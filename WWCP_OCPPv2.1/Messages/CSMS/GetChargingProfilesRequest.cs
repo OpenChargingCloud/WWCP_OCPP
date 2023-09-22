@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="GetChargingProfilesRequestId">An unique identification of the get charging profiles request.</param>
         /// <param name="ChargingProfile">Machting charging profiles.</param>
         /// <param name="EVSEId">Optional EVSE identification of the EVSE for which the installed charging profiles SHALL be reported. If 0, only charging profiles installed on the charging station itself (the grid connection) SHALL be reported.If omitted, all installed charging profiles SHALL be reported.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -79,6 +81,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           Int64                     GetChargingProfilesRequestId,
                                           ChargingProfileCriterion  ChargingProfile,
                                           EVSE_Id?                  EVSEId              = null,
+
+                                          IEnumerable<Signature>?   Signatures          = null,
                                           CustomData?               CustomData          = null,
 
                                           Request_Id?               RequestId           = null,
@@ -89,6 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "GetChargingProfiles",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -335,6 +340,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures                      [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                      [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -369,12 +388,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                GetChargingProfilesRequest = new GetChargingProfilesRequest(ChargeBoxId,
-                                                                            GetChargingProfilesRequestId,
-                                                                            ChargingProfile,
-                                                                            EVSEId,
-                                                                            CustomData,
-                                                                            RequestId);
+                GetChargingProfilesRequest = new GetChargingProfilesRequest(
+                                                 ChargeBoxId,
+                                                 GetChargingProfilesRequestId,
+                                                 ChargingProfile,
+                                                 EVSEId,
+                                                 Signatures,
+                                                 CustomData,
+                                                 RequestId
+                                             );
 
                 if (CustomGetChargingProfilesRequestParser is not null)
                     GetChargingProfilesRequest = CustomGetChargingProfilesRequestParser(JSON,
@@ -401,9 +423,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="CustomGetChargingProfilesRequestSerializer">A delegate to serialize custom get charging profiles requests.</param>
         /// <param name="CustomChargingProfileCriterionSerializer">A delegate to serialize custom ChargingProfileCriterion objects.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetChargingProfilesRequest>?  CustomGetChargingProfilesRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingProfileCriterion>?    CustomChargingProfileCriterionSerializer     = null,
+                              CustomJObjectSerializerDelegate<Signature>?                   CustomSignatureSerializer                    = null,
                               CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {
 
@@ -414,6 +438,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            EVSEId.HasValue
                                ? new JProperty("evseId",            EVSEId.Value.Value)
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                               CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

@@ -65,7 +65,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Certificate">An optional X.509 certificated presented by the electric vehicle/user (PEM format).</param>
         /// <param name="ISO15118CertificateHashData">Optional information to verify the electric vehicle/user contract certificate via OCSP.</param>
         /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
@@ -77,7 +79,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                 Certificate?                   Certificate                   = null,
                                 IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData   = null,
 
+                                IEnumerable<Signature>?        Signatures                    = null,
                                 CustomData?                    CustomData                    = null,
+
                                 Request_Id?                    RequestId                     = null,
                                 DateTime?                      RequestTimestamp              = null,
                                 TimeSpan?                      RequestTimeout                = null,
@@ -86,6 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             : base(ChargeBoxId,
                    "Authorize",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -380,6 +385,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures                     [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -419,6 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        IdToken,
                                        Certificate,
                                        ISO15118CertificateHashData,
+                                       Signatures,
                                        CustomData,
                                        RequestId
                                    );
@@ -450,11 +470,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional infos.</param>
         /// <param name="CustomOCSPRequestDataSerializer">A delegate to serialize custom OCSP request data.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeRequest>?  CustomAuthorizeRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<IdToken>?           CustomIdTokenSerializer            = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?    CustomAdditionalInfoSerializer     = null,
                               CustomJObjectSerializerDelegate<OCSPRequestData>?   CustomOCSPRequestDataSerializer    = null,
+                              CustomJObjectSerializerDelegate<Signature>?         CustomSignatureSerializer          = null,
                               CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataSerializer         = null)
         {
 
@@ -471,6 +493,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            ISO15118CertificateHashData is not null && ISO15118CertificateHashData.Any()
                                ? new JProperty("iso15118CertificateHashData",   new JArray(ISO15118CertificateHashData.SafeSelect(ocspRequestData => ocspRequestData.ToJSON(CustomOCSPRequestDataSerializer,
                                                                                                                                                                             CustomCustomDataSerializer))))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",                    new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                           CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

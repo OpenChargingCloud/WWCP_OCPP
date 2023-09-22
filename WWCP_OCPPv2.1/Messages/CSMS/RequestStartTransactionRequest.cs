@@ -80,6 +80,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EVSEId">An optional EVSE identification on which the charging transaction should be started (SHALL be > 0).</param>
         /// <param name="ChargingProfile">An optional charging profile to be used by the charging station for the requested charging transaction.</param>
         /// <param name="GroupIdToken">An optional group identifier.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -87,22 +89,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public RequestStartTransactionRequest(ChargeBox_Id       ChargeBoxId,
-                                              RemoteStart_Id     RequestStartTransactionRequestId,
-                                              IdToken            IdToken,
-                                              EVSE_Id?           EVSEId              = null,
-                                              ChargingProfile?   ChargingProfile     = null,
-                                              IdToken?           GroupIdToken        = null,
-                                              CustomData?        CustomData          = null,
+        public RequestStartTransactionRequest(ChargeBox_Id             ChargeBoxId,
+                                              RemoteStart_Id           RequestStartTransactionRequestId,
+                                              IdToken                  IdToken,
+                                              EVSE_Id?                 EVSEId              = null,
+                                              ChargingProfile?         ChargingProfile     = null,
+                                              IdToken?                 GroupIdToken        = null,
 
-                                              Request_Id?        RequestId           = null,
-                                              DateTime?          RequestTimestamp    = null,
-                                              TimeSpan?          RequestTimeout      = null,
-                                              EventTracking_Id?  EventTrackingId     = null,
-                                              CancellationToken  CancellationToken   = default)
+                                              IEnumerable<Signature>?  Signatures          = null,
+                                              CustomData?              CustomData          = null,
+
+                                              Request_Id?              RequestId           = null,
+                                              DateTime?                RequestTimestamp    = null,
+                                              TimeSpan?                RequestTimeout      = null,
+                                              EventTracking_Id?        EventTrackingId     = null,
+                                              CancellationToken        CancellationToken   = default)
 
             : base(ChargeBoxId,
                    "RequestStartTransaction",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -734,6 +739,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures                          [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                          [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -768,14 +787,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                RequestStartTransactionRequest = new RequestStartTransactionRequest(ChargeBoxId,
-                                                                                    RequestStartTransactionRequestId,
-                                                                                    IdToken,
-                                                                                    EVSEId,
-                                                                                    ChargingProfile,
-                                                                                    GroupIdToken,
-                                                                                    CustomData,
-                                                                                    RequestId);
+                RequestStartTransactionRequest = new RequestStartTransactionRequest(
+                                                     ChargeBoxId,
+                                                     RequestStartTransactionRequestId,
+                                                     IdToken,
+                                                     EVSEId,
+                                                     ChargingProfile,
+                                                     GroupIdToken,
+                                                     Signatures,
+                                                     CustomData,
+                                                     RequestId
+                                                 );
 
                 if (CustomRequestStartTransactionRequestParser is not null)
                     RequestStartTransactionRequest = CustomRequestStartTransactionRequestParser(JSON,
@@ -826,6 +848,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomPriceLevelScheduleSerializer">A delegate to serialize custom price level schedules.</param>
         /// <param name="CustomPriceLevelScheduleEntrySerializer">A delegate to serialize custom price level schedule entries.</param>
         /// 
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<RequestStartTransactionRequest>?                      CustomRequestStartTransactionRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                          = null,
@@ -853,6 +876,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer               = null,
                               CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer          = null,
 
+                              CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                        = null,
                               CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                       = null)
         {
 
@@ -898,6 +922,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ? new JProperty("groupIdToken",      GroupIdToken.   ToJSON(CustomIdTokenSerializer,
                                                                                            CustomAdditionalInfoSerializer,
                                                                                            CustomCustomDataSerializer))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                               CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

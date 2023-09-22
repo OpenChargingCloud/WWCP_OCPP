@@ -97,6 +97,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomerIdentifier">An optional e.g. vendor specific identifier of the customer this request refers to. This field contains a custom identifier other than IdToken and Certificate.</param>
         /// <param name="IdToken">An optional IdToken of the customer this request refers to.</param>
         /// <param name="CustomerCertificate">An optional certificate of the customer this request refers to.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -104,23 +106,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public CustomerInformationRequest(ChargeBox_Id          ChargeBoxId,
-                                          Int64                 CustomerInformationRequestId,
-                                          Boolean               Report,
-                                          Boolean               Clear,
-                                          CustomerIdentifier?   CustomerIdentifier    = null,
-                                          IdToken?              IdToken               = null,
-                                          CertificateHashData?  CustomerCertificate   = null,
-                                          CustomData?           CustomData            = null,
+        public CustomerInformationRequest(ChargeBox_Id             ChargeBoxId,
+                                          Int64                    CustomerInformationRequestId,
+                                          Boolean                  Report,
+                                          Boolean                  Clear,
+                                          CustomerIdentifier?      CustomerIdentifier    = null,
+                                          IdToken?                 IdToken               = null,
+                                          CertificateHashData?     CustomerCertificate   = null,
 
-                                          Request_Id?           RequestId             = null,
-                                          DateTime?             RequestTimestamp      = null,
-                                          TimeSpan?             RequestTimeout        = null,
-                                          EventTracking_Id?     EventTrackingId       = null,
-                                          CancellationToken     CancellationToken     = default)
+                                          IEnumerable<Signature>?  Signatures            = null,
+                                          CustomData?              CustomData            = null,
+
+                                          Request_Id?              RequestId             = null,
+                                          DateTime?                RequestTimestamp      = null,
+                                          TimeSpan?                RequestTimeout        = null,
+                                          EventTracking_Id?        EventTrackingId       = null,
+                                          CancellationToken        CancellationToken     = default)
 
             : base(ChargeBoxId,
                    "CustomerInformation",
+                   Signatures,
                    CustomData,
                    RequestId,
                    RequestTimestamp,
@@ -488,6 +493,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures                      [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                      [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -522,15 +541,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                CustomerInformationRequest = new CustomerInformationRequest(ChargeBoxId,
-                                                                            CustomerInformationRequestId,
-                                                                            Report,
-                                                                            Clear,
-                                                                            CustomerIdentifier,
-                                                                            IdToken,
-                                                                            CustomerCertificate,
-                                                                            CustomData,
-                                                                            RequestId);
+                CustomerInformationRequest = new CustomerInformationRequest(
+                                                 ChargeBoxId,
+                                                 CustomerInformationRequestId,
+                                                 Report,
+                                                 Clear,
+                                                 CustomerIdentifier,
+                                                 IdToken,
+                                                 CustomerCertificate,
+                                                 Signatures,
+                                                 CustomData,
+                                                 RequestId
+                                             );
 
                 if (CustomCustomerInformationRequestParser is not null)
                     CustomerInformationRequest = CustomCustomerInformationRequestParser(JSON,
@@ -550,7 +572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomCustomerInformationRequestSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomCustomerInformationRequestSerializer = null, CustomIdTokenSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -559,11 +581,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomIdTokenSerializer">A delegate to serialize custom IdTokens.</param>
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash datas.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<CustomerInformationRequest>?  CustomCustomerInformationRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<IdToken>?                     CustomIdTokenSerializer                      = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?              CustomAdditionalInfoSerializer               = null,
                               CustomJObjectSerializerDelegate<CertificateHashData>?         CustomCertificateHashDataSerializer          = null,
+                              CustomJObjectSerializerDelegate<Signature>?                   CustomSignatureSerializer                    = null,
                               CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {
 
@@ -585,6 +609,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            CustomerCertificate is not null
                                ? new JProperty("customerCertificate",  CustomerCertificate.         ToJSON(CustomCertificateHashDataSerializer))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",           new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                  CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
