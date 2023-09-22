@@ -38,14 +38,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <summary>
         /// The unit of the measured value.
         /// </summary>
-        [Mandatory]
-        public UnitOfMeasure  Unit          { get; }
+        [Optional]
+        public UnitOfMeasure?  Unit          { get; }
 
         /// <summary>
         /// Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.
         /// </summary>
-        [Mandatory]
-        public Int32          Multiplier    { get; }
+        [Optional]
+        public Int32?          Multiplier    { get; }
 
         #endregion
 
@@ -57,9 +57,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// <param name="Unit">The unit of the measured value.</param>
         /// <param name="Multiplier">Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public UnitsOfMeasure(UnitOfMeasure  Unit,
-                              Int32          Multiplier,
-                              CustomData?    CustomData   = null)
+        public UnitsOfMeasure(UnitOfMeasure?  Unit         = null,
+                              Int32?          Multiplier   = null,
+                              CustomData?     CustomData   = null)
 
             : base(CustomData)
 
@@ -167,27 +167,29 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
                 UnitsOfMeasure = default;
 
-                #region Unit          [mandatory]
+                #region Unit          [optional]
 
-                if (!JSON.ParseMandatory("unit",
-                                         "unit measure",
-                                         UnitOfMeasure.TryParse,
-                                         out UnitOfMeasure Unit,
-                                         out ErrorResponse))
+                if (JSON.ParseOptional("unit",
+                                       "unit measure",
+                                       UnitOfMeasure.TryParse,
+                                       out UnitOfMeasure? Unit,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
-                #region Multiplier    [mandatory]
+                #region Multiplier    [optional]
 
-                if (!JSON.ParseMandatory("multiplier",
-                                         "multiplier",
-                                         out Int32 Multiplier,
-                                         out ErrorResponse))
+                if (!JSON.ParseOptional("multiplier",
+                                        "multiplier",
+                                        out Int32? Multiplier,
+                                        out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -244,8 +246,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("unit",         Unit.      ToString()),
-                                 new JProperty("multiplier",   Multiplier),
+                           Unit.      HasValue
+                               ? new JProperty("unit",         Unit.      ToString())
+                               : null,
+
+                           Multiplier.HasValue
+                               ? new JProperty("multiplier",   Multiplier)
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
@@ -497,8 +504,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             => UnitsOfMeasure is not null &&
 
-               Unit.      Equals(UnitsOfMeasure.Unit)       &&
-               Multiplier.Equals(UnitsOfMeasure.Multiplier) &&
+            ((!Unit.      HasValue && UnitsOfMeasure.Unit.      HasValue) ||
+              (Unit.      HasValue && UnitsOfMeasure.Unit.      HasValue && Unit.      Equals(UnitsOfMeasure.Unit)))       &&
+
+            ((!Multiplier.HasValue && UnitsOfMeasure.Multiplier.HasValue) ||
+              (Multiplier.HasValue && UnitsOfMeasure.Multiplier.HasValue && Multiplier.Equals(UnitsOfMeasure.Multiplier))) &&
 
                base.      Equals(UnitsOfMeasure);
 
@@ -517,10 +527,10 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             unchecked
             {
 
-                return Unit.      GetHashCode() * 5 ^
-                       Multiplier.GetHashCode() * 3 ^
+                return (Unit?.      GetHashCode() ?? 0) * 5 ^
+                       (Multiplier?.GetHashCode() ?? 0) * 3 ^
 
-                       base.      GetHashCode();
+                        base.       GetHashCode();
 
             }
         }
@@ -534,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         /// </summary>
         public override String ToString()
 
-            => $"{Unit} ( *10^{Multiplier} )";
+            => $"{Unit?.ToString() ?? "-"} ( *10^{Multiplier?.ToString() ?? "-"} )";
 
         #endregion
 

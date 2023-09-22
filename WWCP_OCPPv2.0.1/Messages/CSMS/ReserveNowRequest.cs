@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// The unique identification of this reservation.
         /// </summary>
         [Mandatory]
-        public Reservation_Id   ReservationId    { get; }
+        public Reservation_Id   Id    { get; }
 
         /// <summary>
         /// The timestamp when the reservation ends.
@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// Create a new reserve now request.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ReservationId">The unique identification of this reservation.</param>
+        /// <param name="Id">The unique identification of this reservation.</param>
         /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
         /// <param name="IdToken">The unique token identification for which the reservation is being made.</param>
         /// <param name="ConnectorType">An optional connector type to be reserved..</param>
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ReserveNowRequest(ChargeBox_Id       ChargeBoxId,
-                                 Reservation_Id     ReservationId,
+                                 Reservation_Id     Id,
                                  DateTime           ExpiryDate,
                                  IdToken            IdToken,
                                  ConnectorTypes?    ConnectorType       = null,
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
         {
 
-            this.ReservationId  = ReservationId;
+            this.Id             = Id;
             this.ExpiryDate     = ExpiryDate;
             this.IdToken        = IdToken;
             this.ConnectorType  = ConnectorType;
@@ -373,12 +373,12 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                 ReserveNowRequest = null;
 
-                #region ReservationId    [mandatory]
+                #region Id                [mandatory]
 
-                if (!JSON.ParseMandatory("reservationId",
+                if (!JSON.ParseMandatory("id",
                                          "reservation identification",
                                          Reservation_Id.TryParse,
-                                         out Reservation_Id ReservationId,
+                                         out Reservation_Id Id,
                                          out ErrorResponse))
                 {
                     return false;
@@ -386,11 +386,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                 #endregion
 
-                #region ExpiryDate       [mandatory]
+                #region ExpiryDateTime    [mandatory]
 
-                if (!JSON.ParseMandatory("expiryDate",
-                                         "expiry date",
-                                         out DateTime ExpiryDate,
+                if (!JSON.ParseMandatory("expiryDateTime",
+                                         "expiry timestamp",
+                                         out DateTime ExpiryDateTime,
                                          out ErrorResponse))
                 {
                     return false;
@@ -398,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                 #endregion
 
-                #region IdToken          [mandatory]
+                #region IdToken           [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("idToken",
                                              "identification token",
@@ -412,7 +412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                 #endregion
 
-                #region ConnectorType    [optional]
+                #region ConnectorType     [optional]
 
                 if (JSON.ParseOptional("connectorType",
                                        "connector type",
@@ -426,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                 #endregion
 
-                #region EVSEId           [optional]
+                #region EVSEId            [optional]
 
                 if (JSON.ParseOptional("evseId",
                                        "evse identification",
@@ -440,7 +440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                 #endregion
 
-                #region GroupIdToken     [optional]
+                #region GroupIdToken      [optional]
 
                 if (JSON.ParseOptionalJSON("groupIdToken",
                                            "group identification token",
@@ -454,7 +454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                 #endregion
 
-                #region CustomData       [optional]
+                #region CustomData        [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -468,7 +468,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId      [optional, OCPP_CSE]
+                #region ChargeBoxId       [optional, OCPP_CSE]
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
@@ -488,15 +488,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 #endregion
 
 
-                ReserveNowRequest = new ReserveNowRequest(ChargeBoxId,
-                                                          ReservationId,
-                                                          ExpiryDate,
-                                                          IdToken,
-                                                          ConnectorType,
-                                                          EVSEId,
-                                                          GroupIdToken,
-                                                          CustomData,
-                                                          RequestId);
+                ReserveNowRequest = new ReserveNowRequest(
+                                        ChargeBoxId,
+                                        Id,
+                                        ExpiryDateTime,
+                                        IdToken,
+                                        ConnectorType,
+                                        EVSEId,
+                                        GroupIdToken,
+                                        CustomData,
+                                        RequestId
+                                    );
 
                 if (CustomReserveNowRequestParser is not null)
                     ReserveNowRequest = CustomReserveNowRequestParser(JSON,
@@ -533,28 +535,28 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("reservationId",   ReservationId.Value),
-                                 new JProperty("expiryDate",      ExpiryDate.         ToIso8601()),
-                                 new JProperty("idToken",         IdToken.            ToJSON(CustomIdTokenSerializer,
-                                                                                             CustomAdditionalInfoSerializer,
-                                                                                             CustomCustomDataSerializer)),
+                                 new JProperty("id",               Id.Value),
+                                 new JProperty("expiryDateTime",   ExpiryDate.         ToIso8601()),
+                                 new JProperty("idToken",          IdToken.            ToJSON(CustomIdTokenSerializer,
+                                                                                              CustomAdditionalInfoSerializer,
+                                                                                              CustomCustomDataSerializer)),
 
                            ConnectorType.HasValue
-                               ? new JProperty("connectorType",   ConnectorType.Value.AsText())
+                               ? new JProperty("connectorType",    ConnectorType.Value.AsText())
                                : null,
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",          EVSEId.       Value.Value)
+                               ? new JProperty("evseId",           EVSEId.       Value.Value)
                                : null,
 
                            GroupIdToken is not null
-                               ? new JProperty("groupIdToken",    GroupIdToken.       ToJSON(CustomIdTokenSerializer,
-                                                                                             CustomAdditionalInfoSerializer,
-                                                                                             CustomCustomDataSerializer))
+                               ? new JProperty("groupIdToken",     GroupIdToken.       ToJSON(CustomIdTokenSerializer,
+                                                                                              CustomAdditionalInfoSerializer,
+                                                                                              CustomCustomDataSerializer))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",      CustomData.         ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",       CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -638,7 +640,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
             => ReserveNowRequest is not null &&
 
-               ReservationId.Equals(ReserveNowRequest.ReservationId) &&
+               Id.Equals(ReserveNowRequest.Id) &&
                ExpiryDate.   Equals(ReserveNowRequest.ExpiryDate)    &&
                IdToken.      Equals(ReserveNowRequest.IdToken)       &&
 
@@ -668,7 +670,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
             unchecked
             {
 
-                return ReservationId. GetHashCode()       * 17 ^
+                return Id.            GetHashCode()       * 17 ^
                        ExpiryDate.    GetHashCode()       * 13 ^
                        IdToken.       GetHashCode()       * 11 ^
                       (ConnectorType?.GetHashCode() ?? 0) *  7 ^
@@ -691,7 +693,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
             => String.Concat(
 
-                   ReservationId,
+                   Id,
                    " till ",
                    ExpiryDate.ToIso8601(),
                    " for ",

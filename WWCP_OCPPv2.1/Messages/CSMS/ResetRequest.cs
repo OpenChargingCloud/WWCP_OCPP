@@ -442,6 +442,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 return ResetType.GetHashCode()       * 5 ^
                       (EVSEId?.  GetHashCode() ?? 0) * 3 ^
+
                        base.     GetHashCode();
 
             }

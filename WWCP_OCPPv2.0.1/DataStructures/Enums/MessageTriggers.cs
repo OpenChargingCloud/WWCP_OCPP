@@ -94,8 +94,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                     MessageTrigger = MessageTriggers.MeterValues;
                     return true;
 
-                case "SignChargePointCertificate":
-                    MessageTrigger = MessageTriggers.SignChargePointCertificate;
+                case "SignChargingStationCertificate":
+                    MessageTrigger = MessageTriggers.SignChargingStationCertificate;
                     return true;
 
                 case "StatusNotification":
@@ -117,15 +117,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         public static String AsText(this MessageTriggers MessageTrigger)
 
             => MessageTrigger switch {
-                   MessageTriggers.BootNotification               => "BootNotification",
-                   MessageTriggers.LogStatusNotification          => "LogStatusNotification",
-                   MessageTriggers.DiagnosticsStatusNotification  => "DiagnosticsStatusNotification",
-                   MessageTriggers.FirmwareStatusNotification     => "FirmwareStatusNotification",
-                   MessageTriggers.Heartbeat                      => "Heartbeat",
-                   MessageTriggers.MeterValues                    => "MeterValues",
-                   MessageTriggers.SignChargePointCertificate     => "SignChargePointCertificate",
-                   MessageTriggers.StatusNotification             => "StatusNotification",
-                   _                                              => "Unknown"
+                   MessageTriggers.BootNotification                => "BootNotification",
+                   MessageTriggers.LogStatusNotification           => "LogStatusNotification",
+                   MessageTriggers.DiagnosticsStatusNotification   => "DiagnosticsStatusNotification",
+                   MessageTriggers.FirmwareStatusNotification      => "FirmwareStatusNotification",
+                   MessageTriggers.Heartbeat                       => "Heartbeat",
+                   MessageTriggers.MeterValues                     => "MeterValues",
+                   MessageTriggers.SignChargingStationCertificate  => "SignChargingStationCertificate",
+                   MessageTriggers.StatusNotification              => "StatusNotification",
+                   _                                               => "Unknown"
                };
 
         #endregion
@@ -140,49 +140,70 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
     {
 
         /// <summary>
-        /// Unknown message-trigger status.
+        /// Unknown message-trigger status
         /// </summary>
         Unknown,
 
         /// <summary>
-        /// To trigger a BootNotification request.
+        /// To trigger a BootNotification request
         /// </summary>
         BootNotification,
 
         /// <summary>
-        /// To trigger LogStatusNotification.req.
+        /// To trigger LogStatusNotification request
         /// </summary>
         LogStatusNotification,
 
         /// <summary>
-        /// To trigger a DiagnosticsStatusNotification request.
+        /// To trigger a DiagnosticsStatusNotification request
         /// </summary>
         DiagnosticsStatusNotification,
 
         /// <summary>
-        /// To trigger a FirmwareStatusNotification request.
+        /// To trigger a FirmwareStatusNotification request
         /// </summary>
         FirmwareStatusNotification,
 
         /// <summary>
-        /// To trigger a Heartbeat request.
+        /// To trigger a Heartbeat request
         /// </summary>
         Heartbeat,
 
         /// <summary>
-        /// To trigger a MeterValues request.
+        /// To trigger a MeterValues request
         /// </summary>
         MeterValues,
 
         /// <summary>
-        /// To trigger a SignCertificate.req with certificateType: ChargePointCertificate.
+        /// To trigger a SignCertificate.req with certificateType: ChargingStationCertificate
         /// </summary>
-        SignChargePointCertificate,
+        SignChargingStationCertificate,
 
         /// <summary>
-        /// To trigger a StatusNotification request.
+        /// To trigger a SignCertificate with typeOfCertificate: V2GCertificate
         /// </summary>
-        StatusNotification
+        SignV2GCertificate,
+
+        /// <summary>
+        /// To trigger a StatusNotification request
+        /// </summary>
+        StatusNotification,
+
+        /// <summary>
+        /// To trigger TransactionEvents
+        /// </summary>
+        TransactionEvent,
+
+        /// <summary>
+        /// To trigger a SignCertificate with typeOfCertificate: ChargingStationCertificate AND V2GCertificate
+        /// </summary>
+        SignCombinedCertificate,
+
+        /// <summary>
+        /// To trigger PublishFirmwareStatusNotifications
+        /// </summary>
+        PublishFirmwareStatusNotification
+
 
     }
 

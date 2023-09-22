@@ -43,13 +43,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <summary>
         /// The optional enumeration of criteria for components for which a report is requested.
         /// </summary>
-        [Mandatory]
+        [Optional]
         public IEnumerable<ComponentCriteria>  ComponentCriteria     { get; }
 
         /// <summary>
         /// The optional enumeration of components and variables for which a report is requested.
         /// </summary>
-        [Mandatory]
+        [Optional]
         public IEnumerable<ComponentVariable>  ComponentVariables    { get; }
 
         #endregion
@@ -70,17 +70,17 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetReportRequest(ChargeBox_Id                    ChargeBoxId,
-                                Int32                           GetReportRequestId,
-                                IEnumerable<ComponentCriteria>  ComponentCriteria,
-                                IEnumerable<ComponentVariable>  ComponentVariables,
-                                CustomData?                     CustomData          = null,
+        public GetReportRequest(ChargeBox_Id                     ChargeBoxId,
+                                Int32                            GetReportRequestId,
+                                IEnumerable<ComponentCriteria>?  ComponentCriteria    = null,
+                                IEnumerable<ComponentVariable>?  ComponentVariables   = null,
+                                CustomData?                      CustomData           = null,
 
-                                Request_Id?                     RequestId           = null,
-                                DateTime?                       RequestTimestamp    = null,
-                                TimeSpan?                       RequestTimeout      = null,
-                                EventTracking_Id?               EventTrackingId     = null,
-                                CancellationToken               CancellationToken   = default)
+                                Request_Id?                      RequestId            = null,
+                                DateTime?                        RequestTimestamp     = null,
+                                TimeSpan?                        RequestTimeout       = null,
+                                EventTracking_Id?                EventTrackingId      = null,
+                                CancellationToken                CancellationToken    = default)
 
             : base(ChargeBoxId,
                    "GetReport",
@@ -93,17 +93,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
         {
 
-            if (!ComponentCriteria.Any())
-                throw new ArgumentException("The given enumeration of criteria for components for which a report is requested must not be empty!",
-                                            nameof(ComponentCriteria));
-
-            if (!ComponentVariables.Any())
-                throw new ArgumentException("The given enumeration of components and variables for which a report is requested must not be empty!",
-                                            nameof(ComponentVariables));
-
             this.GetReportRequestId  = GetReportRequestId;
-            this.ComponentCriteria   = ComponentCriteria. Distinct();
-            this.ComponentVariables  = ComponentVariables.Distinct();
+            this.ComponentCriteria   = ComponentCriteria?. Distinct() ?? Array.Empty<ComponentCriteria>();
+            this.ComponentVariables  = ComponentVariables?.Distinct() ?? Array.Empty<ComponentVariable>();
 
         }
 
@@ -364,28 +356,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                 #endregion
 
-                #region ComponentCriteria     [mandatory]
+                #region ComponentCriteria     [optional]
 
-                if (!JSON.ParseMandatoryHashSet("componentCriteria",
-                                                "component criteria",
-                                                ComponentCriteriaExtensions.TryParse,
-                                                out HashSet<ComponentCriteria> ComponentCriteria,
-                                                out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("componentCriteria",
+                                              "component criteria",
+                                              ComponentCriteriaExtensions.TryParse,
+                                              out HashSet<ComponentCriteria> ComponentCriteria,
+                                              out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
-                #region ComponentVariables    [mandatory]
+                #region ComponentVariables    [optional]
 
-                if (!JSON.ParseMandatoryHashSet("componentVariable",
-                                                "component variables",
-                                                ComponentVariable.TryParse,
-                                                out HashSet<ComponentVariable> ComponentVariables,
-                                                out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("componentVariable",
+                                              "component variables",
+                                              ComponentVariable.TryParse,
+                                              out HashSet<ComponentVariable> ComponentVariables,
+                                              out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
@@ -424,12 +418,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 #endregion
 
 
-                GetReportRequest = new GetReportRequest(ChargeBoxId,
-                                                        GetReportRequestId,
-                                                        ComponentCriteria,
-                                                        ComponentVariables,
-                                                        CustomData,
-                                                        RequestId);
+                GetReportRequest = new GetReportRequest(
+                                       ChargeBoxId,
+                                       GetReportRequestId,
+                                       ComponentCriteria,
+                                       ComponentVariables,
+                                       CustomData,
+                                       RequestId
+                                   );
 
                 if (CustomGetReportRequestParser is not null)
                     GetReportRequest = CustomGetReportRequestParser(JSON,
@@ -470,15 +466,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestId",          GetReportRequestId),
+                                 new JProperty("requestId",           GetReportRequestId),
 
-                                 new JProperty("componentCriteria",  new JArray(ComponentCriteria. Select(componentCriterium => componentCriterium.AsText()))),
+                           ComponentCriteria.Any()
+                               ? new JProperty("componentCriteria",   new JArray(ComponentCriteria. Select(componentCriterium => componentCriterium.AsText())))
+                               : null,
 
-                                 new JProperty("componentVariable",  new JArray(ComponentVariables.Select(componentVariable  => componentVariable. ToJSON(CustomComponentVariableSerializer,
-                                                                                                                                                          CustomComponentSerializer,
-                                                                                                                                                          CustomEVSESerializer,
-                                                                                                                                                          CustomVariableSerializer,
-                                                                                                                                                          CustomCustomDataSerializer)))),
+                           ComponentVariables.Any()
+                               ? new JProperty("componentVariable",   new JArray(ComponentVariables.Select(componentVariable  => componentVariable. ToJSON(CustomComponentVariableSerializer,
+                                                                                                                                                           CustomComponentSerializer,
+                                                                                                                                                           CustomEVSESerializer,
+                                                                                                                                                           CustomVariableSerializer,
+                                                                                                                                                           CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",         CustomData.ToJSON(CustomCustomDataSerializer))

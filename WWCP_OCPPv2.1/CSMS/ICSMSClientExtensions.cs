@@ -749,7 +749,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS.CSMSClientExtensions
 
         #endregion
 
-        #region TriggerMessage             (ChargeBoxId, RequestedMessage, ConnectorId = null, ...)
+        #region TriggerMessage             (ChargeBoxId, RequestedMessage, EVSE = null, ...)
 
         /// <summary>
         /// Create a trigger for the given message at the given charging station or EVSE.

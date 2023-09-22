@@ -411,7 +411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("id",                       Id.                 ToString()),
+                                 new JProperty("id",                       Id.                 Value),
                                  new JProperty("chargingRateUnit",         ChargingRateUnit.   AsText()),
                                  new JProperty("chargingSchedulePeriod",   new JArray(ChargingSchedulePeriods.Select(chargingSchedulePeriod => chargingSchedulePeriod.ToJSON(CustomChargingSchedulePeriodSerializer,
                                                                                                                                                                              CustomCustomDataSerializer)))),

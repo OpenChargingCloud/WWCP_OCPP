@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
     public static class ICSMSClientExtensions
     {
 
-        #region Reset                     (ChargeBoxId, ResetType, ...)
+        #region Reset                     (ChargeBoxId, ResetType, EVSEId = null, ...)
 
         /// <summary>
         /// Reset the given charge box.
@@ -41,15 +41,19 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="ICSMSClient">A CSMS client.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ResetType">The type of reset that the charging station should perform.</param>
+        /// <param name="EVSEId">An optional EVSE identification.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional request timeout.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<ResetResponse> Reset(this ICSMSClient   ICSMSClient,
                                                 ChargeBox_Id       ChargeBoxId,
                                                 ResetTypes         ResetType,
                                                 CustomData?        CustomData          = null,
+                                                EVSE_Id?           EVSEId              = null,
 
                                                 Request_Id?        RequestId           = null,
                                                 DateTime?          RequestTimestamp    = null,
@@ -61,12 +65,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                    new ResetRequest(
                        ChargeBoxId,
                        ResetType,
+                       EVSEId,
                        CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
-                       EventTrackingId,
+                       EventTrackingId ?? EventTracking_Id.New,
                        CancellationToken
                    )
                );
@@ -712,7 +717,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
         #endregion
 
-        #region TriggerMessage            (ChargeBoxId, RequestedMessage, ConnectorId = null, ...)
+        #region TriggerMessage            (ChargeBoxId, RequestedMessage, EVSE = null, ...)
 
         /// <summary>
         /// Create a trigger for the given message at the given charging station or EVSE.
@@ -720,7 +725,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="ICSMSClient">A CSMS client.</param>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
-        /// <param name="EVSEId">Optional connector identification whenever the message applies to a specific EVSE.</param>
+        /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -729,7 +734,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         public static Task<TriggerMessageResponse> TriggerMessage(this ICSMSClient   ICSMSClient,
                                                                   ChargeBox_Id       ChargeBoxId,
                                                                   MessageTriggers    RequestedMessage,
-                                                                  EVSE_Id?           EVSEId              = null,
+                                                                  EVSE?              EVSE                = null,
                                                                   CustomData?        CustomData          = null,
 
                                                                   Request_Id?        RequestId           = null,
@@ -742,7 +747,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                    new TriggerMessageRequest(
                        ChargeBoxId,
                        RequestedMessage,
-                       EVSEId,
+                       EVSE,
                        CustomData,
 
                        RequestId,

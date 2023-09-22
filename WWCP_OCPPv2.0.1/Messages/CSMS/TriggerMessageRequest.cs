@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// applies to a specific EVSE and/or connector.
         /// </summary>
         [Optional]
-        public EVSE_Id?         EVSEId              { get; }
+        public EVSE?            EVSE                { get; }
 
         #endregion
 
@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
-        /// <param name="EVSEId">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
+        /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public TriggerMessageRequest(ChargeBox_Id       ChargeBoxId,
                                      MessageTriggers    RequestedMessage,
-                                     EVSE_Id?           EVSEId              = null,
+                                     EVSE?              EVSE                = null,
                                      CustomData?        CustomData          = null,
 
                                      Request_Id?        RequestId           = null,
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         {
 
             this.RequestedMessage  = RequestedMessage;
-            this.EVSEId            = EVSEId;
+            this.EVSE              = EVSE;
 
         }
 
@@ -270,13 +270,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                 #endregion
 
-                #region EVSEId             [optional]
+                #region EVSE               [optional]
 
-                if (JSON.ParseOptional("evseId",
-                                       "evse identification",
-                                       EVSE_Id.TryParse,
-                                       out EVSE_Id EVSEId,
-                                       out ErrorResponse))
+                if (JSON.ParseOptionalJSON("evse",
+                                           "evse",
+                                           OCPPv2_0_1.EVSE.TryParse,
+                                           out EVSE? EVSE,
+                                           out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -318,11 +318,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 #endregion
 
 
-                TriggerMessageRequest = new TriggerMessageRequest(ChargeBoxId,
-                                                                  MessageTriggers,
-                                                                  EVSEId,
-                                                                  CustomData,
-                                                                  RequestId);
+                TriggerMessageRequest = new TriggerMessageRequest(
+                                            ChargeBoxId,
+                                            MessageTriggers,
+                                            EVSE,
+                                            CustomData,
+                                            RequestId
+                                        );
 
                 if (CustomTriggerMessageRequestParser is not null)
                     TriggerMessageRequest = CustomTriggerMessageRequestParser(JSON,
@@ -348,15 +350,24 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomTriggerMessageRequestSerializer">A delegate to serialize custom trigger message requests.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<TriggerMessageRequest>? CustomTriggerMessageRequestSerializer = null)
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<EVSE>?                   CustomEVSESerializer                    = null,
+                              CustomJObjectSerializerDelegate<CustomData>?             CustomCustomDataSerializer              = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("requestedMessage",  RequestedMessage.AsText()),
+                                 new JProperty("requestedMessage",   RequestedMessage.AsText()),
 
-                           EVSEId.HasValue
-                               ? new JProperty("evseId",      EVSEId.Value.Value)
+                           EVSE is not null
+                               ? new JProperty("evse",               EVSE.            ToJSON(CustomEVSESerializer,
+                                                                                             CustomCustomDataSerializer))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",         CustomData.      ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -442,8 +453,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                RequestedMessage.Equals(TriggerMessageRequest.RequestedMessage) &&
 
-            ((!EVSEId.HasValue && !TriggerMessageRequest.EVSEId.HasValue) ||
-              (EVSEId.HasValue &&  TriggerMessageRequest.EVSEId.HasValue && EVSEId.Equals(TriggerMessageRequest.EVSEId))) &&
+             ((EVSE is null     && TriggerMessageRequest.EVSE is null) ||
+              (EVSE is not null && TriggerMessageRequest.EVSE is not null && EVSE.Equals(TriggerMessageRequest.EVSE))) &&
 
                base.     GenericEquals(TriggerMessageRequest);
 
@@ -463,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
             {
 
                 return RequestedMessage.GetHashCode()       * 5 ^
-                      (EVSEId?.         GetHashCode() ?? 0) * 3 ^
+                      (EVSE?.           GetHashCode() ?? 0) * 3 ^
 
                        base.            GetHashCode();
 
@@ -479,11 +490,9 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(RequestedMessage,
-
-                             EVSEId.HasValue
-                                 ? " for " + EVSEId
-                                 : "");
+            => $"{RequestedMessage}, {(EVSE is not null
+                                           ? " for " + EVSE.ToString()
+                                           : "")}";
 
         #endregion
 

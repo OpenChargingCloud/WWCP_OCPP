@@ -1033,13 +1033,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                     triggerMessageRequests.Add(triggerMessageRequest);
                 };
 
-                var evseId          = EVSE_Id.Parse(1);
+                var evse            = new EVSE(EVSE_Id.Parse(1));
                 var messageTrigger  = MessageTriggers.StatusNotification;
 
                 var response1       = await testCSMS01.TriggerMessage(
                                                 ChargeBoxId:        chargingStation1.ChargeBoxId,
                                                 RequestedMessage:   messageTrigger,
-                                                EVSEId:             evseId,
+                                                EVSE:               evse,
                                                 CustomData:         null
                                             );
 

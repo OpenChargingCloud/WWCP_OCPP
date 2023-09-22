@@ -670,7 +670,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             unchecked
             {
 
-                return Id. GetHashCode()       * 17 ^
+                return Id.            GetHashCode()       * 17 ^
                        ExpiryDate.    GetHashCode()       * 13 ^
                        IdToken.       GetHashCode()       * 11 ^
                       (ConnectorType?.GetHashCode() ?? 0) *  7 ^

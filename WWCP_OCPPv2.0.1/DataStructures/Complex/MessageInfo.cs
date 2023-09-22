@@ -422,11 +422,11 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                : null,
 
                            StartTimestamp.HasValue
-                               ? new JProperty("startDateTime",   StartTimestamp.Value.ToString())
+                               ? new JProperty("startDateTime",   StartTimestamp.Value.ToIso8601())
                                : null,
 
                            EndTimestamp.HasValue
-                               ? new JProperty("endDateTime",     EndTimestamp.  Value.ToString())
+                               ? new JProperty("endDateTime",     EndTimestamp.  Value.ToIso8601())
                                : null,
 
                            TransactionId.HasValue

@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         MeterValues,
 
         /// <summary>
-        /// To trigger a SignCertificate.req with certificateType: SignChargingStationCertificate
+        /// To trigger a SignCertificate.req with certificateType: ChargingStationCertificate
         /// </summary>
         SignChargingStationCertificate,
 

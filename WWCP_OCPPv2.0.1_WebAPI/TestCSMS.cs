@@ -5414,13 +5414,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
         #endregion
 
 
-        #region Reset                     (ChargeBoxId, ResetType, ...)
+        #region Reset                     (ChargeBoxId, ResetType, EVSEId = null, ...)
 
         /// <summary>
         /// Reset the given charging station.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="ResetType">The type of reset that the charging station should perform.</param>
+        /// <param name="EVSEId">An optional EVSE identification.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -5432,6 +5433,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             Reset(ChargeBox_Id       ChargeBoxId,
                   ResetTypes         ResetType,
+                  EVSE_Id?           EVSEId              = null,
                   CustomData?        CustomData          = null,
 
                   Request_Id?        RequestId           = null,
@@ -5449,6 +5451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             var request    = new ResetRequest(
                                  ChargeBoxId,
                                  ResetType,
+                                 EVSEId,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
@@ -7037,14 +7040,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
         #endregion
 
-        #region TriggerMessage            (ChargeBoxId, RequestedMessage, EVSEId = null,...)
+        #region TriggerMessage            (ChargeBoxId, RequestedMessage, EVSE = null,...)
 
         /// <summary>
         /// Create a trigger for the given message at the given charge box connector.
         /// </summary>
         /// <param name="ChargeBoxId">The charge box identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
-        /// <param name="EVSEId">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
+        /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -7056,7 +7059,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             TriggerMessage(ChargeBox_Id       ChargeBoxId,
                            MessageTriggers    RequestedMessage,
-                           EVSE_Id?           EVSEId              = null,
+                           EVSE?              EVSE                = null,
                            CustomData?        CustomData          = null,
 
                            Request_Id?        RequestId           = null,
@@ -7074,7 +7077,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
             var request    = new TriggerMessageRequest(
                                  ChargeBoxId,
                                  RequestedMessage,
-                                 EVSEId,
+                                 EVSE,
                                  CustomData,
 
                                  RequestId        ?? NextRequestId,
