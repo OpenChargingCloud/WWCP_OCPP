@@ -59,14 +59,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The set network profile request leading to this response.</param>
         /// <param name="Status">Whether the charging station was able to accept the request.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public SetNetworkProfileResponse(CSMS.SetNetworkProfileRequest  Request,
                                          SetNetworkProfileStatus        Status,
                                          StatusInfo?                    StatusInfo   = null,
+
+                                         IEnumerable<Signature>?        Signatures   = null,
                                          CustomData?                    CustomData   = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -254,6 +259,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -269,10 +288,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                SetNetworkProfileResponse = new SetNetworkProfileResponse(Request,
-                                                                          Status,
-                                                                          StatusInfo,
-                                                                          CustomData);
+                SetNetworkProfileResponse = new SetNetworkProfileResponse(
+                                                Request,
+                                                Status,
+                                                StatusInfo,
+                                                Signatures,
+                                                CustomData
+                                            );
 
                 if (CustomSetNetworkProfileResponseParser is not null)
                     SetNetworkProfileResponse = CustomSetNetworkProfileResponseParser(JSON,
@@ -292,16 +314,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomSetNetworkProfileResponseSerializer = null, CustomStatusInfoSerializer = null)
+        #region ToJSON(CustomSetNetworkProfileResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomSetNetworkProfileResponseSerializer">A delegate to serialize custom charging profile responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SetNetworkProfileResponse>?  CustomSetNetworkProfileResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                 CustomStatusInfoSerializer                  = null,
+                              CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
@@ -312,6 +336,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            StatusInfo is not null
                                ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
                                                                                  CustomCustomDataSerializer))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

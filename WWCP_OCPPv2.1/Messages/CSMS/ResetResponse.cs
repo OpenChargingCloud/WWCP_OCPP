@@ -59,14 +59,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="Status">The success or failure of the reset command.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public ResetResponse(CSMS.ResetRequest  Request,
-                             ResetStatus      Status,
-                             StatusInfo?      StatusInfo   = null,
-                             CustomData?      CustomData   = null)
+        public ResetResponse(CSMS.ResetRequest        Request,
+                             ResetStatus              Status,
+                             StatusInfo?              StatusInfo   = null,
+
+                             IEnumerable<Signature>?  Signatures   = null,
+                             CustomData?              CustomData   = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -254,6 +259,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures     [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -269,10 +288,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                ResetResponse = new ResetResponse(Request,
-                                                  ResetStatus,
-                                                  StatusInfo,
-                                                  CustomData);
+                ResetResponse = new ResetResponse(
+                                    Request,
+                                    ResetStatus,
+                                    StatusInfo,
+                                    Signatures,
+                                    CustomData
+                                );
 
                 if (CustomResetResponseParser is not null)
                     ResetResponse = CustomResetResponseParser(JSON,
@@ -299,23 +321,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="CustomResetResponseSerializer">A delegate to serialize custom reset responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ResetResponse>? CustomResetResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?    CustomStatusInfoSerializer      = null,
+                              CustomJObjectSerializerDelegate<Signature>?     CustomSignatureSerializer       = null,
                               CustomJObjectSerializerDelegate<CustomData>?    CustomCustomDataSerializer      = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.    AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",  StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                 CustomCustomDataSerializer))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",  CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

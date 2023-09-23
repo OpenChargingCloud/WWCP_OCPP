@@ -57,14 +57,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Request">The request leading to this result.</param>
         /// <param name="Result">A generic result.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public AResponse(TRequest     Request,
-                         Result       Result,
-                         CustomData?  CustomData   = null)
+        public AResponse(TRequest                 Request,
+                         Result                   Result,
+                         IEnumerable<Signature>?  Signatures   = null,
+                         CustomData?              CustomData   = null)
 
             : this(Request,
                    Result,
                    Timestamp.Now,
+                   Signatures,
                    CustomData)
 
         { }
@@ -76,14 +79,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Request">The request leading to this result.</param>
         /// <param name="Result">A generic result.</param>
         /// <param name="Timestamp">An optional response timestamp.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public AResponse(TRequest     Request,
-                         Result       Result,
-                         DateTime?    Timestamp    = null,
-                         CustomData?  CustomData   = null)
+        public AResponse(TRequest                 Request,
+                         Result                   Result,
+                         DateTime?                Timestamp    = null,
+                         IEnumerable<Signature>?  Signatures   = null,
+                         CustomData?              CustomData   = null)
 
             : base(Result,
                    Timestamp,
+                   Signatures,
                    CustomData)
 
         {
@@ -124,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            new JProperty("chargeBoxId",       Request.ChargeBoxId.ToString()),
                            new JProperty("eventTrackingId",   Request.EventTrackingId. ToString()),
 
-                           new JProperty("request",       JSONObject.Create(
+                           new JProperty("request",           JSONObject.Create(
                                new JProperty("id",                Request.RequestId.       ToString()),
                                new JProperty("timestamp",         Request.RequestTimestamp.ToIso8601()),
                                new JProperty("timeout",           Request.RequestTimeout.  TotalSeconds),
@@ -132,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                new JProperty("data",              RequestData)
                            )),
 
-                           new JProperty("response", JSONObject.Create(
+                           new JProperty("response",          JSONObject.Create(
                                new JProperty("timestamp",         ResponseTimestamp.       ToIso8601()),
                                new JProperty("runtime",           Runtime.TotalMilliseconds),
                                new JProperty("data",              ResponseData)
@@ -184,17 +190,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The machine-readable result code.
         /// </summary>
-        public Result       Result               { get; }
+        public Result                  Result               { get; }
 
         /// <summary>
         /// The timestamp of the response message creation.
         /// </summary>
-        public DateTime     ResponseTimestamp    { get; }
+        public DateTime                ResponseTimestamp    { get; }
+
+        /// <summary>
+        /// The optional enumeration of cryptographic signatures for this message.
+        /// </summary>
+        [Optional]
+        public IEnumerable<Signature>  Signatures           { get; }
 
         /// <summary>
         /// The custom data object to allow to store any kind of customer specific data.
         /// </summary>
-        public CustomData?  CustomData           { get; }
+        public CustomData?             CustomData           { get; }
 
         #endregion
 
@@ -205,14 +217,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Result">A generic result.</param>
         /// <param name="Timestamp">An optional response timestamp.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public AResponse(Result       Result,
-                         DateTime?    Timestamp    = null,
-                         CustomData?  CustomData   = null)
+        public AResponse(Result                   Result,
+                         DateTime?                Timestamp    = null,
+                         IEnumerable<Signature>?  Signatures   = null,
+                         CustomData?              CustomData   = null)
         {
 
             this.Result             = Result;
             this.ResponseTimestamp  = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            this.Signatures         = Signatures?.Distinct() ?? Array.Empty<Signature>();
             this.CustomData         = CustomData;
 
         }

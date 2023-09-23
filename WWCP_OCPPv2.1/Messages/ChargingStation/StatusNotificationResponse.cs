@@ -41,12 +41,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a new status notification response.
         /// </summary>
         /// <param name="Request">The status notification request leading to this response.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public StatusNotificationResponse(CS.StatusNotificationRequest  Request,
+
+                                          IEnumerable<Signature>?       Signatures   = null,
                                           CustomData?                   CustomData   = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         { }
@@ -158,6 +163,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 StatusNotificationResponse = null;
 
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -175,6 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 StatusNotificationResponse = new StatusNotificationResponse(
                                                  Request,
+                                                 Signatures,
                                                  CustomData
                                              );
 
@@ -196,18 +216,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomStatusNotificationResponseSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomStatusNotificationResponseSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomStatusNotificationResponseSerializer">A delegate to serialize custom status notification responses.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<StatusNotificationResponse>?  CustomStatusNotificationResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                   CustomSignatureSerializer                    = null,
                               CustomJObjectSerializerDelegate<CustomData>?                  CustomCustomDataSerializer                   = null)
         {
 
             var json = JSONObject.Create(
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))

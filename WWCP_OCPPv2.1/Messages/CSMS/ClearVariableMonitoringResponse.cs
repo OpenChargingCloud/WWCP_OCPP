@@ -52,13 +52,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The clear variable monitoring request leading to this response.</param>
         /// <param name="ClearMonitoringResults">An enumeration of clear variable monitoring results.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public ClearVariableMonitoringResponse(CSMS.ClearVariableMonitoringRequest   Request,
-                                               IEnumerable<ClearMonitoringResult>  ClearMonitoringResults,
-                                               CustomData?                         CustomData   = null)
+                                               IEnumerable<ClearMonitoringResult>    ClearMonitoringResults,
+
+                                               IEnumerable<Signature>?               Signatures   = null,
+                                               CustomData?                           CustomData   = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -265,6 +270,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures                [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -280,9 +299,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                ClearVariableMonitoringResponse = new ClearVariableMonitoringResponse(Request,
-                                                                                      ClearMonitoringResults,
-                                                                                      CustomData);
+                ClearVariableMonitoringResponse = new ClearVariableMonitoringResponse(
+                                                      Request,
+                                                      ClearMonitoringResults,
+                                                      Signatures,
+                                                      CustomData
+                                                  );
 
                 if (CustomClearVariableMonitoringResponseParser is not null)
                     ClearVariableMonitoringResponse = CustomClearVariableMonitoringResponseParser(JSON,
@@ -309,21 +331,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="CustomClearVariableMonitoringResponseSerializer">A delegate to serialize custom clear variable monitoring responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ClearVariableMonitoringResponse>?  CustomClearVariableMonitoringResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<ClearMonitoringResult>?            CustomClearMonitoringResultSerializer             = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                       CustomStatusInfoSerializer                        = null,
+                              CustomJObjectSerializerDelegate<Signature>?                        CustomSignatureSerializer                         = null,
                               CustomJObjectSerializerDelegate<CustomData>?                       CustomCustomDataSerializer                        = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("clearMonitoringResult",  new JArray(ClearMonitoringResults.Select(result => result.ToJSON(CustomClearMonitoringResultSerializer,
-                                                                                                                                          CustomStatusInfoSerializer,
-                                                                                                                                          CustomCustomDataSerializer)))),
+                                 new JProperty("clearMonitoringResult",   new JArray(ClearMonitoringResults.Select(result    => result.   ToJSON(CustomClearMonitoringResultSerializer,
+                                                                                                                                                 CustomStatusInfoSerializer,
+                                                                                                                                                 CustomCustomDataSerializer)))),
+
+                           Signatures is not null
+                               ? new JProperty("signatures",              new JArray(Signatures.            Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                                 CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",             CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",              CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

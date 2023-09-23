@@ -59,14 +59,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="MessagesInQueue">Whether there are still message to be delivered.</param>
         /// <param name="OngoingIndicator">An optional indication whether the transaction is still ongoing.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public GetTransactionStatusResponse(CSMS.GetTransactionStatusRequest  Request,
                                             Boolean                           MessagesInQueue,
                                             Boolean?                          OngoingIndicator   = null,
+
+                                            IEnumerable<Signature>?           Signatures         = null,
                                             CustomData?                       CustomData         = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -219,6 +224,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures          [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData          [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -234,10 +253,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                GetTransactionStatusResponse = new GetTransactionStatusResponse(Request,
-                                                                                MessagesInQueue,
-                                                                                OngoingIndicator,
-                                                                                CustomData);
+                GetTransactionStatusResponse = new GetTransactionStatusResponse(
+                                                   Request,
+                                                   MessagesInQueue,
+                                                   OngoingIndicator,
+                                                   Signatures,
+                                                   CustomData
+                                               );
 
                 if (CustomGetTransactionStatusResponseParser is not null)
                     GetTransactionStatusResponse = CustomGetTransactionStatusResponseParser(JSON,
@@ -257,14 +279,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomGetTransactionStatusResponseSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomGetTransactionStatusResponseSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetTransactionStatusResponseSerializer">A delegate to serialize custom get transaction status responses.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetTransactionStatusResponse>?  CustomGetTransactionStatusResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer                      = null,
                               CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
@@ -274,6 +298,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                            OngoingIndicator is not null
                                ? new JProperty("ongoingIndicator",   OngoingIndicator)
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",         new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

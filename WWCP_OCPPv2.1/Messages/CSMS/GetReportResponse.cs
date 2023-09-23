@@ -58,16 +58,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="Status">The success or failure of the get report command.</param>
-        /// <param name="Filename">The name of the log file that will be uploaded. This field is not present when no logging information is available.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public GetReportResponse(CSMS.GetReportRequest     Request,
                                  GenericDeviceModelStatus  Status,
                                  StatusInfo?               StatusInfo   = null,
+
+                                 IEnumerable<Signature>?   Signatures   = null,
                                  CustomData?               CustomData   = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -256,6 +260,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -271,10 +289,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                GetReportResponse = new GetReportResponse(Request,
-                                                          Status,
-                                                          StatusInfo,
-                                                          CustomData);
+                GetReportResponse = new GetReportResponse(
+                                        Request,
+                                        Status,
+                                        StatusInfo,
+                                        Signatures,
+                                        CustomData
+                                    );
 
                 if (CustomGetReportResponseParser is not null)
                     GetReportResponse = CustomGetReportResponseParser(JSON,
@@ -301,9 +322,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="CustomGetReportResponseSerializer">A delegate to serialize custom get report responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetReportResponse>?  CustomGetReportResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?         CustomStatusInfoSerializer          = null,
+                              CustomJObjectSerializerDelegate<Signature>?          CustomSignatureSerializer           = null,
                               CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
@@ -314,6 +337,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            StatusInfo is not null
                                ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
                                                                                  CustomCustomDataSerializer))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

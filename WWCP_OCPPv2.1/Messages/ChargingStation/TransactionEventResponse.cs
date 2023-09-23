@@ -84,16 +84,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ChargingPriority">The optional charging priority from a business point of view.</param>
         /// <param name="IdTokenInfo">The optional information about the authorization status, expiry and group id.</param>
         /// <param name="UpdatedPersonalMessage">The optional personal message that should be shown to the EV driver.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public TransactionEventResponse(CS.TransactionEventRequest  Request,
                                         Decimal?                    TotalCost                = null,
                                         Int16?                      ChargingPriority         = null,
                                         IdTokenInfo?                IdTokenInfo              = null,
                                         MessageContent?             UpdatedPersonalMessage   = null,
+
+                                        IEnumerable<Signature>?     Signatures               = null,
                                         CustomData?                 CustomData               = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -461,6 +466,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures                [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -482,6 +501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                ChargingPriority,
                                                IdTokenInfo,
                                                UpdatedPersonalMessage,
+                                               Signatures,
                                                CustomData
                                            );
 
@@ -513,12 +533,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional infos.</param>
         /// <param name="CustomMessageContentSerializer">A delegate to serialize custom message contents.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<TransactionEventResponse>?  CustomTransactionEventResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<IdTokenInfo>?               CustomIdTokenInfoSerializer                = null,
                               CustomJObjectSerializerDelegate<IdToken>?                   CustomIdTokenSerializer                    = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?            CustomAdditionalInfoSerializer             = null,
                               CustomJObjectSerializerDelegate<MessageContent>?            CustomMessageContentSerializer             = null,
+                              CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                  = null,
                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
 
@@ -543,6 +565,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            UpdatedPersonalMessage is not null
                                ? new JProperty("updatedPersonalMessage",   UpdatedPersonalMessage.ToJSON(CustomMessageContentSerializer,
                                                                                                          CustomCustomDataSerializer))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",               new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                      CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

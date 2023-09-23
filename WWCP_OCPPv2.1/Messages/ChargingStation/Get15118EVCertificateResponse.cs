@@ -80,10 +80,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              EXIData                          EXIResponse,
                                              UInt32?                          RemainingContracts   = null,
                                              StatusInfo?                      StatusInfo           = null,
+
+                                             IEnumerable<Signature>?          Signatures           = null,
                                              CustomData?                      CustomData           = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -306,6 +309,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures            [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData            [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -327,6 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                     EXIRequest,
                                                     RemainingContracts,
                                                     StatusInfo,
+                                                    Signatures,
                                                     CustomData
                                                 );
 
@@ -348,16 +366,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomGet15118EVCertificateResponseSerializer = null, CustomStatusInfoSerializer = null)
+        #region ToJSON(CustomGet15118EVCertificateResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGet15118EVCertificateResponseSerializer">A delegate to serialize custom get 15118 EV certificate responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<Get15118EVCertificateResponse>?  CustomGet15118EVCertificateResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                     CustomStatusInfoSerializer                      = null,
+                              CustomJObjectSerializerDelegate<Signature>?                      CustomSignatureSerializer                       = null,
                               CustomJObjectSerializerDelegate<CustomData>?                     CustomCustomDataSerializer                      = null)
         {
 
@@ -373,6 +393,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            StatusInfo is not null
                                ? new JProperty("statusInfo",           StatusInfo. ToJSON(CustomStatusInfoSerializer,
                                                                                           CustomCustomDataSerializer))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",           new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                  CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

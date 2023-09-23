@@ -63,10 +63,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public UpdateFirmwareResponse(CSMS.UpdateFirmwareRequest  Request,
                                       UpdateFirmwareStatus        Status,
                                       StatusInfo?                 StatusInfo   = null,
+
+                                      IEnumerable<Signature>?     Signatures   = null,
                                       CustomData?                 CustomData   = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -256,6 +259,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -271,10 +288,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                UpdateFirmwareResponse = new UpdateFirmwareResponse(Request,
-                                                                    Status,
-                                                                    StatusInfo,
-                                                                    CustomData);
+                UpdateFirmwareResponse = new UpdateFirmwareResponse(
+                                             Request,
+                                             Status,
+                                             StatusInfo,
+                                             Signatures,
+                                             CustomData
+                                         );
 
                 if (CustomUpdateFirmwareResponseParser is not null)
                     UpdateFirmwareResponse = CustomUpdateFirmwareResponseParser(JSON,
@@ -302,9 +322,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="CustomUpdateFirmwareResponseSerializer">A delegate to serialize custom update firmware responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<UpdateFirmwareResponse>?  CustomUpdateFirmwareResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?              CustomStatusInfoSerializer               = null,
+                              CustomJObjectSerializerDelegate<Signature>?               CustomSignatureSerializer                = null,
                               CustomJObjectSerializerDelegate<CustomData>?              CustomCustomDataSerializer               = null)
         {
 
@@ -315,6 +337,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            StatusInfo is not null
                                ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
                                                                                  CustomCustomDataSerializer))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

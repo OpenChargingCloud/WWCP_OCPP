@@ -77,16 +77,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CurrentTime">The current time at the central system. Should be UTC!</param>
         /// <param name="Interval">When the registration status is 'accepted', the interval defines the heartbeat interval in seconds. In all other cases, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public BootNotificationResponse(CS.BootNotificationRequest  Request,
                                         RegistrationStatus          Status,
                                         DateTime                    CurrentTime,
                                         TimeSpan                    Interval,
                                         StatusInfo?                 StatusInfo   = null,
+
+                                        IEnumerable<Signature>?     Signatures   = null,
                                         CustomData?                 CustomData   = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -324,6 +329,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures     [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData     [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -345,6 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                CurrentTime,
                                                Interval,
                                                StatusInfo,
+                                               Signatures,
                                                CustomData
                                            );
 
@@ -373,25 +393,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="CustomBootNotificationResponseSerializer">A delegate to serialize custom boot notification responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<BootNotificationResponse>?  CustomBootNotificationResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                CustomStatusInfoSerializer                 = null,
+                              CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                  = null,
                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("status",             Status.           AsText()),
-                           new JProperty("currentTime",        CurrentTime.      ToIso8601()),
-                           new JProperty("interval",           (UInt32) Interval.TotalSeconds),
+                                 new JProperty("status",        Status.           AsText()),
+                                 new JProperty("currentTime",   CurrentTime.      ToIso8601()),
+                                 new JProperty("interval",      (UInt32) Interval.TotalSeconds),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",   StatusInfo.       ToJSON(CustomStatusInfoSerializer,
-                                                                                        CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",    StatusInfo.       ToJSON(CustomStatusInfoSerializer,
+                                                                                         CustomCustomDataSerializer))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",    new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                           CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.       ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",    CustomData.       ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

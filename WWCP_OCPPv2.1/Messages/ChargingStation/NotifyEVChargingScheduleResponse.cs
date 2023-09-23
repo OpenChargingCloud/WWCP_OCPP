@@ -60,14 +60,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The notify EV charging schedule request leading to this response.</param>
         /// <param name="Status">Whether the CSMS has been able to process the message successfully. It does not imply any approval of the charging schedule.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public NotifyEVChargingScheduleResponse(CS.NotifyEVChargingScheduleRequest  Request,
                                                 GenericStatus                       Status,
                                                 StatusInfo?                         StatusInfo   = null,
+
+                                                IEnumerable<Signature>?             Signatures   = null,
                                                 CustomData?                         CustomData   = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -147,9 +152,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyEVChargingScheduleResponseParser">A delegate to parse custom notify EV charging schedule responses.</param>
         public static Boolean TryParse(CS.NotifyEVChargingScheduleRequest                              Request,
-                                       JObject                                                      JSON,
+                                       JObject                                                         JSON,
                                        out NotifyEVChargingScheduleResponse?                           NotifyEVChargingScheduleResponse,
-                                       out String?                                                  ErrorResponse,
+                                       out String?                                                     ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyEVChargingScheduleResponse>?  CustomNotifyEVChargingScheduleResponseParser   = null)
         {
 
@@ -185,6 +190,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -204,6 +223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                        Request,
                                                        Status,
                                                        StatusInfo,
+                                                       Signatures,
                                                        CustomData
                                                    );
 
@@ -232,10 +252,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="CustomNotifyEVChargingScheduleResponseSerializer">A delegate to serialize custom notify EV charging schedule responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyEVChargingScheduleResponse>?  CustomNotifyEVChargingScheduleResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?                        CustomStatusInfoSerializer                      = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                      = null)
+                              CustomJObjectSerializerDelegate<StatusInfo>?                        CustomStatusInfoSerializer                         = null,
+                              CustomJObjectSerializerDelegate<Signature>?                         CustomSignatureSerializer                          = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                         = null)
         {
 
             var json = JSONObject.Create(
@@ -245,6 +267,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            StatusInfo is not null
                                ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
                                                                                  CustomCustomDataSerializer))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

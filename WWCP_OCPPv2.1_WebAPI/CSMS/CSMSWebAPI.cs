@@ -920,6 +920,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomBootNotificationResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -938,6 +939,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomFirmwareStatusNotificationResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -956,6 +958,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomPublishFirmwareStatusNotificationResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -974,6 +977,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomHeartbeatResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1000,6 +1004,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomNotifyEventResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1018,6 +1023,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomSecurityEventNotificationResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1048,6 +1054,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomNotifyReportResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1076,6 +1083,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomNotifyMonitoringReportResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1094,6 +1102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomLogStatusNotificationResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1113,6 +1122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomDataTransferResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1133,6 +1143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomSignCertificateResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1152,6 +1163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomGet15118EVCertificateResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1173,6 +1185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomGetCertificateStatusResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1194,6 +1207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomGetCRLResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1213,6 +1227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomReservationStatusUpdateResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1241,6 +1256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomIdTokenSerializer,
                                                                                         CustomAdditionalInfoSerializer,
                                                                                         CustomMessageContentSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1280,6 +1296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomNotifyEVChargingNeedsResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1318,6 +1335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomIdTokenSerializer,
                                                                                         CustomAdditionalInfoSerializer,
                                                                                         CustomMessageContentSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1336,6 +1354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomStatusNotificationResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1358,6 +1377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomMeterValuesResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1422,6 +1442,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomNotifyChargingLimitResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1440,6 +1461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomClearedChargingLimitResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1506,6 +1528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomReportChargingProfilesResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1571,6 +1594,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomNotifyEVChargingScheduleResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1589,6 +1613,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomNotifyPriorityChargingResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1607,6 +1632,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomPullDynamicScheduleUpdateResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1634,6 +1660,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomNotifyDisplayMessagesResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1652,6 +1679,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomNotifyCustomerInformationResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1675,6 +1703,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomResetResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1696,6 +1725,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomUpdateFirmwareResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1715,6 +1745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomPublishFirmwareResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1733,6 +1764,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomUnpublishFirmwareResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1752,6 +1784,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomGetBaseReportResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1779,6 +1812,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomGetReportResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1800,6 +1834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomGetLogResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1831,6 +1866,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomEVSESerializer,
                                                                                         CustomVariableSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1862,6 +1898,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomEVSESerializer,
                                                                                         CustomVariableSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1881,6 +1918,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomSetMonitoringBaseResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1908,6 +1946,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomGetMonitoringReportResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1927,6 +1966,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomSetMonitoringLevelResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1958,6 +1998,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomEVSESerializer,
                                                                                         CustomVariableSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -1978,6 +2019,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                         response.ToJSON(CustomClearVariableMonitoringResponseSerializer,
                                                                                         CustomClearMonitoringResultSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2003,6 +2045,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomSetNetworkProfileResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2024,6 +2067,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomChangeAvailabilityResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2045,6 +2089,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomTriggerMessageResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2064,6 +2109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomData2TransferResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2084,6 +2130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomCertificateSignedResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2103,6 +2150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomInstallCertificateResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2123,6 +2171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                         response.ToJSON(CustomGetInstalledCertificateIdsResponseSerializer,
                                                                                         CustomCertificateHashDataSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2144,6 +2193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomDeleteCertificateResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2162,6 +2212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomNotifyCRLResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2181,6 +2232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomGetLocalListVersionResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2210,6 +2262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomSendLocalListResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2229,6 +2282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomClearCacheResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2253,6 +2307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomReserveNowResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2272,6 +2327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomCancelReservationResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2343,6 +2399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomRequestStartTransactionResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2362,6 +2419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomRequestStopTransactionResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2380,6 +2438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomGetTransactionStatusResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2447,6 +2506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomSetChargingProfileResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2468,6 +2528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomGetChargingProfilesResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2489,6 +2550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomClearChargingProfileResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2510,6 +2572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCompositeScheduleSerializer,
                                                                                         CustomChargingSchedulePeriodSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2529,6 +2592,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomUpdateDynamicScheduleResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2548,6 +2612,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomNotifyAllowedEnergyTransferResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2567,6 +2632,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomUsePriorityChargingResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2586,6 +2652,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomUnlockConnectorResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2606,6 +2673,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomAFRRSignalResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2634,6 +2702,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomSetDisplayMessageResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2653,6 +2722,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomGetDisplayMessagesResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2672,6 +2742,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomClearDisplayMessageResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2690,6 +2761,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomCostUpdatedResponseSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion
@@ -2715,6 +2787,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomCustomDataSerializer),
                                                                         response.ToJSON(CustomCustomerInformationResponseSerializer,
                                                                                         CustomStatusInfoSerializer,
+                                                                                        CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 
             #endregion

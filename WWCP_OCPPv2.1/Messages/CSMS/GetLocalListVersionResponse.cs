@@ -52,13 +52,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The get local list version request leading to this response.</param>
         /// <param name="VersionNumber">The current version number of the local authorization list within the charging station.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetLocalListVersionResponse(CSMS.GetLocalListVersionRequest  Request,
                                            UInt64                           VersionNumber,
+
+                                           IEnumerable<Signature>?          Signatures   = null,
                                            CustomData?                      CustomData   = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -193,6 +198,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures       [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData       [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -208,9 +227,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                GetLocalListVersionResponse = new GetLocalListVersionResponse(Request,
-                                                                              VersionNumber,
-                                                                              CustomData);
+                GetLocalListVersionResponse = new GetLocalListVersionResponse(
+                                                  Request,
+                                                  VersionNumber,
+                                                  Signatures,
+                                                  CustomData
+                                              );
 
                 if (CustomGetLocalListVersionResponseParser is not null)
                     GetLocalListVersionResponse = CustomGetLocalListVersionResponseParser(JSON,
@@ -230,20 +252,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomGetLocalListVersionResponseSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomGetLocalListVersionResponseSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetLocalListVersionResponseSerializer">A delegate to serialize custom get local list version responses.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                    CustomSignatureSerializer                     = null,
                               CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataSerializer                    = null)
         {
 
             var json = JSONObject.Create(
 
                                  new JProperty("versionNumber",   VersionNumber),
+
+                           Signatures is not null
+                               ? new JProperty("signatures",      new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                             CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))

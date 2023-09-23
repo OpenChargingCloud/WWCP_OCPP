@@ -67,15 +67,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Status">The charging station will indicate if it was able to process the request.</param>
         /// <param name="Schedule">The calculated composite schedule. It may only be omitted when this message contains status 'rejected'.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetCompositeScheduleResponse(CSMS.GetCompositeScheduleRequest  Request,
                                             GenericStatus                     Status,
                                             CompositeSchedule?                Schedule     = null,
                                             StatusInfo?                       StatusInfo   = null,
+
+                                            IEnumerable<Signature>?           Signatures   = null,
                                             CustomData?                       CustomData   = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -363,6 +368,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -378,11 +397,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                GetCompositeScheduleResponse = new GetCompositeScheduleResponse(Request,
-                                                                                Status,
-                                                                                Schedule,
-                                                                                StatusInfo,
-                                                                                CustomData);
+                GetCompositeScheduleResponse = new GetCompositeScheduleResponse(
+                                                   Request,
+                                                   Status,
+                                                   Schedule,
+                                                   StatusInfo,
+                                                   Signatures,
+                                                   CustomData
+                                               );
 
                 if (CustomGetCompositeScheduleResponseParser is not null)
                     GetCompositeScheduleResponse = CustomGetCompositeScheduleResponseParser(JSON,
@@ -411,11 +433,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomCompositeScheduleSerializer">A delegate to serialize custom composite schedule requests.</param>
         /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<CompositeSchedule>?             CustomCompositeScheduleSerializer              = null,
                               CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?        CustomChargingSchedulePeriodSerializer         = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                    CustomStatusInfoSerializer                     = null,
+                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer                      = null,
                               CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
@@ -432,6 +456,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            StatusInfo is not null
                                ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
                                                                                  CustomCustomDataSerializer))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

@@ -60,14 +60,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="IdTokenInfo">The identification token info.</param>
         /// <param name="CertificateStatus">The optional certificate status information.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public AuthorizeResponse(CS.AuthorizeRequest          Request,
                                  IdTokenInfo                  IdTokenInfo,
                                  AuthorizeCertificateStatus?  CertificateStatus   = null,
+
+                                 IEnumerable<Signature>?      Signatures          = null,
                                  CustomData?                  CustomData          = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -424,6 +429,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region Signatures           [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -443,6 +462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         Request,
                                         IdTokenInfo,
                                         CertificateStatus,
+                                        Signatures,
                                         CustomData
                                     );
 
@@ -464,7 +484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomAuthorizeResponseSerializer = null, ...)
+        #region ToJSON(CustomAuthorizeResponseSerializer = null, CustomIdTokenInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -474,12 +494,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional infos.</param>
         /// <param name="CustomMessageContentSerializer">A delegate to serialize custom message contents.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeResponse>?  CustomAuthorizeResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<IdTokenInfo>?        CustomIdTokenInfoSerializer         = null,
                               CustomJObjectSerializerDelegate<IdToken>?            CustomIdTokenSerializer             = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?     CustomAdditionalInfoSerializer      = null,
                               CustomJObjectSerializerDelegate<MessageContent>?     CustomMessageContentSerializer      = null,
+                              CustomJObjectSerializerDelegate<Signature>?          CustomSignatureSerializer           = null,
                               CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
@@ -493,6 +515,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            CertificateStatus.HasValue
                                ? new JProperty("certificateStatus",   CertificateStatus.Value.AsText())
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",          new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                 CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

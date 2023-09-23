@@ -52,13 +52,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The set variables request leading to this response.</param>
         /// <param name="SetVariableResults">An enumeration of set variable result status per component and variable.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public SetVariablesResponse(CSMS.SetVariablesRequest        Request,
                                     IEnumerable<SetVariableResult>  SetVariableResults,
+
+                                    IEnumerable<Signature>?         Signatures   = null,
                                     CustomData?                     CustomData   = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -356,6 +361,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures            [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData            [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -371,9 +390,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                SetVariablesResponse = new SetVariablesResponse(Request,
-                                                                SetVariableResults,
-                                                                CustomData);
+                SetVariablesResponse = new SetVariablesResponse(
+                                           Request,
+                                           SetVariableResults,
+                                           Signatures,
+                                           CustomData
+                                       );
 
                 if (CustomSetVariablesResponseParser is not null)
                     SetVariablesResponse = CustomSetVariablesResponseParser(JSON,
@@ -404,6 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomVariableSerializer">A delegate to serialize custom variables.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SetVariablesResponse>?  CustomSetVariablesResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<SetVariableResult>?     CustomSetVariableResultSerializer      = null,
@@ -411,6 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                               CustomJObjectSerializerDelegate<EVSE>?                  CustomEVSESerializer                   = null,
                               CustomJObjectSerializerDelegate<Variable>?              CustomVariableSerializer               = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?            CustomStatusInfoSerializer             = null,
+                              CustomJObjectSerializerDelegate<Signature>?             CustomSignatureSerializer              = null,
                               CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
         {
 
@@ -422,6 +446,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                                                                                                          CustomVariableSerializer,
                                                                                                                                                          CustomStatusInfoSerializer,
                                                                                                                                                          CustomCustomDataSerializer)))),
+
+                           Signatures is not null
+                               ? new JProperty("signatures",          new JArray(Signatures.        Select(signature         => signature.        ToJSON(CustomSignatureSerializer,
+                                                                                                                                                         CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",          CustomData.ToJSON(CustomCustomDataSerializer))

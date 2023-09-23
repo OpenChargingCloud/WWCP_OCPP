@@ -137,6 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="SetpointReactive_L2">Optional setpoint for reactive power (or current) in chargingRateUnit on phase L2.</param>
         /// <param name="SetpointReactive_L3">Optional setpoint for reactive power (or current) in chargingRateUnit on phase L3.</param>
         /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public PullDynamicScheduleUpdateResponse(CS.PullDynamicScheduleUpdateRequest  Request,
 
@@ -156,10 +157,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  ChargingRateValue?                   SetpointReactive_L2   = null,
                                                  ChargingRateValue?                   SetpointReactive_L3   = null,
 
+                                                 IEnumerable<Signature>?              Signatures            = null,
                                                  CustomData?                          CustomData            = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -475,6 +478,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
+                #region Signatures             [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData             [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -510,6 +527,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                         SetpointReactive_L2,
                                                         SetpointReactive_L3,
 
+                                                        Signatures,
                                                         CustomData
 
                                                     );
@@ -532,14 +550,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomPullDynamicScheduleUpdateResponseSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomPullDynamicScheduleUpdateResponseSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomPullDynamicScheduleUpdateResponseSerializer">A delegate to serialize custom pull dynamic schedule update responses.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<PullDynamicScheduleUpdateResponse>?  CustomPullDynamicScheduleUpdateResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                          CustomSignatureSerializer                           = null,
                               CustomJObjectSerializerDelegate<CustomData>?                         CustomCustomDataSerializer                          = null)
         {
 
@@ -596,6 +616,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ? new JProperty("setpointReactive_L3",   SetpointReactive_L3.Value.Value)
                                : null,
 
+
+                           Signatures is not null
+                               ? new JProperty("signatures",            new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                   CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",            CustomData.ToJSON(CustomCustomDataSerializer))

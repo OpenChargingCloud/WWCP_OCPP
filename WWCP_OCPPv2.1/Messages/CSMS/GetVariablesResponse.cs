@@ -52,13 +52,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="Results">The get variables results.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public GetVariablesResponse(CSMS.GetVariablesRequest        Request,
                                     IEnumerable<GetVariableResult>  Results,
+
+                                    IEnumerable<Signature>?         Signatures   = null,
                                     CustomData?                     CustomData   = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -365,6 +370,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -380,9 +399,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                GetVariablesResponse = new GetVariablesResponse(Request,
-                                                                Results,
-                                                                CustomData);
+                GetVariablesResponse = new GetVariablesResponse(
+                                           Request,
+                                           Results,
+                                           Signatures,
+                                           CustomData
+                                       );
 
                 if (CustomGetVariablesResponseParser is not null)
                     GetVariablesResponse = CustomGetVariablesResponseParser(JSON,
@@ -402,7 +424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomGetVariablesResponseSerializer = null, CustomCustomDataSerializer = null, ...)
+        #region ToJSON(CustomGetVariablesResponseSerializer = null, CustomGetVariableResultSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -413,6 +435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomVariableSerializer">A delegate to serialize custom variables.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetVariablesResponse>?  CustomGetVariablesResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<GetVariableResult>?     CustomGetVariableResultSerializer      = null,
@@ -420,17 +443,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                               CustomJObjectSerializerDelegate<EVSE>?                  CustomEVSESerializer                   = null,
                               CustomJObjectSerializerDelegate<Variable>?              CustomVariableSerializer               = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?            CustomStatusInfoSerializer             = null,
+                              CustomJObjectSerializerDelegate<Signature>?             CustomSignatureSerializer              = null,
                               CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("getVariableResult",   new JArray(Results.Select(result => result.ToJSON(CustomGetVariableResultSerializer,
-                                                                                                                        CustomComponentSerializer,
-                                                                                                                        CustomEVSESerializer,
-                                                                                                                        CustomVariableSerializer,
-                                                                                                                        CustomStatusInfoSerializer,
-                                                                                                                        CustomCustomDataSerializer)))),
+                                 new JProperty("getVariableResult",   new JArray(Results.   Select(result    => result.   ToJSON(CustomGetVariableResultSerializer,
+                                                                                                                                 CustomComponentSerializer,
+                                                                                                                                 CustomEVSESerializer,
+                                                                                                                                 CustomVariableSerializer,
+                                                                                                                                 CustomStatusInfoSerializer,
+                                                                                                                                 CustomCustomDataSerializer)))),
+
+                           Signatures is not null
+                               ? new JProperty("signatures",          new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                 CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",          CustomData.ToJSON(CustomCustomDataSerializer))

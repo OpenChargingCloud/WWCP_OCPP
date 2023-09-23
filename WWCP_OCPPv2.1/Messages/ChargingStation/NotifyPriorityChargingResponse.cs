@@ -41,12 +41,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a new notify priority charging response.
         /// </summary>
         /// <param name="Request">The notify priority charging request leading to this response.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public NotifyPriorityChargingResponse(CS.NotifyPriorityChargingRequest  Request,
+
+                                              IEnumerable<Signature>?           Signatures   = null,
                                               CustomData?                       CustomData   = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         { }
@@ -134,6 +139,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 NotifyPriorityChargingResponse = null;
 
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData    [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -151,6 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 NotifyPriorityChargingResponse = new NotifyPriorityChargingResponse(
                                                      Request,
+                                                     Signatures,
                                                      CustomData
                                                  );
 
@@ -172,18 +192,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomNotifyPriorityChargingResponseSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomNotifyPriorityChargingResponseSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomNotifyPriorityChargingResponseSerializer">A delegate to serialize custom notify priority charging responses.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyPriorityChargingResponse>?  CustomNotifyPriorityChargingResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                       CustomSignatureSerializer                        = null,
                               CustomJObjectSerializerDelegate<CustomData>?                      CustomCustomDataSerializer                       = null)
         {
 
             var json = JSONObject.Create(
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))

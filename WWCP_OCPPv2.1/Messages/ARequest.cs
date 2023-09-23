@@ -85,16 +85,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public String                  Action               { get; }
 
         /// <summary>
-        /// The custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        [Optional]
-        public CustomData?             CustomData           { get; }
-
-        /// <summary>
         /// The optional enumeration of cryptographic signatures for this message.
         /// </summary>
         [Optional]
         public IEnumerable<Signature>  Signatures           { get; }
+
+        /// <summary>
+        /// The custom data object to allow to store any kind of customer specific data.
+        /// </summary>
+        [Optional]
+        public CustomData?             CustomData           { get; }
 
         /// <summary>
         /// An optional token to cancel this request.

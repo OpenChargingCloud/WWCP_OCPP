@@ -70,15 +70,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Status">The status indicating whether the charging station accepts the request to start a charging transaction.</param>
         /// <param name="TransactionId">An optional transaction identification of an already started transaction, when the transaction was already started by the charging station before the RequestStartTransactionRequest was received. For example when the cable was plugged in first.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public RequestStartTransactionResponse(CSMS.RequestStartTransactionRequest  Request,
                                                RequestStartStopStatus               Status,
                                                Transaction_Id?                      TransactionId   = null,
                                                StatusInfo?                          StatusInfo      = null,
+
+                                               IEnumerable<Signature>?              Signatures      = null,
                                                CustomData?                          CustomData      = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -285,6 +290,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures       [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData       [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -300,11 +319,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                RequestStartTransactionResponse = new RequestStartTransactionResponse(Request,
-                                                                                      Status,
-                                                                                      TransactionId,
-                                                                                      StatusInfo,
-                                                                                      CustomData);
+                RequestStartTransactionResponse = new RequestStartTransactionResponse(
+                                                      Request,
+                                                      Status,
+                                                      TransactionId,
+                                                      StatusInfo,
+                                                      Signatures,
+                                                      CustomData
+                                                  );
 
                 if (CustomRequestStartTransactionResponseParser is not null)
                     RequestStartTransactionResponse = CustomRequestStartTransactionResponseParser(JSON,
@@ -331,9 +353,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="CustomRequestStartTransactionResponseSerializer">A delegate to serialize custom request start transaction responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<RequestStartTransactionResponse>?  CustomRequestStartTransactionResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                       CustomStatusInfoSerializer                        = null,
+                              CustomJObjectSerializerDelegate<Signature>?                        CustomSignatureSerializer                         = null,
                               CustomJObjectSerializerDelegate<CustomData>?                       CustomCustomDataSerializer                        = null)
         {
 
@@ -348,6 +372,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            StatusInfo is not null
                                ? new JProperty("statusInfo",      StatusInfo.   ToJSON(CustomStatusInfoSerializer,
                                                                                         CustomCustomDataSerializer))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",      new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                             CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null

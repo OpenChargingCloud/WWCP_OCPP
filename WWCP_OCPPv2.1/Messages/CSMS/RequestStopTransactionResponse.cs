@@ -59,14 +59,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The request stop transaction request leading to this response.</param>
         /// <param name="Status">The status indicating whether the charging station accepts the request to stop the charging transaction.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public RequestStopTransactionResponse(CSMS.RequestStopTransactionRequest  Request,
                                               RequestStartStopStatus              Status,
                                               StatusInfo?                         StatusInfo   = null,
+
+                                              IEnumerable<Signature>?             Signatures   = null,
                                               CustomData?                         CustomData   = null)
 
             : base(Request,
                    Result.OK(),
+                   Signatures,
                    CustomData)
 
         {
@@ -253,6 +258,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region Signatures                [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData                [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -268,10 +287,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #endregion
 
 
-                RequestStopTransactionResponse = new RequestStopTransactionResponse(Request,
-                                                                                    RequestStartStopStatus,
-                                                                                    StatusInfo,
-                                                                                    CustomData);
+                RequestStopTransactionResponse = new RequestStopTransactionResponse(
+                                                     Request,
+                                                     RequestStartStopStatus,
+                                                     StatusInfo,
+                                                     Signatures,
+                                                     CustomData
+                                                 );
 
                 if (CustomRequestStopTransactionResponseParser is not null)
                     RequestStopTransactionResponse = CustomRequestStopTransactionResponseParser(JSON,
@@ -291,16 +313,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomRequestStopTransactionResponseSerializer = null, CustomStatusInfoSerializer = null)
+        #region ToJSON(CustomRequestStopTransactionResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomRequestStopTransactionResponseSerializer">A delegate to serialize custom request stop transaction responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<RequestStopTransactionResponse>?  CustomRequestStopTransactionResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                      CustomStatusInfoSerializer                       = null,
+                              CustomJObjectSerializerDelegate<Signature>?                       CustomSignatureSerializer                        = null,
                               CustomJObjectSerializerDelegate<CustomData>?                      CustomCustomDataSerializer                       = null)
         {
 
@@ -311,6 +335,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            StatusInfo is not null
                                ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
                                                                                  CustomCustomDataSerializer))
+                               : null,
+
+                           Signatures is not null
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
