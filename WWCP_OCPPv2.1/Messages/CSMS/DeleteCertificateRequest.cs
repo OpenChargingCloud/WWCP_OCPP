@@ -361,7 +361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  new JProperty("certificateHashData",   CertificateHashData.ToJSON(CustomCertificateHashDataSerializer,
                                                                                                    CustomCustomDataSerializer)),
 
-                           Signatures is not null
+                           Signatures.Any()
                                ? new JProperty("signatures",            new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
                                                                                                                                    CustomCustomDataSerializer))))
                                : null,

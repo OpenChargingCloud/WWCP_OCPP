@@ -442,7 +442,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ? new JProperty("prioritizedEMAIDs",                  new JArray(PrioritizedEMAIds.Select(prioritizedEMAId => prioritizedEMAId.ToString())))
                                : null,
 
-                           Signatures is not null
+                           Signatures.Any()
                                ? new JProperty("signatures",                         new JArray(Signatures.       Select(signature        => signature.       ToJSON(CustomSignatureSerializer,
                                                                                                                                                                      CustomCustomDataSerializer))))
                                : null,

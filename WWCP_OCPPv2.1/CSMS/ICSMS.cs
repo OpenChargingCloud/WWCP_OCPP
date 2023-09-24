@@ -15,21 +15,12 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
     /// The common interface of all central systems channels.
-    /// CSMS might have multiple channels, e.g. a SOAP and a WebSockets channels.
+    /// CSMS might have multiple channels, e.g. a SOAP and a WebSockets channel.
     /// </summary>
     public interface ICSMSChannel : ICSMSClient, ICSMSServer
     {

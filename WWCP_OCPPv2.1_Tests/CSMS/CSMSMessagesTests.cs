@@ -38,13 +38,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
     public class CSMSMessagesTests : AChargingStationTests
     {
 
-        #region Reset_Test()
+        #region Reset_ChargingStation_Test()
 
         /// <summary>
         /// A test for sending a reset message to a charging station.
         /// </summary>
         [Test]
-        public async Task Reset_Test()
+        public async Task Reset_ChargingStation_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -87,13 +87,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
         #endregion
 
-        #region Reset_UnknownChargeBox_Test()
+        #region Reset_UnknownChargingStation_Test()
 
         /// <summary>
         /// A test for sending a reset message to a charging station.
         /// </summary>
         [Test]
-        public async Task Reset_UnknownChargeBox_Test()
+        public async Task Reset_UnknownChargingStation_Test()
         {
 
             Assert.IsNotNull(testCSMS01);
@@ -124,6 +124,110 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 Assert.AreEqual  (ResetStatus.Unknown,       response1.Status);
 
                 Assert.AreEqual  (0,                         resetRequests.Count);
+
+            }
+
+        }
+
+        #endregion
+
+        #region Reset_EVSE_Test()
+
+        /// <summary>
+        /// A test for sending a reset message to an EVSE of a charging station.
+        /// </summary>
+        [Test]
+        public async Task Reset_EVSE_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var resetRequests = new ConcurrentList<ResetRequest>();
+
+                chargingStation1.OnResetRequest += (timestamp, sender, resetRequest) => {
+                    resetRequests.TryAdd(resetRequest);
+                    return Task.CompletedTask;
+                };
+
+                var resetType  = ResetTypes.Immediate;
+                var response1  = await testCSMS01.Reset(
+                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
+                                           ResetType:     resetType,
+                                           EVSEId:        EVSE_Id.Parse(1),
+                                           CustomData:    null
+                                       );
+
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResetStatus.Accepted,           response1.Status);
+
+                Assert.AreEqual(1,                              resetRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   resetRequests.First().ChargeBoxId);
+                Assert.AreEqual(resetType,                      resetRequests.First().ResetType);
+                Assert.IsTrue  (                                resetRequests.First().EVSEId.HasValue);
+                Assert.AreEqual(EVSE_Id.Parse(1),               resetRequests.First().EVSEId!.Value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region Reset_UnknownEVSE_Test()
+
+        /// <summary>
+        /// A test for sending a reset message to an unknown EVSE of a charging station.
+        /// </summary>
+        [Test]
+        public async Task Reset_UnknownEVSE_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var resetRequests = new ConcurrentList<ResetRequest>();
+
+                chargingStation1.OnResetRequest += (timestamp, sender, resetRequest) => {
+                    resetRequests.TryAdd(resetRequest);
+                    return Task.CompletedTask;
+                };
+
+                var resetType  = ResetTypes.Immediate;
+                var response1  = await testCSMS01.Reset(
+                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
+                                           ResetType:     resetType,
+                                           EVSEId:        EVSE_Id.Parse(5),
+                                           CustomData:    null
+                                       );
+
+                Assert.AreEqual(ResultCodes.GenericError,       response1.Result.ResultCode);
+                Assert.AreEqual(ResetStatus.Rejected,           response1.Status);
+
+                Assert.AreEqual(1,                              resetRequests.Count);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   resetRequests.First().ChargeBoxId);
+                Assert.AreEqual(resetType,                      resetRequests.First().ResetType);
+                Assert.IsTrue  (                                resetRequests.First().EVSEId.HasValue);
+                Assert.AreEqual(EVSE_Id.Parse(5),               resetRequests.First().EVSEId!.Value);
 
             }
 

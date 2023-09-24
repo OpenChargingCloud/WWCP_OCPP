@@ -1975,12 +1975,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Data Structures
 
-        public CustomJObjectSerializerDelegate<ChargingProfile>?                      CustomChargingProfileSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedule>?                     CustomChargingScheduleSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?               CustomChargingSchedulePeriodSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<Variable>?                                            CustomVariableSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<LogParameters>?                                       CustomLogParametersSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariableData>?                                     CustomSetVariableDataSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<GetVariableData>?                                     CustomGetVariableDataSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringData>?                                   CustomSetMonitoringDataSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<NetworkConnectionProfile>?                            CustomNetworkConnectionProfileSerializer         { get; set; }
+        public CustomJObjectSerializerDelegate<VPNConfiguration>?                                    CustomVPNConfigurationSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<APNConfiguration>?                                    CustomAPNConfigurationSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<IdTokenInfo>?                                         CustomIdTokenInfoSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<MessageContent>?                                      CustomMessageContentSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                             { get; set; }
+        
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                { get; set; }
+        
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer          { get; set; }
 
-        public CustomJObjectSerializerDelegate<AuthorizationData>?                    CustomAuthorizationDataSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<IdTokenInfo>?                          CustomIdTokenInfoResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer         { get; set; }
+        public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                      { get; set; }
 
         #endregion
 
@@ -7115,24 +7155,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomResetRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomResetRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
-
-
-            //sendRequestState = new SendRequestState(Timestamp.Now,
-            //                                        Request.ChargeBoxId,
-            //                                        new OCPP_WebSocket_RequestMessage(
-            //                                            Request_Id.Parse("1"),
-            //                                            Request.Action,
-            //                                            Request.ToJSON(CustomResetRequestSerializer),
-            //                                            OCPP_WebSocket_MessageTypes.CALL
-            //                                        ),
-            //                                        Timestamp.Now + TimeSpan.FromHours(1),
-            //                                        new JObject(),
-            //                                        ResultCodes.FormationViolation,
-            //                                        "Format Error 0815!",
-            //                                        new JObject());
-
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -7213,7 +7241,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomUpdateFirmwareRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomUpdateFirmwareRequestSerializer,
+                                                         CustomFirmwareSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -7295,7 +7328,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomPublishFirmwareRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomPublishFirmwareRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -7377,7 +7414,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomUnpublishFirmwareRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomUnpublishFirmwareRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -7459,7 +7500,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomGetBaseReportRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomGetBaseReportRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -7541,7 +7586,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomGetReportRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomGetReportRequestSerializer,
+                                                         CustomComponentVariableSerializer,
+                                                         CustomComponentSerializer,
+                                                         CustomEVSESerializer,
+                                                         CustomVariableSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -7627,7 +7680,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomGetLogRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomGetLogRequestSerializer,
+                                                         CustomLogParametersSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -7709,7 +7767,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomSetVariablesRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomSetVariablesRequestSerializer,
+                                                         CustomSetVariableDataSerializer,
+                                                         CustomComponentSerializer,
+                                                         CustomEVSESerializer,
+                                                         CustomVariableSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -7791,7 +7857,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomGetVariablesRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomGetVariablesRequestSerializer,
+                                                         CustomGetVariableDataSerializer,
+                                                         CustomComponentSerializer,
+                                                         CustomEVSESerializer,
+                                                         CustomVariableSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -7873,7 +7947,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomSetMonitoringBaseRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomSetMonitoringBaseRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -7955,7 +8033,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomGetMonitoringReportRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomGetMonitoringReportRequestSerializer,
+                                                         CustomComponentVariableSerializer,
+                                                         CustomComponentSerializer,
+                                                         CustomEVSESerializer,
+                                                         CustomVariableSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -8037,7 +8123,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomSetMonitoringLevelRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomSetMonitoringLevelRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -8119,7 +8209,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomSetVariableMonitoringRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomSetVariableMonitoringRequestSerializer,
+                                                         CustomSetMonitoringDataSerializer,
+                                                         CustomComponentSerializer,
+                                                         CustomEVSESerializer,
+                                                         CustomVariableSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -8201,7 +8299,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomClearVariableMonitoringRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomClearVariableMonitoringRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -8283,7 +8385,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomSetNetworkProfileRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomSetNetworkProfileRequestSerializer,
+                                                         CustomNetworkConnectionProfileSerializer,
+                                                         CustomVPNConfigurationSerializer,
+                                                         CustomAPNConfigurationSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -8365,7 +8474,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomChangeAvailabilityRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomChangeAvailabilityRequestSerializer,
+                                                         CustomEVSESerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -8447,7 +8561,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomTriggerMessageRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomTriggerMessageRequestSerializer,
+                                                         CustomEVSESerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -8529,7 +8648,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomDataTransferRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomDataTransferRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -8616,7 +8739,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomCertificateSignedRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomCertificateSignedRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -8702,7 +8829,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomInstallCertificateRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomInstallCertificateRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -8788,7 +8919,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomGetInstalledCertificateIdsRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomGetInstalledCertificateIdsRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -8874,7 +9009,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomDeleteCertificateRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomDeleteCertificateRequestSerializer,
+                                                         CustomCertificateHashDataSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -8960,7 +9100,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomNotifyCRLRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomNotifyCRLRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -9047,7 +9191,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomGetLocalListVersionRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomGetLocalListVersionRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -9129,7 +9277,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomSendLocalListRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomSendLocalListRequestSerializer,
+                                                         CustomAuthorizationDataSerializer,
+                                                         CustomIdTokenSerializer,
+                                                         CustomAdditionalInfoSerializer,
+                                                         CustomIdTokenInfoSerializer,
+                                                         CustomMessageContentSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -9211,7 +9368,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomClearCacheRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomClearCacheRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -9294,7 +9455,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomReserveNowRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomReserveNowRequestSerializer,
+                                                         CustomIdTokenSerializer,
+                                                         CustomAdditionalInfoSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -9376,7 +9543,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomCancelReservationRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomCancelReservationRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -9458,7 +9629,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomRequestStartTransactionRequestSerializer),
+                                                     Request.ToJSON(
+
+                                                         CustomRequestStartTransactionRequestSerializer,
+                                                         CustomIdTokenSerializer,
+                                                         CustomAdditionalInfoSerializer,
+                                                         CustomChargingProfileSerializer,
+                                                         CustomLimitBeyondSoCSerializer,
+                                                         CustomChargingScheduleSerializer,
+                                                         CustomChargingSchedulePeriodSerializer,
+                                                         CustomV2XFreqWattEntrySerializer,
+                                                         CustomV2XSignalWattEntrySerializer,
+                                                         CustomSalesTariffSerializer,
+                                                         CustomSalesTariffEntrySerializer,
+                                                         CustomRelativeTimeIntervalSerializer,
+                                                         CustomConsumptionCostSerializer,
+                                                         CustomCostSerializer,
+
+                                                         CustomAbsolutePriceScheduleSerializer,
+                                                         CustomPriceRuleStackSerializer,
+                                                         CustomPriceRuleSerializer,
+                                                         CustomTaxRuleSerializer,
+                                                         CustomOverstayRuleListSerializer,
+                                                         CustomOverstayRuleSerializer,
+                                                         CustomAdditionalServiceSerializer,
+
+                                                         CustomPriceLevelScheduleSerializer,
+                                                         CustomPriceLevelScheduleEntrySerializer,
+
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -9540,7 +9742,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomRequestStopTransactionRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomRequestStopTransactionRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -9622,7 +9828,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomGetTransactionStatusRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomGetTransactionStatusRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -9704,7 +9914,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomSetChargingProfileRequestSerializer),
+                                                     Request.ToJSON(
+
+                                                         CustomSetChargingProfileRequestSerializer,
+                                                         CustomChargingProfileSerializer,
+                                                         CustomLimitBeyondSoCSerializer,
+                                                         CustomChargingScheduleSerializer,
+                                                         CustomChargingSchedulePeriodSerializer,
+                                                         CustomV2XFreqWattEntrySerializer,
+                                                         CustomV2XSignalWattEntrySerializer,
+                                                         CustomSalesTariffSerializer,
+                                                         CustomSalesTariffEntrySerializer,
+                                                         CustomRelativeTimeIntervalSerializer,
+                                                         CustomConsumptionCostSerializer,
+                                                         CustomCostSerializer,
+
+                                                         CustomAbsolutePriceScheduleSerializer,
+                                                         CustomPriceRuleStackSerializer,
+                                                         CustomPriceRuleSerializer,
+                                                         CustomTaxRuleSerializer,
+                                                         CustomOverstayRuleListSerializer,
+                                                         CustomOverstayRuleSerializer,
+                                                         CustomAdditionalServiceSerializer,
+
+                                                         CustomPriceLevelScheduleSerializer,
+                                                         CustomPriceLevelScheduleEntrySerializer,
+
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -9786,7 +10025,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomGetChargingProfilesRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomGetChargingProfilesRequestSerializer,
+                                                         CustomChargingProfileCriterionSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -9868,7 +10112,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomClearChargingProfileRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomClearChargingProfileRequestSerializer,
+                                                         CustomClearChargingProfileSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -9951,7 +10200,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomGetCompositeScheduleRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomGetCompositeScheduleRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -10034,7 +10287,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomUpdateDynamicScheduleRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomUpdateDynamicScheduleRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -10117,7 +10374,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomNotifyAllowedEnergyTransferRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomNotifyAllowedEnergyTransferRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -10200,7 +10461,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomUsePriorityChargingRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomUsePriorityChargingRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -10282,7 +10547,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomUnlockConnectorRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomUnlockConnectorRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -10365,7 +10634,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomAFRRSignalRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomAFRRSignalRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -10448,7 +10721,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomSetDisplayMessageRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomSetDisplayMessageRequestSerializer,
+                                                         CustomMessageInfoSerializer,
+                                                         CustomMessageContentSerializer,
+                                                         CustomComponentSerializer,
+                                                         CustomEVSESerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -10530,7 +10811,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomGetDisplayMessagesRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomGetDisplayMessagesRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -10612,7 +10897,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomClearDisplayMessageRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomClearDisplayMessageRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -10694,7 +10983,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomCostUpdatedRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomCostUpdatedRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
@@ -10776,7 +11069,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.RequestId,
                                                      Request.ChargeBoxId,
                                                      Request.Action,
-                                                     Request.ToJSON(CustomCustomerInformationRequestSerializer),
+                                                     Request.ToJSON(
+                                                         CustomCustomerInformationRequestSerializer,
+                                                         CustomIdTokenSerializer,
+                                                         CustomAdditionalInfoSerializer,
+                                                         CustomCertificateHashDataSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&

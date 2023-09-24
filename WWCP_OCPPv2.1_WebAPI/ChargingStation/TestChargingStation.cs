@@ -1661,6 +1661,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
+                    var success = CryptoUtils.VerifyMessage(Request, Request.ToJSON(), true);
+
+
                     DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming '", Request.ResetType, "' reset request accepted."));
 
                     response = new ResetResponse(

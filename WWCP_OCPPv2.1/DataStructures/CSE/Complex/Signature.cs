@@ -17,7 +17,15 @@
 
 #region Usings
 
+using System.Security.Cryptography;
+
 using Newtonsoft.Json.Linq;
+
+using Org.BouncyCastle.X509;
+using Org.BouncyCastle.Asn1.Sec;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -27,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// A OCPP CSE cryptographic signature.
+    /// An OCPP CSE cryptographic signature.
     /// </summary>
     public class Signature : ACustomData,
                              IEquatable<Signature>
@@ -58,6 +66,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         [Optional]
         public String?  EncodingMethod     { get; }
+
+
+
+        public Boolean? Status { get; set; }
 
         #endregion
 
@@ -264,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("keyId",            KeyId),
-                                 new JProperty("Value",            Value),
+                                 new JProperty("value",            Value),
                                  new JProperty("signingMethod",    SigningMethod),
                                  new JProperty("encodingMethod",   EncodingMethod),
 

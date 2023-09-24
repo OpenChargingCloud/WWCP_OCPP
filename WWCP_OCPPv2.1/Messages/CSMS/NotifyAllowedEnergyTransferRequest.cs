@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                  new JProperty("allowedEnergyTransfer",   new JArray(AllowedEnergyTransferModes.Select(allowedEnergyTransferMode => allowedEnergyTransferMode.AsText()))),
 
-                           Signatures is not null
+                           Signatures.Any()
                                ? new JProperty("signatures",              new JArray(Signatures.                Select(signature                 => signature.                ToJSON(CustomSignatureSerializer,
                                                                                                                                                                                      CustomCustomDataSerializer))))
                                : null,

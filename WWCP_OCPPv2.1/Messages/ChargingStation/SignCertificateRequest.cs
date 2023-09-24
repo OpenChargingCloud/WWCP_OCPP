@@ -356,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                ? new JProperty("certificateType",   CertificateType.Value.AsText())
                                : null,
 
-                           Signatures is not null
+                           Signatures.Any()
                                ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
                                                                                                                                CustomCustomDataSerializer))))
                                : null,

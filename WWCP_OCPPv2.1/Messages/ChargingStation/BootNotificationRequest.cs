@@ -381,7 +381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  new JProperty("chargingStation",   ChargingStation.ToJSON(CustomChargingStationSerializer)),
                                  new JProperty("reason",            Reason.         ToString()),
 
-                           Signatures is not null
+                           Signatures.Any()
                                ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
                                                                                                                                CustomCustomDataSerializer))))
                                : null,

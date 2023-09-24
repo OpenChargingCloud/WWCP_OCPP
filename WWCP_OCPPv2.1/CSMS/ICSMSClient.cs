@@ -17,6 +17,8 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
@@ -30,14 +32,162 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public interface ICSMSClient : ICSMSClientEvents
     {
 
-        //ChargeBox_Id                            ChargeBoxIdentity    { get; }
-        //String                                  From                 { get; }
-        //String                                  To                   { get; }
+        #region Custom JSON serializer delegates
 
-        //     CSMSSOAPClient.CSClientLogger  Logger               { get; }
+        #region CSMS Messages
+
+        public CustomJObjectSerializerDelegate<ResetRequest>?                         CustomResetRequestSerializer                           { get; set; }
+
+        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?                CustomUpdateFirmwareRequestSerializer                  { get; set; }
+
+        public CustomJObjectSerializerDelegate<PublishFirmwareRequest>?               CustomPublishFirmwareRequestSerializer                 { get; set; }
+
+        public CustomJObjectSerializerDelegate<UnpublishFirmwareRequest>?             CustomUnpublishFirmwareRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetBaseReportRequest>?                 CustomGetBaseReportRequestSerializer                   { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetReportRequest>?                     CustomGetReportRequestSerializer                       { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetLogRequest>?                        CustomGetLogRequestSerializer                          { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetVariablesRequest>?                  CustomSetVariablesRequestSerializer                    { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetVariablesRequest>?                  CustomGetVariablesRequestSerializer                    { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetMonitoringBaseRequest>?             CustomSetMonitoringBaseRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetMonitoringReportRequest>?           CustomGetMonitoringReportRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetMonitoringLevelRequest>?            CustomSetMonitoringLevelRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetVariableMonitoringRequest>?         CustomSetVariableMonitoringRequestSerializer           { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearVariableMonitoringRequest>?       CustomClearVariableMonitoringRequestSerializer         { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetNetworkProfileRequest>?             CustomSetNetworkProfileRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?            CustomChangeAvailabilityRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                CustomTriggerMessageRequestSerializer                  { get; set; }
+
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?                  CustomDataTransferRequestSerializer                    { get; set; }
 
 
-        #region Reset                      (Request)
+        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?             CustomCertificateSignedRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?            CustomInstallCertificateRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?    CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
+
+        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?             CustomDeleteCertificateRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<NotifyCRLRequest>?                     CustomNotifyCRLRequestSerializer                       { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?           CustomGetLocalListVersionRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<SendLocalListRequest>?                 CustomSendLocalListRequestSerializer                   { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                    CustomClearCacheRequestSerializer                      { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<ReserveNowRequest>?                    CustomReserveNowRequestSerializer                      { get; set; }
+
+        public CustomJObjectSerializerDelegate<CancelReservationRequest>?             CustomCancelReservationRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<RequestStartTransactionRequest>?       CustomRequestStartTransactionRequestSerializer         { get; set; }
+
+        public CustomJObjectSerializerDelegate<RequestStopTransactionRequest>?        CustomRequestStopTransactionRequestSerializer          { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetTransactionStatusRequest>?          CustomGetTransactionStatusRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?            CustomSetChargingProfileRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetChargingProfilesRequest>?           CustomGetChargingProfilesRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?          CustomClearChargingProfileRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?          CustomGetCompositeScheduleRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<UpdateDynamicScheduleRequest>?         CustomUpdateDynamicScheduleRequestSerializer           { get; set; }
+
+        public CustomJObjectSerializerDelegate<NotifyAllowedEnergyTransferRequest>?   CustomNotifyAllowedEnergyTransferRequestSerializer     { get; set; }
+
+        public CustomJObjectSerializerDelegate<UsePriorityChargingRequest>?           CustomUsePriorityChargingRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?               CustomUnlockConnectorRequestSerializer                 { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<AFRRSignalRequest>?                    CustomAFRRSignalRequestSerializer                      { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<SetDisplayMessageRequest>?             CustomSetDisplayMessageRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetDisplayMessagesRequest>?            CustomGetDisplayMessagesRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearDisplayMessageRequest>?           CustomClearDisplayMessageRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<CostUpdatedRequest>?                   CustomCostUpdatedRequestSerializer                     { get; set; }
+
+        public CustomJObjectSerializerDelegate<CustomerInformationRequest>?           CustomCustomerInformationRequestSerializer             { get; set; }
+
+        #endregion
+
+        #region Data Structures
+
+        CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                        { get; set; }
+        CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                       { get; set; }
+        CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                         { get; set; }
+        CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                { get; set; }
+        CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                        { get; set; }
+        CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                             { get; set; }
+        CustomJObjectSerializerDelegate<Variable>?                                            CustomVariableSerializer                         { get; set; }
+        CustomJObjectSerializerDelegate<LogParameters>?                                       CustomLogParametersSerializer                    { get; set; }
+        CustomJObjectSerializerDelegate<SetVariableData>?                                     CustomSetVariableDataSerializer                  { get; set; }
+        CustomJObjectSerializerDelegate<GetVariableData>?                                     CustomGetVariableDataSerializer                  { get; set; }
+        CustomJObjectSerializerDelegate<SetMonitoringData>?                                   CustomSetMonitoringDataSerializer                { get; set; }
+        CustomJObjectSerializerDelegate<NetworkConnectionProfile>?                            CustomNetworkConnectionProfileSerializer         { get; set; }
+        CustomJObjectSerializerDelegate<VPNConfiguration>?                                    CustomVPNConfigurationSerializer                 { get; set; }
+        CustomJObjectSerializerDelegate<APNConfiguration>?                                    CustomAPNConfigurationSerializer                 { get; set; }
+        CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer              { get; set; }
+        CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                { get; set; }
+        CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                          { get; set; }
+        CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                   { get; set; }
+        CustomJObjectSerializerDelegate<IdTokenInfo>?                                         CustomIdTokenInfoSerializer                      { get; set; }
+        CustomJObjectSerializerDelegate<MessageContent>?                                      CustomMessageContentSerializer                   { get; set; }
+        CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                  { get; set; }
+        CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                   { get; set; }
+        CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                 { get; set; }
+        CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer           { get; set; }
+        CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                 { get; set; }
+        CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer               { get; set; }
+        CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                      { get; set; }
+        CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                 { get; set; }
+        CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer             { get; set; }
+        CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                  { get; set; }
+        CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                             { get; set; }
+        
+        CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer            { get; set; }
+        CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                   { get; set; }
+        CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                        { get; set; }
+        CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                          { get; set; }
+        CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                 { get; set; }
+        CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                     { get; set; }
+        CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                { get; set; }
+        
+        CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer               { get; set; }
+        CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer          { get; set; }
+
+        CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer         { get; set; }
+        CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer             { get; set; }
+        CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                      { get; set; }
+
+        #endregion
+
+        #endregion
+
+
+        #region Reset                       (Request)
 
         /// <summary>
         /// Reset the given charge box.
@@ -47,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UpdateFirmware             (Request)
+        #region UpdateFirmware              (Request)
 
         /// <summary>
         /// Initiate a firmware download from the given location at the given charge box.
@@ -57,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region PublishFirmware            (Request)
+        #region PublishFirmware             (Request)
 
         /// <summary>
         /// Publish a firmware.
@@ -67,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UnpublishFirmware
+        #region UnpublishFirmware           (Request)
 
         /// <summary>
         /// Unpublish a firmware.
@@ -77,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetBaseReport
+        #region GetBaseReport               (Request)
 
         /// <summary>
         /// Get a base report.
@@ -87,7 +237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetReport
+        #region GetReport                   (Request)
 
         /// <summary>
         /// Get a report.
@@ -97,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetLog
+        #region GetLog                      (Request)
 
         /// <summary>
         /// Retrieve log files from the charging station.
@@ -107,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetVariables
+        #region SetVariables                (Request)
 
         /// <summary>
         /// Set variables.
@@ -117,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetVariables
+        #region GetVariables                (Request)
 
         /// <summary>
         /// Get all variables.
@@ -127,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetMonitoringBase
+        #region SetMonitoringBase           (Request)
 
         /// <summary>
         /// Set the monitoring base.
@@ -137,7 +287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetMonitoringReport
+        #region GetMonitoringReport         (Request)
 
         /// <summary>
         /// Get a monitoring report.
@@ -147,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetMonitoringLevel
+        #region SetMonitoringLevel          (Request)
 
         /// <summary>
         /// Set the monitoring level.
@@ -157,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetVariableMonitoring
+        #region SetVariableMonitoring       (Request)
 
         /// <summary>
         /// Set a variable monitoring.
@@ -167,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearVariableMonitoring
+        #region ClearVariableMonitoring     (Request)
 
         /// <summary>
         /// Remove the given variable monitoring.
@@ -177,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetNetworkProfile
+        #region SetNetworkProfile           (Request)
 
         /// <summary>
         /// Set the network profile.
@@ -187,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ChangeAvailability
+        #region ChangeAvailability          (Request)
 
         /// <summary>
         /// Change the availability of the given charging station or EVSE.
@@ -197,7 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region TriggerMessage
+        #region TriggerMessage              (Request)
 
         /// <summary>
         /// Create a trigger for the given message at the given charging station or EVSE.
@@ -207,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region TransferData
+        #region TransferData                (Request)
 
         /// <summary>
         /// Send the given vendor-specific data.
@@ -218,7 +368,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SendSignedCertificate
+        #region SendSignedCertificate       (Request)
 
         /// <summary>
         /// Send the signed certificate to the charging station.
@@ -228,7 +378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region InstallCertificate
+        #region InstallCertificate          (Request)
 
         /// <summary>
         /// Install the given certificate within the charging station.
@@ -238,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetInstalledCertificateIds (Request)
+        #region GetInstalledCertificateIds  (Request)
 
         /// <summary>
         /// Retrieve a list of all installed certificates within the charging station.
@@ -248,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region DeleteCertificate
+        #region DeleteCertificate           (Request)
 
         /// <summary>
         /// Remove the given certificate from the charging station.
@@ -258,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region NotifyCRLAvailability
+        #region NotifyCRLAvailability       (Request)
 
         /// <summary>
         /// Notify the charging station about the status of a certificate revocation list.
@@ -269,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetLocalListVersion
+        #region GetLocalListVersion         (Request)
 
         /// <summary>
         /// Return the local white list of the given charging station.
@@ -279,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SendLocalList
+        #region SendLocalList               (Request)
 
         /// <summary>
         /// Set the local white liste at the given charging station.
@@ -289,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearCache
+        #region ClearCache                  (Request)
 
         /// <summary>
         /// Clear the local white liste cache of the given charging station.
@@ -300,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region ReserveNow
+        #region ReserveNow                  (Request)
 
         /// <summary>
         /// Create a charging reservation at the given charging station.
@@ -310,7 +460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region CancelReservation
+        #region CancelReservation           (Request)
 
         /// <summary>
         /// Cancel the given charging reservation.
@@ -320,7 +470,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region StartCharging
+        #region StartCharging               (Request)
 
         /// <summary>
         /// Start a charging process (transaction).
@@ -330,7 +480,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region StopCharging
+        #region StopCharging                (Request)
 
         /// <summary>
         /// Stop a charging process (transaction).
@@ -340,7 +490,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetTransactionStatus
+        #region GetTransactionStatus        (Request)
 
         /// <summary>
         /// Get the status of a charging process (transaction).
@@ -350,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetChargingProfile
+        #region SetChargingProfile          (Request)
 
         /// <summary>
         /// Set the charging profile of the given EVSE at the given charging station.
@@ -360,7 +510,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetChargingProfiles
+        #region GetChargingProfiles         (Request)
 
         /// <summary>
         /// Get all charging profiles from the given charging station.
@@ -370,7 +520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearChargingProfile
+        #region ClearChargingProfile        (Request)
 
         /// <summary>
         /// Remove matching charging profiles from the given charging station.
@@ -380,7 +530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetCompositeSchedule
+        #region GetCompositeSchedule        (Request)
 
         /// <summary>
         /// Return the charging schedule at the given charging station and EVSE.
@@ -390,7 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UpdateDynamicSchedule
+        #region UpdateDynamicSchedule       (Request)
 
         /// <summary>
         /// Update the dynamic charging schedule for the given charging profile.
@@ -400,7 +550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region NotifyAllowedEnergyTransfer
+        #region NotifyAllowedEnergyTransfer (Request)
 
         /// <summary>
         /// Update the list of authorized energy services.
@@ -410,7 +560,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UsePriorityCharging
+        #region UsePriorityCharging         (Request)
 
         /// <summary>
         /// Switch to the priority charging profile.
@@ -420,7 +570,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UnlockConnector
+        #region UnlockConnector             (Request)
 
         /// <summary>
         /// Unlock the given EVSE/connector at the given charging station.
@@ -431,7 +581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SendAFRRSignal
+        #region SendAFRRSignal              (Request)
 
         /// <summary>
         /// Send an aFRR signal to the charging station.
@@ -444,7 +594,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetDisplayMessage
+        #region SetDisplayMessage           (Request)
 
         /// <summary>
         /// Set a display message.
@@ -454,7 +604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetDisplayMessages
+        #region GetDisplayMessages          (Request)
 
         /// <summary>
         /// Get all display messages.
@@ -464,7 +614,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearDisplayMessage
+        #region ClearDisplayMessage         (Request)
 
         /// <summary>
         /// Remove the given display message.
@@ -474,7 +624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SendCostUpdated
+        #region SendCostUpdated             (Request)
 
         /// <summary>
         /// Send updated cost(s).
@@ -484,7 +634,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region RequestCustomerInformation
+        #region RequestCustomerInformation  (Request)
 
         /// <summary>
         /// Request customer information.

@@ -52,35 +52,61 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ResetResponse>
 
-            Reset(this ICSMS               CSMS,
-                  ChargeBox_Id             ChargeBoxId,
-                  ResetTypes               ResetType,
-                  EVSE_Id?                 EVSEId              = null,
+            Reset(this ICSMS                                      CSMS,
+                  ChargeBox_Id                                    ChargeBoxId,
+                  ResetTypes                                      ResetType,
+                  EVSE_Id?                                        EVSEId                         = null,
 
-                  IEnumerable<Signature>?  Signatures          = null,
-                  CustomData?              CustomData          = null,
+                  IEnumerable<Signature>?                         Signatures                     = null,
+                  CustomData?                                     CustomData                     = null,
 
-                  Request_Id?              RequestId           = null,
-                  DateTime?                RequestTimestamp    = null,
-                  TimeSpan?                RequestTimeout      = null,
-                  EventTracking_Id?        EventTrackingId     = null,
-                  CancellationToken        CancellationToken   = default)
+                  Request_Id?                                     RequestId                      = null,
+                  DateTime?                                       RequestTimestamp               = null,
+                  TimeSpan?                                       RequestTimeout                 = null,
+                  EventTracking_Id?                               EventTrackingId                = null,
 
+                  IEnumerable<KeyPair>?                           SignKeys                       = null,
+                  CustomJObjectSerializerDelegate<ResetRequest>?  CustomResetRequestSerializer   = null,
+                  CustomJObjectSerializerDelegate<Signature>?     CustomSignatureSerializer      = null,
+                  CustomJObjectSerializerDelegate<CustomData>?    CustomCustomDataSerializer     = null,
 
-                => CSMS.Reset(new ResetRequest(
-                                  ChargeBoxId,
-                                  ResetType,
-                                  EVSEId,
+                  CancellationToken                               CancellationToken              = default)
 
-                                  Signatures,
-                                  CustomData,
+        {
 
-                                  RequestId        ?? CSMS.NextRequestId,
-                                  RequestTimestamp ?? Timestamp.Now,
-                                  RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                  EventTrackingId  ?? EventTracking_Id.New,
-                                  CancellationToken
-                              ));
+            var request = new ResetRequest(
+                              ChargeBoxId,
+                              ResetType,
+                              EVSEId,
+
+                              Signatures,
+                              CustomData,
+
+                              RequestId        ?? CSMS.NextRequestId,
+                              RequestTimestamp ?? Timestamp.Now,
+                              RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                              EventTrackingId  ?? EventTracking_Id.New,
+                              CancellationToken
+                          );
+
+            if (SignKeys is not null && SignKeys.Any())
+            {
+
+                var success = CryptoUtils.SignMessage(
+                                  request,
+                                  request.ToJSON(
+                                      CustomResetRequestSerializer ?? CSMS.CustomResetRequestSerializer,
+                                      CustomSignatureSerializer    ?? CSMS.CustomSignatureSerializer,
+                                      CustomCustomDataSerializer   ?? CSMS.CustomCustomDataSerializer
+                                  ),
+                                  SignKeys.ToArray()
+                              );
+
+            }
+
+            return CSMS.Reset(request);
+
+        }
 
         #endregion
 

@@ -44,6 +44,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public static readonly TimeSpan DefaultRequestTimeout = TimeSpan.FromSeconds(30);
 
+        private readonly HashSet<Signature> signatures;
+
         #endregion
 
         #region Properties
@@ -88,7 +90,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional enumeration of cryptographic signatures for this message.
         /// </summary>
         [Optional]
-        public IEnumerable<Signature>  Signatures           { get; }
+        public IEnumerable<Signature>  Signatures
+            => signatures;
 
         /// <summary>
         /// The custom data object to allow to store any kind of customer specific data.
@@ -136,7 +139,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.ChargeBoxId        = ChargeBoxId;
             this.Action             = Action;
 
-            this.Signatures         = Signatures?.Distinct() ?? Array.Empty<Signature>();
+            this.signatures         = Signatures is not null && Signatures.Any()
+                                          ? new HashSet<Signature>(Signatures)
+                                          : new HashSet<Signature>();
+
             this.CustomData         = CustomData;
 
             this.RequestId          = RequestId        ?? Request_Id.NewRandom();
@@ -171,6 +177,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             return json;
 
+        }
+
+
+        internal void AddSignature(Signature Signature)
+        {
+            signatures.Add(Signature);
         }
 
 

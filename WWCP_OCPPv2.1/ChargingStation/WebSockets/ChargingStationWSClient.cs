@@ -8713,10 +8713,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomBootNotificationRequestSerializer,
-                                                                  CustomChargingStationSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomBootNotificationRequestSerializer,
+                                                       CustomChargingStationSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -8813,9 +8815,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomFirmwareStatusNotificationRequestSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomFirmwareStatusNotificationRequestSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -8912,9 +8916,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomPublishFirmwareStatusNotificationRequestSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomPublishFirmwareStatusNotificationRequestSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -9011,9 +9017,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomHeartbeatRequestSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomHeartbeatRequestSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -9110,13 +9118,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomNotifyEventRequestSerializer,
-                                                                  CustomEventDataSerializer,
-                                                                  CustomComponentSerializer,
-                                                                  CustomEVSESerializer,
-                                                                  CustomVariableSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomNotifyEventRequestSerializer,
+                                                       CustomEventDataSerializer,
+                                                       CustomComponentSerializer,
+                                                       CustomEVSESerializer,
+                                                       CustomVariableSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -9213,9 +9223,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomSecurityEventNotificationSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomSecurityEventNotificationSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -9312,15 +9324,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomNotifyReportRequestSerializer,
-                                                                  CustomReportDataSerializer,
-                                                                  CustomComponentSerializer,
-                                                                  CustomEVSESerializer,
-                                                                  CustomVariableSerializer,
-                                                                  CustomVariableAttributeSerializer,
-                                                                  CustomVariableCharacteristicsSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomNotifyReportRequestSerializer,
+                                                       CustomReportDataSerializer,
+                                                       CustomComponentSerializer,
+                                                       CustomEVSESerializer,
+                                                       CustomVariableSerializer,
+                                                       CustomVariableAttributeSerializer,
+                                                       CustomVariableCharacteristicsSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -9417,14 +9431,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomNotifyMonitoringReportRequestSerializer,
-                                                                  CustomMonitoringDataSerializer,
-                                                                  CustomComponentSerializer,
-                                                                  CustomEVSESerializer,
-                                                                  CustomVariableSerializer,
-                                                                  CustomVariableMonitoringSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomNotifyMonitoringReportRequestSerializer,
+                                                       CustomMonitoringDataSerializer,
+                                                       CustomComponentSerializer,
+                                                       CustomEVSESerializer,
+                                                       CustomVariableSerializer,
+                                                       CustomVariableMonitoringSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -9521,9 +9537,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomLogStatusNotificationSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomLogStatusNotificationSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -9620,9 +9638,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomDataTransferRequestSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomDataTransferRequestSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -9720,9 +9740,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomSignCertificateRequestSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomSignCertificateRequestSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -9819,9 +9841,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomGet15118EVCertificateSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomGet15118EVCertificateSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -9918,10 +9942,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomGetCertificateStatusSerializer,
-                                                                  CustomOCSPRequestDataSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomGetCertificateStatusSerializer,
+                                                       CustomOCSPRequestDataSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -10018,10 +10044,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomGetCRLSerializer,
-                                                                  CustomCertificateHashDataSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomGetCRLSerializer,
+                                                       CustomCertificateHashDataSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -10119,9 +10147,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomReservationStatusUpdateRequestSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomReservationStatusUpdateRequestSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -10218,12 +10248,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomAuthorizeRequestSerializer,
-                                                                  CustomIdTokenSerializer,
-                                                                  CustomAdditionalInfoSerializer,
-                                                                  CustomOCSPRequestDataSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomAuthorizeRequestSerializer,
+                                                       CustomIdTokenSerializer,
+                                                       CustomAdditionalInfoSerializer,
+                                                       CustomOCSPRequestDataSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -10320,19 +10352,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomNotifyEVChargingNeedsRequestSerializer,
-                                                                  CustomChargingNeedsSerializer,
-                                                                  CustomACChargingParametersSerializer,
-                                                                  CustomDCChargingParametersSerializer,
-                                                                  CustomV2XChargingParametersSerializer,
-                                                                  CustomEVEnergyOfferSerializer,
-                                                                  CustomEVPowerScheduleSerializer,
-                                                                  CustomEVPowerScheduleEntrySerializer,
-                                                                  CustomEVAbsolutePriceScheduleSerializer,
-                                                                  CustomEVAbsolutePriceScheduleEntrySerializer,
-                                                                  CustomEVPriceRuleSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomNotifyEVChargingNeedsRequestSerializer,
+                                                       CustomChargingNeedsSerializer,
+                                                       CustomACChargingParametersSerializer,
+                                                       CustomDCChargingParametersSerializer,
+                                                       CustomV2XChargingParametersSerializer,
+                                                       CustomEVEnergyOfferSerializer,
+                                                       CustomEVPowerScheduleSerializer,
+                                                       CustomEVPowerScheduleEntrySerializer,
+                                                       CustomEVAbsolutePriceScheduleSerializer,
+                                                       CustomEVAbsolutePriceScheduleEntrySerializer,
+                                                       CustomEVPriceRuleSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -10429,17 +10463,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomTransactionEventRequestSerializer,
-                                                                  CustomTransactionSerializer,
-                                                                  CustomIdTokenSerializer,
-                                                                  CustomAdditionalInfoSerializer,
-                                                                  CustomEVSESerializer,
-                                                                  CustomMeterValueSerializer,
-                                                                  CustomSampledValueSerializer,
-                                                                  CustomSignedMeterValueSerializer,
-                                                                  CustomUnitsOfMeasureSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomTransactionEventRequestSerializer,
+                                                       CustomTransactionSerializer,
+                                                       CustomIdTokenSerializer,
+                                                       CustomAdditionalInfoSerializer,
+                                                       CustomEVSESerializer,
+                                                       CustomMeterValueSerializer,
+                                                       CustomSampledValueSerializer,
+                                                       CustomSignedMeterValueSerializer,
+                                                       CustomUnitsOfMeasureSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -10536,9 +10572,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomStatusNotificationRequestSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomStatusNotificationRequestSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -10635,11 +10673,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomMeterValuesRequestSerializer,
-                                                                  CustomMeterValueSerializer,
-                                                                  CustomSampledValueSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomMeterValuesRequestSerializer,
+                                                       CustomMeterValueSerializer,
+                                                       CustomSampledValueSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -10736,31 +10776,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomNotifyChargingLimitRequestSerializer,
-                                                                  CustomChargingScheduleSerializer,
-                                                                  CustomLimitBeyondSoCSerializer,
-                                                                  CustomChargingSchedulePeriodSerializer,
-                                                                  CustomV2XFreqWattEntrySerializer,
-                                                                  CustomV2XSignalWattEntrySerializer,
-                                                                  CustomSalesTariffSerializer,
-                                                                  CustomSalesTariffEntrySerializer,
-                                                                  CustomRelativeTimeIntervalSerializer,
-                                                                  CustomConsumptionCostSerializer,
-                                                                  CustomCostSerializer,
+                                                   Request.ToJSON(
+                                                       CustomNotifyChargingLimitRequestSerializer,
+                                                       CustomChargingScheduleSerializer,
+                                                       CustomLimitBeyondSoCSerializer,
+                                                       CustomChargingSchedulePeriodSerializer,
+                                                       CustomV2XFreqWattEntrySerializer,
+                                                       CustomV2XSignalWattEntrySerializer,
+                                                       CustomSalesTariffSerializer,
+                                                       CustomSalesTariffEntrySerializer,
+                                                       CustomRelativeTimeIntervalSerializer,
+                                                       CustomConsumptionCostSerializer,
+                                                       CustomCostSerializer,
 
-                                                                  CustomAbsolutePriceScheduleSerializer,
-                                                                  CustomPriceRuleStackSerializer,
-                                                                  CustomPriceRuleSerializer,
-                                                                  CustomTaxRuleSerializer,
-                                                                  CustomOverstayRuleListSerializer,
-                                                                  CustomOverstayRuleSerializer,
-                                                                  CustomAdditionalServiceSerializer,
+                                                       CustomAbsolutePriceScheduleSerializer,
+                                                       CustomPriceRuleStackSerializer,
+                                                       CustomPriceRuleSerializer,
+                                                       CustomTaxRuleSerializer,
+                                                       CustomOverstayRuleListSerializer,
+                                                       CustomOverstayRuleSerializer,
+                                                       CustomAdditionalServiceSerializer,
 
-                                                                  CustomPriceLevelScheduleSerializer,
-                                                                  CustomPriceLevelScheduleEntrySerializer,
+                                                       CustomPriceLevelScheduleSerializer,
+                                                       CustomPriceLevelScheduleEntrySerializer,
 
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -10857,9 +10899,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomClearedChargingLimitRequestSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomClearedChargingLimitRequestSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -10956,32 +11000,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomReportChargingProfilesRequestSerializer,
-                                                                  CustomChargingProfileSerializer,
-                                                                  CustomLimitBeyondSoCSerializer,
-                                                                  CustomChargingScheduleSerializer,
-                                                                  CustomChargingSchedulePeriodSerializer,
-                                                                  CustomV2XFreqWattEntrySerializer,
-                                                                  CustomV2XSignalWattEntrySerializer,
-                                                                  CustomSalesTariffSerializer,
-                                                                  CustomSalesTariffEntrySerializer,
-                                                                  CustomRelativeTimeIntervalSerializer,
-                                                                  CustomConsumptionCostSerializer,
-                                                                  CustomCostSerializer,
+                                                   Request.ToJSON(
+                                                       CustomReportChargingProfilesRequestSerializer,
+                                                       CustomChargingProfileSerializer,
+                                                       CustomLimitBeyondSoCSerializer,
+                                                       CustomChargingScheduleSerializer,
+                                                       CustomChargingSchedulePeriodSerializer,
+                                                       CustomV2XFreqWattEntrySerializer,
+                                                       CustomV2XSignalWattEntrySerializer,
+                                                       CustomSalesTariffSerializer,
+                                                       CustomSalesTariffEntrySerializer,
+                                                       CustomRelativeTimeIntervalSerializer,
+                                                       CustomConsumptionCostSerializer,
+                                                       CustomCostSerializer,
 
-                                                                  CustomAbsolutePriceScheduleSerializer,
-                                                                  CustomPriceRuleStackSerializer,
-                                                                  CustomPriceRuleSerializer,
-                                                                  CustomTaxRuleSerializer,
-                                                                  CustomOverstayRuleListSerializer,
-                                                                  CustomOverstayRuleSerializer,
-                                                                  CustomAdditionalServiceSerializer,
+                                                       CustomAbsolutePriceScheduleSerializer,
+                                                       CustomPriceRuleStackSerializer,
+                                                       CustomPriceRuleSerializer,
+                                                       CustomTaxRuleSerializer,
+                                                       CustomOverstayRuleListSerializer,
+                                                       CustomOverstayRuleSerializer,
+                                                       CustomAdditionalServiceSerializer,
 
-                                                                  CustomPriceLevelScheduleSerializer,
-                                                                  CustomPriceLevelScheduleEntrySerializer,
+                                                       CustomPriceLevelScheduleSerializer,
+                                                       CustomPriceLevelScheduleEntrySerializer,
 
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -11078,31 +11124,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomNotifyEVChargingScheduleRequestSerializer,
-                                                                  CustomChargingScheduleSerializer,
-                                                                  CustomLimitBeyondSoCSerializer,
-                                                                  CustomChargingSchedulePeriodSerializer,
-                                                                  CustomV2XFreqWattEntrySerializer,
-                                                                  CustomV2XSignalWattEntrySerializer,
-                                                                  CustomSalesTariffSerializer,
-                                                                  CustomSalesTariffEntrySerializer,
-                                                                  CustomRelativeTimeIntervalSerializer,
-                                                                  CustomConsumptionCostSerializer,
-                                                                  CustomCostSerializer,
+                                                   Request.ToJSON(
+                                                       CustomNotifyEVChargingScheduleRequestSerializer,
+                                                       CustomChargingScheduleSerializer,
+                                                       CustomLimitBeyondSoCSerializer,
+                                                       CustomChargingSchedulePeriodSerializer,
+                                                       CustomV2XFreqWattEntrySerializer,
+                                                       CustomV2XSignalWattEntrySerializer,
+                                                       CustomSalesTariffSerializer,
+                                                       CustomSalesTariffEntrySerializer,
+                                                       CustomRelativeTimeIntervalSerializer,
+                                                       CustomConsumptionCostSerializer,
+                                                       CustomCostSerializer,
 
-                                                                  CustomAbsolutePriceScheduleSerializer,
-                                                                  CustomPriceRuleStackSerializer,
-                                                                  CustomPriceRuleSerializer,
-                                                                  CustomTaxRuleSerializer,
-                                                                  CustomOverstayRuleListSerializer,
-                                                                  CustomOverstayRuleSerializer,
-                                                                  CustomAdditionalServiceSerializer,
+                                                       CustomAbsolutePriceScheduleSerializer,
+                                                       CustomPriceRuleStackSerializer,
+                                                       CustomPriceRuleSerializer,
+                                                       CustomTaxRuleSerializer,
+                                                       CustomOverstayRuleListSerializer,
+                                                       CustomOverstayRuleSerializer,
+                                                       CustomAdditionalServiceSerializer,
 
-                                                                  CustomPriceLevelScheduleSerializer,
-                                                                  CustomPriceLevelScheduleEntrySerializer,
+                                                       CustomPriceLevelScheduleSerializer,
+                                                       CustomPriceLevelScheduleEntrySerializer,
 
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -11199,9 +11247,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomNotifyPriorityChargingRequestSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomNotifyPriorityChargingRequestSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -11298,9 +11348,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomPullDynamicScheduleUpdateRequestSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomPullDynamicScheduleUpdateRequestSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -11398,13 +11450,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomNotifyDisplayMessagesRequestSerializer,
-                                                                  CustomMessageInfoSerializer,
-                                                                  CustomMessageContentSerializer,
-                                                                  CustomComponentSerializer,
-                                                                  CustomEVSESerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomNotifyDisplayMessagesRequestSerializer,
+                                                       CustomMessageInfoSerializer,
+                                                       CustomMessageContentSerializer,
+                                                       CustomComponentSerializer,
+                                                       CustomEVSESerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
@@ -11501,9 +11555,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
-                                                   Request.ToJSON(CustomNotifyCustomerInformationRequestSerializer,
-                                                                  CustomSignatureSerializer,
-                                                                  CustomCustomDataSerializer));
+                                                   Request.ToJSON(
+                                                       CustomNotifyCustomerInformationRequestSerializer,
+                                                       CustomSignatureSerializer,
+                                                       CustomCustomDataSerializer
+                                                   ));
 
             if (requestMessage.NoErrors)
             {
