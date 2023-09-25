@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// The common interface of all request messages.
     /// </summary>
-    public interface IRequest
+    public interface IRequest : ISignableMessage
     {
 
         /// <summary>

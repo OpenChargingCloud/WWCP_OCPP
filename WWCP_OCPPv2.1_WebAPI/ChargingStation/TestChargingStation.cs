@@ -344,6 +344,160 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region Custom JSON serializer delegates
+
+        #region CSMS Messages
+
+        public CustomJObjectSerializerDelegate<CSMS.ResetRequest>?                         CustomResetRequestSerializer                           { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.UpdateFirmwareRequest>?                CustomUpdateFirmwareRequestSerializer                  { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.PublishFirmwareRequest>?               CustomPublishFirmwareRequestSerializer                 { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.UnpublishFirmwareRequest>?             CustomUnpublishFirmwareRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.GetBaseReportRequest>?                 CustomGetBaseReportRequestSerializer                   { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.GetReportRequest>?                     CustomGetReportRequestSerializer                       { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.GetLogRequest>?                        CustomGetLogRequestSerializer                          { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.SetVariablesRequest>?                  CustomSetVariablesRequestSerializer                    { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.GetVariablesRequest>?                  CustomGetVariablesRequestSerializer                    { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.SetMonitoringBaseRequest>?             CustomSetMonitoringBaseRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.GetMonitoringReportRequest>?           CustomGetMonitoringReportRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.SetMonitoringLevelRequest>?            CustomSetMonitoringLevelRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.SetVariableMonitoringRequest>?         CustomSetVariableMonitoringRequestSerializer           { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.ClearVariableMonitoringRequest>?       CustomClearVariableMonitoringRequestSerializer         { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.SetNetworkProfileRequest>?             CustomSetNetworkProfileRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.ChangeAvailabilityRequest>?            CustomChangeAvailabilityRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.TriggerMessageRequest>?                CustomTriggerMessageRequestSerializer                  { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.DataTransferRequest>?                  CustomDataTransferRequestSerializer                    { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<CSMS.CertificateSignedRequest>?             CustomCertificateSignedRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.InstallCertificateRequest>?            CustomInstallCertificateRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.GetInstalledCertificateIdsRequest>?    CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.DeleteCertificateRequest>?             CustomDeleteCertificateRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.NotifyCRLRequest>?                     CustomNotifyCRLRequestSerializer                       { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<CSMS.GetLocalListVersionRequest>?           CustomGetLocalListVersionRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.SendLocalListRequest>?                 CustomSendLocalListRequestSerializer                   { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.ClearCacheRequest>?                    CustomClearCacheRequestSerializer                      { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<CSMS.ReserveNowRequest>?                    CustomReserveNowRequestSerializer                      { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.CancelReservationRequest>?             CustomCancelReservationRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.RequestStartTransactionRequest>?       CustomRequestStartTransactionRequestSerializer         { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.RequestStopTransactionRequest>?        CustomRequestStopTransactionRequestSerializer          { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.GetTransactionStatusRequest>?          CustomGetTransactionStatusRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.SetChargingProfileRequest>?            CustomSetChargingProfileRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.GetChargingProfilesRequest>?           CustomGetChargingProfilesRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.ClearChargingProfileRequest>?          CustomClearChargingProfileRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.GetCompositeScheduleRequest>?          CustomGetCompositeScheduleRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.UpdateDynamicScheduleRequest>?         CustomUpdateDynamicScheduleRequestSerializer           { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.NotifyAllowedEnergyTransferRequest>?   CustomNotifyAllowedEnergyTransferRequestSerializer     { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.UsePriorityChargingRequest>?           CustomUsePriorityChargingRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.UnlockConnectorRequest>?               CustomUnlockConnectorRequestSerializer                 { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<CSMS.AFRRSignalRequest>?                    CustomAFRRSignalRequestSerializer                      { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<CSMS.SetDisplayMessageRequest>?             CustomSetDisplayMessageRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.GetDisplayMessagesRequest>?            CustomGetDisplayMessagesRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.ClearDisplayMessageRequest>?           CustomClearDisplayMessageRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.CostUpdatedRequest>?                   CustomCostUpdatedRequestSerializer                     { get; set; }
+
+        public CustomJObjectSerializerDelegate<CSMS.CustomerInformationRequest>?           CustomCustomerInformationRequestSerializer             { get; set; }
+
+        #endregion
+
+        #region Data Structures
+
+        public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<Variable>?                                            CustomVariableSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<LogParameters>?                                       CustomLogParametersSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariableData>?                                     CustomSetVariableDataSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<GetVariableData>?                                     CustomGetVariableDataSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringData>?                                   CustomSetMonitoringDataSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<NetworkConnectionProfile>?                            CustomNetworkConnectionProfileSerializer         { get; set; }
+        public CustomJObjectSerializerDelegate<VPNConfiguration>?                                    CustomVPNConfigurationSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<APNConfiguration>?                                    CustomAPNConfigurationSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<IdTokenInfo>?                                         CustomIdTokenInfoSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<MessageContent>?                                      CustomMessageContentSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                             { get; set; }
+        
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                { get; set; }
+        
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer          { get; set; }
+
+        public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer         { get; set; }
+        public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                      { get; set; }
+
+        #endregion
+
+        #endregion
+
         #region Events
 
         #region Charging Station -> CSMS
@@ -1661,17 +1815,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    var success = CryptoUtils.VerifyMessage(Request, Request.ToJSON(), true);
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             Request,
+                             Request.ToJSON(
+                                 CustomResetRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
+                        response = new ResetResponse(
+                                       Request:  Request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming '", Request.ResetType, "' reset request accepted."));
+                    }
+                    else
+                    {
 
-                    response = new ResetResponse(
-                                   Request:      Request,
-                                   Status:       ResetStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                        DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming '", Request.ResetType, "' reset request accepted."));
+
+                        response = new ResetResponse(
+                                       Request:      Request,
+                                       Status:       ResetStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
 

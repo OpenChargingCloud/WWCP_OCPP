@@ -15,30 +15,26 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// The common interface of all response messages.
+    /// The common interface of all signable OCPP CSE messages.
     /// </summary>
-    public interface IResponse : ISignableMessage
+    public interface ISignableMessage
     {
 
         /// <summary>
-        /// The machine-readable result code.
+        /// Add the given cryptographic signature to the message.
         /// </summary>
-        Result    Result               { get; }
+        /// <param name="Signature">A cryptographic signature.</param>
+        void AddSignature(Signature Signature);
 
         /// <summary>
-        /// The timestamp of the response message creation.
+        /// The enumeration of all cryptographic signatures.
         /// </summary>
-        DateTime  ResponseTimestamp    { get; }
+        IEnumerable<Signature> Signatures { get; }
+
 
     }
 

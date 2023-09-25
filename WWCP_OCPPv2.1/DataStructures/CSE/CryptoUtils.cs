@@ -19,137 +19,348 @@
 
 using System.Security.Cryptography;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Asn1.Sec;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using Org.BouncyCastle.Math;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
+    /// <summary>
+    /// Cryptographic utilities
+    /// </summary>
     public static class CryptoUtils
     {
 
-        public static Newtonsoft.Json.JsonConverter[] DefaultConverters  = new[] {
-                                                                               new Newtonsoft.Json.Converters.IsoDateTimeConverter {
-                                                                                   DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ"
-                                                                               }
-                                                                           };
+        #region Data
+
+        private static readonly JsonConverter[] defaultJSONConverters = new[] {
+                                                                        new Newtonsoft.Json.Converters.IsoDateTimeConverter {
+                                                                            DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ"
+                                                                        }
+                                                                    };
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Default JSON converters for a standardized serialization of JSON messages
+        /// in context of cryptography. Without those converters the cryptographic
+        /// signatures might fail.
+        /// </summary>
+        public static JsonConverter[] DefaultJSONConverters
+            => defaultJSONConverters;
+
+        #endregion
 
 
-        #region (static) SignMessage(JSONMessage, params KeyPairs)
+        #region (static) SignMessage        (SignableMessage, JSONMessage, out ErrorResponse, params KeyPairs)
 
-        public static Boolean SignMessage<TRequest>(ARequest<TRequest> Request, JObject JSONMessage, params KeyPair[] KeyPairs)
-            where TRequest : class, IRequest
+        /// <summary>
+        /// Sign the given message.
+        /// </summary>
+        /// <param name="SignableMessage">A signable message.</param>
+        /// <param name="JSONMessage">The JSON representation of the signable message.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="KeyPairs">An enumeration of cryptographic key pairs to sign the given message.</param>
+        public static Boolean SignMessage(ISignableMessage  SignableMessage,
+                                          JObject           JSONMessage,
+                                          out String?       ErrorResponse,
+                                          params KeyPair[]  KeyPairs)
         {
 
-            if (JSONMessage is null || KeyPairs is null || !KeyPairs.Any())
-                return false;
+            #region Initial checks
 
-            foreach (var keyPair in KeyPairs)
+            if (JSONMessage is null)
+            {
+                ErrorResponse = "The given JSON message must not be null!";
+                return false;
+            }
+
+            if (KeyPairs is null || !KeyPairs.Any())
+            {
+                ErrorResponse = "The given key pairs must not be null or empty!";
+                return false;
+            }
+
+            #endregion
+
+            try
             {
 
-                if (keyPair is null)
-                    continue;
-
-                if ((keyPair.Private is null || keyPair.Private.IsNullOrEmpty()) &&
-                    (keyPair.Public  is null || keyPair.Public. IsNullOrEmpty()))
-                    continue;
-
-                if ((keyPair.PrivateKey is null) &&
-                    (keyPair.PublicKey  is null))
-                    continue;
-
-                if (keyPair.Private is not null)
+                foreach (var keyPair in KeyPairs)
                 {
 
-                    var plainText   = JSONMessage.ToString(Newtonsoft.Json.Formatting.None,
-                                                           DefaultConverters);
-                    var sha256Hash  = SHA256.HashData(plainText.ToUTF8Bytes());
-                    var blockSize   = 32;
+                    #region Initial checks
 
-                    if (JSONMessage["signatures"] is not JArray signaturesJSON)
+                    if (keyPair is null)
                     {
-                        signaturesJSON = new JArray();
-                        JSONMessage.Add("signatures", signaturesJSON);
+                        ErrorResponse = "The given key pair must not be null!";
+                        return false;
                     }
 
-                    var signatureJSON = new JObject();
-                    signaturesJSON.Add(signatureJSON);
+
+                    if (keyPair.Private is null || keyPair.Private.IsNullOrEmpty())
+                    {
+                        ErrorResponse = "The given key pair must contain a serialized private key!";
+                        return false;
+                    }
+
+                    if (keyPair.Public  is null || keyPair.Public. IsNullOrEmpty())
+                    {
+                        ErrorResponse = "The given key pair must contain a serialized public key!";
+                        return false;
+                    }
+
+
+                    if (keyPair.PrivateKey is null)
+                    {
+                        ErrorResponse = "The given key pair must contain a private key!";
+                        return false;
+                    }
+
+                    if (keyPair.PublicKey is null)
+                    {
+                        ErrorResponse = "The given key pair must contain a public key!";
+                        return false;
+                    }
+
+                    #endregion
+
+                    var plainText   = JSONMessage.ToString(Formatting.None, defaultJSONConverters);
+
+                    var cryptoHash  = keyPair.ECCurve switch {
+                                          "secp384r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                          "secp521r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                          _            => SHA256.HashData(plainText.ToUTF8Bytes()),
+                                      };
 
                     var signer       = SignerUtilities.GetSigner("NONEwithECDSA");
                     signer.Init(true, keyPair.PrivateKey);
-                    signer.BlockUpdate(sha256Hash, 0, blockSize);
+                    signer.BlockUpdate(cryptoHash);
                     var signature    = signer.GenerateSignature();
 
-                    Request.AddSignature(new Signature(
-                                             SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(keyPair.PublicKey).PublicKeyData.GetBytes().ToBase64(),
-                                             signature.ToBase64()
-                                         ));
+                    SignableMessage.AddSignature(new Signature(
+                                                     SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(keyPair.PublicKey).PublicKeyData.GetBytes().ToBase64(),
+                                                     signature.ToBase64()
+                                                 ));
 
                 }
 
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = e.Message;
+                return false;
             }
 
-            return true;
+        }
+
+        #endregion
+
+        #region (static) SignRequestMessage (RequestMessage,  JSONMessage, out ErrorResponse, params KeyPairs)
+
+        /// <summary>
+        /// Sign the given request message.
+        /// </summary>
+        /// <typeparam name="TRequest">The type of the request message.</typeparam>
+        /// <param name="RequestMessage">The request message.</param>
+        /// <param name="JSONMessage">The JSON representation of the request message.</param>
+        /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
+        /// <param name="KeyPairs">One or multiple cryptographic key pairs to sign the request message.</param>
+        public static Boolean SignRequestMessage<TRequest>(ARequest<TRequest>  RequestMessage,
+                                                           JObject             JSONMessage,
+                                                           out String?         ErrorResponse,
+                                                           params KeyPair[]    KeyPairs)
+
+            where TRequest : class, IRequest
+
+        {
+
+            JSONMessage.AddFirst(new JProperty("@context", $"https://open.charging.cloud/context/ocpp/{RequestMessage.Action.FirstCharToLower()}Request"));
+
+            return SignMessage(RequestMessage,
+                               JSONMessage,
+                               out ErrorResponse,
+                               KeyPairs);
+
+        }
+
+        #endregion
+
+        #region (static) SignResponseMessage(ResponseMessage, JSONMessage, out ErrorResponse, params KeyPairs)
+
+        /// <summary>
+        /// Sign the given response message.
+        /// </summary>
+        /// <typeparam name="TRequest">The type of the request message.</typeparam>
+        /// <typeparam name="TResponse">The type of the response message.</typeparam>
+        /// <param name="ResponseMessage">A response message.</param>
+        /// <param name="JSONMessage">The JSON representation of the response message.</param>
+        /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
+        /// <param name="KeyPairs">One or multiple cryptographic key pairs to sign the response message.</param>
+        public static Boolean SignResponseMessage<TRequest, TResponse>(AResponse<TRequest, TResponse>  ResponseMessage,
+                                                                       JObject                         JSONMessage,
+                                                                       out String?                     ErrorResponse,
+                                                                       params KeyPair[]                KeyPairs)
+
+            where TRequest  : class, IRequest
+            where TResponse : class, IResponse
+
+        {
+
+            JSONMessage.AddFirst(new JProperty("@context", $"https://open.charging.cloud/context/ocpp/{ResponseMessage.Request.Action.FirstCharToLower()}Request"));
+
+            return SignMessage(ResponseMessage,
+                               JSONMessage,
+                               out ErrorResponse,
+                               KeyPairs);
 
         }
 
         #endregion
 
 
-        public static Boolean VerifyMessage<TRequest>(ARequest<TRequest> Request, JObject JSONMessage, Boolean AllMustBeValid) //, params KeyPair[] KeyPairs)
-            where TRequest : class, IRequest
+        #region (static) VerifyMessage      (SignableMessage, JSONMessage, out ErrorResponse, AllMustBeValid = true)
+
+        /// <summary>
+        /// Verify the given message.
+        /// </summary>
+        /// <param name="SignableMessage">A signable/verifiable message.</param>
+        /// <param name="JSONMessage">The JSON representation of the signable/verifiable message.</param>
+        /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
+        /// <param name="AllMustBeValid">Whether all or just one cryptographic signature has to match.</param>
+        public static Boolean VerifyMessage(ISignableMessage  SignableMessage,
+                                            JObject           JSONMessage,
+                                            out String?       ErrorResponse,
+                                            Boolean           AllMustBeValid = true)
         {
 
-            if (!Request.Signatures.Any())
+            if (!SignableMessage.Signatures.Any())
+            {
+                ErrorResponse = "The given message does not contain any signatures!";
                 return false;
+            }
 
             try
             {
 
-                var JSONMessageCopy  = JObject.Parse(JSONMessage.ToString(Newtonsoft.Json.Formatting.None));
-                JSONMessageCopy.Remove("signatures");
+                var jsonMessageCopy  = JObject.Parse(JSONMessage.ToString(Formatting.None, defaultJSONConverters));
+                jsonMessageCopy.Remove("signatures");
 
-                var plainText        = JSONMessageCopy.ToString(Newtonsoft.Json.Formatting.None,
-                                                                DefaultConverters)?.ToUTF8Bytes();
+                var plainText        = jsonMessageCopy.ToString(Formatting.None, defaultJSONConverters);
 
-                foreach (var signature in Request.Signatures)
+                foreach (var signature in SignableMessage.Signatures)
                 {
 
                     var ecp           = SecNamedCurves.GetByName("secp256r1");
                     var ecParams      = new ECDomainParameters(ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
                     var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId.FromBase64()), ecParams);
 
-                    var sha256Hash    = SHA256.HashData(plainText);
-                    var blockSize     = 32;
+                    var cryptoHash    = signature.ECCurve switch {
+                                            "secp384r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                            "secp521r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                            _            => SHA256.HashData(plainText.ToUTF8Bytes()),
+                                        };
 
                     var verifier      = SignerUtilities.GetSigner("NONEwithECDSA");
                     verifier.Init(false, pubKeyParams);
-                    verifier.BlockUpdate(sha256Hash, 0, blockSize);
+                    verifier.BlockUpdate(cryptoHash);
                     signature.Status  = verifier.VerifySignature(signature.Value.FromBase64());
 
                 }
 
+                ErrorResponse = null;
+
                 return AllMustBeValid
-                           ? Request.Signatures.All(signature => signature.Status == true)
-                           : Request.Signatures.Any(signature => signature.Status == true);
+                           ? SignableMessage.Signatures.All(signature => signature.Status == true)
+                           : SignableMessage.Signatures.Any(signature => signature.Status == true);
 
             }
-            catch
+            catch (Exception e)
             {
+                ErrorResponse = e.Message;
                 return false;
             }
 
         }
+
+        #endregion
+
+        #region (static) VerifyMessage      (RequestMessage,  JSONMessage, out ErrorResponse, AllMustBeValid = true)
+
+        /// <summary>
+        /// Verify the given request message.
+        /// </summary>
+        /// <typeparam name="TRequest">he type of the request message.</typeparam>
+        /// <param name="RequestMessage">The request message.</param>
+        /// <param name="JSONMessage">The JSON representation of the request message.</param>
+        /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
+        /// <param name="AllMustBeValid">Whether all or just one cryptographic signature has to match.</param>
+        public static Boolean VerifyRequestMessage<TRequest>(ARequest<TRequest>  RequestMessage,
+                                                             JObject             JSONMessage,
+                                                             out String?         ErrorResponse,
+                                                             Boolean             AllMustBeValid)
+
+            where TRequest : class, IRequest
+
+        {
+
+            JSONMessage.AddFirst(new JProperty("@context", $"https://open.charging.cloud/context/ocpp/{RequestMessage.Action.FirstCharToLower()}Request"));
+
+            return VerifyMessage(RequestMessage,
+                                 JSONMessage,
+                                 out ErrorResponse,
+                                 AllMustBeValid);
+
+        }
+
+        #endregion
+
+        #region (static) VerifyMessage      (RequestMessage,  JSONMessage, out ErrorResponse, AllMustBeValid = true)
+
+        /// <summary>
+        /// Verify the given request message.
+        /// </summary>
+        /// <typeparam name="TRequest">The type of the request message.</typeparam>
+        /// <typeparam name="TResponse">The type of the response message.</typeparam>
+        /// <param name="ResponseMessage">A response message.</param>
+        /// <param name="JSONMessage">The JSON representation of the request message.</param>
+        /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
+        /// <param name="AllMustBeValid">Whether all or just one cryptographic signature has to match.</param>
+        public static Boolean VerifyResponseMessage<TRequest, TResponse>(AResponse<TRequest, TResponse>  ResponseMessage,
+                                                                         JObject                         JSONMessage,
+                                                                         out String?                     ErrorResponse,
+                                                                         Boolean                         AllMustBeValid)
+
+            where TRequest  : class, IRequest
+            where TResponse : class, IResponse
+
+        {
+
+            JSONMessage.AddFirst(new JProperty("@context", $"https://open.charging.cloud/context/ocpp/{ResponseMessage.Request.Action.FirstCharToLower()}Response"));
+
+            return VerifyMessage(ResponseMessage,
+                                 JSONMessage,
+                                 out ErrorResponse,
+                                 AllMustBeValid);
+
+        }
+
+        #endregion
+
 
     }
 

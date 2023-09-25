@@ -18,8 +18,9 @@
 #region Usings
 
 using Newtonsoft.Json.Linq;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
@@ -180,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
 
-        internal void AddSignature(Signature Signature)
+        public void AddSignature(Signature Signature)
         {
             signatures.Add(Signature);
         }

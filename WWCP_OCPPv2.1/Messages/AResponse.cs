@@ -185,6 +185,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
     {
 
+        #region Data
+
+        private readonly HashSet<Signature> signatures;
+
+        #endregion
+
         #region Properties
 
         /// <summary>
@@ -201,7 +207,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional enumeration of cryptographic signatures for this message.
         /// </summary>
         [Optional]
-        public IEnumerable<Signature>  Signatures           { get; }
+        public IEnumerable<Signature>  Signatures
+            => signatures;
 
         /// <summary>
         /// The custom data object to allow to store any kind of customer specific data.
@@ -227,12 +234,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.Result             = Result;
             this.ResponseTimestamp  = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            this.Signatures         = Signatures?.Distinct() ?? Array.Empty<Signature>();
+
+            this.signatures         = Signatures is not null && Signatures.Any()
+                                          ? new HashSet<Signature>(Signatures)
+                                          : new HashSet<Signature>();
+
             this.CustomData         = CustomData;
 
         }
 
         #endregion
+
+
+        public void AddSignature(Signature Signature)
+        {
+            signatures.Add(Signature);
+        }
 
 
         #region Operator overloading

@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="Result">The result.</param>
         public ResetResponse(CSMS.ResetRequest  Request,
-                             Result           Result)
+                             Result             Result)
 
             : base(Request,
                    Result,

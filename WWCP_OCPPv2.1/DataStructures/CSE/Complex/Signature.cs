@@ -55,6 +55,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         [Mandatory]
         public String   Value              { get; }
 
+        [Optional]
+        public String   ECCurve            { get; }
+
         /// <summary>
         /// The optional method used to create the digital signature.
         /// </summary>

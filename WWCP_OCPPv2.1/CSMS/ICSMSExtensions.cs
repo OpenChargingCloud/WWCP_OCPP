@@ -74,37 +74,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            var request = new ResetRequest(
-                              ChargeBoxId,
-                              ResetType,
-                              EVSEId,
+            var resetRequest = new ResetRequest(
+                                   ChargeBoxId,
+                                   ResetType,
+                                   EVSEId,
 
-                              Signatures,
-                              CustomData,
+                                   Signatures,
+                                   CustomData,
 
-                              RequestId        ?? CSMS.NextRequestId,
-                              RequestTimestamp ?? Timestamp.Now,
-                              RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                              EventTrackingId  ?? EventTracking_Id.New,
-                              CancellationToken
-                          );
+                                   RequestId        ?? CSMS.NextRequestId,
+                                   RequestTimestamp ?? Timestamp.Now,
+                                   RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                                   EventTrackingId  ?? EventTracking_Id.New,
+                                   CancellationToken
+                               );
 
             if (SignKeys is not null && SignKeys.Any())
             {
 
-                var success = CryptoUtils.SignMessage(
-                                  request,
-                                  request.ToJSON(
-                                      CustomResetRequestSerializer ?? CSMS.CustomResetRequestSerializer,
-                                      CustomSignatureSerializer    ?? CSMS.CustomSignatureSerializer,
-                                      CustomCustomDataSerializer   ?? CSMS.CustomCustomDataSerializer
-                                  ),
-                                  SignKeys.ToArray()
-                              );
+                if (!CryptoUtils.SignRequestMessage(
+                        resetRequest,
+                        resetRequest.ToJSON(
+                            CustomResetRequestSerializer ?? CSMS.CustomResetRequestSerializer,
+                            CustomSignatureSerializer    ?? CSMS.CustomSignatureSerializer,
+                            CustomCustomDataSerializer   ?? CSMS.CustomCustomDataSerializer
+                        ),
+                        out var errorResponse,
+                        SignKeys.ToArray())) {
+
+                    return Task.FromResult(
+                               new CS.ResetResponse(
+                                   resetRequest,
+                                   Result.SignatureError(errorResponse)
+                               )
+                           );
+
+                }
 
             }
 
-            return CSMS.Reset(request);
+            return CSMS.Reset(resetRequest);
 
         }
 

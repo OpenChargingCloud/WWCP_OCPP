@@ -175,6 +175,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (ResultCodes.FormationViolation,
                     Description);
 
+
+        /// <summary>
+        /// The message could not be signed cryptographically.
+        /// </summary>
+        /// <param name="Description">A human-readable error description.</param>
+        public static Result SignatureError(String? Description = null)
+
+            => new (ResultCodes.SecurityError,
+                    Description);
+
         #endregion
 
 
