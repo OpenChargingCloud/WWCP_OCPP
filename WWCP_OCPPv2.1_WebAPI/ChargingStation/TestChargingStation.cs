@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The client connected to a CSMS.
         /// </summary>
-        public IChargingStationClient?      CSClient                    { get; private set; }
+        public IChargingStationClient?  CSClient                    { get; private set; }
 
 
         public String? ClientCloseMessage
@@ -305,7 +305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The time at the CSMS.
         /// </summary>
-        public DateTime?                CSMSTime           { get; private set; }
+        public DateTime?                CSMSTime                    { get; private set; }
 
         /// <summary>
         /// The default request timeout for all requests.
@@ -329,9 +329,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Disable all heartbeats.
         /// </summary>
         public Boolean                  DisableSendHeartbeats       { get; set; }
-
-
-
 
 
 
@@ -442,6 +439,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CSMS.CostUpdatedRequest>?                   CustomCostUpdatedRequestSerializer                     { get; set; }
 
         public CustomJObjectSerializerDelegate<CSMS.CustomerInformationRequest>?           CustomCustomerInformationRequestSerializer             { get; set; }
+
+        #endregion
+
+        #region Charging Station Messages
+
+        public CustomJObjectSerializerDelegate<ResetResponse>?                                       CustomResetResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                       { get; set; }
 
         #endregion
 
@@ -1850,6 +1854,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     }
 
                 }
+
+
+                var signKeys = new[] { KeyPair.GenerateKeys() };
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomResetResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2,
+                    signKeys.ToArray());
 
 
                 #region Send OnResetResponse event

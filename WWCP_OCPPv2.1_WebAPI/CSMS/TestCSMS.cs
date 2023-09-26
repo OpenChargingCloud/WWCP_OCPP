@@ -1382,6 +1382,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region Charging Station Messages
+
+        public CustomJObjectSerializerDelegate<CS.ResetResponse>?                     CustomResetResponseSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<StatusInfo>?                           CustomStatusInfoSerializer                             { get; set; }
+
+        #endregion
+
         #region Data Structures
 
         public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                        { get; set; }

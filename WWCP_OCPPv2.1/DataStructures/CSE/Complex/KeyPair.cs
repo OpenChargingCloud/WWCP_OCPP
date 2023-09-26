@@ -19,14 +19,12 @@
 
 using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
-using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Security;
-using System.Security.Cryptography;
 using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Asn1.Sec;
+using Org.BouncyCastle.Asn1.X9;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto.Parameters;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -55,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public   String                  Public                { get; }
 
         [Optional]
-        public   String                  ECCurve               { get; }
+        public   String                  Algorithm             { get; }
 
         public   X9ECParameters          ECParameters          { get; }
 
@@ -77,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public KeyPair(String       Private,
                        String       Public,
-                       String?      ECCurve      = null,
+                       String?      Algorithm    = "secp256r1",
                        CustomData?  CustomData   = null)
 
             : base(CustomData)
@@ -86,9 +84,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.Private             = Private;
             this.Public              = Public;
-            this.ECCurve             = ECCurve ?? "secp256r1";
+            this.Algorithm           = Algorithm ?? "secp256r1";
 
-            this.ECParameters        = ECNamedCurveTable.GetByName(this.ECCurve);
+            this.ECParameters        = ECNamedCurveTable.GetByName(this.Algorithm);
 
             this.ECDomainParameters  = new ECDomainParameters(
                                            this.ECParameters.Curve,
@@ -112,11 +110,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                hashCode = this.Private.GetHashCode() * 7 ^
-                           this.Public. GetHashCode() * 5 ^
-                           this.ECCurve.GetHashCode() * 3 ^
+                hashCode = this.Private.  GetHashCode() * 7 ^
+                           this.Public.   GetHashCode() * 5 ^
+                           this.Algorithm.GetHashCode() * 3 ^
 
-                           base.        GetHashCode();
+                           base.          GetHashCode();
 
             }
 
@@ -131,12 +129,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) GenerateKeys(ECParameters)
+        #region (static) GenerateKeys(Algorithm = secp256r1)
 
-        public static KeyPair GenerateKeys(String? ECCurve = null)
+        public static KeyPair GenerateKeys(String? Algorithm = "secp256r1")
         {
 
-            var ecParameters  = ECNamedCurveTable. GetByName(ECCurve ?? "secp256r1");
+            var ecParameters  = ECNamedCurveTable. GetByName(Algorithm ?? "secp256r1");
 
             var g             = GeneratorUtilities.GetKeyPairGenerator("ECDH");
 
@@ -162,8 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-
-        #region (static) Parse   (JSON, CustomKeyPairParser = null)
+        #region (static) Parse       (JSON, CustomKeyPairParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a cryptographic key pair.
@@ -189,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(JSON, out KeyPair, out ErrorResponse, CustomKeyPairParser = null)
+        #region (static) TryParse    (JSON, out KeyPair, out ErrorResponse, CustomKeyPairParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -251,9 +248,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region ECCurve       [optional]
+                #region Algorithm     [optional]
 
-                var ECCurve = JSON.GetString("ecCurve");
+                var Algorithm = JSON.GetString("algorithm");
 
                 #endregion
 
@@ -275,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 KeyPair = new KeyPair(
                               Private,
                               Public,
-                              ECCurve,
+                              Algorithm,
                               CustomData
                           );
 
@@ -312,6 +309,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("private",      Private),
                                  new JProperty("public",       Public),
+
+                           String.Equals(Algorithm, "secp256r1",
+                                         StringComparison.OrdinalIgnoreCase)
+                               ? null
+                               : new JProperty("algorithm",    Algorithm),
 
                            CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
@@ -398,8 +400,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => KeyPair is not null &&
 
-               String.Equals(Private,  KeyPair.Private, StringComparison.Ordinal) &&
-               String.Equals(Public,   KeyPair.Public,  StringComparison.Ordinal) &&
+               String.Equals(Private, KeyPair.Private, StringComparison.Ordinal) &&
+               String.Equals(Public,  KeyPair.Public,  StringComparison.Ordinal) &&
 
                base.  Equals(KeyPair);
 

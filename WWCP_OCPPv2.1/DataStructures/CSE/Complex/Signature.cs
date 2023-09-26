@@ -17,15 +17,7 @@
 
 #region Usings
 
-using System.Security.Cryptography;
-
 using Newtonsoft.Json.Linq;
-
-using Org.BouncyCastle.X509;
-using Org.BouncyCastle.Asn1.Sec;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Security;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -56,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public String   Value              { get; }
 
         [Optional]
-        public String   ECCurve            { get; }
+        public String   Algorithm            { get; }
 
         /// <summary>
         /// The optional method used to create the digital signature.
@@ -88,6 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public Signature(String       KeyId,
                          String       Value,
+                         String?      Algorithm        = "secp256r1",
                          String?      SigningMethod    = null,
                          String?      EncodingMethod   = null,
                          CustomData?  CustomData       = null)
@@ -98,6 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.KeyId            = KeyId;
             this.Value            = Value;
+            this.Algorithm        = Algorithm ?? "secp256r1";
             this.SigningMethod    = SigningMethod;
             this.EncodingMethod   = EncodingMethod;
 
@@ -212,6 +206,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region Algorithm         [optional]
+
+                var Algorithm = JSON.GetString("algorithm");
+
+                #endregion
+
                 #region SigningMethod     [optional]
 
                 var SigningMethod   = JSON.GetString("signingMethod");
@@ -242,6 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 Signature = new Signature(
                                 KeyId,
                                 Value,
+                                Algorithm,
                                 SigningMethod,
                                 EncodingMethod,
                                 CustomData
@@ -282,6 +283,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("value",            Value),
                                  new JProperty("signingMethod",    SigningMethod),
                                  new JProperty("encodingMethod",   EncodingMethod),
+
+                           String.Equals(Algorithm, "secp256r1",
+                                         StringComparison.OrdinalIgnoreCase)
+                               ? null
+                               : new JProperty("algorithm",        Algorithm),
 
                            CustomData is not null
                                ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))

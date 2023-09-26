@@ -43,10 +43,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Data
 
         private static readonly JsonConverter[] defaultJSONConverters = new[] {
-                                                                        new Newtonsoft.Json.Converters.IsoDateTimeConverter {
-                                                                            DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ"
-                                                                        }
-                                                                    };
+                                                                            new Newtonsoft.Json.Converters.IsoDateTimeConverter {
+                                                                                DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ"
+                                                                            }
+                                                                        };
 
         #endregion
 
@@ -138,9 +138,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     var plainText   = JSONMessage.ToString(Formatting.None, defaultJSONConverters);
 
-                    var cryptoHash  = keyPair.ECCurve switch {
-                                          "secp384r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                    var cryptoHash  = keyPair.Algorithm switch {
                                           "secp521r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                          "secp384r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
                                           _            => SHA256.HashData(plainText.ToUTF8Bytes()),
                                       };
 
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            JSONMessage.AddFirst(new JProperty("@context", $"https://open.charging.cloud/context/ocpp/{ResponseMessage.Request.Action.FirstCharToLower()}Request"));
+            JSONMessage.AddFirst(new JProperty("@context", $"https://open.charging.cloud/context/ocpp/{ResponseMessage.Request.Action.FirstCharToLower()}Response"));
 
             return SignMessage(ResponseMessage,
                                JSONMessage,
@@ -265,13 +265,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 foreach (var signature in SignableMessage.Signatures)
                 {
 
-                    var ecp           = SecNamedCurves.GetByName("secp256r1");
+                    var ecp           = signature.Algorithm switch {
+                                            "secp521r1"  => SecNamedCurves.GetByName("secp521r1"),
+                                            "secp384r1"  => SecNamedCurves.GetByName("secp384r1"),
+                                            _            => SecNamedCurves.GetByName("secp256r1"),
+                                        };
                     var ecParams      = new ECDomainParameters(ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
                     var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId.FromBase64()), ecParams);
 
-                    var cryptoHash    = signature.ECCurve switch {
-                                            "secp384r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                    var cryptoHash    = signature.Algorithm switch {
                                             "secp521r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                            "secp384r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
                                             _            => SHA256.HashData(plainText.ToUTF8Bytes()),
                                         };
 
