@@ -35,7 +35,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        private readonly HashSet<SignaturePolicyEntry> entries;
+        private readonly HashSet<SignaturePolicyEntry>  entries    = new();
+        private readonly HashSet<KeyPair>               keyPairs   = new();
 
         #endregion
 
@@ -49,36 +50,79 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => entries;
 
         /// <summary>
+        /// The enumeration of signature policy policy entries.
+        /// </summary>
+        [Mandatory]
+        public IEnumerable<KeyPair>               KeyPairs
+            => keyPairs;
+
+        /// <summary>
         /// The default action.
         /// </summary>
         [Mandatory]
-        public SignaturePolicyAction              DefaultAction    { get; }
+        public SignaturePolicyAction              DefaultAction            { get; }
+
+        /// <summary>
+        /// The optional default cryptographic signing key pair.
+        /// </summary>
+        [Optional]
+        public KeyPair?                           DefaultSigningKeyPair    { get; }
 
         #endregion
 
         #region Constructor(s)
 
+        #region SignaturePolicy(                DefaultAction,        DefaultSigningKeyPair,        CustomData = null)
+
         /// <summary>
         /// Create a new OCPP CSE cryptographic signature policy.
         /// </summary>
-        /// <param name="KeyId">An unique key identification, e.g. a prefix of a public key.</param>
-        /// <param name="Value">A signature policy value.</param>
-        /// <param name="SigningMethod">An optional method used to create the digital signature policy.</param>
-        /// <param name="EncodingMethod">An optional encoding method.</param>
+        /// <param name="DefaultAction">The optional default action of this policy.</param>
+        /// <param name="DefaultSigningKeyPair">The optional default cryptographic signing key pair.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SignaturePolicy(IEnumerable<SignaturePolicyEntry>?  Entries         = null,
-                               SignaturePolicyAction?              DefaultAction   = null,
-                               CustomData?                         CustomData      = null)
+        public SignaturePolicy(SignaturePolicyAction?              DefaultAction,
+                               KeyPair?                            DefaultSigningKeyPair,
+                               CustomData?                         CustomData   = null)
+
+            : this(null,
+                   DefaultAction,
+                   DefaultSigningKeyPair,
+                   CustomData)
+
+        { }
+
+        #endregion
+
+        #region SignaturePolicy(Entries = null, DefaultAction = null, DefaultSigningKeyPair = null, CustomData = null)
+
+        /// <summary>
+        /// Create a new OCPP CSE cryptographic signature policy.
+        /// </summary>
+        /// <param name="Entries">An optional enumeration of cryptographic signature policy entries.</param>
+        /// <param name="DefaultAction">The optional default action of this policy.</param>
+        /// <param name="DefaultSigningKeyPair">The optional default cryptographic signing key pair.</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public SignaturePolicy(IEnumerable<SignaturePolicyEntry>?  Entries                 = null,
+                               SignaturePolicyAction?              DefaultAction           = null,
+                               KeyPair?                            DefaultSigningKeyPair   = null,
+                               CustomData?                         CustomData              = null)
 
             : base(CustomData)
 
         {
 
-            this.entries        = Entries is not null && Entries.Any()
-                                      ? new HashSet<SignaturePolicyEntry>(Entries)
-                                      : new HashSet<SignaturePolicyEntry>();
+            if (Entries is not null)
+                foreach (var entry in Entries)
+                    entries.Add(entry);
 
-            this.DefaultAction  = DefaultAction ?? new SignaturePolicyAction();
+            this.DefaultAction          = DefaultAction ?? SignaturePolicyAction.Reject;
+            this.DefaultSigningKeyPair  = DefaultSigningKeyPair;
+
+            if (this.DefaultAction == SignaturePolicyAction.sign &&
+                this.DefaultSigningKeyPair is null)
+            {
+                throw new ArgumentException("If the default action is 'sign', a default signing key pair must be provided!");
+            }
 
             unchecked
             {
@@ -93,6 +137,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             }
 
         }
+
+        #endregion
 
         #endregion
 
@@ -161,7 +207,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return this;
 
         }
-
 
 
         #region Operator overloading

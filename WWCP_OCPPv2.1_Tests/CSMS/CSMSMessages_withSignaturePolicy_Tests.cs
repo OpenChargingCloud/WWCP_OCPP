@@ -68,11 +68,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var keyPair    = KeyPair.GenerateKeys();
+                var keyPair     = KeyPair.GenerateKeys();
 
-                var signPolicy  = new SignaturePolicy();
-                signPolicy.AddSigningRule($"https://open.charging.cloud/context/ocpp/resetRequest",
-                                          keyPair);
+                var signPolicy  = new SignaturePolicy(
+                                      //SignaturePolicyAction.sign,
+                                      //KeyPair.GenerateKeys()
+                                  );
+
+                signPolicy.AddSigningRule     ($"https://open.charging.cloud/context/ocpp/resetRequest",
+                                                 keyPair!);
 
                 signPolicy.AddVerificationRule($"https://open.charging.cloud/context/ocpp/resetResponse");
 
@@ -81,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var response1  = await testCSMS01.Reset(
                                            ChargeBoxId:   chargingStation1.ChargeBoxId,
                                            ResetType:     resetType,
-                                           SignKeys:      new[] { keyPair },
+                                           SignKeys:      new[] { keyPair! },
                                            CustomData:    null
                                        );
 

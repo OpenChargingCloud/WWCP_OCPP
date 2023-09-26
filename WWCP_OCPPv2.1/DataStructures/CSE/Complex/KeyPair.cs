@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// An OCPP CSE cryptographic key pair.
+    /// An OCPP CSE asymmetric cryptographic key pair.
     /// </summary>
     public class KeyPair : ACustomData,
                            IEquatable<KeyPair>
@@ -41,23 +41,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The private key.
+        /// The cryptographic private key.
         /// </summary>
         [Mandatory]
         public   String                  Private               { get; }
 
         /// <summary>
-        /// The public key.
+        /// The cryptographic public key.
         /// </summary>
         [Mandatory]
         public   String                  Public                { get; }
 
+        /// <summary>
+        /// The optional cryptographic algorithm of the keys. Default is 'secp256r1'.
+        /// </summary>
         [Optional]
         public   String                  Algorithm             { get; }
+
+        /// <summary>
+        /// The optional serialization of the cryptographic keys. Default is 'raw'.
+        /// </summary>
+        [Optional]
+        public   String                  Serialization         { get; }
+
+        /// <summary>
+        /// The optional encoding of the cryptographic keys. Default is 'base64'.
+        /// </summary>
+        [Optional]
+        public   String                  Encoding              { get; }
+
 
         public   X9ECParameters          ECParameters          { get; }
 
         public   ECDomainParameters      ECDomainParameters    { get; }
+
 
         internal ECPrivateKeyParameters  PrivateKey            { get; }
 
@@ -68,15 +85,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new OCPP CSE cryptographic key pair.
+        /// Create a new OCPP CSE asymmetric cryptographic key pair.
         /// </summary>
         /// <param name="Private">The private key.</param>
         /// <param name="Public">The public key.</param>
+        /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
+        /// <param name="Serialization">The optional serialization of the cryptographic keys. Default is 'raw'.</param>
+        /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public KeyPair(String       Private,
                        String       Public,
-                       String?      Algorithm    = "secp256r1",
-                       CustomData?  CustomData   = null)
+                       String?      Algorithm       = "secp256r1",
+                       String?      Serialization   = "raw",
+                       String?      Encoding        = "base64",
+                       CustomData?  CustomData      = null)
 
             : base(CustomData)
 
@@ -84,37 +106,71 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.Private             = Private;
             this.Public              = Public;
-            this.Algorithm           = Algorithm ?? "secp256r1";
+            this.Algorithm           = Algorithm     ?? "secp256r1";
+            this.Serialization       = Serialization ?? "raw";
+            this.Encoding            = Encoding      ?? "base64";
 
             this.ECParameters        = ECNamedCurveTable.GetByName(this.Algorithm);
 
+            if (this.ECParameters is null)
+                throw new ArgumentException("The given cryptographic algorithm is unknown!", nameof(Algorithm));
+
             this.ECDomainParameters  = new ECDomainParameters(
-                                           this.ECParameters.Curve,
-                                           this.ECParameters.G,
-                                           this.ECParameters.N,
-                                           this.ECParameters.H,
-                                           this.ECParameters.GetSeed()
+                                           ECParameters.Curve,
+                                           ECParameters.G,
+                                           ECParameters.N,
+                                           ECParameters.H,
+                                           ECParameters.GetSeed()
                                        );
 
-            this.PrivateKey          = new ECPrivateKeyParameters(
+            #region Try to parse the private key
+
+            try
+            {
+
+                this.PrivateKey      = new ECPrivateKeyParameters(
                                            new BigInteger(this.Private.FromBase64()),
-                                           this.ECDomainParameters
+                                           ECDomainParameters
                                        );
 
-            this.PublicKey           = new ECPublicKeyParameters(
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("The given private key is invalid!", nameof(Private), e);
+            }
+
+            #endregion
+
+            #region Try to parse the public key
+
+            try
+            {
+
+                this.PublicKey       = new ECPublicKeyParameters(
                                            "ECDSA",
-                                           this.ECParameters.Curve.DecodePoint(this.Public.FromBase64()),
-                                           this.ECDomainParameters
+                                           ECParameters.Curve.DecodePoint(this.Public.FromBase64()),
+                                           ECDomainParameters
                                        );
+
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("The given public key is invalid!", nameof(Public), e);
+            }
+
+            #endregion
+
 
             unchecked
             {
 
-                hashCode = this.Private.  GetHashCode() * 7 ^
-                           this.Public.   GetHashCode() * 5 ^
-                           this.Algorithm.GetHashCode() * 3 ^
+                hashCode = this.Private.      GetHashCode() * 13 ^
+                           this.Public.       GetHashCode() * 11 ^
+                           this.Algorithm.    GetHashCode() *  7 ^
+                           this.Serialization.GetHashCode() *  5 ^
+                           this.Encoding.     GetHashCode() *  3 ^
 
-                           base.          GetHashCode();
+                           base.              GetHashCode();
 
             }
 
@@ -131,10 +187,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (static) GenerateKeys(Algorithm = secp256r1)
 
-        public static KeyPair GenerateKeys(String? Algorithm = "secp256r1")
+        public static KeyPair? GenerateKeys(String? Algorithm = "secp256r1")
         {
 
             var ecParameters  = ECNamedCurveTable. GetByName(Algorithm ?? "secp256r1");
+
+            if (ecParameters is null)
+                return null;
 
             var g             = GeneratorUtilities.GetKeyPairGenerator("ECDH");
 
@@ -224,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 KeyPair = default;
 
-                #region Private       [mandatory]
+                #region Private           [mandatory]
 
                 if (!JSON.ParseMandatoryText("private",
                                              "private key",
@@ -236,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Public        [mandatory]
+                #region Public            [mandatory]
 
                 if (!JSON.ParseMandatoryText("public",
                                              "public key",
@@ -248,13 +307,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Algorithm     [optional]
+                #region Algorithm         [optional]
 
-                var Algorithm = JSON.GetString("algorithm");
+                var Algorithm      = JSON.GetString("algorithm");
 
                 #endregion
 
-                #region CustomData    [optional]
+                #region Serialization     [optional]
+
+                var Serialization  = JSON.GetString("serialization");
+
+                #endregion
+
+                #region Encoding          [optional]
+
+                var Encoding       = JSON.GetString("encoding");
+
+                #endregion
+
+                #region CustomData        [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -273,6 +344,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               Private,
                               Public,
                               Algorithm,
+                              Serialization,
+                              Encoding,
                               CustomData
                           );
 
@@ -307,16 +380,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("private",      Private),
-                                 new JProperty("public",       Public),
+                                 new JProperty("private",         Private),
+                                 new JProperty("public",          Public),
 
-                           String.Equals(Algorithm, "secp256r1",
-                                         StringComparison.OrdinalIgnoreCase)
+                           Algorithm.    Equals("secp256r1", StringComparison.OrdinalIgnoreCase)
                                ? null
-                               : new JProperty("algorithm",    Algorithm),
+                               : new JProperty("algorithm",       Algorithm),
+
+                           Serialization.Equals("raw",       StringComparison.OrdinalIgnoreCase)
+                               ? null
+                               : new JProperty("serialization",   Serialization),
+
+                           Encoding.     Equals("base64",    StringComparison.OrdinalIgnoreCase)
+                               ? null
+                               : new JProperty("encoding",        Encoding),
 
                            CustomData is not null
-                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -400,8 +480,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => KeyPair is not null &&
 
-               String.Equals(Private, KeyPair.Private, StringComparison.Ordinal) &&
-               String.Equals(Public,  KeyPair.Public,  StringComparison.Ordinal) &&
+               String.Equals(Private,       KeyPair.Private,       StringComparison.Ordinal)           &&
+               String.Equals(Public,        KeyPair.Public,        StringComparison.Ordinal)           &&
+               String.Equals(Algorithm,     KeyPair.Algorithm,     StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(Serialization, KeyPair.Serialization, StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(Encoding,      KeyPair.Encoding,      StringComparison.OrdinalIgnoreCase) &&
 
                base.  Equals(KeyPair);
 

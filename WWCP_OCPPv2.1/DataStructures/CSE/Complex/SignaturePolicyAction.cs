@@ -24,9 +24,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public enum SignaturePolicyAction
     {
 
-        drop,
-        reject,
+        /// <summary>
+        /// Silently drop this message.
+        /// </summary>
+        Drop,
+
+        /// <summary>
+        /// Reject this message as invalid because of a missing signature.
+        /// </summary>
+        Reject,
+
+        /// <summary>
+        /// Sign this outgoing message.
+        /// </summary>
         sign,
+
+        /// <summary>
+        /// Verify this incoming message.
+        /// </summary>
         verify
 
     }
