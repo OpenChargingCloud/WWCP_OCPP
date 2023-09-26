@@ -32,10 +32,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 {
 
     /// <summary>
-    /// Unit tests for a central system sending signed messages to charging stations.
+    /// Unit tests for a central system sending signed messages
+    /// based on a message signature policy to charging stations.
     /// </summary>
     [TestFixture]
-    public class SignedCSMSMessagesTests : AChargingStationTests
+    public class CSMSMessages_withSignaturePolicy_Tests : AChargingStationTests
     {
 
         #region Reset_Test()
@@ -68,6 +69,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
                 var keyPair    = KeyPair.GenerateKeys();
+
+                var signPolicy  = new SignaturePolicy();
+                signPolicy.AddSigningRule($"https://open.charging.cloud/context/ocpp/resetRequest",
+                                          keyPair);
+
+                signPolicy.AddVerificationRule($"https://open.charging.cloud/context/ocpp/resetResponse");
+
 
                 var resetType  = ResetTypes.Immediate;
                 var response1  = await testCSMS01.Reset(
