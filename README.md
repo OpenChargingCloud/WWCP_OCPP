@@ -11,7 +11,7 @@ For more details on this protocol please visit http://www.openchargealliance.org
 
 ## Versions
 
-- **OCPP v2.1** is a based on an internal OCA specification (Draft 2) and currently under development.
+- **OCPP v2.1** is a based on an internal OCA specification (Draft 2) and currently under development. This version also comes with our ***OCPP CSE*** extensions for cryptographically signed messages and security polices.
 - **OCPP v2.0.1** is fully implemented and at least one tests exists for
 every charging station or CSMS message.
 - **OCPP v1.6** and the **Security Whitepaper** extensions are fully implemented
