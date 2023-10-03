@@ -1380,9 +1380,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public CustomJObjectSerializerDelegate<CustomerInformationRequest>?           CustomCustomerInformationRequestSerializer             { get; set; }
 
+
+
+        public CustomJObjectSerializerDelegate<BootNotificationResponse>?             CustomBootNotificationResponseSerializer               { get; set; }
+
+
         #endregion
 
         #region Charging Station Messages
+
+        public CustomJObjectSerializerDelegate<CS.BootNotificationRequest>?           CustomBootNotificationRequestSerializer                { get; set; }
+
 
         public CustomJObjectSerializerDelegate<CS.ResetResponse>?                     CustomResetResponseSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<StatusInfo>?                           CustomStatusInfoSerializer                             { get; set; }
@@ -1437,6 +1445,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer         { get; set; }
         public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer             { get; set; }
         public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                      { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<ChargingStation>?                                     CustomChargingStationSerializer                  { get; set; }
 
         #endregion
 
@@ -2109,14 +2120,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 //                                            Request.MeterType,
                 //                                            Request.MeterSerialNumber));
 
+                BootNotificationResponse? response = null;
 
                 if (!reachableChargingBoxes.ContainsKey(request.ChargeBoxId))
                 {
 
                     if (sender is CSMSWSServer centralSystemWSServer)
                         reachableChargingBoxes.TryAdd(request.ChargeBoxId, new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    //if (Sender is CSMSSOAPServer centralSystemSOAPServer)
 
                 }
                 else
@@ -2125,12 +2135,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     if (sender is CSMSWSServer centralSystemWSServer)
                         reachableChargingBoxes[request.ChargeBoxId] = new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
 
-                    //if (Sender is CSMSSOAPServer centralSystemSOAPServer)
-
                 }
 
 
-                var response = new BootNotificationResponse(
+                if (request.Signatures.Any() &&
+                    !CryptoUtils.VerifyRequestMessage(
+                            request,
+                            request.ToJSON(
+                                CustomBootNotificationRequestSerializer,
+                                CustomChargingStationSerializer,
+                                CustomSignatureSerializer,
+                                CustomCustomDataSerializer
+                            ),
+                            out var errorResponse,
+                            AllMustBeValid: true
+                        ))
+                {
+
+                    response = new BootNotificationResponse(
+                                    Request:  request,
+                                    Result:   Result.SignatureError(
+                                                    $"Invalid signature: {errorResponse}"
+                                                )
+                                );
+
+                }
+                else
+                {
+
+                    response = new BootNotificationResponse(
                                    Request:       request,
                                    Status:        RegistrationStatus.Accepted,
                                    CurrentTime:   Timestamp.Now,
@@ -2138,6 +2171,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    StatusInfo:    null,
                                    CustomData:    null
                                );
+
+                }
+
+
+
+                if (request.Signatures.Any())
+                {
+
+                    var signKeys = new[] { KeyPair.GenerateKeys()! };
+
+                    CryptoUtils.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            CustomBootNotificationResponseSerializer,
+                            CustomStatusInfoSerializer,
+                            CustomSignatureSerializer,
+                            CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2,
+                        signKeys.ToArray());
+
+                }
 
 
                 #region Send OnBootNotificationResponse event

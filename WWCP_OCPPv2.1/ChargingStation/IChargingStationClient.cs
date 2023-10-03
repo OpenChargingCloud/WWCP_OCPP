@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
@@ -35,7 +36,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               IEventSender
     {
 
-        String? ClientCloseMessage { get; }
+        String?  ClientCloseMessage    { get; }
+
+
+        #region Custom JSON serializer delegates
+
+        #region Charging Station Messages
+
+        CustomJObjectSerializerDelegate<BootNotificationRequest>?  CustomBootNotificationRequestSerializer    { get; set; }
+
+
+        #endregion
+
+        #region Data Structures
+
+        CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationSerializer            { get; set; }
+        CustomJObjectSerializerDelegate<Signature>?                CustomSignatureSerializer                  { get; set; }
+        CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                 { get; set; }
+
+        #endregion
+
+        #endregion
 
 
         #region SendBootNotification                  (Request)
@@ -68,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendHeartbeat
+        #region SendHeartbeat                         (Request)
 
         /// <summary>
         /// Send a heartbeat.
@@ -78,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyEvent
+        #region NotifyEvent                           (Request)
 
         /// <summary>
         /// Notify about an event.
@@ -88,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendSecurityEventNotification
+        #region SendSecurityEventNotification         (Request)
 
         /// <summary>
         /// Send a security event notification.
@@ -98,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyReport
+        #region NotifyReport                          (Request)
 
         /// <summary>
         /// Notify about a report.
@@ -108,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyMonitoringReport
+        #region NotifyMonitoringReport                (Request)
 
         /// <summary>
         /// Notify about a monitoring report.
@@ -118,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendLogStatusNotification
+        #region SendLogStatusNotification             (Request)
 
         /// <summary>
         /// Send a log status notification.
@@ -128,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region TransferData
+        #region TransferData                          (Request)
 
         /// <summary>
         /// Send the given vendor-specific data.
@@ -139,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendCertificateSigningRequest
+        #region SendCertificateSigningRequest         (Request)
 
         /// <summary>
         /// Send a certificate signing request.
@@ -149,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region Get15118EVCertificate
+        #region Get15118EVCertificate                 (Request)
 
         /// <summary>
         /// Send a certificate signing request.
@@ -159,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region GetCertificateStatus
+        #region GetCertificateStatus                  (Request)
 
         /// <summary>
         /// Get the status of a certificate.
@@ -169,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region GetCRL
+        #region GetCRL                                (Request)
 
         /// <summary>
         /// Get a certificate revocation list from CSMS for the specified certificate.
@@ -180,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendReservationStatusUpdate
+        #region SendReservationStatusUpdate           (Request)
 
         /// <summary>
         /// Send a reservation status update.
@@ -190,7 +211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region Authorize
+        #region Authorize                             (Request)
 
         /// <summary>
         /// Authorize the given token.
@@ -200,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyEVChargingNeeds
+        #region NotifyEVChargingNeeds                 (Request)
 
         /// <summary>
         /// Notify about EV charging needs.
@@ -210,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendTransactionEvent
+        #region SendTransactionEvent                  (Request)
 
         /// <summary>
         /// Send a transaction event.
@@ -220,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendStatusNotification
+        #region SendStatusNotification                (Request)
 
         /// <summary>
         /// Send a status notification for the given evse and connector.
@@ -230,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendMeterValues
+        #region SendMeterValues                       (Request)
 
         /// <summary>
         /// Send a meter values for the given evse.
@@ -240,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyChargingLimit
+        #region NotifyChargingLimit                   (Request)
 
         /// <summary>
         /// Notify about charging limits.
@@ -250,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendClearedChargingLimit
+        #region SendClearedChargingLimit              (Request)
 
         /// <summary>
         /// Notify about charging limits.
@@ -260,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ReportChargingProfiles
+        #region ReportChargingProfiles                (Request)
 
         /// <summary>
         /// Report about charging profiles.
@@ -270,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyEVChargingSchedule
+        #region NotifyEVChargingSchedule              (Request)
 
         /// <summary>
         /// Notify about an EV charging schedule.
@@ -280,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyPriorityCharging
+        #region NotifyPriorityCharging                (Request)
 
         /// <summary>
         /// Notify about priority charging.
@@ -290,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region PullDynamicScheduleUpdate
+        #region PullDynamicScheduleUpdate             (Request)
 
         /// <summary>
         /// Pull a dynamic schedule update.
@@ -301,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region NotifyDisplayMessages
+        #region NotifyDisplayMessages                 (Request)
 
         /// <summary>
         /// Notify about display messages.
@@ -311,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyCustomerInformation
+        #region NotifyCustomerInformation             (Request)
 
         /// <summary>
         /// Notify about customer information.

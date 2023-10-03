@@ -30,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+//using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -100,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         public ChargingStationEVSE(EVSE_Id                                 Id,
-                                   OperationalStatus                       Status,
+                                   OperationalStatus                       AdminStatus,
                                    String?                                 MeterType           = null,
                                    String?                                 MeterSerialNumber   = null,
                                    String?                                 MeterPublicKey      = null,
@@ -108,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             this.Id                 = Id;
-            this.AdminStatus             = Status;
+            this.AdminStatus        = AdminStatus;
             this.MeterType          = MeterType;
             this.MeterSerialNumber  = MeterSerialNumber;
             this.MeterPublicKey     = MeterPublicKey;
@@ -141,7 +142,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A charging station for testing.
     /// </summary>
-    public class TestChargingStation : IChargingStationClientEvents,
+    public class TestChargingStation : IChargingStation,
+                                    //  IChargingStationClientEvents,
                                        IEventSender
     {
 
@@ -207,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         private readonly            Timer                       SendHeartbeatTimer;
 
 
-        private readonly            List<EnqueuedRequest>         EnqueuedRequests;
+        private readonly            List<EnqueuedRequest>       EnqueuedRequests;
 
         public                      IHTTPAuthentication?        HTTPAuthentication          { get; }
         public                      DNSClient?                  DNSClient                   { get; }
@@ -297,6 +299,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public String?                  MeterPublicKey              { get; }
 
 
+        public CustomData?              CustomData                  { get; set; }
+
+
         /// <summary>
         /// The time span between heartbeat requests.
         /// </summary>
@@ -330,6 +335,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public Boolean                  DisableSendHeartbeats       { get; set; }
 
+
+        #region ToDo's
+
+        public URL RemoteURL => throw new NotImplementedException();
+
+        public HTTPHostname? VirtualHostname => throw new NotImplementedException();
+
+        string? IHTTPClient.Description { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public RemoteCertificateValidationHandler? RemoteCertificateValidator => throw new NotImplementedException();
+
+        public X509Certificate? ClientCert => throw new NotImplementedException();
+
+        public SslProtocols TLSProtocol => throw new NotImplementedException();
+
+        public bool PreferIPv4 => throw new NotImplementedException();
+
+        public string HTTPUserAgent => throw new NotImplementedException();
+
+        public TimeSpan RequestTimeout { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public TransmissionRetryDelayDelegate TransmissionRetryDelay => throw new NotImplementedException();
+
+        public ushort MaxNumberOfRetries => throw new NotImplementedException();
+
+        public bool UseHTTPPipelining => throw new NotImplementedException();
+
+        public HTTPClientLogger? HTTPLogger => throw new NotImplementedException();
+
+        #endregion
 
 
         // Controlled by the CSMS!
@@ -444,6 +479,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Charging Station Messages
 
+        public CustomJObjectSerializerDelegate<BootNotificationRequest>?                             CustomBootNotificationRequestSerializer          { get; set; }
+
+
+
+
         public CustomJObjectSerializerDelegate<ResetResponse>?                                       CustomResetResponseSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                       { get; set; }
 
@@ -497,6 +537,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer         { get; set; }
         public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer             { get; set; }
         public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                      { get; set; }
+
+
+
+        public CustomJObjectSerializerDelegate<ChargingStation>?                                     CustomChargingStationSerializer                  { get; set; }
 
         #endregion
 
@@ -1537,6 +1581,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event fired whenever a response to a CustomerInformation request was received.
         /// </summary>
         public event OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
+        public event OnResetDelegate OnReset;
+        public event OnUpdateFirmwareDelegate OnUpdateFirmware;
+        public event OnPublishFirmwareDelegate OnPublishFirmware;
+        public event OnUnpublishFirmwareDelegate OnUnpublishFirmware;
+        public event OnGetBaseReportDelegate OnGetBaseReport;
+        public event OnGetReportDelegate OnGetReport;
+        public event OnGetLogDelegate OnGetLog;
+        public event OnSetVariablesDelegate OnSetVariables;
+        public event OnGetVariablesDelegate OnGetVariables;
+        public event OnSetMonitoringBaseDelegate OnSetMonitoringBase;
+        public event OnGetMonitoringReportDelegate OnGetMonitoringReport;
+        public event OnSetMonitoringLevelDelegate OnSetMonitoringLevel;
+        public event OnSetVariableMonitoringDelegate OnSetVariableMonitoring;
+        public event OnClearVariableMonitoringDelegate OnClearVariableMonitoring;
+        public event OnSetNetworkProfileDelegate OnSetNetworkProfile;
+        public event OnChangeAvailabilityDelegate OnChangeAvailability;
+        public event OnTriggerMessageDelegate OnTriggerMessage;
+        public event OnIncomingDataTransferDelegate OnIncomingDataTransfer;
+        public event OnCertificateSignedDelegate OnCertificateSigned;
+        public event OnInstallCertificateDelegate OnInstallCertificate;
+        public event OnGetInstalledCertificateIdsDelegate OnGetInstalledCertificateIds;
+        public event OnDeleteCertificateDelegate OnDeleteCertificate;
+        public event OnNotifyCRLDelegate OnNotifyCRL;
+        public event OnGetLocalListVersionDelegate OnGetLocalListVersion;
+        public event OnSendLocalListDelegate OnSendLocalList;
+        public event OnClearCacheDelegate OnClearCache;
+        public event OnReserveNowDelegate OnReserveNow;
+        public event OnCancelReservationDelegate OnCancelReservation;
+        public event OnRequestStartTransactionDelegate OnRequestStartTransaction;
+        public event OnRequestStopTransactionDelegate OnRequestStopTransaction;
+        public event OnGetTransactionStatusDelegate OnGetTransactionStatus;
+        public event OnSetChargingProfileDelegate OnSetChargingProfile;
+        public event OnGetChargingProfilesDelegate OnGetChargingProfiles;
+        public event OnClearChargingProfileDelegate OnClearChargingProfile;
+        public event OnGetCompositeScheduleDelegate OnGetCompositeSchedule;
+        public event OnUpdateDynamicScheduleDelegate OnUpdateDynamicSchedule;
+        public event OnNotifyAllowedEnergyTransferDelegate OnNotifyAllowedEnergyTransfer;
+        public event OnUsePriorityChargingDelegate OnUsePriorityCharging;
+        public event OnUnlockConnectorDelegate OnUnlockConnector;
+        public event OnAFRRSignalDelegate OnAFRRSignal;
+        public event OnSetDisplayMessageDelegate OnSetDisplayMessage;
+        public event OnGetDisplayMessagesDelegate OnGetDisplayMessages;
+        public event OnClearDisplayMessageDelegate OnClearDisplayMessage;
+        public event OnCostUpdatedDelegate OnCostUpdated;
+        public event OnCustomerInformationDelegate OnCustomerInformation;
 
         #endregion
 
@@ -1762,10 +1851,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnReset
 
-            ChargingStationServer.OnReset += async (LogTimestamp,
-                                                    Sender,
-                                                    Request,
-                                                    CancellationToken) => {
+            ChargingStationServer.OnReset += async (timestamp,
+                                                    sender,
+                                                    request,
+                                                    cancellationToken) => {
 
                 #region Send OnResetRequest event
 
@@ -1779,7 +1868,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnResetRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -1803,13 +1892,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ResetResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (request.ChargeBoxId != ChargeBoxId)
                 {
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid reset request for charge box '{Request.ChargeBoxId}'!"));
+                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid reset request for charge box '{request.ChargeBoxId}'!"));
 
                     response = new ResetResponse(
-                                   Request:      Request,
+                                   Request:      request,
                                    Status:       ResetStatus.Rejected,
                                    StatusInfo:   null,
                                    CustomData:   null
@@ -1819,9 +1908,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
-                             Request,
-                             Request.ToJSON(
+                    if (request.Signatures.Any() &&
+                        !CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
                                  CustomResetRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
@@ -1832,7 +1922,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     {
 
                         response = new ResetResponse(
-                                       Request:  Request,
+                                       Request:  request,
                                        Result:   Result.SignatureError(
                                                      $"Invalid signature: {errorResponse}"
                                                  )
@@ -1842,33 +1932,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     else
                     {
 
-                        DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming '", Request.ResetType, "' reset request accepted."));
+                        DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming '{request.ResetType}'{(request.EVSEId.HasValue ? $" for EVSE Id {request.EVSEId}" : "")}reset request accepted."));
 
-                        response = new ResetResponse(
-                                       Request:      Request,
-                                       Status:       ResetStatus.Accepted,
-                                       StatusInfo:   null,
-                                       CustomData:   null
-                                   );
+                        response = request.EVSEId.HasValue &&
+                                   !EVSEs.Any(evse => evse.Id == request.EVSEId)
+
+                                       ? new ResetResponse(
+                                             Request:      request,
+                                             Status:       ResetStatus.Rejected,
+                                             StatusInfo:   null,
+                                             CustomData:   null
+                                         )
+
+                                       : new ResetResponse(
+                                             Request:      request,
+                                             Status:       ResetStatus.Accepted,
+                                             StatusInfo:   null,
+                                             CustomData:   null
+                                         );
 
                     }
 
                 }
 
 
-                var signKeys = new[] { KeyPair.GenerateKeys() };
+                if (request.Signatures.Any())
+                {
 
-                CryptoUtils.SignResponseMessage(
-                    response,
-                    response.ToJSON(
-                        CustomResetResponseSerializer,
-                        CustomStatusInfoSerializer,
-                        CustomSignatureSerializer,
-                        CustomCustomDataSerializer
-                    ),
-                    out var errorResponse2,
-                    signKeys.ToArray());
+                    var signKeys = new[] { KeyPair.GenerateKeys()! };
 
+                    CryptoUtils.SignResponseMessage(
+                        response,
+                        response.ToJSON(
+                            CustomResetResponseSerializer,
+                            CustomStatusInfoSerializer,
+                            CustomSignatureSerializer,
+                            CustomCustomDataSerializer
+                        ),
+                        out var errorResponse2,
+                        signKeys.ToArray());
+
+                }
 
                 #region Send OnResetResponse event
 
@@ -1882,7 +1986,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnResetResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -3687,7 +3791,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         switch (Request.RequestedMessage) {
 
                             case MessageTriggers.BootNotification:
-                                await SendBootNotification(
+                                await this.SendBootNotification(
                                           BootReason:   BootReason.Triggered,
                                           CustomData:   null
                                       );
@@ -5040,7 +5144,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    var success = reservations.TryRemove(Request.ReservationId, out _);
+                    var success = reservations.ContainsKey(Request.ReservationId)
+                                      ? reservations.TryRemove(Request.ReservationId, out _)
+                                      : true;
 
                     DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming CancelReservation request " + (success
                                                                                                            ? "accepted"
@@ -7331,7 +7437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (private) NextRequestId
 
-        private Request_Id NextRequestId
+        public Request_Id NextRequestId
         {
             get
             {
@@ -7346,70 +7452,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region SendBootNotification                 (BootReason, ...)
+        #region SendBootNotification                 (Request)
 
         /// <summary>
         /// Send a boot notification.
         /// </summary>
-        /// <param name="BootReason">The the reason for sending this boot notification to the CSMS.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A boot notification request.</param>
         public async Task<CSMS.BootNotificationResponse>
 
-            SendBootNotification(BootReason         BootReason,
-                                 CustomData?        CustomData          = null,
-
-                                 Request_Id?        RequestId           = null,
-                                 DateTime?          RequestTimestamp    = null,
-                                 TimeSpan?          RequestTimeout      = null,
-                                 EventTracking_Id?  EventTrackingId     = null,
-                                 CancellationToken  CancellationToken   = default)
+            SendBootNotification(BootNotificationRequest Request)
 
         {
 
-            #region Create request
+            #region Send OnBootNotificationRequest event
 
             var startTime  = Timestamp.Now;
-
-            var request    = new BootNotificationRequest(
-                                 ChargeBoxId,
-                                 new ChargingStation(
-                                     Model,
-                                     VendorName,
-                                     SerialNumber,
-                                     Modem,
-                                     FirmwareVersion,
-                                     new CustomData(
-                                         Vendor_Id.Parse("GraphDefined"),
-                                         new JObject()
-                                     )
-                                 ),
-                                 BootReason,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
-            #region Send OnBootNotificationRequest event
 
             try
             {
 
                 OnBootNotificationRequest?.Invoke(startTime,
                                                   this,
-                                                  request);
+                                                  Request);
 
             }
             catch (Exception e)
@@ -7423,7 +7487,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.BootNotificationResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.SendBootNotification(request);
+                response = await CSClient.SendBootNotification(Request);
 
             if (response is not null)
             {
@@ -7448,7 +7512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
             }
 
-            response ??= new CSMS.BootNotificationResponse(request,
+            response ??= new CSMS.BootNotificationResponse(Request,
                                                            Result.Server("Response is null!"));
 
 
@@ -7461,7 +7525,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnBootNotificationResponse?.Invoke(endTime,
                                                    this,
-                                                   request,
+                                                   Request,
                                                    response,
                                                    endTime - startTime);
 
@@ -10445,6 +10509,156 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return response;
 
         }
+
+        #endregion
+
+
+
+
+        #region ToDo's...
+
+        public Task<CSMS.FirmwareStatusNotificationResponse> SendFirmwareStatusNotification(FirmwareStatusNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.PublishFirmwareStatusNotificationResponse> SendPublishFirmwareStatusNotification(PublishFirmwareStatusNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.HeartbeatResponse> SendHeartbeat(HeartbeatRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.NotifyEventResponse> NotifyEvent(NotifyEventRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.SecurityEventNotificationResponse> SendSecurityEventNotification(SecurityEventNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.NotifyReportResponse> NotifyReport(NotifyReportRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.NotifyMonitoringReportResponse> NotifyMonitoringReport(NotifyMonitoringReportRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.LogStatusNotificationResponse> SendLogStatusNotification(LogStatusNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.DataTransferResponse> TransferData(DataTransferRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.SignCertificateResponse> SendCertificateSigningRequest(SignCertificateRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.Get15118EVCertificateResponse> Get15118EVCertificate(Get15118EVCertificateRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.GetCertificateStatusResponse> GetCertificateStatus(GetCertificateStatusRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.GetCRLResponse> GetCRL(GetCRLRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.ReservationStatusUpdateResponse> SendReservationStatusUpdate(ReservationStatusUpdateRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.AuthorizeResponse> Authorize(AuthorizeRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.NotifyEVChargingNeedsResponse> NotifyEVChargingNeeds(NotifyEVChargingNeedsRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.TransactionEventResponse> SendTransactionEvent(TransactionEventRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.StatusNotificationResponse> SendStatusNotification(StatusNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.MeterValuesResponse> SendMeterValues(MeterValuesRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.NotifyChargingLimitResponse> NotifyChargingLimit(NotifyChargingLimitRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.ClearedChargingLimitResponse> SendClearedChargingLimit(ClearedChargingLimitRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.ReportChargingProfilesResponse> ReportChargingProfiles(ReportChargingProfilesRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.NotifyEVChargingScheduleResponse> NotifyEVChargingSchedule(NotifyEVChargingScheduleRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.NotifyPriorityChargingResponse> NotifyPriorityCharging(NotifyPriorityChargingRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.PullDynamicScheduleUpdateResponse> PullDynamicScheduleUpdate(PullDynamicScheduleUpdateRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.NotifyDisplayMessagesResponse> NotifyDisplayMessages(NotifyDisplayMessagesRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CSMS.NotifyCustomerInformationResponse> NotifyCustomerInformation(NotifyCustomerInformationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+
+        #region Dispose()
+
+        public void Dispose()
+        { }
 
         #endregion
 

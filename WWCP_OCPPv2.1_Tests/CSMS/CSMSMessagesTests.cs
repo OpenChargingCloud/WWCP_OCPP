@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                            CustomData:    null
                                        );
 
-                Assert.AreEqual(ResultCodes.GenericError,       response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
                 Assert.AreEqual(ResetStatus.Rejected,           response1.Status);
 
                 Assert.AreEqual(1,                              resetRequests.Count);
@@ -2140,12 +2140,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 var reservationId   = Reservation_Id.NewRandom;
                 var evseId          = EVSE_Id.       Parse(1);
-                //var connectorId     = Connector_Id.  Parse(1);
                 var connectorType   = ConnectorTypes.sType2;
 
                 var response1       = await testCSMS01.ReserveNow(
                                                 ChargeBoxId:     chargingStation1.ChargeBoxId,
-                                                //ConnectorId:     connectorId,
                                                 ReservationId:   reservationId,
                                                 ExpiryDate:      Timestamp.Now + TimeSpan.FromHours(2),
                                                 IdToken:         new IdToken(
@@ -2212,34 +2210,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var reserveNowRequests = new ConcurrentList<ReserveNowRequest>();
-
-                chargingStation1.OnReserveNowRequest += (timestamp, sender, reserveNowRequest) => {
-                    reserveNowRequests.TryAdd(reserveNowRequest);
-                    return Task.CompletedTask;
-                };
-
-
-                var reservationId   = Reservation_Id.NewRandom;
-                var evseId          = EVSE_Id.       Parse(1);
-
-                var response1       = await testCSMS01.CancelReservation(
-                                                ChargeBoxId:     chargingStation1.ChargeBoxId,
-                                                ReservationId:   reservationId,
-                                                CustomData:      null
-                                            );
-
-
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(ReservationStatus.Accepted,     response1.Status);
-
-                Assert.AreEqual(1,                              reserveNowRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   reserveNowRequests.First().ChargeBoxId);
-
-
-                await Task.Delay(500);
-
-
                 var cancelReservationRequests = new ConcurrentList<CancelReservationRequest>();
 
                 chargingStation1.OnCancelReservationRequest += (timestamp, sender, cancelReservationRequest) => {
@@ -2247,11 +2217,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response2       = await testCSMS01.CancelReservation(
-                                                ChargeBoxId:     chargingStation1.ChargeBoxId,
-                                                ReservationId:   reservationId,
-                                                CustomData:      null
-                                            );
+                var reservationId  = Reservation_Id.NewRandom;
+                var response2      = await testCSMS01.CancelReservation(
+                                               ChargeBoxId:     chargingStation1.ChargeBoxId,
+                                               ReservationId:   reservationId,
+                                               CustomData:      null
+                                           );
 
 
                 Assert.AreEqual(ResultCodes.OK,                     response2.Result.ResultCode);

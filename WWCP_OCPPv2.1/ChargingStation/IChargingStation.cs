@@ -21,7 +21,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The common interface of all charging station.
     /// </summary>
-    public interface IChargingStation : IChargingStationClient, IChargingStationServer
-    { }
+    public interface IChargingStation : IChargingStationClient,
+                                        IChargingStationServer
+    {
+
+        ChargeBox_Id  ChargeBoxId              { get; }
+
+        TimeSpan      DefaultRequestTimeout    { get; }
+
+        Request_Id    NextRequestId            { get; }
+
+        String        Model                    { get; }
+        String        VendorName               { get; }
+        String?       SerialNumber             { get; }
+        Modem?        Modem                    { get; }
+        String?       FirmwareVersion          { get; }
+
+        CustomData    CustomData               { get; }
+
+
+    }
 
 }

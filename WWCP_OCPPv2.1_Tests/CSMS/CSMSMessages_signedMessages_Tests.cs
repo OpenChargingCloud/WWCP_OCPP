@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var keyPair    = KeyPair.GenerateKeys();
+                var keyPair    = KeyPair.GenerateKeys()!;
 
                 var resetType  = ResetTypes.Immediate;
                 var response1  = await testCSMS01.Reset(

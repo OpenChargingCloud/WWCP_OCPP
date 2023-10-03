@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                     EVSEs:                    new[] {
                                                                   new ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(1),
-                                                                      Status:              OperationalStatus.Operative,
+                                                                      AdminStatus:         OperationalStatus.Operative,
                                                                       MeterType:           "MT1",
                                                                       MeterSerialNumber:   "MSN1",
                                                                       MeterPublicKey:      "MPK1",
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                     EVSEs:                    new[] {
                                                                   new ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(1),
-                                                                      Status:              OperationalStatus.Operative,
+                                                                      AdminStatus:         OperationalStatus.Operative,
                                                                       MeterType:           "MT2",
                                                                       MeterSerialNumber:   "MSN2",
                                                                       MeterPublicKey:      "MPK2",
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                     EVSEs:                    new[] {
                                                                   new ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(1),
-                                                                      Status:              OperationalStatus.Operative,
+                                                                      AdminStatus:         OperationalStatus.Operative,
                                                                       MeterType:           "MT3",
                                                                       MeterSerialNumber:   "MSN3",
                                                                       MeterPublicKey:      "MPK3",

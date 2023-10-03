@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region EVSEId         [optional]
 
-                if (JSON.ParseOptional("evseID",
+                if (JSON.ParseOptional("evseId",
                                        "evse identification",
                                        EVSE_Id.TryParse,
                                        out EVSE_Id? EVSEId,

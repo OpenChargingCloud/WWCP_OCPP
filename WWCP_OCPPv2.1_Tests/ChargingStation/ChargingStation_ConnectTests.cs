@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                     EVSEs:                    new[] {
                                                                   new ChargingStationEVSE(
                                                                       Id:                  EVSE_Id.Parse(1),
-                                                                      Status:              OperationalStatus.Operative,
+                                                                      AdminStatus:         OperationalStatus.Operative,
                                                                       MeterType:           "MT1",
                                                                       MeterSerialNumber:   "MSN1",
                                                                       MeterPublicKey:      "MPK1",
