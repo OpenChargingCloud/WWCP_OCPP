@@ -70,10 +70,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var keyPair    = KeyPair.GenerateKeys()!;
 
                 var resetType  = ResetTypes.Immediate;
+                var now        = Timestamp.Now;
                 var response1  = await testCSMS01.Reset(
                                            ChargeBoxId:   chargingStation1.ChargeBoxId,
                                            ResetType:     resetType,
-                                           SignKeys:      new[] { keyPair },
+                                           SignInfos:     new[] {
+                                                              keyPair.ToSignInfo(
+                                                                          "ahzf",
+                                                                          I18NString.Create("Just a test!"),
+                                                                          now
+                                                                      )
+                                                          },
                                            CustomData:    null
                                        );
 
@@ -99,6 +106,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 Assert.AreEqual(resetType,                      resetRequests.First().ResetType);
                 Assert.AreEqual(1,                              resetRequests.First().Signatures.Count());
                 Assert.IsTrue  (                                resetRequests.First().Signatures.First().Status);
+                Assert.AreEqual("ahzf",                         resetRequests.First().Signatures.First().Name);
+                Assert.AreEqual("Just a test!",                 resetRequests.First().Signatures.First().Description?.FirstText());
+                Assert.AreEqual(now.ToIso8601(),                resetRequests.First().Signatures.First().Timestamp?.  ToIso8601());
 
             }
 

@@ -357,6 +357,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? null
                                : new JProperty("algorithm",        Algorithm),
 
+                           Name        is not null && Name.       IsNotNullOrEmpty()
+                               ? new JProperty("name",             Name)
+                               : null,
+
+                           Description is not null && Description.IsNotNullOrEmpty()
+                               ? new JProperty("description",      Description.ToJSON())
+                               : null,
+
+                           Timestamp.HasValue
+                               ? new JProperty("timestamp",        Timestamp.Value.ToIso8601())
+                               : null,
+
                            CustomData is not null
                                ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
                                : null

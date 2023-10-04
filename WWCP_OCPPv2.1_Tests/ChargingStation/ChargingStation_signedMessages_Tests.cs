@@ -99,9 +99,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var keyPair    = KeyPair.GenerateKeys()!;
 
                 var reason     = BootReason.PowerUp;
+                var now        = Timestamp.Now;
                 var response1  = await chargingStation1.SendBootNotification(
                                            BootReason:   reason,
-                                           SignKeys:     new[] { keyPair },
+                                           SignInfos:    new[] {
+                                                             keyPair.ToSignInfo(
+                                                                         "ahzf",
+                                                                         I18NString.Create("Just a test!"),
+                                                                         now
+                                                                     )
+                                                         },
                                            CustomData:   null
                                        );
 
@@ -126,6 +133,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 Assert.AreEqual(reason,                                  bootNotificationRequests.First().Reason);
                 Assert.AreEqual(1,                                       bootNotificationRequests.First().Signatures.Count());
                 Assert.IsTrue  (                                         bootNotificationRequests.First().Signatures.First().Status);
+                Assert.AreEqual("ahzf",                                  bootNotificationRequests.First().Signatures.First().Name);
+                Assert.AreEqual("Just a test!",                          bootNotificationRequests.First().Signatures.First().Description?.FirstText());
+                Assert.AreEqual(now.ToIso8601(),                         bootNotificationRequests.First().Signatures.First().Timestamp?.  ToIso8601());
 
                 var chargingStation = bootNotificationRequests.First().ChargingStation;
 

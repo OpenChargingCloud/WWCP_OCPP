@@ -150,8 +150,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     var signature    = signer.GenerateSignature();
 
                     SignableMessage.AddSignature(new Signature(
-                                                     SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKeyData.GetBytes().ToBase64(),
-                                                     signature.ToBase64()
+                                                     KeyId:            SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKeyData.GetBytes().ToBase64(),
+                                                     Value:            signature.ToBase64(),
+                                                     Algorithm:        signInfo.Algorithm,
+                                                     SigningMethod:    null,
+                                                     EncodingMethod:   signInfo.Encoding,
+                                                     Name:             signInfo.Name,
+                                                     Description:      signInfo.Description,
+                                                     Timestamp:        signInfo.Timestamp
                                                  ));
 
                 }
