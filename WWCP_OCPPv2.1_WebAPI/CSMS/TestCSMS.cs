@@ -103,6 +103,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => centralSystemServers;
 
 
+        public SignaturePolicy?  SignaturePolicy    { get; set; }
+
+
+
         public IEnumerable<ICSMSChannel> CSMSChannels
             => centralSystemServers;
 

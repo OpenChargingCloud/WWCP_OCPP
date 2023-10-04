@@ -59,6 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                  IEnumerable<KeyPair>?                                      SignKeys                                  = null,
                                  IEnumerable<SignInfo>?                                     SignInfos                                 = null,
+                                 SignaturePolicy?                                           SignaturePolicy                           = null,
                                  CustomJObjectSerializerDelegate<BootNotificationRequest>?  CustomBootNotificationRequestSerializer   = null,
                                  CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationSerializer           = null,
                                  CustomJObjectSerializerDelegate<Signature>?                CustomSignatureSerializer                 = null,
@@ -90,8 +91,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                               CancellationToken
                                           );
 
-            if (SignKeys  is not null && SignKeys. Any() ||
-                SignInfos is not null && SignInfos.Any())
+            var signaturePolicy = SignaturePolicy ?? ChargingStation.SignaturePolicy;
+
+            IEnumerable<SignaturePolicyEntry>? signaturePolicyEntries = null;
+
+            if ((SignKeys        is not null && SignKeys.       Any()) ||
+                (SignInfos       is not null && SignInfos.      Any()) ||
+                (signaturePolicy is not null && signaturePolicy.Has($"https://open.charging.cloud/context/ocpp/bootNotificationRequest", out signaturePolicyEntries)))
             {
 
                 var signInfos = new List<SignInfo>();
@@ -101,6 +107,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (SignKeys  is not null && SignKeys. Any())
                     signInfos.AddRange(SignKeys.Select(signKey => signKey.ToSignInfo()));
+
+                if (signaturePolicyEntries is not null && signaturePolicyEntries.Any())
+                {
+                    foreach (var signaturePolicyEntry in signaturePolicyEntries)
+                    {
+                        if (signaturePolicyEntry.KeyPair is not null)
+                            signInfos.Add(signaturePolicyEntry.KeyPair.ToSignInfo());
+                    }
+                }
 
                 if (!CryptoUtils.SignRequestMessage(
                         bootNotificationRequest,

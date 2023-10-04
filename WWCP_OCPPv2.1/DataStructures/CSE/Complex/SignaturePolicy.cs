@@ -209,6 +209,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
 
+        public Boolean Has(String                                 Context,
+                           out IEnumerable<SignaturePolicyEntry>  SignaturePolicyEntries)
+        {
+
+            SignaturePolicyEntries = entries.Where(entry => entry.Context == Context);
+
+            return SignaturePolicyEntries.Any();
+
+        }
+
+
         #region Operator overloading
 
         #region Operator == (SignaturePolicy1, SignaturePolicy2)

@@ -42,6 +42,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         Request_Id                 NextRequestId            { get; }
 
+        SignaturePolicy?           SignaturePolicy          { get; }
+
 
         IEnumerable<ICSMSChannel>  CSMSChannels             { get; }
 

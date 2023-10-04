@@ -220,6 +220,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Properties
 
+        public SignaturePolicy?         SignaturePolicy             { get; set; }
+
+
         /// <summary>
         /// The client connected to a CSMS.
         /// </summary>
