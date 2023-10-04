@@ -39,32 +39,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The unique key identification, e.g. the prefix of the public key.
         /// </summary>
         [Mandatory]
-        public String   KeyId              { get; }
+        public String       KeyId             { get; }
 
         /// <summary>
         /// The signature value.
         /// </summary>
         [Mandatory]
-        public String   Value              { get; }
+        public String       Value             { get; }
 
         [Optional]
-        public String   Algorithm            { get; }
+        public String       Algorithm         { get; }
 
         /// <summary>
         /// The optional method used to create the digital signature.
         /// </summary>
         [Optional]
-        public String?  SigningMethod      { get; }
+        public String?      SigningMethod     { get; }
 
         /// <summary>
         /// The optional encoding method.
         /// </summary>
         [Optional]
-        public String?  EncodingMethod     { get; }
+        public String?      EncodingMethod    { get; }
+
+        /// <summary>
+        /// The optional name of a person or process signing the message.
+        /// </summary>
+        [Optional]
+        public String?      Name              { get; }
+
+        /// <summary>
+        /// The optional multi-language description or explanation for signing the message.
+        /// </summary>
+        [Optional]
+        public I18NString?  Description       { get; }
+
+        /// <summary>
+        /// The optional timestamp of the message signature.
+        /// </summary>
+        [Optional]
+        public DateTime?    Timestamp         { get; }
 
 
-
-        public Boolean? Status { get; set; }
+        /// <summary>
+        /// The verification status of this signature.
+        /// </summary>
+        public Boolean?     Status            { get; set; }
 
         #endregion
 
@@ -77,31 +97,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Value">A signature value.</param>
         /// <param name="SigningMethod">An optional method used to create the digital signature.</param>
         /// <param name="EncodingMethod">An optional encoding method.</param>
+        /// <param name="Name">An optional name of a person or process signing the message.</param>
+        /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
+        /// <param name="Timestamp">An optional timestamp of the message signature.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public Signature(String       KeyId,
                          String       Value,
                          String?      Algorithm        = "secp256r1",
                          String?      SigningMethod    = null,
                          String?      EncodingMethod   = null,
+                         String?      Name             = null,
+                         I18NString?  Description      = null,
+                         DateTime?    Timestamp        = null,
                          CustomData?  CustomData       = null)
 
             : base(CustomData)
 
         {
 
-            this.KeyId            = KeyId;
-            this.Value            = Value;
-            this.Algorithm        = Algorithm ?? "secp256r1";
-            this.SigningMethod    = SigningMethod;
-            this.EncodingMethod   = EncodingMethod;
+            this.KeyId           = KeyId;
+            this.Value           = Value;
+            this.Algorithm       = Algorithm ?? "secp256r1";
+            this.SigningMethod   = SigningMethod;
+            this.EncodingMethod  = EncodingMethod;
+            this.Name            = Name;
+            this.Description     = Description;
+            this.Timestamp       = Timestamp;
 
             unchecked
             {
 
-                hashCode = KeyId.          GetHashCode()       * 11 ^
-                           Value.          GetHashCode()       *  7 ^
-                          (SigningMethod?. GetHashCode() ?? 0) *  5 ^
-                          (EncodingMethod?.GetHashCode() ?? 0) *  3 ^
+                hashCode = KeyId.          GetHashCode()       * 23 ^
+                           Value.          GetHashCode()       * 17 ^
+                          (SigningMethod?. GetHashCode() ?? 0) * 13 ^
+                          (EncodingMethod?.GetHashCode() ?? 0) * 11 ^
+                          (Name?.          GetHashCode() ?? 0) *  7 ^
+                          (Description?.   GetHashCode() ?? 0) *  5 ^
+                          (Timestamp?.     GetHashCode() ?? 0) *  3 ^
 
                            base.           GetHashCode();
 
@@ -224,6 +256,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region Name              [optional]
+
+                var Name        = JSON.GetString("name");
+
+                #endregion
+
+                #region Description       [optional]
+
+                if (JSON.ParseOptional("description",
+                                       "description",
+                                       I18NString.TryParse,
+                                       out I18NString? Description,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Timestamp         [optional]
+
+                if (JSON.ParseOptional("timestamp",
+                                       "timestamp",
+                                       out DateTime? Timestamp,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region CustomData        [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
@@ -245,6 +310,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 Algorithm,
                                 SigningMethod,
                                 EncodingMethod,
+                                Name,
+                                Description,
+                                Timestamp,
                                 CustomData
                             );
 

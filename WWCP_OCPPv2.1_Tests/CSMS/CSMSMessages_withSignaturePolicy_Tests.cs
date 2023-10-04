@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var keyPair     = KeyPair.GenerateKeys();
+                var keyPair     = KeyPair.GenerateKeys()!;
 
                 var signPolicy  = new SignaturePolicy(
                                       //SignaturePolicyAction.sign,
@@ -85,7 +85,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var response1  = await testCSMS01.Reset(
                                            ChargeBoxId:   chargingStation1.ChargeBoxId,
                                            ResetType:     resetType,
-                                           SignKeys:      new[] { keyPair! },
+                                           SignKeys:      new[] { keyPair },
+                                       //    SignInfos:     new[] { keyPair.ToSignInfo("ahzf", I18NString.Create("Just a test!")) },
                                            CustomData:    null
                                        );
 

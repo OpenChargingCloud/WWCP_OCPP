@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region (static) SignMessage        (SignableMessage, JSONMessage, out ErrorResponse, params KeyPairs)
+        #region (static) SignMessage        (SignableMessage, JSONMessage, out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given message.
@@ -71,11 +71,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SignableMessage">A signable message.</param>
         /// <param name="JSONMessage">The JSON representation of the signable message.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="KeyPairs">An enumeration of cryptographic key pairs to sign the given message.</param>
-        public static Boolean SignMessage(ISignableMessage  SignableMessage,
-                                          JObject           JSONMessage,
-                                          out String?       ErrorResponse,
-                                          params KeyPair[]  KeyPairs)
+        /// <param name="SignInfos">An enumeration of cryptographic signature information or key pairs to sign the given message.</param>
+        public static Boolean SignMessage(ISignableMessage   SignableMessage,
+                                          JObject            JSONMessage,
+                                          out String?        ErrorResponse,
+                                          params SignInfo[]  SignInfos)
         {
 
             #region Initial checks
@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return false;
             }
 
-            if (KeyPairs is null || !KeyPairs.Any())
+            if (SignInfos is null || !SignInfos.Any())
             {
                 ErrorResponse = "The given key pairs must not be null or empty!";
                 return false;
@@ -97,38 +97,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             try
             {
 
-                foreach (var keyPair in KeyPairs)
+                foreach (var signInfo in SignInfos)
                 {
 
                     #region Initial checks
 
-                    if (keyPair is null)
+                    if (signInfo is null)
                     {
                         ErrorResponse = "The given key pair must not be null!";
                         return false;
                     }
 
 
-                    if (keyPair.Private is null || keyPair.Private.IsNullOrEmpty())
+                    if (signInfo.Private is null || signInfo.Private.IsNullOrEmpty())
                     {
                         ErrorResponse = "The given key pair must contain a serialized private key!";
                         return false;
                     }
 
-                    if (keyPair.Public  is null || keyPair.Public. IsNullOrEmpty())
+                    if (signInfo.Public  is null || signInfo.Public. IsNullOrEmpty())
                     {
                         ErrorResponse = "The given key pair must contain a serialized public key!";
                         return false;
                     }
 
 
-                    if (keyPair.PrivateKey is null)
+                    if (signInfo.PrivateKey is null)
                     {
                         ErrorResponse = "The given key pair must contain a private key!";
                         return false;
                     }
 
-                    if (keyPair.PublicKey is null)
+                    if (signInfo.PublicKey is null)
                     {
                         ErrorResponse = "The given key pair must contain a public key!";
                         return false;
@@ -138,19 +138,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     var plainText   = JSONMessage.ToString(Formatting.None, defaultJSONConverters);
 
-                    var cryptoHash  = keyPair.Algorithm switch {
+                    var cryptoHash  = signInfo.Algorithm switch {
                                           "secp521r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
                                           "secp384r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
                                           _            => SHA256.HashData(plainText.ToUTF8Bytes()),
                                       };
 
                     var signer       = SignerUtilities.GetSigner("NONEwithECDSA");
-                    signer.Init(true, keyPair.PrivateKey);
+                    signer.Init(true, signInfo.PrivateKey);
                     signer.BlockUpdate(cryptoHash);
                     var signature    = signer.GenerateSignature();
 
                     SignableMessage.AddSignature(new Signature(
-                                                     SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(keyPair.PublicKey).PublicKeyData.GetBytes().ToBase64(),
+                                                     SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKeyData.GetBytes().ToBase64(),
                                                      signature.ToBase64()
                                                  ));
 
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) SignRequestMessage (RequestMessage,  JSONMessage, out ErrorResponse, params KeyPairs)
+        #region (static) SignRequestMessage (RequestMessage,  JSONMessage, out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given request message.
@@ -179,11 +179,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequestMessage">The request message.</param>
         /// <param name="JSONMessage">The JSON representation of the request message.</param>
         /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
-        /// <param name="KeyPairs">One or multiple cryptographic key pairs to sign the request message.</param>
+        /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the request message.</param>
         public static Boolean SignRequestMessage<TRequest>(ARequest<TRequest>  RequestMessage,
                                                            JObject             JSONMessage,
                                                            out String?         ErrorResponse,
-                                                           params KeyPair[]    KeyPairs)
+                                                           params SignInfo[]   SignInfos)
 
             where TRequest : class, IRequest
 
@@ -194,13 +194,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return SignMessage(RequestMessage,
                                JSONMessage,
                                out ErrorResponse,
-                               KeyPairs);
+                               SignInfos);
 
         }
 
         #endregion
 
-        #region (static) SignResponseMessage(ResponseMessage, JSONMessage, out ErrorResponse, params KeyPairs)
+        #region (static) SignResponseMessage(ResponseMessage, JSONMessage, out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given response message.
@@ -210,11 +210,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ResponseMessage">A response message.</param>
         /// <param name="JSONMessage">The JSON representation of the response message.</param>
         /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
-        /// <param name="KeyPairs">One or multiple cryptographic key pairs to sign the response message.</param>
+        /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the response message.</param>
         public static Boolean SignResponseMessage<TRequest, TResponse>(AResponse<TRequest, TResponse>  ResponseMessage,
                                                                        JObject                         JSONMessage,
                                                                        out String?                     ErrorResponse,
-                                                                       params KeyPair[]                KeyPairs)
+                                                                       params SignInfo[]               SignInfos)
 
             where TRequest  : class, IRequest
             where TResponse : class, IResponse
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             return SignMessage(ResponseMessage,
                                JSONMessage,
                                out ErrorResponse,
-                               KeyPairs);
+                               SignInfos);
 
         }
 

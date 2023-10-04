@@ -66,6 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                   EventTracking_Id?                               EventTrackingId                = null,
 
                   IEnumerable<KeyPair>?                           SignKeys                       = null,
+                  IEnumerable<SignInfo>?                          SignInfos                      = null,
                   CustomJObjectSerializerDelegate<ResetRequest>?  CustomResetRequestSerializer   = null,
                   CustomJObjectSerializerDelegate<Signature>?     CustomSignatureSerializer      = null,
                   CustomJObjectSerializerDelegate<CustomData>?    CustomCustomDataSerializer     = null,
@@ -89,8 +90,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                    CancellationToken
                                );
 
-            if (SignKeys is not null && SignKeys.Any())
+            if (SignKeys  is not null && SignKeys. Any() ||
+                SignInfos is not null && SignInfos.Any())
             {
+
+                var signInfos = new List<SignInfo>();
+
+                if (SignInfos is not null && SignInfos.Any())
+                    signInfos.AddRange(SignInfos);
+
+                if (SignKeys  is not null && SignKeys. Any())
+                    signInfos.AddRange(SignKeys.Select(signKey => signKey.ToSignInfo()));
 
                 if (!CryptoUtils.SignRequestMessage(
                         resetRequest,
@@ -100,7 +110,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             CustomCustomDataSerializer   ?? CSMS.CustomCustomDataSerializer
                         ),
                         out var errorResponse,
-                        SignKeys.ToArray())) {
+                        signInfos.ToArray()))
+                {
 
                     return Task.FromResult(
                                new CS.ResetResponse(

@@ -1959,7 +1959,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (request.Signatures.Any())
                 {
 
-                    var signKeys = new[] { KeyPair.GenerateKeys()! };
+                    var signInfos = new[] { SignInfo.GenerateKeys()! };
 
                     CryptoUtils.SignResponseMessage(
                         response,
@@ -1970,7 +1970,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                             CustomCustomDataSerializer
                         ),
                         out var errorResponse2,
-                        signKeys.ToArray());
+                        signInfos.ToArray());
 
                 }
 
