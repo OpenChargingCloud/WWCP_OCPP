@@ -97,7 +97,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if ((SignKeys        is not null && SignKeys.       Any()) ||
                 (SignInfos       is not null && SignInfos.      Any()) ||
-                (signaturePolicy is not null && signaturePolicy.Has($"https://open.charging.cloud/context/ocpp/bootNotificationRequest", out signaturePolicyEntries)))
+                (signaturePolicy is not null && signaturePolicy.Has(BootNotificationRequest.DefaultJSONLDContext,
+                                                                    out signaturePolicyEntries)))
             {
 
                 var signInfos = new List<SignInfo>();

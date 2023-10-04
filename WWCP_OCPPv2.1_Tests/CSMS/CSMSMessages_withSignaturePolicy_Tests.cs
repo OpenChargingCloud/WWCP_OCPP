@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -75,10 +76,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                                  //KeyPair.GenerateKeys()
                                              );
 
-                testCSMS01.SignaturePolicy.AddSigningRule     ($"https://open.charging.cloud/context/ocpp/resetRequest",
-                                                                 keyPair!);
-
-                testCSMS01.SignaturePolicy.AddVerificationRule($"https://open.charging.cloud/context/ocpp/resetResponse");
+                testCSMS01.SignaturePolicy.AddSigningRule     (ResetRequest. DefaultJSONLDContext, keyPair!);
+                testCSMS01.SignaturePolicy.AddVerificationRule(ResetResponse.DefaultJSONLDContext);
 
 
                 var resetType  = ResetTypes.Immediate;

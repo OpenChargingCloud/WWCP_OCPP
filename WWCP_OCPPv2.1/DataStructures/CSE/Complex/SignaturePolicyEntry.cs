@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         public UInt32                 Priority    { get; }
-        public String                 Context     { get; }
+        public JSONLDContext          Context     { get; }
         public SignaturePolicyAction  Action      { get; }
         public KeyPair?               KeyPair     { get; }
 
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EncodingMethod">An optional encoding method.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public SignaturePolicyEntry(UInt32                 Priority,
-                                    String                 Context,
+                                    JSONLDContext          Context,
                                     SignaturePolicyAction  Action,
                                     KeyPair?               KeyPair      = null,
                                     CustomData?            CustomData   = null)
@@ -349,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => SignaturePolicyEntry is not null &&
 
                Priority.Equals(SignaturePolicyEntry.Priority) &&
-               Context. Equals(SignaturePolicyEntry.Context, StringComparison.Ordinal) &&
+               Context. Equals(SignaturePolicyEntry.Context)  &&
                Action.  Equals(SignaturePolicyEntry.Action)   &&
 
              ((KeyPair is null     && SignaturePolicyEntry.KeyPair is null) ||

@@ -36,6 +36,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public class BootNotificationRequest : ARequest<BootNotificationRequest>
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/bootNotificationRequest");
+
+        #endregion
+
         #region Properties
 
         /// <summary>

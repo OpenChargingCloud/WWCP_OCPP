@@ -32,6 +32,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public class ResetRequest : ARequest<ResetRequest>
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/resetRequest");
+
+        #endregion
+
         #region Properties
 
         /// <summary>

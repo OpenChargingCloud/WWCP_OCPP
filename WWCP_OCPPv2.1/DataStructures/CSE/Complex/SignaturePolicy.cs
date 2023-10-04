@@ -150,8 +150,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        public SignaturePolicy AddSigningRule(String   Context,
-                                              KeyPair  KeyPair)
+        public SignaturePolicy AddSigningRule(JSONLDContext  Context,
+                                              KeyPair        KeyPair)
         {
 
             entries.Add(new SignaturePolicyEntry(
@@ -165,9 +165,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         }
 
-        public SignaturePolicy AddSigningRule(UInt32   Priority,
-                                              String   Context,
-                                              KeyPair  KeyPair)
+        public SignaturePolicy AddSigningRule(UInt32         Priority,
+                                              JSONLDContext  Context,
+                                              KeyPair        KeyPair)
         {
 
             entries.Add(new SignaturePolicyEntry(
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         }
 
-        public SignaturePolicy AddVerificationRule(String  Context)
+        public SignaturePolicy AddVerificationRule(JSONLDContext  Context)
         {
 
             entries.Add(new SignaturePolicyEntry(
@@ -194,8 +194,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         }
 
-        public SignaturePolicy AddVerificationRule(UInt32  Priority,
-                                                   String  Context)
+        public SignaturePolicy AddVerificationRule(UInt32         Priority,
+                                                   JSONLDContext  Context)
         {
 
             entries.Add(new SignaturePolicyEntry(
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
 
-        public Boolean Has(String                                 Context,
+        public Boolean Has(JSONLDContext                          Context,
                            out IEnumerable<SignaturePolicyEntry>  SignaturePolicyEntries)
         {
 

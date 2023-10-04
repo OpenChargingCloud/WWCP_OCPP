@@ -97,7 +97,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if ((SignKeys        is not null && SignKeys.       Any()) ||
                 (SignInfos       is not null && SignInfos.      Any()) ||
-                (signaturePolicy is not null && signaturePolicy.Has($"https://open.charging.cloud/context/ocpp/resetRequest", out signaturePolicyEntries)))
+                (signaturePolicy is not null && signaturePolicy.Has(ResetRequest.DefaultJSONLDContext,
+                                                                    out signaturePolicyEntries)))
             {
 
                 var signInfos = new List<SignInfo>();
