@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 Assert.AreEqual(chargingStation1.ChargeBoxId,            bootNotificationRequests.First().ChargeBoxId);
                 Assert.AreEqual(reason,                                  bootNotificationRequests.First().Reason);
                 Assert.AreEqual(1,                                       bootNotificationRequests.First().Signatures.Count());
-                Assert.IsTrue  (                                         bootNotificationRequests.First().Signatures.First().Status);
+                Assert.AreEqual(VerificationStatus.Verified,             bootNotificationRequests.First().Signatures.First().Status);
                 Assert.AreEqual("ahzf",                                  bootNotificationRequests.First().Signatures.First().Name);
                 Assert.AreEqual("Just a test!",                          bootNotificationRequests.First().Signatures.First().Description?.FirstText());
                 Assert.AreEqual(now.ToIso8601(),                         bootNotificationRequests.First().Signatures.First().Timestamp?.  ToIso8601());

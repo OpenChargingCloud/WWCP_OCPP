@@ -331,15 +331,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     var verifier      = SignerUtilities.GetSigner("NONEwithECDSA");
                     verifier.Init(false, pubKeyParams);
                     verifier.BlockUpdate(cryptoHash);
-                    signature.Status  = verifier.VerifySignature(signature.Value.FromBase64());
+                    signature.Status  = verifier.VerifySignature(signature.Value.FromBase64())
+                                            ? VerificationStatus.Verified
+                                            : VerificationStatus.InvalidSignature;
 
                 }
 
                 ErrorResponse = null;
 
                 return AllMustBeValid
-                           ? SignableMessage.Signatures.All(signature => signature.Status == true)
-                           : SignableMessage.Signatures.Any(signature => signature.Status == true);
+                           ? SignableMessage.Signatures.All(signature => signature.Status == VerificationStatus.Verified)
+                           : SignableMessage.Signatures.Any(signature => signature.Status == VerificationStatus.Verified);
 
             }
             catch (Exception e)

@@ -39,52 +39,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The unique key identification, e.g. the prefix of the public key.
         /// </summary>
         [Mandatory]
-        public String       KeyId             { get; }
+        public String               KeyId             { get; }
 
         /// <summary>
         /// The signature value.
         /// </summary>
         [Mandatory]
-        public String       Value             { get; }
+        public String               Value             { get; }
 
         [Optional]
-        public String       Algorithm         { get; }
+        public String               Algorithm         { get; }
 
         /// <summary>
         /// The optional method used to create the digital signature.
         /// </summary>
         [Optional]
-        public String?      SigningMethod     { get; }
+        public String?              SigningMethod     { get; }
 
         /// <summary>
         /// The optional encoding method.
         /// </summary>
         [Optional]
-        public String?      EncodingMethod    { get; }
+        public String?              EncodingMethod    { get; }
 
         /// <summary>
         /// The optional name of a person or process signing the message.
         /// </summary>
         [Optional]
-        public String?      Name              { get; }
+        public String?              Name              { get; }
 
         /// <summary>
         /// The optional multi-language description or explanation for signing the message.
         /// </summary>
         [Optional]
-        public I18NString?  Description       { get; }
+        public I18NString?          Description       { get; }
 
         /// <summary>
         /// The optional timestamp of the message signature.
         /// </summary>
         [Optional]
-        public DateTime?    Timestamp         { get; }
+        public DateTime?            Timestamp         { get; }
 
 
         /// <summary>
         /// The verification status of this signature.
         /// </summary>
-        public Boolean?     Status            { get; set; }
+        public VerificationStatus?  Status            { get; set; }
 
         #endregion
 
