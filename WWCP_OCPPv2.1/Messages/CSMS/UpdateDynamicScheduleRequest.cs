@@ -169,7 +169,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             ChargingRateValue?       SetpointReactive_L2   = null,
                                             ChargingRateValue?       SetpointReactive_L3   = null,
 
+                                            IEnumerable<KeyPair>?    SignKeys              = null,
+                                            IEnumerable<SignInfo>?   SignInfos             = null,
+                                            SignaturePolicy?         SignaturePolicy       = null,
                                             IEnumerable<Signature>?  Signatures            = null,
+
                                             CustomData?              CustomData            = null,
 
                                             Request_Id?              RequestId             = null,
@@ -180,8 +184,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "UpdateDynamicSchedule",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -573,7 +583,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                    SetpointReactive_L2,
                                                    SetpointReactive_L3,
 
+                                                   null,
+                                                   null,
+                                                   null,
                                                    Signatures,
+
                                                    CustomData,
                                                    RequestId
 

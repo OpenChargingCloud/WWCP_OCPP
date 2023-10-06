@@ -98,7 +98,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    IEnumerable<ReportData>  ReportData,
                                    Boolean?                 ToBeContinued       = null,
 
+                                   IEnumerable<KeyPair>?    SignKeys            = null,
+                                   IEnumerable<SignInfo>?   SignInfos           = null,
+                                   SignaturePolicy?         SignaturePolicy     = null,
                                    IEnumerable<Signature>?  Signatures          = null,
+
                                    CustomData?              CustomData          = null,
 
                                    Request_Id?              RequestId           = null,
@@ -109,8 +113,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             : base(ChargeBoxId,
                    "NotifyReport",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -591,6 +601,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                           GeneratedAt,
                                           ReportData,
                                           ToBeContinued,
+                                          null,
+                                          null,
+                                          null,
                                           Signatures,
                                           CustomData,
                                           RequestId

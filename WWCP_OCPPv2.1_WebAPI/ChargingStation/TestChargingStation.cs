@@ -1972,6 +1972,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                             CustomSignatureSerializer,
                             CustomCustomDataSerializer
                         ),
+                        ResetResponse.DefaultJSONLDContext,
+                        SignaturePolicy,
                         out var errorResponse2,
                         signInfos.ToArray());
 
@@ -3801,14 +3803,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 break;
 
                             case MessageTriggers.Heartbeat:
-                                await SendHeartbeat(
+                                await this.SendHeartbeat(
                                           CustomData:   null
                                       );
                                 break;
 
                             case MessageTriggers.StatusNotification:
                                 if (Request.EVSE is not null)
-                                    await SendStatusNotification(
+                                    await this.SendStatusNotification(
                                               EVSEId:        Request.EVSE.Id,
                                               ConnectorId:   Connector_Id.Parse(1),
                                               Timestamp:     Timestamp.Now,
@@ -5292,7 +5294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                             await Task.Delay(500);
 
-                            await SendTransactionEvent(
+                            await this.SendTransactionEvent(
 
                                       EventType:            TransactionEvents.Started,
                                       Timestamp:            evse.StartTimestamp.Value,
@@ -5478,7 +5480,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         _ = Task.Run(async () => {
 
-                            await SendTransactionEvent(
+                            await this.SendTransactionEvent(
 
                                       EventType:            TransactionEvents.Ended,
                                       Timestamp:            evse.StopTimestamp.Value,
@@ -6918,7 +6920,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                           Where(displayMessage => !Request.Priority.HasValue || displayMessage.Priority == Request.Priority.Value).
                                                           ToArray();
 
-                        await NotifyDisplayMessages(
+                        await this.NotifyDisplayMessages(
                                   NotifyDisplayMessagesRequestId:   Request.GetDisplayMessagesRequestId,
                                   MessageInfos:                     filteredDisplayMessages,
                                   ToBeContinued:                    false,
@@ -7289,7 +7291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         //                                  Where(displayMessage => !Request.Priority.HasValue || displayMessage.Priority == Request.Priority.Value).
                         //                                  ToArray();
 
-                        await NotifyCustomerInformation(
+                        await this.NotifyCustomerInformation(
                                   NotifyCustomerInformationRequestId:   Request.CustomerInformationRequestId,
                                   Data:                                 "",
                                   SequenceNumber:                       1,
@@ -7426,7 +7428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             {
                 try
                 {
-                    SendHeartbeat().Wait();
+                    this.SendHeartbeat().Wait();
                 }
                 catch (Exception e)
                 {
@@ -7455,7 +7457,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region SendBootNotification                 (Request)
+        #region SendBootNotification                  (Request)
 
         /// <summary>
         /// Send a boot notification.
@@ -7487,10 +7489,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.BootNotificationResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.SendBootNotification(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomBootNotificationRequestSerializer,
+                                         CustomChargingStationSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     BootNotificationRequest.DefaultJSONLDContext,
+                                     SignaturePolicy,
+                                     out var errorResponse)
+
+                                 ? await CSClient.SendBootNotification(Request)
+
+                                 : new CSMS.BootNotificationResponse(
+                                       Request,
+                                       Result.SignatureError(errorResponse)
+                                   )
+
+                               : new CSMS.BootNotificationResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
 
             if (response is not null)
             {
@@ -7546,7 +7570,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SendFirmwareStatusNotification       (Status, ...)
+        #region SendFirmwareStatusNotification        (Request)
 
         /// <summary>
         /// Send a firmware status notification to the CSMS.
@@ -7562,46 +7586,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.FirmwareStatusNotificationResponse>
 
-            SendFirmwareStatusNotification(FirmwareStatus     Status,
-                                           Int64?             UpdateFirmwareRequestId   = null,
-                                           CustomData?        CustomData                = null,
-
-                                           Request_Id?        RequestId                 = null,
-                                           DateTime?          RequestTimestamp          = null,
-                                           TimeSpan?          RequestTimeout            = null,
-                                           EventTracking_Id?  EventTrackingId           = null,
-                                           CancellationToken  CancellationToken         = default)
+            SendFirmwareStatusNotification(FirmwareStatusNotificationRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new FirmwareStatusNotificationRequest(
-                                 ChargeBoxId,
-                                 Status,
-                                 UpdateFirmwareRequestId,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnFirmwareStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnFirmwareStatusNotificationRequest?.Invoke(startTime,
                                                             this,
-                                                            request);
+                                                            Request);
 
             }
             catch (Exception e)
@@ -7615,9 +7613,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.FirmwareStatusNotificationResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.SendFirmwareStatusNotification(request);
+                response = await CSClient.SendFirmwareStatusNotification(Request);
 
-            response ??= new CSMS.FirmwareStatusNotificationResponse(request,
+            response ??= new CSMS.FirmwareStatusNotificationResponse(Request,
                                                                      Result.Server("Response is null!"));
 
 
@@ -7630,7 +7628,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnFirmwareStatusNotificationResponse?.Invoke(endTime,
                                                              this,
-                                                             request,
+                                                             Request,
                                                              response,
                                                              endTime - startTime);
 
@@ -7648,7 +7646,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SendPublishFirmwareStatusNotification(Status, PublishFirmwareStatusNotificationRequestId, DownloadLocations, ...)
+        #region SendPublishFirmwareStatusNotification (Request)
 
         /// <summary>
         /// Send a publish firmware status notification to the CSMS.
@@ -7665,48 +7663,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.PublishFirmwareStatusNotificationResponse>
 
-            SendPublishFirmwareStatusNotification(PublishFirmwareStatus  Status,
-                                                  Int32?                 PublishFirmwareStatusNotificationRequestId,
-                                                  IEnumerable<URL>?      DownloadLocations,
-                                                  CustomData?            CustomData          = null,
-
-                                                  Request_Id?            RequestId           = null,
-                                                  DateTime?              RequestTimestamp    = null,
-                                                  TimeSpan?              RequestTimeout      = null,
-                                                  EventTracking_Id?      EventTrackingId     = null,
-                                                  CancellationToken      CancellationToken   = default)
+            SendPublishFirmwareStatusNotification(PublishFirmwareStatusNotificationRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new PublishFirmwareStatusNotificationRequest(
-                                 ChargeBoxId,
-                                 Status,
-                                 PublishFirmwareStatusNotificationRequestId,
-                                 DownloadLocations,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnPublishFirmwareStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnPublishFirmwareStatusNotificationRequest?.Invoke(startTime,
                                                                    this,
-                                                                   request);
+                                                                   Request);
 
             }
             catch (Exception e)
@@ -7720,9 +7690,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.PublishFirmwareStatusNotificationResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.SendPublishFirmwareStatusNotification(request);
+                response = await CSClient.SendPublishFirmwareStatusNotification(Request);
 
-            response ??= new CSMS.PublishFirmwareStatusNotificationResponse(request,
+            response ??= new CSMS.PublishFirmwareStatusNotificationResponse(Request,
                                                                             Result.Server("Response is null!"));
 
 
@@ -7735,7 +7705,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnPublishFirmwareStatusNotificationResponse?.Invoke(endTime,
                                                                     this,
-                                                                    request,
+                                                                    Request,
                                                                     response,
                                                                     endTime - startTime);
 
@@ -7753,7 +7723,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SendHeartbeat                        (...)
+        #region SendHeartbeat                         (Request)
 
         /// <summary>
         /// Send a heartbeat.
@@ -7767,42 +7737,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.HeartbeatResponse>
 
-            SendHeartbeat(CustomData?        CustomData          = null,
-
-                          Request_Id?        RequestId           = null,
-                          DateTime?          RequestTimestamp    = null,
-                          TimeSpan?          RequestTimeout      = null,
-                          EventTracking_Id?  EventTrackingId     = null,
-                          CancellationToken  CancellationToken   = default)
+            SendHeartbeat(HeartbeatRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new HeartbeatRequest(
-                                 ChargeBoxId,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnHeartbeatRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnHeartbeatRequest?.Invoke(startTime,
                                            this,
-                                           request);
+                                           Request);
 
             }
             catch (Exception e)
@@ -7816,14 +7764,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.HeartbeatResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.SendHeartbeat(request);
+                response = await CSClient.SendHeartbeat(Request);
 
             if (response is not null)
             {
                 this.CSMSTime = response.CurrentTime;
             }
 
-            response ??= new CSMS.HeartbeatResponse(request,
+            response ??= new CSMS.HeartbeatResponse(Request,
                                                     Result.Server("Response is null!"));
 
 
@@ -7836,7 +7784,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnHeartbeatResponse?.Invoke(endTime,
                                             this,
-                                            request,
+                                            Request,
                                             response,
                                             endTime - startTime);
 
@@ -7854,7 +7802,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region NotifyEvent                          (GeneratedAt, SequenceNumber, EventData, ToBeContinued = null, ...)
+        #region NotifyEvent                           (Request)
 
         /// <summary>
         /// Notify about an event.
@@ -7872,50 +7820,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyEventResponse>
 
-            NotifyEvent(DateTime                GeneratedAt,
-                        UInt32                  SequenceNumber,
-                        IEnumerable<EventData>  EventData,
-                        Boolean?                ToBeContinued       = null,
-                        CustomData?             CustomData          = null,
-
-                        Request_Id?             RequestId           = null,
-                        DateTime?               RequestTimestamp    = null,
-                        TimeSpan?               RequestTimeout      = null,
-                        EventTracking_Id?       EventTrackingId     = null,
-                        CancellationToken       CancellationToken   = default)
+            NotifyEvent(NotifyEventRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new NotifyEventRequest(
-                                 ChargeBoxId,
-                                 GeneratedAt,
-                                 SequenceNumber,
-                                 EventData,
-                                 ToBeContinued,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnNotifyEventRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnNotifyEventRequest?.Invoke(startTime,
                                              this,
-                                             request);
+                                             Request);
 
             }
             catch (Exception e)
@@ -7929,14 +7847,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.NotifyEventResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.NotifyEvent(request);
+                response = await CSClient.NotifyEvent(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.NotifyEventResponse(request,
+            response ??= new CSMS.NotifyEventResponse(Request,
                                                       Result.Server("Response is null!"));
 
 
@@ -7949,7 +7867,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnNotifyEventResponse?.Invoke(endTime,
                                               this,
-                                              request,
+                                              Request,
                                               response,
                                               endTime - startTime);
 
@@ -7967,7 +7885,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SendSecurityEventNotification        (Type, Timestamp, TechInfo = null, TechInfo = null, ...)
+        #region SendSecurityEventNotification         (Request)
 
         /// <summary>
         /// Send a security event notification.
@@ -7984,48 +7902,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.SecurityEventNotificationResponse>
 
-            SendSecurityEventNotification(SecurityEventType      Type,
-                                          DateTime           Timestamp,
-                                          String?            TechInfo            = null,
-                                          CustomData?        CustomData          = null,
-
-                                          Request_Id?        RequestId           = null,
-                                          DateTime?          RequestTimestamp    = null,
-                                          TimeSpan?          RequestTimeout      = null,
-                                          EventTracking_Id?  EventTrackingId     = null,
-                                          CancellationToken  CancellationToken   = default)
+            SendSecurityEventNotification(SecurityEventNotificationRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            var request    = new SecurityEventNotificationRequest(
-                                 ChargeBoxId,
-                                 Type,
-                                 Timestamp,
-                                 TechInfo,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnSecurityEventNotificationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnSecurityEventNotificationRequest?.Invoke(startTime,
                                                            this,
-                                                           request);
+                                                           Request);
 
             }
             catch (Exception e)
@@ -8039,14 +7929,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.SecurityEventNotificationResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.SendSecurityEventNotification(request);
+                response = await CSClient.SendSecurityEventNotification(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.SecurityEventNotificationResponse(request,
+            response ??= new CSMS.SecurityEventNotificationResponse(Request,
                                                                     Result.Server("Response is null!"));
 
 
@@ -8059,7 +7949,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnSecurityEventNotificationResponse?.Invoke(endTime,
                                                             this,
-                                                            request,
+                                                            Request,
                                                             response,
                                                             endTime - startTime);
 
@@ -8077,7 +7967,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region NotifyReport                         (SequenceNumber, GeneratedAt, ReportData, ...)
+        #region NotifyReport                          (Request)
 
         /// <summary>
         /// Notify about a report.
@@ -8096,52 +7986,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyReportResponse>
 
-            NotifyReport(Int32                    NotifyReportRequestId,
-                         UInt32                   SequenceNumber,
-                         DateTime                 GeneratedAt,
-                         IEnumerable<ReportData>  ReportData,
-                         Boolean?                 ToBeContinued       = null,
-                         CustomData?              CustomData          = null,
-
-                         Request_Id?              RequestId           = null,
-                         DateTime?                RequestTimestamp    = null,
-                         TimeSpan?                RequestTimeout      = null,
-                         EventTracking_Id?        EventTrackingId     = null,
-                         CancellationToken        CancellationToken   = default)
+            NotifyReport(NotifyReportRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new NotifyReportRequest(
-                                 ChargeBoxId,
-                                 NotifyReportRequestId,
-                                 SequenceNumber,
-                                 GeneratedAt,
-                                 ReportData,
-                                 ToBeContinued,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnNotifyReportRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnNotifyReportRequest?.Invoke(startTime,
                                               this,
-                                              request);
+                                              Request);
 
             }
             catch (Exception e)
@@ -8155,14 +8013,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.NotifyReportResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.NotifyReport(request);
+                response = await CSClient.NotifyReport(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.NotifyReportResponse(request,
+            response ??= new CSMS.NotifyReportResponse(Request,
                                                        Result.Server("Response is null!"));
 
 
@@ -8175,7 +8033,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnNotifyReportResponse?.Invoke(endTime,
                                                this,
-                                               request,
+                                               Request,
                                                response,
                                                endTime - startTime);
 
@@ -8193,7 +8051,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region NotifyMonitoringReport               (NotifyMonitoringReportRequestId, SequenceNumber, GeneratedAt, MonitoringData, ToBeContinued = null, ...)
+        #region NotifyMonitoringReport                (Request)
 
         /// <summary>
         /// Notify about a monitoring report.
@@ -8212,45 +8070,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyMonitoringReportResponse>
 
-            NotifyMonitoringReport(Int32                        NotifyMonitoringReportRequestId,
-                                   UInt32                       SequenceNumber,
-                                   DateTime                     GeneratedAt,
-                                   IEnumerable<MonitoringData>  MonitoringData,
-                                   Boolean?                     ToBeContinued       = null,
-                                   CustomData?                  CustomData          = null,
-
-                                   Request_Id?                  RequestId           = null,
-                                   DateTime?                    RequestTimestamp    = null,
-                                   TimeSpan?                    RequestTimeout      = null,
-                                   EventTracking_Id?            EventTrackingId     = null,
-                                   CancellationToken            CancellationToken   = default)
+            NotifyMonitoringReport(NotifyMonitoringReportRequest request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new NotifyMonitoringReportRequest(
-                                 ChargeBoxId,
-                                 NotifyMonitoringReportRequestId,
-                                 SequenceNumber,
-                                 GeneratedAt,
-                                 MonitoringData,
-                                 ToBeContinued,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnNotifyMonitoringReportRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
@@ -8309,7 +8135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SendLogStatusNotification            (Status, LogRequestId = null, ...)
+        #region SendLogStatusNotification             (Request)
 
         /// <summary>
         /// Send a log status notification.
@@ -8325,46 +8151,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.LogStatusNotificationResponse>
 
-            SendLogStatusNotification(UploadLogStatus    Status,
-                                      Int32?             LogRequestId        = null,
-                                      CustomData?        CustomData          = null,
-
-                                      Request_Id?        RequestId           = null,
-                                      DateTime?          RequestTimestamp    = null,
-                                      TimeSpan?          RequestTimeout      = null,
-                                      EventTracking_Id?  EventTrackingId     = null,
-                                      CancellationToken  CancellationToken   = default)
+            SendLogStatusNotification(LogStatusNotificationRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new LogStatusNotificationRequest(
-                                 ChargeBoxId,
-                                 Status,
-                                 LogRequestId,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnLogStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnLogStatusNotificationRequest?.Invoke(startTime,
                                                        this,
-                                                       request);
+                                                       Request);
 
             }
             catch (Exception e)
@@ -8378,14 +8178,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.LogStatusNotificationResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.SendLogStatusNotification(request);
+                response = await CSClient.SendLogStatusNotification(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.LogStatusNotificationResponse(request,
+            response ??= new CSMS.LogStatusNotificationResponse(Request,
                                                                     Result.Server("Response is null!"));
 
 
@@ -8398,7 +8198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnLogStatusNotificationResponse?.Invoke(endTime,
                                                         this,
-                                                        request,
+                                                        Request,
                                                         response,
                                                         endTime - startTime);
 
@@ -8416,7 +8216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region TransferData                         (VendorId, MessageId = null, Data = null, ...)
+        #region TransferData                          (Request)
 
         /// <summary>
         /// Send the given vendor-specific data to the CSMS.
@@ -8433,48 +8233,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.DataTransferResponse>
 
-            TransferData(Vendor_Id          VendorId,
-                         String?            MessageId           = null,
-                         JToken?            Data                = null,
-                         CustomData?        CustomData          = null,
-
-                         Request_Id?        RequestId           = null,
-                         DateTime?          RequestTimestamp    = null,
-                         TimeSpan?          RequestTimeout      = null,
-                         EventTracking_Id?  EventTrackingId     = null,
-                         CancellationToken  CancellationToken   = default)
+            TransferData(DataTransferRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new DataTransferRequest(
-                                 ChargeBoxId,
-                                 VendorId,
-                                 MessageId,
-                                 Data,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnDataTransferRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnDataTransferRequest?.Invoke(startTime,
                                               this,
-                                              request);
+                                              Request);
 
             }
             catch (Exception e)
@@ -8488,9 +8260,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.DataTransferResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.TransferData(request);
+                response = await CSClient.TransferData(Request);
 
-            response ??= new CSMS.DataTransferResponse(request,
+            response ??= new CSMS.DataTransferResponse(Request,
                                                        Result.Server("Response is null!"));
 
 
@@ -8503,7 +8275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnDataTransferResponse?.Invoke(endTime,
                                                this,
-                                               request,
+                                               Request,
                                                response,
                                                endTime - startTime);
 
@@ -8522,7 +8294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region SendCertificateSigningRequest        (CSR, CertificateType = null, ...)
+        #region SendCertificateSigningRequest         (Request)
 
         /// <summary>
         /// Send a heartbeat.
@@ -8538,46 +8310,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.SignCertificateResponse>
 
-            SendCertificateSigningRequest(String                  CSR,
-                                          CertificateSigningUse?  CertificateType     = null,
-                                          CustomData?             CustomData          = null,
-
-                                          Request_Id?             RequestId           = null,
-                                          DateTime?               RequestTimestamp    = null,
-                                          TimeSpan?               RequestTimeout      = null,
-                                          EventTracking_Id?       EventTrackingId     = null,
-                                          CancellationToken       CancellationToken   = default)
+            SendCertificateSigningRequest(SignCertificateRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new SignCertificateRequest(
-                                 ChargeBoxId,
-                                 CSR,
-                                 CertificateType,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnSignCertificateRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnSignCertificateRequest?.Invoke(startTime,
                                                  this,
-                                                 request);
+                                                 Request);
 
             }
             catch (Exception e)
@@ -8591,14 +8337,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.SignCertificateResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.SendCertificateSigningRequest(request);
+                response = await CSClient.SendCertificateSigningRequest(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.SignCertificateResponse(request,
+            response ??= new CSMS.SignCertificateResponse(Request,
                                                           Result.Server("Response is null!"));
 
 
@@ -8611,7 +8357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnSignCertificateResponse?.Invoke(endTime,
                                                   this,
-                                                  request,
+                                                  Request,
                                                   response,
                                                   endTime - startTime);
 
@@ -8629,7 +8375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Get15118EVCertificate                (ISO15118SchemaVersion, CertificateAction, EXIRequest, ...)
+        #region Get15118EVCertificate                 (Request)
 
         /// <summary>
         /// Get an ISO 15118 contract certificate.
@@ -8648,52 +8394,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.Get15118EVCertificateResponse>
 
-            Get15118EVCertificate(ISO15118SchemaVersion  ISO15118SchemaVersion,
-                                  CertificateAction      CertificateAction,
-                                  EXIData                EXIRequest,
-                                  UInt32?                MaximumContractCertificateChains   = 1,
-                                  IEnumerable<EMA_Id>?   PrioritizedEMAIds                  = null,
-                                  CustomData?            CustomData                         = null,
-
-                                  Request_Id?            RequestId                          = null,
-                                  DateTime?              RequestTimestamp                   = null,
-                                  TimeSpan?              RequestTimeout                     = null,
-                                  EventTracking_Id?      EventTrackingId                    = null,
-                                  CancellationToken      CancellationToken                  = default)
+            Get15118EVCertificate(Get15118EVCertificateRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new Get15118EVCertificateRequest(
-                                 ChargeBoxId,
-                                 ISO15118SchemaVersion,
-                                 CertificateAction,
-                                 EXIRequest,
-                                 MaximumContractCertificateChains,
-                                 PrioritizedEMAIds,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnGet15118EVCertificateRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnGet15118EVCertificateRequest?.Invoke(startTime,
                                                        this,
-                                                       request);
+                                                       Request);
 
             }
             catch (Exception e)
@@ -8707,14 +8421,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.Get15118EVCertificateResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.Get15118EVCertificate(request);
+                response = await CSClient.Get15118EVCertificate(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.Get15118EVCertificateResponse(request,
+            response ??= new CSMS.Get15118EVCertificateResponse(Request,
                                                                 Result.Server("Response is null!"));
 
 
@@ -8727,7 +8441,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnGet15118EVCertificateResponse?.Invoke(endTime,
                                                         this,
-                                                        request,
+                                                        Request,
                                                         response,
                                                         endTime - startTime);
 
@@ -8745,7 +8459,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region GetCertificateStatus                 (OCSPRequestData, ...)
+        #region GetCertificateStatus                  (Request)
 
         /// <summary>
         /// Get the status of a certificate.
@@ -8760,44 +8474,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.GetCertificateStatusResponse>
 
-            GetCertificateStatus(OCSPRequestData    OCSPRequestData,
-                                 CustomData?        CustomData          = null,
-
-                                 Request_Id?        RequestId           = null,
-                                 DateTime?          RequestTimestamp    = null,
-                                 TimeSpan?          RequestTimeout      = null,
-                                 EventTracking_Id?  EventTrackingId     = null,
-                                 CancellationToken  CancellationToken   = default)
+            GetCertificateStatus(GetCertificateStatusRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new GetCertificateStatusRequest(
-                                 ChargeBoxId,
-                                 OCSPRequestData,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnGetCertificateStatusRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnGetCertificateStatusRequest?.Invoke(startTime,
                                                       this,
-                                                      request);
+                                                      Request);
 
             }
             catch (Exception e)
@@ -8811,14 +8501,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.GetCertificateStatusResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.GetCertificateStatus(request);
+                response = await CSClient.GetCertificateStatus(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.GetCertificateStatusResponse(request,
+            response ??= new CSMS.GetCertificateStatusResponse(Request,
                                                                Result.Server("Response is null!"));
 
 
@@ -8831,7 +8521,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnGetCertificateStatusResponse?.Invoke(endTime,
                                                        this,
-                                                       request,
+                                                       Request,
                                                        response,
                                                        endTime - startTime);
 
@@ -8849,7 +8539,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region GetCRLRequest                        (GetCRLRequestId, CertificateHashData, ...)
+        #region GetCRL                                (Request)
 
         /// <summary>
         /// Get a certificate revocation list from CSMS for the specified certificate.
@@ -8866,46 +8556,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.GetCRLResponse>
 
-            GetCRLRequest(UInt32               GetCRLRequestId,
-                          CertificateHashData  CertificateHashData,
-                          CustomData?          CustomData          = null,
-
-                          Request_Id?          RequestId           = null,
-                          DateTime?            RequestTimestamp    = null,
-                          TimeSpan?            RequestTimeout      = null,
-                          EventTracking_Id?    EventTrackingId     = null,
-                          CancellationToken    CancellationToken   = default)
+            GetCRL(GetCRLRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new GetCRLRequest(
-                                 ChargeBoxId,
-                                 GetCRLRequestId,
-                                 CertificateHashData,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnGetCRLRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnGetCRLRequest?.Invoke(startTime,
                                         this,
-                                        request);
+                                        Request);
 
             }
             catch (Exception e)
@@ -8919,14 +8583,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.GetCRLResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.GetCRL(request);
+                response = await CSClient.GetCRL(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.GetCRLResponse(request,
+            response ??= new CSMS.GetCRLResponse(Request,
                                                  Result.Server("Response is null!"));
 
 
@@ -8939,7 +8603,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnGetCRLResponse?.Invoke(endTime,
                                          this,
-                                         request,
+                                         Request,
                                          response,
                                          endTime - startTime);
 
@@ -8958,7 +8622,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region SendReservationStatusUpdate          (ReservationId, ReservationUpdateStatus, ...)
+        #region SendReservationStatusUpdate           (Request)
 
         /// <summary>
         /// Send a reservation status update.
@@ -8974,46 +8638,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.ReservationStatusUpdateResponse>
 
-            SendReservationStatusUpdate(Reservation_Id           ReservationId,
-                                        ReservationUpdateStatus  ReservationUpdateStatus,
-                                        CustomData?              CustomData          = null,
-
-                                        Request_Id?              RequestId           = null,
-                                        DateTime?                RequestTimestamp    = null,
-                                        TimeSpan?                RequestTimeout      = null,
-                                        EventTracking_Id?        EventTrackingId     = null,
-                                        CancellationToken        CancellationToken   = default)
+            SendReservationStatusUpdate(ReservationStatusUpdateRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new ReservationStatusUpdateRequest(
-                                 ChargeBoxId,
-                                 ReservationId,
-                                 ReservationUpdateStatus,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnReservationStatusUpdateRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnReservationStatusUpdateRequest?.Invoke(startTime,
                                                          this,
-                                                         request);
+                                                         Request);
 
             }
             catch (Exception e)
@@ -9027,14 +8665,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.ReservationStatusUpdateResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.SendReservationStatusUpdate(request);
+                response = await CSClient.SendReservationStatusUpdate(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.ReservationStatusUpdateResponse(request,
+            response ??= new CSMS.ReservationStatusUpdateResponse(Request,
                                                                   Result.Server("Response is null!"));
 
 
@@ -9047,7 +8685,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnReservationStatusUpdateResponse?.Invoke(endTime,
                                                           this,
-                                                          request,
+                                                          Request,
                                                           response,
                                                           endTime - startTime);
 
@@ -9065,7 +8703,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Authorize                            (IdToken, Certificate = null, ISO15118CertificateHashData = null, ...)
+        #region Authorize                             (Request)
 
         /// <summary>
         /// Authorize the given token.
@@ -9082,48 +8720,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.AuthorizeResponse>
 
-            Authorize(IdToken                        IdToken,
-                      Certificate?                   Certificate                   = null,
-                      IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData   = null,
-                      CustomData?                    CustomData                    = null,
-
-                      Request_Id?                    RequestId                     = null,
-                      DateTime?                      RequestTimestamp              = null,
-                      TimeSpan?                      RequestTimeout                = null,
-                      EventTracking_Id?              EventTrackingId               = null,
-                      CancellationToken              CancellationToken             = default)
+            Authorize(AuthorizeRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new AuthorizeRequest(
-                                 ChargeBoxId,
-                                 IdToken,
-                                 Certificate,
-                                 ISO15118CertificateHashData,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnAuthorizeRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnAuthorizeRequest?.Invoke(startTime,
                                            this,
-                                           request);
+                                           Request);
 
             }
             catch (Exception e)
@@ -9137,9 +8747,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.AuthorizeResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.Authorize(request);
+                response = await CSClient.Authorize(Request);
 
-            response ??= new CSMS.AuthorizeResponse(request,
+            response ??= new CSMS.AuthorizeResponse(Request,
                                                     Result.Server("Response is null!"));
 
 
@@ -9152,7 +8762,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnAuthorizeResponse?.Invoke(endTime,
                                             this,
-                                            request,
+                                            Request,
                                             response,
                                             endTime - startTime);
 
@@ -9170,7 +8780,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region NotifyEVChargingNeeds                (EVSEId, ChargingNeeds, ReceivedTimestamp = null, MaxScheduleTuples = null, ...)
+        #region NotifyEVChargingNeeds                 (Request)
 
         /// <summary>
         /// Notify about EV charging needs.
@@ -9188,50 +8798,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyEVChargingNeedsResponse>
 
-            NotifyEVChargingNeeds(EVSE_Id            EVSEId,
-                                  ChargingNeeds      ChargingNeeds,
-                                  DateTime?          ReceivedTimestamp   = null,
-                                  UInt16?            MaxScheduleTuples   = null,
-                                  CustomData?        CustomData          = null,
-
-                                  Request_Id?        RequestId           = null,
-                                  DateTime?          RequestTimestamp    = null,
-                                  TimeSpan?          RequestTimeout      = null,
-                                  EventTracking_Id?  EventTrackingId     = null,
-                                  CancellationToken  CancellationToken   = default)
+            NotifyEVChargingNeeds(NotifyEVChargingNeedsRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new NotifyEVChargingNeedsRequest(
-                                 ChargeBoxId,
-                                 EVSEId,
-                                 ChargingNeeds,
-                                 ReceivedTimestamp,
-                                 MaxScheduleTuples,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnNotifyEVChargingNeedsRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnNotifyEVChargingNeedsRequest?.Invoke(startTime,
                                                        this,
-                                                       request);
+                                                       Request);
 
             }
             catch (Exception e)
@@ -9245,14 +8825,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.NotifyEVChargingNeedsResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.NotifyEVChargingNeeds(request);
+                response = await CSClient.NotifyEVChargingNeeds(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.NotifyEVChargingNeedsResponse(request,
+            response ??= new CSMS.NotifyEVChargingNeedsResponse(Request,
                                                                 Result.Server("Response is null!"));
 
 
@@ -9265,7 +8845,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnNotifyEVChargingNeedsResponse?.Invoke(endTime,
                                                         this,
-                                                        request,
+                                                        Request,
                                                         response,
                                                         endTime - startTime);
 
@@ -9283,7 +8863,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SendTransactionEvent                 (EventType, Timestamp, TriggerReason, SequenceNumber, TransactionInfo, ...)
+        #region SendTransactionEvent                  (Request)
 
         /// <summary>
         /// Send a transaction event.
@@ -9311,71 +8891,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.TransactionEventResponse>
 
-            SendTransactionEvent(TransactionEvents         EventType,
-                                 DateTime                  Timestamp,
-                                 TriggerReasons            TriggerReason,
-                                 UInt32                    SequenceNumber,
-                                 Transaction               TransactionInfo,
-
-                                 Boolean?                  Offline                 = null,
-                                 Byte?                     NumberOfPhasesUsed      = null,
-                                 Ampere?                   CableMaxCurrent         = null,
-                                 Reservation_Id?           ReservationId           = null,
-                                 IdToken?                  IdToken                 = null,
-                                 EVSE?                     EVSE                    = null,
-                                 IEnumerable<MeterValue>?  MeterValues             = null,
-                                 PreconditioningStatus?    PreconditioningStatus   = null,
-                                 CustomData?               CustomData              = null,
-
-                                 Request_Id?               RequestId               = null,
-                                 DateTime?                 RequestTimestamp        = null,
-                                 TimeSpan?                 RequestTimeout          = null,
-                                 EventTracking_Id?         EventTrackingId         = null,
-                                 CancellationToken         CancellationToken       = default)
+            SendTransactionEvent(TransactionEventRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            var request    = new TransactionEventRequest(
-                                 ChargeBoxId,
-
-                                 EventType,
-                                 Timestamp,
-                                 TriggerReason,
-                                 SequenceNumber,
-                                 TransactionInfo,
-
-                                 Offline,
-                                 NumberOfPhasesUsed,
-                                 CableMaxCurrent,
-                                 ReservationId,
-                                 IdToken,
-                                 EVSE,
-                                 MeterValues,
-                                 PreconditioningStatus,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnTransactionEventRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnTransactionEventRequest?.Invoke(startTime,
                                                   this,
-                                                  request);
+                                                  Request);
 
             }
             catch (Exception e)
@@ -9389,9 +8918,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.TransactionEventResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.SendTransactionEvent(request);
+                response = await CSClient.SendTransactionEvent(Request);
 
-            response ??= new CSMS.TransactionEventResponse(request,
+            response ??= new CSMS.TransactionEventResponse(Request,
                                                            Result.Server("Response is null!"));
 
 
@@ -9404,7 +8933,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnTransactionEventResponse?.Invoke(endTime,
                                                    this,
-                                                   request,
+                                                   Request,
                                                    response,
                                                    endTime - startTime);
 
@@ -9422,7 +8951,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SendStatusNotification               (EVSEId, ConnectorId, Timestamp, Status, ...)
+        #region SendStatusNotification                (Request)
 
         /// <summary>
         /// Send a status notification for the given connector.
@@ -9440,50 +8969,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.StatusNotificationResponse>
 
-            SendStatusNotification(EVSE_Id            EVSEId,
-                                   Connector_Id       ConnectorId,
-                                   DateTime           Timestamp,
-                                   ConnectorStatus    Status,
-                                   CustomData?        CustomData          = null,
-
-                                   Request_Id?        RequestId           = null,
-                                   DateTime?          RequestTimestamp    = null,
-                                   TimeSpan?          RequestTimeout      = null,
-                                   EventTracking_Id?  EventTrackingId     = null,
-                                   CancellationToken  CancellationToken   = default)
+            SendStatusNotification(StatusNotificationRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-
-            var request    = new StatusNotificationRequest(
-                                 ChargeBoxId,
-                                 Timestamp,
-                                 Status,
-                                 EVSEId,
-                                 ConnectorId,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnStatusNotificationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnStatusNotificationRequest?.Invoke(startTime,
                                                     this,
-                                                    request);
+                                                    Request);
 
             }
             catch (Exception e)
@@ -9497,9 +8996,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.StatusNotificationResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.SendStatusNotification(request);
+                response = await CSClient.SendStatusNotification(Request);
 
-            response ??= new CSMS.StatusNotificationResponse(request,
+            response ??= new CSMS.StatusNotificationResponse(Request,
                                                              Result.Server("Response is null!"));
 
 
@@ -9512,7 +9011,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnStatusNotificationResponse?.Invoke(endTime,
                                                      this,
-                                                     request,
+                                                     Request,
                                                      response,
                                                      endTime - startTime);
 
@@ -9530,7 +9029,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SendMeterValues                      (EVSEId, MeterValues, ...)
+        #region SendMeterValues                       (Request)
 
         /// <summary>
         /// Send a meter values for the given connector.
@@ -9546,46 +9045,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.MeterValuesResponse>
 
-            SendMeterValues(EVSE_Id                  EVSEId, // 0 => main power meter; 1 => first EVSE
-                            IEnumerable<MeterValue>  MeterValues,
-                            CustomData?              CustomData          = null,
-
-                            Request_Id?              RequestId           = null,
-                            DateTime?                RequestTimestamp    = null,
-                            TimeSpan?                RequestTimeout      = null,
-                            EventTracking_Id?        EventTrackingId     = null,
-                            CancellationToken        CancellationToken   = default)
+            SendMeterValues(MeterValuesRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new MeterValuesRequest(
-                                 ChargeBoxId,
-                                 EVSEId,
-                                 MeterValues,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnMeterValuesRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnMeterValuesRequest?.Invoke(startTime,
                                              this,
-                                             request);
+                                             Request);
 
             }
             catch (Exception e)
@@ -9599,9 +9072,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.MeterValuesResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.SendMeterValues(request);
+                response = await CSClient.SendMeterValues(Request);
 
-            response ??= new CSMS.MeterValuesResponse(request,
+            response ??= new CSMS.MeterValuesResponse(Request,
                                                       Result.Server("Response is null!"));
 
 
@@ -9614,7 +9087,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnMeterValuesResponse?.Invoke(endTime,
                                               this,
-                                              request,
+                                              Request,
                                               response,
                                               endTime - startTime);
 
@@ -9632,7 +9105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region NotifyChargingLimit                  (ChargingLimit, ChargingSchedules, EVSEId = null, ...)
+        #region NotifyChargingLimit                   (Request)
 
         /// <summary>
         /// Notify about a charging limit.
@@ -9649,48 +9122,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyChargingLimitResponse>
 
-            NotifyChargingLimit(ChargingLimit                  ChargingLimit,
-                                IEnumerable<ChargingSchedule>  ChargingSchedules,
-                                EVSE_Id?                       EVSEId              = null,
-                                CustomData?                    CustomData          = null,
-
-                                Request_Id?                    RequestId           = null,
-                                DateTime?                      RequestTimestamp    = null,
-                                TimeSpan?                      RequestTimeout      = null,
-                                EventTracking_Id?              EventTrackingId     = null,
-                                CancellationToken              CancellationToken   = default)
+            NotifyChargingLimit(NotifyChargingLimitRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new NotifyChargingLimitRequest(
-                                 ChargeBoxId,
-                                 ChargingLimit,
-                                 ChargingSchedules,
-                                 EVSEId,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnNotifyChargingLimitRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnNotifyChargingLimitRequest?.Invoke(startTime,
                                                      this,
-                                                     request);
+                                                     Request);
 
             }
             catch (Exception e)
@@ -9704,14 +9149,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.NotifyChargingLimitResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.NotifyChargingLimit(request);
+                response = await CSClient.NotifyChargingLimit(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.NotifyChargingLimitResponse(request,
+            response ??= new CSMS.NotifyChargingLimitResponse(Request,
                                                               Result.Server("Response is null!"));
 
 
@@ -9724,7 +9169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnNotifyChargingLimitResponse?.Invoke(endTime,
                                                       this,
-                                                      request,
+                                                      Request,
                                                       response,
                                                       endTime - startTime);
 
@@ -9742,7 +9187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SendClearedChargingLimit             (ChargingLimitSource, EVSEId, ...)
+        #region SendClearedChargingLimit              (Request)
 
         /// <summary>
         /// Send a heartbeat.
@@ -9758,46 +9203,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.ClearedChargingLimitResponse>
 
-            SendClearedChargingLimit(ChargingLimitSources  ChargingLimitSource,
-                                     EVSE_Id?              EVSEId,
-                                     CustomData?           CustomData          = null,
-
-                                     Request_Id?           RequestId           = null,
-                                     DateTime?             RequestTimestamp    = null,
-                                     TimeSpan?             RequestTimeout      = null,
-                                     EventTracking_Id?     EventTrackingId     = null,
-                                     CancellationToken     CancellationToken   = default)
+            SendClearedChargingLimit(ClearedChargingLimitRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new ClearedChargingLimitRequest(
-                                 ChargeBoxId,
-                                 ChargingLimitSource,
-                                 EVSEId,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnClearedChargingLimitRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnClearedChargingLimitRequest?.Invoke(startTime,
                                                       this,
-                                                      request);
+                                                      Request);
 
             }
             catch (Exception e)
@@ -9811,14 +9230,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.ClearedChargingLimitResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.SendClearedChargingLimit(request);
+                response = await CSClient.SendClearedChargingLimit(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.ClearedChargingLimitResponse(request,
+            response ??= new CSMS.ClearedChargingLimitResponse(Request,
                                                                Result.Server("Response is null!"));
 
 
@@ -9831,7 +9250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnClearedChargingLimitResponse?.Invoke(endTime,
                                                        this,
-                                                       request,
+                                                       Request,
                                                        response,
                                                        endTime - startTime);
 
@@ -9849,7 +9268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ReportChargingProfiles               (ReportChargingProfilesRequestId, ChargingLimitSource, EVSEId, ChargingProfiles, ToBeContinued = null, ...)
+        #region ReportChargingProfiles                (Request)
 
         /// <summary>
         /// Report about all charging profiles.
@@ -9868,52 +9287,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.ReportChargingProfilesResponse>
 
-            ReportChargingProfiles(Int32                         ReportChargingProfilesRequestId,
-                                   ChargingLimitSources          ChargingLimitSource,
-                                   EVSE_Id                       EVSEId,
-                                   IEnumerable<ChargingProfile>  ChargingProfiles,
-                                   Boolean?                      ToBeContinued       = null,
-                                   CustomData?                   CustomData          = null,
-
-                                   Request_Id?                   RequestId           = null,
-                                   DateTime?                     RequestTimestamp    = null,
-                                   TimeSpan?                     RequestTimeout      = null,
-                                   EventTracking_Id?             EventTrackingId     = null,
-                                   CancellationToken             CancellationToken   = default)
+            ReportChargingProfiles(ReportChargingProfilesRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new ReportChargingProfilesRequest(
-                                 ChargeBoxId,
-                                 ReportChargingProfilesRequestId,
-                                 ChargingLimitSource,
-                                 EVSEId,
-                                 ChargingProfiles,
-                                 ToBeContinued,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnReportChargingProfilesRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnReportChargingProfilesRequest?.Invoke(startTime,
                                                         this,
-                                                        request);
+                                                        Request);
 
             }
             catch (Exception e)
@@ -9927,14 +9314,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.ReportChargingProfilesResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.ReportChargingProfiles(request);
+                response = await CSClient.ReportChargingProfiles(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.ReportChargingProfilesResponse(request,
+            response ??= new CSMS.ReportChargingProfilesResponse(Request,
                                                                  Result.Server("Response is null!"));
 
 
@@ -9947,7 +9334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnReportChargingProfilesResponse?.Invoke(endTime,
                                                          this,
-                                                         request,
+                                                         Request,
                                                          response,
                                                          endTime - startTime);
 
@@ -9965,7 +9352,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region NotifyEVChargingSchedule             (NotifyEVChargingScheduleRequestId, TimeBase, EVSEId, ChargingSchedule, SelectedScheduleTupleId = null, PowerToleranceAcceptance = null, ...)
+        #region NotifyEVChargingSchedule              (Request)
 
         /// <summary>
         /// Notify about an EV charging schedule.
@@ -9985,53 +9372,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyEVChargingScheduleResponse>
 
-            NotifyEVChargingSchedule(Int32              NotifyEVChargingScheduleRequestId,
-                                     DateTime           TimeBase,
-                                     EVSE_Id            EVSEId,
-                                     ChargingSchedule   ChargingSchedule,
-                                     Byte?              SelectedScheduleTupleId    = null,
-                                     Boolean?           PowerToleranceAcceptance   = null,
-                                     CustomData?        CustomData                 = null,
-
-                                     Request_Id?        RequestId                  = null,
-                                     DateTime?          RequestTimestamp           = null,
-                                     TimeSpan?          RequestTimeout             = null,
-                                     EventTracking_Id?  EventTrackingId            = null,
-                                     CancellationToken  CancellationToken          = default)
+            NotifyEVChargingSchedule(NotifyEVChargingScheduleRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new NotifyEVChargingScheduleRequest(
-                                 ChargeBoxId,
-                                 TimeBase,
-                                 EVSEId,
-                                 ChargingSchedule,
-                                 SelectedScheduleTupleId,
-                                 PowerToleranceAcceptance,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnNotifyEVChargingScheduleRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnNotifyEVChargingScheduleRequest?.Invoke(startTime,
                                                           this,
-                                                          request);
+                                                          Request);
 
             }
             catch (Exception e)
@@ -10045,14 +9399,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.NotifyEVChargingScheduleResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.NotifyEVChargingSchedule(request);
+                response = await CSClient.NotifyEVChargingSchedule(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.NotifyEVChargingScheduleResponse(request,
+            response ??= new CSMS.NotifyEVChargingScheduleResponse(Request,
                                                                    Result.Server("Response is null!"));
 
 
@@ -10065,7 +9419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnNotifyEVChargingScheduleResponse?.Invoke(endTime,
                                                            this,
-                                                           request,
+                                                           Request,
                                                            response,
                                                            endTime - startTime);
 
@@ -10083,7 +9437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region NotifyPriorityCharging               (NotifyPriorityChargingRequestId, TransactionId, Activated, ...)
+        #region NotifyPriorityCharging                (Request)
 
         /// <summary>
         /// Notify about priority charging.
@@ -10100,47 +9454,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyPriorityChargingResponse>
 
-            NotifyPriorityCharging(Int32              NotifyPriorityChargingRequestId,
-                                   Transaction_Id     TransactionId,
-                                   Boolean            Activated,
-                                   CustomData?        CustomData          = null,
-
-                                   Request_Id?        RequestId           = null,
-                                   DateTime?          RequestTimestamp    = null,
-                                   TimeSpan?          RequestTimeout      = null,
-                                   EventTracking_Id?  EventTrackingId     = null,
-                                   CancellationToken  CancellationToken   = default)
+            NotifyPriorityCharging(NotifyPriorityChargingRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new NotifyPriorityChargingRequest(
-                                 ChargeBoxId,
-                                 TransactionId,
-                                 Activated,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnNotifyPriorityChargingRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnNotifyPriorityChargingRequest?.Invoke(startTime,
                                                         this,
-                                                        request);
+                                                        Request);
 
             }
             catch (Exception e)
@@ -10154,14 +9481,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.NotifyPriorityChargingResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.NotifyPriorityCharging(request);
+                response = await CSClient.NotifyPriorityCharging(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.NotifyPriorityChargingResponse(request,
+            response ??= new CSMS.NotifyPriorityChargingResponse(Request,
                                                                  Result.Server("Response is null!"));
 
 
@@ -10174,7 +9501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnNotifyPriorityChargingResponse?.Invoke(endTime,
                                                          this,
-                                                         request,
+                                                         Request,
                                                          response,
                                                          endTime - startTime);
 
@@ -10192,7 +9519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region PullDynamicScheduleUpdate            (PullDynamicScheduleUpdateRequestId, ChargingProfileId, ...)
+        #region PullDynamicScheduleUpdate             (Request)
 
         /// <summary>
         /// Report about all charging profiles.
@@ -10208,45 +9535,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.PullDynamicScheduleUpdateResponse>
 
-            PullDynamicScheduleUpdate(Int32               PullDynamicScheduleUpdateRequestId,
-                                      ChargingProfile_Id  ChargingProfileId,
-                                      CustomData?         CustomData          = null,
-
-                                      Request_Id?         RequestId           = null,
-                                      DateTime?           RequestTimestamp    = null,
-                                      TimeSpan?           RequestTimeout      = null,
-                                      EventTracking_Id?   EventTrackingId     = null,
-                                      CancellationToken   CancellationToken   = default)
+            PullDynamicScheduleUpdate(PullDynamicScheduleUpdateRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new PullDynamicScheduleUpdateRequest(
-                                 ChargeBoxId,
-                                 ChargingProfileId,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnPullDynamicScheduleUpdateRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnPullDynamicScheduleUpdateRequest?.Invoke(startTime,
                                                            this,
-                                                           request);
+                                                           Request);
 
             }
             catch (Exception e)
@@ -10260,14 +9562,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.PullDynamicScheduleUpdateResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.PullDynamicScheduleUpdate(request);
+                response = await CSClient.PullDynamicScheduleUpdate(Request);
 
             if (response is not null)
             {
                 
             }
 
-            response ??= new CSMS.PullDynamicScheduleUpdateResponse(request,
+            response ??= new CSMS.PullDynamicScheduleUpdateResponse(Request,
                                                                     Result.Server("Response is null!"));
 
 
@@ -10280,7 +9582,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnPullDynamicScheduleUpdateResponse?.Invoke(endTime,
                                                             this,
-                                                            request,
+                                                            Request,
                                                             response,
                                                             endTime - startTime);
 
@@ -10299,7 +9601,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region NotifyDisplayMessages                (NotifyDisplayMessagesRequestId, MessageInfos, ToBeContinued, ...)
+        #region NotifyDisplayMessages                 (Request)
 
         /// <summary>
         /// NotifyDisplayMessages the given token.
@@ -10316,48 +9618,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyDisplayMessagesResponse>
 
-            NotifyDisplayMessages(Int32                     NotifyDisplayMessagesRequestId,
-                                  IEnumerable<MessageInfo>  MessageInfos,
-                                  Boolean?                  ToBeContinued       = null,
-                                  CustomData?               CustomData          = null,
-
-                                  Request_Id?               RequestId           = null,
-                                  DateTime?                 RequestTimestamp    = null,
-                                  TimeSpan?                 RequestTimeout      = null,
-                                  EventTracking_Id?         EventTrackingId     = null,
-                                  CancellationToken         CancellationToken   = default)
+            NotifyDisplayMessages(NotifyDisplayMessagesRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new NotifyDisplayMessagesRequest(
-                                 ChargeBoxId,
-                                 NotifyDisplayMessagesRequestId,
-                                 MessageInfos,
-                                 ToBeContinued,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnNotifyDisplayMessagesRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnNotifyDisplayMessagesRequest?.Invoke(startTime,
                                                        this,
-                                                       request);
+                                                       Request);
 
             }
             catch (Exception e)
@@ -10371,9 +9645,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.NotifyDisplayMessagesResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.NotifyDisplayMessages(request);
+                response = await CSClient.NotifyDisplayMessages(Request);
 
-            response ??= new CSMS.NotifyDisplayMessagesResponse(request,
+            response ??= new CSMS.NotifyDisplayMessagesResponse(Request,
                                                                 Result.Server("Response is null!"));
 
 
@@ -10386,7 +9660,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnNotifyDisplayMessagesResponse?.Invoke(endTime,
                                                         this,
-                                                        request,
+                                                        Request,
                                                         response,
                                                         endTime - startTime);
 
@@ -10404,7 +9678,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region NotifyCustomerInformation            (NotifyCustomerInformationRequestId, Data, SequenceNumber, GeneratedAt, ToBeContinued = null, ...)
+        #region NotifyCustomerInformation             (Request)
 
         /// <summary>
         /// NotifyCustomerInformation the given token.
@@ -10423,52 +9697,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyCustomerInformationResponse>
 
-            NotifyCustomerInformation(Int64              NotifyCustomerInformationRequestId,
-                                      String             Data,
-                                      UInt32             SequenceNumber,
-                                      DateTime           GeneratedAt,
-                                      Boolean?           ToBeContinued       = null,
-                                      CustomData?        CustomData          = null,
-
-                                      Request_Id?        RequestId           = null,
-                                      DateTime?          RequestTimestamp    = null,
-                                      TimeSpan?          RequestTimeout      = null,
-                                      EventTracking_Id?  EventTrackingId     = null,
-                                      CancellationToken  CancellationToken   = default)
+            NotifyCustomerInformation(NotifyCustomerInformationRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new NotifyCustomerInformationRequest(
-                                 ChargeBoxId,
-                                 NotifyCustomerInformationRequestId,
-                                 Data,
-                                 SequenceNumber,
-                                 GeneratedAt,
-                                 ToBeContinued,
-                                 null,
-                                 CustomData,
-
-                                 RequestId        ?? NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnNotifyCustomerInformationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnNotifyCustomerInformationRequest?.Invoke(startTime,
                                                            this,
-                                                           request);
+                                                           Request);
 
             }
             catch (Exception e)
@@ -10482,9 +9724,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.NotifyCustomerInformationResponse? response = null;
 
             if (CSClient is not null)
-                response = await CSClient.NotifyCustomerInformation(request);
+                response = await CSClient.NotifyCustomerInformation(Request);
 
-            response ??= new CSMS.NotifyCustomerInformationResponse(request,
+            response ??= new CSMS.NotifyCustomerInformationResponse(Request,
                                                                     Result.Server("Response is null!"));
 
 
@@ -10497,7 +9739,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnNotifyCustomerInformationResponse?.Invoke(endTime,
                                                             this,
-                                                            request,
+                                                            Request,
                                                             response,
                                                             endTime - startTime);
 
@@ -10511,148 +9753,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             return response;
 
-        }
-
-        #endregion
-
-
-
-
-        #region ToDo's...
-
-        public Task<CSMS.FirmwareStatusNotificationResponse> SendFirmwareStatusNotification(FirmwareStatusNotificationRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.PublishFirmwareStatusNotificationResponse> SendPublishFirmwareStatusNotification(PublishFirmwareStatusNotificationRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.HeartbeatResponse> SendHeartbeat(HeartbeatRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.NotifyEventResponse> NotifyEvent(NotifyEventRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.SecurityEventNotificationResponse> SendSecurityEventNotification(SecurityEventNotificationRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.NotifyReportResponse> NotifyReport(NotifyReportRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.NotifyMonitoringReportResponse> NotifyMonitoringReport(NotifyMonitoringReportRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.LogStatusNotificationResponse> SendLogStatusNotification(LogStatusNotificationRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.DataTransferResponse> TransferData(DataTransferRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.SignCertificateResponse> SendCertificateSigningRequest(SignCertificateRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.Get15118EVCertificateResponse> Get15118EVCertificate(Get15118EVCertificateRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.GetCertificateStatusResponse> GetCertificateStatus(GetCertificateStatusRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.GetCRLResponse> GetCRL(GetCRLRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.ReservationStatusUpdateResponse> SendReservationStatusUpdate(ReservationStatusUpdateRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.AuthorizeResponse> Authorize(AuthorizeRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.NotifyEVChargingNeedsResponse> NotifyEVChargingNeeds(NotifyEVChargingNeedsRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.TransactionEventResponse> SendTransactionEvent(TransactionEventRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.StatusNotificationResponse> SendStatusNotification(StatusNotificationRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.MeterValuesResponse> SendMeterValues(MeterValuesRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.NotifyChargingLimitResponse> NotifyChargingLimit(NotifyChargingLimitRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.ClearedChargingLimitResponse> SendClearedChargingLimit(ClearedChargingLimitRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.ReportChargingProfilesResponse> ReportChargingProfiles(ReportChargingProfilesRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.NotifyEVChargingScheduleResponse> NotifyEVChargingSchedule(NotifyEVChargingScheduleRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.NotifyPriorityChargingResponse> NotifyPriorityCharging(NotifyPriorityChargingRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.PullDynamicScheduleUpdateResponse> PullDynamicScheduleUpdate(PullDynamicScheduleUpdateRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.NotifyDisplayMessagesResponse> NotifyDisplayMessages(NotifyDisplayMessagesRequest Request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<CSMS.NotifyCustomerInformationResponse> NotifyCustomerInformation(NotifyCustomerInformationRequest Request)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

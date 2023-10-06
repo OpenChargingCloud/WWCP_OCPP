@@ -46,12 +46,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public NotifyCRLResponse(CSMS.NotifyCRLRequest    Request,
 
-                                 IEnumerable<Signature>?  Signatures   = null,
-                                 CustomData?              CustomData   = null)
+                                 IEnumerable<KeyPair>?    SignKeys          = null,
+                                 IEnumerable<SignInfo>?   SignInfos         = null,
+                                 SignaturePolicy?         SignaturePolicy   = null,
+                                 IEnumerable<Signature>?  Signatures        = null,
+
+                                 DateTime?                Timestamp         = null,
+                                 CustomData?              CustomData        = null)
 
             : base(Request,
                    Result.OK(),
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+                   Timestamp,
                    CustomData)
 
         { }
@@ -69,8 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  Result                 Result)
 
             : base(Request,
-                   Result,
-                   Timestamp.Now)
+                   Result)
 
         { }
 
@@ -168,7 +176,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 NotifyCRLResponse = new NotifyCRLResponse(
                                         Request,
+                                        null,
+                                        null,
+                                        null,
                                         Signatures,
+                                        null,
                                         CustomData
                                     );
 
@@ -182,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 NotifyCRLResponse  = null;
-                ErrorResponse                        = "The given JSON representation of a notify certificate revocation list response is invalid: " + e.Message;
+                ErrorResponse      = "The given JSON representation of a notify certificate revocation list response is invalid: " + e.Message;
                 return false;
             }
 

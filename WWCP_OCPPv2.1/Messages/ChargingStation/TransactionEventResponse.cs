@@ -93,12 +93,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         IdTokenInfo?                IdTokenInfo              = null,
                                         MessageContent?             UpdatedPersonalMessage   = null,
 
+                                        IEnumerable<KeyPair>?       SignKeys                 = null,
+                                        IEnumerable<SignInfo>?      SignInfos                = null,
+                                        SignaturePolicy?            SignaturePolicy          = null,
                                         IEnumerable<Signature>?     Signatures               = null,
+
+                                        DateTime?                   Timestamp                = null,
                                         CustomData?                 CustomData               = null)
 
             : base(Request,
                    Result.OK(),
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+                   Timestamp,
                    CustomData)
 
         {
@@ -123,8 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         Result                      Result)
 
             : base(Request,
-                   Result,
-                   Timestamp.Now)
+                   Result)
 
         { }
 
@@ -501,7 +509,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                ChargingPriority,
                                                IdTokenInfo,
                                                UpdatedPersonalMessage,
+                                               null,
+                                               null,
+                                               null,
                                                Signatures,
+                                               null,
                                                CustomData
                                            );
 

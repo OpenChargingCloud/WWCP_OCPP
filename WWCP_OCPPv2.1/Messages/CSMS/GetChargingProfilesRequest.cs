@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using Org.BouncyCastle.Asn1.Esf;
 
 #endregion
 
@@ -82,7 +83,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           ChargingProfileCriterion  ChargingProfile,
                                           EVSE_Id?                  EVSEId              = null,
 
+                                          IEnumerable<KeyPair>?     SignKeys            = null,
+                                          IEnumerable<SignInfo>?    SignInfos           = null,
+                                          SignaturePolicy?          SignaturePolicy     = null,
                                           IEnumerable<Signature>?   Signatures          = null,
+
                                           CustomData?               CustomData          = null,
 
                                           Request_Id?               RequestId           = null,
@@ -93,8 +98,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "GetChargingProfiles",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -393,6 +404,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  GetChargingProfilesRequestId,
                                                  ChargingProfile,
                                                  EVSEId,
+                                                 null,
+                                                 null,
+                                                 null,
                                                  Signatures,
                                                  CustomData,
                                                  RequestId

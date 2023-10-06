@@ -157,12 +157,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  ChargingRateValue?                   SetpointReactive_L2   = null,
                                                  ChargingRateValue?                   SetpointReactive_L3   = null,
 
+                                                 IEnumerable<KeyPair>?                SignKeys              = null,
+                                                 IEnumerable<SignInfo>?               SignInfos             = null,
+                                                 SignaturePolicy?                     SignaturePolicy       = null,
                                                  IEnumerable<Signature>?              Signatures            = null,
+
+                                                 DateTime?                            Timestamp             = null,
                                                  CustomData?                          CustomData            = null)
 
             : base(Request,
                    Result.OK(),
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+                   Timestamp,
                    CustomData)
 
         {
@@ -250,8 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  Result                               Result)
 
             : base(Request,
-                   Result,
-                   Timestamp.Now)
+                   Result)
 
         { }
 
@@ -527,7 +535,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                         SetpointReactive_L2,
                                                         SetpointReactive_L3,
 
+                                                        null,
+                                                        null,
+                                                        null,
                                                         Signatures,
+
+                                                        null,
                                                         CustomData
 
                                                     );

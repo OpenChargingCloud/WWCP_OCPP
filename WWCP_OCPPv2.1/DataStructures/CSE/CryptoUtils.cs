@@ -74,6 +74,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SignInfos">An enumeration of cryptographic signature information or key pairs to sign the given message.</param>
         public static Boolean SignMessage(ISignableMessage   SignableMessage,
                                           JObject            JSONMessage,
+                                          JSONLDContext      JSONLDContext,
+                                          SignaturePolicy?   SignaturePolicy,
                                           out String?        ErrorResponse,
                                           params SignInfo[]  SignInfos)
         {
@@ -86,81 +88,114 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return false;
             }
 
-            if (SignInfos is null || !SignInfos.Any())
-            {
-                ErrorResponse = "The given key pairs must not be null or empty!";
-                return false;
-            }
+            //if (SignInfos is null || !SignInfos.Any())
+            //{
+            //    ErrorResponse = "The given key pairs must not be null or empty!";
+            //    return false;
+            //}
 
             #endregion
 
             try
             {
 
-                foreach (var signInfo in SignInfos)
+                IEnumerable<SignaturePolicyEntry>? signaturePolicyEntries = null;
+
+                if ((SignInfos                 is not null && SignInfos.                Any()) ||
+                    (SignableMessage.SignKeys  is not null && SignableMessage.SignKeys. Any()) ||
+                    (SignableMessage.SignInfos is not null && SignableMessage.SignInfos.Any()) ||
+                    (SignaturePolicy           is not null && SignaturePolicy.Has(JSONLDContext,
+                                                                                  out signaturePolicyEntries)))
                 {
 
-                    #region Initial checks
+                    var signInfos = new List<SignInfo>();
 
-                    if (signInfo is null)
+                    if (SignInfos                 is not null && SignInfos.Any())
+                        signInfos.AddRange(SignInfos);
+
+                    if (SignableMessage.SignKeys  is not null && SignableMessage.SignKeys. Any())
+                        signInfos.AddRange(SignableMessage.SignKeys.Select(keyPair => keyPair.ToSignInfo()));
+
+                    if (SignableMessage.SignInfos is not null && SignableMessage.SignInfos.Any())
+                        signInfos.AddRange(SignableMessage.SignInfos);
+
+                    if (signaturePolicyEntries is not null && signaturePolicyEntries.Any())
                     {
-                        ErrorResponse = "The given key pair must not be null!";
-                        return false;
+                        foreach (var signaturePolicyEntry in signaturePolicyEntries)
+                        {
+                            if (signaturePolicyEntry.KeyPair is not null)
+                                signInfos.Add(signaturePolicyEntry.KeyPair.ToSignInfo());
+                        }
                     }
 
 
-                    if (signInfo.Private is null || signInfo.Private.IsNullOrEmpty())
+                    foreach (var signInfo in signInfos)
                     {
-                        ErrorResponse = "The given key pair must contain a serialized private key!";
-                        return false;
+
+                        #region Initial checks
+
+                        if (signInfo is null)
+                        {
+                            ErrorResponse = "The given key pair must not be null!";
+                            return false;
+                        }
+
+
+                        if (signInfo.Private is null || signInfo.Private.IsNullOrEmpty())
+                        {
+                            ErrorResponse = "The given key pair must contain a serialized private key!";
+                            return false;
+                        }
+
+                        if (signInfo.Public  is null || signInfo.Public. IsNullOrEmpty())
+                        {
+                            ErrorResponse = "The given key pair must contain a serialized public key!";
+                            return false;
+                        }
+
+
+                        if (signInfo.PrivateKey is null)
+                        {
+                            ErrorResponse = "The given key pair must contain a private key!";
+                            return false;
+                        }
+
+                        if (signInfo.PublicKey is null)
+                        {
+                            ErrorResponse = "The given key pair must contain a public key!";
+                            return false;
+                        }
+
+                        #endregion
+
+                        var plainText   = JSONMessage.ToString(Formatting.None, defaultJSONConverters);
+
+                        var cryptoHash  = signInfo.Algorithm switch {
+                                              "secp521r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                              "secp384r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                              _            => SHA256.HashData(plainText.ToUTF8Bytes()),
+                                          };
+
+                        var signer       = SignerUtilities.GetSigner("NONEwithECDSA");
+                        signer.Init(true, signInfo.PrivateKey);
+                        signer.BlockUpdate(cryptoHash);
+                        var signature    = signer.GenerateSignature();
+
+                        SignableMessage.AddSignature(new Signature(
+                                                         KeyId:            SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKeyData.GetBytes().ToBase64(),
+                                                         Value:            signature.ToBase64(),
+                                                         Algorithm:        signInfo.Algorithm,
+                                                         SigningMethod:    null,
+                                                         EncodingMethod:   signInfo.Encoding,
+                                                         Name:             signInfo.Name,
+                                                         Description:      signInfo.Description,
+                                                         Timestamp:        signInfo.Timestamp
+                                                     ));
+
                     }
-
-                    if (signInfo.Public  is null || signInfo.Public. IsNullOrEmpty())
-                    {
-                        ErrorResponse = "The given key pair must contain a serialized public key!";
-                        return false;
-                    }
-
-
-                    if (signInfo.PrivateKey is null)
-                    {
-                        ErrorResponse = "The given key pair must contain a private key!";
-                        return false;
-                    }
-
-                    if (signInfo.PublicKey is null)
-                    {
-                        ErrorResponse = "The given key pair must contain a public key!";
-                        return false;
-                    }
-
-                    #endregion
-
-                    var plainText   = JSONMessage.ToString(Formatting.None, defaultJSONConverters);
-
-                    var cryptoHash  = signInfo.Algorithm switch {
-                                          "secp521r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                          "secp384r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                          _            => SHA256.HashData(plainText.ToUTF8Bytes()),
-                                      };
-
-                    var signer       = SignerUtilities.GetSigner("NONEwithECDSA");
-                    signer.Init(true, signInfo.PrivateKey);
-                    signer.BlockUpdate(cryptoHash);
-                    var signature    = signer.GenerateSignature();
-
-                    SignableMessage.AddSignature(new Signature(
-                                                     KeyId:            SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKeyData.GetBytes().ToBase64(),
-                                                     Value:            signature.ToBase64(),
-                                                     Algorithm:        signInfo.Algorithm,
-                                                     SigningMethod:    null,
-                                                     EncodingMethod:   signInfo.Encoding,
-                                                     Name:             signInfo.Name,
-                                                     Description:      signInfo.Description,
-                                                     Timestamp:        signInfo.Timestamp
-                                                 ));
 
                 }
+
 
                 ErrorResponse = null;
                 return true;
@@ -188,6 +223,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the request message.</param>
         public static Boolean SignRequestMessage<TRequest>(ARequest<TRequest>  RequestMessage,
                                                            JObject             JSONMessage,
+                                                           JSONLDContext       JSONLDContext,
+                                                           SignaturePolicy?    SignaturePolicy,
                                                            out String?         ErrorResponse,
                                                            params SignInfo[]   SignInfos)
 
@@ -199,6 +236,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             return SignMessage(RequestMessage,
                                JSONMessage,
+                               JSONLDContext,
+                               SignaturePolicy,
                                out ErrorResponse,
                                SignInfos);
 
@@ -219,6 +258,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the response message.</param>
         public static Boolean SignResponseMessage<TRequest, TResponse>(AResponse<TRequest, TResponse>  ResponseMessage,
                                                                        JObject                         JSONMessage,
+                                                                       JSONLDContext                   JSONLDContext,
+                                                                       SignaturePolicy?                SignaturePolicy,
                                                                        out String?                     ErrorResponse,
                                                                        params SignInfo[]               SignInfos)
 
@@ -231,6 +272,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             return SignMessage(ResponseMessage,
                                JSONMessage,
+                               JSONLDContext,
+                               SignaturePolicy,
                                out ErrorResponse,
                                SignInfos);
 

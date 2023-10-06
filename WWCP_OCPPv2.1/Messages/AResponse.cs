@@ -57,39 +57,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Request">The request leading to this result.</param>
         /// <param name="Result">A generic result.</param>
+        /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public AResponse(TRequest                 Request,
-                         Result                   Result,
-                         IEnumerable<Signature>?  Signatures   = null,
-                         CustomData?              CustomData   = null)
-
-            : this(Request,
-                   Result,
-                   Timestamp.Now,
-                   Signatures,
-                   CustomData)
-
-        { }
-
-
-        /// <summary>
-        /// Create a new generic response.
-        /// </summary>
-        /// <param name="Request">The request leading to this result.</param>
-        /// <param name="Result">A generic result.</param>
+        /// 
         /// <param name="Timestamp">An optional response timestamp.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         public AResponse(TRequest                 Request,
                          Result                   Result,
-                         DateTime?                Timestamp    = null,
-                         IEnumerable<Signature>?  Signatures   = null,
-                         CustomData?              CustomData   = null)
+
+                         IEnumerable<KeyPair>?    SignKeys          = null,
+                         IEnumerable<SignInfo>?   SignInfos         = null,
+                         SignaturePolicy?         SignaturePolicy   = null,
+                         IEnumerable<Signature>?  Signatures        = null,
+
+                         DateTime?                Timestamp         = null,
+                         CustomData?              CustomData        = null)
 
             : base(Result,
-                   Timestamp,
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
+                   Timestamp,
                    CustomData)
 
         {
@@ -203,6 +194,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public DateTime                ResponseTimestamp    { get; }
 
+        public IEnumerable<KeyPair>    SignKeys             { get; }
+        public IEnumerable<SignInfo>   SignInfos            { get; }
+        public SignaturePolicy?        SignaturePolicy      { get; set; }
+
+
         /// <summary>
         /// The optional enumeration of cryptographic signatures for this message.
         /// </summary>
@@ -223,22 +219,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new generic response.
         /// </summary>
         /// <param name="Result">A generic result.</param>
-        /// <param name="Timestamp">An optional response timestamp.</param>
+        /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="Timestamp">An optional response timestamp.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public AResponse(Result                   Result,
-                         DateTime?                Timestamp    = null,
-                         IEnumerable<Signature>?  Signatures   = null,
-                         CustomData?              CustomData   = null)
+
+                         IEnumerable<KeyPair>?    SignKeys          = null,
+                         IEnumerable<SignInfo>?   SignInfos         = null,
+                         SignaturePolicy?         SignaturePolicy   = null,
+                         IEnumerable<Signature>?  Signatures        = null,
+
+                         DateTime?                Timestamp         = null,
+                         CustomData?              CustomData        = null)
         {
 
             this.Result             = Result;
-            this.ResponseTimestamp  = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
 
+            this.SignKeys           = SignKeys  ?? Array.Empty<KeyPair>();
+            this.SignInfos          = SignInfos ?? Array.Empty<SignInfo>();
+            this.SignaturePolicy    = SignaturePolicy;
             this.signatures         = Signatures is not null && Signatures.Any()
                                           ? new HashSet<Signature>(Signatures)
                                           : new HashSet<Signature>();
 
+            this.ResponseTimestamp  = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
             this.CustomData         = CustomData;
 
         }

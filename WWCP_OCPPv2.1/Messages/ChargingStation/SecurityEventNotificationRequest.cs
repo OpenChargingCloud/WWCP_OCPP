@@ -77,7 +77,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 DateTime                 Timestamp,
                                                 String?                  TechInfo            = null,
 
+                                                IEnumerable<KeyPair>?    SignKeys            = null,
+                                                IEnumerable<SignInfo>?   SignInfos           = null,
+                                                SignaturePolicy?         SignaturePolicy     = null,
                                                 IEnumerable<Signature>?  Signatures          = null,
+
                                                 CustomData?              CustomData          = null,
 
                                                 Request_Id?              RequestId           = null,
@@ -88,8 +92,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             : base(ChargeBoxId,
                    "SecurityEventNotification",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -323,6 +333,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                        Type,
                                                        Timestamp,
                                                        TechInfo,
+                                                       null,
+                                                       null,
+                                                       null,
                                                        Signatures,
                                                        CustomData,
                                                        RequestId

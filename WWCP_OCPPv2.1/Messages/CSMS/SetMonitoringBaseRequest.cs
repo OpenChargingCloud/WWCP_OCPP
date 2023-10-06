@@ -61,7 +61,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public SetMonitoringBaseRequest(ChargeBox_Id             ChargeBoxId,
                                         MonitoringBases          MonitoringBase,
 
+                                        IEnumerable<KeyPair>?    SignKeys            = null,
+                                        IEnumerable<SignInfo>?   SignInfos           = null,
+                                        SignaturePolicy?         SignaturePolicy     = null,
                                         IEnumerable<Signature>?  Signatures          = null,
+
                                         CustomData?              CustomData          = null,
 
                                         Request_Id?              RequestId           = null,
@@ -72,8 +76,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "SetMonitoringBase",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -283,6 +293,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 SetMonitoringBaseRequest = new SetMonitoringBaseRequest(
                                                ChargeBoxId,
                                                MonitoringBase,
+                                               null,
+                                               null,
+                                               null,
                                                Signatures,
                                                CustomData,
                                                RequestId

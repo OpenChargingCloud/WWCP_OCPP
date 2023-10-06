@@ -79,7 +79,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                 Certificate?                   Certificate                   = null,
                                 IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData   = null,
 
+                                IEnumerable<KeyPair>?          SignKeys                      = null,
+                                IEnumerable<SignInfo>?         SignInfos                     = null,
+                                SignaturePolicy?               SignaturePolicy               = null,
                                 IEnumerable<Signature>?        Signatures                    = null,
+
                                 CustomData?                    CustomData                    = null,
 
                                 Request_Id?                    RequestId                     = null,
@@ -90,8 +94,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             : base(ChargeBoxId,
                    "Authorize",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -438,6 +448,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        IdToken,
                                        Certificate,
                                        ISO15118CertificateHashData,
+                                       null,
+                                       null,
+                                       null,
                                        Signatures,
                                        CustomData,
                                        RequestId

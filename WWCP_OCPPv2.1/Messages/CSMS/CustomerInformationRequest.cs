@@ -114,7 +114,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           IdToken?                 IdToken               = null,
                                           CertificateHashData?     CustomerCertificate   = null,
 
+                                          IEnumerable<KeyPair>?    SignKeys              = null,
+                                          IEnumerable<SignInfo>?   SignInfos             = null,
+                                          SignaturePolicy?         SignaturePolicy       = null,
                                           IEnumerable<Signature>?  Signatures            = null,
+
                                           CustomData?              CustomData            = null,
 
                                           Request_Id?              RequestId             = null,
@@ -125,8 +129,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "CustomerInformation",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -549,6 +559,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  CustomerIdentifier,
                                                  IdToken,
                                                  CustomerCertificate,
+                                                 null,
+                                                 null,
+                                                 null,
                                                  Signatures,
                                                  CustomData,
                                                  RequestId

@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using Org.BouncyCastle.Asn1.Esf;
 
 #endregion
 
@@ -67,12 +68,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  IdTokenInfo                  IdTokenInfo,
                                  AuthorizeCertificateStatus?  CertificateStatus   = null,
 
+                                 IEnumerable<KeyPair>?        SignKeys            = null,
+                                 IEnumerable<SignInfo>?       SignInfos           = null,
+                                 SignaturePolicy?             SignaturePolicy     = null,
                                  IEnumerable<Signature>?      Signatures          = null,
+
+                                 DateTime?                    Timestamp           = null,
                                  CustomData?                  CustomData          = null)
 
             : base(Request,
                    Result.OK(),
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+                   Timestamp,
                    CustomData)
 
         {
@@ -95,8 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  Result               Result)
 
             : base(Request,
-                   Result,
-                   Timestamp.Now)
+                   Result)
 
         {
 
@@ -462,7 +471,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         Request,
                                         IdTokenInfo,
                                         CertificateStatus,
+                                        null,
+                                        null,
+                                        null,
                                         Signatures,
+                                        null,
                                         CustomData
                                     );
 

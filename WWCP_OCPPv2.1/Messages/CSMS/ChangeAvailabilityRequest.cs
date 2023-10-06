@@ -70,7 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          OperationalStatus        OperationalStatus,
                                          EVSE?                    EVSE                = null,
 
+                                         IEnumerable<KeyPair>?    SignKeys            = null,
+                                         IEnumerable<SignInfo>?   SignInfos           = null,
+                                         SignaturePolicy?         SignaturePolicy     = null,
                                          IEnumerable<Signature>?  Signatures          = null,
+
                                          CustomData?              CustomData          = null,
 
                                          Request_Id?              RequestId           = null,
@@ -81,8 +85,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "ChangeAvailability",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -331,6 +341,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ChargeBoxId,
                                                 OperationalStatus,
                                                 EVSE,
+                                                null,
+                                                null,
+                                                null,
                                                 Signatures,
                                                 CustomData,
                                                 RequestId

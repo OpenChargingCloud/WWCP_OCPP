@@ -72,15 +72,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public GetLogResponse(CSMS.GetLogRequest       Request,
                               LogStatus                Status,
-                              String?                  Filename     = null,
-                              StatusInfo?              StatusInfo   = null,
+                              String?                  Filename          = null,
+                              StatusInfo?              StatusInfo        = null,
 
-                              IEnumerable<Signature>?  Signatures   = null,
-                              CustomData?              CustomData   = null)
+                              IEnumerable<KeyPair>?    SignKeys          = null,
+                              IEnumerable<SignInfo>?   SignInfos         = null,
+                              SignaturePolicy?         SignaturePolicy   = null,
+                              IEnumerable<Signature>?  Signatures        = null,
+
+                              DateTime?                Timestamp         = null,
+                              CustomData?              CustomData        = null)
 
             : base(Request,
                    Result.OK(),
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+                   Timestamp,
                    CustomData)
 
         {
@@ -104,8 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                               Result              Result)
 
             : base(Request,
-                   Result,
-                   Timestamp.Now)
+                   Result)
 
         { }
 
@@ -266,7 +274,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                      Status,
                                      Filename,
                                      StatusInfo,
+                                     null,
+                                     null,
+                                     null,
                                      Signatures,
+                                     null,
                                      CustomData
                                  );
 

@@ -70,7 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           Transaction_Id           TransactionId,
                                           Boolean                  Activate,
 
+                                          IEnumerable<KeyPair>?    SignKeys            = null,
+                                          IEnumerable<SignInfo>?   SignInfos           = null,
+                                          SignaturePolicy?         SignaturePolicy     = null,
                                           IEnumerable<Signature>?  Signatures          = null,
+
                                           CustomData?              CustomData          = null,
 
                                           Request_Id?              RequestId           = null,
@@ -81,8 +85,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "UsePriorityCharging",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -249,6 +259,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  ChargeBoxId,
                                                  TransactionId,
                                                  Activate,
+                                                 null,
+                                                 null,
+                                                 null,
                                                  Signatures,
                                                  CustomData,
                                                  RequestId

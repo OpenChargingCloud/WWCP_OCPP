@@ -62,7 +62,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public UnpublishFirmwareRequest(ChargeBox_Id             ChargeBoxId,
                                         String                   MD5Checksum,
 
+                                        IEnumerable<KeyPair>?    SignKeys            = null,
+                                        IEnumerable<SignInfo>?   SignInfos           = null,
+                                        SignaturePolicy?         SignaturePolicy     = null,
                                         IEnumerable<Signature>?  Signatures          = null,
+
                                         CustomData?              CustomData          = null,
 
                                         Request_Id?              RequestId           = null,
@@ -73,8 +77,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "UnpublishFirmware",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -274,6 +284,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 UnpublishFirmwareRequest = new UnpublishFirmwareRequest(
                                                ChargeBoxId,
                                                MD5Checksum,
+                                               null,
+                                               null,
+                                               null,
                                                Signatures,
                                                CustomData,
                                                RequestId

@@ -70,7 +70,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                   Decimal                  TotalCost,
                                   Transaction_Id           TransactionId,
 
+                                  IEnumerable<KeyPair>?    SignKeys            = null,
+                                  IEnumerable<SignInfo>?   SignInfos           = null,
+                                  SignaturePolicy?         SignaturePolicy     = null,
                                   IEnumerable<Signature>?  Signatures          = null,
+
                                   CustomData?              CustomData          = null,
 
                                   Request_Id?              RequestId           = null,
@@ -81,8 +85,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "CostUpdated",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -302,6 +312,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          ChargeBoxId,
                                          TotalCost,
                                          TransactionId,
+                                         null,
+                                         null,
+                                         null,
                                          Signatures,
                                          CustomData,
                                          RequestId

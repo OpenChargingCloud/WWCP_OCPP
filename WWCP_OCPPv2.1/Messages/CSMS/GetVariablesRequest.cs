@@ -61,7 +61,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public GetVariablesRequest(ChargeBox_Id                  ChargeBoxId,
                                    IEnumerable<GetVariableData>  VariableData,
 
+                                   IEnumerable<KeyPair>?         SignKeys            = null,
+                                   IEnumerable<SignInfo>?        SignInfos           = null,
+                                   SignaturePolicy?              SignaturePolicy     = null,
                                    IEnumerable<Signature>?       Signatures          = null,
+
                                    CustomData?                   CustomData          = null,
 
                                    Request_Id?                   RequestId           = null,
@@ -72,8 +76,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "GetVariables",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -391,6 +401,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 GetVariablesRequest = new GetVariablesRequest(
                                           ChargeBoxId,
                                           VariableData,
+                                          null,
+                                          null,
+                                          null,
                                           Signatures,
                                           CustomData,
                                           RequestId

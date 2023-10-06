@@ -69,6 +69,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            ChargingLimitSources     ChargingLimitSource,
                                            EVSE_Id?                 EVSEId,
 
+                                           IEnumerable<KeyPair>?    SignKeys            = null,
+                                           IEnumerable<SignInfo>?   SignInfos           = null,
+                                           SignaturePolicy?         SignaturePolicy     = null,
                                            IEnumerable<Signature>?  Signatures          = null,
                                            CustomData?              CustomData          = null,
 
@@ -80,8 +83,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             : base(ChargeBoxId,
                    "ClearedChargingLimit",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -290,6 +299,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                   ChargeBoxId,
                                                   ChargingLimitSource,
                                                   EVSEId,
+                                                  null,
+                                                  null,
+                                                  null,
                                                   Signatures,
                                                   CustomData,
                                                   RequestId

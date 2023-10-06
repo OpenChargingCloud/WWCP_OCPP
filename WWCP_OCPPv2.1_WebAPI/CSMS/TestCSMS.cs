@@ -30,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using Org.BouncyCastle.Asn1.Esf;
 
 #endregion
 
@@ -2193,6 +2194,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                             CustomSignatureSerializer,
                             CustomCustomDataSerializer
                         ),
+                        BootNotificationResponse.DefaultJSONLDContext,
+                        SignaturePolicy,
                         out var errorResponse2,
                         signInfos.ToArray());
 
@@ -5271,12 +5274,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingBoxes.TryGetValue(Request.ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingBoxes.TryGetValue(Request.ChargeBoxId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.Reset(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomResetRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      ResetRequest.DefaultJSONLDContext,
+                                      SignaturePolicy,
+                                      out var errorResponse)
 
-                                : new CS.ResetResponse(Request,
-                                                       Result.Server("Unknown or unreachable charge box!"));
+                                  ? await centralSystem.Item1.Reset(Request)
+
+                                  : new CS.ResetResponse(
+                                        Request,
+                                        Result.SignatureError(errorResponse)
+                                    )
+
+                                : new CS.ResetResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
 
 
             #region Send OnResetResponse event
@@ -5339,7 +5361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.UpdateFirmware(Request)
 
                                 : new CS.UpdateFirmwareResponse(Request,
-                                                                Result.Server("Unknown or unreachable charge box!"));
+                                                                Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnUpdateFirmwareResponse event
@@ -5402,7 +5424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.PublishFirmware(Request)
 
                                 : new CS.PublishFirmwareResponse(Request,
-                                                                 Result.Server("Unknown or unreachable charge box!"));
+                                                                 Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnPublishFirmwareResponse event
@@ -5465,7 +5487,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.UnpublishFirmware(Request)
 
                                 : new CS.UnpublishFirmwareResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charge box!"));
+                                                                   Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnUnpublishFirmwareResponse event
@@ -5528,7 +5550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.GetBaseReport(Request)
 
                                 : new CS.GetBaseReportResponse(Request,
-                                                               Result.Server("Unknown or unreachable charge box!"));
+                                                               Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnGetBaseReportResponse event
@@ -5591,7 +5613,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.GetReport(Request)
 
                                 : new CS.GetReportResponse(Request,
-                                                           Result.Server("Unknown or unreachable charge box!"));
+                                                           Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnGetReportResponse event
@@ -5654,7 +5676,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.GetLog(Request)
 
                                 : new CS.GetLogResponse(Request,
-                                                        Result.Server("Unknown or unreachable charge box!"));
+                                                        Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnGetLogResponse event
@@ -5718,7 +5740,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.SetVariables(Request)
 
                                 : new CS.SetVariablesResponse(Request,
-                                                              Result.Server("Unknown or unreachable charge box!"));
+                                                              Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnSetVariablesResponse event
@@ -5781,7 +5803,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.GetVariables(Request)
 
                                 : new CS.GetVariablesResponse(Request,
-                                                              Result.Server("Unknown or unreachable charge box!"));
+                                                              Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnGetVariablesResponse event
@@ -5844,7 +5866,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.SetMonitoringBase(Request)
 
                                 : new CS.SetMonitoringBaseResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charge box!"));
+                                                                   Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnSetMonitoringBaseResponse event
@@ -5907,7 +5929,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.GetMonitoringReport(Request)
 
                                 : new CS.GetMonitoringReportResponse(Request,
-                                                                     Result.Server("Unknown or unreachable charge box!"));
+                                                                     Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnGetMonitoringReportResponse event
@@ -5970,7 +5992,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? await centralSystem.Item1.SetMonitoringLevel(Request)
 
                                : new CS.SetMonitoringLevelResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charge box!"));
+                                                                   Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnSetMonitoringLevelResponse event
@@ -6033,7 +6055,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? await centralSystem.Item1.SetVariableMonitoring(Request)
 
                                : new CS.SetVariableMonitoringResponse(Request,
-                                                                      Result.Server("Unknown or unreachable charge box!"));
+                                                                      Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnSetVariableMonitoringResponse event
@@ -6096,7 +6118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.ClearVariableMonitoring(Request)
 
                                 : new CS.ClearVariableMonitoringResponse(Request,
-                                                                         Result.Server("Unknown or unreachable charge box!"));
+                                                                         Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnClearVariableMonitoringResponse event
@@ -6159,7 +6181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.SetNetworkProfile(Request)
 
                                 : new CS.SetNetworkProfileResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charge box!"));
+                                                                   Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnSetNetworkProfileResponse event
@@ -6222,7 +6244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.ChangeAvailability(Request)
 
                                 : new CS.ChangeAvailabilityResponse(Request,
-                                                                    Result.Server("Unknown or unreachable charge box!"));
+                                                                    Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnChangeAvailabilityResponse event
@@ -6285,7 +6307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.TriggerMessage(Request)
 
                                 : new CS.TriggerMessageResponse(Request,
-                                                                Result.Server("Unknown or unreachable charge box!"));
+                                                                Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnTriggerMessageResponse event
@@ -6348,7 +6370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? await centralSystem.Item1.TransferData(Request)
 
                                : new CS.DataTransferResponse(Request,
-                                                             Result.Server("Unknown or unreachable charge box!"));
+                                                             Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnDataTransferResponse event
@@ -6412,7 +6434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.SendSignedCertificate(Request)
 
                                 : new CS.CertificateSignedResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charge box!"));
+                                                                   Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnCertificateSignedResponse event
@@ -6475,7 +6497,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.InstallCertificate(Request)
 
                                 : new CS.InstallCertificateResponse(Request,
-                                                                    Result.Server("Unknown or unreachable charge box!"));
+                                                                    Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnInstallCertificateResponse event
@@ -6538,7 +6560,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.GetInstalledCertificateIds(Request)
 
                                 : new CS.GetInstalledCertificateIdsResponse(Request,
-                                                                            Result.Server("Unknown or unreachable charge box!"));
+                                                                            Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnGetInstalledCertificateIdsResponse event
@@ -6601,7 +6623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.DeleteCertificate(Request)
 
                                 : new CS.DeleteCertificateResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charge box!"));
+                                                                   Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnDeleteCertificateResponse event
@@ -6664,7 +6686,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.NotifyCRLAvailability(Request)
 
                                 : new CS.NotifyCRLResponse(Request,
-                                                           Result.Server("Unknown or unreachable charge box!"));
+                                                           Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnNotifyCRLResponse event
@@ -6728,7 +6750,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.GetLocalListVersion(Request)
 
                                 : new CS.GetLocalListVersionResponse(Request,
-                                                                     Result.Server("Unknown or unreachable charge box!"));
+                                                                     Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnGetLocalListVersionResponse event
@@ -6791,7 +6813,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.SendLocalList(Request)
 
                                 : new CS.SendLocalListResponse(Request,
-                                                               Result.Server("Unknown or unreachable charge box!"));
+                                                               Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnSendLocalListResponse event
@@ -6854,7 +6876,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.ClearCache(Request)
 
                                 : new CS.ClearCacheResponse(Request,
-                                                            Result.Server("Unknown or unreachable charge box!"));
+                                                            Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnClearCacheResponse event
@@ -6918,7 +6940,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.ReserveNow(Request)
 
                                 : new CS.ReserveNowResponse(Request,
-                                                            Result.Server("Unknown or unreachable charge box!"));
+                                                            Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnReserveNowResponse event
@@ -6981,7 +7003,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.CancelReservation(Request)
 
                                 : new CS.CancelReservationResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charge box!"));
+                                                                   Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnCancelReservationResponse event
@@ -7044,7 +7066,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.StartCharging(Request)
 
                                 : new CS.RequestStartTransactionResponse(Request,
-                                                                         Result.Server("Unknown or unreachable charge box!"));
+                                                                         Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnRequestStartTransactionResponse event
@@ -7107,7 +7129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.StopCharging(Request)
 
                                 : new CS.RequestStopTransactionResponse(Request,
-                                                                        Result.Server("Unknown or unreachable charge box!"));
+                                                                        Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnRequestStopTransactionResponse event
@@ -7170,7 +7192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.GetTransactionStatus(Request)
 
                                 : new CS.GetTransactionStatusResponse(Request,
-                                                                      Result.Server("Unknown or unreachable charge box!"));
+                                                                      Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnGetTransactionStatusResponse event
@@ -7233,7 +7255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.SetChargingProfile(Request)
 
                                 : new CS.SetChargingProfileResponse(Request,
-                                                                    Result.Server("Unknown or unreachable charge box!"));
+                                                                    Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnSetChargingProfileResponse event
@@ -7296,7 +7318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.GetChargingProfiles(Request)
 
                                 : new CS.GetChargingProfilesResponse(Request,
-                                                                     Result.Server("Unknown or unreachable charge box!"));
+                                                                     Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnGetChargingProfilesResponse event
@@ -7359,7 +7381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.ClearChargingProfile(Request)
 
                                 : new CS.ClearChargingProfileResponse(Request,
-                                                                      Result.Server("Unknown or unreachable charge box!"));
+                                                                      Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnClearChargingProfileResponse event
@@ -7422,7 +7444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.GetCompositeSchedule(Request)
 
                                 : new CS.GetCompositeScheduleResponse(Request,
-                                                                      Result.Server("Unknown or unreachable charge box!"));
+                                                                      Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnGetCompositeScheduleResponse event
@@ -7485,7 +7507,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.UpdateDynamicSchedule(Request)
 
                                 : new CS.UpdateDynamicScheduleResponse(Request,
-                                                                       Result.Server("Unknown or unreachable charge box!"));
+                                                                       Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnUpdateDynamicScheduleResponse event
@@ -7548,7 +7570,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.NotifyAllowedEnergyTransfer(Request)
 
                                 : new CS.NotifyAllowedEnergyTransferResponse(Request,
-                                                                             Result.Server("Unknown or unreachable charge box!"));
+                                                                             Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnNotifyAllowedEnergyTransferResponse event
@@ -7611,7 +7633,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? await centralSystem.Item1.UsePriorityCharging(Request)
 
                                : new CS.UsePriorityChargingResponse(Request,
-                                                                    Result.Server("Unknown or unreachable charge box!"));
+                                                                    Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnUsePriorityChargingResponse event
@@ -7674,7 +7696,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.UnlockConnector(Request)
 
                                 : new CS.UnlockConnectorResponse(Request,
-                                                                 Result.Server("Unknown or unreachable charge box!"));
+                                                                 Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnUnlockConnectorResponse event
@@ -7740,7 +7762,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? await centralSystem.Item1.SendAFRRSignal(Request)
 
                                : new CS.AFRRSignalResponse(Request,
-                                                           Result.Server("Unknown or unreachable charge box!"));
+                                                           Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnAFRRSignalResponse event
@@ -7804,7 +7826,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.SetDisplayMessage(Request)
 
                                 : new CS.SetDisplayMessageResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charge box!"));
+                                                                   Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnSetDisplayMessageResponse event
@@ -7867,7 +7889,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.GetDisplayMessages(Request)
 
                                 : new CS.GetDisplayMessagesResponse(Request,
-                                                                    Result.Server("Unknown or unreachable charge box!"));
+                                                                    Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnGetDisplayMessagesResponse event
@@ -7930,7 +7952,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.ClearDisplayMessage(Request)
 
                                 : new CS.ClearDisplayMessageResponse(Request,
-                                                                     Result.Server("Unknown or unreachable charge box!"));
+                                                                     Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnClearDisplayMessageResponse event
@@ -7994,7 +8016,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.SendCostUpdated(Request)
 
                                 : new CS.CostUpdatedResponse(Request,
-                                                             Result.Server("Unknown or unreachable charge box!"));
+                                                             Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnCostUpdatedResponse event
@@ -8058,7 +8080,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? await centralSystem.Item1.RequestCustomerInformation(Request)
 
                                 : new CS.CustomerInformationResponse(Request,
-                                                                     Result.Server("Unknown or unreachable charge box!"));
+                                                                     Result.Server("Unknown or unreachable charging station!"));
 
 
             #region Send OnCustomerInformationResponse event

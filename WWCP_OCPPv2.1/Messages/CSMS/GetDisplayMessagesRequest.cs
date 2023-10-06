@@ -86,7 +86,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          MessagePriorities?               Priority            = null,
                                          MessageStates?                   State               = null,
 
+                                         IEnumerable<KeyPair>?            SignKeys            = null,
+                                         IEnumerable<SignInfo>?           SignInfos           = null,
+                                         SignaturePolicy?                 SignaturePolicy     = null,
                                          IEnumerable<Signature>?          Signatures          = null,
+
                                          CustomData?                      CustomData          = null,
 
                                          Request_Id?                      RequestId           = null,
@@ -97,8 +101,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "GetDisplayMessages",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -383,6 +393,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 Ids,
                                                 Priority,
                                                 State,
+                                                null,
+                                                null,
+                                                null,
                                                 Signatures,
                                                 CustomData,
                                                 RequestId

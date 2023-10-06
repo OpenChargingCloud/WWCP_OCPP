@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Data.SqlTypes;
 
 #endregion
 
@@ -62,7 +63,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public RequestStopTransactionRequest(ChargeBox_Id             ChargeBoxId,
                                              Transaction_Id           TransactionId,
 
+                                             IEnumerable<KeyPair>?    SignKeys            = null,
+                                             IEnumerable<SignInfo>?   SignInfos           = null,
+                                             SignaturePolicy?         SignaturePolicy     = null,
                                              IEnumerable<Signature>?  Signatures          = null,
+
                                              CustomData?              CustomData          = null,
 
                                              Request_Id?              RequestId           = null,
@@ -73,8 +78,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "RequestStopTransaction",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -275,6 +286,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 RequestStopTransactionRequest = new RequestStopTransactionRequest(
                                                     ChargeBoxId,
                                                     TransactionId,
+                                                    null,
+                                                    null,
+                                                    null,
                                                     Signatures,
                                                     CustomData,
                                                     RequestId

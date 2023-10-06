@@ -79,7 +79,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            EVSE_Id                  EVSEId,
                                            ChargingRateUnits?       ChargingRateUnit    = null,
 
+                                           IEnumerable<KeyPair>?    SignKeys            = null,
+                                           IEnumerable<SignInfo>?   SignInfos           = null,
+                                           SignaturePolicy?         SignaturePolicy     = null,
                                            IEnumerable<Signature>?  Signatures          = null,
+
                                            CustomData?              CustomData          = null,
 
                                            Request_Id?              RequestId           = null,
@@ -90,8 +94,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "GetCompositeSchedule",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -339,6 +349,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   Duration,
                                                   EVSEId,
                                                   ChargingRateUnit,
+                                                  null,
+                                                  null,
+                                                  null,
                                                   Signatures,
                                                   CustomData,
                                                   RequestId

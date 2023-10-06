@@ -96,7 +96,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             UInt32?                  MaximumContractCertificateChains   = 1,
                                             IEnumerable<EMA_Id>?     PrioritizedEMAIds                  = null,
 
+                                            IEnumerable<KeyPair>?    SignKeys                           = null,
+                                            IEnumerable<SignInfo>?   SignInfos                          = null,
+                                            SignaturePolicy?         SignaturePolicy                    = null,
                                             IEnumerable<Signature>?  Signatures                         = null,
+
                                             CustomData?              CustomData                         = null,
 
                                             Request_Id?              RequestId                          = null,
@@ -107,8 +111,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             : base(ChargeBoxId,
                    "Get15118EVCertificate",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -392,6 +402,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    EXIRequest,
                                                    MaximumContractCertificateChains,
                                                    PrioritizedEMAIDs,
+                                                   null,
+                                                   null,
+                                                   null,
                                                    Signatures,
                                                    CustomData,
                                                    RequestId

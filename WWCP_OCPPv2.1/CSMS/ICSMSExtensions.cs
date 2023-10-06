@@ -68,81 +68,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                   IEnumerable<KeyPair>?                           SignKeys                       = null,
                   IEnumerable<SignInfo>?                          SignInfos                      = null,
                   SignaturePolicy?                                SignaturePolicy                = null,
-                  CustomJObjectSerializerDelegate<ResetRequest>?  CustomResetRequestSerializer   = null,
-                  CustomJObjectSerializerDelegate<Signature>?     CustomSignatureSerializer      = null,
-                  CustomJObjectSerializerDelegate<CustomData>?    CustomCustomDataSerializer     = null,
+                  //CustomJObjectSerializerDelegate<ResetRequest>?  CustomResetRequestSerializer   = null,
+                  //CustomJObjectSerializerDelegate<Signature>?     CustomSignatureSerializer      = null,
+                  //CustomJObjectSerializerDelegate<CustomData>?    CustomCustomDataSerializer     = null,
 
                   CancellationToken                               CancellationToken              = default)
 
-        {
+                => CSMS.Reset(new ResetRequest(
+                                  ChargeBoxId,
+                                  ResetType,
+                                  EVSEId,
 
-            var resetRequest = new ResetRequest(
-                                   ChargeBoxId,
-                                   ResetType,
-                                   EVSEId,
+                                  SignKeys,
+                                  SignInfos,
+                                  SignaturePolicy,
+                                  Signatures,
+                                  CustomData,
 
-                                   Signatures,
-                                   CustomData,
-
-                                   RequestId        ?? CSMS.NextRequestId,
-                                   RequestTimestamp ?? Timestamp.Now,
-                                   RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                   EventTrackingId  ?? EventTracking_Id.New,
-                                   CancellationToken
-                               );
-
-            var signaturePolicy = SignaturePolicy ?? CSMS.SignaturePolicy;
-
-            IEnumerable<SignaturePolicyEntry>? signaturePolicyEntries = null;
-
-            if ((SignKeys        is not null && SignKeys.       Any()) ||
-                (SignInfos       is not null && SignInfos.      Any()) ||
-                (signaturePolicy is not null && signaturePolicy.Has(ResetRequest.DefaultJSONLDContext,
-                                                                    out signaturePolicyEntries)))
-            {
-
-                var signInfos = new List<SignInfo>();
-
-                if (SignInfos is not null && SignInfos.Any())
-                    signInfos.AddRange(SignInfos);
-
-                if (SignKeys  is not null && SignKeys. Any())
-                    signInfos.AddRange(SignKeys.Select(signKey => signKey.ToSignInfo()));
-
-                if (signaturePolicyEntries is not null && signaturePolicyEntries.Any())
-                {
-                    foreach (var signaturePolicyEntry in signaturePolicyEntries)
-                    {
-                        if (signaturePolicyEntry.KeyPair is not null)
-                            signInfos.Add(signaturePolicyEntry.KeyPair.ToSignInfo());
-                    }
-                }
-
-                if (!CryptoUtils.SignRequestMessage(
-                        resetRequest,
-                        resetRequest.ToJSON(
-                            CustomResetRequestSerializer ?? CSMS.CustomResetRequestSerializer,
-                            CustomSignatureSerializer    ?? CSMS.CustomSignatureSerializer,
-                            CustomCustomDataSerializer   ?? CSMS.CustomCustomDataSerializer
-                        ),
-                        out var errorResponse,
-                        signInfos.ToArray()))
-                {
-
-                    return Task.FromResult(
-                               new CS.ResetResponse(
-                                   resetRequest,
-                                   Result.SignatureError(errorResponse)
-                               )
-                           );
-
-                }
-
-            }
-
-            return CSMS.Reset(resetRequest);
-
-        }
+                                  RequestId        ?? CSMS.NextRequestId,
+                                  RequestTimestamp ?? Timestamp.Now,
+                                  RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                                  EventTrackingId  ?? EventTracking_Id.New,
+                                  CancellationToken
+                              ));
 
         #endregion
 
@@ -174,7 +122,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            Byte?                    Retries             = null,
                            TimeSpan?                RetryInterval       = null,
 
+                           IEnumerable<KeyPair>?    SignKeys            = null,
+                           IEnumerable<SignInfo>?   SignInfos           = null,
+                           SignaturePolicy?         SignaturePolicy     = null,
                            IEnumerable<Signature>?  Signatures          = null,
+
                            CustomData?              CustomData          = null,
 
                            Request_Id?              RequestId           = null,
@@ -191,7 +143,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            Retries,
                                            RetryInterval,
 
+                                           SignKeys,
+                                           SignInfos,
+                                           SignaturePolicy,
                                            Signatures,
+
                                            CustomData,
 
                                            RequestId        ?? CSMS.NextRequestId,
@@ -233,7 +189,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             Byte?                    Retries             = null,
                             TimeSpan?                RetryInterval       = null,
 
+                            IEnumerable<KeyPair>?    SignKeys            = null,
+                            IEnumerable<SignInfo>?   SignInfos           = null,
+                            SignaturePolicy?         SignaturePolicy     = null,
                             IEnumerable<Signature>?  Signatures          = null,
+
                             CustomData?              CustomData          = null,
 
                             Request_Id?              RequestId           = null,
@@ -251,7 +211,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             Retries,
                                             RetryInterval,
 
+                                            SignKeys,
+                                            SignInfos,
+                                            SignaturePolicy,
                                             Signatures,
+
                                             CustomData,
 
                                             RequestId        ?? CSMS.NextRequestId,
@@ -285,7 +249,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               ChargeBox_Id             ChargeBoxId,
                               String                   MD5Checksum,
 
+                              IEnumerable<KeyPair>?    SignKeys            = null,
+                              IEnumerable<SignInfo>?   SignInfos           = null,
+                              SignaturePolicy?         SignaturePolicy     = null,
                               IEnumerable<Signature>?  Signatures          = null,
+
                               CustomData?              CustomData          = null,
 
                               Request_Id?              RequestId           = null,
@@ -299,7 +267,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               ChargeBoxId,
                                               MD5Checksum,
 
+                                              SignKeys,
+                                              SignInfos,
+                                              SignaturePolicy,
                                               Signatures,
+
                                               CustomData,
 
                                               RequestId        ?? CSMS.NextRequestId,
@@ -335,7 +307,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                           Int64                    GetBaseReportRequestId,
                           ReportBases              ReportBase,
 
+                          IEnumerable<KeyPair>?    SignKeys            = null,
+                          IEnumerable<SignInfo>?   SignInfos           = null,
+                          SignaturePolicy?         SignaturePolicy     = null,
                           IEnumerable<Signature>?  Signatures          = null,
+
                           CustomData?              CustomData          = null,
 
                           Request_Id?              RequestId           = null,
@@ -350,7 +326,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           GetBaseReportRequestId,
                                           ReportBase,
 
+                                          SignKeys,
+                                          SignInfos,
+                                          SignaturePolicy,
                                           Signatures,
+
                                           CustomData,
 
                                           RequestId        ?? CSMS.NextRequestId,
@@ -388,7 +368,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                       IEnumerable<ComponentCriteria>  ComponentCriteria,
                       IEnumerable<ComponentVariable>  ComponentVariables,
 
+                      IEnumerable<KeyPair>?           SignKeys            = null,
+                      IEnumerable<SignInfo>?          SignInfos           = null,
+                      SignaturePolicy?                SignaturePolicy     = null,
                       IEnumerable<Signature>?         Signatures          = null,
+
                       CustomData?                     CustomData          = null,
 
                       Request_Id?                     RequestId           = null,
@@ -404,7 +388,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                       ComponentCriteria,
                                       ComponentVariables,
 
+                                      SignKeys,
+                                      SignInfos,
+                                      SignaturePolicy,
                                       Signatures,
+
                                       CustomData,
 
                                       RequestId        ?? CSMS.NextRequestId,
@@ -446,7 +434,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Byte?                    Retries             = null,
                    TimeSpan?                RetryInterval       = null,
 
+                   IEnumerable<KeyPair>?    SignKeys            = null,
+                   IEnumerable<SignInfo>?   SignInfos           = null,
+                   SignaturePolicy?         SignaturePolicy     = null,
                    IEnumerable<Signature>?  Signatures          = null,
+
                    CustomData?              CustomData          = null,
 
                    Request_Id?              RequestId           = null,
@@ -464,7 +456,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                    Retries,
                                    RetryInterval,
 
+                                   SignKeys,
+                                   SignInfos,
+                                   SignaturePolicy,
                                    Signatures,
+
                                    CustomData,
 
                                    RequestId        ?? CSMS.NextRequestId,
@@ -499,7 +495,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargeBox_Id                  ChargeBoxId,
                          IEnumerable<SetVariableData>  VariableData,
 
+                         IEnumerable<KeyPair>?         SignKeys            = null,
+                         IEnumerable<SignInfo>?        SignInfos           = null,
+                         SignaturePolicy?              SignaturePolicy     = null,
                          IEnumerable<Signature>?       Signatures          = null,
+
                          CustomData?                   CustomData          = null,
 
                          Request_Id?                   RequestId           = null,
@@ -513,7 +513,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          ChargeBoxId,
                                          VariableData,
 
+                                         SignKeys,
+                                         SignInfos,
+                                         SignaturePolicy,
                                          Signatures,
+
                                          CustomData,
 
                                          RequestId        ?? CSMS.NextRequestId,
@@ -547,7 +551,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargeBox_Id                  ChargeBoxId,
                          IEnumerable<GetVariableData>  VariableData,
 
+                         IEnumerable<KeyPair>?         SignKeys            = null,
+                         IEnumerable<SignInfo>?        SignInfos           = null,
+                         SignaturePolicy?              SignaturePolicy     = null,
                          IEnumerable<Signature>?       Signatures          = null,
+
                          CustomData?                   CustomData          = null,
 
                          Request_Id?                   RequestId           = null,
@@ -561,7 +569,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          ChargeBoxId,
                                          VariableData,
 
+                                         SignKeys,
+                                         SignInfos,
+                                         SignaturePolicy,
                                          Signatures,
+
                                          CustomData,
 
                                          RequestId        ?? CSMS.NextRequestId,
@@ -595,7 +607,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               ChargeBox_Id             ChargeBoxId,
                               MonitoringBases          MonitoringBase,
 
+                              IEnumerable<KeyPair>?    SignKeys            = null,
+                              IEnumerable<SignInfo>?   SignInfos           = null,
+                              SignaturePolicy?         SignaturePolicy     = null,
                               IEnumerable<Signature>?  Signatures          = null,
+
                               CustomData?              CustomData          = null,
 
                               Request_Id?              RequestId           = null,
@@ -609,7 +625,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               ChargeBoxId,
                                               MonitoringBase,
 
+                                              SignKeys,
+                                              SignInfos,
+                                              SignaturePolicy,
                                               Signatures,
+
                                               CustomData,
 
                                               RequestId        ?? CSMS.NextRequestId,
@@ -647,7 +667,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 IEnumerable<MonitoringCriteria>  MonitoringCriteria,
                                 IEnumerable<ComponentVariable>   ComponentVariables,
 
+                                IEnumerable<KeyPair>?            SignKeys            = null,
+                                IEnumerable<SignInfo>?           SignInfos           = null,
+                                SignaturePolicy?                 SignaturePolicy     = null,
                                 IEnumerable<Signature>?          Signatures          = null,
+
                                 CustomData?                      CustomData          = null,
 
                                 Request_Id?                      RequestId           = null,
@@ -663,7 +687,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 MonitoringCriteria,
                                                 ComponentVariables,
 
+                                                SignKeys,
+                                                SignInfos,
+                                                SignaturePolicy,
                                                 Signatures,
+
                                                 CustomData,
 
                                                 RequestId        ?? CSMS.NextRequestId,
@@ -697,7 +725,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ChargeBox_Id             ChargeBoxId,
                                Severities               Severity,
 
+                               IEnumerable<KeyPair>?    SignKeys            = null,
+                               IEnumerable<SignInfo>?   SignInfos           = null,
+                               SignaturePolicy?         SignaturePolicy     = null,
                                IEnumerable<Signature>?  Signatures          = null,
+
                                CustomData?              CustomData          = null,
 
                                Request_Id?              RequestId           = null,
@@ -711,7 +743,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                ChargeBoxId,
                                                Severity,
 
+                                               SignKeys,
+                                               SignInfos,
+                                               SignaturePolicy,
                                                Signatures,
+
                                                CustomData,
 
                                                RequestId        ?? CSMS.NextRequestId,
@@ -745,7 +781,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                   ChargeBox_Id                    ChargeBoxId,
                                   IEnumerable<SetMonitoringData>  MonitoringData,
 
+                                  IEnumerable<KeyPair>?           SignKeys            = null,
+                                  IEnumerable<SignInfo>?          SignInfos           = null,
+                                  SignaturePolicy?                SignaturePolicy     = null,
                                   IEnumerable<Signature>?         Signatures          = null,
+
                                   CustomData?                     CustomData          = null,
 
                                   Request_Id?                     RequestId           = null,
@@ -759,7 +799,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   ChargeBoxId,
                                                   MonitoringData,
 
+                                                  SignKeys,
+                                                  SignInfos,
+                                                  SignaturePolicy,
                                                   Signatures,
+
                                                   CustomData,
 
                                                   RequestId        ?? CSMS.NextRequestId,
@@ -793,7 +837,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     ChargeBox_Id                        ChargeBoxId,
                                     IEnumerable<VariableMonitoring_Id>  VariableMonitoringIds,
 
+                                    IEnumerable<KeyPair>?               SignKeys            = null,
+                                    IEnumerable<SignInfo>?              SignInfos           = null,
+                                    SignaturePolicy?                    SignaturePolicy     = null,
                                     IEnumerable<Signature>?             Signatures          = null,
+
                                     CustomData?                         CustomData          = null,
 
                                     Request_Id?                         RequestId           = null,
@@ -807,7 +855,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                     ChargeBoxId,
                                                     VariableMonitoringIds,
 
+                                                    SignKeys,
+                                                    SignInfos,
+                                                    SignaturePolicy,
                                                     Signatures,
+
                                                     CustomData,
 
                                                     RequestId        ?? CSMS.NextRequestId,
@@ -843,7 +895,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               Int32                     ConfigurationSlot,
                               NetworkConnectionProfile  NetworkConnectionProfile,
 
+                              IEnumerable<KeyPair>?     SignKeys            = null,
+                              IEnumerable<SignInfo>?    SignInfos           = null,
+                              SignaturePolicy?          SignaturePolicy     = null,
                               IEnumerable<Signature>?   Signatures          = null,
+
                               CustomData?               CustomData          = null,
 
                               Request_Id?               RequestId           = null,
@@ -858,7 +914,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               ConfigurationSlot,
                                               NetworkConnectionProfile,
 
+                                              SignKeys,
+                                              SignInfos,
+                                              SignaturePolicy,
                                               Signatures,
+
                                               CustomData,
 
                                               RequestId        ?? CSMS.NextRequestId,
@@ -894,7 +954,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                OperationalStatus        OperationalStatus,
                                EVSE?                    EVSE,
 
+                               IEnumerable<KeyPair>?    SignKeys            = null,
+                               IEnumerable<SignInfo>?   SignInfos           = null,
+                               SignaturePolicy?         SignaturePolicy     = null,
                                IEnumerable<Signature>?  Signatures          = null,
+
                                CustomData?              CustomData          = null,
 
                                Request_Id?              RequestId           = null,
@@ -909,7 +973,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                OperationalStatus,
                                                EVSE,
 
+                                               SignKeys,
+                                               SignInfos,
+                                               SignaturePolicy,
                                                Signatures,
+
                                                CustomData,
 
                                                RequestId        ?? CSMS.NextRequestId,
@@ -945,7 +1013,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            MessageTriggers          RequestedMessage,
                            EVSE?                    EVSE                = null,
 
+                           IEnumerable<KeyPair>?    SignKeys            = null,
+                           IEnumerable<SignInfo>?   SignInfos           = null,
+                           SignaturePolicy?         SignaturePolicy     = null,
                            IEnumerable<Signature>?  Signatures          = null,
+
                            CustomData?              CustomData          = null,
 
                            Request_Id?              RequestId           = null,
@@ -960,7 +1032,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            RequestedMessage,
                                            EVSE,
 
+                                           SignKeys,
+                                           SignInfos,
+                                           SignaturePolicy,
                                            Signatures,
+
                                            CustomData,
 
                                            RequestId        ?? CSMS.NextRequestId,
@@ -998,7 +1074,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          String?                  MessageId           = null,
                          JToken?                  Data                = null,
 
+                         IEnumerable<KeyPair>?    SignKeys            = null,
+                         IEnumerable<SignInfo>?   SignInfos           = null,
+                         SignaturePolicy?         SignaturePolicy     = null,
                          IEnumerable<Signature>?  Signatures          = null,
+
                          CustomData?              CustomData          = null,
 
                          Request_Id?              RequestId           = null,
@@ -1014,7 +1094,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          MessageId,
                                          Data,
 
+                                         SignKeys,
+                                         SignInfos,
+                                         SignaturePolicy,
                                          Signatures,
+
                                          CustomData,
 
                                          RequestId        ?? CSMS.NextRequestId,
@@ -1050,7 +1134,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                   CertificateChain         CertificateChain,
                                   CertificateSigningUse?   CertificateType     = null,
 
+                                  IEnumerable<KeyPair>?    SignKeys            = null,
+                                  IEnumerable<SignInfo>?   SignInfos           = null,
+                                  SignaturePolicy?         SignaturePolicy     = null,
                                   IEnumerable<Signature>?  Signatures          = null,
+
                                   CustomData?              CustomData          = null,
 
                                   Request_Id?              RequestId           = null,
@@ -1065,7 +1153,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   CertificateChain,
                                                   CertificateType,
 
+                                                  SignKeys,
+                                                  SignInfos,
+                                                  SignaturePolicy,
                                                   Signatures,
+
                                                   CustomData,
 
                                                   RequestId        ?? CSMS.NextRequestId,
@@ -1101,7 +1193,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                CertificateUse           CertificateType,
                                Certificate              Certificate,
 
+                               IEnumerable<KeyPair>?    SignKeys            = null,
+                               IEnumerable<SignInfo>?   SignInfos           = null,
+                               SignaturePolicy?         SignaturePolicy     = null,
                                IEnumerable<Signature>?  Signatures          = null,
+
                                CustomData?              CustomData          = null,
 
                                Request_Id?              RequestId           = null,
@@ -1116,7 +1212,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                CertificateType,
                                                Certificate,
 
+                                               SignKeys,
+                                               SignInfos,
+                                               SignaturePolicy,
                                                Signatures,
+
                                                CustomData,
 
                                                RequestId        ?? CSMS.NextRequestId,
@@ -1150,7 +1250,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        ChargeBox_Id                  ChargeBoxId,
                                        IEnumerable<CertificateUse>?  CertificateTypes    = null,
 
+                                       IEnumerable<KeyPair>?         SignKeys            = null,
+                                       IEnumerable<SignInfo>?        SignInfos           = null,
+                                       SignaturePolicy?              SignaturePolicy     = null,
                                        IEnumerable<Signature>?       Signatures          = null,
+
                                        CustomData?                   CustomData          = null,
 
                                        Request_Id?                   RequestId           = null,
@@ -1164,7 +1268,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                        ChargeBoxId,
                                                        CertificateTypes,
 
+                                                       SignKeys,
+                                                       SignInfos,
+                                                       SignaturePolicy,
                                                        Signatures,
+
                                                        CustomData,
 
                                                        RequestId        ?? CSMS.NextRequestId,
@@ -1198,7 +1306,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               ChargeBox_Id             ChargeBoxId,
                               CertificateHashData      CertificateHashData,
 
+                              IEnumerable<KeyPair>?    SignKeys            = null,
+                              IEnumerable<SignInfo>?   SignInfos           = null,
+                              SignaturePolicy?         SignaturePolicy     = null,
                               IEnumerable<Signature>?  Signatures          = null,
+
                               CustomData?              CustomData          = null,
 
                               Request_Id?              RequestId           = null,
@@ -1212,7 +1324,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               ChargeBoxId,
                                               CertificateHashData,
 
+                                              SignKeys,
+                                              SignInfos,
+                                              SignaturePolicy,
                                               Signatures,
+
                                               CustomData,
 
                                               RequestId        ?? CSMS.NextRequestId,
@@ -1250,7 +1366,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                   NotifyCRLStatus          Availability,
                                   URL?                     Location,
 
+                                  IEnumerable<KeyPair>?    SignKeys            = null,
+                                  IEnumerable<SignInfo>?   SignInfos           = null,
+                                  SignaturePolicy?         SignaturePolicy     = null,
                                   IEnumerable<Signature>?  Signatures          = null,
+
                                   CustomData?              CustomData          = null,
 
                                   Request_Id?              RequestId           = null,
@@ -1266,7 +1386,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   Availability,
                                                   Location,
 
+                                                  SignKeys,
+                                                  SignInfos,
+                                                  SignaturePolicy,
                                                   Signatures,
+
                                                   CustomData,
 
                                                   RequestId        ?? CSMS.NextRequestId,
@@ -1299,7 +1423,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             GetLocalListVersion(this ICSMS               CSMS,
                                 ChargeBox_Id             ChargeBoxId,
 
+                                IEnumerable<KeyPair>?    SignKeys            = null,
+                                IEnumerable<SignInfo>?   SignInfos           = null,
+                                SignaturePolicy?         SignaturePolicy     = null,
                                 IEnumerable<Signature>?  Signatures          = null,
+
                                 CustomData?              CustomData          = null,
 
                                 Request_Id?              RequestId           = null,
@@ -1312,7 +1440,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 => CSMS.GetLocalListVersion(new GetLocalListVersionRequest(
                                                 ChargeBoxId,
 
+                                                SignKeys,
+                                                SignInfos,
+                                                SignaturePolicy,
                                                 Signatures,
+
                                                 CustomData,
 
                                                 RequestId        ?? CSMS.NextRequestId,
@@ -1350,7 +1482,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                           UpdateTypes                      UpdateType,
                           IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
 
+                          IEnumerable<KeyPair>?            SignKeys                 = null,
+                          IEnumerable<SignInfo>?           SignInfos                = null,
+                          SignaturePolicy?                 SignaturePolicy          = null,
                           IEnumerable<Signature>?          Signatures               = null,
+
                           CustomData?                      CustomData               = null,
 
                           Request_Id?                      RequestId                = null,
@@ -1366,7 +1502,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           UpdateType,
                                           LocalAuthorizationList,
 
+                                          SignKeys,
+                                          SignInfos,
+                                          SignaturePolicy,
                                           Signatures,
+
                                           CustomData,
 
                                           RequestId        ?? CSMS.NextRequestId,
@@ -1398,7 +1538,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             ClearCache(this ICSMS               CSMS,
                        ChargeBox_Id             ChargeBoxId,
 
+                       IEnumerable<KeyPair>?    SignKeys            = null,
+                       IEnumerable<SignInfo>?   SignInfos           = null,
+                       SignaturePolicy?         SignaturePolicy     = null,
                        IEnumerable<Signature>?  Signatures          = null,
+
                        CustomData?              CustomData          = null,
 
                        Request_Id?              RequestId           = null,
@@ -1411,7 +1555,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 => CSMS.ClearCache(new ClearCacheRequest(
                                        ChargeBoxId,
 
+                                       SignKeys,
+                                       SignInfos,
+                                       SignaturePolicy,
                                        Signatures,
+
                                        CustomData,
 
                                        RequestId        ?? CSMS.NextRequestId,
@@ -1456,7 +1604,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                        EVSE_Id?                 EVSEId              = null,
                        IdToken?                 GroupIdToken        = null,
 
+                       IEnumerable<KeyPair>?    SignKeys            = null,
+                       IEnumerable<SignInfo>?   SignInfos           = null,
+                       SignaturePolicy?         SignaturePolicy     = null,
                        IEnumerable<Signature>?  Signatures          = null,
+
                        CustomData?              CustomData          = null,
 
                        Request_Id?              RequestId           = null,
@@ -1475,7 +1627,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        EVSEId,
                                        GroupIdToken,
 
+                                       SignKeys,
+                                       SignInfos,
+                                       SignaturePolicy,
                                        Signatures,
+
                                        CustomData,
 
                                        RequestId        ?? CSMS.NextRequestId,
@@ -1509,7 +1665,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               ChargeBox_Id             ChargeBoxId,
                               Reservation_Id           ReservationId,
 
+                              IEnumerable<KeyPair>?    SignKeys            = null,
+                              IEnumerable<SignInfo>?   SignInfos           = null,
+                              SignaturePolicy?         SignaturePolicy     = null,
                               IEnumerable<Signature>?  Signatures          = null,
+
                               CustomData?              CustomData          = null,
 
                               Request_Id?              RequestId           = null,
@@ -1523,7 +1683,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               ChargeBoxId,
                                               ReservationId,
 
+                                              SignKeys,
+                                              SignInfos,
+                                              SignaturePolicy,
                                               Signatures,
+
                                               CustomData,
 
                                               RequestId        ?? CSMS.NextRequestId,
@@ -1565,7 +1729,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                           ChargingProfile?         ChargingProfile     = null,
                           IdToken?                 GroupIdToken        = null,
 
+                          IEnumerable<KeyPair>?    SignKeys            = null,
+                          IEnumerable<SignInfo>?   SignInfos           = null,
+                          SignaturePolicy?         SignaturePolicy     = null,
                           IEnumerable<Signature>?  Signatures          = null,
+
                           CustomData?              CustomData          = null,
 
                           Request_Id?              RequestId           = null,
@@ -1583,7 +1751,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           ChargingProfile,
                                           GroupIdToken,
 
+                                          SignKeys,
+                                          SignInfos,
+                                          SignaturePolicy,
                                           Signatures,
+
                                           CustomData,
 
                                           RequestId        ?? CSMS.NextRequestId,
@@ -1617,7 +1789,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargeBox_Id             ChargeBoxId,
                          Transaction_Id           TransactionId,
 
+                         IEnumerable<KeyPair>?    SignKeys            = null,
+                         IEnumerable<SignInfo>?   SignInfos           = null,
+                         SignaturePolicy?         SignaturePolicy     = null,
                          IEnumerable<Signature>?  Signatures          = null,
+
                          CustomData?              CustomData          = null,
 
                          Request_Id?              RequestId           = null,
@@ -1631,7 +1807,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          ChargeBoxId,
                                          TransactionId,
 
+                                         SignKeys,
+                                         SignInfos,
+                                         SignaturePolicy,
                                          Signatures,
+
                                          CustomData,
 
                                          RequestId        ?? CSMS.NextRequestId,
@@ -1665,7 +1845,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  ChargeBox_Id             ChargeBoxId,
                                  Transaction_Id?          TransactionId       = null,
 
+                                 IEnumerable<KeyPair>?    SignKeys            = null,
+                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 SignaturePolicy?         SignaturePolicy     = null,
                                  IEnumerable<Signature>?  Signatures          = null,
+
                                  CustomData?              CustomData          = null,
 
                                  Request_Id?              RequestId           = null,
@@ -1679,7 +1863,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  ChargeBoxId,
                                                  TransactionId,
 
+                                                 SignKeys,
+                                                 SignInfos,
+                                                 SignaturePolicy,
                                                  Signatures,
+
                                                  CustomData,
 
                                                  RequestId        ?? CSMS.NextRequestId,
@@ -1715,7 +1903,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                EVSE_Id                  EVSEId,
                                ChargingProfile          ChargingProfile,
 
+                               IEnumerable<KeyPair>?    SignKeys            = null,
+                               IEnumerable<SignInfo>?   SignInfos           = null,
+                               SignaturePolicy?         SignaturePolicy     = null,
                                IEnumerable<Signature>?  Signatures          = null,
+
                                CustomData?              CustomData          = null,
 
                                Request_Id?              RequestId           = null,
@@ -1730,7 +1922,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                EVSEId,
                                                ChargingProfile,
 
+                                               SignKeys,
+                                               SignInfos,
+                                               SignaturePolicy,
                                                Signatures,
+
                                                CustomData,
 
                                                RequestId        ?? CSMS.NextRequestId,
@@ -1767,7 +1963,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 ChargingProfileCriterion  ChargingProfile,
                                 EVSE_Id?                  EVSEId              = null,
 
+                                IEnumerable<KeyPair>?     SignKeys            = null,
+                                IEnumerable<SignInfo>?    SignInfos           = null,
+                                SignaturePolicy?          SignaturePolicy     = null,
                                 IEnumerable<Signature>?   Signatures          = null,
+
                                 CustomData?               CustomData          = null,
 
                                 Request_Id?               RequestId           = null,
@@ -1783,7 +1983,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ChargingProfile,
                                                 EVSEId,
 
+                                                SignKeys,
+                                                SignInfos,
+                                                SignaturePolicy,
                                                 Signatures,
+
                                                 CustomData,
 
                                                 RequestId        ?? CSMS.NextRequestId,
@@ -1819,7 +2023,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  ChargingProfile_Id?      ChargingProfileId         = null,
                                  ClearChargingProfile?    ChargingProfileCriteria   = null,
 
+                                 IEnumerable<KeyPair>?    SignKeys                  = null,
+                                 IEnumerable<SignInfo>?   SignInfos                 = null,
+                                 SignaturePolicy?         SignaturePolicy           = null,
                                  IEnumerable<Signature>?  Signatures                = null,
+
                                  CustomData?              CustomData                = null,
 
                                  Request_Id?              RequestId                 = null,
@@ -1834,7 +2042,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  ChargingProfileId,
                                                  ChargingProfileCriteria,
 
+                                                 SignKeys,
+                                                 SignInfos,
+                                                 SignaturePolicy,
                                                  Signatures,
+
                                                  CustomData,
 
                                                  RequestId        ?? CSMS.NextRequestId,
@@ -1872,7 +2084,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  EVSE_Id                  EVSEId,
                                  ChargingRateUnits?       ChargingRateUnit    = null,
 
+                                 IEnumerable<KeyPair>?    SignKeys            = null,
+                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 SignaturePolicy?         SignaturePolicy     = null,
                                  IEnumerable<Signature>?  Signatures          = null,
+
                                  CustomData?              CustomData          = null,
 
                                  Request_Id?              RequestId           = null,
@@ -1888,7 +2104,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  EVSEId,
                                                  ChargingRateUnit,
 
+                                                 SignKeys,
+                                                 SignInfos,
+                                                 SignaturePolicy,
                                                  Signatures,
+
                                                  CustomData,
 
                                                  RequestId        ?? CSMS.NextRequestId,
@@ -1954,7 +2174,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                   ChargingRateValue?       SetpointReactive_L2   = null,
                                   ChargingRateValue?       SetpointReactive_L3   = null,
 
+                                  IEnumerable<KeyPair>?    SignKeys              = null,
+                                  IEnumerable<SignInfo>?   SignInfos             = null,
+                                  SignaturePolicy?         SignaturePolicy       = null,
                                   IEnumerable<Signature>?  Signatures            = null,
+
                                   CustomData?              CustomData            = null,
 
                                   Request_Id?              RequestId             = null,
@@ -1985,7 +2209,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                   SetpointReactive_L2,
                                                   SetpointReactive_L3,
 
+                                                  SignKeys,
+                                                  SignInfos,
+                                                  SignaturePolicy,
                                                   Signatures,
+
                                                   CustomData,
 
                                                   RequestId        ?? CSMS.NextRequestId,
@@ -2020,7 +2248,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         ChargeBox_Id                      ChargeBoxId,
                                         IEnumerable<EnergyTransferModes>  AllowedEnergyTransferModes,
 
+                                        IEnumerable<KeyPair>?             SignKeys            = null,
+                                        IEnumerable<SignInfo>?            SignInfos           = null,
+                                        SignaturePolicy?                  SignaturePolicy     = null,
                                         IEnumerable<Signature>?           Signatures          = null,
+
                                         CustomData?                       CustomData          = null,
 
                                         Request_Id?                       RequestId           = null,
@@ -2034,7 +2266,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                         ChargeBoxId,
                                                         AllowedEnergyTransferModes,
 
+                                                        SignKeys,
+                                                        SignInfos,
+                                                        SignaturePolicy,
                                                         Signatures,
+
                                                         CustomData,
 
                                                         RequestId        ?? CSMS.NextRequestId,
@@ -2070,7 +2306,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 Transaction_Id           TransactionId,
                                 Boolean                  Activate,
 
+                                IEnumerable<KeyPair>?    SignKeys            = null,
+                                IEnumerable<SignInfo>?   SignInfos           = null,
+                                SignaturePolicy?         SignaturePolicy     = null,
                                 IEnumerable<Signature>?  Signatures          = null,
+
                                 CustomData?              CustomData          = null,
 
                                 Request_Id?              RequestId           = null,
@@ -2085,7 +2325,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 TransactionId,
                                                 Activate,
 
+                                                SignKeys,
+                                                SignInfos,
+                                                SignaturePolicy,
                                                 Signatures,
+
                                                 CustomData,
 
                                                 RequestId        ?? CSMS.NextRequestId,
@@ -2120,7 +2364,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             EVSE_Id                  EVSEId,
                             Connector_Id             ConnectorId,
 
+                            IEnumerable<KeyPair>?    SignKeys            = null,
+                            IEnumerable<SignInfo>?   SignInfos           = null,
+                            SignaturePolicy?         SignaturePolicy     = null,
                             IEnumerable<Signature>?  Signatures          = null,
+
                             CustomData?              CustomData          = null,
 
                             Request_Id?              RequestId           = null,
@@ -2135,7 +2383,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             EVSEId,
                                             ConnectorId,
 
+                                            SignKeys,
+                                            SignInfos,
+                                            SignaturePolicy,
                                             Signatures,
+
                                             CustomData,
 
                                             RequestId        ?? CSMS.NextRequestId,
@@ -2174,7 +2426,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            DateTime                 ActivationTimestamp,
                            AFRR_Signal              Signal,
 
+                           IEnumerable<KeyPair>?    SignKeys            = null,
+                           IEnumerable<SignInfo>?   SignInfos           = null,
+                           SignaturePolicy?         SignaturePolicy     = null,
                            IEnumerable<Signature>?  Signatures          = null,
+
                            CustomData?              CustomData          = null,
 
                            Request_Id?              RequestId           = null,
@@ -2189,7 +2445,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            ActivationTimestamp,
                                            Signal,
 
+                                           SignKeys,
+                                           SignInfos,
+                                           SignaturePolicy,
                                            Signatures,
+
                                            CustomData,
 
                                            RequestId        ?? CSMS.NextRequestId,
@@ -2223,7 +2483,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               ChargeBox_Id             ChargeBoxId,
                               MessageInfo              Message,
 
+                              IEnumerable<KeyPair>?    SignKeys            = null,
+                              IEnumerable<SignInfo>?   SignInfos           = null,
+                              SignaturePolicy?         SignaturePolicy     = null,
                               IEnumerable<Signature>?  Signatures          = null,
+
                               CustomData?              CustomData          = null,
 
                               Request_Id?              RequestId           = null,
@@ -2237,7 +2501,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               ChargeBoxId,
                                               Message,
 
+                                              SignKeys,
+                                              SignInfos,
+                                              SignaturePolicy,
                                               Signatures,
+
                                               CustomData,
 
                                               RequestId        ?? CSMS.NextRequestId,
@@ -2276,7 +2544,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                MessagePriorities?               Priority            = null,
                                MessageStates?                   State               = null,
 
+                               IEnumerable<KeyPair>?            SignKeys            = null,
+                               IEnumerable<SignInfo>?           SignInfos           = null,
+                               SignaturePolicy?                 SignaturePolicy     = null,
                                IEnumerable<Signature>?          Signatures          = null,
+
                                CustomData?                      CustomData          = null,
 
                                Request_Id?                      RequestId           = null,
@@ -2293,7 +2565,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                Priority,
                                                State,
 
+                                               SignKeys,
+                                               SignInfos,
+                                               SignaturePolicy,
                                                Signatures,
+
                                                CustomData,
 
                                                RequestId        ?? CSMS.NextRequestId,
@@ -2326,7 +2602,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 ChargeBox_Id             ChargeBoxId,
                                 DisplayMessage_Id        DisplayMessageId,
 
+                                IEnumerable<KeyPair>?    SignKeys            = null,
+                                IEnumerable<SignInfo>?   SignInfos           = null,
+                                SignaturePolicy?         SignaturePolicy     = null,
                                 IEnumerable<Signature>?  Signatures          = null,
+
                                 CustomData?              CustomData          = null,
 
                                 Request_Id?              RequestId           = null,
@@ -2340,7 +2620,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                 ChargeBoxId,
                                                 DisplayMessageId,
 
+                                                SignKeys,
+                                                SignInfos,
+                                                SignaturePolicy,
                                                 Signatures,
+
                                                 CustomData,
 
                                                 RequestId        ?? CSMS.NextRequestId,
@@ -2375,7 +2659,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             Decimal                  TotalCost,
                             Transaction_Id           TransactionId,
 
+                            IEnumerable<KeyPair>?    SignKeys            = null,
+                            IEnumerable<SignInfo>?   SignInfos           = null,
+                            SignaturePolicy?         SignaturePolicy     = null,
                             IEnumerable<Signature>?  Signatures          = null,
+
                             CustomData?              CustomData          = null,
 
                             Request_Id?              RequestId           = null,
@@ -2390,7 +2678,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             TotalCost,
                                             TransactionId,
 
+                                            SignKeys,
+                                            SignInfos,
+                                            SignaturePolicy,
                                             Signatures,
+
                                             CustomData,
 
                                             RequestId        ?? CSMS.NextRequestId,
@@ -2433,7 +2725,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        IdToken?                 IdToken               = null,
                                        CertificateHashData?     CustomerCertificate   = null,
 
+                                       IEnumerable<KeyPair>?    SignKeys              = null,
+                                       IEnumerable<SignInfo>?   SignInfos             = null,
+                                       SignaturePolicy?         SignaturePolicy       = null,
                                        IEnumerable<Signature>?  Signatures            = null,
+
                                        CustomData?              CustomData            = null,
 
                                        Request_Id?              RequestId             = null,
@@ -2452,7 +2748,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                        IdToken,
                                                        CustomerCertificate,
 
+                                                       SignKeys,
+                                                       SignInfos,
+                                                       SignaturePolicy,
                                                        Signatures,
+
                                                        CustomData,
 
                                                        RequestId        ?? CSMS.NextRequestId,

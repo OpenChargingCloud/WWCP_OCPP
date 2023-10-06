@@ -58,12 +58,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public GetLocalListVersionResponse(CSMS.GetLocalListVersionRequest  Request,
                                            UInt64                           VersionNumber,
 
-                                           IEnumerable<Signature>?          Signatures   = null,
-                                           CustomData?                      CustomData   = null)
+                                           IEnumerable<KeyPair>?            SignKeys          = null,
+                                           IEnumerable<SignInfo>?           SignInfos         = null,
+                                           SignaturePolicy?                 SignaturePolicy   = null,
+                                           IEnumerable<Signature>?          Signatures        = null,
+
+                                           DateTime?                        Timestamp         = null,
+                                           CustomData?                      CustomData        = null)
 
             : base(Request,
                    Result.OK(),
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+                   Timestamp,
                    CustomData)
 
         {
@@ -85,8 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            Result                           Result)
 
             : base(Request,
-                   Result,
-                   Timestamp.Now)
+                   Result)
 
         { }
 
@@ -230,7 +238,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 GetLocalListVersionResponse = new GetLocalListVersionResponse(
                                                   Request,
                                                   VersionNumber,
+                                                  null,
+                                                  null,
+                                                  null,
                                                   Signatures,
+                                                  null,
                                                   CustomData
                                               );
 

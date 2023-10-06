@@ -94,6 +94,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public IEnumerable<Signature>  Signatures
             => signatures;
 
+        public IEnumerable<KeyPair>    SignKeys             { get; }
+        public IEnumerable<SignInfo>   SignInfos            { get; }
+        public SignaturePolicy?        SignaturePolicy      { get; set; }
+
+
         /// <summary>
         /// The custom data object to allow to store any kind of customer specific data.
         /// </summary>
@@ -126,6 +131,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public ARequest(ChargeBox_Id             ChargeBoxId,
                         String                   Action,
 
+                        IEnumerable<KeyPair>?    SignKeys            = null,
+                        IEnumerable<SignInfo>?   SignInfos           = null,
+                        SignaturePolicy?         SignaturePolicy     = null,
                         IEnumerable<Signature>?  Signatures          = null,
                         CustomData?              CustomData          = null,
 
@@ -140,6 +148,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.ChargeBoxId        = ChargeBoxId;
             this.Action             = Action;
 
+            this.SignKeys           = SignKeys  ?? Array.Empty<KeyPair>();
+            this.SignInfos          = SignInfos ?? Array.Empty<SignInfo>();
+            this.SignaturePolicy    = SignaturePolicy;
             this.signatures         = Signatures is not null && Signatures.Any()
                                           ? new HashSet<Signature>(Signatures)
                                           : new HashSet<Signature>();

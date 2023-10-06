@@ -49,7 +49,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ClearCacheRequest(ChargeBox_Id             ChargeBoxId,
 
+                                 IEnumerable<KeyPair>?    SignKeys            = null,
+                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 SignaturePolicy?         SignaturePolicy     = null,
                                  IEnumerable<Signature>?  Signatures          = null,
+
                                  CustomData?              CustomData          = null,
 
                                  Request_Id?              RequestId           = null,
@@ -60,8 +64,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "ClearCache",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -236,6 +246,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 ClearCacheRequest = new ClearCacheRequest(
                                         ChargeBoxId,
+                                        null,
+                                        null,
+                                        null,
                                         Signatures,
                                         CustomData,
                                         RequestId

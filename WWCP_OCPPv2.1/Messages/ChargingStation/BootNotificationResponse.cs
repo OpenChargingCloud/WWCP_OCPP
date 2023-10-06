@@ -33,6 +33,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                       BootNotificationResponse>
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/bootNotificationResponse");
+
+        #endregion
+
         #region Properties
 
         /// <summary>
@@ -84,14 +93,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         RegistrationStatus          Status,
                                         DateTime                    CurrentTime,
                                         TimeSpan                    Interval,
-                                        StatusInfo?                 StatusInfo   = null,
+                                        StatusInfo?                 StatusInfo        = null,
 
-                                        IEnumerable<Signature>?     Signatures   = null,
-                                        CustomData?                 CustomData   = null)
+                                        IEnumerable<KeyPair>?       SignKeys          = null,
+                                        IEnumerable<SignInfo>?      SignInfos         = null,
+                                        SignaturePolicy?            SignaturePolicy   = null,
+                                        IEnumerable<Signature>?     Signatures        = null,
+
+                                        DateTime?                   Timestamp         = null,
+                                        CustomData?                 CustomData        = null)
 
             : base(Request,
                    Result.OK(),
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+                   Timestamp,
                    CustomData)
 
         {
@@ -116,8 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         Result                      Result)
 
             : base(Request,
-                   Result,
-                   Timestamp.Now)
+                   Result)
 
         {
 
@@ -364,7 +381,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                CurrentTime,
                                                Interval,
                                                StatusInfo,
+                                               null,
+                                               null,
+                                               null,
                                                Signatures,
+                                               null,
                                                CustomData
                                            );
 

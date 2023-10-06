@@ -78,7 +78,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             ResetTypes               ResetType,
                             EVSE_Id?                 EVSEId              = null,
 
+                            IEnumerable<KeyPair>?    SignKeys            = null,
+                            IEnumerable<SignInfo>?   SignInfos           = null,
+                            SignaturePolicy?         SignaturePolicy     = null,
                             IEnumerable<Signature>?  Signatures          = null,
+
                             CustomData?              CustomData          = null,
 
                             Request_Id?              RequestId           = null,
@@ -90,8 +94,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "Reset",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -320,6 +330,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                    ChargeBoxId,
                                    ResetType,
                                    EVSEId,
+                                   null,
+                                   null,
+                                   null,
                                    Signatures,
                                    CustomData,
                                    RequestId

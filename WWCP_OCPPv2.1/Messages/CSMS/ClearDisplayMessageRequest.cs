@@ -61,7 +61,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public ClearDisplayMessageRequest(ChargeBox_Id             ChargeBoxId,
                                           DisplayMessage_Id        DisplayMessageId,
 
+                                          IEnumerable<KeyPair>?    SignKeys            = null,
+                                          IEnumerable<SignInfo>?   SignInfos           = null,
+                                          SignaturePolicy?         SignaturePolicy     = null,
                                           IEnumerable<Signature>?  Signatures          = null,
+
                                           CustomData?              CustomData          = null,
 
                                           Request_Id?              RequestId           = null,
@@ -72,8 +76,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "ClearDisplayMessage",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -274,6 +284,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 ClearDisplayMessageRequest = new ClearDisplayMessageRequest(
                                                  ChargeBoxId,
                                                  DisplayMessageId,
+                                                 null,
+                                                 null,
+                                                 null,
                                                  Signatures,
                                                  CustomData,
                                                  RequestId

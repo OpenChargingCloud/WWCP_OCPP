@@ -24,16 +24,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public interface ISignableMessage
     {
 
+        IEnumerable<KeyPair>    SignKeys      { get; }
+
+        IEnumerable<SignInfo>   SignInfos     { get; }
+
+        /// <summary>
+        /// The enumeration of all cryptographic signatures.
+        /// </summary>
+        IEnumerable<Signature>  Signatures    { get; }
+
+
         /// <summary>
         /// Add the given cryptographic signature to the message.
         /// </summary>
         /// <param name="Signature">A cryptographic signature.</param>
         void AddSignature(Signature Signature);
-
-        /// <summary>
-        /// The enumeration of all cryptographic signatures.
-        /// </summary>
-        IEnumerable<Signature> Signatures { get; }
 
 
     }

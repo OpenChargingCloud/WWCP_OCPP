@@ -61,7 +61,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public SetDisplayMessageRequest(ChargeBox_Id             ChargeBoxId,
                                         MessageInfo              Message,
 
+                                        IEnumerable<KeyPair>?    SignKeys            = null,
+                                        IEnumerable<SignInfo>?   SignInfos           = null,
+                                        SignaturePolicy?         SignaturePolicy     = null,
                                         IEnumerable<Signature>?  Signatures          = null,
+
                                         CustomData?              CustomData          = null,
 
                                         Request_Id?              RequestId           = null,
@@ -72,8 +76,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "SetDisplayMessage",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -432,6 +442,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 SetDisplayMessageRequest = new SetDisplayMessageRequest(
                                                ChargeBoxId,
                                                Message,
+                                               null,
+                                               null,
+                                               null,
                                                Signatures,
                                                CustomData,
                                                RequestId

@@ -68,7 +68,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         Int32                     ConfigurationSlot,
                                         NetworkConnectionProfile  NetworkConnectionProfile,
 
+                                        IEnumerable<KeyPair>?     SignKeys            = null,
+                                        IEnumerable<SignInfo>?    SignInfos           = null,
+                                        SignaturePolicy?          SignaturePolicy     = null,
                                         IEnumerable<Signature>?   Signatures          = null,
+
                                         CustomData?               CustomData          = null,
 
                                         Request_Id?               RequestId           = null,
@@ -79,8 +83,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "SetNetworkProfile",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -501,6 +511,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                ChargeBoxId,
                                                ConfigurationSlot,
                                                NetworkConnectionProfile,
+                                               null,
+                                               null,
+                                               null,
                                                Signatures,
                                                CustomData,
                                                RequestId

@@ -62,7 +62,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public SetMonitoringLevelRequest(ChargeBox_Id             ChargeBoxId,
                                          Severities               Severity,
 
+                                         IEnumerable<KeyPair>?    SignKeys            = null,
+                                         IEnumerable<SignInfo>?   SignInfos           = null,
+                                         SignaturePolicy?         SignaturePolicy     = null,
                                          IEnumerable<Signature>?  Signatures          = null,
+
                                          CustomData?              CustomData          = null,
 
                                          Request_Id?              RequestId           = null,
@@ -73,8 +77,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             : base(ChargeBoxId,
                    "SetMonitoringLevel",
+
+                   SignKeys,
+                   SignInfos,
+                   SignaturePolicy,
                    Signatures,
+
                    CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
@@ -278,6 +288,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 SetMonitoringLevelRequest = new SetMonitoringLevelRequest(
                                                 ChargeBoxId,
                                                 Severity.Value,
+                                                null,
+                                                null,
+                                                null,
                                                 Signatures,
                                                 CustomData,
                                                 RequestId
