@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         {
 
             public DateTime                       Timestamp            { get; }
-            public ChargingStation_Id                   ChargeBoxId          { get; }
+            public ChargingStation_Id             ChargingStationId    { get; }
             public OCPP_WebSocket_RequestMessage  WSRequestMessage     { get; }
             public DateTime                       Timeout              { get; }
 
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
             public SendRequestState(DateTime                       Timestamp,
-                                    ChargingStation_Id                   ChargeBoxId,
+                                    ChargingStation_Id             ChargingStationId,
                                     OCPP_WebSocket_RequestMessage  WSRequestMessage,
                                     DateTime                       Timeout,
 
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             {
 
                 this.Timestamp          = Timestamp;
-                this.ChargeBoxId        = ChargeBoxId;
+                this.ChargingStationId  = ChargingStationId;
                 this.WSRequestMessage   = WSRequestMessage;
                 this.Timeout            = Timeout;
 
@@ -119,30 +119,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public const            String                                                                          DefaultHTTPServiceName    = $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API";
+        public const            String                                                                                 DefaultHTTPServiceName           = $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API";
 
         /// <summary>
         /// The default HTTP server TCP port.
         /// </summary>
-        public static readonly  IPPort                                                                          DefaultHTTPServerPort     = IPPort.Parse(2010);
+        public static readonly  IPPort                                                                                 DefaultHTTPServerPort            = IPPort.Parse(2010);
 
         /// <summary>
         /// The default HTTP server URI prefix.
         /// </summary>
-        public static readonly  HTTPPath                                                                        DefaultURLPrefix          = HTTPPath.Parse("/" + Version.String);
+        public static readonly  HTTPPath                                                                               DefaultURLPrefix                 = HTTPPath.Parse("/" + Version.String);
 
         /// <summary>
         /// The default request timeout.
         /// </summary>
-        public static readonly  TimeSpan                                                                        DefaultRequestTimeout     = TimeSpan.FromSeconds(30);
+        public static readonly  TimeSpan                                                                               DefaultRequestTimeout            = TimeSpan.FromSeconds(30);
 
 
-        private readonly        ConcurrentDictionary<ChargingStation_Id, Tuple<WebSocketServerConnection, DateTime>>  connectedChargingBoxes    = new();
+        public  const           String                                                                                 chargingStationId_WebSocketKey   = "chargingStationId";
 
-        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                              requests                  = new();
+        private readonly        ConcurrentDictionary<ChargingStation_Id, Tuple<WebSocketServerConnection, DateTime>>   connectedChargingStations        = new();
+
+        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                                     requests                         = new();
 
 
-        private const           String                                                                          LogfileName               = "CSMSWSServer.log";
+        private const           String                                                                                 LogfileName                      = "CSMSWSServer.log";
 
         #endregion
 
@@ -158,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The enumeration of all connected charging stations.
         /// </summary>
         public IEnumerable<ChargingStation_Id> ChargeBoxIds
-            => connectedChargingBoxes.Keys;
+            => connectedChargingStations.Keys;
 
         /// <summary>
         /// Require a HTTP Basic Authentication of all charging boxes.
@@ -2116,34 +2118,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region AddOrUpdateHTTPBasicAuth(ChargeBoxId, Password)
+        #region AddOrUpdateHTTPBasicAuth(ChargingStationId, Password)
 
         /// <summary>
-        /// Add the given HTTP Basic Authentication password for the given charge box.
+        /// Add the given HTTP Basic Authentication password for the given charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of the charge box.</param>
-        /// <param name="Password">The password of the charge box.</param>
-        public void AddOrUpdateHTTPBasicAuth(ChargingStation_Id  ChargeBoxId,
-                                             String        Password)
+        /// <param name="ChargingStationId">The unique identification of the charging station.</param>
+        /// <param name="Password">The password of the charging station.</param>
+        public void AddOrUpdateHTTPBasicAuth(ChargingStation_Id  ChargingStationId,
+                                             String              Password)
         {
 
-            ChargingBoxLogins.AddOrUpdate(ChargeBoxId,
+            ChargingBoxLogins.AddOrUpdate(ChargingStationId,
                                           Password,
-                                          (chargeBoxId, password) => Password);
+                                          (chargingStationId, password) => Password);
 
         }
 
         #endregion
 
-        #region RemoveHTTPBasicAuth     (ChargeBoxId)
+        #region RemoveHTTPBasicAuth     (ChargingStationId)
 
         /// <summary>
-        /// Remove the given HTTP Basic Authentication for the given charge box.
+        /// Remove the given HTTP Basic Authentication for the given charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of the charge box.</param>
-        public void RemoveHTTPBasicAuth(ChargingStation_Id ChargeBoxId)
+        /// <param name="ChargingStationId">The unique identification of the charging station.</param>
+        public Boolean RemoveHTTPBasicAuth(ChargingStation_Id ChargingStationId)
         {
-            ChargingBoxLogins.TryRemove(ChargeBoxId, out _);
+
+            if (ChargingBoxLogins.ContainsKey(ChargingStationId))
+                return ChargingBoxLogins.TryRemove(ChargingStationId, out _);
+
+            return true;
+
         }
 
         #endregion
@@ -2269,30 +2276,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      CancellationToken          CancellationToken)
         {
 
-            if (!Connection.HasCustomData("chargeBoxId") &&
+            if (!Connection.HasCustomData(chargingStationId_WebSocketKey) &&
                 Connection.HTTPRequest is not null &&
-                ChargingStation_Id.TryParse(Connection.HTTPRequest.Path.ToString()[(Connection.HTTPRequest.Path.ToString().LastIndexOf("/") + 1)..], out var chargeBoxId))
+                ChargingStation_Id.TryParse(Connection.HTTPRequest.Path.ToString()[(Connection.HTTPRequest.Path.ToString().LastIndexOf("/") + 1)..], out var chargingStationId))
             {
 
-                // Add the chargeBoxId to the WebSocket connection
-                Connection.TryAddCustomData("chargeBoxId", chargeBoxId);
+                // Add the charging station identification to the WebSocket connection
+                Connection.TryAddCustomData(chargingStationId_WebSocketKey, chargingStationId);
 
-                if (!connectedChargingBoxes.ContainsKey(chargeBoxId))
-                    connectedChargingBoxes.TryAdd(chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+                if (!connectedChargingStations.ContainsKey(chargingStationId))
+                     connectedChargingStations.TryAdd(chargingStationId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
 
                 else
                 {
 
-                    DebugX.Log($"{nameof(CSMSWSServer)} Duplicate charge box '{chargeBoxId}' detected");
+                    DebugX.Log($"{nameof(CSMSWSServer)} Duplicate charging station '{chargingStationId}' detected!");
 
-                    var oldChargingBox_WebSocketConnection = connectedChargingBoxes[chargeBoxId].Item1;
+                    var oldChargingStation_WebSocketConnection = connectedChargingStations[chargingStationId].Item1;
 
-                    connectedChargingBoxes.TryRemove(chargeBoxId, out _);
-                    connectedChargingBoxes.TryAdd   (chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+                    connectedChargingStations.TryRemove(chargingStationId, out _);
+                    connectedChargingStations.TryAdd   (chargingStationId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
 
                     try
                     {
-                        oldChargingBox_WebSocketConnection.Close();
+                        oldChargingStation_WebSocketConnection.Close();
                     }
                     catch (Exception e)
                     {
@@ -2335,10 +2342,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            String?                           Reason)
         {
 
-            if (Connection.TryGetCustomDataAs<ChargingStation_Id>("chargeBoxId", out var chargeBoxId))
+            if (Connection.TryGetCustomDataAs<ChargingStation_Id>(chargingStationId_WebSocketKey, out var chargingStationId))
             {
-                //DebugX.Log(nameof(CSMSWSServer), " Charge box " + chargeBoxId + " disconnected!");
-                connectedChargingBoxes.TryRemove(chargeBoxId, out _);
+                //DebugX.Log(nameof(CSMSWSServer), " Charging station " + chargingStationId + " disconnected!");
+                connectedChargingStations.TryRemove(chargingStationId, out _);
             }
 
             return Task.CompletedTask;
@@ -2426,16 +2433,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     #region Initial checks
 
-                    var chargeBoxId  = Connection.TryGetCustomDataAs<ChargingStation_Id>("chargeBoxId");
-                    var requestId    = Request_Id.TryParse(json[1]?.Value<String>() ?? "");
-                    var action       = json[2]?.Value<String>()?.Trim();
-                    var requestData  = json[3]?.Value<JObject>();
+                    var chargingStationId  = Connection.TryGetCustomDataAs<ChargingStation_Id>(chargingStationId_WebSocketKey);
+                    var requestId          = Request_Id.TryParse(json[1]?.Value<String>() ?? "");
+                    var action             = json[2]?.Value<String>()?.Trim();
+                    var requestData        = json[3]?.Value<JObject>();
 
-                    if (!chargeBoxId.HasValue)
+                    if (!chargingStationId.HasValue)
                         OCPPErrorResponse  = new OCPP_WebSocket_ErrorMessage(
                                                  requestId ?? Request_Id.Parse("0"),
                                                  ResultCodes.ProtocolError,
-                                                 "The given 'charge box identity' must not be null or empty!",
+                                                 "The given 'charging station identity' must not be null or empty!",
                                                  new JObject(
                                                      new JProperty("request", OCPPTextMessage)
                                                  )
@@ -2504,7 +2511,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (BootNotificationRequest.TryParse(requestData,
                                                                              requestId.Value,
-                                                                             chargeBoxId.Value,
+                                                                             chargingStationId.Value,
                                                                              out var request,
                                                                              out var errorResponse,
                                                                              CustomBootNotificationRequestParser) && request is not null) {
@@ -2655,7 +2662,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (FirmwareStatusNotificationRequest.TryParse(requestData,
                                                                                        requestId.Value,
-                                                                                       chargeBoxId.Value,
+                                                                                       chargingStationId.Value,
                                                                                        out var request,
                                                                                        out var errorResponse,
                                                                                        CustomFirmwareStatusNotificationRequestParser) && request is not null) {
@@ -2803,7 +2810,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (PublishFirmwareStatusNotificationRequest.TryParse(requestData,
                                                                                               requestId.Value,
-                                                                                              chargeBoxId.Value,
+                                                                                              chargingStationId.Value,
                                                                                               out var request,
                                                                                               out var errorResponse,
                                                                                               CustomPublishFirmwareStatusNotificationRequestParser) && request is not null) {
@@ -2951,7 +2958,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (HeartbeatRequest.TryParse(requestData,
                                                                       requestId.Value,
-                                                                      chargeBoxId.Value,
+                                                                      chargingStationId.Value,
                                                                       out var request,
                                                                       out var errorResponse,
                                                                       CustomHeartbeatRequestParser) && request is not null) {
@@ -3099,7 +3106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (NotifyEventRequest.TryParse(requestData,
                                                                         requestId.Value,
-                                                                        chargeBoxId.Value,
+                                                                        chargingStationId.Value,
                                                                         out var request,
                                                                         out var errorResponse,
                                                                         CustomNotifyEventRequestParser) && request is not null) {
@@ -3247,7 +3254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (SecurityEventNotificationRequest.TryParse(requestData,
                                                                                       requestId.Value,
-                                                                                      chargeBoxId.Value,
+                                                                                      chargingStationId.Value,
                                                                                       out var request,
                                                                                       out var errorResponse,
                                                                                       CustomSecurityEventNotificationRequestParser) && request is not null) {
@@ -3395,7 +3402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (NotifyReportRequest.TryParse(requestData,
                                                                          requestId.Value,
-                                                                         chargeBoxId.Value,
+                                                                         chargingStationId.Value,
                                                                          out var request,
                                                                          out var errorResponse,
                                                                          CustomNotifyReportRequestParser) && request is not null) {
@@ -3543,7 +3550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (NotifyMonitoringReportRequest.TryParse(requestData,
                                                                                    requestId.Value,
-                                                                                   chargeBoxId.Value,
+                                                                                   chargingStationId.Value,
                                                                                    out var request,
                                                                                    out var errorResponse,
                                                                                    CustomNotifyMonitoringReportRequestParser) && request is not null) {
@@ -3691,7 +3698,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (LogStatusNotificationRequest.TryParse(requestData,
                                                                                   requestId.Value,
-                                                                                  chargeBoxId.Value,
+                                                                                  chargingStationId.Value,
                                                                                   out var request,
                                                                                   out var errorResponse,
                                                                                   CustomLogStatusNotificationRequestParser) && request is not null) {
@@ -3839,7 +3846,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (CS.DataTransferRequest.TryParse(requestData,
                                                                             requestId.Value,
-                                                                            chargeBoxId.Value,
+                                                                            chargingStationId.Value,
                                                                             out var request,
                                                                             out var errorResponse,
                                                                             CustomDataTransferRequestParser) && request is not null) {
@@ -3988,7 +3995,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (SignCertificateRequest.TryParse(requestData,
                                                                             requestId.Value,
-                                                                            chargeBoxId.Value,
+                                                                            chargingStationId.Value,
                                                                             out var request,
                                                                             out var errorResponse,
                                                                             CustomSignCertificateRequestParser) && request is not null) {
@@ -4136,7 +4143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (Get15118EVCertificateRequest.TryParse(requestData,
                                                                                   requestId.Value,
-                                                                                  chargeBoxId.Value,
+                                                                                  chargingStationId.Value,
                                                                                   out var request,
                                                                                   out var errorResponse,
                                                                                   CustomGet15118EVCertificateRequestParser) && request is not null) {
@@ -4284,7 +4291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (GetCertificateStatusRequest.TryParse(requestData,
                                                                                  requestId.Value,
-                                                                                 chargeBoxId.Value,
+                                                                                 chargingStationId.Value,
                                                                                  out var request,
                                                                                  out var errorResponse,
                                                                                  CustomGetCertificateStatusRequestParser) && request is not null) {
@@ -4432,7 +4439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (GetCRLRequest.TryParse(requestData,
                                                                    requestId.Value,
-                                                                   chargeBoxId.Value,
+                                                                   chargingStationId.Value,
                                                                    out var request,
                                                                    out var errorResponse,
                                                                    CustomGetCRLRequestParser) && request is not null) {
@@ -4581,7 +4588,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (ReservationStatusUpdateRequest.TryParse(requestData,
                                                                                     requestId.Value,
-                                                                                    chargeBoxId.Value,
+                                                                                    chargingStationId.Value,
                                                                                     out var request,
                                                                                     out var errorResponse,
                                                                                     CustomReservationStatusUpdateRequestParser) && request is not null) {
@@ -4729,7 +4736,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (AuthorizeRequest.TryParse(requestData,
                                                                       requestId.Value,
-                                                                      chargeBoxId.Value,
+                                                                      chargingStationId.Value,
                                                                       out var request,
                                                                       out var errorResponse,
                                                                       CustomAuthorizeRequestParser) && request is not null) {
@@ -4877,7 +4884,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (NotifyEVChargingNeedsRequest.TryParse(requestData,
                                                                                   requestId.Value,
-                                                                                  chargeBoxId.Value,
+                                                                                  chargingStationId.Value,
                                                                                   out var request,
                                                                                   out var errorResponse,
                                                                                   CustomNotifyEVChargingNeedsRequestParser) && request is not null) {
@@ -5025,7 +5032,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (TransactionEventRequest.TryParse(requestData,
                                                                              requestId.Value,
-                                                                             chargeBoxId.Value,
+                                                                             chargingStationId.Value,
                                                                              out var request,
                                                                              out var errorResponse,
                                                                              CustomTransactionEventRequestParser) && request is not null) {
@@ -5173,7 +5180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (StatusNotificationRequest.TryParse(requestData,
                                                                                requestId.Value,
-                                                                               chargeBoxId.Value,
+                                                                               chargingStationId.Value,
                                                                                out var request,
                                                                                out var errorResponse,
                                                                                CustomStatusNotificationRequestParser) && request is not null) {
@@ -5321,7 +5328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (MeterValuesRequest.TryParse(requestData,
                                                                         requestId.Value,
-                                                                        chargeBoxId.Value,
+                                                                        chargingStationId.Value,
                                                                         out var request,
                                                                         out var errorResponse,
                                                                         CustomMeterValuesRequestParser) && request is not null) {
@@ -5469,7 +5476,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (NotifyChargingLimitRequest.TryParse(requestData,
                                                                                 requestId.Value,
-                                                                                chargeBoxId.Value,
+                                                                                chargingStationId.Value,
                                                                                 out var request,
                                                                                 out var errorResponse,
                                                                                 CustomNotifyChargingLimitRequestParser) && request is not null) {
@@ -5617,7 +5624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (ClearedChargingLimitRequest.TryParse(requestData,
                                                                                  requestId.Value,
-                                                                                 chargeBoxId.Value,
+                                                                                 chargingStationId.Value,
                                                                                  out var request,
                                                                                  out var errorResponse,
                                                                                  CustomClearedChargingLimitRequestParser) && request is not null) {
@@ -5765,7 +5772,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (ReportChargingProfilesRequest.TryParse(requestData,
                                                                                    requestId.Value,
-                                                                                   chargeBoxId.Value,
+                                                                                   chargingStationId.Value,
                                                                                    out var request,
                                                                                    out var errorResponse,
                                                                                    CustomReportChargingProfilesRequestParser) && request is not null) {
@@ -5913,7 +5920,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (NotifyEVChargingScheduleRequest.TryParse(requestData,
                                                                                      requestId.Value,
-                                                                                     chargeBoxId.Value,
+                                                                                     chargingStationId.Value,
                                                                                      out var request,
                                                                                      out var errorResponse,
                                                                                      CustomNotifyEVChargingScheduleRequestParser) && request is not null) {
@@ -6061,7 +6068,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (NotifyPriorityChargingRequest.TryParse(requestData,
                                                                                    requestId.Value,
-                                                                                   chargeBoxId.Value,
+                                                                                   chargingStationId.Value,
                                                                                    out var request,
                                                                                    out var errorResponse,
                                                                                    CustomNotifyPriorityChargingRequestParser) && request is not null) {
@@ -6209,7 +6216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (PullDynamicScheduleUpdateRequest.TryParse(requestData,
                                                                                       requestId.Value,
-                                                                                      chargeBoxId.Value,
+                                                                                      chargingStationId.Value,
                                                                                       out var request,
                                                                                       out var errorResponse,
                                                                                       CustomPullDynamicScheduleUpdateRequestParser) && request is not null) {
@@ -6358,7 +6365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (NotifyDisplayMessagesRequest.TryParse(requestData,
                                                                                   requestId.Value,
-                                                                                  chargeBoxId.Value,
+                                                                                  chargingStationId.Value,
                                                                                   out var request,
                                                                                   out var errorResponse,
                                                                                   CustomNotifyDisplayMessagesRequestParser) && request is not null) {
@@ -6506,7 +6513,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         if (NotifyCustomerInformationRequest.TryParse(requestData,
                                                                                       requestId.Value,
-                                                                                      chargeBoxId.Value,
+                                                                                      chargingStationId.Value,
                                                                                       out var request,
                                                                                       out var errorResponse,
                                                                                       CustomNotifyCustomerInformationRequestParser) && request is not null) {
@@ -7008,7 +7015,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             return new SendRequestState(
                        Timestamp:           now,
-                       ChargeBoxId:         ChargeBoxId,
+                       ChargingStationId:         ChargeBoxId,
                        WSRequestMessage:    new OCPP_WebSocket_RequestMessage(
                                                 RequestId,
                                                 OCPPAction,
@@ -7033,7 +7040,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestId">A unique request identification.</param>
-        /// <param name="ChargeBoxId">A charge box identification.</param>
+        /// <param name="ChargingStationId">A charging station identification.</param>
         /// <param name="Action">An OCPP action.</param>
         /// <param name="JSON">The JSON payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
@@ -7056,7 +7063,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<ChargingStation_Id>("chargeBoxId") == ChargeBoxId).
+                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<ChargingStation_Id>(chargingStationId_WebSocketKey) == ChargeBoxId).
                                                                  ToArray();
 
                 if (webSocketConnections.Any())

@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Reset the given charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ResetType">The type of reset that the charging station should perform.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
         /// 
@@ -52,45 +52,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.ResetResponse>
 
-            Reset(this ICSMS                                      CSMS,
-                  ChargingStation_Id                                    ChargingStationId,
-                  ResetTypes                                      ResetType,
-                  EVSE_Id?                                        EVSEId                         = null,
+            Reset(this ICSMS               CSMS,
+                  ChargingStation_Id       ChargingStationId,
+                  ResetTypes               ResetType,
+                  EVSE_Id?                 EVSEId              = null,
 
-                  IEnumerable<Signature>?                         Signatures                     = null,
-                  CustomData?                                     CustomData                     = null,
+                  IEnumerable<Signature>?  Signatures          = null,
+                  CustomData?              CustomData          = null,
 
-                  Request_Id?                                     RequestId                      = null,
-                  DateTime?                                       RequestTimestamp               = null,
-                  TimeSpan?                                       RequestTimeout                 = null,
-                  EventTracking_Id?                               EventTrackingId                = null,
+                  Request_Id?              RequestId           = null,
+                  DateTime?                RequestTimestamp    = null,
+                  TimeSpan?                RequestTimeout      = null,
+                  EventTracking_Id?        EventTrackingId     = null,
 
-                  IEnumerable<KeyPair>?                           SignKeys                       = null,
-                  IEnumerable<SignInfo>?                          SignInfos                      = null,
-                  SignaturePolicy?                                SignaturePolicy                = null,
-                  //CustomJObjectSerializerDelegate<ResetRequest>?  CustomResetRequestSerializer   = null,
-                  //CustomJObjectSerializerDelegate<Signature>?     CustomSignatureSerializer      = null,
-                  //CustomJObjectSerializerDelegate<CustomData>?    CustomCustomDataSerializer     = null,
+                  IEnumerable<KeyPair>?    SignKeys            = null,
+                  IEnumerable<SignInfo>?   SignInfos           = null,
+                  SignaturePolicy?         SignaturePolicy     = null,
 
-                  CancellationToken                               CancellationToken              = default)
+                  CancellationToken        CancellationToken   = default)
 
-                => CSMS.Reset(new ResetRequest(
-                                  ChargingStationId,
-                                  ResetType,
-                                  EVSEId,
+                => CSMS.Reset(
+                       new ResetRequest(
+                           ChargingStationId,
+                           ResetType,
+                           EVSEId,
 
-                                  SignKeys,
-                                  SignInfos,
-                                  SignaturePolicy,
-                                  Signatures,
-                                  CustomData,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
+                           CustomData,
 
-                                  RequestId        ?? CSMS.NextRequestId,
-                                  RequestTimestamp ?? Timestamp.Now,
-                                  RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                  EventTrackingId  ?? EventTracking_Id.New,
-                                  CancellationToken
-                              ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -99,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Initiate a firmware update of the given charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="Firmware">The firmware image to be installed at the charging station.</param>
         /// <param name="UpdateFirmwareRequestId">The update firmware request identification.</param>
         /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
@@ -116,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UpdateFirmwareResponse>
 
             UpdateFirmware(this ICSMS               CSMS,
-                           ChargingStation_Id             ChargingStationId,
+                           ChargingStation_Id       ChargingStationId,
                            Firmware                 Firmware,
                            Int32                    UpdateFirmwareRequestId,
                            Byte?                    Retries             = null,
@@ -136,26 +135,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.UpdateFirmware(new UpdateFirmwareRequest(
-                                           ChargingStationId,
-                                           Firmware,
-                                           UpdateFirmwareRequestId,
-                                           Retries,
-                                           RetryInterval,
+                => CSMS.UpdateFirmware(
+                       new UpdateFirmwareRequest(
+                           ChargingStationId,
+                           Firmware,
+                           UpdateFirmwareRequestId,
+                           Retries,
+                           RetryInterval,
 
-                                           SignKeys,
-                                           SignInfos,
-                                           SignaturePolicy,
-                                           Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                           CustomData,
+                           CustomData,
 
-                                           RequestId        ?? CSMS.NextRequestId,
-                                           RequestTimestamp ?? Timestamp.Now,
-                                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                           EventTrackingId  ?? EventTracking_Id.New,
-                                           CancellationToken
-                                       ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -164,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Publish a firmware onto a local controller.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="PublishFirmwareRequestId">The unique identification of this publish firmware request</param>
         /// <param name="DownloadLocation">An URL for downloading the firmware.onto the local controller.</param>
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
@@ -182,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.PublishFirmwareResponse>
 
             PublishFirmware(this ICSMS               CSMS,
-                            ChargingStation_Id             ChargingStationId,
+                            ChargingStation_Id       ChargingStationId,
                             Int32                    PublishFirmwareRequestId,
                             URL                      DownloadLocation,
                             String                   MD5Checksum,
@@ -203,27 +204,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.PublishFirmware(new PublishFirmwareRequest(
-                                            ChargingStationId,
-                                            PublishFirmwareRequestId,
-                                            DownloadLocation,
-                                            MD5Checksum,
-                                            Retries,
-                                            RetryInterval,
+                => CSMS.PublishFirmware(
+                       new PublishFirmwareRequest(
+                           ChargingStationId,
+                           PublishFirmwareRequestId,
+                           DownloadLocation,
+                           MD5Checksum,
+                           Retries,
+                           RetryInterval,
 
-                                            SignKeys,
-                                            SignInfos,
-                                            SignaturePolicy,
-                                            Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                            CustomData,
+                           CustomData,
 
-                                            RequestId        ?? CSMS.NextRequestId,
-                                            RequestTimestamp ?? Timestamp.Now,
-                                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                            EventTrackingId  ?? EventTracking_Id.New,
-                                            CancellationToken
-                                        ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -232,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Unpublish a firmware from a local controller.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -246,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UnpublishFirmwareResponse>
 
             UnpublishFirmware(this ICSMS               CSMS,
-                              ChargingStation_Id             ChargingStationId,
+                              ChargingStation_Id       ChargingStationId,
                               String                   MD5Checksum,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -263,23 +266,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.UnpublishFirmware(new UnpublishFirmwareRequest(
-                                              ChargingStationId,
-                                              MD5Checksum,
+                => CSMS.UnpublishFirmware(
+                       new UnpublishFirmwareRequest(
+                           ChargingStationId,
+                           MD5Checksum,
 
-                                              SignKeys,
-                                              SignInfos,
-                                              SignaturePolicy,
-                                              Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                              CustomData,
+                           CustomData,
 
-                                              RequestId        ?? CSMS.NextRequestId,
-                                              RequestTimestamp ?? Timestamp.Now,
-                                              RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                              EventTrackingId  ?? EventTracking_Id.New,
-                                              CancellationToken
-                                          ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -288,7 +293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Retrieve the base report from the charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="GetBaseReportRequestId">An unique identification of the get base report request.</param>
         /// <param name="ReportBase">The requested reporting base.</param>
         /// 
@@ -303,7 +308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetBaseReportResponse>
 
             GetBaseReport(this ICSMS               CSMS,
-                          ChargingStation_Id             ChargingStationId,
+                          ChargingStation_Id       ChargingStationId,
                           Int64                    GetBaseReportRequestId,
                           ReportBases              ReportBase,
 
@@ -321,24 +326,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                           CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.GetBaseReport(new GetBaseReportRequest(
-                                          ChargingStationId,
-                                          GetBaseReportRequestId,
-                                          ReportBase,
+                => CSMS.GetBaseReport(
+                       new GetBaseReportRequest(
+                           ChargingStationId,
+                           GetBaseReportRequestId,
+                           ReportBase,
 
-                                          SignKeys,
-                                          SignInfos,
-                                          SignaturePolicy,
-                                          Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                          CustomData,
+                           CustomData,
 
-                                          RequestId        ?? CSMS.NextRequestId,
-                                          RequestTimestamp ?? Timestamp.Now,
-                                          RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                          EventTrackingId  ?? EventTracking_Id.New,
-                                          CancellationToken
-                                      ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -347,8 +354,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Retrieve reports from the charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="GetReportRequestId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="GetReportRequestId">The charging station identification.</param>
         /// <param name="ComponentCriteria">An optional enumeration of criteria for components for which a report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a report is requested.</param>
         /// 
@@ -363,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetReportResponse>
 
             GetReport(this ICSMS                      CSMS,
-                      ChargingStation_Id                    ChargingStationId,
+                      ChargingStation_Id              ChargingStationId,
                       Int32                           GetReportRequestId,
                       IEnumerable<ComponentCriteria>  ComponentCriteria,
                       IEnumerable<ComponentVariable>  ComponentVariables,
@@ -382,25 +389,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                       CancellationToken               CancellationToken   = default)
 
 
-                => CSMS.GetReport(new GetReportRequest(
-                                      ChargingStationId,
-                                      GetReportRequestId,
-                                      ComponentCriteria,
-                                      ComponentVariables,
+                => CSMS.GetReport(
+                       new GetReportRequest(
+                           ChargingStationId,
+                           GetReportRequestId,
+                           ComponentCriteria,
+                           ComponentVariables,
 
-                                      SignKeys,
-                                      SignInfos,
-                                      SignaturePolicy,
-                                      Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                      CustomData,
+                           CustomData,
 
-                                      RequestId        ?? CSMS.NextRequestId,
-                                      RequestTimestamp ?? Timestamp.Now,
-                                      RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                      EventTrackingId  ?? EventTracking_Id.New,
-                                      CancellationToken
-                                  ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -409,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Retrieve log files from the charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="LogType">The type of the certificates requested.</param>
         /// <param name="LogRequestId">The unique identification of this request.</param>
         /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
@@ -427,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetLogResponse>
 
             GetLog(this ICSMS               CSMS,
-                   ChargingStation_Id             ChargingStationId,
+                   ChargingStation_Id       ChargingStationId,
                    LogTypes                 LogType,
                    Int32                    LogRequestId,
                    LogParameters            Log,
@@ -448,27 +457,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.GetLog(new GetLogRequest(
-                                   ChargingStationId,
-                                   LogType,
-                                   LogRequestId,
-                                   Log,
-                                   Retries,
-                                   RetryInterval,
+                => CSMS.GetLog(
+                       new GetLogRequest(
+                           ChargingStationId,
+                           LogType,
+                           LogRequestId,
+                           Log,
+                           Retries,
+                           RetryInterval,
 
-                                   SignKeys,
-                                   SignInfos,
-                                   SignaturePolicy,
-                                   Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                   CustomData,
+                           CustomData,
 
-                                   RequestId        ?? CSMS.NextRequestId,
-                                   RequestTimestamp ?? Timestamp.Now,
-                                   RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                   EventTrackingId  ?? EventTracking_Id.New,
-                                   CancellationToken
-                               ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -478,7 +489,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set variable data on a charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="VariableData">An enumeration of variable data to set/change.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -492,7 +503,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetVariablesResponse>
 
             SetVariables(this ICSMS                    CSMS,
-                         ChargingStation_Id                  ChargingStationId,
+                         ChargingStation_Id            ChargingStationId,
                          IEnumerable<SetVariableData>  VariableData,
 
                          IEnumerable<KeyPair>?         SignKeys            = null,
@@ -509,23 +520,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          CancellationToken             CancellationToken   = default)
 
 
-                => CSMS.SetVariables(new SetVariablesRequest(
-                                         ChargingStationId,
-                                         VariableData,
+                => CSMS.SetVariables(
+                       new SetVariablesRequest(
+                           ChargingStationId,
+                           VariableData,
 
-                                         SignKeys,
-                                         SignInfos,
-                                         SignaturePolicy,
-                                         Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                         CustomData,
+                           CustomData,
 
-                                         RequestId        ?? CSMS.NextRequestId,
-                                         RequestTimestamp ?? Timestamp.Now,
-                                         RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                         EventTrackingId  ?? EventTracking_Id.New,
-                                         CancellationToken
-                                     ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -534,7 +547,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Get variable data from a charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="VariableData">An enumeration of requested variable data sets.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -548,7 +561,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetVariablesResponse>
 
             GetVariables(this ICSMS                    CSMS,
-                         ChargingStation_Id                  ChargingStationId,
+                         ChargingStation_Id            ChargingStationId,
                          IEnumerable<GetVariableData>  VariableData,
 
                          IEnumerable<KeyPair>?         SignKeys            = null,
@@ -565,23 +578,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          CancellationToken             CancellationToken   = default)
 
 
-                => CSMS.GetVariables(new GetVariablesRequest(
-                                         ChargingStationId,
-                                         VariableData,
+                => CSMS.GetVariables(
+                       new GetVariablesRequest(
+                           ChargingStationId,
+                           VariableData,
 
-                                         SignKeys,
-                                         SignInfos,
-                                         SignaturePolicy,
-                                         Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                         CustomData,
+                           CustomData,
 
-                                         RequestId        ?? CSMS.NextRequestId,
-                                         RequestTimestamp ?? Timestamp.Now,
-                                         RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                         EventTrackingId  ?? EventTracking_Id.New,
-                                         CancellationToken
-                                     ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -590,7 +605,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set the monitoring base of a charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="MonitoringBase">The monitoring base to be set.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -604,7 +619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetMonitoringBaseResponse>
 
             SetMonitoringBase(this ICSMS               CSMS,
-                              ChargingStation_Id             ChargingStationId,
+                              ChargingStation_Id       ChargingStationId,
                               MonitoringBases          MonitoringBase,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -621,23 +636,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.SetMonitoringBase(new SetMonitoringBaseRequest(
-                                              ChargingStationId,
-                                              MonitoringBase,
+                => CSMS.SetMonitoringBase(
+                       new SetMonitoringBaseRequest(
+                           ChargingStationId,
+                           MonitoringBase,
 
-                                              SignKeys,
-                                              SignInfos,
-                                              SignaturePolicy,
-                                              Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                              CustomData,
+                           CustomData,
 
-                                              RequestId        ?? CSMS.NextRequestId,
-                                              RequestTimestamp ?? Timestamp.Now,
-                                              RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                              EventTrackingId  ?? EventTracking_Id.New,
-                                              CancellationToken
-                                          ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -646,8 +663,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Get monitoring report from a charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="GetMonitoringReportRequestId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="GetMonitoringReportRequestId">The charging station identification.</param>
         /// <param name="MonitoringCriteria">An optional enumeration of criteria for components for which a monitoring report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a monitoring report is requested.</param>
         /// 
@@ -662,7 +679,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetMonitoringReportResponse>
 
             GetMonitoringReport(this ICSMS                       CSMS,
-                                ChargingStation_Id                     ChargingStationId,
+                                ChargingStation_Id               ChargingStationId,
                                 Int32                            GetMonitoringReportRequestId,
                                 IEnumerable<MonitoringCriteria>  MonitoringCriteria,
                                 IEnumerable<ComponentVariable>   ComponentVariables,
@@ -681,25 +698,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 CancellationToken                CancellationToken   = default)
 
 
-                => CSMS.GetMonitoringReport(new GetMonitoringReportRequest(
-                                                ChargingStationId,
-                                                GetMonitoringReportRequestId,
-                                                MonitoringCriteria,
-                                                ComponentVariables,
+                => CSMS.GetMonitoringReport(
+                       new GetMonitoringReportRequest(
+                           ChargingStationId,
+                           GetMonitoringReportRequestId,
+                           MonitoringCriteria,
+                           ComponentVariables,
 
-                                                SignKeys,
-                                                SignInfos,
-                                                SignaturePolicy,
-                                                Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                CustomData,
+                           CustomData,
 
-                                                RequestId        ?? CSMS.NextRequestId,
-                                                RequestTimestamp ?? Timestamp.Now,
-                                                RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                EventTrackingId  ?? EventTracking_Id.New,
-                                                CancellationToken
-                                            ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -708,7 +727,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set the monitoring level on a charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="Severity">The charging station SHALL only report events with a severity number lower than or equal to this severity.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -722,7 +741,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetMonitoringLevelResponse>
 
             SetMonitoringLevel(this ICSMS               CSMS,
-                               ChargingStation_Id             ChargingStationId,
+                               ChargingStation_Id       ChargingStationId,
                                Severities               Severity,
 
                                IEnumerable<KeyPair>?    SignKeys            = null,
@@ -739,23 +758,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.SetMonitoringLevel(new SetMonitoringLevelRequest(
-                                               ChargingStationId,
-                                               Severity,
+                => CSMS.SetMonitoringLevel(
+                       new SetMonitoringLevelRequest(
+                           ChargingStationId,
+                           Severity,
 
-                                               SignKeys,
-                                               SignInfos,
-                                               SignaturePolicy,
-                                               Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                               CustomData,
+                           CustomData,
 
-                                               RequestId        ?? CSMS.NextRequestId,
-                                               RequestTimestamp ?? Timestamp.Now,
-                                               RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                               EventTrackingId  ?? EventTracking_Id.New,
-                                               CancellationToken
-                                           ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -764,7 +785,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set a variable monitoring on a charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="MonitoringData">An enumeration of monitoring data.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -778,7 +799,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetVariableMonitoringResponse>
 
             SetVariableMonitoring(this ICSMS                      CSMS,
-                                  ChargingStation_Id                    ChargingStationId,
+                                  ChargingStation_Id              ChargingStationId,
                                   IEnumerable<SetMonitoringData>  MonitoringData,
 
                                   IEnumerable<KeyPair>?           SignKeys            = null,
@@ -795,23 +816,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                   CancellationToken               CancellationToken   = default)
 
 
-                => CSMS.SetVariableMonitoring(new SetVariableMonitoringRequest(
-                                                  ChargingStationId,
-                                                  MonitoringData,
+                => CSMS.SetVariableMonitoring(
+                       new SetVariableMonitoringRequest(
+                           ChargingStationId,
+                           MonitoringData,
 
-                                                  SignKeys,
-                                                  SignInfos,
-                                                  SignaturePolicy,
-                                                  Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                  CustomData,
+                           CustomData,
 
-                                                  RequestId        ?? CSMS.NextRequestId,
-                                                  RequestTimestamp ?? Timestamp.Now,
-                                                  RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                  EventTrackingId  ?? EventTracking_Id.New,
-                                                  CancellationToken
-                                              ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -820,7 +843,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Delete a variable monitoring on a charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="VariableMonitoringIds">An enumeration of variable monitoring identifications to clear.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -834,7 +857,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ClearVariableMonitoringResponse>
 
             ClearVariableMonitoring(this ICSMS                          CSMS,
-                                    ChargingStation_Id                        ChargingStationId,
+                                    ChargingStation_Id                  ChargingStationId,
                                     IEnumerable<VariableMonitoring_Id>  VariableMonitoringIds,
 
                                     IEnumerable<KeyPair>?               SignKeys            = null,
@@ -851,23 +874,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     CancellationToken                   CancellationToken   = default)
 
 
-                => CSMS.ClearVariableMonitoring(new ClearVariableMonitoringRequest(
-                                                    ChargingStationId,
-                                                    VariableMonitoringIds,
+                => CSMS.ClearVariableMonitoring(
+                       new ClearVariableMonitoringRequest(
+                           ChargingStationId,
+                           VariableMonitoringIds,
 
-                                                    SignKeys,
-                                                    SignInfos,
-                                                    SignaturePolicy,
-                                                    Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                    CustomData,
+                           CustomData,
 
-                                                    RequestId        ?? CSMS.NextRequestId,
-                                                    RequestTimestamp ?? Timestamp.Now,
-                                                    RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                    EventTrackingId  ?? EventTracking_Id.New,
-                                                    CancellationToken
-                                                ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -876,7 +901,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Set the network profile of a charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ConfigurationSlot">The slot in which the configuration should be stored.</param>
         /// <param name="NetworkConnectionProfile">The network connection configuration.</param>
         /// 
@@ -891,7 +916,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetNetworkProfileResponse>
 
             SetNetworkProfile(this ICSMS                CSMS,
-                              ChargingStation_Id              ChargingStationId,
+                              ChargingStation_Id        ChargingStationId,
                               Int32                     ConfigurationSlot,
                               NetworkConnectionProfile  NetworkConnectionProfile,
 
@@ -909,33 +934,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CancellationToken         CancellationToken   = default)
 
 
-                => CSMS.SetNetworkProfile(new SetNetworkProfileRequest(
-                                              ChargingStationId,
-                                              ConfigurationSlot,
-                                              NetworkConnectionProfile,
+                => CSMS.SetNetworkProfile(
+                       new SetNetworkProfileRequest(
+                           ChargingStationId,
+                           ConfigurationSlot,
+                           NetworkConnectionProfile,
 
-                                              SignKeys,
-                                              SignInfos,
-                                              SignaturePolicy,
-                                              Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                              CustomData,
+                           CustomData,
 
-                                              RequestId        ?? CSMS.NextRequestId,
-                                              RequestTimestamp ?? Timestamp.Now,
-                                              RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                              EventTrackingId  ?? EventTracking_Id.New,
-                                              CancellationToken
-                                          ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
         #region ChangeAvailability         (this CSMS, ChargingStationId, OperationalStatus, EVSE, ...)
 
         /// <summary>
-        /// Change the availability of the given charge box.
+        /// Change the availability of the given charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="OperationalStatus">A new operational status of the charging station or EVSE.</param>
         /// <param name="EVSE">Optional identification of an EVSE/connector for which the operational status should be changed.</param>
         /// 
@@ -950,7 +977,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ChangeAvailabilityResponse>
 
             ChangeAvailability(this ICSMS               CSMS,
-                               ChargingStation_Id             ChargingStationId,
+                               ChargingStation_Id       ChargingStationId,
                                OperationalStatus        OperationalStatus,
                                EVSE?                    EVSE,
 
@@ -968,33 +995,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.ChangeAvailability(new ChangeAvailabilityRequest(
-                                               ChargingStationId,
-                                               OperationalStatus,
-                                               EVSE,
+                => CSMS.ChangeAvailability(
+                       new ChangeAvailabilityRequest(
+                           ChargingStationId,
+                           OperationalStatus,
+                           EVSE,
 
-                                               SignKeys,
-                                               SignInfos,
-                                               SignaturePolicy,
-                                               Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                               CustomData,
+                           CustomData,
 
-                                               RequestId        ?? CSMS.NextRequestId,
-                                               RequestTimestamp ?? Timestamp.Now,
-                                               RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                               EventTrackingId  ?? EventTracking_Id.New,
-                                               CancellationToken
-                                           ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
         #region TriggerMessage             (this CSMS, ChargingStationId, RequestedMessage, EVSEId = null, ...)
 
         /// <summary>
-        /// Create a trigger for the given message at the given charge box connector.
+        /// Create a trigger for the given message at the given charging station connector.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
         /// 
@@ -1009,7 +1038,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.TriggerMessageResponse>
 
             TriggerMessage(this ICSMS               CSMS,
-                           ChargingStation_Id             ChargingStationId,
+                           ChargingStation_Id       ChargingStationId,
                            MessageTriggers          RequestedMessage,
                            EVSE?                    EVSE                = null,
 
@@ -1027,33 +1056,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.TriggerMessage(new TriggerMessageRequest(
-                                           ChargingStationId,
-                                           RequestedMessage,
-                                           EVSE,
+                => CSMS.TriggerMessage(
+                       new TriggerMessageRequest(
+                           ChargingStationId,
+                           RequestedMessage,
+                           EVSE,
 
-                                           SignKeys,
-                                           SignInfos,
-                                           SignaturePolicy,
-                                           Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                           CustomData,
+                           CustomData,
 
-                                           RequestId        ?? CSMS.NextRequestId,
-                                           RequestTimestamp ?? Timestamp.Now,
-                                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                           EventTrackingId  ?? EventTracking_Id.New,
-                                           CancellationToken
-                                       ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
         #region TransferData               (this CSMS, ChargingStationId, VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
-        /// Transfer the given data to the given charge box.
+        /// Transfer the given data to the given charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
@@ -1069,7 +1100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.DataTransferResponse>
 
             TransferData(this ICSMS               CSMS,
-                         ChargingStation_Id             ChargingStationId,
+                         ChargingStation_Id       ChargingStationId,
                          Vendor_Id                VendorId,
                          String?                  MessageId           = null,
                          JToken?                  Data                = null,
@@ -1088,25 +1119,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.TransferData(new DataTransferRequest(
-                                         ChargingStationId,
-                                         VendorId,
-                                         MessageId,
-                                         Data,
+                => CSMS.TransferData(
+                       new DataTransferRequest(
+                           ChargingStationId,
+                           VendorId,
+                           MessageId,
+                           Data,
 
-                                         SignKeys,
-                                         SignInfos,
-                                         SignaturePolicy,
-                                         Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                         CustomData,
+                           CustomData,
 
-                                         RequestId        ?? CSMS.NextRequestId,
-                                         RequestTimestamp ?? Timestamp.Now,
-                                         RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                         EventTrackingId  ?? EventTracking_Id.New,
-                                         CancellationToken
-                                     ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -1114,9 +1147,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region SendSignedCertificate      (this CSMS, ChargingStationId, CertificateChain, CertificateType = null, ...)
 
         /// <summary>
-        /// Send the signed certificate to the given charge box.
+        /// Send the signed certificate to the given charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CertificateChain">The signed PEM encoded X.509 certificates. This can also contain the necessary sub CA certificates.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1130,7 +1163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.CertificateSignedResponse>
 
             SendSignedCertificate(this ICSMS               CSMS,
-                                  ChargingStation_Id             ChargingStationId,
+                                  ChargingStation_Id       ChargingStationId,
                                   CertificateChain         CertificateChain,
                                   CertificateSigningUse?   CertificateType     = null,
 
@@ -1148,24 +1181,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                   CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.SendSignedCertificate(new CertificateSignedRequest(
-                                                  ChargingStationId,
-                                                  CertificateChain,
-                                                  CertificateType,
+                => CSMS.SendSignedCertificate(
+                       new CertificateSignedRequest(
+                           ChargingStationId,
+                           CertificateChain,
+                           CertificateType,
 
-                                                  SignKeys,
-                                                  SignInfos,
-                                                  SignaturePolicy,
-                                                  Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                  CustomData,
+                           CustomData,
 
-                                                  RequestId        ?? CSMS.NextRequestId,
-                                                  RequestTimestamp ?? Timestamp.Now,
-                                                  RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                  EventTrackingId  ?? EventTracking_Id.New,
-                                                  CancellationToken
-                                              ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -1174,7 +1209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Install the given certificate within the charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CertificateType">The type of the certificate.</param>
         /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
         /// 
@@ -1189,7 +1224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.InstallCertificateResponse>
 
             InstallCertificate(this ICSMS               CSMS,
-                               ChargingStation_Id             ChargingStationId,
+                               ChargingStation_Id       ChargingStationId,
                                CertificateUse           CertificateType,
                                Certificate              Certificate,
 
@@ -1207,24 +1242,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.InstallCertificate(new InstallCertificateRequest(
-                                               ChargingStationId,
-                                               CertificateType,
-                                               Certificate,
+                => CSMS.InstallCertificate(
+                       new InstallCertificateRequest(
+                           ChargingStationId,
+                           CertificateType,
+                           Certificate,
 
-                                               SignKeys,
-                                               SignInfos,
-                                               SignaturePolicy,
-                                               Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                               CustomData,
+                           CustomData,
 
-                                               RequestId        ?? CSMS.NextRequestId,
-                                               RequestTimestamp ?? Timestamp.Now,
-                                               RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                               EventTrackingId  ?? EventTracking_Id.New,
-                                               CancellationToken
-                                           ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -1233,7 +1270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Retrieve a list of all installed certificates within the charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CertificateTypes">An optional enumeration of certificate types requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1247,7 +1284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetInstalledCertificateIdsResponse>
 
             GetInstalledCertificateIds(this ICSMS                    CSMS,
-                                       ChargingStation_Id                  ChargingStationId,
+                                       ChargingStation_Id            ChargingStationId,
                                        IEnumerable<CertificateUse>?  CertificateTypes    = null,
 
                                        IEnumerable<KeyPair>?         SignKeys            = null,
@@ -1264,23 +1301,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        CancellationToken             CancellationToken   = default)
 
 
-                => CSMS.GetInstalledCertificateIds(new GetInstalledCertificateIdsRequest(
-                                                       ChargingStationId,
-                                                       CertificateTypes,
+                => CSMS.GetInstalledCertificateIds(
+                       new GetInstalledCertificateIdsRequest(
+                           ChargingStationId,
+                           CertificateTypes,
 
-                                                       SignKeys,
-                                                       SignInfos,
-                                                       SignaturePolicy,
-                                                       Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                       CustomData,
+                           CustomData,
 
-                                                       RequestId        ?? CSMS.NextRequestId,
-                                                       RequestTimestamp ?? Timestamp.Now,
-                                                       RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                       EventTrackingId  ?? EventTracking_Id.New,
-                                                       CancellationToken
-                                                   ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -1289,7 +1328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Delete the given certificate on the charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CertificateHashData">Indicates the certificate which should be deleted.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1303,7 +1342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.DeleteCertificateResponse>
 
             DeleteCertificate(this ICSMS               CSMS,
-                              ChargingStation_Id             ChargingStationId,
+                              ChargingStation_Id       ChargingStationId,
                               CertificateHashData      CertificateHashData,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -1320,23 +1359,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.DeleteCertificate(new DeleteCertificateRequest(
-                                              ChargingStationId,
-                                              CertificateHashData,
+                => CSMS.DeleteCertificate(
+                       new DeleteCertificateRequest(
+                           ChargingStationId,
+                           CertificateHashData,
 
-                                              SignKeys,
-                                              SignInfos,
-                                              SignaturePolicy,
-                                              Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                              CustomData,
+                           CustomData,
 
-                                              RequestId        ?? CSMS.NextRequestId,
-                                              RequestTimestamp ?? Timestamp.Now,
-                                              RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                              EventTrackingId  ?? EventTracking_Id.New,
-                                              CancellationToken
-                                          ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -1345,7 +1386,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Delete the given certificate on the charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="NotifyCRLRequestId">An unique identification of this request.</param>
         /// <param name="Availability">An availability status of the certificate revocation list.</param>
         /// <param name="Location">An optional location of the certificate revocation list.</param>
@@ -1361,7 +1402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.NotifyCRLResponse>
 
             NotifyCRLAvailability(this ICSMS               CSMS,
-                                  ChargingStation_Id             ChargingStationId,
+                                  ChargingStation_Id       ChargingStationId,
                                   Int32                    NotifyCRLRequestId,
                                   NotifyCRLStatus          Availability,
                                   URL?                     Location,
@@ -1380,25 +1421,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                   CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.NotifyCRLAvailability(new NotifyCRLRequest(
-                                                  ChargingStationId,
-                                                  NotifyCRLRequestId,
-                                                  Availability,
-                                                  Location,
+                => CSMS.NotifyCRLAvailability(
+                       new NotifyCRLRequest(
+                           ChargingStationId,
+                           NotifyCRLRequestId,
+                           Availability,
+                           Location,
 
-                                                  SignKeys,
-                                                  SignInfos,
-                                                  SignaturePolicy,
-                                                  Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                  CustomData,
+                           CustomData,
 
-                                                  RequestId        ?? CSMS.NextRequestId,
-                                                  RequestTimestamp ?? Timestamp.Now,
-                                                  RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                  EventTrackingId  ?? EventTracking_Id.New,
-                                                  CancellationToken
-                                              ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -1406,9 +1449,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region GetLocalListVersion        (this CSMS, ChargingStationId, ...)
 
         /// <summary>
-        /// Return the local white list of the given charge box.
+        /// Return the local white list of the given charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -1421,7 +1464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetLocalListVersionResponse>
 
             GetLocalListVersion(this ICSMS               CSMS,
-                                ChargingStation_Id             ChargingStationId,
+                                ChargingStation_Id       ChargingStationId,
 
                                 IEnumerable<KeyPair>?    SignKeys            = null,
                                 IEnumerable<SignInfo>?   SignInfos           = null,
@@ -1437,31 +1480,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.GetLocalListVersion(new GetLocalListVersionRequest(
-                                                ChargingStationId,
+                => CSMS.GetLocalListVersion(
+                       new GetLocalListVersionRequest(
+                           ChargingStationId,
 
-                                                SignKeys,
-                                                SignInfos,
-                                                SignaturePolicy,
-                                                Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                CustomData,
+                           CustomData,
 
-                                                RequestId        ?? CSMS.NextRequestId,
-                                                RequestTimestamp ?? Timestamp.Now,
-                                                RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                EventTrackingId  ?? EventTracking_Id.New,
-                                                CancellationToken
-                                            ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
         #region SendLocalList              (this CSMS, ChargingStationId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
 
         /// <summary>
-        /// Set the local white liste at the given charge box.
+        /// Set the local white liste at the given charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
         /// <param name="UpdateType">The type of update (full or differential).</param>
         /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charging station. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
@@ -1477,7 +1522,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SendLocalListResponse>
 
             SendLocalList(this ICSMS                       CSMS,
-                          ChargingStation_Id                     ChargingStationId,
+                          ChargingStation_Id               ChargingStationId,
                           UInt64                           ListVersion,
                           UpdateTypes                      UpdateType,
                           IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
@@ -1496,34 +1541,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                           CancellationToken                CancellationToken        = default)
 
 
-                => CSMS.SendLocalList(new SendLocalListRequest(
-                                          ChargingStationId,
-                                          ListVersion,
-                                          UpdateType,
-                                          LocalAuthorizationList,
+                => CSMS.SendLocalList(
+                       new SendLocalListRequest(
+                           ChargingStationId,
+                           ListVersion,
+                           UpdateType,
+                           LocalAuthorizationList,
 
-                                          SignKeys,
-                                          SignInfos,
-                                          SignaturePolicy,
-                                          Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                          CustomData,
+                           CustomData,
 
-                                          RequestId        ?? CSMS.NextRequestId,
-                                          RequestTimestamp ?? Timestamp.Now,
-                                          RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                          EventTrackingId  ?? EventTracking_Id.New,
-                                          CancellationToken
-                                      ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
         #region ClearCache                 (this CSMS, ChargingStationId, ...)
 
         /// <summary>
-        /// Clear the local white liste cache of the given charge box.
+        /// Clear the local white liste cache of the given charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -1536,7 +1583,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ClearCacheResponse>
 
             ClearCache(this ICSMS               CSMS,
-                       ChargingStation_Id             ChargingStationId,
+                       ChargingStation_Id       ChargingStationId,
 
                        IEnumerable<KeyPair>?    SignKeys            = null,
                        IEnumerable<SignInfo>?   SignInfos           = null,
@@ -1552,22 +1599,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                        CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.ClearCache(new ClearCacheRequest(
-                                       ChargingStationId,
+                => CSMS.ClearCache(
+                       new ClearCacheRequest(
+                           ChargingStationId,
 
-                                       SignKeys,
-                                       SignInfos,
-                                       SignaturePolicy,
-                                       Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                       CustomData,
+                           CustomData,
 
-                                       RequestId        ?? CSMS.NextRequestId,
-                                       RequestTimestamp ?? Timestamp.Now,
-                                       RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                       EventTrackingId  ?? EventTracking_Id.New,
-                                       CancellationToken
-                                   ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -1575,9 +1624,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region ReserveNow                 (this CSMS, ChargingStationId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
 
         /// <summary>
-        /// Create a charging reservation of the given charge box connector.
+        /// Create a charging reservation of the given charging station connector.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
         /// <param name="IdToken">The identifier for which the charging station has to reserve a connector.</param>
@@ -1596,7 +1645,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ReserveNowResponse>
 
             ReserveNow(this ICSMS               CSMS,
-                       ChargingStation_Id             ChargingStationId,
+                       ChargingStation_Id       ChargingStationId,
                        Reservation_Id           ReservationId,
                        DateTime                 ExpiryDate,
                        IdToken                  IdToken,
@@ -1618,37 +1667,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                        CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.ReserveNow(new ReserveNowRequest(
-                                       ChargingStationId,
-                                       ReservationId,
-                                       ExpiryDate,
-                                       IdToken,
-                                       ConnectorType,
-                                       EVSEId,
-                                       GroupIdToken,
+                => CSMS.ReserveNow(
+                       new ReserveNowRequest(
+                           ChargingStationId,
+                           ReservationId,
+                           ExpiryDate,
+                           IdToken,
+                           ConnectorType,
+                           EVSEId,
+                           GroupIdToken,
 
-                                       SignKeys,
-                                       SignInfos,
-                                       SignaturePolicy,
-                                       Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                       CustomData,
+                           CustomData,
 
-                                       RequestId        ?? CSMS.NextRequestId,
-                                       RequestTimestamp ?? Timestamp.Now,
-                                       RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                       EventTrackingId  ?? EventTracking_Id.New,
-                                       CancellationToken
-                                   ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
         #region CancelReservation          (this CSMS, ChargingStationId, ReservationId, ...)
 
         /// <summary>
-        /// Cancel the given charging reservation at the given charge box.
+        /// Cancel the given charging reservation at the given charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1662,7 +1713,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.CancelReservationResponse>
 
             CancelReservation(this ICSMS               CSMS,
-                              ChargingStation_Id             ChargingStationId,
+                              ChargingStation_Id       ChargingStationId,
                               Reservation_Id           ReservationId,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -1679,32 +1730,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.CancelReservation(new CancelReservationRequest(
-                                              ChargingStationId,
-                                              ReservationId,
+                => CSMS.CancelReservation(
+                       new CancelReservationRequest(
+                           ChargingStationId,
+                           ReservationId,
 
-                                              SignKeys,
-                                              SignInfos,
-                                              SignaturePolicy,
-                                              Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                              CustomData,
+                           CustomData,
 
-                                              RequestId        ?? CSMS.NextRequestId,
-                                              RequestTimestamp ?? Timestamp.Now,
-                                              RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                              EventTrackingId  ?? EventTracking_Id.New,
-                                              CancellationToken
-                                          ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
         #region StartCharging              (this CSMS, ChargingStationId, RequestStartTransactionRequestId, IdToken, EVSEId, ChargingProfile, GroupIdToken, ...)
 
         /// <summary>
-        /// Set the charging profile of the given charge box connector.
+        /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="RequestStartTransactionRequestId">Request identification given by the server to this start request. The charging station might return this in the TransactionEventRequest, letting the server know which transaction was started for this request.</param>
         /// <param name="IdToken">The identification token to start the charging transaction.</param>
         /// <param name="EVSEId">An optional EVSE identification on which the charging transaction should be started (SHALL be > 0).</param>
@@ -1722,7 +1775,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.RequestStartTransactionResponse>
 
             StartCharging(this ICSMS               CSMS,
-                          ChargingStation_Id             ChargingStationId,
+                          ChargingStation_Id       ChargingStationId,
                           RemoteStart_Id           RequestStartTransactionRequestId,
                           IdToken                  IdToken,
                           EVSE_Id?                 EVSEId              = null,
@@ -1743,36 +1796,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                           CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.StartCharging(new RequestStartTransactionRequest(
-                                          ChargingStationId,
-                                          RequestStartTransactionRequestId,
-                                          IdToken,
-                                          EVSEId,
-                                          ChargingProfile,
-                                          GroupIdToken,
+                => CSMS.StartCharging(
+                       new RequestStartTransactionRequest(
+                           ChargingStationId,
+                           RequestStartTransactionRequestId,
+                           IdToken,
+                           EVSEId,
+                           ChargingProfile,
+                           GroupIdToken,
 
-                                          SignKeys,
-                                          SignInfos,
-                                          SignaturePolicy,
-                                          Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                          CustomData,
+                           CustomData,
 
-                                          RequestId        ?? CSMS.NextRequestId,
-                                          RequestTimestamp ?? Timestamp.Now,
-                                          RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                          EventTrackingId  ?? EventTracking_Id.New,
-                                          CancellationToken
-                                      ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
         #region StopCharging               (this CSMS, ChargingStationId, TransactionId, ...)
 
         /// <summary>
-        /// Set the charging profile of the given charge box connector.
+        /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="TransactionId">An optional transaction identification for which its status is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1786,7 +1841,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.RequestStopTransactionResponse>
 
             StopCharging(this ICSMS               CSMS,
-                         ChargingStation_Id             ChargingStationId,
+                         ChargingStation_Id       ChargingStationId,
                          Transaction_Id           TransactionId,
 
                          IEnumerable<KeyPair>?    SignKeys            = null,
@@ -1803,32 +1858,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.StopCharging(new RequestStopTransactionRequest(
-                                         ChargingStationId,
-                                         TransactionId,
+                => CSMS.StopCharging(
+                       new RequestStopTransactionRequest(
+                           ChargingStationId,
+                           TransactionId,
 
-                                         SignKeys,
-                                         SignInfos,
-                                         SignaturePolicy,
-                                         Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                         CustomData,
+                           CustomData,
 
-                                         RequestId        ?? CSMS.NextRequestId,
-                                         RequestTimestamp ?? Timestamp.Now,
-                                         RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                         EventTrackingId  ?? EventTracking_Id.New,
-                                         CancellationToken
-                                     ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
         #region GetTransactionStatus       (this CSMS, ChargingStationId, ConnectorId, ChargingProfile, ...)
 
         /// <summary>
-        /// Set the charging profile of the given charge box connector.
+        /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="TransactionId">An optional transaction identification for which its status is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1842,7 +1899,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetTransactionStatusResponse>
 
             GetTransactionStatus(this ICSMS               CSMS,
-                                 ChargingStation_Id             ChargingStationId,
+                                 ChargingStation_Id       ChargingStationId,
                                  Transaction_Id?          TransactionId       = null,
 
                                  IEnumerable<KeyPair>?    SignKeys            = null,
@@ -1859,32 +1916,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.GetTransactionStatus(new GetTransactionStatusRequest(
-                                                 ChargingStationId,
-                                                 TransactionId,
+                => CSMS.GetTransactionStatus(
+                       new GetTransactionStatusRequest(
+                           ChargingStationId,
+                           TransactionId,
 
-                                                 SignKeys,
-                                                 SignInfos,
-                                                 SignaturePolicy,
-                                                 Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                 CustomData,
+                           CustomData,
 
-                                                 RequestId        ?? CSMS.NextRequestId,
-                                                 RequestTimestamp ?? Timestamp.Now,
-                                                 RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                 EventTrackingId  ?? EventTracking_Id.New,
-                                                 CancellationToken
-                                             ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
         #region SetChargingProfile         (this CSMS, ChargingStationId, EVSEId, ChargingProfile, ...)
 
         /// <summary>
-        /// Set the charging profile of the given charge box connector.
+        /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="EVSEId">The EVSE identification to which the charging profile applies.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
         /// 
@@ -1899,7 +1958,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetChargingProfileResponse>
 
             SetChargingProfile(this ICSMS               CSMS,
-                               ChargingStation_Id             ChargingStationId,
+                               ChargingStation_Id       ChargingStationId,
                                EVSE_Id                  EVSEId,
                                ChargingProfile          ChargingProfile,
 
@@ -1917,33 +1976,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.SetChargingProfile(new SetChargingProfileRequest(
-                                               ChargingStationId,
-                                               EVSEId,
-                                               ChargingProfile,
+                => CSMS.SetChargingProfile(
+                       new SetChargingProfileRequest(
+                           ChargingStationId,
+                           EVSEId,
+                           ChargingProfile,
 
-                                               SignKeys,
-                                               SignInfos,
-                                               SignaturePolicy,
-                                               Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                               CustomData,
+                           CustomData,
 
-                                               RequestId        ?? CSMS.NextRequestId,
-                                               RequestTimestamp ?? Timestamp.Now,
-                                               RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                               EventTrackingId  ?? EventTracking_Id.New,
-                                               CancellationToken
-                                           ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
         #region GetChargingProfiles        (this CSMS, ChargingStationId, EVSEId, ChargingProfile, ...)
 
         /// <summary>
-        /// Set the charging profile of the given charge box connector.
+        /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="EVSEId">The EVSE identification to which the charging profile applies.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
         /// 
@@ -1958,7 +2019,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetChargingProfilesResponse>
 
             GetChargingProfiles(this ICSMS                CSMS,
-                                ChargingStation_Id              ChargingStationId,
+                                ChargingStation_Id        ChargingStationId,
                                 Int64                     GetChargingProfilesRequestId,
                                 ChargingProfileCriterion  ChargingProfile,
                                 EVSE_Id?                  EVSEId              = null,
@@ -1977,34 +2038,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 CancellationToken         CancellationToken   = default)
 
 
-                => CSMS.GetChargingProfiles(new GetChargingProfilesRequest(
-                                                ChargingStationId,
-                                                GetChargingProfilesRequestId,
-                                                ChargingProfile,
-                                                EVSEId,
+                => CSMS.GetChargingProfiles(
+                       new GetChargingProfilesRequest(
+                           ChargingStationId,
+                           GetChargingProfilesRequestId,
+                           ChargingProfile,
+                           EVSEId,
 
-                                                SignKeys,
-                                                SignInfos,
-                                                SignaturePolicy,
-                                                Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                CustomData,
+                           CustomData,
 
-                                                RequestId        ?? CSMS.NextRequestId,
-                                                RequestTimestamp ?? Timestamp.Now,
-                                                RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                EventTrackingId  ?? EventTracking_Id.New,
-                                                CancellationToken
-                                            ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
         #region ClearChargingProfile       (this CSMS, ChargingStationId, ChargingProfileId, ChargingProfileCriteria, ...)
 
         /// <summary>
-        /// Remove the charging profile at the given charge box connector.
+        /// Remove the charging profile at the given charging station connector.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ChargingProfileId">An optional identification of the charging profile to clear.</param>
         /// <param name="ChargingProfileCriteria">An optional specification of the charging profile to clear.</param>
         /// 
@@ -2019,7 +2082,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ClearChargingProfileResponse>
 
             ClearChargingProfile(this ICSMS               CSMS,
-                                 ChargingStation_Id             ChargingStationId,
+                                 ChargingStation_Id       ChargingStationId,
                                  ChargingProfile_Id?      ChargingProfileId         = null,
                                  ClearChargingProfile?    ChargingProfileCriteria   = null,
 
@@ -2037,33 +2100,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  CancellationToken        CancellationToken         = default)
 
 
-                => CSMS.ClearChargingProfile(new ClearChargingProfileRequest(
-                                                 ChargingStationId,
-                                                 ChargingProfileId,
-                                                 ChargingProfileCriteria,
+                => CSMS.ClearChargingProfile(
+                       new ClearChargingProfileRequest(
+                           ChargingStationId,
+                           ChargingProfileId,
+                           ChargingProfileCriteria,
 
-                                                 SignKeys,
-                                                 SignInfos,
-                                                 SignaturePolicy,
-                                                 Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                 CustomData,
+                           CustomData,
 
-                                                 RequestId        ?? CSMS.NextRequestId,
-                                                 RequestTimestamp ?? Timestamp.Now,
-                                                 RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                 EventTrackingId  ?? EventTracking_Id.New,
-                                                 CancellationToken
-                                             ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
         #region GetCompositeSchedule       (this CSMS, ChargingStationId, Duration, EVSEId, ChargingRateUnit = null, ...)
 
         /// <summary>
-        /// Return the charging schedule of the given charge box connector.
+        /// Return the charging schedule of the given charging station connector.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="Duration">The length of requested schedule.</param>
         /// <param name="EVSEId">The EVSE identification for which the schedule is requested. EVSE identification is 0, the charging station will calculate the expected consumption for the grid connection.</param>
         /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
@@ -2079,7 +2144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetCompositeScheduleResponse>
 
             GetCompositeSchedule(this ICSMS               CSMS,
-                                 ChargingStation_Id             ChargingStationId,
+                                 ChargingStation_Id       ChargingStationId,
                                  TimeSpan                 Duration,
                                  EVSE_Id                  EVSEId,
                                  ChargingRateUnits?       ChargingRateUnit    = null,
@@ -2098,25 +2163,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.GetCompositeSchedule(new GetCompositeScheduleRequest(
-                                                 ChargingStationId,
-                                                 Duration,
-                                                 EVSEId,
-                                                 ChargingRateUnit,
+                => CSMS.GetCompositeSchedule(
+                       new GetCompositeScheduleRequest(
+                           ChargingStationId,
+                           Duration,
+                           EVSEId,
+                           ChargingRateUnit,
 
-                                                 SignKeys,
-                                                 SignInfos,
-                                                 SignaturePolicy,
-                                                 Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                 CustomData,
+                           CustomData,
 
-                                                 RequestId        ?? CSMS.NextRequestId,
-                                                 RequestTimestamp ?? Timestamp.Now,
-                                                 RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                 EventTrackingId  ?? EventTracking_Id.New,
-                                                 CancellationToken
-                                             ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -2125,7 +2192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Update the dynamic charging schedule for the given charging profile.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ChargingProfileId">The identification of the charging profile to update.</param>
         /// 
         /// <param name="Limit">Optional charging rate limit in chargingRateUnit.</param>
@@ -2155,7 +2222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UpdateDynamicScheduleResponse>
 
             UpdateDynamicSchedule(this ICSMS               CSMS,
-                                  ChargingStation_Id             ChargingStationId,
+                                  ChargingStation_Id       ChargingStationId,
                                   ChargingProfile_Id       ChargingProfileId,
 
                                   ChargingRateValue?       Limit                 = null,
@@ -2188,50 +2255,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                   CancellationToken        CancellationToken     = default)
 
 
-                => CSMS.UpdateDynamicSchedule(new UpdateDynamicScheduleRequest(
+                => CSMS.UpdateDynamicSchedule(
+                       new UpdateDynamicScheduleRequest(
 
-                                                  ChargingStationId,
-                                                  ChargingProfileId,
+                           ChargingStationId,
+                           ChargingProfileId,
 
-                                                  Limit,
-                                                  Limit_L2,
-                                                  Limit_L3,
+                           Limit,
+                           Limit_L2,
+                           Limit_L3,
 
-                                                  DischargeLimit,
-                                                  DischargeLimit_L2,
-                                                  DischargeLimit_L3,
+                           DischargeLimit,
+                           DischargeLimit_L2,
+                           DischargeLimit_L3,
 
-                                                  Setpoint,
-                                                  Setpoint_L2,
-                                                  Setpoint_L3,
+                           Setpoint,
+                           Setpoint_L2,
+                           Setpoint_L3,
 
-                                                  SetpointReactive,
-                                                  SetpointReactive_L2,
-                                                  SetpointReactive_L3,
+                           SetpointReactive,
+                           SetpointReactive_L2,
+                           SetpointReactive_L3,
 
-                                                  SignKeys,
-                                                  SignInfos,
-                                                  SignaturePolicy,
-                                                  Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                  CustomData,
+                           CustomData,
 
-                                                  RequestId        ?? CSMS.NextRequestId,
-                                                  RequestTimestamp ?? Timestamp.Now,
-                                                  RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                  EventTrackingId  ?? EventTracking_Id.New,
-                                                  CancellationToken
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
 
-                                              ));
+                       )
+                   );
 
         #endregion
 
         #region NotifyAllowedEnergyTransfer(this CSMS, ChargingStationId, AllowedEnergyTransferModes, ...)
 
         /// <summary>
-        /// Unlock the given charge box connector.
+        /// Unlock the given charging station connector.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="AllowedEnergyTransferModes">An enumeration of allowed energy transfer modes.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2245,7 +2314,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.NotifyAllowedEnergyTransferResponse>
 
             NotifyAllowedEnergyTransfer(this ICSMS                        CSMS,
-                                        ChargingStation_Id                      ChargingStationId,
+                                        ChargingStation_Id                ChargingStationId,
                                         IEnumerable<EnergyTransferModes>  AllowedEnergyTransferModes,
 
                                         IEnumerable<KeyPair>?             SignKeys            = null,
@@ -2262,23 +2331,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         CancellationToken                 CancellationToken   = default)
 
 
-                => CSMS.NotifyAllowedEnergyTransfer(new NotifyAllowedEnergyTransferRequest(
-                                                        ChargingStationId,
-                                                        AllowedEnergyTransferModes,
+                => CSMS.NotifyAllowedEnergyTransfer(
+                       new NotifyAllowedEnergyTransferRequest(
+                           ChargingStationId,
+                           AllowedEnergyTransferModes,
 
-                                                        SignKeys,
-                                                        SignInfos,
-                                                        SignaturePolicy,
-                                                        Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                        CustomData,
+                           CustomData,
 
-                                                        RequestId        ?? CSMS.NextRequestId,
-                                                        RequestTimestamp ?? Timestamp.Now,
-                                                        RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                        EventTrackingId  ?? EventTracking_Id.New,
-                                                        CancellationToken
-                                                    ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -2287,7 +2358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Switch to the priority charging profile.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
         /// <param name="Activate">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
         /// 
@@ -2302,7 +2373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UsePriorityChargingResponse>
 
             UsePriorityCharging(this ICSMS               CSMS,
-                                ChargingStation_Id             ChargingStationId,
+                                ChargingStation_Id       ChargingStationId,
                                 Transaction_Id           TransactionId,
                                 Boolean                  Activate,
 
@@ -2320,33 +2391,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.UsePriorityCharging(new UsePriorityChargingRequest(
-                                                ChargingStationId,
-                                                TransactionId,
-                                                Activate,
+                => CSMS.UsePriorityCharging(
+                       new UsePriorityChargingRequest(
+                           ChargingStationId,
+                           TransactionId,
+                           Activate,
 
-                                                SignKeys,
-                                                SignInfos,
-                                                SignaturePolicy,
-                                                Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                CustomData,
+                           CustomData,
 
-                                                RequestId        ?? CSMS.NextRequestId,
-                                                RequestTimestamp ?? Timestamp.Now,
-                                                RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                EventTrackingId  ?? EventTracking_Id.New,
-                                                CancellationToken
-                                            ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
         #region UnlockConnector            (this CSMS, ChargingStationId, EVSEId, ConnectorId, ...)
 
         /// <summary>
-        /// Unlock the given charge box connector.
+        /// Unlock the given charging station connector.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2360,7 +2433,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UnlockConnectorResponse>
 
             UnlockConnector(this ICSMS               CSMS,
-                            ChargingStation_Id             ChargingStationId,
+                            ChargingStation_Id       ChargingStationId,
                             EVSE_Id                  EVSEId,
                             Connector_Id             ConnectorId,
 
@@ -2378,24 +2451,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.UnlockConnector(new UnlockConnectorRequest(
-                                            ChargingStationId,
-                                            EVSEId,
-                                            ConnectorId,
+                => CSMS.UnlockConnector(
+                       new UnlockConnectorRequest(
+                           ChargingStationId,
+                           EVSEId,
+                           ConnectorId,
 
-                                            SignKeys,
-                                            SignInfos,
-                                            SignaturePolicy,
-                                            Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                            CustomData,
+                           CustomData,
 
-                                            RequestId        ?? CSMS.NextRequestId,
-                                            RequestTimestamp ?? Timestamp.Now,
-                                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                            EventTrackingId  ?? EventTracking_Id.New,
-                                            CancellationToken
-                                        ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -2407,7 +2482,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The charging station uses the value of signal to select a matching power value
         /// from the v2xSignalWattCurve in the charging schedule period.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ActivationTimestamp">The time when the signal becomes active.</param>
         /// <param name="Signal">Ther value of the signal in v2xSignalWattCurve. Usually between -1 and 1.</param>
         /// 
@@ -2422,7 +2497,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.AFRRSignalResponse>
 
             SendAFRRSignal(this ICSMS               CSMS,
-                           ChargingStation_Id             ChargingStationId,
+                           ChargingStation_Id       ChargingStationId,
                            DateTime                 ActivationTimestamp,
                            AFRR_Signal              Signal,
 
@@ -2440,24 +2515,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.SendAFRRSignal(new AFRRSignalRequest(
-                                           ChargingStationId,
-                                           ActivationTimestamp,
-                                           Signal,
+                => CSMS.SendAFRRSignal(
+                       new AFRRSignalRequest(
+                           ChargingStationId,
+                           ActivationTimestamp,
+                           Signal,
 
-                                           SignKeys,
-                                           SignInfos,
-                                           SignaturePolicy,
-                                           Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                           CustomData,
+                           CustomData,
 
-                                           RequestId        ?? CSMS.NextRequestId,
-                                           RequestTimestamp ?? Timestamp.Now,
-                                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                           EventTrackingId  ?? EventTracking_Id.New,
-                                           CancellationToken
-                                       ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -2480,7 +2557,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetDisplayMessageResponse>
 
             SetDisplayMessage(this ICSMS               CSMS,
-                              ChargingStation_Id             ChargingStationId,
+                              ChargingStation_Id       ChargingStationId,
                               MessageInfo              Message,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -2497,23 +2574,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.SetDisplayMessage(new SetDisplayMessageRequest(
-                                              ChargingStationId,
-                                              Message,
+                => CSMS.SetDisplayMessage(
+                       new SetDisplayMessageRequest(
+                           ChargingStationId,
+                           Message,
 
-                                              SignKeys,
-                                              SignInfos,
-                                              SignaturePolicy,
-                                              Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                              CustomData,
+                           CustomData,
 
-                                              RequestId        ?? CSMS.NextRequestId,
-                                              RequestTimestamp ?? Timestamp.Now,
-                                              RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                              EventTrackingId  ?? EventTracking_Id.New,
-                                              CancellationToken
-                                          ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -2538,7 +2617,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetDisplayMessagesResponse>
 
             GetDisplayMessages(this ICSMS                       CSMS,
-                               ChargingStation_Id                     ChargingStationId,
+                               ChargingStation_Id               ChargingStationId,
                                Int32                            GetDisplayMessagesRequestId,
                                IEnumerable<DisplayMessage_Id>?  Ids                 = null,
                                MessagePriorities?               Priority            = null,
@@ -2558,26 +2637,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                CancellationToken                CancellationToken   = default)
 
 
-                => CSMS.GetDisplayMessages(new GetDisplayMessagesRequest(
-                                               ChargingStationId,
-                                               GetDisplayMessagesRequestId,
-                                               Ids,
-                                               Priority,
-                                               State,
+                => CSMS.GetDisplayMessages(
+                       new GetDisplayMessagesRequest(
+                           ChargingStationId,
+                           GetDisplayMessagesRequestId,
+                           Ids,
+                           Priority,
+                           State,
 
-                                               SignKeys,
-                                               SignInfos,
-                                               SignaturePolicy,
-                                               Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                               CustomData,
+                           CustomData,
 
-                                               RequestId        ?? CSMS.NextRequestId,
-                                               RequestTimestamp ?? Timestamp.Now,
-                                               RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                               EventTrackingId  ?? EventTracking_Id.New,
-                                               CancellationToken
-                                           ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -2599,7 +2680,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ClearDisplayMessageResponse>
 
             ClearDisplayMessage(this ICSMS               CSMS,
-                                ChargingStation_Id             ChargingStationId,
+                                ChargingStation_Id       ChargingStationId,
                                 DisplayMessage_Id        DisplayMessageId,
 
                                 IEnumerable<KeyPair>?    SignKeys            = null,
@@ -2616,23 +2697,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.ClearDisplayMessage(new ClearDisplayMessageRequest(
-                                                ChargingStationId,
-                                                DisplayMessageId,
+                => CSMS.ClearDisplayMessage(
+                       new ClearDisplayMessageRequest(
+                           ChargingStationId,
+                           DisplayMessageId,
 
-                                                SignKeys,
-                                                SignInfos,
-                                                SignaturePolicy,
-                                                Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                CustomData,
+                           CustomData,
 
-                                                RequestId        ?? CSMS.NextRequestId,
-                                                RequestTimestamp ?? Timestamp.Now,
-                                                RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                EventTrackingId  ?? EventTracking_Id.New,
-                                                CancellationToken
-                                            ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -2655,7 +2738,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.CostUpdatedResponse>
 
             SendCostUpdated(this ICSMS               CSMS,
-                            ChargingStation_Id             ChargingStationId,
+                            ChargingStation_Id       ChargingStationId,
                             Decimal                  TotalCost,
                             Transaction_Id           TransactionId,
 
@@ -2673,24 +2756,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.SendCostUpdated(new CostUpdatedRequest(
-                                            ChargingStationId,
-                                            TotalCost,
-                                            TransactionId,
+                => CSMS.SendCostUpdated(
+                       new CostUpdatedRequest(
+                           ChargingStationId,
+                           TotalCost,
+                           TransactionId,
 
-                                            SignKeys,
-                                            SignInfos,
-                                            SignaturePolicy,
-                                            Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                            CustomData,
+                           CustomData,
 
-                                            RequestId        ?? CSMS.NextRequestId,
-                                            RequestTimestamp ?? Timestamp.Now,
-                                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                            EventTrackingId  ?? EventTracking_Id.New,
-                                            CancellationToken
-                                        ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 
@@ -2717,7 +2802,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.CustomerInformationResponse>
 
             RequestCustomerInformation(this ICSMS               CSMS,
-                                       ChargingStation_Id             ChargingStationId,
+                                       ChargingStation_Id       ChargingStationId,
                                        Int64                    CustomerInformationRequestId,
                                        Boolean                  Report,
                                        Boolean                  Clear,
@@ -2739,28 +2824,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        CancellationToken        CancellationToken     = default)
 
 
-                => CSMS.RequestCustomerInformation(new CustomerInformationRequest(
-                                                       ChargingStationId,
-                                                       CustomerInformationRequestId,
-                                                       Report,
-                                                       Clear,
-                                                       CustomerIdentifier,
-                                                       IdToken,
-                                                       CustomerCertificate,
+                => CSMS.RequestCustomerInformation(
+                       new CustomerInformationRequest(
+                           ChargingStationId,
+                           CustomerInformationRequestId,
+                           Report,
+                           Clear,
+                           CustomerIdentifier,
+                           IdToken,
+                           CustomerCertificate,
 
-                                                       SignKeys,
-                                                       SignInfos,
-                                                       SignaturePolicy,
-                                                       Signatures,
+                           SignKeys,
+                           SignInfos,
+                           SignaturePolicy,
+                           Signatures,
 
-                                                       CustomData,
+                           CustomData,
 
-                                                       RequestId        ?? CSMS.NextRequestId,
-                                                       RequestTimestamp ?? Timestamp.Now,
-                                                       RequestTimeout   ?? CSMS.DefaultRequestTimeout,
-                                                       EventTrackingId  ?? EventTracking_Id.New,
-                                                       CancellationToken
-                                                   ));
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
 
         #endregion
 

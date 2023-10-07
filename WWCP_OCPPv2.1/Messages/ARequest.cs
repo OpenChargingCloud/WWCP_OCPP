@@ -177,12 +177,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             var json = JSONObject.Create(
-                           new JProperty("id",                RequestId.       ToString()),
-                           new JProperty("timestamp",         RequestTimestamp.ToIso8601()),
-                           new JProperty("eventTrackingId",   EventTrackingId. ToString()),
-                           new JProperty("connection",        Connection?.     ToJSON()),
-                           new JProperty("chargeBoxId",       ChargingStationId.     ToString()),
-                           new JProperty("timeout",           RequestTimeout.  TotalSeconds),
+                           new JProperty("id",                RequestId.        ToString()),
+                           new JProperty("timestamp",         RequestTimestamp. ToIso8601()),
+                           new JProperty("eventTrackingId",   EventTrackingId.  ToString()),
+                           new JProperty("connection",        Connection?.      ToJSON()),
+                           new JProperty("chargeBoxId",       ChargingStationId.ToString()),
+                           new JProperty("timeout",           RequestTimeout.   TotalSeconds),
                            new JProperty("action",            Action),
                            new JProperty("data",              RequestData)
                        );
