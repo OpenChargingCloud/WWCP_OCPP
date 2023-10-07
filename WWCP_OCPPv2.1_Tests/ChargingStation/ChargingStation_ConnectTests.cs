@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
             chargingStation1WebSocketTextMessageResponsesReceived  = new ConcurrentList<LogData2>();
 
             chargingStation1 = new TestChargingStation(
-                                    ChargeBoxId:              ChargeBox_Id.Parse("GD001"),
+                                    Id:              ChargingStation_Id.Parse("GD001"),
                                     VendorName:               "GraphDefined OEM #1",
                                     Model:                    "VCP.1",
                                     Description:              I18NString.Create(Languages.en, "Our first virtual charging station!"),
@@ -221,15 +221,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
             if (testBackendWebSockets01 is not null)
             {
 
-                testCSMS01.AddOrUpdateHTTPBasicAuth(ChargeBox_Id.Parse("test01"), "1234abcd");
+                testCSMS01.AddOrUpdateHTTPBasicAuth(ChargingStation_Id.Parse("test01"), "1234abcd");
 
                 var response1 = chargingStation1.ConnectWebSocket(
-                                                     From:                    "From:GD001",
-                                                     To:                      "To:OCPPTest01",
-                                                     RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation1.ChargeBoxId),
-                                                     HTTPAuthentication:      HTTPBasicAuthentication.Create("test01", "1234abcd"),
-                                                     DisableWebSocketPings:   true
-                                                 ).Result;
+                                    From:                    "From:GD001",
+                                    To:                      "To:OCPPTest01",
+                                    RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation1.Id),
+                                    HTTPAuthentication:      HTTPBasicAuthentication.Create("test01", "1234abcd"),
+                                    DisableWebSocketPings:   true
+                                ).Result;
 
                 Assert.IsNotNull(response1);
 

@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The charge box identification.
         /// </summary>
         [Mandatory]
-        ChargeBox_Id        ChargeBoxId          { get; }
+        ChargingStation_Id        ChargingStationId          { get; }
 
         /// <summary>
         /// The request identification.

@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyEVChargingScheduleRequest(ChargeBox_Id             ChargeBoxId,
+        public NotifyEVChargingScheduleRequest(ChargingStation_Id             ChargeBoxId,
                                                DateTime                 TimeBase,
                                                EVSE_Id                  EVSEId,
                                                ChargingSchedule         ChargingSchedule,
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyEVChargingScheduleRequestParser">A delegate to parse custom notify EV charging schedule requests.</param>
         public static NotifyEVChargingScheduleRequest Parse(JObject                                                        JSON,
                                                             Request_Id                                                     RequestId,
-                                                            ChargeBox_Id                                                   ChargeBoxId,
+                                                            ChargingStation_Id                                                   ChargeBoxId,
                                                             CustomJObjectParserDelegate<NotifyEVChargingScheduleRequest>?  CustomNotifyEVChargingScheduleRequestParser   = null)
         {
 
@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyEVChargingScheduleRequestParser">A delegate to parse custom notify EV charging schedule requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       ChargeBox_Id                                                ChargeBoxId,
+                                       ChargingStation_Id                                                ChargeBoxId,
                                        out NotifyEVChargingScheduleRequest?                           NotifyEVChargingScheduleRequest,
                                        out String?                                                 ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyEVChargingScheduleRequest>?  CustomNotifyEVChargingScheduleRequestParser)
@@ -298,8 +298,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

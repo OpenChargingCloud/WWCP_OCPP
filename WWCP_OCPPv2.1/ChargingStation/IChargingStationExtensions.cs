@@ -70,32 +70,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                  CancellationToken                                          CancellationToken                         = default)
 
-        {
 
-            var bootNotificationRequest = new BootNotificationRequest(
-                                              ChargingStation.ChargeBoxId,
-                                              new ChargingStation(
-                                                  ChargingStation.Model,
-                                                  ChargingStation.VendorName,
-                                                  ChargingStation.SerialNumber,
-                                                  ChargingStation.Modem,
-                                                  ChargingStation.FirmwareVersion,
-                                                  ChargingStation.CustomData
-                                              ),
-                                              BootReason,
+            => ChargingStation.SendBootNotification(
+                   new BootNotificationRequest(
+                       ChargingStation.Id,
+                       new ChargingStation(
+                           ChargingStation.Model,
+                           ChargingStation.VendorName,
+                           ChargingStation.SerialNumber,
+                           ChargingStation.Modem,
+                           ChargingStation.FirmwareVersion,
+                           ChargingStation.CustomData
+                       ),
+                       BootReason,
 
-                                              SignKeys,
-                                              SignInfos,
-                                              SignaturePolicy,
-                                              Signatures,
-                                              CustomData,
+                       SignKeys,
+                       SignInfos,
+                       SignaturePolicy,
+                       Signatures,
+                       CustomData,
 
-                                              RequestId        ?? ChargingStation.NextRequestId,
-                                              RequestTimestamp ?? Timestamp.Now,
-                                              RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
-                                              EventTrackingId  ?? EventTracking_Id.New,
-                                              CancellationToken
-                                          );
+                       RequestId        ?? ChargingStation.NextRequestId,
+                       RequestTimestamp ?? Timestamp.Now,
+                       RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
+                       EventTrackingId  ?? EventTracking_Id.New,
+                       CancellationToken
+                   )
+               );
 
             //var signaturePolicy = SignaturePolicy ?? ChargingStation.SignaturePolicy;
 
@@ -149,10 +150,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             //}
 
-            return ChargingStation.SendBootNotification(bootNotificationRequest);
-
-        }
-
         #endregion
 
         #region SendFirmwareStatusNotification       (Status, ...)
@@ -192,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.SendFirmwareStatusNotification(
                        new FirmwareStatusNotificationRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            Status,
                            UpdateFirmwareRequestId,
 
@@ -249,9 +246,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                   EventTracking_Id?        EventTrackingId     = null,
                                                   CancellationToken        CancellationToken   = default)
 
+
                 => ChargingStation.SendPublishFirmwareStatusNotification(
                        new PublishFirmwareStatusNotificationRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            Status,
                            PublishFirmwareStatusNotificationRequestId,
                            DownloadLocations,
@@ -306,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.SendHeartbeat(
                        new HeartbeatRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
 
                            SignKeys,
                            SignInfos,
@@ -366,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.NotifyEvent(
                        new NotifyEventRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            GeneratedAt,
                            SequenceNumber,
                            EventData,
@@ -428,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.SendSecurityEventNotification(
                        new SecurityEventNotificationRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            Type,
                            Timestamp,
                            TechInfo,
@@ -493,7 +491,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.NotifyReport(
                        new NotifyReportRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            NotifyReportRequestId,
                            SequenceNumber,
                            GeneratedAt,
@@ -560,7 +558,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.NotifyMonitoringReport(
                        new NotifyMonitoringReportRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            NotifyMonitoringReportRequestId,
                            SequenceNumber,
                            GeneratedAt,
@@ -621,7 +619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.SendLogStatusNotification(
                        new LogStatusNotificationRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            Status,
                            LogRequestId,
 
@@ -681,7 +679,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.TransferData(
                        new DataTransferRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            VendorId,
                            MessageId,
                            Data,
@@ -741,7 +739,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.SendCertificateSigningRequest(
                        new SignCertificateRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            CSR,
                            CertificateType,
 
@@ -805,7 +803,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.Get15118EVCertificate(
                        new Get15118EVCertificateRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            ISO15118SchemaVersion,
                            CertificateAction,
                            EXIRequest,
@@ -864,7 +862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.GetCertificateStatus(
                        new GetCertificateStatusRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            OCSPRequestData,
 
                            SignKeys,
@@ -922,7 +920,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.GetCRL(
                        new GetCRLRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            GetCRLRequestId,
                            CertificateHashData,
 
@@ -981,7 +979,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.SendReservationStatusUpdate(
                        new ReservationStatusUpdateRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            ReservationId,
                            ReservationUpdateStatus,
 
@@ -1041,7 +1039,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.Authorize(
                        new AuthorizeRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            IdToken,
                            Certificate,
                            ISO15118CertificateHashData,
@@ -1104,7 +1102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.NotifyEVChargingNeeds(
                        new NotifyEVChargingNeedsRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            EVSEId,
                            ChargingNeeds,
                            ReceivedTimestamp,
@@ -1188,7 +1186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.SendTransactionEvent(
                        new TransactionEventRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
 
                            EventType,
                            Timestamp,
@@ -1263,7 +1261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.SendStatusNotification(
                        new StatusNotificationRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            Timestamp,
                            Status,
                            EVSEId,
@@ -1323,7 +1321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.SendMeterValues(
                        new MeterValuesRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            EVSEId,
                            MeterValues,
 
@@ -1383,7 +1381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.NotifyChargingLimit(
                        new NotifyChargingLimitRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            ChargingLimit,
                            ChargingSchedules,
                            EVSEId,
@@ -1442,7 +1440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.SendClearedChargingLimit(
                        new ClearedChargingLimitRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            ChargingLimitSource,
                            EVSEId,
 
@@ -1506,7 +1504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.ReportChargingProfiles(
                        new ReportChargingProfilesRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            ReportChargingProfilesRequestId,
                            ChargingLimitSource,
                            EVSEId,
@@ -1575,7 +1573,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.NotifyEVChargingSchedule(
                        new NotifyEVChargingScheduleRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            TimeBase,
                            EVSEId,
                            ChargingSchedule,
@@ -1638,7 +1636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.NotifyPriorityCharging(
                        new NotifyPriorityChargingRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            TransactionId,
                            Activated,
 
@@ -1696,7 +1694,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.PullDynamicScheduleUpdate(
                        new PullDynamicScheduleUpdateRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            ChargingProfileId,
 
                            SignKeys,
@@ -1756,7 +1754,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.NotifyDisplayMessages(
                        new NotifyDisplayMessagesRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            NotifyDisplayMessagesRequestId,
                            MessageInfos,
                            ToBeContinued,
@@ -1821,7 +1819,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.NotifyCustomerInformation(
                        new NotifyCustomerInformationRequest(
-                           ChargingStation.ChargeBoxId,
+                           ChargingStation.Id,
                            NotifyCustomerInformationRequestId,
                            Data,
                            SequenceNumber,

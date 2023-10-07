@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetChargingProfileRequest(ChargeBox_Id             ChargeBoxId,
+        public SetChargingProfileRequest(ChargingStation_Id             ChargeBoxId,
                                          EVSE_Id                  EVSEId,
                                          ChargingProfile          ChargingProfile,
 
@@ -501,7 +501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetChargingProfileRequestParser">A delegate to parse custom set charging profile requests.</param>
         public static SetChargingProfileRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      ChargeBox_Id                                             ChargeBoxId,
+                                                      ChargingStation_Id                                             ChargeBoxId,
                                                       CustomJObjectParserDelegate<SetChargingProfileRequest>?  CustomSetChargingProfileRequestParser   = null)
         {
 
@@ -536,7 +536,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                         JSON,
                                        Request_Id                      RequestId,
-                                       ChargeBox_Id                    ChargeBoxId,
+                                       ChargingStation_Id                    ChargeBoxId,
                                        out SetChargingProfileRequest?  SetChargingProfileRequest,
                                        out String?                     ErrorResponse)
 
@@ -559,7 +559,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetChargingProfileRequestParser">A delegate to parse custom set charging profile requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       ChargeBox_Id                                             ChargeBoxId,
+                                       ChargingStation_Id                                             ChargeBoxId,
                                        out SetChargingProfileRequest?                           SetChargingProfileRequest,
                                        out String?                                              ErrorResponse,
                                        CustomJObjectParserDelegate<SetChargingProfileRequest>?  CustomSetChargingProfileRequestParser)
@@ -629,8 +629,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

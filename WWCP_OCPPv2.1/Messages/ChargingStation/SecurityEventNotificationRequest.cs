@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SecurityEventNotificationRequest(ChargeBox_Id             ChargeBoxId,
+        public SecurityEventNotificationRequest(ChargingStation_Id             ChargeBoxId,
                                                 SecurityEventType        Type,
                                                 DateTime                 Timestamp,
                                                 String?                  TechInfo            = null,
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSecurityEventNotificationRequestParser">A delegate to parse custom security event notification requests.</param>
         public static SecurityEventNotificationRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
-                                                             ChargeBox_Id                                                    ChargeBoxId,
+                                                             ChargingStation_Id                                                    ChargeBoxId,
                                                              CustomJObjectParserDelegate<SecurityEventNotificationRequest>?  CustomSecurityEventNotificationRequestParser   = null)
         {
 
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                JSON,
                                        Request_Id                             RequestId,
-                                       ChargeBox_Id                           ChargeBoxId,
+                                       ChargingStation_Id                           ChargeBoxId,
                                        out SecurityEventNotificationRequest?  SecurityEventNotificationRequest,
                                        out String?                            ErrorResponse)
 
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSecurityEventNotificationRequestParser">A delegate to parse custom security event notification requests.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
-                                       ChargeBox_Id                                                    ChargeBoxId,
+                                       ChargingStation_Id                                                    ChargeBoxId,
                                        out SecurityEventNotificationRequest?                           SecurityEventNotificationRequest,
                                        out String?                                                     ErrorResponse,
                                        CustomJObjectParserDelegate<SecurityEventNotificationRequest>?  CustomSecurityEventNotificationRequestParser)
@@ -312,8 +312,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

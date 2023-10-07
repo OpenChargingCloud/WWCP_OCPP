@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetVariablesRequest(ChargeBox_Id                  ChargeBoxId,
+        public SetVariablesRequest(ChargingStation_Id                  ChargeBoxId,
                                    IEnumerable<SetVariableData>  VariableData,
 
                                    IEnumerable<KeyPair>?         SignKeys            = null,
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetVariablesRequestParser">A delegate to parse custom set variables requests.</param>
         public static SetVariablesRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
-                                                ChargeBox_Id                                       ChargeBoxId,
+                                                ChargingStation_Id                                       ChargeBoxId,
                                                 CustomJObjectParserDelegate<SetVariablesRequest>?  CustomSetVariablesRequestParser   = null)
         {
 
@@ -308,7 +308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                   JSON,
                                        Request_Id                RequestId,
-                                       ChargeBox_Id              ChargeBoxId,
+                                       ChargingStation_Id              ChargeBoxId,
                                        out SetVariablesRequest?  SetVariablesRequest,
                                        out String?               ErrorResponse)
 
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomSetVariablesRequestParser">A delegate to parse custom set variables requests.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
-                                       ChargeBox_Id                                       ChargeBoxId,
+                                       ChargingStation_Id                                       ChargeBoxId,
                                        out SetVariablesRequest?                           SetVariablesRequest,
                                        out String?                                        ErrorResponse,
                                        CustomJObjectParserDelegate<SetVariablesRequest>?  CustomSetVariablesRequestParser)
@@ -387,8 +387,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

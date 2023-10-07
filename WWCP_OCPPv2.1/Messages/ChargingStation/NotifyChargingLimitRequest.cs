@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyChargingLimitRequest(ChargeBox_Id                    ChargeBoxId,
+        public NotifyChargingLimitRequest(ChargingStation_Id                    ChargeBoxId,
                                           ChargingLimit                   ChargingLimit,
                                           IEnumerable<ChargingSchedule>?  ChargingSchedules   = null,
                                           EVSE_Id?                        EVSEId              = null,
@@ -134,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyChargingLimitRequestParser">A delegate to parse custom notify charging limit requests.</param>
         public static NotifyChargingLimitRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       ChargeBox_Id                                              ChargeBoxId,
+                                                       ChargingStation_Id                                              ChargeBoxId,
                                                        CustomJObjectParserDelegate<NotifyChargingLimitRequest>?  CustomNotifyChargingLimitRequestParser   = null)
         {
 
@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomNotifyChargingLimitRequestParser">A delegate to parse custom notify charging limit requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       ChargeBox_Id                                              ChargeBoxId,
+                                       ChargingStation_Id                                              ChargeBoxId,
                                        out NotifyChargingLimitRequest?                           NotifyChargingLimitRequest,
                                        out String?                                               ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyChargingLimitRequest>?  CustomNotifyChargingLimitRequestParser)
@@ -253,8 +253,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

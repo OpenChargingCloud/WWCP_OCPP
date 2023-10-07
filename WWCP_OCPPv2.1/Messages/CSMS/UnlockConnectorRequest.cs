@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UnlockConnectorRequest(ChargeBox_Id             ChargeBoxId,
+        public UnlockConnectorRequest(ChargingStation_Id             ChargeBoxId,
                                       EVSE_Id                  EVSEId,
                                       Connector_Id             ConnectorId,
 
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUnlockConnectorRequestParser">A delegate to parse custom unlock connector requests.</param>
         public static UnlockConnectorRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
-                                                   ChargeBox_Id                                          ChargeBoxId,
+                                                   ChargingStation_Id                                          ChargeBoxId,
                                                    CustomJObjectParserDelegate<UnlockConnectorRequest>?  CustomUnlockConnectorRequestParser   = null)
         {
 
@@ -199,7 +199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                      JSON,
                                        Request_Id                   RequestId,
-                                       ChargeBox_Id                 ChargeBoxId,
+                                       ChargingStation_Id                 ChargeBoxId,
                                        out UnlockConnectorRequest?  UnlockConnectorRequest,
                                        out String?                  ErrorResponse)
 
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUnlockConnectorRequestParser">A delegate to parse custom unlock connector requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
-                                       ChargeBox_Id                                          ChargeBoxId,
+                                       ChargingStation_Id                                          ChargeBoxId,
                                        out UnlockConnectorRequest?                           UnlockConnectorRequest,
                                        out String?                                           ErrorResponse,
                                        CustomJObjectParserDelegate<UnlockConnectorRequest>?  CustomUnlockConnectorRequestParser)
@@ -291,8 +291,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

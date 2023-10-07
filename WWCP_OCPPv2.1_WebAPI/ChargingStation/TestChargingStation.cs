@@ -237,14 +237,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The sender identification.
         /// </summary>
         String IEventSender.Id
-            => ChargeBoxId.ToString();
+            => Id.ToString();
 
 
 
         /// <summary>
-        /// The charge box identification.
+        /// The charging station identification.
         /// </summary>
-        public ChargeBox_Id             ChargeBoxId                 { get; }
+        public ChargingStation_Id             Id                          { get; }
 
         /// <summary>
         /// The charging station vendor identification.
@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         /// <summary>
-        /// The optional multi-language charge box description.
+        /// The optional multi-language charging station description.
         /// </summary>
         [Optional]
         public I18NString?              Description                 { get; }
@@ -952,6 +952,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Charging Station <- CSMS
 
+        public event OnResetDelegate? OnReset;
+        public event OnUpdateFirmwareDelegate? OnUpdateFirmware;
+        public event OnPublishFirmwareDelegate? OnPublishFirmware;
+        public event OnUnpublishFirmwareDelegate? OnUnpublishFirmware;
+        public event OnGetBaseReportDelegate? OnGetBaseReport;
+        public event OnGetReportDelegate? OnGetReport;
+        public event OnGetLogDelegate? OnGetLog;
+        public event OnSetVariablesDelegate? OnSetVariables;
+        public event OnGetVariablesDelegate? OnGetVariables;
+        public event OnSetMonitoringBaseDelegate? OnSetMonitoringBase;
+        public event OnGetMonitoringReportDelegate? OnGetMonitoringReport;
+        public event OnSetMonitoringLevelDelegate? OnSetMonitoringLevel;
+        public event OnSetVariableMonitoringDelegate? OnSetVariableMonitoring;
+        public event OnClearVariableMonitoringDelegate? OnClearVariableMonitoring;
+        public event OnSetNetworkProfileDelegate? OnSetNetworkProfile;
+        public event OnChangeAvailabilityDelegate? OnChangeAvailability;
+        public event OnTriggerMessageDelegate? OnTriggerMessage;
+        public event OnIncomingDataTransferDelegate? OnIncomingDataTransfer;
+        public event OnCertificateSignedDelegate? OnCertificateSigned;
+        public event OnInstallCertificateDelegate? OnInstallCertificate;
+        public event OnGetInstalledCertificateIdsDelegate? OnGetInstalledCertificateIds;
+        public event OnDeleteCertificateDelegate? OnDeleteCertificate;
+        public event OnNotifyCRLDelegate? OnNotifyCRL;
+        public event OnGetLocalListVersionDelegate? OnGetLocalListVersion;
+        public event OnSendLocalListDelegate? OnSendLocalList;
+        public event OnClearCacheDelegate? OnClearCache;
+        public event OnReserveNowDelegate? OnReserveNow;
+        public event OnCancelReservationDelegate? OnCancelReservation;
+        public event OnRequestStartTransactionDelegate? OnRequestStartTransaction;
+        public event OnRequestStopTransactionDelegate? OnRequestStopTransaction;
+        public event OnGetTransactionStatusDelegate? OnGetTransactionStatus;
+        public event OnSetChargingProfileDelegate? OnSetChargingProfile;
+        public event OnGetChargingProfilesDelegate? OnGetChargingProfiles;
+        public event OnClearChargingProfileDelegate? OnClearChargingProfile;
+        public event OnGetCompositeScheduleDelegate? OnGetCompositeSchedule;
+        public event OnUpdateDynamicScheduleDelegate? OnUpdateDynamicSchedule;
+        public event OnNotifyAllowedEnergyTransferDelegate? OnNotifyAllowedEnergyTransfer;
+        public event OnUsePriorityChargingDelegate? OnUsePriorityCharging;
+        public event OnUnlockConnectorDelegate? OnUnlockConnector;
+        public event OnAFRRSignalDelegate? OnAFRRSignal;
+        public event OnSetDisplayMessageDelegate? OnSetDisplayMessage;
+        public event OnGetDisplayMessagesDelegate? OnGetDisplayMessages;
+        public event OnClearDisplayMessageDelegate? OnClearDisplayMessage;
+        public event OnCostUpdatedDelegate? OnCostUpdated;
+        public event OnCustomerInformationDelegate? OnCustomerInformation;
+
+
+
         #region Reset
 
         /// <summary>
@@ -1584,51 +1632,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event fired whenever a response to a CustomerInformation request was received.
         /// </summary>
         public event OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
-        public event OnResetDelegate OnReset;
-        public event OnUpdateFirmwareDelegate OnUpdateFirmware;
-        public event OnPublishFirmwareDelegate OnPublishFirmware;
-        public event OnUnpublishFirmwareDelegate OnUnpublishFirmware;
-        public event OnGetBaseReportDelegate OnGetBaseReport;
-        public event OnGetReportDelegate OnGetReport;
-        public event OnGetLogDelegate OnGetLog;
-        public event OnSetVariablesDelegate OnSetVariables;
-        public event OnGetVariablesDelegate OnGetVariables;
-        public event OnSetMonitoringBaseDelegate OnSetMonitoringBase;
-        public event OnGetMonitoringReportDelegate OnGetMonitoringReport;
-        public event OnSetMonitoringLevelDelegate OnSetMonitoringLevel;
-        public event OnSetVariableMonitoringDelegate OnSetVariableMonitoring;
-        public event OnClearVariableMonitoringDelegate OnClearVariableMonitoring;
-        public event OnSetNetworkProfileDelegate OnSetNetworkProfile;
-        public event OnChangeAvailabilityDelegate OnChangeAvailability;
-        public event OnTriggerMessageDelegate OnTriggerMessage;
-        public event OnIncomingDataTransferDelegate OnIncomingDataTransfer;
-        public event OnCertificateSignedDelegate OnCertificateSigned;
-        public event OnInstallCertificateDelegate OnInstallCertificate;
-        public event OnGetInstalledCertificateIdsDelegate OnGetInstalledCertificateIds;
-        public event OnDeleteCertificateDelegate OnDeleteCertificate;
-        public event OnNotifyCRLDelegate OnNotifyCRL;
-        public event OnGetLocalListVersionDelegate OnGetLocalListVersion;
-        public event OnSendLocalListDelegate OnSendLocalList;
-        public event OnClearCacheDelegate OnClearCache;
-        public event OnReserveNowDelegate OnReserveNow;
-        public event OnCancelReservationDelegate OnCancelReservation;
-        public event OnRequestStartTransactionDelegate OnRequestStartTransaction;
-        public event OnRequestStopTransactionDelegate OnRequestStopTransaction;
-        public event OnGetTransactionStatusDelegate OnGetTransactionStatus;
-        public event OnSetChargingProfileDelegate OnSetChargingProfile;
-        public event OnGetChargingProfilesDelegate OnGetChargingProfiles;
-        public event OnClearChargingProfileDelegate OnClearChargingProfile;
-        public event OnGetCompositeScheduleDelegate OnGetCompositeSchedule;
-        public event OnUpdateDynamicScheduleDelegate OnUpdateDynamicSchedule;
-        public event OnNotifyAllowedEnergyTransferDelegate OnNotifyAllowedEnergyTransfer;
-        public event OnUsePriorityChargingDelegate OnUsePriorityCharging;
-        public event OnUnlockConnectorDelegate OnUnlockConnector;
-        public event OnAFRRSignalDelegate OnAFRRSignal;
-        public event OnSetDisplayMessageDelegate OnSetDisplayMessage;
-        public event OnGetDisplayMessagesDelegate OnGetDisplayMessages;
-        public event OnClearDisplayMessageDelegate OnClearDisplayMessage;
-        public event OnCostUpdatedDelegate OnCostUpdated;
-        public event OnCustomerInformationDelegate OnCustomerInformation;
 
         #endregion
 
@@ -1641,11 +1644,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new charging station for testing.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="Id">The charging station identification.</param>
         /// <param name="VendorName">The charging station vendor identification.</param>
         /// <param name="Model">The charging station model identification.</param>
         /// 
-        /// <param name="Description">An optional multi-language charge box description.</param>
+        /// <param name="Description">An optional multi-language charging station description.</param>
         /// <param name="SerialNumber">An optional serial number of the charging station.</param>
         /// <param name="FirmwareVersion">An optional firmware version of the charging station.</param>
         /// <param name="MeterType">An optional meter type of the main power meter of the charging station.</param>
@@ -1655,7 +1658,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SendHeartbeatEvery">The time span between heartbeat requests.</param>
         /// 
         /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
-        public TestChargingStation(ChargeBox_Id                       ChargeBoxId,
+        public TestChargingStation(ChargingStation_Id                       Id,
                                    String                             VendorName,
                                    String                             Model,
 
@@ -1682,17 +1685,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            if (ChargeBoxId.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ChargeBoxId),  "The given charge box identification must not be null or empty!");
+            if (Id.        IsNullOrEmpty)
+                throw new ArgumentNullException(nameof(Id),          "The given charging station identification must not be null or empty!");
 
             if (VendorName.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(VendorName),   "The given charging station vendor must not be null or empty!");
+                throw new ArgumentNullException(nameof(VendorName),  "The given charging station vendor must not be null or empty!");
 
-            if (Model.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Model),        "The given charging station model must not be null or empty!");
+            if (Model.     IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Model),       "The given charging station model must not be null or empty!");
 
 
-            this.ChargeBoxId              = ChargeBoxId;
+            this.Id                       = Id;
 
             this.evses                    = EVSEs is not null && EVSEs.Any()
                                                 ? EVSEs.ToDictionary(evse => evse.Id, evse => evse)
@@ -1704,7 +1707,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             //    { "doNotChangeMe",  new ConfigurationData("never",    AccessRights.ReadOnly,  false) },
             //    { "password",       new ConfigurationData("12345678", AccessRights.WriteOnly, false) }
             //};
-            this.EnqueuedRequests           = new List<EnqueuedRequest>();
+            this.EnqueuedRequests         = new List<EnqueuedRequest>();
 
             this.VendorName               = VendorName;
             this.Model                    = Model;
@@ -1793,7 +1796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             var chargingStationWSClient = new ChargingStationWSClient(
-                                              ChargeBoxId,
+                                              Id,
                                               From,
                                               To,
 
@@ -1895,10 +1898,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ResetResponse? response = null;
 
-                if (request.ChargeBoxId != ChargeBoxId)
+                if (request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid reset request for charge box '{request.ChargeBoxId}'!"));
+                    DebugX.Log(String.Concat($"ChargeBox[{Id}] Invalid reset request for charging station '{request.ChargingStationId}'!"));
 
                     response = new ResetResponse(
                                    Request:      request,
@@ -1935,7 +1938,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     else
                     {
 
-                        DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming '{request.ResetType}'{(request.EVSEId.HasValue ? $" for EVSE Id {request.EVSEId}" : "")}reset request accepted."));
+                        DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming '{request.ResetType}'{(request.EVSEId.HasValue ? $" for EVSE Id {request.EVSEId}" : "")}reset request accepted."));
 
                         response = request.EVSEId.HasValue &&
                                    !EVSEs.Any(evse => evse.Id == request.EVSEId)
@@ -2065,10 +2068,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 UpdateFirmwareResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid UpdateFirmware request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid UpdateFirmware request for charging station '{Request.ChargingStationId}'!");
 
                     response = new UpdateFirmwareResponse(
                                    Request:      Request,
@@ -2081,7 +2084,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming UpdateFirmware request for '" + Request.Firmware.FirmwareURL + "'.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming UpdateFirmware request for '" + Request.Firmware.FirmwareURL + "'.");
 
                     response = new UpdateFirmwareResponse(
                                    Request:      Request,
@@ -2180,10 +2183,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 PublishFirmwareResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid PublishFirmware request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid PublishFirmware request for charging station '{Request.ChargingStationId}'!");
 
                     response = new PublishFirmwareResponse(
                                    Request:      Request,
@@ -2196,7 +2199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming PublishFirmware request for '" + Request.DownloadLocation + "'.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming PublishFirmware request for '" + Request.DownloadLocation + "'.");
 
                     response = new PublishFirmwareResponse(
                                    Request:      Request,
@@ -2291,10 +2294,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 UnpublishFirmwareResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid UnpublishFirmware request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid UnpublishFirmware request for charging station '{Request.ChargingStationId}'!");
 
                     response = new UnpublishFirmwareResponse(
                                    Request:      Request,
@@ -2306,7 +2309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming UnpublishFirmware request for '" + Request.MD5Checksum + "'.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming UnpublishFirmware request for '" + Request.MD5Checksum + "'.");
 
                     response = new UnpublishFirmwareResponse(
                                    Request:      Request,
@@ -2401,10 +2404,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetBaseReportResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetBaseReport request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid GetBaseReport request for charging station '{Request.ChargingStationId}'!");
 
                     response = new GetBaseReportResponse(
                                    Request:      Request,
@@ -2417,7 +2420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetBaseReport request accepted.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming GetBaseReport request accepted.");
 
                     response = new GetBaseReportResponse(
                                    Request:      Request,
@@ -2514,10 +2517,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetReportResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetReport request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid GetReport request for charging station '{Request.ChargingStationId}'!");
 
                     response = new GetReportResponse(
                                    Request:      Request,
@@ -2530,7 +2533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetReport request accepted.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming GetReport request accepted.");
 
                     response = new GetReportResponse(
                                    Request:      Request,
@@ -2629,10 +2632,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetLogResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetLog request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid GetLog request for charging station '{Request.ChargingStationId}'!");
 
                     response = new GetLogResponse(
                                    Request:      Request,
@@ -2645,7 +2648,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetLog request accepted.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming GetLog request accepted.");
 
                     response = new GetLogResponse(
                                    Request:      Request,
@@ -2740,10 +2743,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetVariablesResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetVariables request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid SetVariables request for charging station '{Request.ChargingStationId}'!");
 
                     response = new SetVariablesResponse(
                                    Request:              Request,
@@ -2755,7 +2758,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetVariables request accepted.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming SetVariables request accepted.");
 
                     response = new SetVariablesResponse(
                                    Request:              Request,
@@ -2856,10 +2859,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetVariablesResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetVariables request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid GetVariables request for charging station '{Request.ChargingStationId}'!");
 
                     response = new GetVariablesResponse(
                                    Request:      Request,
@@ -2871,7 +2874,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetVariables request accepted.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming GetVariables request accepted.");
 
                     response = new GetVariablesResponse(
                                    Request:      Request,
@@ -2973,10 +2976,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetMonitoringBaseResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetMonitoringBase request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid SetMonitoringBase request for charging station '{Request.ChargingStationId}'!");
 
                     response = new SetMonitoringBaseResponse(
                                    Request:      Request,
@@ -2989,7 +2992,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetMonitoringBase request accepted.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming SetMonitoringBase request accepted.");
 
                     response = new SetMonitoringBaseResponse(
                                    Request:      Request,
@@ -3086,10 +3089,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetMonitoringReportResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetMonitoringReport request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid GetMonitoringReport request for charging station '{Request.ChargingStationId}'!");
 
                     response = new GetMonitoringReportResponse(
                                    Request:      Request,
@@ -3102,7 +3105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetMonitoringReport request accepted.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming GetMonitoringReport request accepted.");
 
                     response = new GetMonitoringReportResponse(
                                    Request:      Request,
@@ -3197,10 +3200,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetMonitoringLevelResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetMonitoringLevel request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid SetMonitoringLevel request for charging station '{Request.ChargingStationId}'!");
 
                     response = new SetMonitoringLevelResponse(
                                    Request:      Request,
@@ -3213,7 +3216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetMonitoringLevel request accepted.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming SetMonitoringLevel request accepted.");
 
                     response = new SetMonitoringLevelResponse(
                                    Request:      Request,
@@ -3308,10 +3311,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetVariableMonitoringResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetVariableMonitoring request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid SetVariableMonitoring request for charging station '{Request.ChargingStationId}'!");
 
                     response = new SetVariableMonitoringResponse(
                                    Request:                Request,
@@ -3323,7 +3326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetVariableMonitoring request accepted.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming SetVariableMonitoring request accepted.");
 
                     response = new SetVariableMonitoringResponse(
                                    Request:                Request,
@@ -3426,10 +3429,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ClearVariableMonitoringResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid ClearVariableMonitoring request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid ClearVariableMonitoring request for charging station '{Request.ChargingStationId}'!");
 
                     response = new ClearVariableMonitoringResponse(
                                    Request:                  Request,
@@ -3441,7 +3444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming ClearVariableMonitoring request accepted.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming ClearVariableMonitoring request accepted.");
 
                     response = new ClearVariableMonitoringResponse(
                                    Request:                  Request,
@@ -3541,10 +3544,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetNetworkProfileResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetNetworkProfile request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid SetNetworkProfile request for charging station '{Request.ChargingStationId}'!");
 
                     response = new SetNetworkProfileResponse(
                                    Request:      Request,
@@ -3557,7 +3560,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetNetworkProfile request accepted.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming SetNetworkProfile request accepted.");
 
                     response = new SetNetworkProfileResponse(
                                    Request:      Request,
@@ -3653,10 +3656,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ChangeAvailabilityResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid ChangeAvailability request for charge box '{Request.ChargeBoxId}'!"));
+                    DebugX.Log(String.Concat($"Charging Station '{Id}': Invalid ChangeAvailability request for charging station '{Request.ChargingStationId}'!"));
 
                     response = new ChangeAvailabilityResponse(
                                    Request,
@@ -3667,7 +3670,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming ChangeAvailability '", Request.OperationalStatus, "' request for EVSE '", Request.EVSE?.Id.ToString() ?? "?", "'."));
+                    DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming ChangeAvailability '", Request.OperationalStatus, "' request for EVSE '", Request.EVSE?.Id.ToString() ?? "?", "'."));
 
                     if (Request.EVSE is not null &&
                         evses.ContainsKey(Request.EVSE.Id))
@@ -3775,10 +3778,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 TriggerMessageResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid TriggerMessage request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid TriggerMessage request for charging station '{Request.ChargingStationId}'!");
 
                     response = new TriggerMessageResponse(
                                    Request,
@@ -3789,7 +3792,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming TriggerMessage request for '" + Request.RequestedMessage + "' at EVSE '" + (Request.EVSE?.Id.ToString() ?? "-") + "'.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming TriggerMessage request for '" + Request.RequestedMessage + "' at EVSE '" + (Request.EVSE?.Id.ToString() ?? "-") + "'.");
 
                     _ = Task.Run(async () => {
 
@@ -3949,10 +3952,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 DataTransferResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid data transfer request for charge box '{Request.ChargeBoxId}'!"));
+                    DebugX.Log(String.Concat($"Charging Station '{Id}': Invalid data transfer request for charging station '{Request.ChargingStationId}'!"));
 
                     response = new DataTransferResponse(
                                    Request,
@@ -3963,7 +3966,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming data transfer request: ", Request.VendorId, ".", Request.MessageId ?? "-", ": ", Request.Data ?? "-"));
+                    DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming data transfer request: ", Request.VendorId, ".", Request.MessageId ?? "-", ": ", Request.Data ?? "-"));
 
                     var responseData = Request.Data;
 
@@ -4106,10 +4109,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 CertificateSignedResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid CertificateSigned request for charge box '{Request.ChargeBoxId}'!"));
+                    DebugX.Log(String.Concat($"Charging Station '{Id}': Invalid CertificateSigned request for charging station '{Request.ChargingStationId}'!"));
 
                     response = new CertificateSignedResponse(
                                    Request:      Request,
@@ -4122,7 +4125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming CertificateSigned request accepted."));
+                    DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming CertificateSigned request accepted."));
 
                     response = new CertificateSignedResponse(
                                    Request:      Request,
@@ -4220,10 +4223,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 InstallCertificateResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid InstallCertificate request for charge box '{Request.ChargeBoxId}'!"));
+                    DebugX.Log(String.Concat($"Charging Station '{Id}': Invalid InstallCertificate request for charging station '{Request.ChargingStationId}'!"));
 
                     response = new InstallCertificateResponse(
                                    Request:      Request,
@@ -4236,7 +4239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming InstallCertificate request accepted."));
+                    DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming InstallCertificate request accepted."));
 
                     var success = certificates.AddOrUpdate(Request.CertificateType,
                                                             a    => Request.Certificate,
@@ -4337,9 +4340,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetInstalledCertificateIdsResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid GetInstalledCertificateIds request for charge box '{Request.ChargeBoxId}'!"));
+                    DebugX.Log(String.Concat($"Charging Station '{Id}': Invalid GetInstalledCertificateIds request for charging station '{Request.ChargingStationId}'!"));
                     response = new GetInstalledCertificateIdsResponse(Request:                    Request,
                                                                       Status:                     GetInstalledCertificateStatus.NotFound,
                                                                       CertificateHashDataChain:   Array.Empty<CertificateHashData>(),
@@ -4349,7 +4352,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming GetInstalledCertificateIds request accepted."));
+                    DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming GetInstalledCertificateIds request accepted."));
 
                     var certs = new List<CertificateHashData>();
 
@@ -4461,9 +4464,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 DeleteCertificateResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid DeleteCertificate request for charge box '{Request.ChargeBoxId}'!"));
+                    DebugX.Log(String.Concat($"Charging Station '{Id}': Invalid DeleteCertificate request for charging station '{Request.ChargingStationId}'!"));
                     response = new DeleteCertificateResponse(
                                    Request:      Request,
                                    Status:       DeleteCertificateStatus.Failed,
@@ -4474,7 +4477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming DeleteCertificate request accepted."));
+                    DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming DeleteCertificate request accepted."));
 
                     var certKV  = certificates.FirstOrDefault(certificateKV => Request.CertificateHashData.SerialNumber == certificateKV.Value.Parsed?.SerialNumber);
 
@@ -4577,10 +4580,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 NotifyCRLResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Invalid NotifyCRL request for charge box '{Request.ChargeBoxId}'!"));
+                    DebugX.Log(String.Concat($"Charging Station '{Id}': Invalid NotifyCRL request for charging station '{Request.ChargingStationId}'!"));
 
                     //Note: No proper error response is defined within OCPP!
                     response = new NotifyCRLResponse(
@@ -4592,7 +4595,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log(String.Concat($"ChargeBox[{ChargeBoxId}] Incoming NotifyCRL request accepted."));
+                    DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming NotifyCRL request accepted."));
 
                     response = new NotifyCRLResponse(
                                    Request:      Request,
@@ -4686,10 +4689,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetLocalListVersionResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetLocalListVersion request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid GetLocalListVersion request for charging station '{Request.ChargingStationId}'!");
 
                     response = new GetLocalListVersionResponse(
                                    Request,
@@ -4700,7 +4703,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetLocalListVersion request.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming GetLocalListVersion request.");
 
                     response = new GetLocalListVersionResponse(
                                    Request,
@@ -4795,10 +4798,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SendLocalListResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SendLocalList request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid SendLocalList request for charging station '{Request.ChargingStationId}'!");
 
                     response = new SendLocalListResponse(
                                    Request,
@@ -4809,7 +4812,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SendLocalList request: '" + Request.UpdateType + "' version '" + Request.VersionNumber + "'.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming SendLocalList request: '" + Request.UpdateType + "' version '" + Request.VersionNumber + "'.");
 
                     response = new SendLocalListResponse(
                                    Request,
@@ -4902,10 +4905,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ClearCacheResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid ClearCache request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid ClearCache request for charging station '{Request.ChargingStationId}'!");
 
                     response = new ClearCacheResponse(
                                    Request,
@@ -4916,7 +4919,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming ClearCache request.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming ClearCache request.");
 
                     response = new ClearCacheResponse(
                                    Request,
@@ -5015,10 +5018,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ReserveNowResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid ReserveNow request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid ReserveNow request for charging station '{Request.ChargingStationId}'!");
 
                     response = new ReserveNowResponse(
                                    Request:      Request,
@@ -5034,7 +5037,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     var success = reservations.TryAdd(Request.Id,
                                                       Request.Id);
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming ReserveNow request " + (success
+                    DebugX.Log($"Charging Station '{Id}': Incoming ReserveNow request " + (success
                                                                                                ? "accepted"
                                                                                                : "rejected") + ".");
 
@@ -5133,10 +5136,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 CancelReservationResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid CancelReservation request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid CancelReservation request for charging station '{Request.ChargingStationId}'!");
 
                     response = new CancelReservationResponse(
                                    Request:      Request,
@@ -5153,7 +5156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       ? reservations.TryRemove(Request.ReservationId, out _)
                                       : true;
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming CancelReservation request " + (success
+                    DebugX.Log($"Charging Station '{Id}': Incoming CancelReservation request " + (success
                                                                                                            ? "accepted"
                                                                                                            : "rejected") + ".");
 
@@ -5251,10 +5254,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 RequestStartTransactionResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid RequestStartTransaction request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid RequestStartTransaction request for charging station '{Request.ChargingStationId}'!");
 
                     response = new RequestStartTransactionResponse(
                                    Request,
@@ -5265,7 +5268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming RequestStartTransaction for '" + (Request.EVSEId?.ToString() ?? "-") + "'.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming RequestStartTransaction for '" + (Request.EVSEId?.ToString() ?? "-") + "'.");
 
                     // ToDo: lock(evses)
 
@@ -5450,10 +5453,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 RequestStopTransactionResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid RequestStopTransaction request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid RequestStopTransaction request for charging station '{Request.ChargingStationId}'!");
 
                     response = new RequestStopTransactionResponse(
                                    Request,
@@ -5464,7 +5467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming RequestStopTransaction for '" + Request.TransactionId + "'.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming RequestStopTransaction for '" + Request.TransactionId + "'.");
 
                     // ToDo: lock(evses)
                     var evse = evses.Values.FirstOrDefault(evse => Request.TransactionId == evse.TransactionId);
@@ -5633,10 +5636,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetTransactionStatusResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetTransactionStatus request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid GetTransactionStatus request for charging station '{Request.ChargingStationId}'!");
 
                     response = new GetTransactionStatusResponse(
                                    Request,
@@ -5648,7 +5651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetTransactionStatus for '" + Request.TransactionId + "'.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming GetTransactionStatus for '" + Request.TransactionId + "'.");
 
                     if (Request.TransactionId.HasValue)
                     {
@@ -5775,10 +5778,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetChargingProfileResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetChargingProfile request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid SetChargingProfile request for charging station '{Request.ChargingStationId}'!");
 
                     response = new SetChargingProfileResponse(
                                    Request,
@@ -5798,7 +5801,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetChargingProfile for '" + Request.EVSEId + "'.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming SetChargingProfile for '" + Request.EVSEId + "'.");
 
                     // ToDo: lock(connectors)
 
@@ -5927,10 +5930,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetChargingProfilesResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetChargingProfiles request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid GetChargingProfiles request for charging station '{Request.ChargingStationId}'!");
 
                     response = new GetChargingProfilesResponse(
                                    Request,
@@ -6325,10 +6328,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 NotifyAllowedEnergyTransferResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid NotifyAllowedEnergyTransfer request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid NotifyAllowedEnergyTransfer request for charging station '{Request.ChargingStationId}'!");
 
                     response = new NotifyAllowedEnergyTransferResponse(
                                    Request:      Request,
@@ -6341,7 +6344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming NotifyAllowedEnergyTransfer");
+                    DebugX.Log($"Charging Station '{Id}': Incoming NotifyAllowedEnergyTransfer");
 
                     response = new NotifyAllowedEnergyTransferResponse(
                                    Request:      Request,
@@ -6527,10 +6530,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 UnlockConnectorResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid UnlockConnector request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid UnlockConnector request for charging station '{Request.ChargingStationId}'!");
 
                     response = new UnlockConnectorResponse(
                                    Request:      Request,
@@ -6543,7 +6546,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming UnlockConnector for '" + Request.ConnectorId + "'.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming UnlockConnector for '" + Request.ConnectorId + "'.");
 
                     // ToDo: lock(connectors)
 
@@ -6657,10 +6660,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 AFRRSignalResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid AFRRSignal request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid AFRRSignal request for charging station '{Request.ChargingStationId}'!");
 
                     response = new AFRRSignalResponse(
                                    Request:      Request,
@@ -6673,7 +6676,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming AFRRSignal '{Request.Signal}' @ '{Request.ActivationTimestamp}'.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming AFRRSignal '{Request.Signal}' @ '{Request.ActivationTimestamp}'.");
 
                     response = new AFRRSignalResponse(
                                    Request:      Request,
@@ -6771,10 +6774,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SetDisplayMessageResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid SetDisplayMessage request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid SetDisplayMessage request for charging station '{Request.ChargingStationId}'!");
 
                     response = new SetDisplayMessageResponse(
                                    Request:   Request,
@@ -6785,7 +6788,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetDisplayMessage request.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming SetDisplayMessage request.");
 
                     if (displayMessages.TryAdd(Request.Message.Id,
                                                Request.Message)) {
@@ -6896,10 +6899,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 GetDisplayMessagesResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid GetDisplayMessages request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid GetDisplayMessages request for charging station '{Request.ChargingStationId}'!");
 
                     response = new GetDisplayMessagesResponse(
                                    Request,
@@ -6910,7 +6913,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetDisplayMessage request.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming SetDisplayMessage request.");
 
                     _ = Task.Run(async () => {
 
@@ -7021,10 +7024,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 ClearDisplayMessageResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid ClearDisplayMessage request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid ClearDisplayMessage request for charging station '{Request.ChargingStationId}'!");
 
                     response = new ClearDisplayMessageResponse(
                                    Request,
@@ -7035,7 +7038,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming ClearDisplayMessage request.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming ClearDisplayMessage request.");
 
                     if (displayMessages.TryGetValue(Request.DisplayMessageId, out var messageInfo) &&
                         displayMessages.TryRemove(new KeyValuePair<DisplayMessage_Id, MessageInfo>(Request.DisplayMessageId, messageInfo))) {
@@ -7140,10 +7143,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 CostUpdatedResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid CostUpdated request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid CostUpdated request for charging station '{Request.ChargingStationId}'!");
 
                     response = new CostUpdatedResponse(
                                    Request,
@@ -7154,7 +7157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming CostUpdated request.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming CostUpdated request.");
 
 
                     if (transactions.ContainsKey(Request.TransactionId)) {
@@ -7266,10 +7269,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 CustomerInformationResponse? response = null;
 
-                if (Request.ChargeBoxId != ChargeBoxId)
+                if (Request.ChargingStationId != Id)
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Invalid CustomerInformation request for charge box '{Request.ChargeBoxId}'!");
+                    DebugX.Log($"Charging Station '{Id}': Invalid CustomerInformation request for charging station '{Request.ChargingStationId}'!");
 
                     response = new CustomerInformationResponse(
                                    Request,
@@ -7280,7 +7283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming CustomerInformation request.");
+                    DebugX.Log($"Charging Station '{Id}': Incoming CustomerInformation request.");
 
 
                     _ = Task.Run(async () => {

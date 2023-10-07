@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
             chargingStation1WebSocketTextMessageResponsesReceived  = new List<LogData2>();
 
             chargingStation1 = new TestChargingStation(
-                                    ChargeBoxId:              ChargeBox_Id.Parse("GD001"),
+                                    Id:              ChargingStation_Id.Parse("GD001"),
                                     VendorName:               "GraphDefined OEM #1",
                                     Model:                    "VCP.1",
                                     Description:              I18NString.Create(Languages.en, "Our first virtual charging station!"),
@@ -117,15 +117,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
             if (testBackendWebSockets01 is not null)
             {
 
-                testCSMS01.AddOrUpdateHTTPBasicAuth(ChargeBox_Id.Parse("test01"), "1234abcd");
+                testCSMS01.AddOrUpdateHTTPBasicAuth(ChargingStation_Id.Parse("test01"), "1234abcd");
 
                 var response1 = chargingStation1.ConnectWebSocket(
-                                                     From:                    "From:GD001",
-                                                     To:                      "To:OCPPTest01",
-                                                     RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation1.ChargeBoxId),
-                                                     HTTPAuthentication:      HTTPBasicAuthentication.Create("test01", "1234abcd"),
-                                                     DisableWebSocketPings:   true
-                                                 ).Result;
+                                    From:                    "From:GD001",
+                                    To:                      "To:OCPPTest01",
+                                    RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation1.Id),
+                                    HTTPAuthentication:      HTTPBasicAuthentication.Create("test01", "1234abcd"),
+                                    DisableWebSocketPings:   true
+                                ).Result;
 
                 Assert.IsNotNull(response1);
 
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
             chargingStation2WebSocketTextMessageResponsesReceived  = new List<LogData2>();
 
             chargingStation2  = new TestChargingStation(
-                                    ChargeBoxId:              ChargeBox_Id.Parse("CP002"),
+                                    Id:              ChargingStation_Id.Parse("CP002"),
                                     VendorName:               "GraphDefined OEM #2",
                                     Model:                    "VCP.2",
                                     Description:              I18NString.Create(Languages.en, "Our 2nd virtual charging station!"),
@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
             chargingStation3WebSocketTextMessageResponsesReceived  = new List<LogData2>();
 
             chargingStation3 = new TestChargingStation(
-                                    ChargeBoxId:              ChargeBox_Id.Parse("CP003"),
+                                    Id:              ChargingStation_Id.Parse("CP003"),
                                     VendorName:               "GraphDefined OEM #3",
                                     Model:                    "VCP.3",
                                     Description:              I18NString.Create(Languages.en, "Our 3rd virtual charging station!"),

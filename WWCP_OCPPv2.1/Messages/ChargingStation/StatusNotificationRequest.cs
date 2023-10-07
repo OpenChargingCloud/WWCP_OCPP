@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public StatusNotificationRequest(ChargeBox_Id             ChargeBoxId,
+        public StatusNotificationRequest(ChargingStation_Id             ChargeBoxId,
                                          DateTime                 Timestamp,
                                          ConnectorStatus          ConnectorStatus,
                                          EVSE_Id                  EVSEId,
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom status notification requests.</param>
         public static StatusNotificationRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      ChargeBox_Id                                             ChargeBoxId,
+                                                      ChargingStation_Id                                             ChargeBoxId,
                                                       CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser   = null)
         {
 
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom status notification requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       ChargeBox_Id                                             ChargeBoxId,
+                                       ChargingStation_Id                                             ChargeBoxId,
                                        out StatusNotificationRequest?                           StatusNotificationRequest,
                                        out String?                                              ErrorResponse,
                                        CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser)
@@ -335,8 +335,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

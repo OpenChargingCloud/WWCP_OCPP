@@ -71,25 +71,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 var resetType  = ResetTypes.Immediate;
                 var now        = Timestamp.Now;
-                var response1  = await testCSMS01.Reset(
-                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
-                                           ResetType:     resetType,
-                                           SignInfos:     new[] {
+                var response   = await testCSMS01.Reset(
+                                     ChargingStationId:   chargingStation1.Id,
+                                     ResetType:           resetType,
+                                     SignInfos:           new[] {
                                                               keyPair.ToSignInfo(
-                                                                          "ahzf",
-                                                                          I18NString.Create("Just a test!"),
-                                                                          now
+                                                                          Name:         "ahzf",
+                                                                          Description:   I18NString.Create("Just a test!"),
+                                                                          Timestamp:     now
                                                                       )
                                                           },
-                                           CustomData:    null
-                                       );
+                                     CustomData:          null
+                                 );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(ResetStatus.Accepted,           response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
+                Assert.AreEqual(ResetStatus.Accepted,           response.Status);
 
                 Assert.IsTrue  (CryptoUtils.VerifyResponseMessage(
-                                    response1,
-                                    response1.ToJSON(
+                                    response,
+                                    response.ToJSON(
                                         testCSMS01.CustomResetResponseSerializer,
                                         testCSMS01.CustomStatusInfoSerializer,
                                         testCSMS01.CustomSignatureSerializer,
@@ -101,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
 
                 Assert.AreEqual(1,                              resetRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   resetRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,            resetRequests.First().ChargingStationId);
                 Assert.AreEqual(resetType,                      resetRequests.First().ResetType);
                 Assert.AreEqual(1,                              resetRequests.First().Signatures.Count());
                 Assert.AreEqual(VerificationStatus.Verified,    resetRequests.First().Signatures.First().Status);

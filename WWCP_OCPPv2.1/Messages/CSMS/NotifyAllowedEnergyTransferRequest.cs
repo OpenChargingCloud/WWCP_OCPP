@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyAllowedEnergyTransferRequest(ChargeBox_Id                      ChargeBoxId,
+        public NotifyAllowedEnergyTransferRequest(ChargingStation_Id                      ChargeBoxId,
                                                   IEnumerable<EnergyTransferModes>  AllowedEnergyTransferModes,
 
                                                   IEnumerable<KeyPair>?             SignKeys            = null,
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNotifyAllowedEnergyTransferRequestParser">A delegate to parse custom notify allowed energy transfer requests.</param>
         public static NotifyAllowedEnergyTransferRequest Parse(JObject                                                           JSON,
                                                                Request_Id                                                        RequestId,
-                                                               ChargeBox_Id                                                      ChargeBoxId,
+                                                               ChargingStation_Id                                                      ChargeBoxId,
                                                                CustomJObjectParserDelegate<NotifyAllowedEnergyTransferRequest>?  CustomNotifyAllowedEnergyTransferRequestParser   = null)
         {
 
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                  JSON,
                                        Request_Id                               RequestId,
-                                       ChargeBox_Id                             ChargeBoxId,
+                                       ChargingStation_Id                             ChargeBoxId,
                                        out NotifyAllowedEnergyTransferRequest?  NotifyAllowedEnergyTransferRequest,
                                        out String?                              ErrorResponse)
 
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNotifyAllowedEnergyTransferRequestParser">A delegate to parse custom notify allowed energy transfer requests.</param>
         public static Boolean TryParse(JObject                                                           JSON,
                                        Request_Id                                                        RequestId,
-                                       ChargeBox_Id                                                      ChargeBoxId,
+                                       ChargingStation_Id                                                      ChargeBoxId,
                                        out NotifyAllowedEnergyTransferRequest?                           NotifyAllowedEnergyTransferRequest,
                                        out String?                                                       ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyAllowedEnergyTransferRequest>?  CustomNotifyAllowedEnergyTransferRequestParser)
@@ -235,8 +235,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

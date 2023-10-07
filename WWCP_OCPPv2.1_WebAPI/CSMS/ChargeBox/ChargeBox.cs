@@ -33,7 +33,7 @@ using cloud.charging.open.protocols.OCPPv2_1.CS;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
-    public delegate Boolean ChargeBoxProviderDelegate(ChargeBox_Id ChargeBoxId, out ChargeBox ChargeBox);
+    public delegate Boolean ChargeBoxProviderDelegate(ChargingStation_Id ChargeBoxId, out ChargeBox ChargeBox);
 
     public delegate JObject ChargeBoxToJSONDelegate(ChargeBox     ChargeBox,
                                                     Boolean       Embedded                 = false,
@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A charge box.
     /// </summary>
-    public class ChargeBox : AEntity<ChargeBox_Id,
+    public class ChargeBox : AEntity<ChargingStation_Id,
                                      ChargeBox>
     {
 
@@ -650,7 +650,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="MeterPublicKey">An optional public key of the main power meter of the charge point.</param>
         /// 
         /// <param name="ExpectHeartbeatEvery">The time span between expected heartbeat.</param>
-        public ChargeBox(ChargeBox_Id                                Id,
+        public ChargeBox(ChargingStation_Id                                Id,
                          Byte                                        NumberOfConnectors,
                          String                                      ChargePointVendor,
                          String                                      ChargePointModel,
@@ -1050,7 +1050,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Return a builder for this chargeBox.
         /// </summary>
         /// <param name="NewChargeBoxId">An optional new chargeBox identification.</param>
-        public Builder ToBuilder(ChargeBox_Id? NewChargeBoxId = null)
+        public Builder ToBuilder(ChargingStation_Id? NewChargeBoxId = null)
 
             => new (NewChargeBoxId ?? Id,
                     1, //NumberOfConnectors,
@@ -1088,7 +1088,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An chargeBox builder.
         /// </summary>
-        public new class Builder : AEntity<ChargeBox_Id, ChargeBox>.Builder
+        public new class Builder : AEntity<ChargingStation_Id, ChargeBox>.Builder
         {
 
             #region Properties
@@ -1411,7 +1411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             /// </summary>
             /// <param name="Id">The unique identification of the chargeBox.</param>
             /// <param name="DataSource">The source of all this data, e.g. an automatic importer.</param>
-            public Builder(ChargeBox_Id                             Id,
+            public Builder(ChargingStation_Id                             Id,
                          Byte                                        NumberOfConnectors,
                          String                                      ChargePointVendor,
                          String                                      ChargePointModel,

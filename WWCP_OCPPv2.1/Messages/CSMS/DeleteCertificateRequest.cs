@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public DeleteCertificateRequest(ChargeBox_Id             ChargeBoxId,
+        public DeleteCertificateRequest(ChargingStation_Id             ChargeBoxId,
                                         CertificateHashData      CertificateHashData,
 
                                         IEnumerable<KeyPair>?    SignKeys            = null,
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomDeleteCertificateRequestParser">A delegate to parse custom delete certificate requests.</param>
         public static DeleteCertificateRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
-                                                     ChargeBox_Id                                            ChargeBoxId,
+                                                     ChargingStation_Id                                            ChargeBoxId,
                                                      CustomJObjectParserDelegate<DeleteCertificateRequest>?  CustomDeleteCertificateRequestParser   = null)
         {
 
@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                        JSON,
                                        Request_Id                     RequestId,
-                                       ChargeBox_Id                   ChargeBoxId,
+                                       ChargingStation_Id                   ChargeBoxId,
                                        out DeleteCertificateRequest?  DeleteCertificateRequest,
                                        out String?                    ErrorResponse)
 
@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomDeleteCertificateRequestParser">A delegate to parse custom delete certificate requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
-                                       ChargeBox_Id                                            ChargeBoxId,
+                                       ChargingStation_Id                                            ChargeBoxId,
                                        out DeleteCertificateRequest?                           DeleteCertificateRequest,
                                        out String?                                             ErrorResponse,
                                        CustomJObjectParserDelegate<DeleteCertificateRequest>?  CustomDeleteCertificateRequestParser)
@@ -309,8 +309,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

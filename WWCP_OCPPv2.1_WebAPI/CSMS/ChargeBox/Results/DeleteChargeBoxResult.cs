@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// The result of a delete charge box request.
     /// </summary>
-    public class DeleteChargeBoxResult : AEnitityResult<ChargeBox, ChargeBox_Id>
+    public class DeleteChargeBoxResult : AEnitityResult<ChargeBox, ChargingStation_Id>
     {
 
         #region Properties
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         { }
 
 
-        public DeleteChargeBoxResult(ChargeBox_Id           ChargeBoxId,
+        public DeleteChargeBoxResult(ChargingStation_Id           ChargeBoxId,
                                      CommandResult          Result,
                                      EventTracking_Id?      EventTrackingId   = null,
                                      IId?                   SenderId          = null,
@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public static DeleteChargeBoxResult
 
-            ArgumentError(ChargeBox_Id           ChargeBoxId,
+            ArgumentError(ChargingStation_Id           ChargeBoxId,
                           I18NString             Description,
                           EventTracking_Id?      EventTrackingId   = null,
                           IId?                   SenderId          = null,

@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public TriggerMessageRequest(ChargeBox_Id             ChargeBoxId,
+        public TriggerMessageRequest(ChargingStation_Id             ChargeBoxId,
                                      MessageTriggers          RequestedMessage,
                                      EVSE?                    EVSE                = null,
 
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom trigger message requests.</param>
         public static TriggerMessageRequest Parse(JObject                                              JSON,
                                                   Request_Id                                           RequestId,
-                                                  ChargeBox_Id                                         ChargeBoxId,
+                                                  ChargingStation_Id                                         ChargeBoxId,
                                                   CustomJObjectParserDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestParser   = null)
         {
 
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                     JSON,
                                        Request_Id                  RequestId,
-                                       ChargeBox_Id                ChargeBoxId,
+                                       ChargingStation_Id                ChargeBoxId,
                                        out TriggerMessageRequest?  TriggerMessageRequest,
                                        out String?                 ErrorResponse)
 
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom trigger message requests.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        Request_Id                                           RequestId,
-                                       ChargeBox_Id                                         ChargeBoxId,
+                                       ChargingStation_Id                                         ChargeBoxId,
                                        out TriggerMessageRequest?                           TriggerMessageRequest,
                                        out String?                                          ErrorResponse,
                                        CustomJObjectParserDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestParser)
@@ -331,8 +331,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

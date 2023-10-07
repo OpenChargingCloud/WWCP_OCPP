@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                         IChargingStationServer
     {
 
-        ChargeBox_Id      ChargeBoxId              { get; }
+        ChargingStation_Id      Id                       { get; }
 
         TimeSpan          DefaultRequestTimeout    { get; }
 

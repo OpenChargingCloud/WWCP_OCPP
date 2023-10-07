@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ClearDisplayMessageRequest(ChargeBox_Id             ChargeBoxId,
+        public ClearDisplayMessageRequest(ChargingStation_Id             ChargeBoxId,
                                           DisplayMessage_Id        DisplayMessageId,
 
                                           IEnumerable<KeyPair>?    SignKeys            = null,
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearDisplayMessageRequestParser">A delegate to parse custom clear display message requests.</param>
         public static ClearDisplayMessageRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       ChargeBox_Id                                              ChargeBoxId,
+                                                       ChargingStation_Id                                              ChargeBoxId,
                                                        CustomJObjectParserDelegate<ClearDisplayMessageRequest>?  CustomClearDisplayMessageRequestParser   = null)
         {
 
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                          JSON,
                                        Request_Id                       RequestId,
-                                       ChargeBox_Id                     ChargeBoxId,
+                                       ChargingStation_Id                     ChargeBoxId,
                                        out ClearDisplayMessageRequest?  ClearDisplayMessageRequest,
                                        out String?                      ErrorResponse)
 
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearDisplayMessageRequestParser">A delegate to parse custom clear display message requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       ChargeBox_Id                                              ChargeBoxId,
+                                       ChargingStation_Id                                              ChargeBoxId,
                                        out ClearDisplayMessageRequest?                           ClearDisplayMessageRequest,
                                        out String?                                               ErrorResponse,
                                        CustomJObjectParserDelegate<ClearDisplayMessageRequest>?  CustomClearDisplayMessageRequestParser)
@@ -265,8 +265,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

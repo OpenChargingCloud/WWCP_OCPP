@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The unique identification of this charge box.
         /// </summary>
-        public ChargeBox_Id                         ChargeBoxIdentity               { get; }
+        public ChargingStation_Id                         ChargeBoxIdentity               { get; }
 
         /// <summary>
         /// The sender identification.
@@ -2379,7 +2379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public ChargingStationWSClient(ChargeBox_Id                         ChargeBoxIdentity,
+        public ChargingStationWSClient(ChargingStation_Id                         ChargeBoxIdentity,
                                        String                               From,
                                        String                               To,
 

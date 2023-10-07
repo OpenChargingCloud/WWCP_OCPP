@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public CancelReservationRequest(ChargeBox_Id             ChargeBoxId,
+        public CancelReservationRequest(ChargingStation_Id             ChargeBoxId,
                                         Reservation_Id           ReservationId,
 
                                         IEnumerable<KeyPair>?    SignKeys            = null,
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCancelReservationRequestParser">A delegate to parse custom CancelReservation requests.</param>
         public static CancelReservationRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
-                                                     ChargeBox_Id                                            ChargeBoxId,
+                                                     ChargingStation_Id                                            ChargeBoxId,
                                                      CustomJObjectParserDelegate<CancelReservationRequest>?  CustomCancelReservationRequestParser   = null)
         {
 
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                        JSON,
                                        Request_Id                     RequestId,
-                                       ChargeBox_Id                   ChargeBoxId,
+                                       ChargingStation_Id                   ChargeBoxId,
                                        out CancelReservationRequest?  CancelReservationRequest,
                                        out String?                    ErrorResponse)
 
@@ -208,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCancelReservationRequestParser">A delegate to parse custom cancel reservation requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
-                                       ChargeBox_Id                                            ChargeBoxId,
+                                       ChargingStation_Id                                            ChargeBoxId,
                                        out CancelReservationRequest?                           CancelReservationRequest,
                                        out String?                                             ErrorResponse,
                                        CustomJObjectParserDelegate<CancelReservationRequest>?  CustomCancelReservationRequestParser)
@@ -264,8 +264,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

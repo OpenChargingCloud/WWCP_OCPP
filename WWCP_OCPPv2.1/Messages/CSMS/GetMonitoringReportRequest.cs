@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetMonitoringReportRequest(ChargeBox_Id                     ChargeBoxId,
+        public GetMonitoringReportRequest(ChargingStation_Id                     ChargeBoxId,
                                           Int32                            GetMonitoringReportRequestId,
                                           IEnumerable<MonitoringCriteria>  MonitoringCriteria,
                                           IEnumerable<ComponentVariable>   ComponentVariables,
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetMonitoringReportRequestParser">A delegate to parse custom get monitoring report requests.</param>
         public static GetMonitoringReportRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       ChargeBox_Id                                              ChargeBoxId,
+                                                       ChargingStation_Id                                              ChargeBoxId,
                                                        CustomJObjectParserDelegate<GetMonitoringReportRequest>?  CustomGetMonitoringReportRequestParser   = null)
         {
 
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                          JSON,
                                        Request_Id                       RequestId,
-                                       ChargeBox_Id                     ChargeBoxId,
+                                       ChargingStation_Id                     ChargeBoxId,
                                        out GetMonitoringReportRequest?  GetMonitoringReportRequest,
                                        out String?                      ErrorResponse)
 
@@ -355,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomGetMonitoringReportRequestParser">A delegate to parse custom get monitoring report requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       ChargeBox_Id                                              ChargeBoxId,
+                                       ChargingStation_Id                                              ChargeBoxId,
                                        out GetMonitoringReportRequest?                           GetMonitoringReportRequest,
                                        out String?                                               ErrorResponse,
                                        CustomJObjectParserDelegate<GetMonitoringReportRequest>?  CustomGetMonitoringReportRequestParser)
@@ -436,8 +436,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

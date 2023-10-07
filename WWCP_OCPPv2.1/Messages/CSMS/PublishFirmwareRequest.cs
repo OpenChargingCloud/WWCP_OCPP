@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public PublishFirmwareRequest(ChargeBox_Id             ChargeBoxId,
+        public PublishFirmwareRequest(ChargingStation_Id             ChargeBoxId,
                                       Int32                    PublishFirmwareRequestId,
                                       URL                      DownloadLocation,
                                       String                   MD5Checksum,
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomPublishFirmwareRequestParser">A delegate to parse custom publish firmware requests.</param>
         public static PublishFirmwareRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
-                                                   ChargeBox_Id                                          ChargeBoxId,
+                                                   ChargingStation_Id                                          ChargeBoxId,
                                                    CustomJObjectParserDelegate<PublishFirmwareRequest>?  CustomPublishFirmwareRequestParser   = null)
         {
 
@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                      JSON,
                                        Request_Id                   RequestId,
-                                       ChargeBox_Id                 ChargeBoxId,
+                                       ChargingStation_Id                 ChargeBoxId,
                                        out PublishFirmwareRequest?  PublishFirmwareRequest,
                                        out String?                  ErrorResponse)
 
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomPublishFirmwareRequestParser">A delegate to parse custom publish firmware requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
-                                       ChargeBox_Id                                          ChargeBoxId,
+                                       ChargingStation_Id                                          ChargeBoxId,
                                        out PublishFirmwareRequest?                           PublishFirmwareRequest,
                                        out String?                                           ErrorResponse,
                                        CustomJObjectParserDelegate<PublishFirmwareRequest>?  CustomPublishFirmwareRequestParser)
@@ -376,8 +376,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

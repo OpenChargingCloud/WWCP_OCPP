@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
 
                 Assert.AreEqual(1,                                       bootNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,            bootNotificationRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().ChargingStationId);
                 Assert.AreEqual(reason,                                  bootNotificationRequests.First().Reason);
                 Assert.AreEqual(1,                                       bootNotificationRequests.First().Signatures.Count());
                 Assert.AreEqual(VerificationStatus.Verified,             bootNotificationRequests.First().Signatures.First().Status);

@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UpdateDynamicScheduleRequest(ChargeBox_Id             ChargeBoxId,
+        public UpdateDynamicScheduleRequest(ChargingStation_Id             ChargeBoxId,
                                             ChargingProfile_Id       ChargingProfileId,
 
                                             ChargingRateValue?       Limit                 = null,
@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUpdateDynamicScheduleRequestParser">A delegate to parse custom update dynamic schedule requests.</param>
         public static UpdateDynamicScheduleRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         ChargeBox_Id                                                ChargeBoxId,
+                                                         ChargingStation_Id                                                ChargeBoxId,
                                                          CustomJObjectParserDelegate<UpdateDynamicScheduleRequest>?  CustomUpdateDynamicScheduleRequestParser   = null)
         {
 
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUpdateDynamicScheduleRequestParser">A delegate to parse custom update dynamic schedule requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       ChargeBox_Id                                                ChargeBoxId,
+                                       ChargingStation_Id                                                ChargeBoxId,
                                        out UpdateDynamicScheduleRequest?                           UpdateDynamicScheduleRequest,
                                        out String?                                                 ErrorResponse,
                                        CustomJObjectParserDelegate<UpdateDynamicScheduleRequest>?  CustomUpdateDynamicScheduleRequestParser)
@@ -546,8 +546,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

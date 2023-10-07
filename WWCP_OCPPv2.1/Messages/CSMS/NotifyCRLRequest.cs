@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyCRLRequest(ChargeBox_Id             ChargeBoxId,
+        public NotifyCRLRequest(ChargingStation_Id             ChargeBoxId,
                                 Int32                    NotifyCRLRequestId,
                                 NotifyCRLStatus          Availability,
                                 URL?                     Location,
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNotifyCRLRequestParser">A delegate to parse custom notify certificate revocation list requests.</param>
         public static NotifyCRLRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
-                                             ChargeBox_Id                                    ChargeBoxId,
+                                             ChargingStation_Id                                    ChargeBoxId,
                                              CustomJObjectParserDelegate<NotifyCRLRequest>?  CustomNotifyCRLRequestParser   = null)
         {
 
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                JSON,
                                        Request_Id             RequestId,
-                                       ChargeBox_Id           ChargeBoxId,
+                                       ChargingStation_Id           ChargeBoxId,
                                        out NotifyCRLRequest?  NotifyCRLRequest,
                                        out String?            ErrorResponse)
 
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomNotifyCRLRequestParser">A delegate to parse custom notify certificate revocation list requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
-                                       ChargeBox_Id                                    ChargeBoxId,
+                                       ChargingStation_Id                                    ChargeBoxId,
                                        out NotifyCRLRequest?                           NotifyCRLRequest,
                                        out String?                                     ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyCRLRequest>?  CustomNotifyCRLRequestParser)
@@ -276,8 +276,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

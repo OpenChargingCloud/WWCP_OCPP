@@ -52,10 +52,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The charge box identification.
+        /// The charging station identification.
         /// </summary>
         [Mandatory]
-        public ChargeBox_Id            ChargeBoxId          { get; }
+        public ChargingStation_Id            ChargingStationId    { get; }
 
         /// <summary>
         /// The request identification.
@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new generic OCPP request message.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="Action">The OCPP HTTP Web Socket action.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ARequest(ChargeBox_Id             ChargeBoxId,
+        public ARequest(ChargingStation_Id             ChargingStationId,
                         String                   Action,
 
                         IEnumerable<KeyPair>?    SignKeys            = null,
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            this.ChargeBoxId        = ChargeBoxId;
+            this.ChargingStationId  = ChargingStationId;
             this.Action             = Action;
 
             this.SignKeys           = SignKeys  ?? Array.Empty<KeyPair>();
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            new JProperty("timestamp",         RequestTimestamp.ToIso8601()),
                            new JProperty("eventTrackingId",   EventTrackingId. ToString()),
                            new JProperty("connection",        Connection?.     ToJSON()),
-                           new JProperty("chargeBoxId",       ChargeBoxId.     ToString()),
+                           new JProperty("chargeBoxId",       ChargingStationId.     ToString()),
                            new JProperty("timeout",           RequestTimeout.  TotalSeconds),
                            new JProperty("action",            Action),
                            new JProperty("data",              RequestData)
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => ARequest is not null &&
 
-               ChargeBoxId.     Equals(ARequest.ChargeBoxId)      &&
+               ChargingStationId.     Equals(ARequest.ChargingStationId)      &&
                RequestId.       Equals(ARequest.RequestId)        &&
                RequestTimestamp.Equals(ARequest.RequestTimestamp) &&
                RequestTimeout.  Equals(ARequest.RequestTimeout)   &&
@@ -241,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                return ChargeBoxId.     GetHashCode() * 17 ^
+                return ChargingStationId.     GetHashCode() * 17 ^
                        RequestId.       GetHashCode() * 13 ^
                        RequestTimestamp.GetHashCode() * 11 ^
                        RequestTimeout.  GetHashCode() *  7 ^

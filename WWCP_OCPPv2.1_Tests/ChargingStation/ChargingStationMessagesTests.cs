@@ -71,6 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
         #endregion
 
+
         #region SendBootNotifications_Test()
 
         /// <summary>
@@ -100,14 +101,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var reason     = BootReason.PowerUp;
-                var response1  = await chargingStation1.SendBootNotification(reason);
+                var reason    = BootReason.PowerUp;
+                var response  = await chargingStation1.SendBootNotification(
+                                    BootReason:   reason,
+                                    CustomData:   null
+                                );
 
-                Assert.AreEqual (ResultCodes.OK,                         response1.Result.ResultCode);
-                Assert.AreEqual (RegistrationStatus.Accepted,            response1.Status);
+                Assert.AreEqual (ResultCodes.OK,                         response.Result.ResultCode);
+                Assert.AreEqual (RegistrationStatus.Accepted,            response.Status);
 
                 Assert.AreEqual (1,                                      bootNotificationRequests.Count);
-                Assert.AreEqual (chargingStation1.ChargeBoxId,           bootNotificationRequests.First().ChargeBoxId);
+                Assert.AreEqual (chargingStation1.Id,                    bootNotificationRequests.First().ChargingStationId);
                 Assert.AreEqual (reason,                                 bootNotificationRequests.First().Reason);
 
                 var chargingStation = bootNotificationRequests.First().ChargingStation;
@@ -167,19 +171,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var status     = FirmwareStatus.Installed;
+                var status    = FirmwareStatus.Installed;
+                var response  = await chargingStation1.SendFirmwareStatusNotification(
+                                    Status:       status,
+                                    CustomData:   null
+                                );
 
-                var response1  = await chargingStation1.SendFirmwareStatusNotification(
-                                           Status:       status,
-                                           CustomData:   null
-                                       );
 
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-
-                Assert.AreEqual(1,                              firmwareStatusNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   firmwareStatusNotificationRequests.First().ChargeBoxId);
-                Assert.AreEqual(status,                         firmwareStatusNotificationRequests.First().Status);
+                Assert.AreEqual(1,                     firmwareStatusNotificationRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   firmwareStatusNotificationRequests.First().ChargingStationId);
+                Assert.AreEqual(status,                firmwareStatusNotificationRequests.First().Status);
 
             }
 
@@ -216,21 +219,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var status     = PublishFirmwareStatus.Published;
-                var url1       = URL.Parse("https://example.org/firmware.bin");
+                var status    = PublishFirmwareStatus.Published;
+                var url1      = URL.Parse("https://example.org/firmware.bin");
 
-                var response1  = await chargingStation1.SendPublishFirmwareStatusNotification(
-                                           Status:                                       status,
-                                           PublishFirmwareStatusNotificationRequestId:   0,
-                                           DownloadLocations:                            new[] { url1 },
-                                           CustomData:                                   null
-                                       );
+                var response  = await chargingStation1.SendPublishFirmwareStatusNotification(
+                                    Status:                                       status,
+                                    PublishFirmwareStatusNotificationRequestId:   0,
+                                    DownloadLocations:                            new[] { url1 },
+                                    CustomData:                                   null
+                                );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
 
                 Assert.AreEqual(1,                              publishFirmwareStatusNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   publishFirmwareStatusNotificationRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,   publishFirmwareStatusNotificationRequests.First().ChargingStationId);
                 Assert.AreEqual(status,                         publishFirmwareStatusNotificationRequests.First().Status);
 
             }
@@ -269,14 +272,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
 
-                var response1 = await chargingStation1.SendHeartbeat();
+                var response = await chargingStation1.SendHeartbeat(
+                                   CustomData:   null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.IsTrue  (Timestamp.Now - response1.CurrentTime < TimeSpan.FromSeconds(10));
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
+                Assert.IsTrue  (Timestamp.Now - response.CurrentTime < TimeSpan.FromSeconds(10));
 
-                Assert.AreEqual(1,                              heartbeatRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   heartbeatRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     heartbeatRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   heartbeatRequests.First().ChargingStationId);
 
             }
 
@@ -313,49 +318,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await chargingStation1.NotifyEvent(
-                                           GeneratedAt:      Timestamp.Now,
-                                           SequenceNumber:   1,
-                                           EventData:        new[] {
-                                                                 new EventData(
-                                                                     EventId:                 Event_Id.NewRandom,
-                                                                     Timestamp:               Timestamp.Now,
-                                                                     Trigger:                 EventTriggers.Alerting,
-                                                                     ActualValue:             "ALERTA!",
-                                                                     EventNotificationType:   EventNotificationTypes.HardWiredMonitor,
-                                                                     Component:               new Component(
-                                                                                                  Name:         "Alert System!",
-                                                                                                  Instance:     "Alert System #1",
-                                                                                                  EVSE:         new EVSE(
-                                                                                                                    Id:            EVSE_Id.Parse(1),
-                                                                                                                    ConnectorId:   Connector_Id.Parse(1),
-                                                                                                                    CustomData:    null
-                                                                                                                ),
-                                                                                                  CustomData:   null
-                                                                                              ),
-                                                                     Variable:                new Variable(
-                                                                                                  Name:         "Temperature Sensors",
-                                                                                                  Instance:     "Temperature Sensor #1",
-                                                                                                  CustomData:   null
-                                                                                              ),
-                                                                     Cause:                   Event_Id.NewRandom,
-                                                                     TechCode:                "Tech Code #1",
-                                                                     TechInfo:                "Tech Info #1",
-                                                                     Cleared:                 false,
-                                                                     TransactionId:           Transaction_Id.       NewRandom,
-                                                                     VariableMonitoringId:    VariableMonitoring_Id.NewRandom,
-                                                                     CustomData:              null
-                                                                 )
-                                                             },
-                                           ToBeContinued:    false,
-                                           CustomData:       null
-                                       );
+                var response = await chargingStation1.NotifyEvent(
+                                   GeneratedAt:      Timestamp.Now,
+                                   SequenceNumber:   1,
+                                   EventData:        new[] {
+                                                         new EventData(
+                                                             EventId:                 Event_Id.NewRandom,
+                                                             Timestamp:               Timestamp.Now,
+                                                             Trigger:                 EventTriggers.Alerting,
+                                                             ActualValue:             "ALERTA!",
+                                                             EventNotificationType:   EventNotificationTypes.HardWiredMonitor,
+                                                             Component:               new Component(
+                                                                                          Name:         "Alert System!",
+                                                                                          Instance:     "Alert System #1",
+                                                                                          EVSE:         new EVSE(
+                                                                                                            Id:            EVSE_Id.Parse(1),
+                                                                                                            ConnectorId:   Connector_Id.Parse(1),
+                                                                                                            CustomData:    null
+                                                                                                        ),
+                                                                                          CustomData:   null
+                                                                                      ),
+                                                             Variable:                new Variable(
+                                                                                          Name:         "Temperature Sensors",
+                                                                                          Instance:     "Temperature Sensor #1",
+                                                                                          CustomData:   null
+                                                                                      ),
+                                                             Cause:                   Event_Id.NewRandom,
+                                                             TechCode:                "Tech Code #1",
+                                                             TechInfo:                "Tech Info #1",
+                                                             Cleared:                 false,
+                                                             TransactionId:           Transaction_Id.       NewRandom,
+                                                             VariableMonitoringId:    VariableMonitoring_Id.NewRandom,
+                                                             CustomData:              null
+                                                         )
+                                                     },
+                                   ToBeContinued:    false,
+                                   CustomData:       null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              notifyEventRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyEventRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     notifyEventRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   notifyEventRequests.First().ChargingStationId);
 
             }
 
@@ -392,18 +397,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await chargingStation1.SendSecurityEventNotification(
-                                           Type:         SecurityEventType.MemoryExhaustion,
-                                           Timestamp:    Timestamp.Now,
-                                           TechInfo:     "Too many open TCP sockets!",
-                                           CustomData:   null
-                                       );
+                var response = await chargingStation1.SendSecurityEventNotification(
+                                   Type:         SecurityEventType.MemoryExhaustion,
+                                   Timestamp:    Timestamp.Now,
+                                   TechInfo:     "Too many open TCP sockets!",
+                                   CustomData:   null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              securityEventNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   securityEventNotificationRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     securityEventNotificationRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   securityEventNotificationRequests.First().ChargingStationId);
 
             }
 
@@ -440,60 +445,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await chargingStation1.NotifyReport(
-                                           NotifyReportRequestId:   1,
-                                           SequenceNumber:          1,
-                                           GeneratedAt:             Timestamp.Now,
-                                           ReportData:              new[] {
-                                                                        new ReportData(
-                                                                            Component:                new Component(
-                                                                                                           Name:                 "Alert System!",
-                                                                                                           Instance:             "Alert System #1",
-                                                                                                           EVSE:                 new EVSE(
-                                                                                                                                     Id:            EVSE_Id.Parse(1),
-                                                                                                                                     ConnectorId:   Connector_Id.Parse(1),
-                                                                                                                                     CustomData:    null
-                                                                                                                                 ),
-                                                                                                           CustomData:           null
-                                                                                                       ),
-                                                                             Variable:                 new Variable(
-                                                                                                           Name:                 "Temperature Sensors",
-                                                                                                           Instance:             "Temperature Sensor #1",
-                                                                                                           CustomData:           null
-                                                                                                       ),
-                                                                            VariableAttributes:        new[] {
-                                                                                                           new VariableAttribute(
-                                                                                                               Type:             AttributeTypes.Actual,
-                                                                                                               Value:            "123",
-                                                                                                               Mutability:       MutabilityTypes.ReadWrite,
-                                                                                                               Persistent:       true,
-                                                                                                               Constant:         false,
-                                                                                                               CustomData:       null
-                                                                                                           )
-                                                                                                       },
-                                                                            VariableCharacteristics:   new VariableCharacteristics(
-                                                                                                           DataType:             DataTypes.Decimal,
-                                                                                                           SupportsMonitoring:   true,
-                                                                                                           Unit:                 UnitsOfMeasure.Celsius(
-                                                                                                                                     Multiplier:   1,
-                                                                                                                                     CustomData:   null
-                                                                                                                                 ),
-                                                                                                           MinLimit:             0.1M,
-                                                                                                           MaxLimit:             9.9M,
-                                                                                                           ValuesList:           new[] { "" },
-                                                                                                           CustomData:           null
-                                                                                                       ),
-                                                                            CustomData:                null
-                                                                        )
-                                                                    },
-                                           CustomData:              null
-                                       );
+                var response = await chargingStation1.NotifyReport(
+                                   NotifyReportRequestId:   1,
+                                   SequenceNumber:          1,
+                                   GeneratedAt:             Timestamp.Now,
+                                   ReportData:              new[] {
+                                                                new ReportData(
+                                                                    Component:                new Component(
+                                                                                                   Name:                 "Alert System!",
+                                                                                                   Instance:             "Alert System #1",
+                                                                                                   EVSE:                 new EVSE(
+                                                                                                                             Id:            EVSE_Id.Parse(1),
+                                                                                                                             ConnectorId:   Connector_Id.Parse(1),
+                                                                                                                             CustomData:    null
+                                                                                                                         ),
+                                                                                                   CustomData:           null
+                                                                                               ),
+                                                                     Variable:                 new Variable(
+                                                                                                   Name:                 "Temperature Sensors",
+                                                                                                   Instance:             "Temperature Sensor #1",
+                                                                                                   CustomData:           null
+                                                                                               ),
+                                                                    VariableAttributes:        new[] {
+                                                                                                   new VariableAttribute(
+                                                                                                       Type:             AttributeTypes.Actual,
+                                                                                                       Value:            "123",
+                                                                                                       Mutability:       MutabilityTypes.ReadWrite,
+                                                                                                       Persistent:       true,
+                                                                                                       Constant:         false,
+                                                                                                       CustomData:       null
+                                                                                                   )
+                                                                                               },
+                                                                    VariableCharacteristics:   new VariableCharacteristics(
+                                                                                                   DataType:             DataTypes.Decimal,
+                                                                                                   SupportsMonitoring:   true,
+                                                                                                   Unit:                 UnitsOfMeasure.Celsius(
+                                                                                                                             Multiplier:   1,
+                                                                                                                             CustomData:   null
+                                                                                                                         ),
+                                                                                                   MinLimit:             0.1M,
+                                                                                                   MaxLimit:             9.9M,
+                                                                                                   ValuesList:           new[] { "" },
+                                                                                                   CustomData:           null
+                                                                                               ),
+                                                                    CustomData:                null
+                                                                )
+                                                            },
+                                   CustomData:              null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              notifyReportRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyReportRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     notifyReportRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   notifyReportRequests.First().ChargingStationId);
 
             }
 
@@ -530,49 +535,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await chargingStation1.NotifyMonitoringReport(
-                                           NotifyMonitoringReportRequestId:   1,
-                                           SequenceNumber:                    1,
-                                           GeneratedAt:                       Timestamp.Now,
-                                           MonitoringData:                    new[] {
-                                                                                  new MonitoringData(
-                                                                                      Component:              new Component(
-                                                                                                                  Name:             "Alert System!",
-                                                                                                                  Instance:         "Alert System #1",
-                                                                                                                  EVSE:             new EVSE(
-                                                                                                                                        Id:            EVSE_Id.Parse(1),
-                                                                                                                                        ConnectorId:   Connector_Id.Parse(1),
-                                                                                                                                        CustomData:    null
-                                                                                                                                    ),
-                                                                                                                  CustomData:       null
-                                                                                                              ),
-                                                                                      Variable:               new Variable(
-                                                                                                                  Name:             "Temperature Sensors",
-                                                                                                                  Instance:         "Temperature Sensor #1",
-                                                                                                                  CustomData:       null
-                                                                                                              ),
-                                                                                      VariableMonitorings:   new[] {
-                                                                                                                 new VariableMonitoring(
-                                                                                                                     Id:            VariableMonitoring_Id.NewRandom,
-                                                                                                                     Transaction:   true,
-                                                                                                                     Value:         1.01M,
-                                                                                                                     Type:          MonitorTypes.Periodic,
-                                                                                                                     Severity:      Severities.Warning,
-                                                                                                                     CustomData:    null
-                                                                                                                 )
-                                                                                                             },
-                                                                                      CustomData:            null
-                                                                                  )
-                                                                              },
-                                           ToBeContinued:                     false,
-                                           CustomData:                        null
-                                       );
+                var response = await chargingStation1.NotifyMonitoringReport(
+                                   NotifyMonitoringReportRequestId:   1,
+                                   SequenceNumber:                    1,
+                                   GeneratedAt:                       Timestamp.Now,
+                                   MonitoringData:                    new[] {
+                                                                          new MonitoringData(
+                                                                              Component:              new Component(
+                                                                                                          Name:             "Alert System!",
+                                                                                                          Instance:         "Alert System #1",
+                                                                                                          EVSE:             new EVSE(
+                                                                                                                                Id:            EVSE_Id.Parse(1),
+                                                                                                                                ConnectorId:   Connector_Id.Parse(1),
+                                                                                                                                CustomData:    null
+                                                                                                                            ),
+                                                                                                          CustomData:       null
+                                                                                                      ),
+                                                                              Variable:               new Variable(
+                                                                                                          Name:             "Temperature Sensors",
+                                                                                                          Instance:         "Temperature Sensor #1",
+                                                                                                          CustomData:       null
+                                                                                                      ),
+                                                                              VariableMonitorings:   new[] {
+                                                                                                         new VariableMonitoring(
+                                                                                                             Id:            VariableMonitoring_Id.NewRandom,
+                                                                                                             Transaction:   true,
+                                                                                                             Value:         1.01M,
+                                                                                                             Type:          MonitorTypes.Periodic,
+                                                                                                             Severity:      Severities.Warning,
+                                                                                                             CustomData:    null
+                                                                                                         )
+                                                                                                     },
+                                                                              CustomData:            null
+                                                                          )
+                                                                      },
+                                   ToBeContinued:                     false,
+                                   CustomData:                        null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              notifyMonitoringReportRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyMonitoringReportRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     notifyMonitoringReportRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   notifyMonitoringReportRequests.First().ChargingStationId);
 
             }
 
@@ -609,17 +614,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await chargingStation1.SendLogStatusNotification(
-                                            Status:         UploadLogStatus.Uploaded,
-                                            LogRequestId:   1,
-                                            CustomData:     null
-                                        );
+                var response = await chargingStation1.SendLogStatusNotification(
+                                   Status:         UploadLogStatus.Uploaded,
+                                   LogRequestId:   1,
+                                   CustomData:     null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              securityEventNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   securityEventNotificationRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     securityEventNotificationRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   securityEventNotificationRequests.First().ChargingStationId);
 
             }
 
@@ -661,7 +666,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var messageId  = RandomExtensions.RandomString(10);
                 var data       = RandomExtensions.RandomString(40);
 
-                var response1  = await chargingStation1.TransferData(
+                var response   = await chargingStation1.TransferData(
                                      VendorId:    vendorId,
                                      MessageId:   messageId,
                                      Data:        data,
@@ -669,14 +674,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                  );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(data.Reverse(),                 response1.Data?.ToString());
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
+                Assert.AreEqual(data.Reverse(),        response.Data?.ToString());
 
-                Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
-                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                Assert.AreEqual(data,                           dataTransferRequests.First().Data?.ToString());
+                Assert.AreEqual(1,                     dataTransferRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   dataTransferRequests.First().ChargingStationId);
+                Assert.AreEqual(vendorId,              dataTransferRequests.First().VendorId);
+                Assert.AreEqual(messageId,             dataTransferRequests.First().MessageId);
+                Assert.AreEqual(data,                  dataTransferRequests.First().Data?.ToString());
 
             }
 
@@ -722,7 +727,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                      )
                                  );
 
-                var response1  = await chargingStation1.TransferData(
+                var response   = await chargingStation1.TransferData(
                                      VendorId:    vendorId,
                                      MessageId:   messageId,
                                      Data:        data,
@@ -730,12 +735,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                  );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(JTokenType.Object,              response1.Data?.Type);
-                Assert.AreEqual(data["key"]?.Value<String>(),   response1.Data?["key"]?.Value<String>()?.Reverse());
+                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
+                Assert.AreEqual(JTokenType.Object,              response.Data?.Type);
+                Assert.AreEqual(data["key"]?.Value<String>(),   response.Data?["key"]?.Value<String>()?.Reverse());
 
                 Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,            dataTransferRequests.First().ChargingStationId);
                 Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
                 Assert.AreEqual(JTokenType.Object,              dataTransferRequests.First().Data?.Type);
@@ -782,7 +787,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                      RandomExtensions.RandomString(40)
                                  );
 
-                var response1  = await chargingStation1.TransferData(
+                var response   = await chargingStation1.TransferData(
                                      VendorId:    vendorId,
                                      MessageId:   messageId,
                                      Data:        data,
@@ -790,16 +795,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                  );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(JTokenType.Array,               response1.Data?.Type);
-                Assert.AreEqual(data[0]?.Value<String>(),       response1.Data?[0]?.Value<String>()?.Reverse());
+                Assert.AreEqual(ResultCodes.OK,             response.Result.ResultCode);
+                Assert.AreEqual(JTokenType.Array,           response.Data?.Type);
+                Assert.AreEqual(data[0]?.Value<String>(),   response.Data?[0]?.Value<String>()?.Reverse());
 
-                Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
-                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                Assert.AreEqual(JTokenType.Array,               dataTransferRequests.First().Data?.Type);
-                Assert.AreEqual(data[0]?.Value<String>(),       dataTransferRequests.First().Data?[0]?.Value<String>());
+                Assert.AreEqual(1,                          dataTransferRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,        dataTransferRequests.First().ChargingStationId);
+                Assert.AreEqual(vendorId,                   dataTransferRequests.First().VendorId);
+                Assert.AreEqual(messageId,                  dataTransferRequests.First().MessageId);
+                Assert.AreEqual(JTokenType.Array,           dataTransferRequests.First().Data?.Type);
+                Assert.AreEqual(data[0]?.Value<String>(),   dataTransferRequests.First().Data?[0]?.Value<String>());
 
             }
 
@@ -837,17 +842,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await chargingStation1.SendCertificateSigningRequest(
-                                           CSR:               "0x1234",
-                                           CertificateType:   CertificateSigningUse.ChargingStationCertificate,
-                                           CustomData:        null
-                                       );
+                var response = await chargingStation1.SendCertificateSigningRequest(
+                                   CSR:               "0x1234",
+                                   CertificateType:   CertificateSigningUse.ChargingStationCertificate,
+                                   CustomData:        null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              notifyReportRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyReportRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     notifyReportRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   notifyReportRequests.First().ChargingStationId);
 
             }
 
@@ -884,18 +889,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await chargingStation1.Get15118EVCertificate(
-                                           ISO15118SchemaVersion:   ISO15118SchemaVersion.Parse("15118-20:BastelBrothers"),
-                                           CertificateAction:       CertificateAction.Install,
-                                           EXIRequest:              EXIData.Parse("0x1234"),
-                                           CustomData:              null
-                                       );
+                var response = await chargingStation1.Get15118EVCertificate(
+                                   ISO15118SchemaVersion:   ISO15118SchemaVersion.Parse("15118-20:BastelBrothers"),
+                                   CertificateAction:       CertificateAction.Install,
+                                   EXIRequest:              EXIData.Parse("0x1234"),
+                                   CustomData:              null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              notifyReportRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyReportRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     notifyReportRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   notifyReportRequests.First().ChargingStationId);
 
             }
 
@@ -932,23 +937,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await chargingStation1.GetCertificateStatus(
-                                           OCSPRequestData:   new OCSPRequestData(
-                                                                  HashAlgorithm:    HashAlgorithms.SHA256,
-                                                                  IssuerNameHash:   "0x1234",
-                                                                  IssuerKeyHash:    "0x5678",
-                                                                  SerialNumber:     "12345678",
-                                                                  ResponderURL:     URL.Parse("https://example.org/12345678"),
-                                                                  CustomData:       null
-                                                              ),
-                                           CustomData:        null
-                                       );
+                var response = await chargingStation1.GetCertificateStatus(
+                                   OCSPRequestData:   new OCSPRequestData(
+                                                          HashAlgorithm:    HashAlgorithms.SHA256,
+                                                          IssuerNameHash:   "0x1234",
+                                                          IssuerKeyHash:    "0x5678",
+                                                          SerialNumber:     "12345678",
+                                                          ResponderURL:     URL.Parse("https://example.org/12345678"),
+                                                          CustomData:       null
+                                                      ),
+                                   CustomData:        null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              notifyReportRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyReportRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     notifyReportRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   notifyReportRequests.First().ChargingStationId);
 
             }
 
@@ -985,22 +990,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await chargingStation1.GetCRLRequest(
-                                           GetCRLRequestId:       1,
-                                           CertificateHashData:   new CertificateHashData(
-                                                                      HashAlgorithm:         HashAlgorithms.SHA256,
-                                                                      IssuerNameHash:       "f2311e9a995dfbd006bfc909e480987dc2d440ae6eaf1746efdadc638a295f65",
-                                                                      IssuerPublicKeyHash:  "99084534bbe5f6ceaffa2e65ff1ad5301c4c359b599d6edd486a475071f715fb",
-                                                                      SerialNumber:         "23"
-                                                                  ),
-                                           CustomData:            null
-                                       );
+                var response = await chargingStation1.GetCRLRequest(
+                                   GetCRLRequestId:       1,
+                                   CertificateHashData:   new CertificateHashData(
+                                                              HashAlgorithm:         HashAlgorithms.SHA256,
+                                                              IssuerNameHash:       "f2311e9a995dfbd006bfc909e480987dc2d440ae6eaf1746efdadc638a295f65",
+                                                              IssuerPublicKeyHash:  "99084534bbe5f6ceaffa2e65ff1ad5301c4c359b599d6edd486a475071f715fb",
+                                                              SerialNumber:         "23"
+                                                          ),
+                                   CustomData:            null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              getCRLRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getCRLRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     getCRLRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   getCRLRequests.First().ChargingStationId);
 
             }
 
@@ -1038,17 +1043,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await chargingStation1.SendReservationStatusUpdate(
-                                           ReservationId:             Reservation_Id.NewRandom,
-                                           ReservationUpdateStatus:   ReservationUpdateStatus.Expired,
-                                           CustomData:                null
-                                       );
+                var response = await chargingStation1.SendReservationStatusUpdate(
+                                   ReservationId:             Reservation_Id.NewRandom,
+                                   ReservationUpdateStatus:   ReservationUpdateStatus.Expired,
+                                   CustomData:                null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              securityEventNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   securityEventNotificationRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     securityEventNotificationRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   securityEventNotificationRequests.First().ChargingStationId);
 
             }
 
@@ -1086,14 +1091,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
                 var idToken   = IdToken.NewRandomRFID();
-                var response1 = await chargingStation1.Authorize(idToken);
+                var response  = await chargingStation1.Authorize(
+                                    IdToken:                       idToken,
+                                    Certificate:                   null,
+                                    ISO15118CertificateHashData:   null,
+                                    CustomData:                    null
+                                );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(AuthorizationStatus.Accepted,   response1.IdTokenInfo.Status);
+                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
+                Assert.AreEqual(AuthorizationStatus.Accepted,   response.IdTokenInfo.Status);
 
                 Assert.AreEqual(1,                              authorizeRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   authorizeRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,            authorizeRequests.First().ChargingStationId);
                 Assert.AreEqual(idToken,                        authorizeRequests.First().IdToken);
 
             }
@@ -1131,40 +1141,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await chargingStation1.NotifyEVChargingNeeds(
-                                           EVSEId:              EVSE_Id.Parse(1),
-                                           ChargingNeeds:       new ChargingNeeds(
-                                                                    RequestedEnergyTransferMode:   EnergyTransferModes.AC_ThreePhases,
-                                                                    DepartureTime:                 Timestamp.Now + TimeSpan.FromHours(3),
-                                                                    ACChargingParameters:          new ACChargingParameters(
-                                                                                                       EnergyAmount:       WattHour.     Parse( 20),
-                                                                                                       EVMinCurrent:       Ampere.       Parse(  6),
-                                                                                                       EVMaxCurrent:       Ampere.       Parse( 32),
-                                                                                                       EVMaxVoltage:       Volt.         Parse(230),
-                                                                                                       CustomData:         null
-                                                                                                   ),
-                                                                    DCChargingParameters:          new DCChargingParameters(
-                                                                                                       EVMaxCurrent:       Ampere.       Parse( 20),
-                                                                                                       EVMaxVoltage:       Volt.         Parse(900),
-                                                                                                       EnergyAmount:       WattHour.     Parse(300),
-                                                                                                       EVMaxPower:         Watt.         Parse( 60),
-                                                                                                       StateOfCharge:      PercentageInt.Parse( 23),
-                                                                                                       EVEnergyCapacity:   WattHour.     Parse(250),
-                                                                                                       FullSoC:            PercentageInt.Parse( 95),
-                                                                                                       BulkSoC:            PercentageInt.Parse( 80),
-                                                                                                       CustomData:         null
-                                                                                                   ),
-                                                                    CustomData:                    null
-                                                                ),
-                                           MaxScheduleTuples:   16,
-                                           CustomData:          null
-                                       );
+                var response = await chargingStation1.NotifyEVChargingNeeds(
+                                         EVSEId:              EVSE_Id.Parse(1),
+                                         ChargingNeeds:       new ChargingNeeds(
+                                                                  RequestedEnergyTransferMode:   EnergyTransferModes.AC_ThreePhases,
+                                                                  DepartureTime:                 Timestamp.Now + TimeSpan.FromHours(3),
+                                                                  ACChargingParameters:          new ACChargingParameters(
+                                                                                                     EnergyAmount:       WattHour.     Parse( 20),
+                                                                                                     EVMinCurrent:       Ampere.       Parse(  6),
+                                                                                                     EVMaxCurrent:       Ampere.       Parse( 32),
+                                                                                                     EVMaxVoltage:       Volt.         Parse(230),
+                                                                                                     CustomData:         null
+                                                                                                 ),
+                                                                  DCChargingParameters:          new DCChargingParameters(
+                                                                                                     EVMaxCurrent:       Ampere.       Parse( 20),
+                                                                                                     EVMaxVoltage:       Volt.         Parse(900),
+                                                                                                     EnergyAmount:       WattHour.     Parse(300),
+                                                                                                     EVMaxPower:         Watt.         Parse( 60),
+                                                                                                     StateOfCharge:      PercentageInt.Parse( 23),
+                                                                                                     EVEnergyCapacity:   WattHour.     Parse(250),
+                                                                                                     FullSoC:            PercentageInt.Parse( 95),
+                                                                                                     BulkSoC:            PercentageInt.Parse( 80),
+                                                                                                     CustomData:         null
+                                                                                                 ),
+                                                                  CustomData:                    null
+                                                              ),
+                                         MaxScheduleTuples:   16,
+                                         CustomData:          null
+                                     );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              notifyEVChargingNeedsRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyEVChargingNeedsRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     notifyEVChargingNeedsRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   notifyEVChargingNeedsRequests.First().ChargingStationId);
 
             }
 
@@ -1208,7 +1218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var meterStart      = 1234UL;
                 var reservationId   = Reservation_Id.NewRandom;
 
-                var response1       = await chargingStation1.SendTransactionEvent(
+                var response        = await chargingStation1.SendTransactionEvent(
 
                                           EventType:               TransactionEvents.Started,
                                           Timestamp:               startTimestamp,
@@ -1268,12 +1278,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                       );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
                 //Assert.AreEqual(AuthorizationStatus.Accepted,   response1.IdTokenInfo.Status);
                 //Assert.IsTrue  (response1.TransactionId.IsNotNullOrEmpty);
 
                 Assert.AreEqual(1,                              transactionEventRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   transactionEventRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,            transactionEventRequests.First().ChargingStationId);
                 //Assert.AreEqual(connectorId,                    transactionEventRequests.First().ConnectorId);
                 //Assert.AreEqual(idToken,                        transactionEventRequests.First().IdTag);
                 //Assert.AreEqual(startTimestamp.ToIso8601(),     transactionEventRequests.First().StartTimestamp.ToIso8601());
@@ -1320,7 +1330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var connectorStatus  = ConnectorStatus.Available;
                 var statusTimestamp  = Timestamp.Now;
 
-                var response1        = await chargingStation1.SendStatusNotification(
+                var response         = await chargingStation1.SendStatusNotification(
                                            EVSEId:        evseId,
                                            ConnectorId:   connectorId,
                                            Timestamp:     statusTimestamp,
@@ -1329,14 +1339,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                        );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,                response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              statusNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   statusNotificationRequests.First().ChargeBoxId);
-                Assert.AreEqual(evseId,                         statusNotificationRequests.First().EVSEId);
-                Assert.AreEqual(connectorId,                    statusNotificationRequests.First().ConnectorId);
-                Assert.AreEqual(connectorStatus,                statusNotificationRequests.First().ConnectorStatus);
-                Assert.AreEqual(statusTimestamp.ToIso8601(),    statusNotificationRequests.First().Timestamp.ToIso8601());
+                Assert.AreEqual(1,                             statusNotificationRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,           statusNotificationRequests.First().ChargingStationId);
+                Assert.AreEqual(evseId,                        statusNotificationRequests.First().EVSEId);
+                Assert.AreEqual(connectorId,                   statusNotificationRequests.First().ConnectorId);
+                Assert.AreEqual(connectorStatus,               statusNotificationRequests.First().ConnectorStatus);
+                Assert.AreEqual(statusTimestamp.ToIso8601(),   statusNotificationRequests.First().Timestamp.ToIso8601());
 
             }
 
@@ -1430,7 +1440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                                new SampledValue(
                                                    Value:              2.01M,
                                                    Context:            ReadingContexts.TransactionEnd,
-                                                   Measurand:          Measurands.Current_Offered,
+                                                   Measurand:          Measurands.Current_Import_Offered,
                                                    Phase:              Phases.L3,
                                                    Location:           MeasurementLocations.Cable,
                                                    SignedMeterValue:   new SignedMeterValue(
@@ -1469,7 +1479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                        )
                                    };
 
-                var response1    = await chargingStation1.SendMeterValues(
+                var response     = await chargingStation1.SendMeterValues(
                                        EVSEId:        evseId,
                                        MeterValues:   meterValues,
                                        CustomData:    null
@@ -1478,10 +1488,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 var clientCloseMessage = chargingStation1.ClientCloseMessage;
 
-                Assert.AreEqual (ResultCodes.OK,                                                  response1.Result.ResultCode);
+                Assert.AreEqual (ResultCodes.OK,                                                  response.Result.ResultCode);
 
                 Assert.AreEqual (1,                                                               meterValuesRequests.Count);
-                Assert.AreEqual (chargingStation1.ChargeBoxId,                                    meterValuesRequests.First().ChargeBoxId);
+                Assert.AreEqual (chargingStation1.Id,                                             meterValuesRequests.First().ChargingStationId);
                 Assert.AreEqual (evseId,                                                          meterValuesRequests.First().EVSEId);
 
                 Assert.AreEqual (meterValues.Length,                                              meterValuesRequests.First().MeterValues.Count());
@@ -1528,9 +1538,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
 
                 Assert.AreEqual(1, chargingStation1WebSocketTextMessagesReceived.Count);
-                Assert.AreEqual(1, csmsWebSocketTextMessagesReceived.                 Count);
-                Assert.AreEqual(1, csmsWebSocketTextMessageResponsesSent.                Count);
-                Assert.AreEqual(1, chargingStation1WebSocketTextMessagesSent.Count);
+                Assert.AreEqual(1, csmsWebSocketTextMessagesReceived.            Count);
+                Assert.AreEqual(1, csmsWebSocketTextMessageResponsesSent.        Count);
+                Assert.AreEqual(1, chargingStation1WebSocketTextMessagesSent.    Count);
 
             }
 
@@ -1567,75 +1577,75 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await chargingStation1.NotifyChargingLimit(
-                                           ChargingLimit:       new ChargingLimit(
-                                                                    ChargingLimitSource:   ChargingLimitSources.SO,
-                                                                    IsGridCritical:        true,
-                                                                    IsLocalGeneration:     false,
-                                                                    CustomData:            null
-                                                                ),
-                                           ChargingSchedules:   new[] {
-                                                                    new ChargingSchedule(
-                                                                        Id:                        ChargingSchedule_Id.NewRandom(),
-                                                                        ChargingRateUnit:          ChargingRateUnits.Watts,
-                                                                        ChargingSchedulePeriods:   new[] {
-                                                                                                       new ChargingSchedulePeriod(
-                                                                                                           StartPeriod:      TimeSpan.Zero,
-                                                                                                           Limit:            ChargingRateValue.Parse(
-                                                                                                                                 20,
-                                                                                                                                 ChargingRateUnits.Watts
-                                                                                                                             ),
-                                                                                                           NumberOfPhases:   3,
-                                                                                                           PhaseToUse:       PhasesToUse.Three,
-                                                                                                           CustomData:       null
-                                                                                                       )
-                                                                                                   },
-                                                                        StartSchedule:             Timestamp.Now,
-                                                                        Duration:                  TimeSpan.FromMinutes(30),
-                                                                        MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
-                                                                        SalesTariff:               new SalesTariff(
-                                                                                                       Id:                   SalesTariff_Id.NewRandom,
-                                                                                                       SalesTariffEntries:   new[] {
-                                                                                                                                 new SalesTariffEntry(
-                                                                                                                                     RelativeTimeInterval:   new RelativeTimeInterval(
-                                                                                                                                                                 Start:        TimeSpan.Zero,
-                                                                                                                                                                 Duration:     TimeSpan.FromMinutes(30),
-                                                                                                                                                                 CustomData:   null
-                                                                                                                                                             ),
-                                                                                                                                     EPriceLevel:            1,
-                                                                                                                                     ConsumptionCosts:       new[] {
-                                                                                                                                                                 new ConsumptionCost(
-                                                                                                                                                                     StartValue:   1,
-                                                                                                                                                                     Costs:        new[] {
-                                                                                                                                                                                       new Cost(
-                                                                                                                                                                                           CostKind:           CostKinds.CarbonDioxideEmission,
-                                                                                                                                                                                           Amount:             200,
-                                                                                                                                                                                           AmountMultiplier:   23,
-                                                                                                                                                                                           CustomData:         null
-                                                                                                                                                                                       )
-                                                                                                                                                                                   },
-                                                                                                                                                                     CustomData:   null
-                                                                                                                                                                 )
-                                                                                                                                                             },
-                                                                                                                                     CustomData:             null
-                                                                                                                                 )
-                                                                                                                             },
-                                                                                                       Description:          "Green Charging ++",
-                                                                                                       NumEPriceLevels:      1,
-                                                                                                       CustomData:           null
-                                                                                                   ),
-                                                                        CustomData:                null
-                                                                    )
-                                                                },
-                                           EVSEId:              EVSE_Id.Parse("1"),
-                                           CustomData:          null
-                                       );
+                var response = await chargingStation1.NotifyChargingLimit(
+                                         ChargingLimit:       new ChargingLimit(
+                                                                  ChargingLimitSource:   ChargingLimitSources.SO,
+                                                                  IsGridCritical:        true,
+                                                                  IsLocalGeneration:     false,
+                                                                  CustomData:            null
+                                                              ),
+                                         ChargingSchedules:   new[] {
+                                                                  new ChargingSchedule(
+                                                                      Id:                        ChargingSchedule_Id.NewRandom(),
+                                                                      ChargingRateUnit:          ChargingRateUnits.Watts,
+                                                                      ChargingSchedulePeriods:   new[] {
+                                                                                                     new ChargingSchedulePeriod(
+                                                                                                         StartPeriod:      TimeSpan.Zero,
+                                                                                                         Limit:            ChargingRateValue.Parse(
+                                                                                                                               20,
+                                                                                                                               ChargingRateUnits.Watts
+                                                                                                                           ),
+                                                                                                         NumberOfPhases:   3,
+                                                                                                         PhaseToUse:       PhasesToUse.Three,
+                                                                                                         CustomData:       null
+                                                                                                     )
+                                                                                                 },
+                                                                      StartSchedule:             Timestamp.Now,
+                                                                      Duration:                  TimeSpan.FromMinutes(30),
+                                                                      MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
+                                                                      SalesTariff:               new SalesTariff(
+                                                                                                     Id:                   SalesTariff_Id.NewRandom,
+                                                                                                     SalesTariffEntries:   new[] {
+                                                                                                                               new SalesTariffEntry(
+                                                                                                                                   RelativeTimeInterval:   new RelativeTimeInterval(
+                                                                                                                                                               Start:        TimeSpan.Zero,
+                                                                                                                                                               Duration:     TimeSpan.FromMinutes(30),
+                                                                                                                                                               CustomData:   null
+                                                                                                                                                           ),
+                                                                                                                                   EPriceLevel:            1,
+                                                                                                                                   ConsumptionCosts:       new[] {
+                                                                                                                                                               new ConsumptionCost(
+                                                                                                                                                                   StartValue:   1,
+                                                                                                                                                                   Costs:        new[] {
+                                                                                                                                                                                     new Cost(
+                                                                                                                                                                                         CostKind:           CostKinds.CarbonDioxideEmission,
+                                                                                                                                                                                         Amount:             200,
+                                                                                                                                                                                         AmountMultiplier:   23,
+                                                                                                                                                                                         CustomData:         null
+                                                                                                                                                                                     )
+                                                                                                                                                                                 },
+                                                                                                                                                                   CustomData:   null
+                                                                                                                                                               )
+                                                                                                                                                           },
+                                                                                                                                   CustomData:             null
+                                                                                                                               )
+                                                                                                                           },
+                                                                                                     Description:          "Green Charging ++",
+                                                                                                     NumEPriceLevels:      1,
+                                                                                                     CustomData:           null
+                                                                                                 ),
+                                                                      CustomData:                null
+                                                                  )
+                                                              },
+                                         EVSEId:              EVSE_Id.Parse("1"),
+                                         CustomData:          null
+                                     );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              notifyChargingLimitRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyChargingLimitRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     notifyChargingLimitRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   notifyChargingLimitRequests.First().ChargingStationId);
 
             }
 
@@ -1672,17 +1682,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response  = await chargingStation1.SendClearedChargingLimit(
-                                    ChargingLimitSource:   ChargingLimitSources.SO,
-                                    EVSEId:                EVSE_Id.Parse("1"),
-                                    CustomData:            null
-                                );
+                var response = await chargingStation1.SendClearedChargingLimit(
+                                   ChargingLimitSource:   ChargingLimitSources.SO,
+                                   EVSEId:                EVSE_Id.Parse("1"),
+                                   CustomData:            null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              transactionEventRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   transactionEventRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     transactionEventRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   transactionEventRequests.First().ChargingStationId);
 
             }
 
@@ -1719,81 +1729,81 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response  = await chargingStation1.ReportChargingProfiles(
-                                    ReportChargingProfilesRequestId:   1,
-                                    ChargingLimitSource:               ChargingLimitSources.SO,
-                                    EVSEId:                            EVSE_Id.Parse("1"),
-                                    ChargingProfiles:                  new[] {
-                                                                           new ChargingProfile(
-                                                                               ChargingProfileId:        ChargingProfile_Id.NewRandom,
-                                                                               StackLevel:               1,
-                                                                               ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
-                                                                               ChargingProfileKind:      ChargingProfileKinds.   Absolute,
-                                                                               ChargingSchedules:        new[] {
-                                                                                                             new ChargingSchedule(
-                                                                                                                 Id:                        ChargingSchedule_Id.NewRandom(),
-                                                                                                                 ChargingRateUnit:          ChargingRateUnits.Watts,
-                                                                                                                 ChargingSchedulePeriods:   new[] {
-                                                                                                                                                new ChargingSchedulePeriod(
-                                                                                                                                                    StartPeriod:      TimeSpan.Zero,
-                                                                                                                                                    Limit:            ChargingRateValue.Parse(
-                                                                                                                                                                          20,
-                                                                                                                                                                          ChargingRateUnits.Watts
-                                                                                                                                                                      ),
-                                                                                                                                                    NumberOfPhases:   3,
-                                                                                                                                                    PhaseToUse:       PhasesToUse.Three,
-                                                                                                                                                    CustomData:       null
-                                                                                                                                                )
-                                                                                                                                            },
-                                                                                                                 StartSchedule:             Timestamp.Now,
-                                                                                                                 Duration:                  TimeSpan.FromMinutes(30),
-                                                                                                                 MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
-                                                                                                                 SalesTariff:               new SalesTariff(
-                                                                                                                                                Id:                   SalesTariff_Id.NewRandom,
-                                                                                                                                                SalesTariffEntries:   new[] {
-                                                                                                                                                                          new SalesTariffEntry(
-                                                                                                                                                                              RelativeTimeInterval:   new RelativeTimeInterval(
-                                                                                                                                                                                                          Start:        TimeSpan.Zero,
-                                                                                                                                                                                                          Duration:     TimeSpan.FromMinutes(30),
-                                                                                                                                                                                                          CustomData:   null
-                                                                                                                                                                                                      ),
-                                                                                                                                                                              EPriceLevel:            1,
-                                                                                                                                                                              ConsumptionCosts:       new[] {
-                                                                                                                                                                                                          new ConsumptionCost(
-                                                                                                                                                                                                              StartValue:   1,
-                                                                                                                                                                                                              Costs:        new[] {
-                                                                                                                                                                                                                                new Cost(
-                                                                                                                                                                                                                                    CostKind:           CostKinds.CarbonDioxideEmission,
-                                                                                                                                                                                                                                    Amount:             200,
-                                                                                                                                                                                                                                    AmountMultiplier:   23,
-                                                                                                                                                                                                                                    CustomData:         null
-                                                                                                                                                                                                                                )
-                                                                                                                                                                                                                            },
-                                                                                                                                                                                                              CustomData:   null
-                                                                                                                                                                                                          )
-                                                                                                                                                                                                      },
-                                                                                                                                                                              CustomData:             null
-                                                                                                                                                                          )
-                                                                                                                                                                      },
-                                                                                                                                                Description:          "Green Charging ++",
-                                                                                                                                                NumEPriceLevels:      1,
-                                                                                                                                                CustomData:           null
-                                                                                                                                            ),
-                                                                                                                 CustomData:                null
-                                                                                                             )
-                                                                                                         },
-                                                                               CustomData:               null
-                                                                           )
-                                                                       },
-                                    ToBeContinued:                     false,
-                                    CustomData:                        null
-                                );
+                var response = await chargingStation1.ReportChargingProfiles(
+                                   ReportChargingProfilesRequestId:   1,
+                                   ChargingLimitSource:               ChargingLimitSources.SO,
+                                   EVSEId:                            EVSE_Id.Parse("1"),
+                                   ChargingProfiles:                  new[] {
+                                                                          new ChargingProfile(
+                                                                              ChargingProfileId:        ChargingProfile_Id.NewRandom,
+                                                                              StackLevel:               1,
+                                                                              ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
+                                                                              ChargingProfileKind:      ChargingProfileKinds.   Absolute,
+                                                                              ChargingSchedules:        new[] {
+                                                                                                            new ChargingSchedule(
+                                                                                                                Id:                        ChargingSchedule_Id.NewRandom(),
+                                                                                                                ChargingRateUnit:          ChargingRateUnits.Watts,
+                                                                                                                ChargingSchedulePeriods:   new[] {
+                                                                                                                                               new ChargingSchedulePeriod(
+                                                                                                                                                   StartPeriod:      TimeSpan.Zero,
+                                                                                                                                                   Limit:            ChargingRateValue.Parse(
+                                                                                                                                                                         20,
+                                                                                                                                                                         ChargingRateUnits.Watts
+                                                                                                                                                                     ),
+                                                                                                                                                   NumberOfPhases:   3,
+                                                                                                                                                   PhaseToUse:       PhasesToUse.Three,
+                                                                                                                                                   CustomData:       null
+                                                                                                                                               )
+                                                                                                                                           },
+                                                                                                                StartSchedule:             Timestamp.Now,
+                                                                                                                Duration:                  TimeSpan.FromMinutes(30),
+                                                                                                                MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
+                                                                                                                SalesTariff:               new SalesTariff(
+                                                                                                                                               Id:                   SalesTariff_Id.NewRandom,
+                                                                                                                                               SalesTariffEntries:   new[] {
+                                                                                                                                                                         new SalesTariffEntry(
+                                                                                                                                                                             RelativeTimeInterval:   new RelativeTimeInterval(
+                                                                                                                                                                                                         Start:        TimeSpan.Zero,
+                                                                                                                                                                                                         Duration:     TimeSpan.FromMinutes(30),
+                                                                                                                                                                                                         CustomData:   null
+                                                                                                                                                                                                     ),
+                                                                                                                                                                             EPriceLevel:            1,
+                                                                                                                                                                             ConsumptionCosts:       new[] {
+                                                                                                                                                                                                         new ConsumptionCost(
+                                                                                                                                                                                                             StartValue:   1,
+                                                                                                                                                                                                             Costs:        new[] {
+                                                                                                                                                                                                                               new Cost(
+                                                                                                                                                                                                                                   CostKind:           CostKinds.CarbonDioxideEmission,
+                                                                                                                                                                                                                                   Amount:             200,
+                                                                                                                                                                                                                                   AmountMultiplier:   23,
+                                                                                                                                                                                                                                   CustomData:         null
+                                                                                                                                                                                                                               )
+                                                                                                                                                                                                                           },
+                                                                                                                                                                                                             CustomData:   null
+                                                                                                                                                                                                         )
+                                                                                                                                                                                                     },
+                                                                                                                                                                             CustomData:             null
+                                                                                                                                                                         )
+                                                                                                                                                                     },
+                                                                                                                                               Description:          "Green Charging ++",
+                                                                                                                                               NumEPriceLevels:      1,
+                                                                                                                                               CustomData:           null
+                                                                                                                                           ),
+                                                                                                                CustomData:                null
+                                                                                                            )
+                                                                                                        },
+                                                                              CustomData:               null
+                                                                          )
+                                                                      },
+                                   ToBeContinued:                     false,
+                                   CustomData:                        null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              transactionEventRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   transactionEventRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     transactionEventRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   transactionEventRequests.First().ChargingStationId);
 
             }
 
@@ -1830,75 +1840,75 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response  = await chargingStation1.NotifyEVChargingSchedule(
+                var response = await chargingStation1.NotifyEVChargingSchedule(
 
-                                    NotifyEVChargingScheduleRequestId:   1,
-                                    TimeBase:                            Timestamp.Now,
-                                    EVSEId:                              EVSE_Id.Parse("1"),
-                                    ChargingSchedule:                    new ChargingSchedule(
-                                                                             Id:                        ChargingSchedule_Id.NewRandom(),
-                                                                             ChargingRateUnit:          ChargingRateUnits.Watts,
-                                                                             ChargingSchedulePeriods:   new[] {
-                                                                                                            new ChargingSchedulePeriod(
-                                                                                                                StartPeriod:      TimeSpan.Zero,
-                                                                                                                Limit:            ChargingRateValue.Parse(
-                                                                                                                                      20,
-                                                                                                                                      ChargingRateUnits.Watts
-                                                                                                                                  ),
-                                                                                                                NumberOfPhases:   3,
-                                                                                                                PhaseToUse:       PhasesToUse.Three,
-                                                                                                                CustomData:       null
-                                                                                                            )
-                                                                                                        },
-                                                                             StartSchedule:             Timestamp.Now,
-                                                                             Duration:                  TimeSpan.FromMinutes(30),
-                                                                             MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
-                                                                             SalesTariff:               new SalesTariff(
-                                                                                                            Id:                   SalesTariff_Id.NewRandom,
-                                                                                                            SalesTariffEntries:   new[] {
-                                                                                                                                      new SalesTariffEntry(
-                                                                                                                                          RelativeTimeInterval:   new RelativeTimeInterval(
-                                                                                                                                                                      Start:        TimeSpan.Zero,
-                                                                                                                                                                      Duration:     TimeSpan.FromMinutes(30),
-                                                                                                                                                                      CustomData:   null
-                                                                                                                                                                  ),
-                                                                                                                                          EPriceLevel:            1,
-                                                                                                                                          ConsumptionCosts:       new[] {
-                                                                                                                                                                      new ConsumptionCost(
-                                                                                                                                                                          StartValue:   1,
-                                                                                                                                                                          Costs:        new[] {
-                                                                                                                                                                                            new Cost(
-                                                                                                                                                                                                CostKind:           CostKinds.CarbonDioxideEmission,
-                                                                                                                                                                                                Amount:             200,
-                                                                                                                                                                                                AmountMultiplier:   23,
-                                                                                                                                                                                                CustomData:         null
-                                                                                                                                                                                            )
-                                                                                                                                                                                        },
-                                                                                                                                                                          CustomData:   null
-                                                                                                                                                                      )
-                                                                                                                                                                  },
-                                                                                                                                          CustomData:             null
-                                                                                                                                      )
-                                                                                                                                  },
-                                                                                                            Description:          "Green Charging ++",
-                                                                                                            NumEPriceLevels:      1,
-                                                                                                            CustomData:           null
-                                                                                                        ),
-                                                                             CustomData:                null
-                                                                         ),
-                                    SelectedScheduleTupleId:             1,
-                                    PowerToleranceAcceptance:            true,
+                                   NotifyEVChargingScheduleRequestId:   1,
+                                   TimeBase:                            Timestamp.Now,
+                                   EVSEId:                              EVSE_Id.Parse("1"),
+                                   ChargingSchedule:                    new ChargingSchedule(
+                                                                            Id:                        ChargingSchedule_Id.NewRandom(),
+                                                                            ChargingRateUnit:          ChargingRateUnits.Watts,
+                                                                            ChargingSchedulePeriods:   new[] {
+                                                                                                           new ChargingSchedulePeriod(
+                                                                                                               StartPeriod:      TimeSpan.Zero,
+                                                                                                               Limit:            ChargingRateValue.Parse(
+                                                                                                                                     20,
+                                                                                                                                     ChargingRateUnits.Watts
+                                                                                                                                 ),
+                                                                                                               NumberOfPhases:   3,
+                                                                                                               PhaseToUse:       PhasesToUse.Three,
+                                                                                                               CustomData:       null
+                                                                                                           )
+                                                                                                       },
+                                                                            StartSchedule:             Timestamp.Now,
+                                                                            Duration:                  TimeSpan.FromMinutes(30),
+                                                                            MinChargingRate:           ChargingRateValue.Parse(6, ChargingRateUnits.Watts),
+                                                                            SalesTariff:               new SalesTariff(
+                                                                                                           Id:                   SalesTariff_Id.NewRandom,
+                                                                                                           SalesTariffEntries:   new[] {
+                                                                                                                                     new SalesTariffEntry(
+                                                                                                                                         RelativeTimeInterval:   new RelativeTimeInterval(
+                                                                                                                                                                     Start:        TimeSpan.Zero,
+                                                                                                                                                                     Duration:     TimeSpan.FromMinutes(30),
+                                                                                                                                                                     CustomData:   null
+                                                                                                                                                                 ),
+                                                                                                                                         EPriceLevel:            1,
+                                                                                                                                         ConsumptionCosts:       new[] {
+                                                                                                                                                                     new ConsumptionCost(
+                                                                                                                                                                         StartValue:   1,
+                                                                                                                                                                         Costs:        new[] {
+                                                                                                                                                                                           new Cost(
+                                                                                                                                                                                               CostKind:           CostKinds.CarbonDioxideEmission,
+                                                                                                                                                                                               Amount:             200,
+                                                                                                                                                                                               AmountMultiplier:   23,
+                                                                                                                                                                                               CustomData:         null
+                                                                                                                                                                                           )
+                                                                                                                                                                                       },
+                                                                                                                                                                         CustomData:   null
+                                                                                                                                                                     )
+                                                                                                                                                                 },
+                                                                                                                                         CustomData:             null
+                                                                                                                                     )
+                                                                                                                                 },
+                                                                                                           Description:          "Green Charging ++",
+                                                                                                           NumEPriceLevels:      1,
+                                                                                                           CustomData:           null
+                                                                                                       ),
+                                                                            CustomData:                null
+                                                                        ),
+                                   SelectedScheduleTupleId:             1,
+                                   PowerToleranceAcceptance:            true,
 
-                                    CustomData:                          null
+                                   CustomData:                          null
 
-                                );
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
-                Assert.AreEqual(GenericStatus.Accepted,         response.Status);
+                Assert.AreEqual(ResultCodes.OK,           response.Result.ResultCode);
+                Assert.AreEqual(GenericStatus.Accepted,   response.Status);
 
-                Assert.AreEqual(1,                              notifyEVChargingScheduleRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyEVChargingScheduleRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                        notifyEVChargingScheduleRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,      notifyEVChargingScheduleRequests.First().ChargingStationId);
 
             }
 
@@ -1935,18 +1945,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response  = await chargingStation1.NotifyPriorityCharging(
-                                          NotifyPriorityChargingRequestId:   1,
-                                          TransactionId:                     Transaction_Id.Parse("1234"),
-                                          Activated:                         true,
-                                          CustomData:                        null
-                                      );
+                var response = await chargingStation1.NotifyPriorityCharging(
+                                   NotifyPriorityChargingRequestId:   1,
+                                   TransactionId:                     Transaction_Id.Parse("1234"),
+                                   Activated:                         true,
+                                   CustomData:                        null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              notifyPriorityChargingRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyPriorityChargingRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     notifyPriorityChargingRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   notifyPriorityChargingRequests.First().ChargingStationId);
 
             }
 
@@ -1983,11 +1993,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response  = await chargingStation1.PullDynamicScheduleUpdate(
-                                          PullDynamicScheduleUpdateRequestId:   1,
-                                          ChargingProfileId:                    ChargingProfile_Id.Parse(235),
-                                          CustomData:                           null
-                                      );
+                var response = await chargingStation1.PullDynamicScheduleUpdate(
+                                   PullDynamicScheduleUpdateRequestId:   1,
+                                   ChargingProfileId:                    ChargingProfile_Id.Parse(235),
+                                   CustomData:                           null
+                               );
 
 
                 Assert.AreEqual(ResultCodes.OK,                                           response.Result.ResultCode);
@@ -2010,8 +2020,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 Assert.AreEqual(ChargingRateValue.Parse(12, ChargingRateUnits.Unknown),   response.SetpointReactive_L3);
 
 
-                Assert.AreEqual(1,                              pullDynamicScheduleUpdateRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   pullDynamicScheduleUpdateRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     pullDynamicScheduleUpdateRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   pullDynamicScheduleUpdateRequests.First().ChargingStationId);
 
             }
 
@@ -2049,43 +2059,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await chargingStation1.NotifyDisplayMessages(
-                                           NotifyDisplayMessagesRequestId:   1,
-                                           MessageInfos:                     new[] {
-                                                                                 new MessageInfo(
-                                                                                     Id:               DisplayMessage_Id.NewRandom,
-                                                                                     Priority:         MessagePriorities.InFront,
-                                                                                     Message:          new MessageContent(
-                                                                                                           Content:      "Hello World!",
-                                                                                                           Format:       MessageFormats.UTF8,
-                                                                                                           Language:     Language_Id.Parse("EN"),
-                                                                                                           CustomData:   null
-                                                                                                       ),
-                                                                                     State:            MessageStates.Charging,
-                                                                                     StartTimestamp:   Timestamp.Now,
-                                                                                     EndTimestamp:     Timestamp.Now + TimeSpan.FromHours(3),
-                                                                                     TransactionId:    Transaction_Id.NewRandom,
-                                                                                     Display:          new Component(
-                                                                                                           Name:         "Big Displays",
-                                                                                                           Instance:     "Big Display #1",
-                                                                                                           EVSE:         new EVSE(
-                                                                                                                             Id:            EVSE_Id.     Parse(1),
-                                                                                                                             ConnectorId:   Connector_Id.Parse(1),
-                                                                                                                             CustomData:    null
-                                                                                                                         ),
-                                                                                                           CustomData:   null
-                                                                                                       ),
-                                                                                     CustomData:       null
-                                                                                 )
-                                                                             },
-                                           CustomData:                       null
-                                       );
+                var response = await chargingStation1.NotifyDisplayMessages(
+                                         NotifyDisplayMessagesRequestId:   1,
+                                         MessageInfos:                     new[] {
+                                                                               new MessageInfo(
+                                                                                   Id:               DisplayMessage_Id.NewRandom,
+                                                                                   Priority:         MessagePriorities.InFront,
+                                                                                   Message:          new MessageContent(
+                                                                                                         Content:      "Hello World!",
+                                                                                                         Format:       MessageFormats.UTF8,
+                                                                                                         Language:     Language_Id.Parse("EN"),
+                                                                                                         CustomData:   null
+                                                                                                     ),
+                                                                                   State:            MessageStates.Charging,
+                                                                                   StartTimestamp:   Timestamp.Now,
+                                                                                   EndTimestamp:     Timestamp.Now + TimeSpan.FromHours(3),
+                                                                                   TransactionId:    Transaction_Id.NewRandom,
+                                                                                   Display:          new Component(
+                                                                                                         Name:         "Big Displays",
+                                                                                                         Instance:     "Big Display #1",
+                                                                                                         EVSE:         new EVSE(
+                                                                                                                           Id:            EVSE_Id.     Parse(1),
+                                                                                                                           ConnectorId:   Connector_Id.Parse(1),
+                                                                                                                           CustomData:    null
+                                                                                                                       ),
+                                                                                                         CustomData:   null
+                                                                                                     ),
+                                                                                   CustomData:       null
+                                                                               )
+                                                                           },
+                                         CustomData:                       null
+                                     );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              notifyDisplayMessagesRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyDisplayMessagesRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     notifyDisplayMessagesRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   notifyDisplayMessagesRequests.First().ChargingStationId);
 
             }
 
@@ -2122,20 +2132,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await chargingStation1.NotifyCustomerInformation(
-                                           NotifyCustomerInformationRequestId:   1,
-                                           Data:                                 "Hello World!",
-                                           SequenceNumber:                       1,
-                                           GeneratedAt:                          Timestamp.Now,
-                                           ToBeContinued:                        false,
-                                           CustomData:                           null
-                                       );
+                var response = await chargingStation1.NotifyCustomerInformation(
+                                   NotifyCustomerInformationRequestId:   1,
+                                   Data:                                 "Hello World!",
+                                   SequenceNumber:                       1,
+                                   GeneratedAt:                          Timestamp.Now,
+                                   ToBeContinued:                        false,
+                                   CustomData:                           null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              notifyCustomerInformationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyCustomerInformationRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     notifyCustomerInformationRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   notifyCustomerInformationRequests.First().ChargingStationId);
 
             }
 

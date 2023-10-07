@@ -82,18 +82,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 var resetType  = ResetTypes.Immediate;
                 var now        = Timestamp.Now;
-                var response1  = await testCSMS01.Reset(
-                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
-                                           ResetType:     resetType,
-                                           CustomData:    null
-                                       );
+                var response   = await testCSMS01.Reset(
+                                     ChargingStationId:   chargingStation1.Id,
+                                     ResetType:           resetType,
+                                     CustomData:          null
+                                 );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(ResetStatus.Accepted,           response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                response.Result.ResultCode);
+                Assert.AreEqual(ResetStatus.Accepted,          response.Status);
 
                 Assert.IsTrue  (CryptoUtils.VerifyResponseMessage(
-                                    response1,
-                                    response1.ToJSON(
+                                    response,
+                                    response.ToJSON(
                                         testCSMS01.CustomResetResponseSerializer,
                                         testCSMS01.CustomStatusInfoSerializer,
                                         testCSMS01.CustomSignatureSerializer,
@@ -105,14 +105,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
 
 
-                Assert.AreEqual(1,                              resetRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   resetRequests.First().ChargeBoxId);
-                Assert.AreEqual(resetType,                      resetRequests.First().ResetType);
-                Assert.AreEqual(1,                              resetRequests.First().Signatures.Count());
-                Assert.AreEqual(VerificationStatus.Verified,    resetRequests.First().Signatures.First().Status);
-                //Assert.AreEqual("ahzf",                         resetRequests.First().Signatures.First().Name);
-                //Assert.AreEqual("Just a test!",                 resetRequests.First().Signatures.First().Description?.FirstText());
-                //Assert.AreEqual(now.ToIso8601(),                resetRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                Assert.AreEqual(1,                             resetRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,           resetRequests.First().ChargingStationId);
+                Assert.AreEqual(resetType,                     resetRequests.First().ResetType);
+                Assert.AreEqual(1,                             resetRequests.First().Signatures.Count());
+                Assert.AreEqual(VerificationStatus.Verified,   resetRequests.First().Signatures.First().Status);
+                //Assert.AreEqual("ahzf",                        resetRequests.First().Signatures.First().Name);
+                //Assert.AreEqual("Just a test!",                resetRequests.First().Signatures.First().Description?.FirstText());
+                //Assert.AreEqual(now.ToIso8601(),               resetRequests.First().Signatures.First().Timestamp?.  ToIso8601());
 
             }
 

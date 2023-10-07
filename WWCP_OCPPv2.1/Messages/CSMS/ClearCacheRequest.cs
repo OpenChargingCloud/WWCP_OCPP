@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ClearCacheRequest(ChargeBox_Id             ChargeBoxId,
+        public ClearCacheRequest(ChargingStation_Id             ChargeBoxId,
 
                                  IEnumerable<KeyPair>?    SignKeys            = null,
                                  IEnumerable<SignInfo>?   SignInfos           = null,
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearCacheRequestParser">A delegate to parse custom ClearCache requests.</param>
         public static ClearCacheRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
-                                              ChargeBox_Id                                     ChargeBoxId,
+                                              ChargingStation_Id                                     ChargeBoxId,
                                               CustomJObjectParserDelegate<ClearCacheRequest>?  CustomClearCacheRequestParser   = null)
         {
 
@@ -162,7 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                 JSON,
                                        Request_Id              RequestId,
-                                       ChargeBox_Id            ChargeBoxId,
+                                       ChargingStation_Id            ChargeBoxId,
                                        out ClearCacheRequest?  ClearCacheRequest,
                                        out String?             ErrorResponse)
 
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearCacheRequestParser">A delegate to parse custom ClearCache requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
-                                       ChargeBox_Id                                     ChargeBoxId,
+                                       ChargingStation_Id                                     ChargeBoxId,
                                        out ClearCacheRequest?                           ClearCacheRequest,
                                        out String?                                      ErrorResponse,
                                        CustomJObjectParserDelegate<ClearCacheRequest>?  CustomClearCacheRequestParser)
@@ -228,8 +228,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

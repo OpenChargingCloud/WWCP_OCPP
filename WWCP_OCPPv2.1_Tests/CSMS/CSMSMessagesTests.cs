@@ -68,18 +68,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
                 var resetType  = ResetTypes.Immediate;
-                var response1  = await testCSMS01.Reset(
-                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
-                                           ResetType:     resetType,
-                                           CustomData:    null
-                                       );
+                var response   = await testCSMS01.Reset(
+                                     ChargingStationId:   chargingStation1.Id,
+                                     ResetType:           resetType,
+                                     CustomData:          null
+                                 );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(ResetStatus.Accepted,           response1.Status);
+                Assert.AreEqual(ResultCodes.OK,         response.Result.ResultCode);
+                Assert.AreEqual(ResetStatus.Accepted,   response.Status);
 
-                Assert.AreEqual(1,                              resetRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   resetRequests.First().ChargeBoxId);
-                Assert.AreEqual(resetType,                      resetRequests.First().ResetType);
+                Assert.AreEqual(1,                      resetRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,    resetRequests.First().ChargingStationId);
+                Assert.AreEqual(resetType,              resetRequests.First().ResetType);
 
             }
 
@@ -117,11 +117,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
                 var resetType  = ResetTypes.Immediate;
-                var response1  = await testCSMS01.Reset(chargingStation2.ChargeBoxId, resetType);
+                var response   = await testCSMS01.Reset(
+                                     ChargingStationId:   chargingStation2.Id,
+                                     ResetType:           resetType,
+                                     CustomData:          null
+                                 );
 
-                Assert.AreEqual  (ResultCodes.NetworkError,  response1.Result.ResultCode);
-                Assert.IsNotEmpty(                           response1.Result.Description);
-                Assert.AreEqual  (ResetStatus.Unknown,       response1.Status);
+                Assert.AreEqual  (ResultCodes.NetworkError,  response.Result.ResultCode);
+                Assert.IsNotEmpty(                           response.Result.Description);
+                Assert.AreEqual  (ResetStatus.Unknown,       response.Status);
 
                 Assert.AreEqual  (0,                         resetRequests.Count);
 
@@ -161,21 +165,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
                 var resetType  = ResetTypes.Immediate;
-                var response1  = await testCSMS01.Reset(
-                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
-                                           ResetType:     resetType,
-                                           EVSEId:        EVSE_Id.Parse(1),
-                                           CustomData:    null
-                                       );
+                var response   = await testCSMS01.Reset(
+                                     ChargingStationId:   chargingStation1.Id,
+                                     ResetType:           resetType,
+                                     EVSEId:              EVSE_Id.Parse(1),
+                                     CustomData:          null
+                                 );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(ResetStatus.Accepted,           response1.Status);
+                Assert.AreEqual(ResultCodes.OK,         response.Result.ResultCode);
+                Assert.AreEqual(ResetStatus.Accepted,   response.Status);
 
-                Assert.AreEqual(1,                              resetRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   resetRequests.First().ChargeBoxId);
-                Assert.AreEqual(resetType,                      resetRequests.First().ResetType);
-                Assert.IsTrue  (                                resetRequests.First().EVSEId.HasValue);
-                Assert.AreEqual(EVSE_Id.Parse(1),               resetRequests.First().EVSEId!.Value);
+                Assert.AreEqual(1,                      resetRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,    resetRequests.First().ChargingStationId);
+                Assert.AreEqual(resetType,              resetRequests.First().ResetType);
+                Assert.IsTrue  (                        resetRequests.First().EVSEId.HasValue);
+                Assert.AreEqual(EVSE_Id.Parse(1),       resetRequests.First().EVSEId!.Value);
 
             }
 
@@ -213,21 +217,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
                 var resetType  = ResetTypes.Immediate;
-                var response1  = await testCSMS01.Reset(
-                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
-                                           ResetType:     resetType,
-                                           EVSEId:        EVSE_Id.Parse(5),
-                                           CustomData:    null
-                                       );
+                var response   = await testCSMS01.Reset(
+                                     ChargingStationId:   chargingStation1.Id,
+                                     ResetType:           resetType,
+                                     EVSEId:              EVSE_Id.Parse(5),
+                                     CustomData:          null
+                                 );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(ResetStatus.Rejected,           response1.Status);
+                Assert.AreEqual(ResultCodes.OK,         response.Result.ResultCode);
+                Assert.AreEqual(ResetStatus.Rejected,   response.Status);
 
-                Assert.AreEqual(1,                              resetRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   resetRequests.First().ChargeBoxId);
-                Assert.AreEqual(resetType,                      resetRequests.First().ResetType);
-                Assert.IsTrue  (                                resetRequests.First().EVSEId.HasValue);
-                Assert.AreEqual(EVSE_Id.Parse(5),               resetRequests.First().EVSEId!.Value);
+                Assert.AreEqual(1,                      resetRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,    resetRequests.First().ChargingStationId);
+                Assert.AreEqual(resetType,              resetRequests.First().ResetType);
+                Assert.IsTrue  (                        resetRequests.First().EVSEId.HasValue);
+                Assert.AreEqual(EVSE_Id.Parse(5),       resetRequests.First().EVSEId!.Value);
 
             }
 
@@ -265,26 +269,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.UpdateFirmware(
-                                           ChargeBoxId:               chargingStation1.ChargeBoxId,
-                                           Firmware:                  new Firmware(
-                                                                          FirmwareURL:          URL.Parse("https://example.org/fw0001.bin"),
-                                                                          RetrieveTimestamp:    Timestamp.Now,
-                                                                          InstallTimestamp:     Timestamp.Now,
-                                                                          SigningCertificate:   "0x1234",
-                                                                          Signature:            "0x5678",
-                                                                          CustomData:           null
-                                                                      ),
-                                           UpdateFirmwareRequestId:   1,
-                                           Retries:                   5,
-                                           RetryInterval:             TimeSpan.FromMinutes(5),
-                                           CustomData:                null
-                                       );
+                var response = await testCSMS01.UpdateFirmware(
+                                   ChargingStationId:         chargingStation1.Id,
+                                   Firmware:                  new Firmware(
+                                                                  FirmwareURL:          URL.Parse("https://example.org/fw0001.bin"),
+                                                                  RetrieveTimestamp:    Timestamp.Now,
+                                                                  InstallTimestamp:     Timestamp.Now,
+                                                                  SigningCertificate:   "0x1234",
+                                                                  Signature:            "0x5678",
+                                                                  CustomData:           null
+                                                              ),
+                                   UpdateFirmwareRequestId:   1,
+                                   Retries:                   5,
+                                   RetryInterval:             TimeSpan.FromMinutes(5),
+                                   CustomData:                null
+                               );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              updateFirmwareRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   updateFirmwareRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     updateFirmwareRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   updateFirmwareRequests.First().ChargingStationId);
 
             }
 
@@ -321,20 +325,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.PublishFirmware(
-                                           ChargeBoxId:                chargingStation1.ChargeBoxId,
-                                           PublishFirmwareRequestId:   1,
-                                           DownloadLocation:           URL.Parse("https://example.org/fw0001.bin"),
-                                           MD5Checksum:                "0x1234",
-                                           Retries:                    5,
-                                           RetryInterval:              TimeSpan.FromMinutes(5),
-                                           CustomData:                 null
-                                       );
+                var response = await testCSMS01.PublishFirmware(
+                                   ChargingStationId:          chargingStation1.Id,
+                                   PublishFirmwareRequestId:   1,
+                                   DownloadLocation:           URL.Parse("https://example.org/fw0001.bin"),
+                                   MD5Checksum:                "0x1234",
+                                   Retries:                    5,
+                                   RetryInterval:              TimeSpan.FromMinutes(5),
+                                   CustomData:                 null
+                               );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              publishFirmwareRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   publishFirmwareRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     publishFirmwareRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   publishFirmwareRequests.First().ChargingStationId);
 
             }
 
@@ -371,16 +375,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.UnpublishFirmware(
-                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
-                                           MD5Checksum:   "0x1234",
-                                           CustomData:    null
-                                       );
+                var response = await testCSMS01.UnpublishFirmware(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   MD5Checksum:         "0x1234",
+                                   CustomData:          null
+                               );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              unpublishFirmwareRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   unpublishFirmwareRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     unpublishFirmwareRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   unpublishFirmwareRequests.First().ChargingStationId);
 
             }
 
@@ -417,17 +421,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.GetBaseReport(
-                                           ChargeBoxId:              chargingStation1.ChargeBoxId,
-                                           GetBaseReportRequestId:   1,
-                                           ReportBase:               ReportBases.FullInventory,
-                                           CustomData:               null
-                                       );
+                var response = await testCSMS01.GetBaseReport(
+                                   ChargingStationId:        chargingStation1.Id,
+                                   GetBaseReportRequestId:   1,
+                                   ReportBase:               ReportBases.FullInventory,
+                                   CustomData:               null
+                               );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              getBaseReportRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getBaseReportRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     getBaseReportRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   getBaseReportRequests.First().ChargingStationId);
 
             }
 
@@ -464,39 +468,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.GetReport(
-                                           ChargeBoxId:          chargingStation1.ChargeBoxId,
-                                           GetReportRequestId:   1,
-                                           ComponentCriteria:    new[] {
-                                                                     ComponentCriteria.Available
-                                                                 },
-                                           ComponentVariables:   new[] {
-                                                                     new ComponentVariable(
-                                                                         Component:    new Component(
-                                                                                           Name:         "Alert System!",
-                                                                                           Instance:     "Alert System #1",
-                                                                                           EVSE:         new EVSE(
-                                                                                                             Id:            EVSE_Id.     Parse(1),
-                                                                                                             ConnectorId:   Connector_Id.Parse(1),
-                                                                                                             CustomData:    null
-                                                                                                         ),
-                                                                                           CustomData:   null
-                                                                                       ),
-                                                                         Variable:     new Variable(
-                                                                                           Name:         "Temperature Sensors",
-                                                                                           Instance:     "Temperature Sensor #1",
-                                                                                           CustomData:   null
-                                                                                       ),
-                                                                         CustomData:   null
-                                                                     )
-                                                                 },
-                                           CustomData:           null
-                                       );
+                var response = await testCSMS01.GetReport(
+                                   ChargingStationId:    chargingStation1.Id,
+                                   GetReportRequestId:   1,
+                                   ComponentCriteria:    new[] {
+                                                             ComponentCriteria.Available
+                                                         },
+                                   ComponentVariables:   new[] {
+                                                             new ComponentVariable(
+                                                                 Component:    new Component(
+                                                                                   Name:         "Alert System!",
+                                                                                   Instance:     "Alert System #1",
+                                                                                   EVSE:         new EVSE(
+                                                                                                     Id:            EVSE_Id.     Parse(1),
+                                                                                                     ConnectorId:   Connector_Id.Parse(1),
+                                                                                                     CustomData:    null
+                                                                                                 ),
+                                                                                   CustomData:   null
+                                                                               ),
+                                                                 Variable:     new Variable(
+                                                                                   Name:         "Temperature Sensors",
+                                                                                   Instance:     "Temperature Sensor #1",
+                                                                                   CustomData:   null
+                                                                               ),
+                                                                 CustomData:   null
+                                                             )
+                                                         },
+                                   CustomData:           null
+                               );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              getReportRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getReportRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     getReportRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   getReportRequests.First().ChargingStationId);
 
             }
 
@@ -533,23 +537,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.GetLog(
-                                           ChargeBoxId:    chargingStation1.ChargeBoxId,
-                                           LogType:        LogTypes.DiagnosticsLog,
-                                           LogRequestId:   1,
-                                           Log:            new LogParameters(
-                                                               RemoteLocation:    URL.Parse("https://example.org/log0001.log"),
-                                                               OldestTimestamp:   Timestamp.Now - TimeSpan.FromDays(2),
-                                                               LatestTimestamp:   Timestamp.Now,
-                                                               CustomData:        null
-                                                           ),
-                                           CustomData:     null
-                                       );
+                var response = await testCSMS01.GetLog(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   LogType:             LogTypes.DiagnosticsLog,
+                                   LogRequestId:        1,
+                                   Log:                 new LogParameters(
+                                                            RemoteLocation:    URL.Parse("https://example.org/log0001.log"),
+                                                            OldestTimestamp:   Timestamp.Now - TimeSpan.FromDays(2),
+                                                            LatestTimestamp:   Timestamp.Now,
+                                                            CustomData:        null
+                                                        ),
+                                   CustomData:          null
+                               );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
 
             }
 
@@ -586,37 +590,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.SetVariables(
-                                           ChargeBoxId:    chargingStation1.ChargeBoxId,
-                                           VariableData:   new[] {
-                                                               new SetVariableData(
-                                                                   AttributeValue:   "123",
-                                                                   Component:        new Component(
-                                                                                         Name:         "Alert System!",
-                                                                                         Instance:     "Alert System #1",
-                                                                                         EVSE:         new EVSE(
-                                                                                                           Id:            EVSE_Id.     Parse(1),
-                                                                                                           ConnectorId:   Connector_Id.Parse(1),
-                                                                                                           CustomData:    null
-                                                                                                       ),
-                                                                                         CustomData:   null
-                                                                                     ),
-                                                                   Variable:         new Variable(
-                                                                                         Name:         "Temperature Sensors",
-                                                                                         Instance:     "Temperature Sensor #1",
-                                                                                         CustomData:   null
-                                                                                     ),
-                                                                   AttributeType:    AttributeTypes.Actual,
-                                                                   CustomData:       null
-                                                               )
-                                                           },
-                                           CustomData:     null
-                                       );
+                var response = await testCSMS01.SetVariables(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   VariableData:        new[] {
+                                                            new SetVariableData(
+                                                                AttributeValue:   "123",
+                                                                Component:        new Component(
+                                                                                      Name:         "Alert System!",
+                                                                                      Instance:     "Alert System #1",
+                                                                                      EVSE:         new EVSE(
+                                                                                                        Id:            EVSE_Id.     Parse(1),
+                                                                                                        ConnectorId:   Connector_Id.Parse(1),
+                                                                                                        CustomData:    null
+                                                                                                    ),
+                                                                                      CustomData:   null
+                                                                                  ),
+                                                                Variable:         new Variable(
+                                                                                      Name:         "Temperature Sensors",
+                                                                                      Instance:     "Temperature Sensor #1",
+                                                                                      CustomData:   null
+                                                                                  ),
+                                                                AttributeType:    AttributeTypes.Actual,
+                                                                CustomData:       null
+                                                            )
+                                                        },
+                                   CustomData:          null
+                               );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
 
             }
 
@@ -653,36 +657,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.GetVariables(
-                                           ChargeBoxId:    chargingStation1.ChargeBoxId,
-                                           VariableData:   new[] {
-                                                               new GetVariableData(
-                                                                   Component:       new Component(
-                                                                                        Name:         "Alert System!",
-                                                                                        Instance:     "Alert System #1",
-                                                                                        EVSE:         new EVSE(
-                                                                                                          Id:            EVSE_Id.     Parse(1),
-                                                                                                          ConnectorId:   Connector_Id.Parse(1),
-                                                                                                          CustomData:    null
-                                                                                                      ),
-                                                                                        CustomData:   null
-                                                                                    ),
-                                                                   Variable:        new Variable(
-                                                                                        Name:         "Temperature Sensors",
-                                                                                        Instance:     "Temperature Sensor #1",
-                                                                                        CustomData:   null
-                                                                                    ),
-                                                                   AttributeType:   AttributeTypes.Actual,
-                                                                   CustomData:      null
-                                                               )
-                                                           },
-                                           CustomData:     null
-                                       );
+                var response = await testCSMS01.GetVariables(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   VariableData:        new[] {
+                                                            new GetVariableData(
+                                                                Component:       new Component(
+                                                                                     Name:         "Alert System!",
+                                                                                     Instance:     "Alert System #1",
+                                                                                     EVSE:         new EVSE(
+                                                                                                       Id:            EVSE_Id.     Parse(1),
+                                                                                                       ConnectorId:   Connector_Id.Parse(1),
+                                                                                                       CustomData:    null
+                                                                                                   ),
+                                                                                     CustomData:   null
+                                                                                 ),
+                                                                Variable:        new Variable(
+                                                                                     Name:         "Temperature Sensors",
+                                                                                     Instance:     "Temperature Sensor #1",
+                                                                                     CustomData:   null
+                                                                                 ),
+                                                                AttributeType:   AttributeTypes.Actual,
+                                                                CustomData:      null
+                                                            )
+                                                        },
+                                   CustomData:          null
+                               );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
 
             }
 
@@ -719,16 +723,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.SetMonitoringBase(
-                                           ChargeBoxId:      chargingStation1.ChargeBoxId,
-                                           MonitoringBase:   MonitoringBases.All,
-                                           CustomData:       null
-                                       );
+                var response = await testCSMS01.SetMonitoringBase(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   MonitoringBase:      MonitoringBases.All,
+                                   CustomData:          null
+                               );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
 
             }
 
@@ -765,38 +769,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.GetMonitoringReport(
-                                           ChargeBoxId:                    chargingStation1.ChargeBoxId,
-                                           GetMonitoringReportRequestId:   1,
-                                           MonitoringCriteria:             new[] {
-                                                                               MonitoringCriteria.PeriodicMonitoring
-                                                                           },
-                                           ComponentVariables:             new[] {
-                                                                               new ComponentVariable(
-                                                                                   Component:        new Component(
-                                                                                                         Name:         "Alert System!",
-                                                                                                         Instance:     "Alert System #1",
-                                                                                                         EVSE:         new EVSE(
-                                                                                                                           Id:            EVSE_Id.     Parse(1),
-                                                                                                                           ConnectorId:   Connector_Id.Parse(1),
-                                                                                                                           CustomData:    null
-                                                                                                                       ),
-                                                                                                         CustomData:   null
-                                                                                                     ),
-                                                                                   Variable:         new Variable(
-                                                                                                         Name:         "Temperature Sensors",
-                                                                                                         Instance:     "Temperature Sensor #1",
-                                                                                                         CustomData:   null
-                                                                                                     )
-                                                                               )
-                                                                           },
-                                           CustomData:                     null
-                                       );
+                var response = await testCSMS01.GetMonitoringReport(
+                                   ChargingStationId:              chargingStation1.Id,
+                                   GetMonitoringReportRequestId:   1,
+                                   MonitoringCriteria:             new[] {
+                                                                       MonitoringCriteria.PeriodicMonitoring
+                                                                   },
+                                   ComponentVariables:             new[] {
+                                                                       new ComponentVariable(
+                                                                           Component:        new Component(
+                                                                                                 Name:         "Alert System!",
+                                                                                                 Instance:     "Alert System #1",
+                                                                                                 EVSE:         new EVSE(
+                                                                                                                   Id:            EVSE_Id.     Parse(1),
+                                                                                                                   ConnectorId:   Connector_Id.Parse(1),
+                                                                                                                   CustomData:    null
+                                                                                                               ),
+                                                                                                 CustomData:   null
+                                                                                             ),
+                                                                           Variable:         new Variable(
+                                                                                                 Name:         "Temperature Sensors",
+                                                                                                 Instance:     "Temperature Sensor #1",
+                                                                                                 CustomData:   null
+                                                                                             )
+                                                                       )
+                                                                   },
+                                   CustomData:                     null
+                               );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
 
             }
 
@@ -833,16 +837,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.SetMonitoringLevel(
-                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
-                                           Severity:      Severities.Informational,
-                                           CustomData:    null
-                                       );
+                var response = await testCSMS01.SetMonitoringLevel(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   Severity:            Severities.Informational,
+                                   CustomData:          null
+                               );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
 
             }
 
@@ -879,40 +883,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.SetVariableMonitoring(
-                                           ChargeBoxId:      chargingStation1.ChargeBoxId,
-                                           MonitoringData:   new[] {
-                                                                 new SetMonitoringData(
-                                                                     Value:                  23.2M,
-                                                                     MonitorType:            MonitorTypes.Delta,
-                                                                     Severity:               Severities.Critical,
-                                                                     Component:              new Component(
-                                                                                                 Name:         "Alert System!",
-                                                                                                 Instance:     "Alert System #1",
-                                                                                                 EVSE:         new EVSE(
-                                                                                                                   Id:            EVSE_Id.     Parse(1),
-                                                                                                                   ConnectorId:   Connector_Id.Parse(1),
-                                                                                                                   CustomData:    null
-                                                                                                               ),
-                                                                                                 CustomData:   null
-                                                                                             ),
-                                                                     Variable:               new Variable(
-                                                                                                 Name:         "Temperature Sensors",
-                                                                                                 Instance:     "Temperature Sensor #1",
-                                                                                                 CustomData:   null
-                                                                                             ),
-                                                                     VariableMonitoringId:   VariableMonitoring_Id.NewRandom,
-                                                                     Transaction:            true,
-                                                                     CustomData:             null
-                                                                 )
-                                                             },
-                                           CustomData:       null
-                                       );
+                var response = await testCSMS01.SetVariableMonitoring(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   MonitoringData:      new[] {
+                                                            new SetMonitoringData(
+                                                                Value:                  23.2M,
+                                                                MonitorType:            MonitorTypes.Delta,
+                                                                Severity:               Severities.Critical,
+                                                                Component:              new Component(
+                                                                                            Name:         "Alert System!",
+                                                                                            Instance:     "Alert System #1",
+                                                                                            EVSE:         new EVSE(
+                                                                                                              Id:            EVSE_Id.     Parse(1),
+                                                                                                              ConnectorId:   Connector_Id.Parse(1),
+                                                                                                              CustomData:    null
+                                                                                                          ),
+                                                                                            CustomData:   null
+                                                                                        ),
+                                                                Variable:               new Variable(
+                                                                                            Name:         "Temperature Sensors",
+                                                                                            Instance:     "Temperature Sensor #1",
+                                                                                            CustomData:   null
+                                                                                        ),
+                                                                VariableMonitoringId:   VariableMonitoring_Id.NewRandom,
+                                                                Transaction:            true,
+                                                                CustomData:             null
+                                                            )
+                                                        },
+                                   CustomData:          null
+                               );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
 
             }
 
@@ -949,18 +953,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.ClearVariableMonitoring(
-                                           ChargeBoxId:             chargingStation1.ChargeBoxId,
-                                           VariableMonitoringIds:   new[] {
-                                                                        VariableMonitoring_Id.NewRandom
-                                                                    },
-                                           CustomData:              null
-                                       );
+                var response = await testCSMS01.ClearVariableMonitoring(
+                                   ChargingStationId:       chargingStation1.Id,
+                                   VariableMonitoringIds:   new[] {
+                                                                VariableMonitoring_Id.NewRandom
+                                                            },
+                                   CustomData:              null
+                               );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLogRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     getLogRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
 
             }
 
@@ -997,45 +1001,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.SetNetworkProfile(
-                                           ChargeBoxId:                chargingStation1.ChargeBoxId,
-                                           ConfigurationSlot:          1,
-                                           NetworkConnectionProfile:   new NetworkConnectionProfile(
-                                                                           Version:             OCPPVersions.OCPP20,
-                                                                           Transport:           TransportProtocols.JSON,
-                                                                           CentralServiceURL:   URL.Parse("https://example.com/OCPPv2.0/"),
-                                                                           MessageTimeout:      TimeSpan.FromSeconds(30),
-                                                                           SecurityProfile:     SecurityProfiles.SecurityProfile3,
-                                                                           NetworkInterface:    NetworkInterfaces.Wireless1,
-                                                                           VPNConfiguration:    new VPNConfiguration(
-                                                                                                    ServerURL:              URL.Parse("https://example.com/OCPPv2.0/"),
-                                                                                                    Login:                  "vpn",
-                                                                                                    Password:               "pw123",
-                                                                                                    SharedSecret:           "secret123",
-                                                                                                    Protocol:               VPNProtocols.IPSec,
-                                                                                                    AccessGroup:            "group1",
-                                                                                                    CustomData:             null
-                                                                                                ),
-                                                                           APNConfiguration:    new APNConfiguration(
-                                                                                                    AccessPointName:        "apn1",
-                                                                                                    AuthenticationMethod:   APNAuthenticationMethods.PAP,
-                                                                                                    Username:               "root",
-                                                                                                    Password:               "pw234",
-                                                                                                    SIMPINCode:             "7873",
-                                                                                                    PreferredNetwork:       "Vanaheimr Wireless",
-                                                                                                    OnlyPreferredNetwork:   false,
-                                                                                                    CustomData:             null
-                                                                                                ),
-                                                                           CustomData:          null
-                                                                       ),
-                                           CustomData:                 null
-                                       );
+                var response = await testCSMS01.SetNetworkProfile(
+                                   ChargingStationId:          chargingStation1.Id,
+                                   ConfigurationSlot:          1,
+                                   NetworkConnectionProfile:   new NetworkConnectionProfile(
+                                                                   Version:             OCPPVersions.OCPP20,
+                                                                   Transport:           TransportProtocols.JSON,
+                                                                   CentralServiceURL:   URL.Parse("https://example.com/OCPPv2.0/"),
+                                                                   MessageTimeout:      TimeSpan.FromSeconds(30),
+                                                                   SecurityProfile:     SecurityProfiles.SecurityProfile3,
+                                                                   NetworkInterface:    NetworkInterfaces.Wireless1,
+                                                                   VPNConfiguration:    new VPNConfiguration(
+                                                                                            ServerURL:              URL.Parse("https://example.com/OCPPv2.0/"),
+                                                                                            Login:                  "vpn",
+                                                                                            Password:               "pw123",
+                                                                                            SharedSecret:           "secret123",
+                                                                                            Protocol:               VPNProtocols.IPSec,
+                                                                                            AccessGroup:            "group1",
+                                                                                            CustomData:             null
+                                                                                        ),
+                                                                   APNConfiguration:    new APNConfiguration(
+                                                                                            AccessPointName:        "apn1",
+                                                                                            AuthenticationMethod:   APNAuthenticationMethods.PAP,
+                                                                                            Username:               "root",
+                                                                                            Password:               "pw234",
+                                                                                            SIMPINCode:             "7873",
+                                                                                            PreferredNetwork:       "Vanaheimr Wireless",
+                                                                                            OnlyPreferredNetwork:   false,
+                                                                                            CustomData:             null
+                                                                                        ),
+                                                                   CustomData:          null
+                                                               ),
+                                   CustomData:                 null
+                               );
 
-                Assert.AreEqual(ResultCodes.OK,                     response1.Result.ResultCode);
-                Assert.AreEqual(SetNetworkProfileStatus.Accepted,   response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                     response.Result.ResultCode);
+                Assert.AreEqual(SetNetworkProfileStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                  setNetworkProfileRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,       setNetworkProfileRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,                setNetworkProfileRequests.First().ChargingStationId);
 
             }
 
@@ -1090,35 +1094,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var connectorId        = Connector_Id.Parse(1);
                 var operationalStatus  = OperationalStatus.Operative;
 
-                var response1          = await testCSMS01.ChangeAvailability(
-                                                   ChargeBoxId:         chargingStation1.ChargeBoxId,
-                                                   OperationalStatus:   operationalStatus,
-                                                   EVSE:                new EVSE(
-                                                                            Id:            evseId,
-                                                                            ConnectorId:   connectorId,
-                                                                            CustomData:    null
-                                                                        ),
-                                                   CustomData:          null
-                                               );
+                var response           = await testCSMS01.ChangeAvailability(
+                                             ChargingStationId:   chargingStation1.Id,
+                                             OperationalStatus:   operationalStatus,
+                                             EVSE:                new EVSE(
+                                                                      Id:            evseId,
+                                                                      ConnectorId:   connectorId,
+                                                                      CustomData:    null
+                                                                  ),
+                                             CustomData:          null
+                                         );
 
-                Assert.AreEqual(ResultCodes.OK,                      response1.Result.ResultCode);
-                Assert.AreEqual(ChangeAvailabilityStatus.Accepted,   response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                      response.Result.ResultCode);
+                Assert.AreEqual(ChangeAvailabilityStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                   changeAvailabilityRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,        changeAvailabilityRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,                 changeAvailabilityRequests.First().ChargingStationId);
                 Assert.AreEqual(evseId,                              changeAvailabilityRequests.First().EVSE?.Id);
                 Assert.AreEqual(connectorId,                         changeAvailabilityRequests.First().EVSE?.ConnectorId);
                 Assert.AreEqual(operationalStatus,                   changeAvailabilityRequests.First().OperationalStatus);
 
-                Assert.AreEqual(1, csmsWebSocketTextMessagesSent.                        Count);
-                Assert.AreEqual(1, csmsWebSocketTextMessageResponsesReceived.            Count);
-                Assert.AreEqual(1, csmsWebSocketTextMessagesReceived.                    Count);
-                Assert.AreEqual(0, csmsWebSocketTextMessageResponsesSent.                Count);
+                Assert.AreEqual(1,                                   csmsWebSocketTextMessagesSent.                        Count);
+                Assert.AreEqual(1,                                   csmsWebSocketTextMessageResponsesReceived.            Count);
+                Assert.AreEqual(1,                                   csmsWebSocketTextMessagesReceived.                    Count);
+                Assert.AreEqual(0,                                   csmsWebSocketTextMessageResponsesSent.                Count);
 
-                Assert.AreEqual(1, chargingStation1WebSocketTextMessagesReceived.        Count);
-                Assert.AreEqual(1, chargingStation1WebSocketTextMessageResponsesSent.    Count);
-                Assert.AreEqual(1, chargingStation1WebSocketTextMessagesSent.            Count);
-                Assert.AreEqual(0, chargingStation1WebSocketTextMessageResponsesReceived.Count);
+                Assert.AreEqual(1,                                   chargingStation1WebSocketTextMessagesReceived.        Count);
+                Assert.AreEqual(1,                                   chargingStation1WebSocketTextMessageResponsesSent.    Count);
+                Assert.AreEqual(1,                                   chargingStation1WebSocketTextMessagesSent.            Count);
+                Assert.AreEqual(0,                                   chargingStation1WebSocketTextMessageResponsesReceived.Count);
 
             }
 
@@ -1158,20 +1162,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var evseId          = EVSE_Id.Parse(1);
                 var messageTrigger  = MessageTriggers.StatusNotification;
 
-                var response1       = await testCSMS01.TriggerMessage(
-                                                ChargeBoxId:        chargingStation1.ChargeBoxId,
-                                                RequestedMessage:   messageTrigger,
-                                                EVSE:               new EVSE(
-                                                                        evseId
-                                                                    ),
-                                                CustomData:         null
-                                            );
+                var response        = await testCSMS01.TriggerMessage(
+                                          ChargingStationId:  chargingStation1.Id,
+                                          RequestedMessage:   messageTrigger,
+                                          EVSE:               new EVSE(
+                                                                  evseId
+                                                              ),
+                                          CustomData:         null
+                                      );
 
-                Assert.AreEqual(ResultCodes.OK,                  response1.Result.ResultCode);
-                Assert.AreEqual(TriggerMessageStatus.Accepted,   response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                  response.Result.ResultCode);
+                Assert.AreEqual(TriggerMessageStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                               triggerMessageRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,    triggerMessageRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,             triggerMessageRequests.First().ChargingStationId);
 
             }
 
@@ -1213,23 +1217,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var messageId  = RandomExtensions.RandomString(10);
                 var data       = RandomExtensions.RandomString(40);
 
-                var response1  = await testCSMS01.TransferData(
-                                     ChargeBoxId:  chargingStation1.ChargeBoxId,
-                                     VendorId:     vendorId,
-                                     MessageId:    messageId,
-                                     Data:         data,
-                                     CustomData:   null
+                var response   = await testCSMS01.TransferData(
+                                     ChargingStationId:   chargingStation1.Id,
+                                     VendorId:            vendorId,
+                                     MessageId:           messageId,
+                                     Data:                data,
+                                     CustomData:          null
                                  );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(data.Reverse(),                 response1.Data?.ToString());
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
+                Assert.AreEqual(data.Reverse(),        response.Data?.ToString());
 
-                Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
-                Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                Assert.AreEqual(data,                           dataTransferRequests.First().Data?.ToString());
+                Assert.AreEqual(1,                     dataTransferRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   dataTransferRequests.First().ChargingStationId);
+                Assert.AreEqual(vendorId,              dataTransferRequests.First().VendorId);
+                Assert.AreEqual(messageId,             dataTransferRequests.First().MessageId);
+                Assert.AreEqual(data,                  dataTransferRequests.First().Data?.ToString());
 
             }
 
@@ -1275,21 +1279,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                      )
                                  );
 
-                var response1  = await testCSMS01.TransferData(
-                                     ChargeBoxId:  chargingStation1.ChargeBoxId,
-                                     VendorId:     vendorId,
-                                     MessageId:    messageId,
-                                     Data:         data,
-                                     CustomData:   null
+                var response   = await testCSMS01.TransferData(
+                                     ChargingStationId:   chargingStation1.Id,
+                                     VendorId:            vendorId,
+                                     MessageId:           messageId,
+                                     Data:                data,
+                                     CustomData:          null
                                  );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(JTokenType.Object,              response1.Data?.Type);
-                Assert.AreEqual(data["key"]?.Value<String>(),   response1.Data?["key"]?.Value<String>()?.Reverse());
+                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
+                Assert.AreEqual(JTokenType.Object,              response.Data?.Type);
+                Assert.AreEqual(data["key"]?.Value<String>(),   response.Data?["key"]?.Value<String>()?.Reverse());
 
                 Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,            dataTransferRequests.First().ChargingStationId);
                 Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
                 Assert.AreEqual(JTokenType.Object,              dataTransferRequests.First().Data?.Type);
@@ -1336,21 +1340,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                      RandomExtensions.RandomString(40)
                                  );
 
-                var response1  = await testCSMS01.TransferData(
-                                     ChargeBoxId:  chargingStation1.ChargeBoxId,
-                                     VendorId:     vendorId,
-                                     MessageId:    messageId,
-                                     Data:         data,
-                                     CustomData:   null
+                var response   = await testCSMS01.TransferData(
+                                     ChargingStationId:   chargingStation1.Id,
+                                     VendorId:            vendorId,
+                                     MessageId:           messageId,
+                                     Data:                data,
+                                     CustomData:          null
                                  );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(JTokenType.Array,               response1.Data?.Type);
-                Assert.AreEqual(data[0]?.Value<String>(),       response1.Data?[0]?.Value<String>()?.Reverse());
+                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
+                Assert.AreEqual(JTokenType.Array,               response.Data?.Type);
+                Assert.AreEqual(data[0]?.Value<String>(),       response.Data?[0]?.Value<String>()?.Reverse());
 
                 Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,            dataTransferRequests.First().ChargingStationId);
                 Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
                 Assert.AreEqual(JTokenType.Array,               dataTransferRequests.First().Data?.Type);
@@ -1394,16 +1398,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var vendorId   = Vendor_Id.Parse("ACME Inc.");
                 var messageId  = "hello";
                 var data       = "world!";
-                var response1  = await testCSMS01.TransferData(chargingStation1.ChargeBoxId,
-                                                               vendorId,
-                                                               messageId,
-                                                               data);
+                var response   = await testCSMS01.TransferData(
+                                     ChargingStationId:   chargingStation1.Id,
+                                     VendorId:            vendorId,
+                                     MessageId:           messageId,
+                                     Data:                data,
+                                     CustomData:          null
+                                 );
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(DataTransferStatus.Rejected,    response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
+                Assert.AreEqual(DataTransferStatus.Rejected,    response.Status);
 
                 Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,            dataTransferRequests.First().ChargingStationId);
                 Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
                 Assert.AreEqual(data,                           dataTransferRequests.First().Data?.ToString());
@@ -1445,58 +1452,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
 
-                var response1  = await testCSMS01.SendSignedCertificate(
-                                           ChargeBoxId:        chargingStation1.ChargeBoxId,
-                                           CertificateChain:   new CertificateChain(
-                                                                   Certificates:   new[] {
-                                                                                       Certificate.Parse(
-                                                                                           String.Concat(
-                                                                                               "-----BEGIN CERTIFICATE-----\n",
-                                                                                               "MIIFfDCCBGSgAwIBAgISAxm1F16JrzgdEDxpDfnyG2xaMA0GCSqGSIb3DQEBCwUA\n",
-                                                                                               "MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\n",
-                                                                                               "EwJSMzAeFw0yMzAxMDYwNDAwMjZaFw0yMzA0MDYwNDAwMjVaMCIxIDAeBgNVBAMT\n",
-                                                                                               "F2phYmJlci5ncmFwaGRlZmluZWQuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n",
-                                                                                               "MIIBCgKCAQEAtucIqzk30QB90mZxCNO+XP2kiY9QMFIsTfupU5IYrqGcQ1Zn+mYa\n",
-                                                                                               "7yMW9UDZdJeMpi0Ls3bOOY6HbktNTglIETUD3/hUxtLlSIQXgPV/r7qPmx5+rNgT\n",
-                                                                                               "H1uoCJ81Mk/vtGr0hWj/bbEv/FGRLo8KKr10ZZ/PNOs5JA/2SKolGGqst6Xd3Eh5\n",
-                                                                                               "JPqSwOeCPv/2D6rWvdEJwsbHBBgXBvdtb4NzGibz/y4VyiPcDZbw1P+F4MucvVEg\n",
-                                                                                               "cvFxCoupsolLcX/f49uq3FRgYGloPOAjCkHbbi8HCt0VfL0OKL4ooLtzAtm2VOJA\n",
-                                                                                               "ZueprlXzEVES9RR9jfkB5OpE1PMFc4oSEQIDAQABo4ICmjCCApYwDgYDVR0PAQH/\n",
-                                                                                               "BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAMBgNVHRMBAf8E\n",
-                                                                                               "AjAAMB0GA1UdDgQWBBTRSR2BPdSRXb+ifMhxcHkS+Dn9uTAfBgNVHSMEGDAWgBQU\n",
-                                                                                               "LrMXt1hWy65QCUDmH6+dixTCxjBVBggrBgEFBQcBAQRJMEcwIQYIKwYBBQUHMAGG\n",
-                                                                                               "FWh0dHA6Ly9yMy5vLmxlbmNyLm9yZzAiBggrBgEFBQcwAoYWaHR0cDovL3IzLmku\n",
-                                                                                               "bGVuY3Iub3JnLzBqBgNVHREEYzBhghtjb25mZXJlbmNlLmdyYXBoZGVmaW5lZC5j\n",
-                                                                                               "b22CEGdyYXBoZGVmaW5lZC5jb22CF2phYmJlci5ncmFwaGRlZmluZWQuY29tghdw\n",
-                                                                                               "dWJzdWIuZ3JhcGhkZWZpbmVkLmNvbTBMBgNVHSAERTBDMAgGBmeBDAECATA3Bgsr\n",
-                                                                                               "BgEEAYLfEwEBATAoMCYGCCsGAQUFBwIBFhpodHRwOi8vY3BzLmxldHNlbmNyeXB0\n",
-                                                                                               "Lm9yZzCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2AHoyjFTYty22IOo44FIe6YQW\n",
-                                                                                               "cDIThU070ivBOlejUutSAAABhYVzpcAAAAQDAEcwRQIhAJCxbUKgpq153bfWcnMv\n",
-                                                                                               "4yrKTyqtYBttKHxtw+nWMPQ5AiAmwa2yn/7794mQS3dh2hI79p/hC8p8XKn4jx6j\n",
-                                                                                               "ZscOngB2AOg+0No+9QY1MudXKLyJa8kD08vREWvs62nhd31tBr1uAAABhYVzpaAA\n",
-                                                                                               "AAQDAEcwRQIhAORY8NM3uxbxTSECXlWNazCywl3Q0G7iAHBOXIqTzJ2iAiAgEkJ4\n",
-                                                                                               "14UlG3TnHRgITx3wRXQsY0A95z7wa7YR3nkdWTANBgkqhkiG9w0BAQsFAAOCAQEA\n",
-                                                                                               "bwnRFC0EiAs/32J48Ifnt6/hDjqmd5ATo1pCdhy4YIf72EKoPAnZ/kOtaNP5hD8U\n",
-                                                                                               "CHVPQqYTaPE6bAPKs4JJOVIRdUJOTBHeYEHSD6iJHL93zWEKP3nB4ZYx5zOibtS0\n",
-                                                                                               "dN/EqKU7djyvnwM6fTO5gs07cDu1uToV8lBjhH9EHJu8KJJ4vPXFNgyK30XPx1Fd\n",
-                                                                                               "itTVGQId1kGwkuBmBBwbTd5uJiLFBwiJs5Vl/sUj1OHB6fp0pqzJ1M+WlNR3sYM2\n",
-                                                                                               "i68/S4sQsqy8ui74d60lNkuFrZzYpB7NRVVKesHOSdGQeYqchGn6c33kI67fvF5a\n",
-                                                                                               "Ra0DThYgIhij18nkpwaYHg==\n",
-                                                                                               "-----END CERTIFICATE-----\n\n"
-                                                                                           )
-                                                                                       )
-                                                                                   }
-                                                               ),
-                                           CertificateType:    CertificateSigningUse.ChargingStationCertificate,
-                                           CustomData:         null
-                                       );
+                var response = await testCSMS01.SendSignedCertificate(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   CertificateChain:    new CertificateChain(
+                                                            Certificates:   new[] {
+                                                                                Certificate.Parse(
+                                                                                    String.Concat(
+                                                                                        "-----BEGIN CERTIFICATE-----\n",
+                                                                                        "MIIFfDCCBGSgAwIBAgISAxm1F16JrzgdEDxpDfnyG2xaMA0GCSqGSIb3DQEBCwUA\n",
+                                                                                        "MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\n",
+                                                                                        "EwJSMzAeFw0yMzAxMDYwNDAwMjZaFw0yMzA0MDYwNDAwMjVaMCIxIDAeBgNVBAMT\n",
+                                                                                        "F2phYmJlci5ncmFwaGRlZmluZWQuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n",
+                                                                                        "MIIBCgKCAQEAtucIqzk30QB90mZxCNO+XP2kiY9QMFIsTfupU5IYrqGcQ1Zn+mYa\n",
+                                                                                        "7yMW9UDZdJeMpi0Ls3bOOY6HbktNTglIETUD3/hUxtLlSIQXgPV/r7qPmx5+rNgT\n",
+                                                                                        "H1uoCJ81Mk/vtGr0hWj/bbEv/FGRLo8KKr10ZZ/PNOs5JA/2SKolGGqst6Xd3Eh5\n",
+                                                                                        "JPqSwOeCPv/2D6rWvdEJwsbHBBgXBvdtb4NzGibz/y4VyiPcDZbw1P+F4MucvVEg\n",
+                                                                                        "cvFxCoupsolLcX/f49uq3FRgYGloPOAjCkHbbi8HCt0VfL0OKL4ooLtzAtm2VOJA\n",
+                                                                                        "ZueprlXzEVES9RR9jfkB5OpE1PMFc4oSEQIDAQABo4ICmjCCApYwDgYDVR0PAQH/\n",
+                                                                                        "BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAMBgNVHRMBAf8E\n",
+                                                                                        "AjAAMB0GA1UdDgQWBBTRSR2BPdSRXb+ifMhxcHkS+Dn9uTAfBgNVHSMEGDAWgBQU\n",
+                                                                                        "LrMXt1hWy65QCUDmH6+dixTCxjBVBggrBgEFBQcBAQRJMEcwIQYIKwYBBQUHMAGG\n",
+                                                                                        "FWh0dHA6Ly9yMy5vLmxlbmNyLm9yZzAiBggrBgEFBQcwAoYWaHR0cDovL3IzLmku\n",
+                                                                                        "bGVuY3Iub3JnLzBqBgNVHREEYzBhghtjb25mZXJlbmNlLmdyYXBoZGVmaW5lZC5j\n",
+                                                                                        "b22CEGdyYXBoZGVmaW5lZC5jb22CF2phYmJlci5ncmFwaGRlZmluZWQuY29tghdw\n",
+                                                                                        "dWJzdWIuZ3JhcGhkZWZpbmVkLmNvbTBMBgNVHSAERTBDMAgGBmeBDAECATA3Bgsr\n",
+                                                                                        "BgEEAYLfEwEBATAoMCYGCCsGAQUFBwIBFhpodHRwOi8vY3BzLmxldHNlbmNyeXB0\n",
+                                                                                        "Lm9yZzCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2AHoyjFTYty22IOo44FIe6YQW\n",
+                                                                                        "cDIThU070ivBOlejUutSAAABhYVzpcAAAAQDAEcwRQIhAJCxbUKgpq153bfWcnMv\n",
+                                                                                        "4yrKTyqtYBttKHxtw+nWMPQ5AiAmwa2yn/7794mQS3dh2hI79p/hC8p8XKn4jx6j\n",
+                                                                                        "ZscOngB2AOg+0No+9QY1MudXKLyJa8kD08vREWvs62nhd31tBr1uAAABhYVzpaAA\n",
+                                                                                        "AAQDAEcwRQIhAORY8NM3uxbxTSECXlWNazCywl3Q0G7iAHBOXIqTzJ2iAiAgEkJ4\n",
+                                                                                        "14UlG3TnHRgITx3wRXQsY0A95z7wa7YR3nkdWTANBgkqhkiG9w0BAQsFAAOCAQEA\n",
+                                                                                        "bwnRFC0EiAs/32J48Ifnt6/hDjqmd5ATo1pCdhy4YIf72EKoPAnZ/kOtaNP5hD8U\n",
+                                                                                        "CHVPQqYTaPE6bAPKs4JJOVIRdUJOTBHeYEHSD6iJHL93zWEKP3nB4ZYx5zOibtS0\n",
+                                                                                        "dN/EqKU7djyvnwM6fTO5gs07cDu1uToV8lBjhH9EHJu8KJJ4vPXFNgyK30XPx1Fd\n",
+                                                                                        "itTVGQId1kGwkuBmBBwbTd5uJiLFBwiJs5Vl/sUj1OHB6fp0pqzJ1M+WlNR3sYM2\n",
+                                                                                        "i68/S4sQsqy8ui74d60lNkuFrZzYpB7NRVVKesHOSdGQeYqchGn6c33kI67fvF5a\n",
+                                                                                        "Ra0DThYgIhij18nkpwaYHg==\n",
+                                                                                        "-----END CERTIFICATE-----\n\n"
+                                                                                    )
+                                                                                )
+                                                                            }
+                                                        ),
+                                   CertificateType:     CertificateSigningUse.ChargingStationCertificate,
+                                   CustomData:          null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                     response1.Result.ResultCode);
-                Assert.AreEqual(CertificateSignedStatus.Accepted,   response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                     response.Result.ResultCode);
+                Assert.AreEqual(CertificateSignedStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                  certificateSignedRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,       certificateSignedRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,                certificateSignedRequests.First().ChargingStationId);
 
             }
 
@@ -1534,54 +1541,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
 
-                var response1  = await testCSMS01.InstallCertificate(
-                                           ChargeBoxId:       chargingStation1.ChargeBoxId,
-                                           CertificateType:   CertificateUse.V2GRootCertificate,
-                                           Certificate:       Certificate.Parse(
-                                                                  String.Concat(
-                                                                      "-----BEGIN CERTIFICATE-----\n",
-                                                                      "MIIFfDCCBGSgAwIBAgISAxm1F16JrzgdEDxpDfnyG2xaMA0GCSqGSIb3DQEBCwUA\n",
-                                                                      "MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\n",
-                                                                      "EwJSMzAeFw0yMzAxMDYwNDAwMjZaFw0yMzA0MDYwNDAwMjVaMCIxIDAeBgNVBAMT\n",
-                                                                      "F2phYmJlci5ncmFwaGRlZmluZWQuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n",
-                                                                      "MIIBCgKCAQEAtucIqzk30QB90mZxCNO+XP2kiY9QMFIsTfupU5IYrqGcQ1Zn+mYa\n",
-                                                                      "7yMW9UDZdJeMpi0Ls3bOOY6HbktNTglIETUD3/hUxtLlSIQXgPV/r7qPmx5+rNgT\n",
-                                                                      "H1uoCJ81Mk/vtGr0hWj/bbEv/FGRLo8KKr10ZZ/PNOs5JA/2SKolGGqst6Xd3Eh5\n",
-                                                                      "JPqSwOeCPv/2D6rWvdEJwsbHBBgXBvdtb4NzGibz/y4VyiPcDZbw1P+F4MucvVEg\n",
-                                                                      "cvFxCoupsolLcX/f49uq3FRgYGloPOAjCkHbbi8HCt0VfL0OKL4ooLtzAtm2VOJA\n",
-                                                                      "ZueprlXzEVES9RR9jfkB5OpE1PMFc4oSEQIDAQABo4ICmjCCApYwDgYDVR0PAQH/\n",
-                                                                      "BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAMBgNVHRMBAf8E\n",
-                                                                      "AjAAMB0GA1UdDgQWBBTRSR2BPdSRXb+ifMhxcHkS+Dn9uTAfBgNVHSMEGDAWgBQU\n",
-                                                                      "LrMXt1hWy65QCUDmH6+dixTCxjBVBggrBgEFBQcBAQRJMEcwIQYIKwYBBQUHMAGG\n",
-                                                                      "FWh0dHA6Ly9yMy5vLmxlbmNyLm9yZzAiBggrBgEFBQcwAoYWaHR0cDovL3IzLmku\n",
-                                                                      "bGVuY3Iub3JnLzBqBgNVHREEYzBhghtjb25mZXJlbmNlLmdyYXBoZGVmaW5lZC5j\n",
-                                                                      "b22CEGdyYXBoZGVmaW5lZC5jb22CF2phYmJlci5ncmFwaGRlZmluZWQuY29tghdw\n",
-                                                                      "dWJzdWIuZ3JhcGhkZWZpbmVkLmNvbTBMBgNVHSAERTBDMAgGBmeBDAECATA3Bgsr\n",
-                                                                      "BgEEAYLfEwEBATAoMCYGCCsGAQUFBwIBFhpodHRwOi8vY3BzLmxldHNlbmNyeXB0\n",
-                                                                      "Lm9yZzCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2AHoyjFTYty22IOo44FIe6YQW\n",
-                                                                      "cDIThU070ivBOlejUutSAAABhYVzpcAAAAQDAEcwRQIhAJCxbUKgpq153bfWcnMv\n",
-                                                                      "4yrKTyqtYBttKHxtw+nWMPQ5AiAmwa2yn/7794mQS3dh2hI79p/hC8p8XKn4jx6j\n",
-                                                                      "ZscOngB2AOg+0No+9QY1MudXKLyJa8kD08vREWvs62nhd31tBr1uAAABhYVzpaAA\n",
-                                                                      "AAQDAEcwRQIhAORY8NM3uxbxTSECXlWNazCywl3Q0G7iAHBOXIqTzJ2iAiAgEkJ4\n",
-                                                                      "14UlG3TnHRgITx3wRXQsY0A95z7wa7YR3nkdWTANBgkqhkiG9w0BAQsFAAOCAQEA\n",
-                                                                      "bwnRFC0EiAs/32J48Ifnt6/hDjqmd5ATo1pCdhy4YIf72EKoPAnZ/kOtaNP5hD8U\n",
-                                                                      "CHVPQqYTaPE6bAPKs4JJOVIRdUJOTBHeYEHSD6iJHL93zWEKP3nB4ZYx5zOibtS0\n",
-                                                                      "dN/EqKU7djyvnwM6fTO5gs07cDu1uToV8lBjhH9EHJu8KJJ4vPXFNgyK30XPx1Fd\n",
-                                                                      "itTVGQId1kGwkuBmBBwbTd5uJiLFBwiJs5Vl/sUj1OHB6fp0pqzJ1M+WlNR3sYM2\n",
-                                                                      "i68/S4sQsqy8ui74d60lNkuFrZzYpB7NRVVKesHOSdGQeYqchGn6c33kI67fvF5a\n",
-                                                                      "Ra0DThYgIhij18nkpwaYHg==\n",
-                                                                      "-----END CERTIFICATE-----\n\n"
-                                                                  )
-                                                              ),
-                                           CustomData:        null
-                                       );
+                var response = await testCSMS01.InstallCertificate(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   CertificateType:     CertificateUse.V2GRootCertificate,
+                                   Certificate:         Certificate.Parse(
+                                                            String.Concat(
+                                                                "-----BEGIN CERTIFICATE-----\n",
+                                                                "MIIFfDCCBGSgAwIBAgISAxm1F16JrzgdEDxpDfnyG2xaMA0GCSqGSIb3DQEBCwUA\n",
+                                                                "MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\n",
+                                                                "EwJSMzAeFw0yMzAxMDYwNDAwMjZaFw0yMzA0MDYwNDAwMjVaMCIxIDAeBgNVBAMT\n",
+                                                                "F2phYmJlci5ncmFwaGRlZmluZWQuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n",
+                                                                "MIIBCgKCAQEAtucIqzk30QB90mZxCNO+XP2kiY9QMFIsTfupU5IYrqGcQ1Zn+mYa\n",
+                                                                "7yMW9UDZdJeMpi0Ls3bOOY6HbktNTglIETUD3/hUxtLlSIQXgPV/r7qPmx5+rNgT\n",
+                                                                "H1uoCJ81Mk/vtGr0hWj/bbEv/FGRLo8KKr10ZZ/PNOs5JA/2SKolGGqst6Xd3Eh5\n",
+                                                                "JPqSwOeCPv/2D6rWvdEJwsbHBBgXBvdtb4NzGibz/y4VyiPcDZbw1P+F4MucvVEg\n",
+                                                                "cvFxCoupsolLcX/f49uq3FRgYGloPOAjCkHbbi8HCt0VfL0OKL4ooLtzAtm2VOJA\n",
+                                                                "ZueprlXzEVES9RR9jfkB5OpE1PMFc4oSEQIDAQABo4ICmjCCApYwDgYDVR0PAQH/\n",
+                                                                "BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAMBgNVHRMBAf8E\n",
+                                                                "AjAAMB0GA1UdDgQWBBTRSR2BPdSRXb+ifMhxcHkS+Dn9uTAfBgNVHSMEGDAWgBQU\n",
+                                                                "LrMXt1hWy65QCUDmH6+dixTCxjBVBggrBgEFBQcBAQRJMEcwIQYIKwYBBQUHMAGG\n",
+                                                                "FWh0dHA6Ly9yMy5vLmxlbmNyLm9yZzAiBggrBgEFBQcwAoYWaHR0cDovL3IzLmku\n",
+                                                                "bGVuY3Iub3JnLzBqBgNVHREEYzBhghtjb25mZXJlbmNlLmdyYXBoZGVmaW5lZC5j\n",
+                                                                "b22CEGdyYXBoZGVmaW5lZC5jb22CF2phYmJlci5ncmFwaGRlZmluZWQuY29tghdw\n",
+                                                                "dWJzdWIuZ3JhcGhkZWZpbmVkLmNvbTBMBgNVHSAERTBDMAgGBmeBDAECATA3Bgsr\n",
+                                                                "BgEEAYLfEwEBATAoMCYGCCsGAQUFBwIBFhpodHRwOi8vY3BzLmxldHNlbmNyeXB0\n",
+                                                                "Lm9yZzCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2AHoyjFTYty22IOo44FIe6YQW\n",
+                                                                "cDIThU070ivBOlejUutSAAABhYVzpcAAAAQDAEcwRQIhAJCxbUKgpq153bfWcnMv\n",
+                                                                "4yrKTyqtYBttKHxtw+nWMPQ5AiAmwa2yn/7794mQS3dh2hI79p/hC8p8XKn4jx6j\n",
+                                                                "ZscOngB2AOg+0No+9QY1MudXKLyJa8kD08vREWvs62nhd31tBr1uAAABhYVzpaAA\n",
+                                                                "AAQDAEcwRQIhAORY8NM3uxbxTSECXlWNazCywl3Q0G7iAHBOXIqTzJ2iAiAgEkJ4\n",
+                                                                "14UlG3TnHRgITx3wRXQsY0A95z7wa7YR3nkdWTANBgkqhkiG9w0BAQsFAAOCAQEA\n",
+                                                                "bwnRFC0EiAs/32J48Ifnt6/hDjqmd5ATo1pCdhy4YIf72EKoPAnZ/kOtaNP5hD8U\n",
+                                                                "CHVPQqYTaPE6bAPKs4JJOVIRdUJOTBHeYEHSD6iJHL93zWEKP3nB4ZYx5zOibtS0\n",
+                                                                "dN/EqKU7djyvnwM6fTO5gs07cDu1uToV8lBjhH9EHJu8KJJ4vPXFNgyK30XPx1Fd\n",
+                                                                "itTVGQId1kGwkuBmBBwbTd5uJiLFBwiJs5Vl/sUj1OHB6fp0pqzJ1M+WlNR3sYM2\n",
+                                                                "i68/S4sQsqy8ui74d60lNkuFrZzYpB7NRVVKesHOSdGQeYqchGn6c33kI67fvF5a\n",
+                                                                "Ra0DThYgIhij18nkpwaYHg==\n",
+                                                                "-----END CERTIFICATE-----\n\n"
+                                                            )
+                                                        ),
+                                   CustomData:          null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(CertificateStatus.Accepted,     response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                 response.Result.ResultCode);
+                Assert.AreEqual(CertificateStatus.Accepted,     response.Status);
 
                 Assert.AreEqual(1,                              installCertificateRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   installCertificateRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,            installCertificateRequests.First().ChargingStationId);
 
             }
 
@@ -1618,54 +1625,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.InstallCertificate(
-                                           ChargeBoxId:       chargingStation1.ChargeBoxId,
-                                           CertificateType:   CertificateUse.V2GRootCertificate,
-                                           Certificate:       Certificate.Parse(
-                                                                  String.Concat(
-                                                                      "-----BEGIN CERTIFICATE-----\n",
-                                                                      "MIIFfDCCBGSgAwIBAgISAxm1F16JrzgdEDxpDfnyG2xaMA0GCSqGSIb3DQEBCwUA\n",
-                                                                      "MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\n",
-                                                                      "EwJSMzAeFw0yMzAxMDYwNDAwMjZaFw0yMzA0MDYwNDAwMjVaMCIxIDAeBgNVBAMT\n",
-                                                                      "F2phYmJlci5ncmFwaGRlZmluZWQuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n",
-                                                                      "MIIBCgKCAQEAtucIqzk30QB90mZxCNO+XP2kiY9QMFIsTfupU5IYrqGcQ1Zn+mYa\n",
-                                                                      "7yMW9UDZdJeMpi0Ls3bOOY6HbktNTglIETUD3/hUxtLlSIQXgPV/r7qPmx5+rNgT\n",
-                                                                      "H1uoCJ81Mk/vtGr0hWj/bbEv/FGRLo8KKr10ZZ/PNOs5JA/2SKolGGqst6Xd3Eh5\n",
-                                                                      "JPqSwOeCPv/2D6rWvdEJwsbHBBgXBvdtb4NzGibz/y4VyiPcDZbw1P+F4MucvVEg\n",
-                                                                      "cvFxCoupsolLcX/f49uq3FRgYGloPOAjCkHbbi8HCt0VfL0OKL4ooLtzAtm2VOJA\n",
-                                                                      "ZueprlXzEVES9RR9jfkB5OpE1PMFc4oSEQIDAQABo4ICmjCCApYwDgYDVR0PAQH/\n",
-                                                                      "BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAMBgNVHRMBAf8E\n",
-                                                                      "AjAAMB0GA1UdDgQWBBTRSR2BPdSRXb+ifMhxcHkS+Dn9uTAfBgNVHSMEGDAWgBQU\n",
-                                                                      "LrMXt1hWy65QCUDmH6+dixTCxjBVBggrBgEFBQcBAQRJMEcwIQYIKwYBBQUHMAGG\n",
-                                                                      "FWh0dHA6Ly9yMy5vLmxlbmNyLm9yZzAiBggrBgEFBQcwAoYWaHR0cDovL3IzLmku\n",
-                                                                      "bGVuY3Iub3JnLzBqBgNVHREEYzBhghtjb25mZXJlbmNlLmdyYXBoZGVmaW5lZC5j\n",
-                                                                      "b22CEGdyYXBoZGVmaW5lZC5jb22CF2phYmJlci5ncmFwaGRlZmluZWQuY29tghdw\n",
-                                                                      "dWJzdWIuZ3JhcGhkZWZpbmVkLmNvbTBMBgNVHSAERTBDMAgGBmeBDAECATA3Bgsr\n",
-                                                                      "BgEEAYLfEwEBATAoMCYGCCsGAQUFBwIBFhpodHRwOi8vY3BzLmxldHNlbmNyeXB0\n",
-                                                                      "Lm9yZzCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2AHoyjFTYty22IOo44FIe6YQW\n",
-                                                                      "cDIThU070ivBOlejUutSAAABhYVzpcAAAAQDAEcwRQIhAJCxbUKgpq153bfWcnMv\n",
-                                                                      "4yrKTyqtYBttKHxtw+nWMPQ5AiAmwa2yn/7794mQS3dh2hI79p/hC8p8XKn4jx6j\n",
-                                                                      "ZscOngB2AOg+0No+9QY1MudXKLyJa8kD08vREWvs62nhd31tBr1uAAABhYVzpaAA\n",
-                                                                      "AAQDAEcwRQIhAORY8NM3uxbxTSECXlWNazCywl3Q0G7iAHBOXIqTzJ2iAiAgEkJ4\n",
-                                                                      "14UlG3TnHRgITx3wRXQsY0A95z7wa7YR3nkdWTANBgkqhkiG9w0BAQsFAAOCAQEA\n",
-                                                                      "bwnRFC0EiAs/32J48Ifnt6/hDjqmd5ATo1pCdhy4YIf72EKoPAnZ/kOtaNP5hD8U\n",
-                                                                      "CHVPQqYTaPE6bAPKs4JJOVIRdUJOTBHeYEHSD6iJHL93zWEKP3nB4ZYx5zOibtS0\n",
-                                                                      "dN/EqKU7djyvnwM6fTO5gs07cDu1uToV8lBjhH9EHJu8KJJ4vPXFNgyK30XPx1Fd\n",
-                                                                      "itTVGQId1kGwkuBmBBwbTd5uJiLFBwiJs5Vl/sUj1OHB6fp0pqzJ1M+WlNR3sYM2\n",
-                                                                      "i68/S4sQsqy8ui74d60lNkuFrZzYpB7NRVVKesHOSdGQeYqchGn6c33kI67fvF5a\n",
-                                                                      "Ra0DThYgIhij18nkpwaYHg==\n",
-                                                                      "-----END CERTIFICATE-----\n\n"
-                                                                  )
-                                                              ),
-                                           CustomData:        null
-                                       );
+                var response1 = await testCSMS01.InstallCertificate(
+                                    ChargingStationId:   chargingStation1.Id,
+                                    CertificateType:     CertificateUse.V2GRootCertificate,
+                                    Certificate:         Certificate.Parse(
+                                                             String.Concat(
+                                                                 "-----BEGIN CERTIFICATE-----\n",
+                                                                 "MIIFfDCCBGSgAwIBAgISAxm1F16JrzgdEDxpDfnyG2xaMA0GCSqGSIb3DQEBCwUA\n",
+                                                                 "MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\n",
+                                                                 "EwJSMzAeFw0yMzAxMDYwNDAwMjZaFw0yMzA0MDYwNDAwMjVaMCIxIDAeBgNVBAMT\n",
+                                                                 "F2phYmJlci5ncmFwaGRlZmluZWQuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n",
+                                                                 "MIIBCgKCAQEAtucIqzk30QB90mZxCNO+XP2kiY9QMFIsTfupU5IYrqGcQ1Zn+mYa\n",
+                                                                 "7yMW9UDZdJeMpi0Ls3bOOY6HbktNTglIETUD3/hUxtLlSIQXgPV/r7qPmx5+rNgT\n",
+                                                                 "H1uoCJ81Mk/vtGr0hWj/bbEv/FGRLo8KKr10ZZ/PNOs5JA/2SKolGGqst6Xd3Eh5\n",
+                                                                 "JPqSwOeCPv/2D6rWvdEJwsbHBBgXBvdtb4NzGibz/y4VyiPcDZbw1P+F4MucvVEg\n",
+                                                                 "cvFxCoupsolLcX/f49uq3FRgYGloPOAjCkHbbi8HCt0VfL0OKL4ooLtzAtm2VOJA\n",
+                                                                 "ZueprlXzEVES9RR9jfkB5OpE1PMFc4oSEQIDAQABo4ICmjCCApYwDgYDVR0PAQH/\n",
+                                                                 "BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAMBgNVHRMBAf8E\n",
+                                                                 "AjAAMB0GA1UdDgQWBBTRSR2BPdSRXb+ifMhxcHkS+Dn9uTAfBgNVHSMEGDAWgBQU\n",
+                                                                 "LrMXt1hWy65QCUDmH6+dixTCxjBVBggrBgEFBQcBAQRJMEcwIQYIKwYBBQUHMAGG\n",
+                                                                 "FWh0dHA6Ly9yMy5vLmxlbmNyLm9yZzAiBggrBgEFBQcwAoYWaHR0cDovL3IzLmku\n",
+                                                                 "bGVuY3Iub3JnLzBqBgNVHREEYzBhghtjb25mZXJlbmNlLmdyYXBoZGVmaW5lZC5j\n",
+                                                                 "b22CEGdyYXBoZGVmaW5lZC5jb22CF2phYmJlci5ncmFwaGRlZmluZWQuY29tghdw\n",
+                                                                 "dWJzdWIuZ3JhcGhkZWZpbmVkLmNvbTBMBgNVHSAERTBDMAgGBmeBDAECATA3Bgsr\n",
+                                                                 "BgEEAYLfEwEBATAoMCYGCCsGAQUFBwIBFhpodHRwOi8vY3BzLmxldHNlbmNyeXB0\n",
+                                                                 "Lm9yZzCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2AHoyjFTYty22IOo44FIe6YQW\n",
+                                                                 "cDIThU070ivBOlejUutSAAABhYVzpcAAAAQDAEcwRQIhAJCxbUKgpq153bfWcnMv\n",
+                                                                 "4yrKTyqtYBttKHxtw+nWMPQ5AiAmwa2yn/7794mQS3dh2hI79p/hC8p8XKn4jx6j\n",
+                                                                 "ZscOngB2AOg+0No+9QY1MudXKLyJa8kD08vREWvs62nhd31tBr1uAAABhYVzpaAA\n",
+                                                                 "AAQDAEcwRQIhAORY8NM3uxbxTSECXlWNazCywl3Q0G7iAHBOXIqTzJ2iAiAgEkJ4\n",
+                                                                 "14UlG3TnHRgITx3wRXQsY0A95z7wa7YR3nkdWTANBgkqhkiG9w0BAQsFAAOCAQEA\n",
+                                                                 "bwnRFC0EiAs/32J48Ifnt6/hDjqmd5ATo1pCdhy4YIf72EKoPAnZ/kOtaNP5hD8U\n",
+                                                                 "CHVPQqYTaPE6bAPKs4JJOVIRdUJOTBHeYEHSD6iJHL93zWEKP3nB4ZYx5zOibtS0\n",
+                                                                 "dN/EqKU7djyvnwM6fTO5gs07cDu1uToV8lBjhH9EHJu8KJJ4vPXFNgyK30XPx1Fd\n",
+                                                                 "itTVGQId1kGwkuBmBBwbTd5uJiLFBwiJs5Vl/sUj1OHB6fp0pqzJ1M+WlNR3sYM2\n",
+                                                                 "i68/S4sQsqy8ui74d60lNkuFrZzYpB7NRVVKesHOSdGQeYqchGn6c33kI67fvF5a\n",
+                                                                 "Ra0DThYgIhij18nkpwaYHg==\n",
+                                                                 "-----END CERTIFICATE-----\n\n"
+                                                             )
+                                                         ),
+                                    CustomData:          null
+                                );
 
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
                 Assert.AreEqual(CertificateStatus.Accepted,     response1.Status);
 
                 Assert.AreEqual(1,                              installCertificateRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   installCertificateRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,            installCertificateRequests.First().ChargingStationId);
 
 
                 await Task.Delay(500);
@@ -1679,7 +1686,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
                 var response2  = await testCSMS01.GetInstalledCertificateIds(
-                                           ChargeBoxId:        chargingStation1.ChargeBoxId,
+                                           ChargingStationId:  chargingStation1.Id,
                                            CertificateTypes:   new[] {
                                                                    CertificateUse.V2GRootCertificate
                                                                },
@@ -1691,7 +1698,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 Assert.AreEqual(GetInstalledCertificateStatus.Accepted,   response2.Status);
 
                 Assert.AreEqual(1,                                        getInstalledCertificateIdsRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,             getInstalledCertificateIdsRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,                      getInstalledCertificateIdsRequests.First().ChargingStationId);
 
             }
 
@@ -1730,54 +1737,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.InstallCertificate(
-                                           ChargeBoxId:       chargingStation1.ChargeBoxId,
-                                           CertificateType:   CertificateUse.V2GRootCertificate,
-                                           Certificate:       Certificate.Parse(
-                                                                  String.Concat(
-                                                                      "-----BEGIN CERTIFICATE-----\n",
-                                                                      "MIIFfDCCBGSgAwIBAgISAxm1F16JrzgdEDxpDfnyG2xaMA0GCSqGSIb3DQEBCwUA\n",
-                                                                      "MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\n",
-                                                                      "EwJSMzAeFw0yMzAxMDYwNDAwMjZaFw0yMzA0MDYwNDAwMjVaMCIxIDAeBgNVBAMT\n",
-                                                                      "F2phYmJlci5ncmFwaGRlZmluZWQuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n",
-                                                                      "MIIBCgKCAQEAtucIqzk30QB90mZxCNO+XP2kiY9QMFIsTfupU5IYrqGcQ1Zn+mYa\n",
-                                                                      "7yMW9UDZdJeMpi0Ls3bOOY6HbktNTglIETUD3/hUxtLlSIQXgPV/r7qPmx5+rNgT\n",
-                                                                      "H1uoCJ81Mk/vtGr0hWj/bbEv/FGRLo8KKr10ZZ/PNOs5JA/2SKolGGqst6Xd3Eh5\n",
-                                                                      "JPqSwOeCPv/2D6rWvdEJwsbHBBgXBvdtb4NzGibz/y4VyiPcDZbw1P+F4MucvVEg\n",
-                                                                      "cvFxCoupsolLcX/f49uq3FRgYGloPOAjCkHbbi8HCt0VfL0OKL4ooLtzAtm2VOJA\n",
-                                                                      "ZueprlXzEVES9RR9jfkB5OpE1PMFc4oSEQIDAQABo4ICmjCCApYwDgYDVR0PAQH/\n",
-                                                                      "BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAMBgNVHRMBAf8E\n",
-                                                                      "AjAAMB0GA1UdDgQWBBTRSR2BPdSRXb+ifMhxcHkS+Dn9uTAfBgNVHSMEGDAWgBQU\n",
-                                                                      "LrMXt1hWy65QCUDmH6+dixTCxjBVBggrBgEFBQcBAQRJMEcwIQYIKwYBBQUHMAGG\n",
-                                                                      "FWh0dHA6Ly9yMy5vLmxlbmNyLm9yZzAiBggrBgEFBQcwAoYWaHR0cDovL3IzLmku\n",
-                                                                      "bGVuY3Iub3JnLzBqBgNVHREEYzBhghtjb25mZXJlbmNlLmdyYXBoZGVmaW5lZC5j\n",
-                                                                      "b22CEGdyYXBoZGVmaW5lZC5jb22CF2phYmJlci5ncmFwaGRlZmluZWQuY29tghdw\n",
-                                                                      "dWJzdWIuZ3JhcGhkZWZpbmVkLmNvbTBMBgNVHSAERTBDMAgGBmeBDAECATA3Bgsr\n",
-                                                                      "BgEEAYLfEwEBATAoMCYGCCsGAQUFBwIBFhpodHRwOi8vY3BzLmxldHNlbmNyeXB0\n",
-                                                                      "Lm9yZzCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2AHoyjFTYty22IOo44FIe6YQW\n",
-                                                                      "cDIThU070ivBOlejUutSAAABhYVzpcAAAAQDAEcwRQIhAJCxbUKgpq153bfWcnMv\n",
-                                                                      "4yrKTyqtYBttKHxtw+nWMPQ5AiAmwa2yn/7794mQS3dh2hI79p/hC8p8XKn4jx6j\n",
-                                                                      "ZscOngB2AOg+0No+9QY1MudXKLyJa8kD08vREWvs62nhd31tBr1uAAABhYVzpaAA\n",
-                                                                      "AAQDAEcwRQIhAORY8NM3uxbxTSECXlWNazCywl3Q0G7iAHBOXIqTzJ2iAiAgEkJ4\n",
-                                                                      "14UlG3TnHRgITx3wRXQsY0A95z7wa7YR3nkdWTANBgkqhkiG9w0BAQsFAAOCAQEA\n",
-                                                                      "bwnRFC0EiAs/32J48Ifnt6/hDjqmd5ATo1pCdhy4YIf72EKoPAnZ/kOtaNP5hD8U\n",
-                                                                      "CHVPQqYTaPE6bAPKs4JJOVIRdUJOTBHeYEHSD6iJHL93zWEKP3nB4ZYx5zOibtS0\n",
-                                                                      "dN/EqKU7djyvnwM6fTO5gs07cDu1uToV8lBjhH9EHJu8KJJ4vPXFNgyK30XPx1Fd\n",
-                                                                      "itTVGQId1kGwkuBmBBwbTd5uJiLFBwiJs5Vl/sUj1OHB6fp0pqzJ1M+WlNR3sYM2\n",
-                                                                      "i68/S4sQsqy8ui74d60lNkuFrZzYpB7NRVVKesHOSdGQeYqchGn6c33kI67fvF5a\n",
-                                                                      "Ra0DThYgIhij18nkpwaYHg==\n",
-                                                                      "-----END CERTIFICATE-----\n\n"
-                                                                  )
-                                                              ),
-                                           CustomData:        null
-                                       );
+                var response1 = await testCSMS01.InstallCertificate(
+                                    ChargingStationId:   chargingStation1.Id,
+                                    CertificateType:     CertificateUse.V2GRootCertificate,
+                                    Certificate:         Certificate.Parse(
+                                                             String.Concat(
+                                                                 "-----BEGIN CERTIFICATE-----\n",
+                                                                 "MIIFfDCCBGSgAwIBAgISAxm1F16JrzgdEDxpDfnyG2xaMA0GCSqGSIb3DQEBCwUA\n",
+                                                                 "MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\n",
+                                                                 "EwJSMzAeFw0yMzAxMDYwNDAwMjZaFw0yMzA0MDYwNDAwMjVaMCIxIDAeBgNVBAMT\n",
+                                                                 "F2phYmJlci5ncmFwaGRlZmluZWQuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n",
+                                                                 "MIIBCgKCAQEAtucIqzk30QB90mZxCNO+XP2kiY9QMFIsTfupU5IYrqGcQ1Zn+mYa\n",
+                                                                 "7yMW9UDZdJeMpi0Ls3bOOY6HbktNTglIETUD3/hUxtLlSIQXgPV/r7qPmx5+rNgT\n",
+                                                                 "H1uoCJ81Mk/vtGr0hWj/bbEv/FGRLo8KKr10ZZ/PNOs5JA/2SKolGGqst6Xd3Eh5\n",
+                                                                 "JPqSwOeCPv/2D6rWvdEJwsbHBBgXBvdtb4NzGibz/y4VyiPcDZbw1P+F4MucvVEg\n",
+                                                                 "cvFxCoupsolLcX/f49uq3FRgYGloPOAjCkHbbi8HCt0VfL0OKL4ooLtzAtm2VOJA\n",
+                                                                 "ZueprlXzEVES9RR9jfkB5OpE1PMFc4oSEQIDAQABo4ICmjCCApYwDgYDVR0PAQH/\n",
+                                                                 "BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAMBgNVHRMBAf8E\n",
+                                                                 "AjAAMB0GA1UdDgQWBBTRSR2BPdSRXb+ifMhxcHkS+Dn9uTAfBgNVHSMEGDAWgBQU\n",
+                                                                 "LrMXt1hWy65QCUDmH6+dixTCxjBVBggrBgEFBQcBAQRJMEcwIQYIKwYBBQUHMAGG\n",
+                                                                 "FWh0dHA6Ly9yMy5vLmxlbmNyLm9yZzAiBggrBgEFBQcwAoYWaHR0cDovL3IzLmku\n",
+                                                                 "bGVuY3Iub3JnLzBqBgNVHREEYzBhghtjb25mZXJlbmNlLmdyYXBoZGVmaW5lZC5j\n",
+                                                                 "b22CEGdyYXBoZGVmaW5lZC5jb22CF2phYmJlci5ncmFwaGRlZmluZWQuY29tghdw\n",
+                                                                 "dWJzdWIuZ3JhcGhkZWZpbmVkLmNvbTBMBgNVHSAERTBDMAgGBmeBDAECATA3Bgsr\n",
+                                                                 "BgEEAYLfEwEBATAoMCYGCCsGAQUFBwIBFhpodHRwOi8vY3BzLmxldHNlbmNyeXB0\n",
+                                                                 "Lm9yZzCCAQQGCisGAQQB1nkCBAIEgfUEgfIA8AB2AHoyjFTYty22IOo44FIe6YQW\n",
+                                                                 "cDIThU070ivBOlejUutSAAABhYVzpcAAAAQDAEcwRQIhAJCxbUKgpq153bfWcnMv\n",
+                                                                 "4yrKTyqtYBttKHxtw+nWMPQ5AiAmwa2yn/7794mQS3dh2hI79p/hC8p8XKn4jx6j\n",
+                                                                 "ZscOngB2AOg+0No+9QY1MudXKLyJa8kD08vREWvs62nhd31tBr1uAAABhYVzpaAA\n",
+                                                                 "AAQDAEcwRQIhAORY8NM3uxbxTSECXlWNazCywl3Q0G7iAHBOXIqTzJ2iAiAgEkJ4\n",
+                                                                 "14UlG3TnHRgITx3wRXQsY0A95z7wa7YR3nkdWTANBgkqhkiG9w0BAQsFAAOCAQEA\n",
+                                                                 "bwnRFC0EiAs/32J48Ifnt6/hDjqmd5ATo1pCdhy4YIf72EKoPAnZ/kOtaNP5hD8U\n",
+                                                                 "CHVPQqYTaPE6bAPKs4JJOVIRdUJOTBHeYEHSD6iJHL93zWEKP3nB4ZYx5zOibtS0\n",
+                                                                 "dN/EqKU7djyvnwM6fTO5gs07cDu1uToV8lBjhH9EHJu8KJJ4vPXFNgyK30XPx1Fd\n",
+                                                                 "itTVGQId1kGwkuBmBBwbTd5uJiLFBwiJs5Vl/sUj1OHB6fp0pqzJ1M+WlNR3sYM2\n",
+                                                                 "i68/S4sQsqy8ui74d60lNkuFrZzYpB7NRVVKesHOSdGQeYqchGn6c33kI67fvF5a\n",
+                                                                 "Ra0DThYgIhij18nkpwaYHg==\n",
+                                                                 "-----END CERTIFICATE-----\n\n"
+                                                             )
+                                                         ),
+                                    CustomData:          null
+                                );
 
 
                 Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
                 Assert.AreEqual(CertificateStatus.Accepted,     response1.Status);
 
                 Assert.AreEqual(1,                              installCertificateRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   installCertificateRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,            installCertificateRequests.First().ChargingStationId);
 
 
                 await Task.Delay(500);
@@ -1793,13 +1800,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response2  = await testCSMS01.GetInstalledCertificateIds(
-                                           ChargeBoxId:        chargingStation1.ChargeBoxId,
-                                           CertificateTypes:   new[] {
-                                                                   CertificateUse.V2GRootCertificate
-                                                               },
-                                           CustomData:         null
-                                       );
+                var response2 = await testCSMS01.GetInstalledCertificateIds(
+                                    ChargingStationId:   chargingStation1.Id,
+                                    CertificateTypes:    new[] {
+                                                             CertificateUse.V2GRootCertificate
+                                                         },
+                                    CustomData:          null
+                                );
 
 
                 Assert.AreEqual(ResultCodes.OK,                           response2.Result.ResultCode);
@@ -1807,7 +1814,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 Assert.AreEqual(1,                                        response2.CertificateHashDataChain.Count());
 
                 Assert.AreEqual(1,                                        getInstalledCertificateIdsRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,             getInstalledCertificateIdsRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,                      getInstalledCertificateIdsRequests.First().ChargingStationId);
 
 
                 await Task.Delay(500);
@@ -1823,29 +1830,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response3  = await testCSMS01.DeleteCertificate(
-                                           ChargeBoxId:           chargingStation1.ChargeBoxId,
-                                           CertificateHashData:   response2.CertificateHashDataChain.First(),
-                                           CustomData:            null
-                                       );
+                var response3 = await testCSMS01.DeleteCertificate(
+                                    ChargingStationId:     chargingStation1.Id,
+                                    CertificateHashData:   response2.CertificateHashDataChain.First(),
+                                    CustomData:            null
+                                );
 
 
                 Assert.AreEqual(ResultCodes.OK,                     response3.Result.ResultCode);
                 Assert.AreEqual(DeleteCertificateStatus.Accepted,   response3.Status);
 
                 Assert.AreEqual(1,                                  deleteCertificateRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,       deleteCertificateRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,                deleteCertificateRequests.First().ChargingStationId);
 
 
                 // Verification
                 getInstalledCertificateIdsRequests.Clear();
 
                 var response4  = await testCSMS01.GetInstalledCertificateIds(
-                                           ChargeBoxId:        chargingStation1.ChargeBoxId,
-                                           CertificateTypes:   new[] {
-                                                                   CertificateUse.V2GRootCertificate
-                                                               },
-                                           CustomData:         null
+                                           ChargingStationId:   chargingStation1.Id,
+                                           CertificateTypes:    new[] {
+                                                                    CertificateUse.V2GRootCertificate
+                                                                },
+                                           CustomData:          null
                                        );
 
 
@@ -1854,7 +1861,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 Assert.AreEqual(0,                                        response4.CertificateHashDataChain.Count());
 
                 Assert.AreEqual(1,                                        getInstalledCertificateIdsRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,             getInstalledCertificateIdsRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,                      getInstalledCertificateIdsRequests.First().ChargingStationId);
 
 
                 await Task.Delay(500);
@@ -1897,19 +1904,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response3  = await testCSMS01.NotifyCRLAvailability(
-                                           ChargeBoxId:          chargingStation1.ChargeBoxId,
-                                           NotifyCRLRequestId:   1,
-                                           Availability:         NotifyCRLStatus.Available,
-                                           Location:             URL.Parse("https://localhost/clr.json"),
-                                           CustomData:           null
-                                       );;
+                var response = await testCSMS01.NotifyCRLAvailability(
+                                   ChargingStationId:    chargingStation1.Id,
+                                   NotifyCRLRequestId:   1,
+                                   Availability:         NotifyCRLStatus.Available,
+                                   Location:             URL.Parse("https://localhost/clr.json"),
+                                   CustomData:           null
+                               );;
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response3.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              notifyCRLRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyCRLRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     notifyCRLRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   notifyCRLRequests.First().ChargingStationId);
 
             }
 
@@ -1948,16 +1955,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
 
-                var response1  = await testCSMS01.GetLocalListVersion(
-                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
-                                           CustomData:    null
-                                       );
+                var response = await testCSMS01.GetLocalListVersion(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   CustomData:          null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              getLocalListVersionRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getLocalListVersionRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     getLocalListVersionRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   getLocalListVersionRequests.First().ChargingStationId);
 
             }
 
@@ -1995,64 +2002,64 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
 
-                var response1  = await testCSMS01.SendLocalList(
-                                           ChargeBoxId:              chargingStation1.ChargeBoxId,
-                                           ListVersion:              1,
-                                           UpdateType:               UpdateTypes.Full,
-                                           LocalAuthorizationList:   new[] {
-                                                                         new AuthorizationData(
-                                                                             IdToken:       new IdToken(
-                                                                                                Value:                 "aabbccdd",
-                                                                                                Type:                  IdTokenTypes.ISO14443,
-                                                                                                AdditionalInfos:       new[] {
-                                                                                                                           new AdditionalInfo(
-                                                                                                                               AdditionalIdToken:   "1234",
-                                                                                                                               Type:                "PIN",
-                                                                                                                               CustomData:          null
-                                                                                                                           )
-                                                                                                                       },
-                                                                                                CustomData:            null
-                                                                                            ),
-                                                                             IdTokenInfo:   new IdTokenInfo(
-                                                                                                Status:                AuthorizationStatus.Accepted,
-                                                                                                ChargingPriority:      8,
-                                                                                                CacheExpiryDateTime:   Timestamp.Now + TimeSpan.FromDays(3),
-                                                                                                ValidEVSEIds:          new[] {
-                                                                                                                           EVSE_Id.Parse(1)
-                                                                                                                       },
-                                                                                                GroupIdToken:          new IdToken(
-                                                                                                                           Value:                 "55667788",
-                                                                                                                           Type:                  IdTokenTypes.ISO14443,
-                                                                                                                           AdditionalInfos:       new[] {
-                                                                                                                                                      new AdditionalInfo(
-                                                                                                                                                          AdditionalIdToken:   "1234",
-                                                                                                                                                          Type:                "PIN",
-                                                                                                                                                          CustomData:          null
-                                                                                                                                                      )
-                                                                                                                                                  },
-                                                                                                                           CustomData:            null
-                                                                                                                       ),
-                                                                                                Language1:             Language_Id.Parse("de"),
-                                                                                                Language2:             Language_Id.Parse("en"),
-                                                                                                PersonalMessage:       new MessageContent(
-                                                                                                                           Content:      "Hello world!",
-                                                                                                                           Format:       MessageFormats.UTF8,
-                                                                                                                           Language:     Language_Id.Parse("en"),
-                                                                                                                           CustomData:   null
-                                                                                                                       ),
-                                                                                                CustomData:            null
-                                                                                            ),
-                                                                             CustomData:    null
-                                                                         )
-                                                                     },
-                                           CustomData:               null
-                                       );
+                var response  = await testCSMS01.SendLocalList(
+                                    ChargingStationId:        chargingStation1.Id,
+                                    ListVersion:              1,
+                                    UpdateType:               UpdateTypes.Full,
+                                    LocalAuthorizationList:   new[] {
+                                                                  new AuthorizationData(
+                                                                      IdToken:       new IdToken(
+                                                                                         Value:                 "aabbccdd",
+                                                                                         Type:                  IdTokenTypes.ISO14443,
+                                                                                         AdditionalInfos:       new[] {
+                                                                                                                    new AdditionalInfo(
+                                                                                                                        AdditionalIdToken:   "1234",
+                                                                                                                        Type:                "PIN",
+                                                                                                                        CustomData:          null
+                                                                                                                    )
+                                                                                                                },
+                                                                                         CustomData:            null
+                                                                                     ),
+                                                                      IdTokenInfo:   new IdTokenInfo(
+                                                                                         Status:                AuthorizationStatus.Accepted,
+                                                                                         ChargingPriority:      8,
+                                                                                         CacheExpiryDateTime:   Timestamp.Now + TimeSpan.FromDays(3),
+                                                                                         ValidEVSEIds:          new[] {
+                                                                                                                    EVSE_Id.Parse(1)
+                                                                                                                },
+                                                                                         GroupIdToken:          new IdToken(
+                                                                                                                    Value:                 "55667788",
+                                                                                                                    Type:                  IdTokenTypes.ISO14443,
+                                                                                                                    AdditionalInfos:       new[] {
+                                                                                                                                               new AdditionalInfo(
+                                                                                                                                                   AdditionalIdToken:   "1234",
+                                                                                                                                                   Type:                "PIN",
+                                                                                                                                                   CustomData:          null
+                                                                                                                                               )
+                                                                                                                                           },
+                                                                                                                    CustomData:            null
+                                                                                                                ),
+                                                                                         Language1:             Language_Id.Parse("de"),
+                                                                                         Language2:             Language_Id.Parse("en"),
+                                                                                         PersonalMessage:       new MessageContent(
+                                                                                                                    Content:      "Hello world!",
+                                                                                                                    Format:       MessageFormats.UTF8,
+                                                                                                                    Language:     Language_Id.Parse("en"),
+                                                                                                                    CustomData:   null
+                                                                                                                ),
+                                                                                         CustomData:            null
+                                                                                     ),
+                                                                      CustomData:    null
+                                                                  )
+                                                              },
+                                    CustomData:               null
+                                );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              sendLocalListRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   sendLocalListRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     sendLocalListRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   sendLocalListRequests.First().ChargingStationId);
 
             }
 
@@ -2090,16 +2097,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
 
-                var response1  = await testCSMS01.ClearCache(
-                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
-                                           CustomData:    null
-                                       );
+                var response = await testCSMS01.ClearCache(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   CustomData:          null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              clearCacheRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   clearCacheRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     clearCacheRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   clearCacheRequests.First().ChargingStationId);
 
             }
 
@@ -2142,45 +2149,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var evseId          = EVSE_Id.       Parse(1);
                 var connectorType   = ConnectorTypes.sType2;
 
-                var response1       = await testCSMS01.ReserveNow(
-                                                ChargeBoxId:     chargingStation1.ChargeBoxId,
-                                                ReservationId:   reservationId,
-                                                ExpiryDate:      Timestamp.Now + TimeSpan.FromHours(2),
-                                                IdToken:         new IdToken(
-                                                                     Value:             "22334455",
-                                                                     Type:              IdTokenTypes.ISO14443,
-                                                                     AdditionalInfos:   new[] {
-                                                                                            new AdditionalInfo(
-                                                                                                AdditionalIdToken:   "123",
-                                                                                                Type:                "typetype",
-                                                                                                CustomData:          null
-                                                                                            )
-                                                                                        },
-                                                                     CustomData:        null
-                                                                 ),
-                                                ConnectorType:   connectorType,
-                                                EVSEId:          evseId,
-                                                GroupIdToken:    new IdToken(
-                                                                     Value:             "55667788",
-                                                                     Type:              IdTokenTypes.ISO14443,
-                                                                     AdditionalInfos:   new[] {
-                                                                                            new AdditionalInfo(
-                                                                                                AdditionalIdToken:   "567",
-                                                                                                Type:                "type2type2",
-                                                                                                CustomData:          null
-                                                                                            )
-                                                                                        },
-                                                                     CustomData:        null
-                                                                 ),
-                                                CustomData:      null
-                                            );
+                var response        = await testCSMS01.ReserveNow(
+                                          ChargingStationId:   chargingStation1.Id,
+                                          ReservationId:       reservationId,
+                                          ExpiryDate:          Timestamp.Now + TimeSpan.FromHours(2),
+                                          IdToken:             new IdToken(
+                                                                   Value:             "22334455",
+                                                                   Type:              IdTokenTypes.ISO14443,
+                                                                   AdditionalInfos:   new[] {
+                                                                                          new AdditionalInfo(
+                                                                                              AdditionalIdToken:   "123",
+                                                                                              Type:                "typetype",
+                                                                                              CustomData:          null
+                                                                                          )
+                                                                                      },
+                                                                   CustomData:        null
+                                                               ),
+                                          ConnectorType:       connectorType,
+                                          EVSEId:              evseId,
+                                          GroupIdToken:        new IdToken(
+                                                                   Value:             "55667788",
+                                                                   Type:              IdTokenTypes.ISO14443,
+                                                                   AdditionalInfos:   new[] {
+                                                                                          new AdditionalInfo(
+                                                                                              AdditionalIdToken:   "567",
+                                                                                              Type:                "type2type2",
+                                                                                              CustomData:          null
+                                                                                          )
+                                                                                      },
+                                                                   CustomData:        null
+                                                               ),
+                                          CustomData:          null
+                                      );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(ReservationStatus.Accepted,     response1.Status);
+                Assert.AreEqual(ResultCodes.OK,               response.Result.ResultCode);
+                Assert.AreEqual(ReservationStatus.Accepted,   response.Status);
 
-                Assert.AreEqual(1,                              reserveNowRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   reserveNowRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                            reserveNowRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,          reserveNowRequests.First().ChargingStationId);
 
             }
 
@@ -2218,18 +2225,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
                 var reservationId  = Reservation_Id.NewRandom;
-                var response2      = await testCSMS01.CancelReservation(
-                                               ChargeBoxId:     chargingStation1.ChargeBoxId,
-                                               ReservationId:   reservationId,
-                                               CustomData:      null
-                                           );
+                var response       = await testCSMS01.CancelReservation(
+                                         ChargingStationId:   chargingStation1.Id,
+                                         ReservationId:       reservationId,
+                                         CustomData:          null
+                                     );
 
 
-                Assert.AreEqual(ResultCodes.OK,                     response2.Result.ResultCode);
-                Assert.AreEqual(CancelReservationStatus.Accepted,   response2.Status);
+                Assert.AreEqual(ResultCodes.OK,                     response.Result.ResultCode);
+                Assert.AreEqual(CancelReservationStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                  cancelReservationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,       cancelReservationRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,                cancelReservationRequests.First().ChargingStationId);
 
 
             }
@@ -2273,32 +2280,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var startResponse  = await testCSMS01.StartCharging(
-                                           ChargeBoxId:                        chargingStation1.ChargeBoxId,
-                                           RequestStartTransactionRequestId:   RemoteStart_Id.NewRandom,
-                                           IdToken:                            new IdToken(
-                                                                                   Value:             "aabbccdd",
-                                                                                   Type:              IdTokenTypes.ISO14443,
-                                                                                   AdditionalInfos:   null,
-                                                                                   CustomData:        null
-                                                                               ),
-                                           EVSEId:                             EVSE_Id.Parse(1),
-                                           ChargingProfile:                    null,
-                                           GroupIdToken:                       new IdToken(
-                                                                                   Value:             "cafebabe",
-                                                                                   Type:              IdTokenTypes.ISO14443,
-                                                                                   AdditionalInfos:   null,
-                                                                                   CustomData:        null
-                                                                               ),
-                                           CustomData:                         null
-                                       );
+                var startResponse = await testCSMS01.StartCharging(
+                                        ChargingStationId:                  chargingStation1.Id,
+                                        RequestStartTransactionRequestId:   RemoteStart_Id.NewRandom,
+                                        IdToken:                            new IdToken(
+                                                                                Value:             "aabbccdd",
+                                                                                Type:              IdTokenTypes.ISO14443,
+                                                                                AdditionalInfos:   null,
+                                                                                CustomData:        null
+                                                                            ),
+                                        EVSEId:                             EVSE_Id.Parse(1),
+                                        ChargingProfile:                    null,
+                                        GroupIdToken:                       new IdToken(
+                                                                                Value:             "cafebabe",
+                                                                                Type:              IdTokenTypes.ISO14443,
+                                                                                AdditionalInfos:   null,
+                                                                                CustomData:        null
+                                                                            ),
+                                        CustomData:                         null
+                                    );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 startResponse.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        startResponse.Result.ResultCode);
                 Assert.IsTrue  (startResponse.TransactionId.HasValue);
 
-                Assert.AreEqual(1,                              requestStartTransactionRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   requestStartTransactionRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     requestStartTransactionRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   requestStartTransactionRequests.First().ChargingStationId);
 
                 await Task.Delay(500);
 
@@ -2306,18 +2313,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 if (startResponse.TransactionId.HasValue)
                 {
 
-                    var stopResponse  = await testCSMS01.StopCharging(
-                                                  ChargeBoxId:     chargingStation1.ChargeBoxId,
-                                                  TransactionId:   startResponse.TransactionId.Value,
-                                                  CustomData:      null
-                                              );
+                    var stopResponse = await testCSMS01.StopCharging(
+                                           ChargingStationId:   chargingStation1.Id,
+                                           TransactionId:       startResponse.TransactionId.Value,
+                                           CustomData:          null
+                                       );
 
 
-                    Assert.AreEqual(ResultCodes.OK,                 stopResponse.Result.ResultCode);
-                    //Assert.AreEqual(UnlockStatus.Unlocked,          response1.Status);
+                    Assert.AreEqual(ResultCodes.OK,          stopResponse.Result.ResultCode);
+                    //Assert.AreEqual(UnlockStatus.Unlocked,   response1.Status);
 
-                    Assert.AreEqual(1,                              requestStopTransactionRequests.Count);
-                    Assert.AreEqual(chargingStation1.ChargeBoxId,   requestStopTransactionRequests.First().ChargeBoxId);
+                    Assert.AreEqual(1,                       requestStopTransactionRequests.Count);
+                    Assert.AreEqual(chargingStation1.Id,     requestStopTransactionRequests.First().ChargingStationId);
 
                 }
 
@@ -2356,18 +2363,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.GetTransactionStatus(
-                                     ChargeBoxId:     chargingStation1.ChargeBoxId,
-                                     TransactionId:   null,
-                                     CustomData:      null
-                                 );
+                var response = await testCSMS01.GetTransactionStatus(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   TransactionId:       null,
+                                   CustomData:          null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                //Assert.AreEqual(UnlockStatus.Unlocked,          response1.Status);
+                Assert.AreEqual(ResultCodes.OK,          response.Result.ResultCode);
+                //Assert.AreEqual(UnlockStatus.Unlocked,   response1.Status);
 
-                Assert.AreEqual(1,                              unlockConnectorRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   unlockConnectorRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                       unlockConnectorRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,     unlockConnectorRequests.First().ChargingStationId);
 
             }
 
@@ -2404,10 +2411,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.SetChargingProfile(
-                                     ChargeBoxId:       chargingStation1.ChargeBoxId,
-                                     EVSEId:            chargingStation1.EVSEs.First().Id,
-                                     ChargingProfile:   new ChargingProfile(
+                var response = await testCSMS01.SetChargingProfile(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   EVSEId:              chargingStation1.EVSEs.First().Id,
+                                   ChargingProfile:     new ChargingProfile(
                                                             ChargingProfileId:        ChargingProfile_Id.NewRandom,
                                                             StackLevel:               1,
                                                             ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
@@ -2467,15 +2474,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                                                                       },
                                                             CustomData:               null
                                                         ),
-                                     CustomData:        null
-                                 );
+                                   CustomData:          null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                   response1.Result.ResultCode);
-                Assert.AreEqual(ChargingProfileStatus.Accepted,   response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                   response.Result.ResultCode);
+                Assert.AreEqual(ChargingProfileStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                setChargingProfileRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,     setChargingProfileRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,              setChargingProfileRequests.First().ChargingStationId);
 
             }
 
@@ -2512,30 +2519,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.GetChargingProfiles(
-                                     ChargeBoxId:                    chargingStation1.ChargeBoxId,
-                                     GetChargingProfilesRequestId:   1,
-                                     ChargingProfile:                new ChargingProfileCriterion(
-                                                                         ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
-                                                                         StackLevel:               1,
-                                                                         ChargingProfileIds:       new[] {
-                                                                                                       ChargingProfile_Id.Parse(123)
-                                                                                                   },
-                                                                         ChargingLimitSources:     new[] {
-                                                                                                       ChargingLimitSources.SO
-                                                                                                   },
-                                                                         CustomData:               null
-                                                                     ),
-                                     EVSEId:                         EVSE_Id.Parse(1),
-                                     CustomData:                     null
-                                 );
+                var response = await testCSMS01.GetChargingProfiles(
+                                   ChargingStationId:              chargingStation1.Id,
+                                   GetChargingProfilesRequestId:   1,
+                                   ChargingProfile:                new ChargingProfileCriterion(
+                                                                       ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
+                                                                       StackLevel:               1,
+                                                                       ChargingProfileIds:       new[] {
+                                                                                                     ChargingProfile_Id.Parse(123)
+                                                                                                 },
+                                                                       ChargingLimitSources:     new[] {
+                                                                                                     ChargingLimitSources.SO
+                                                                                                 },
+                                                                       CustomData:               null
+                                                                   ),
+                                   EVSEId:                         EVSE_Id.Parse(1),
+                                   CustomData:                     null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                      response1.Result.ResultCode);
-                Assert.AreEqual(GetChargingProfileStatus.Accepted,   response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                      response.Result.ResultCode);
+                Assert.AreEqual(GetChargingProfileStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                   getChargingProfilesRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,        getChargingProfilesRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,                 getChargingProfilesRequests.First().ChargingStationId);
 
             }
 
@@ -2572,24 +2579,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.ClearChargingProfile(
-                                     ChargeBoxId:               chargingStation1.ChargeBoxId,
-                                     ChargingProfileId:         ChargingProfile_Id.Parse(123),
-                                     ChargingProfileCriteria:   new ClearChargingProfile(
-                                                                    EVSEId:                   EVSE_Id.Parse(1),
-                                                                    ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
-                                                                    StackLevel:               1,
-                                                                    CustomData:               null
-                                                                ),
-                                     CustomData:                null
-                                 );
+                var response = await testCSMS01.ClearChargingProfile(
+                                   ChargingStationId:         chargingStation1.Id,
+                                   ChargingProfileId:         ChargingProfile_Id.Parse(123),
+                                   ChargingProfileCriteria:   new ClearChargingProfile(
+                                                                  EVSEId:                   EVSE_Id.Parse(1),
+                                                                  ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
+                                                                  StackLevel:               1,
+                                                                  CustomData:               null
+                                                              ),
+                                   CustomData:                null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                        response1.Result.ResultCode);
-                Assert.AreEqual(ClearChargingProfileStatus.Accepted,   response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                        response.Result.ResultCode);
+                Assert.AreEqual(ClearChargingProfileStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                     getChargingProfilesRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,          getChargingProfilesRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,                   getChargingProfilesRequests.First().ChargingStationId);
 
             }
 
@@ -2626,20 +2633,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.GetCompositeSchedule(
-                                     ChargeBoxId:        chargingStation1.ChargeBoxId,
-                                     Duration:           TimeSpan.FromSeconds(1),
-                                     EVSEId:             EVSE_Id.Parse(1),
-                                     ChargingRateUnit:   ChargingRateUnits.Watts,
-                                     CustomData:         null
-                                 );
+                var response = await testCSMS01.GetCompositeSchedule(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   Duration:            TimeSpan.FromSeconds(1),
+                                   EVSEId:              EVSE_Id.Parse(1),
+                                   ChargingRateUnit:    ChargingRateUnits.Watts,
+                                   CustomData:          null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(GenericStatus.Accepted,         response1.Status);
+                Assert.AreEqual(ResultCodes.OK,           response.Result.ResultCode);
+                Assert.AreEqual(GenericStatus.Accepted,   response.Status);
 
-                Assert.AreEqual(1,                              getCompositeScheduleRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getCompositeScheduleRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                        getCompositeScheduleRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,      getCompositeScheduleRequests.First().ChargingStationId);
 
             }
 
@@ -2676,38 +2683,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.UpdateDynamicSchedule(
+                var response = await testCSMS01.UpdateDynamicSchedule(
 
-                                     ChargeBoxId:           chargingStation1.ChargeBoxId,
+                                   ChargingStationId:     chargingStation1.Id,
 
-                                     ChargingProfileId:     ChargingProfile_Id.Parse(1),
+                                   ChargingProfileId:     ChargingProfile_Id.Parse(1),
 
-                                     Limit:                 ChargingRateValue. Parse( 1, ChargingRateUnits.Watts),
-                                     Limit_L2:              ChargingRateValue. Parse( 2, ChargingRateUnits.Watts),
-                                     Limit_L3:              ChargingRateValue. Parse( 3, ChargingRateUnits.Watts),
+                                   Limit:                 ChargingRateValue. Parse( 1, ChargingRateUnits.Watts),
+                                   Limit_L2:              ChargingRateValue. Parse( 2, ChargingRateUnits.Watts),
+                                   Limit_L3:              ChargingRateValue. Parse( 3, ChargingRateUnits.Watts),
 
-                                     DischargeLimit:        ChargingRateValue. Parse(-4, ChargingRateUnits.Watts),
-                                     DischargeLimit_L2:     ChargingRateValue. Parse(-5, ChargingRateUnits.Watts),
-                                     DischargeLimit_L3:     ChargingRateValue. Parse(-6, ChargingRateUnits.Watts),
+                                   DischargeLimit:        ChargingRateValue. Parse(-4, ChargingRateUnits.Watts),
+                                   DischargeLimit_L2:     ChargingRateValue. Parse(-5, ChargingRateUnits.Watts),
+                                   DischargeLimit_L3:     ChargingRateValue. Parse(-6, ChargingRateUnits.Watts),
 
-                                     Setpoint:              ChargingRateValue. Parse( 7, ChargingRateUnits.Watts),
-                                     Setpoint_L2:           ChargingRateValue. Parse( 8, ChargingRateUnits.Watts),
-                                     Setpoint_L3:           ChargingRateValue. Parse( 9, ChargingRateUnits.Watts),
+                                   Setpoint:              ChargingRateValue. Parse( 7, ChargingRateUnits.Watts),
+                                   Setpoint_L2:           ChargingRateValue. Parse( 8, ChargingRateUnits.Watts),
+                                   Setpoint_L3:           ChargingRateValue. Parse( 9, ChargingRateUnits.Watts),
 
-                                     SetpointReactive:      ChargingRateValue. Parse(10, ChargingRateUnits.Watts),
-                                     SetpointReactive_L2:   ChargingRateValue. Parse(11, ChargingRateUnits.Watts),
-                                     SetpointReactive_L3:   ChargingRateValue. Parse(12, ChargingRateUnits.Watts),
+                                   SetpointReactive:      ChargingRateValue. Parse(10, ChargingRateUnits.Watts),
+                                   SetpointReactive_L2:   ChargingRateValue. Parse(11, ChargingRateUnits.Watts),
+                                   SetpointReactive_L3:   ChargingRateValue. Parse(12, ChargingRateUnits.Watts),
 
-                                     CustomData:            null
+                                   CustomData:            null
 
-                                 );
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                   response1.Result.ResultCode);
-                Assert.AreEqual(ChargingProfileStatus.Accepted,   response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                   response.Result.ResultCode);
+                Assert.AreEqual(ChargingProfileStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                updateDynamicScheduleRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,     updateDynamicScheduleRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,              updateDynamicScheduleRequests.First().ChargingStationId);
 
             }
 
@@ -2744,21 +2751,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.NotifyAllowedEnergyTransfer(
-                                     ChargeBoxId:                  chargingStation1.ChargeBoxId,
-                                     AllowedEnergyTransferModes:   new[] {
-                                                                       EnergyTransferModes.AC_SinglePhase,
-                                                                       EnergyTransferModes.AC_ThreePhases
-                                                                   },
-                                     CustomData:                   null
-                                 );
+                var response = await testCSMS01.NotifyAllowedEnergyTransfer(
+                                   ChargingStationId:            chargingStation1.Id,
+                                   AllowedEnergyTransferModes:   new[] {
+                                                                     EnergyTransferModes.AC_SinglePhase,
+                                                                     EnergyTransferModes.AC_ThreePhases
+                                                                 },
+                                   CustomData:                   null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                               response1.Result.ResultCode);
-                Assert.AreEqual(NotifyAllowedEnergyTransferStatus.Accepted,   response1.Status);
+                Assert.AreEqual(ResultCodes.OK,                               response.Result.ResultCode);
+                Assert.AreEqual(NotifyAllowedEnergyTransferStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                            unlockConnectorRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,                 unlockConnectorRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.Id,                          unlockConnectorRequests.First().ChargingStationId);
 
             }
 
@@ -2795,19 +2802,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.UsePriorityCharging(
-                                     ChargeBoxId:     chargingStation1.ChargeBoxId,
-                                     TransactionId:   Transaction_Id.Parse("1234"),
-                                     Activate:        true,
-                                     CustomData:      null
-                                 );
+                var response = await testCSMS01.UsePriorityCharging(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   TransactionId:       Transaction_Id.Parse("1234"),
+                                   Activate:            true,
+                                   CustomData:          null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(GenericStatus.Accepted,         response1.Status);
+                Assert.AreEqual(ResultCodes.OK,           response.Result.ResultCode);
+                Assert.AreEqual(GenericStatus.Accepted,   response.Status);
 
-                Assert.AreEqual(1,                              usePriorityChargingRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   usePriorityChargingRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                        usePriorityChargingRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,      usePriorityChargingRequests.First().ChargingStationId);
 
             }
 
@@ -2844,19 +2851,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.UnlockConnector(
-                                     ChargeBoxId:   chargingStation1.ChargeBoxId,
-                                     EVSEId:        chargingStation1.EVSEs.First().Id,
-                                     ConnectorId:   chargingStation1.EVSEs.First().Connectors.First().Id,
-                                     CustomData:    null
-                                 );
+                var response = await testCSMS01.UnlockConnector(
+                                   ChargingStationId:   chargingStation1.Id,
+                                   EVSEId:              chargingStation1.EVSEs.First().Id,
+                                   ConnectorId:         chargingStation1.EVSEs.First().Connectors.First().Id,
+                                   CustomData:          null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(UnlockStatus.Unlocked,          response1.Status);
+                Assert.AreEqual(ResultCodes.OK,          response.Result.ResultCode);
+                Assert.AreEqual(UnlockStatus.Unlocked,   response.Status);
 
-                Assert.AreEqual(1,                              unlockConnectorRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   unlockConnectorRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                       unlockConnectorRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,     unlockConnectorRequests.First().ChargingStationId);
 
             }
 
@@ -2894,19 +2901,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var response1  = await testCSMS01.SendAFRRSignal(
-                                     ChargeBoxId:           chargingStation1.ChargeBoxId,
-                                     ActivationTimestamp:   Timestamp.Now,
-                                     Signal:                AFRR_Signal.Parse(-1),
-                                     CustomData:            null
-                                 );
+                var response = await testCSMS01.SendAFRRSignal(
+                                   ChargingStationId:     chargingStation1.Id,
+                                   ActivationTimestamp:   Timestamp.Now,
+                                   Signal:                AFRR_Signal.Parse(-1),
+                                   CustomData:            null
+                               );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(GenericStatus.Accepted,         response1.Status);
+                Assert.AreEqual(ResultCodes.OK,           response.Result.ResultCode);
+                Assert.AreEqual(GenericStatus.Accepted,   response.Status);
 
-                Assert.AreEqual(1,                              afrrSignalRequestRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   afrrSignalRequestRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                        afrrSignalRequestRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,      afrrSignalRequestRequests.First().ChargingStationId);
 
             }
 
@@ -2944,37 +2951,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var message    = RandomExtensions.RandomString(10);
+                var message   = RandomExtensions.RandomString(10);
 
-                var response1  = await testCSMS01.SetDisplayMessage(
-                                     ChargeBoxId:   chargingStation1.ChargeBoxId,
-                                     Message:       new MessageInfo(
-                                                        Id:               DisplayMessage_Id.NewRandom,
-                                                        Priority:         MessagePriorities.AlwaysFront,
-                                                        Message:          new MessageContent(
-                                                                              Content:      message,
-                                                                              Format:       MessageFormats.UTF8,
-                                                                              Language:     Language_Id.Parse("de"),
-                                                                              CustomData:   null
-                                                                          ),
-                                                        State:            MessageStates.Charging,
-                                                        StartTimestamp:   Timestamp.Now,
-                                                        EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
-                                                        TransactionId:    null,
-                                                        CustomData:       null
-                                                    ),
-                                     CustomData:    null
-                                 );
+                var response  = await testCSMS01.SetDisplayMessage(
+                                    ChargingStationId:   chargingStation1.Id,
+                                    Message:             new MessageInfo(
+                                                             Id:               DisplayMessage_Id.NewRandom,
+                                                             Priority:         MessagePriorities.AlwaysFront,
+                                                             Message:          new MessageContent(
+                                                                                   Content:      message,
+                                                                                   Format:       MessageFormats.UTF8,
+                                                                                   Language:     Language_Id.Parse("de"),
+                                                                                   CustomData:   null
+                                                                               ),
+                                                             State:            MessageStates.Charging,
+                                                             StartTimestamp:   Timestamp.Now,
+                                                             EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
+                                                             TransactionId:    null,
+                                                             CustomData:       null
+                                                         ),
+                                    CustomData:          null
+                                );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                //Assert.AreEqual(data.Reverse(),                 response1.Data?.ToString());
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
+                //Assert.AreEqual(data.Reverse(),        response1.Data?.ToString());
 
-                Assert.AreEqual(1,                              setDisplayMessageRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   setDisplayMessageRequests.First().ChargeBoxId);
-                //Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                //Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                //Assert.AreEqual(data,                           dataTransferRequests.First().Data?.ToString());
+                Assert.AreEqual(1,                     setDisplayMessageRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   setDisplayMessageRequests.First().ChargingStationId);
+                //Assert.AreEqual(vendorId,               dataTransferRequests.First().VendorId);
+                //Assert.AreEqual(messageId,              dataTransferRequests.First().MessageId);
+                //Assert.AreEqual(data,                   dataTransferRequests.First().Data?.ToString());
 
             }
 
@@ -3043,7 +3050,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     var setMessage   = RandomExtensions.RandomString(10);
 
                     var setResponse  = await testCSMS01.SetDisplayMessage(
-                                           ChargeBoxId:   chargingStation1.ChargeBoxId,
+                                           ChargingStationId:   chargingStation1.Id,
                                            Message:       new MessageInfo(
                                                               Id:               messageIds[i-1],
                                                               Priority:         i > 7 ? MessagePriorities.AlwaysFront : MessagePriorities.NormalCycle,
@@ -3096,7 +3103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
 
                 var getResponse1  = await testCSMS01.GetDisplayMessages(
-                                              ChargeBoxId:                   chargingStation1.ChargeBoxId,
+                                              ChargingStationId:             chargingStation1.Id,
                                               GetDisplayMessagesRequestId:   1,
                                               Ids:                           null,
                                               Priority:                      null,
@@ -3122,7 +3129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
 
                 var getResponse2  = await testCSMS01.GetDisplayMessages(
-                                              ChargeBoxId:                   chargingStation1.ChargeBoxId,
+                                              ChargingStationId:             chargingStation1.Id,
                                               GetDisplayMessagesRequestId:   2,
                                               Ids:                           new[] {
                                                                                  messageIds[0],
@@ -3141,7 +3148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
 
                 var getResponse3  = await testCSMS01.GetDisplayMessages(
-                                              ChargeBoxId:                   chargingStation1.ChargeBoxId,
+                                              ChargingStationId:             chargingStation1.Id,
                                               GetDisplayMessagesRequestId:   3,
                                               Ids:                           null,
                                               Priority:                      null,
@@ -3156,7 +3163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
 
                 var getResponse4  = await testCSMS01.GetDisplayMessages(
-                                              ChargeBoxId:                   chargingStation1.ChargeBoxId,
+                                              ChargingStationId:             chargingStation1.Id,
                                               GetDisplayMessagesRequestId:   4,
                                               Ids:                           null,
                                               Priority:                      MessagePriorities.AlwaysFront,
@@ -3230,23 +3237,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var message1      = RandomExtensions.RandomString(10);
 
                 var setResponse1  = await testCSMS01.SetDisplayMessage(
-                                        ChargeBoxId:   chargingStation1.ChargeBoxId,
-                                        Message:       new MessageInfo(
-                                                           Id:               messageId1,
-                                                           Priority:         MessagePriorities.AlwaysFront,
-                                                           Message:          new MessageContent(
-                                                                                 Content:      message1,
-                                                                                 Format:       MessageFormats.UTF8,
-                                                                                 Language:     Language_Id.Parse("de"),
-                                                                                 CustomData:   null
-                                                                             ),
-                                                           State:            MessageStates.Charging,
-                                                           StartTimestamp:   Timestamp.Now,
-                                                           EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
-                                                           TransactionId:    null,
-                                                           CustomData:       null
-                                                       ),
-                                        CustomData:    null
+                                        ChargingStationId:   chargingStation1.Id,
+                                        Message:             new MessageInfo(
+                                                                 Id:               messageId1,
+                                                                 Priority:         MessagePriorities.AlwaysFront,
+                                                                 Message:          new MessageContent(
+                                                                                       Content:      message1,
+                                                                                       Format:       MessageFormats.UTF8,
+                                                                                       Language:     Language_Id.Parse("de"),
+                                                                                       CustomData:   null
+                                                                                   ),
+                                                                 State:            MessageStates.Charging,
+                                                                 StartTimestamp:   Timestamp.Now,
+                                                                 EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
+                                                                 TransactionId:    null,
+                                                                 CustomData:       null
+                                                             ),
+                                        CustomData:          null
                                     );
 
                 Assert.AreEqual(ResultCodes.OK,   setResponse1.Result.ResultCode);
@@ -3257,23 +3264,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 var message2      = RandomExtensions.RandomString(10);
 
                 var setResponse2  = await testCSMS01.SetDisplayMessage(
-                                        ChargeBoxId:   chargingStation1.ChargeBoxId,
-                                        Message:       new MessageInfo(
-                                                           Id:               messageId2,
-                                                           Priority:         MessagePriorities.AlwaysFront,
-                                                           Message:          new MessageContent(
-                                                                                 Content:      message2,
-                                                                                 Format:       MessageFormats.UTF8,
-                                                                                 Language:     Language_Id.Parse("de"),
-                                                                                 CustomData:   null
-                                                                             ),
-                                                           State:            MessageStates.Charging,
-                                                           StartTimestamp:   Timestamp.Now,
-                                                           EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
-                                                           TransactionId:    null,
-                                                           CustomData:       null
-                                                       ),
-                                        CustomData:    null
+                                        ChargingStationId:   chargingStation1.Id,
+                                        Message:             new MessageInfo(
+                                                                 Id:               messageId2,
+                                                                 Priority:         MessagePriorities.AlwaysFront,
+                                                                 Message:          new MessageContent(
+                                                                                       Content:      message2,
+                                                                                       Format:       MessageFormats.UTF8,
+                                                                                       Language:     Language_Id.Parse("de"),
+                                                                                       CustomData:   null
+                                                                                   ),
+                                                                 State:            MessageStates.Charging,
+                                                                 StartTimestamp:   Timestamp.Now,
+                                                                 EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
+                                                                 TransactionId:    null,
+                                                                 CustomData:       null
+                                                             ),
+                                        CustomData:          null
                                     );
 
                 Assert.AreEqual(ResultCodes.OK,   setResponse2.Result.ResultCode);
@@ -3298,13 +3305,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
 
                 var getResponse1  = await testCSMS01.GetDisplayMessages(
-                                              ChargeBoxId:                   chargingStation1.ChargeBoxId,
-                                              GetDisplayMessagesRequestId:   1,
-                                              Ids:                           null,
-                                              Priority:                      null,
-                                              State:                         null,
-                                              CustomData:                    null
-                                          );
+                                        ChargingStationId:             chargingStation1.Id,
+                                        GetDisplayMessagesRequestId:   1,
+                                        Ids:                           null,
+                                        Priority:                      null,
+                                        State:                         null,
+                                        CustomData:                    null
+                                    );
 
                 Assert.AreEqual(ResultCodes.OK,   getResponse1.Result.ResultCode);
                 Assert.AreEqual(1,                getDisplayMessagesRequests.Count);
@@ -3322,9 +3329,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
                 var clearResponse  = await testCSMS01.ClearDisplayMessage(
-                                         ChargeBoxId:        chargingStation1.ChargeBoxId,
-                                         DisplayMessageId:   messageId1,
-                                         CustomData:         null
+                                         ChargingStationId:   chargingStation1.Id,
+                                         DisplayMessageId:    messageId1,
+                                         CustomData:          null
                                      );
 
                 Assert.AreEqual(ResultCodes.OK,   clearResponse.Result.ResultCode);
@@ -3336,13 +3343,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
                 // Get Messages AFTER
                 var getResponse2  = await testCSMS01.GetDisplayMessages(
-                                              ChargeBoxId:                   chargingStation1.ChargeBoxId,
-                                              GetDisplayMessagesRequestId:   2,
-                                              Ids:                           null,
-                                              Priority:                      null,
-                                              State:                         null,
-                                              CustomData:                    null
-                                          );
+                                        ChargingStationId:             chargingStation1.Id,
+                                        GetDisplayMessagesRequestId:   2,
+                                        Ids:                           null,
+                                        Priority:                      null,
+                                        State:                         null,
+                                        CustomData:                    null
+                                    );
 
                 Assert.AreEqual(ResultCodes.OK,   getResponse2.Result.ResultCode);
                 Assert.AreEqual(2,                getDisplayMessagesRequests.Count);
@@ -3401,24 +3408,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var message    = RandomExtensions.RandomString(10);
+                var message   = RandomExtensions.RandomString(10);
 
-                var response1  = await testCSMS01.SendCostUpdated(
-                                     ChargeBoxId:     chargingStation1.ChargeBoxId,
-                                     TotalCost:       1.02M,
-                                     TransactionId:   Transaction_Id.NewRandom,
-                                     CustomData:      null
-                                 );
+                var response  = await testCSMS01.SendCostUpdated(
+                                    ChargingStationId:   chargingStation1.Id,
+                                    TotalCost:           1.02M,
+                                    TransactionId:       Transaction_Id.NewRandom,
+                                    CustomData:          null
+                                );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                //Assert.AreEqual(data.Reverse(),                 response1.Data?.ToString());
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
+                //Assert.AreEqual(data.Reverse(),        response.Data?.ToString());
 
-                Assert.AreEqual(1,                              costUpdatedRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   costUpdatedRequests.First().ChargeBoxId);
-                //Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                //Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                //Assert.AreEqual(data,                           dataTransferRequests.First().Data?.ToString());
+                Assert.AreEqual(1,                     costUpdatedRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   costUpdatedRequests.First().ChargingStationId);
+                //Assert.AreEqual(vendorId,              dataTransferRequests.First().VendorId);
+                //Assert.AreEqual(messageId,             dataTransferRequests.First().MessageId);
+                //Assert.AreEqual(data,                  dataTransferRequests.First().Data?.ToString());
 
             }
 
@@ -3462,46 +3469,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
 
-                var response1  = await testCSMS01.RequestCustomerInformation(
-                                           ChargeBoxId:                    chargingStation1.ChargeBoxId,
-                                           CustomerInformationRequestId:   1,
-                                           Report:                         true,
-                                           Clear:                          false,
-                                           CustomerIdentifier:             CustomerIdentifier.Parse("123"),
-                                           IdToken:                        new IdToken(
-                                                                               Value:                 "aabbccdd",
-                                                                               Type:                  IdTokenTypes.ISO14443,
-                                                                               AdditionalInfos:       new[] {
-                                                                                                          new AdditionalInfo(
-                                                                                                              AdditionalIdToken:   "1234",
-                                                                                                              Type:                "PIN",
-                                                                                                              CustomData:          null
-                                                                                                          )
-                                                                                                      },
-                                                                               CustomData:            null
-                                                                           ),
-                                           CustomerCertificate:            new CertificateHashData(
-                                                                               HashAlgorithm:         HashAlgorithms.SHA256,
-                                                                               IssuerNameHash:        "f2311e9a995dfbd006bfc909e480987dc2d440ae6eaf1746efdadc638a295f65",
-                                                                               IssuerPublicKeyHash:   "99084534bbe5f6ceaffa2e65ff1ad5301c4c359b599d6edd486a475071f715fb",
-                                                                               SerialNumber:          "23",
-                                                                               CustomData:            null
-                                                                           ),
-                                           CustomData:                     null
-                                       );
+                var response = await testCSMS01.RequestCustomerInformation(
+                                         ChargingStationId:              chargingStation1.Id,
+                                         CustomerInformationRequestId:   1,
+                                         Report:                         true,
+                                         Clear:                          false,
+                                         CustomerIdentifier:             CustomerIdentifier.Parse("123"),
+                                         IdToken:                        new IdToken(
+                                                                             Value:                 "aabbccdd",
+                                                                             Type:                  IdTokenTypes.ISO14443,
+                                                                             AdditionalInfos:       new[] {
+                                                                                                        new AdditionalInfo(
+                                                                                                            AdditionalIdToken:   "1234",
+                                                                                                            Type:                "PIN",
+                                                                                                            CustomData:          null
+                                                                                                        )
+                                                                                                    },
+                                                                             CustomData:            null
+                                                                         ),
+                                         CustomerCertificate:            new CertificateHashData(
+                                                                             HashAlgorithm:         HashAlgorithms.SHA256,
+                                                                             IssuerNameHash:        "f2311e9a995dfbd006bfc909e480987dc2d440ae6eaf1746efdadc638a295f65",
+                                                                             IssuerPublicKeyHash:   "99084534bbe5f6ceaffa2e65ff1ad5301c4c359b599d6edd486a475071f715fb",
+                                                                             SerialNumber:          "23",
+                                                                             CustomData:            null
+                                                                         ),
+                                         CustomData:                     null
+                                     );
 
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(ResultCodes.OK,        response.Result.ResultCode);
 
-                Assert.AreEqual(1,                              customerInformationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   customerInformationRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     customerInformationRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   customerInformationRequests.First().ChargingStationId);
 
 
                 await Task.Delay(500);
 
 
-                Assert.AreEqual(1,                              notifyCustomerInformationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   notifyCustomerInformationRequests.First().ChargeBoxId);
+                Assert.AreEqual(1,                     notifyCustomerInformationRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,   notifyCustomerInformationRequests.First().ChargingStationId);
 
             }
 

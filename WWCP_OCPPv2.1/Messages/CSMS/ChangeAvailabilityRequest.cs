@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ChangeAvailabilityRequest(ChargeBox_Id             ChargeBoxId,
+        public ChangeAvailabilityRequest(ChargingStation_Id             ChargeBoxId,
                                          OperationalStatus        OperationalStatus,
                                          EVSE?                    EVSE                = null,
 
@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomChangeAvailabilityRequestSerializer">A delegate to parse custom ChangeAvailability requests.</param>
         public static ChangeAvailabilityRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      ChargeBox_Id                                             ChargeBoxId,
+                                                      ChargingStation_Id                                             ChargeBoxId,
                                                       CustomJObjectParserDelegate<ChangeAvailabilityRequest>?  CustomChangeAvailabilityRequestSerializer   = null)
         {
 
@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                         JSON,
                                        Request_Id                      RequestId,
-                                       ChargeBox_Id                    ChargeBoxId,
+                                       ChargingStation_Id                    ChargeBoxId,
                                        out ChangeAvailabilityRequest?  ChangeAvailabilityRequest,
                                        out String?                     ErrorResponse)
 
@@ -252,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomChangeAvailabilityRequestParser">A delegate to parse custom ChangeAvailability requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       ChargeBox_Id                                             ChargeBoxId,
+                                       ChargingStation_Id                                             ChargeBoxId,
                                        out ChangeAvailabilityRequest?                           ChangeAvailabilityRequest,
                                        out String?                                              ErrorResponse,
                                        CustomJObjectParserDelegate<ChangeAvailabilityRequest>?  CustomChangeAvailabilityRequestParser)
@@ -321,8 +321,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

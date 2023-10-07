@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         {
 
             public DateTime                       Timestamp            { get; }
-            public ChargeBox_Id                   ChargeBoxId          { get; }
+            public ChargingStation_Id                   ChargeBoxId          { get; }
             public OCPP_WebSocket_RequestMessage  WSRequestMessage     { get; }
             public DateTime                       Timeout              { get; }
 
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
             public SendRequestState(DateTime                       Timestamp,
-                                    ChargeBox_Id                   ChargeBoxId,
+                                    ChargingStation_Id                   ChargeBoxId,
                                     OCPP_WebSocket_RequestMessage  WSRequestMessage,
                                     DateTime                       Timeout,
 
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static readonly  TimeSpan                                                                        DefaultRequestTimeout     = TimeSpan.FromSeconds(30);
 
 
-        private readonly        ConcurrentDictionary<ChargeBox_Id, Tuple<WebSocketServerConnection, DateTime>>  connectedChargingBoxes    = new();
+        private readonly        ConcurrentDictionary<ChargingStation_Id, Tuple<WebSocketServerConnection, DateTime>>  connectedChargingBoxes    = new();
 
         private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                              requests                  = new();
 
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The enumeration of all connected charging stations.
         /// </summary>
-        public IEnumerable<ChargeBox_Id> ChargeBoxIds
+        public IEnumerable<ChargingStation_Id> ChargeBoxIds
             => connectedChargingBoxes.Keys;
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Logins and passwords for HTTP Basic Authentication.
         /// </summary>
-        public ConcurrentDictionary<ChargeBox_Id, String?>  ChargingBoxLogins        { get; }
+        public ConcurrentDictionary<ChargingStation_Id, String?>  ChargingBoxLogins        { get; }
             = new();
 
         /// <summary>
@@ -2123,7 +2123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="ChargeBoxId">The unique identification of the charge box.</param>
         /// <param name="Password">The password of the charge box.</param>
-        public void AddOrUpdateHTTPBasicAuth(ChargeBox_Id  ChargeBoxId,
+        public void AddOrUpdateHTTPBasicAuth(ChargingStation_Id  ChargeBoxId,
                                              String        Password)
         {
 
@@ -2141,7 +2141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Remove the given HTTP Basic Authentication for the given charge box.
         /// </summary>
         /// <param name="ChargeBoxId">The unique identification of the charge box.</param>
-        public void RemoveHTTPBasicAuth(ChargeBox_Id ChargeBoxId)
+        public void RemoveHTTPBasicAuth(ChargingStation_Id ChargeBoxId)
         {
             ChargingBoxLogins.TryRemove(ChargeBoxId, out _);
         }
@@ -2229,7 +2229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (Connection.HTTPRequest?.Authorization is HTTPBasicAuthentication basicAuthentication)
                 {
 
-                    if (ChargingBoxLogins.TryGetValue(ChargeBox_Id.Parse(basicAuthentication.Username), out var password) &&
+                    if (ChargingBoxLogins.TryGetValue(ChargingStation_Id.Parse(basicAuthentication.Username), out var password) &&
                         basicAuthentication.Password == password)
                     {
                         DebugX.Log(nameof(CSMSWSServer), " connection from " + Connection.RemoteSocket + " using authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
@@ -2271,7 +2271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             if (!Connection.HasCustomData("chargeBoxId") &&
                 Connection.HTTPRequest is not null &&
-                ChargeBox_Id.TryParse(Connection.HTTPRequest.Path.ToString()[(Connection.HTTPRequest.Path.ToString().LastIndexOf("/") + 1)..], out var chargeBoxId))
+                ChargingStation_Id.TryParse(Connection.HTTPRequest.Path.ToString()[(Connection.HTTPRequest.Path.ToString().LastIndexOf("/") + 1)..], out var chargeBoxId))
             {
 
                 // Add the chargeBoxId to the WebSocket connection
@@ -2335,7 +2335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            String?                           Reason)
         {
 
-            if (Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId", out var chargeBoxId))
+            if (Connection.TryGetCustomDataAs<ChargingStation_Id>("chargeBoxId", out var chargeBoxId))
             {
                 //DebugX.Log(nameof(CSMSWSServer), " Charge box " + chargeBoxId + " disconnected!");
                 connectedChargingBoxes.TryRemove(chargeBoxId, out _);
@@ -2426,7 +2426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     #region Initial checks
 
-                    var chargeBoxId  = Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId");
+                    var chargeBoxId  = Connection.TryGetCustomDataAs<ChargingStation_Id>("chargeBoxId");
                     var requestId    = Request_Id.TryParse(json[1]?.Value<String>() ?? "");
                     var action       = json[2]?.Value<String>()?.Trim();
                     var requestData  = json[3]?.Value<JObject>();
@@ -6924,7 +6924,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public async Task<SendRequestState> SendRequest(EventTracking_Id  EventTrackingId,
                                                         Request_Id        RequestId,
-                                                        ChargeBox_Id      ChargeBoxId,
+                                                        ChargingStation_Id      ChargeBoxId,
                                                         String            OCPPAction,
                                                         JObject           JSONPayload,
                                                         TimeSpan?         RequestTimeout   = null)
@@ -7039,7 +7039,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">A request timeout.</param>
         public async Task<SendJSONResults> SendJSON(EventTracking_Id  EventTrackingId,
                                                     Request_Id        RequestId,
-                                                    ChargeBox_Id      ChargeBoxId,
+                                                    ChargingStation_Id      ChargeBoxId,
                                                     String            Action,
                                                     JObject           JSON,
                                                     DateTime          RequestTimeout)
@@ -7056,7 +7056,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId") == ChargeBoxId).
+                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<ChargingStation_Id>("chargeBoxId") == ChargeBoxId).
                                                                  ToArray();
 
                 if (webSocketConnections.Any())
@@ -7160,7 +7160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomResetRequestSerializer,
@@ -7246,7 +7246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomUpdateFirmwareRequestSerializer,
@@ -7333,7 +7333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomPublishFirmwareRequestSerializer,
@@ -7419,7 +7419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomUnpublishFirmwareRequestSerializer,
@@ -7505,7 +7505,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomGetBaseReportRequestSerializer,
@@ -7591,7 +7591,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomGetReportRequestSerializer,
@@ -7685,7 +7685,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomGetLogRequestSerializer,
@@ -7772,7 +7772,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomSetVariablesRequestSerializer,
@@ -7862,7 +7862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomGetVariablesRequestSerializer,
@@ -7952,7 +7952,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomSetMonitoringBaseRequestSerializer,
@@ -8038,7 +8038,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomGetMonitoringReportRequestSerializer,
@@ -8128,7 +8128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomSetMonitoringLevelRequestSerializer,
@@ -8214,7 +8214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomSetVariableMonitoringRequestSerializer,
@@ -8304,7 +8304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomClearVariableMonitoringRequestSerializer,
@@ -8390,7 +8390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomSetNetworkProfileRequestSerializer,
@@ -8479,7 +8479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomChangeAvailabilityRequestSerializer,
@@ -8566,7 +8566,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomTriggerMessageRequestSerializer,
@@ -8653,7 +8653,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomDataTransferRequestSerializer,
@@ -8744,7 +8744,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomCertificateSignedRequestSerializer,
@@ -8834,7 +8834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomInstallCertificateRequestSerializer,
@@ -8924,7 +8924,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomGetInstalledCertificateIdsRequestSerializer,
@@ -9014,7 +9014,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomDeleteCertificateRequestSerializer,
@@ -9105,7 +9105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomNotifyCRLRequestSerializer,
@@ -9196,7 +9196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomGetLocalListVersionRequestSerializer,
@@ -9282,7 +9282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomSendLocalListRequestSerializer,
@@ -9373,7 +9373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomClearCacheRequestSerializer,
@@ -9460,7 +9460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomReserveNowRequestSerializer,
@@ -9548,7 +9548,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomCancelReservationRequestSerializer,
@@ -9634,7 +9634,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
 
@@ -9747,7 +9747,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomRequestStopTransactionRequestSerializer,
@@ -9833,7 +9833,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomGetTransactionStatusRequestSerializer,
@@ -9919,7 +9919,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
 
@@ -10030,7 +10030,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomGetChargingProfilesRequestSerializer,
@@ -10117,7 +10117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomClearChargingProfileRequestSerializer,
@@ -10205,7 +10205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomGetCompositeScheduleRequestSerializer,
@@ -10292,7 +10292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomUpdateDynamicScheduleRequestSerializer,
@@ -10379,7 +10379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomNotifyAllowedEnergyTransferRequestSerializer,
@@ -10466,7 +10466,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomUsePriorityChargingRequestSerializer,
@@ -10552,7 +10552,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomUnlockConnectorRequestSerializer,
@@ -10639,7 +10639,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomAFRRSignalRequestSerializer,
@@ -10726,7 +10726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomSetDisplayMessageRequestSerializer,
@@ -10816,7 +10816,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomGetDisplayMessagesRequestSerializer,
@@ -10902,7 +10902,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomClearDisplayMessageRequestSerializer,
@@ -10988,7 +10988,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomCostUpdatedRequestSerializer,
@@ -11074,7 +11074,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var sendRequestState = await SendRequest(Request.EventTrackingId,
                                                      Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.ChargingStationId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomCustomerInformationRequestSerializer,

@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The unique identifications of all connected charge boxes.
         /// </summary>
-        IEnumerable<ChargeBox_Id>  ChargeBoxIds    { get; }
+        IEnumerable<ChargingStation_Id>  ChargeBoxIds    { get; }
 
         #endregion
 

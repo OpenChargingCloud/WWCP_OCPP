@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// The result of an update charge box request.
     /// </summary>
-    public class UpdateChargeBoxResult : AEnitityResult<ChargeBox, ChargeBox_Id>
+    public class UpdateChargeBoxResult : AEnitityResult<ChargeBox, ChargingStation_Id>
     {
 
         #region Properties
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         { }
 
 
-        public UpdateChargeBoxResult(ChargeBox_Id           ChargeBoxId,
+        public UpdateChargeBoxResult(ChargingStation_Id           ChargeBoxId,
                                      CommandResult          Result,
                                      EventTracking_Id?      EventTrackingId   = null,
                                      IId?                   SenderId          = null,
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public static UpdateChargeBoxResult
 
-            ArgumentError(ChargeBox_Id           ChargeBoxId,
+            ArgumentError(ChargingStation_Id           ChargeBoxId,
                           I18NString             Description,
                           EventTracking_Id?      EventTrackingId   = null,
                           IId?                   SenderId          = null,

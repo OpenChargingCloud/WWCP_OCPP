@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                     new JProperty("timestamp",         logTimestamp.           ToIso8601()),
                                                     new JProperty("connection",        connection.             ToJSON()),
                                                     new JProperty("request",           request.                ToJSON()),
-                                                    new JProperty("chargeBoxId",       request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",       request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",   request.EventTrackingId.ToString())
                                                 ));
 
@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                     new JProperty("timestamp",         logTimestamp.           ToIso8601()),
                                                     new JProperty("eventTrackingId",   request.EventTrackingId.ToString()),
                                                     new JProperty("connection",        connection.             ToJSON()),
-                                                    new JProperty("chargeBoxId",       request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",       request.ChargingStationId.    ToString()),
                                                     new JProperty("request",           request.                ToJSON()),
                                                     new JProperty("response",          response.               ToJSON()),
                                                     new JProperty("runtime",           runtime.TotalMilliseconds)
@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnHeartbeatRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -216,7 +216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnHeartbeatResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnAuthorizeRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnAuthorizeResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -268,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnStatusNotificationRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnStatusNotificationResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnMeterValuesRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnMeterValuesResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -335,7 +335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnIncomingDataTransferRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnIncomingDataTransferResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -368,7 +368,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnFirmwareStatusNotificationRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -383,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnFirmwareStatusNotificationResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -405,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnResetRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -420,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnResetResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -438,7 +438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnChangeAvailabilityRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnChangeAvailabilityResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -471,7 +471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnDataTransferRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -486,7 +486,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnDataTransferResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -504,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnTriggerMessageRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -519,7 +519,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnTriggerMessageResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -537,7 +537,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnUpdateFirmwareRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -552,7 +552,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnUpdateFirmwareResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -571,7 +571,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnReserveNowRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -586,7 +586,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnReserveNowResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -604,7 +604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnCancelReservationRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -619,7 +619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnCancelReservationResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -637,7 +637,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnSetChargingProfileRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -652,7 +652,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnSetChargingProfileResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -670,7 +670,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnClearChargingProfileRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -685,7 +685,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnClearChargingProfileResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -703,7 +703,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnGetCompositeScheduleRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -718,7 +718,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnGetCompositeScheduleResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -736,7 +736,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnUnlockConnectorRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -751,7 +751,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnUnlockConnectorResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -770,7 +770,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnGetLocalListVersionRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -785,7 +785,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnGetLocalListVersionResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -803,7 +803,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnSendLocalListRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -818,7 +818,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnSendLocalListResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),
@@ -836,7 +836,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnClearCacheRequest",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
@@ -851,7 +851,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 await this.EventLog.SubmitEvent("OnClearCacheResponse",
                                                 new JObject(
                                                     new JProperty("timestamp",        logTimestamp.           ToIso8601()),
-                                                    new JProperty("chargeBoxId",      request.ChargeBoxId.    ToString()),
+                                                    new JProperty("chargeBoxId",      request.ChargingStationId.    ToString()),
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString()),
                                                     new JProperty("request",          request.                ToJSON()),
                                                     new JProperty("response",         response.               ToJSON()),

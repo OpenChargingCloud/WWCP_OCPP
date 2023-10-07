@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public BootNotificationRequest(ChargeBox_Id             ChargeBoxId,
+        public BootNotificationRequest(ChargingStation_Id             ChargeBoxId,
                                        ChargingStation          ChargingStation,
                                        BootReason               Reason,
 
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom boot notification requests.</param>
         public static BootNotificationRequest Parse(JObject                                                JSON,
                                                     Request_Id                                             RequestId,
-                                                    ChargeBox_Id                                           ChargeBoxId,
+                                                    ChargingStation_Id                                           ChargeBoxId,
                                                     CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser   = null)
         {
 
@@ -286,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom boot notification requests.</param>
         public static Boolean TryParse(JObject                                                JSON,
                                        Request_Id                                             RequestId,
-                                       ChargeBox_Id                                           ChargeBoxId,
+                                       ChargingStation_Id                                           ChargeBoxId,
                                        out BootNotificationRequest?                           BootNotificationRequest,
                                        out String?                                            ErrorResponse,
                                        CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser)

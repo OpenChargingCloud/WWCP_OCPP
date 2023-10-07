@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SignCertificateRequest(ChargeBox_Id             ChargeBoxId,
+        public SignCertificateRequest(ChargingStation_Id             ChargeBoxId,
                                       String                   CSR,
                                       CertificateSigningUse?   CertificateType     = null,
 
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom SignCertificate requests.</param>
         public static SignCertificateRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
-                                                   ChargeBox_Id                                          ChargeBoxId,
+                                                   ChargingStation_Id                                          ChargeBoxId,
                                                    CustomJObjectParserDelegate<SignCertificateRequest>?  CustomSignCertificateRequestParser   = null)
         {
 
@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                      JSON,
                                        Request_Id                   RequestId,
-                                       ChargeBox_Id                 ChargeBoxId,
+                                       ChargingStation_Id                 ChargeBoxId,
                                        out SignCertificateRequest?  SignCertificateRequest,
                                        out String?                  ErrorResponse)
 
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom sign certificate requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
-                                       ChargeBox_Id                                          ChargeBoxId,
+                                       ChargingStation_Id                                          ChargeBoxId,
                                        out SignCertificateRequest?                           SignCertificateRequest,
                                        out String?                                           ErrorResponse,
                                        CustomJObjectParserDelegate<SignCertificateRequest>?  CustomSignCertificateRequestParser)
@@ -302,8 +302,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

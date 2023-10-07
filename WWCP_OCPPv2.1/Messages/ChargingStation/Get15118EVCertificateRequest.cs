@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public Get15118EVCertificateRequest(ChargeBox_Id             ChargeBoxId,
+        public Get15118EVCertificateRequest(ChargingStation_Id             ChargeBoxId,
                                             ISO15118SchemaVersion    ISO15118SchemaVersion,
                                             CertificateAction        CertificateAction,
                                             EXIData                  EXIRequest,
@@ -212,7 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGet15118EVCertificateRequestParser">A delegate to parse custom get 15118 EV certificate requests.</param>
         public static Get15118EVCertificateRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         ChargeBox_Id                                                ChargeBoxId,
+                                                         ChargingStation_Id                                                ChargeBoxId,
                                                          CustomJObjectParserDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateRequestParser   = null)
         {
 
@@ -247,7 +247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                            JSON,
                                        Request_Id                         RequestId,
-                                       ChargeBox_Id                       ChargeBoxId,
+                                       ChargingStation_Id                       ChargeBoxId,
                                        out Get15118EVCertificateRequest?  Get15118EVCertificateRequest,
                                        out String?                        ErrorResponse)
 
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGet15118EVCertificateRequestParser">A delegate to parse custom Get15118EVCertificate requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       ChargeBox_Id                                                ChargeBoxId,
+                                       ChargingStation_Id                                                ChargeBoxId,
                                        out Get15118EVCertificateRequest?                           Get15118EVCertificateRequest,
                                        out String?                                                 ErrorResponse,
                                        CustomJObjectParserDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateRequestParser)
@@ -379,8 +379,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptional("chargeBoxId",
                                        "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargeBoxId_PayLoad,
                                        out ErrorResponse))
                 {
 

@@ -15,30 +15,21 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-
-#endregion
-
-namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
+namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// The common interface of all central systems.
+    /// The verification status of a cryptographic signature.
     /// </summary>
-    public interface ICSMS3 : ICSMS
+    public enum VerificationStatus
     {
 
-
-        IEnumerable<ChargeBox>     ChargeBoxes     { get; }
-
-        IEnumerable<ChargingStation_Id>  ChargeBoxIds    { get; }
-
-        Boolean TryGetChargeBox(ChargingStation_Id ChargeBoxId, out ChargeBox? ChargeBox);
+        NoSignaturesFound,
+        UnknownSignatureAlgorithm,
+        BrokenSignature,
+        InvalidSignature,
+        InvalidSignatureChain,
+        Verified
 
     }
 

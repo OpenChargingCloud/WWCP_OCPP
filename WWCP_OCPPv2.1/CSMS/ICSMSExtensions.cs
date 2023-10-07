@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public static class ICSMSExtensions
     {
 
-        #region Reset                      (this CSMS, ChargeBoxId, ResetType, EVSEId = null, ...)
+        #region Reset                      (this CSMS, ChargingStationId, ResetType, EVSEId = null, ...)
 
         /// <summary>
         /// Reset the given charging station.
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ResetResponse>
 
             Reset(this ICSMS                                      CSMS,
-                  ChargeBox_Id                                    ChargeBoxId,
+                  ChargingStation_Id                                    ChargingStationId,
                   ResetTypes                                      ResetType,
                   EVSE_Id?                                        EVSEId                         = null,
 
@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                   CancellationToken                               CancellationToken              = default)
 
                 => CSMS.Reset(new ResetRequest(
-                                  ChargeBoxId,
+                                  ChargingStationId,
                                   ResetType,
                                   EVSEId,
 
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UpdateFirmware             (this CSMS, ChargeBoxId, Firmware, UpdateFirmwareRequestId, ...)
+        #region UpdateFirmware             (this CSMS, ChargingStationId, Firmware, UpdateFirmwareRequestId, ...)
 
         /// <summary>
         /// Initiate a firmware update of the given charging station.
@@ -116,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UpdateFirmwareResponse>
 
             UpdateFirmware(this ICSMS               CSMS,
-                           ChargeBox_Id             ChargeBoxId,
+                           ChargingStation_Id             ChargingStationId,
                            Firmware                 Firmware,
                            Int32                    UpdateFirmwareRequestId,
                            Byte?                    Retries             = null,
@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.UpdateFirmware(new UpdateFirmwareRequest(
-                                           ChargeBoxId,
+                                           ChargingStationId,
                                            Firmware,
                                            UpdateFirmwareRequestId,
                                            Retries,
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region PublishFirmware            (this CSMS, ChargeBoxId, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
+        #region PublishFirmware            (this CSMS, ChargingStationId, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Publish a firmware onto a local controller.
@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.PublishFirmwareResponse>
 
             PublishFirmware(this ICSMS               CSMS,
-                            ChargeBox_Id             ChargeBoxId,
+                            ChargingStation_Id             ChargingStationId,
                             Int32                    PublishFirmwareRequestId,
                             URL                      DownloadLocation,
                             String                   MD5Checksum,
@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.PublishFirmware(new PublishFirmwareRequest(
-                                            ChargeBoxId,
+                                            ChargingStationId,
                                             PublishFirmwareRequestId,
                                             DownloadLocation,
                                             MD5Checksum,
@@ -227,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UnpublishFirmware          (this CSMS, ChargeBoxId, MD5Checksum, ...)
+        #region UnpublishFirmware          (this CSMS, ChargingStationId, MD5Checksum, ...)
 
         /// <summary>
         /// Unpublish a firmware from a local controller.
@@ -246,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UnpublishFirmwareResponse>
 
             UnpublishFirmware(this ICSMS               CSMS,
-                              ChargeBox_Id             ChargeBoxId,
+                              ChargingStation_Id             ChargingStationId,
                               String                   MD5Checksum,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.UnpublishFirmware(new UnpublishFirmwareRequest(
-                                              ChargeBoxId,
+                                              ChargingStationId,
                                               MD5Checksum,
 
                                               SignKeys,
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetBaseReport              (this CSMS, ChargeBoxId, GetBaseReportRequestId, ReportBase, ...)
+        #region GetBaseReport              (this CSMS, ChargingStationId, GetBaseReportRequestId, ReportBase, ...)
 
         /// <summary>
         /// Retrieve the base report from the charging station.
@@ -303,7 +303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetBaseReportResponse>
 
             GetBaseReport(this ICSMS               CSMS,
-                          ChargeBox_Id             ChargeBoxId,
+                          ChargingStation_Id             ChargingStationId,
                           Int64                    GetBaseReportRequestId,
                           ReportBases              ReportBase,
 
@@ -322,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.GetBaseReport(new GetBaseReportRequest(
-                                          ChargeBoxId,
+                                          ChargingStationId,
                                           GetBaseReportRequestId,
                                           ReportBase,
 
@@ -342,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetReport                  (this CSMS, ChargeBoxId, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
+        #region GetReport                  (this CSMS, ChargingStationId, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
 
         /// <summary>
         /// Retrieve reports from the charging station.
@@ -363,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetReportResponse>
 
             GetReport(this ICSMS                      CSMS,
-                      ChargeBox_Id                    ChargeBoxId,
+                      ChargingStation_Id                    ChargingStationId,
                       Int32                           GetReportRequestId,
                       IEnumerable<ComponentCriteria>  ComponentCriteria,
                       IEnumerable<ComponentVariable>  ComponentVariables,
@@ -383,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.GetReport(new GetReportRequest(
-                                      ChargeBoxId,
+                                      ChargingStationId,
                                       GetReportRequestId,
                                       ComponentCriteria,
                                       ComponentVariables,
@@ -404,7 +404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetLog                     (this CSMS, ChargeBoxId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
+        #region GetLog                     (this CSMS, ChargingStationId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Retrieve log files from the charging station.
@@ -427,7 +427,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetLogResponse>
 
             GetLog(this ICSMS               CSMS,
-                   ChargeBox_Id             ChargeBoxId,
+                   ChargingStation_Id             ChargingStationId,
                    LogTypes                 LogType,
                    Int32                    LogRequestId,
                    LogParameters            Log,
@@ -449,7 +449,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.GetLog(new GetLogRequest(
-                                   ChargeBoxId,
+                                   ChargingStationId,
                                    LogType,
                                    LogRequestId,
                                    Log,
@@ -473,7 +473,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetVariables               (this CSMS, ChargeBoxId, VariableData, ...)
+        #region SetVariables               (this CSMS, ChargingStationId, VariableData, ...)
 
         /// <summary>
         /// Set variable data on a charging station.
@@ -492,7 +492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetVariablesResponse>
 
             SetVariables(this ICSMS                    CSMS,
-                         ChargeBox_Id                  ChargeBoxId,
+                         ChargingStation_Id                  ChargingStationId,
                          IEnumerable<SetVariableData>  VariableData,
 
                          IEnumerable<KeyPair>?         SignKeys            = null,
@@ -510,7 +510,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.SetVariables(new SetVariablesRequest(
-                                         ChargeBoxId,
+                                         ChargingStationId,
                                          VariableData,
 
                                          SignKeys,
@@ -529,7 +529,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetVariables               (this CSMS, ChargeBoxId, VariableData, ...)
+        #region GetVariables               (this CSMS, ChargingStationId, VariableData, ...)
 
         /// <summary>
         /// Get variable data from a charging station.
@@ -548,7 +548,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetVariablesResponse>
 
             GetVariables(this ICSMS                    CSMS,
-                         ChargeBox_Id                  ChargeBoxId,
+                         ChargingStation_Id                  ChargingStationId,
                          IEnumerable<GetVariableData>  VariableData,
 
                          IEnumerable<KeyPair>?         SignKeys            = null,
@@ -566,7 +566,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.GetVariables(new GetVariablesRequest(
-                                         ChargeBoxId,
+                                         ChargingStationId,
                                          VariableData,
 
                                          SignKeys,
@@ -585,7 +585,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetMonitoringBase          (this CSMS, ChargeBoxId, MonitoringBase, ...)
+        #region SetMonitoringBase          (this CSMS, ChargingStationId, MonitoringBase, ...)
 
         /// <summary>
         /// Set the monitoring base of a charging station.
@@ -604,7 +604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetMonitoringBaseResponse>
 
             SetMonitoringBase(this ICSMS               CSMS,
-                              ChargeBox_Id             ChargeBoxId,
+                              ChargingStation_Id             ChargingStationId,
                               MonitoringBases          MonitoringBase,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -622,7 +622,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.SetMonitoringBase(new SetMonitoringBaseRequest(
-                                              ChargeBoxId,
+                                              ChargingStationId,
                                               MonitoringBase,
 
                                               SignKeys,
@@ -641,7 +641,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetMonitoringReport        (this CSMS, ChargeBoxId, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
+        #region GetMonitoringReport        (this CSMS, ChargingStationId, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
 
         /// <summary>
         /// Get monitoring report from a charging station.
@@ -662,7 +662,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetMonitoringReportResponse>
 
             GetMonitoringReport(this ICSMS                       CSMS,
-                                ChargeBox_Id                     ChargeBoxId,
+                                ChargingStation_Id                     ChargingStationId,
                                 Int32                            GetMonitoringReportRequestId,
                                 IEnumerable<MonitoringCriteria>  MonitoringCriteria,
                                 IEnumerable<ComponentVariable>   ComponentVariables,
@@ -682,7 +682,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.GetMonitoringReport(new GetMonitoringReportRequest(
-                                                ChargeBoxId,
+                                                ChargingStationId,
                                                 GetMonitoringReportRequestId,
                                                 MonitoringCriteria,
                                                 ComponentVariables,
@@ -703,7 +703,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetMonitoringLevel         (this CSMS, ChargeBoxId, Severity, ...)
+        #region SetMonitoringLevel         (this CSMS, ChargingStationId, Severity, ...)
 
         /// <summary>
         /// Set the monitoring level on a charging station.
@@ -722,7 +722,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetMonitoringLevelResponse>
 
             SetMonitoringLevel(this ICSMS               CSMS,
-                               ChargeBox_Id             ChargeBoxId,
+                               ChargingStation_Id             ChargingStationId,
                                Severities               Severity,
 
                                IEnumerable<KeyPair>?    SignKeys            = null,
@@ -740,7 +740,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.SetMonitoringLevel(new SetMonitoringLevelRequest(
-                                               ChargeBoxId,
+                                               ChargingStationId,
                                                Severity,
 
                                                SignKeys,
@@ -759,7 +759,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetVariableMonitoring      (this CSMS, ChargeBoxId, MonitoringData, ...)
+        #region SetVariableMonitoring      (this CSMS, ChargingStationId, MonitoringData, ...)
 
         /// <summary>
         /// Set a variable monitoring on a charging station.
@@ -778,7 +778,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetVariableMonitoringResponse>
 
             SetVariableMonitoring(this ICSMS                      CSMS,
-                                  ChargeBox_Id                    ChargeBoxId,
+                                  ChargingStation_Id                    ChargingStationId,
                                   IEnumerable<SetMonitoringData>  MonitoringData,
 
                                   IEnumerable<KeyPair>?           SignKeys            = null,
@@ -796,7 +796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.SetVariableMonitoring(new SetVariableMonitoringRequest(
-                                                  ChargeBoxId,
+                                                  ChargingStationId,
                                                   MonitoringData,
 
                                                   SignKeys,
@@ -815,7 +815,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearVariableMonitoring    (this CSMS, ChargeBoxId, VariableMonitoringIds, ...)
+        #region ClearVariableMonitoring    (this CSMS, ChargingStationId, VariableMonitoringIds, ...)
 
         /// <summary>
         /// Delete a variable monitoring on a charging station.
@@ -834,7 +834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ClearVariableMonitoringResponse>
 
             ClearVariableMonitoring(this ICSMS                          CSMS,
-                                    ChargeBox_Id                        ChargeBoxId,
+                                    ChargingStation_Id                        ChargingStationId,
                                     IEnumerable<VariableMonitoring_Id>  VariableMonitoringIds,
 
                                     IEnumerable<KeyPair>?               SignKeys            = null,
@@ -852,7 +852,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.ClearVariableMonitoring(new ClearVariableMonitoringRequest(
-                                                    ChargeBoxId,
+                                                    ChargingStationId,
                                                     VariableMonitoringIds,
 
                                                     SignKeys,
@@ -871,7 +871,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetNetworkProfile          (this CSMS, ChargeBoxId, ConfigurationSlot, NetworkConnectionProfile, ...)
+        #region SetNetworkProfile          (this CSMS, ChargingStationId, ConfigurationSlot, NetworkConnectionProfile, ...)
 
         /// <summary>
         /// Set the network profile of a charging station.
@@ -891,7 +891,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetNetworkProfileResponse>
 
             SetNetworkProfile(this ICSMS                CSMS,
-                              ChargeBox_Id              ChargeBoxId,
+                              ChargingStation_Id              ChargingStationId,
                               Int32                     ConfigurationSlot,
                               NetworkConnectionProfile  NetworkConnectionProfile,
 
@@ -910,7 +910,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.SetNetworkProfile(new SetNetworkProfileRequest(
-                                              ChargeBoxId,
+                                              ChargingStationId,
                                               ConfigurationSlot,
                                               NetworkConnectionProfile,
 
@@ -930,7 +930,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ChangeAvailability         (this CSMS, ChargeBoxId, OperationalStatus, EVSE, ...)
+        #region ChangeAvailability         (this CSMS, ChargingStationId, OperationalStatus, EVSE, ...)
 
         /// <summary>
         /// Change the availability of the given charge box.
@@ -950,7 +950,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ChangeAvailabilityResponse>
 
             ChangeAvailability(this ICSMS               CSMS,
-                               ChargeBox_Id             ChargeBoxId,
+                               ChargingStation_Id             ChargingStationId,
                                OperationalStatus        OperationalStatus,
                                EVSE?                    EVSE,
 
@@ -969,7 +969,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.ChangeAvailability(new ChangeAvailabilityRequest(
-                                               ChargeBoxId,
+                                               ChargingStationId,
                                                OperationalStatus,
                                                EVSE,
 
@@ -989,7 +989,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region TriggerMessage             (this CSMS, ChargeBoxId, RequestedMessage, EVSEId = null, ...)
+        #region TriggerMessage             (this CSMS, ChargingStationId, RequestedMessage, EVSEId = null, ...)
 
         /// <summary>
         /// Create a trigger for the given message at the given charge box connector.
@@ -1009,7 +1009,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.TriggerMessageResponse>
 
             TriggerMessage(this ICSMS               CSMS,
-                           ChargeBox_Id             ChargeBoxId,
+                           ChargingStation_Id             ChargingStationId,
                            MessageTriggers          RequestedMessage,
                            EVSE?                    EVSE                = null,
 
@@ -1028,7 +1028,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.TriggerMessage(new TriggerMessageRequest(
-                                           ChargeBoxId,
+                                           ChargingStationId,
                                            RequestedMessage,
                                            EVSE,
 
@@ -1048,7 +1048,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region TransferData               (this CSMS, ChargeBoxId, VendorId, MessageId = null, Data = null, ...)
+        #region TransferData               (this CSMS, ChargingStationId, VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Transfer the given data to the given charge box.
@@ -1069,7 +1069,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.DataTransferResponse>
 
             TransferData(this ICSMS               CSMS,
-                         ChargeBox_Id             ChargeBoxId,
+                         ChargingStation_Id             ChargingStationId,
                          Vendor_Id                VendorId,
                          String?                  MessageId           = null,
                          JToken?                  Data                = null,
@@ -1089,7 +1089,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.TransferData(new DataTransferRequest(
-                                         ChargeBoxId,
+                                         ChargingStationId,
                                          VendorId,
                                          MessageId,
                                          Data,
@@ -1111,7 +1111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SendSignedCertificate      (this CSMS, ChargeBoxId, CertificateChain, CertificateType = null, ...)
+        #region SendSignedCertificate      (this CSMS, ChargingStationId, CertificateChain, CertificateType = null, ...)
 
         /// <summary>
         /// Send the signed certificate to the given charge box.
@@ -1130,7 +1130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.CertificateSignedResponse>
 
             SendSignedCertificate(this ICSMS               CSMS,
-                                  ChargeBox_Id             ChargeBoxId,
+                                  ChargingStation_Id             ChargingStationId,
                                   CertificateChain         CertificateChain,
                                   CertificateSigningUse?   CertificateType     = null,
 
@@ -1149,7 +1149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.SendSignedCertificate(new CertificateSignedRequest(
-                                                  ChargeBoxId,
+                                                  ChargingStationId,
                                                   CertificateChain,
                                                   CertificateType,
 
@@ -1169,7 +1169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region InstallCertificate         (this CSMS, ChargeBoxId, CertificateType, Certificate, ...)
+        #region InstallCertificate         (this CSMS, ChargingStationId, CertificateType, Certificate, ...)
 
         /// <summary>
         /// Install the given certificate within the charging station.
@@ -1189,7 +1189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.InstallCertificateResponse>
 
             InstallCertificate(this ICSMS               CSMS,
-                               ChargeBox_Id             ChargeBoxId,
+                               ChargingStation_Id             ChargingStationId,
                                CertificateUse           CertificateType,
                                Certificate              Certificate,
 
@@ -1208,7 +1208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.InstallCertificate(new InstallCertificateRequest(
-                                               ChargeBoxId,
+                                               ChargingStationId,
                                                CertificateType,
                                                Certificate,
 
@@ -1228,7 +1228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetInstalledCertificateIds (this CSMS, ChargeBoxId, CertificateTypes, ...)
+        #region GetInstalledCertificateIds (this CSMS, ChargingStationId, CertificateTypes, ...)
 
         /// <summary>
         /// Retrieve a list of all installed certificates within the charging station.
@@ -1247,7 +1247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetInstalledCertificateIdsResponse>
 
             GetInstalledCertificateIds(this ICSMS                    CSMS,
-                                       ChargeBox_Id                  ChargeBoxId,
+                                       ChargingStation_Id                  ChargingStationId,
                                        IEnumerable<CertificateUse>?  CertificateTypes    = null,
 
                                        IEnumerable<KeyPair>?         SignKeys            = null,
@@ -1265,7 +1265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.GetInstalledCertificateIds(new GetInstalledCertificateIdsRequest(
-                                                       ChargeBoxId,
+                                                       ChargingStationId,
                                                        CertificateTypes,
 
                                                        SignKeys,
@@ -1284,7 +1284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region DeleteCertificate          (this CSMS, ChargeBoxId, CertificateHashData, ...)
+        #region DeleteCertificate          (this CSMS, ChargingStationId, CertificateHashData, ...)
 
         /// <summary>
         /// Delete the given certificate on the charging station.
@@ -1303,7 +1303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.DeleteCertificateResponse>
 
             DeleteCertificate(this ICSMS               CSMS,
-                              ChargeBox_Id             ChargeBoxId,
+                              ChargingStation_Id             ChargingStationId,
                               CertificateHashData      CertificateHashData,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -1321,7 +1321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.DeleteCertificate(new DeleteCertificateRequest(
-                                              ChargeBoxId,
+                                              ChargingStationId,
                                               CertificateHashData,
 
                                               SignKeys,
@@ -1340,7 +1340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region NotifyCRLAvailability      (this CSMS, ChargeBoxId, NotifyCRLRequestId, Availability, Location, ...)
+        #region NotifyCRLAvailability      (this CSMS, ChargingStationId, NotifyCRLRequestId, Availability, Location, ...)
 
         /// <summary>
         /// Delete the given certificate on the charging station.
@@ -1361,7 +1361,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.NotifyCRLResponse>
 
             NotifyCRLAvailability(this ICSMS               CSMS,
-                                  ChargeBox_Id             ChargeBoxId,
+                                  ChargingStation_Id             ChargingStationId,
                                   Int32                    NotifyCRLRequestId,
                                   NotifyCRLStatus          Availability,
                                   URL?                     Location,
@@ -1381,7 +1381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.NotifyCRLAvailability(new NotifyCRLRequest(
-                                                  ChargeBoxId,
+                                                  ChargingStationId,
                                                   NotifyCRLRequestId,
                                                   Availability,
                                                   Location,
@@ -1403,7 +1403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetLocalListVersion        (this CSMS, ChargeBoxId, ...)
+        #region GetLocalListVersion        (this CSMS, ChargingStationId, ...)
 
         /// <summary>
         /// Return the local white list of the given charge box.
@@ -1421,7 +1421,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetLocalListVersionResponse>
 
             GetLocalListVersion(this ICSMS               CSMS,
-                                ChargeBox_Id             ChargeBoxId,
+                                ChargingStation_Id             ChargingStationId,
 
                                 IEnumerable<KeyPair>?    SignKeys            = null,
                                 IEnumerable<SignInfo>?   SignInfos           = null,
@@ -1438,7 +1438,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.GetLocalListVersion(new GetLocalListVersionRequest(
-                                                ChargeBoxId,
+                                                ChargingStationId,
 
                                                 SignKeys,
                                                 SignInfos,
@@ -1456,7 +1456,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SendLocalList              (this CSMS, ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
+        #region SendLocalList              (this CSMS, ChargingStationId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
 
         /// <summary>
         /// Set the local white liste at the given charge box.
@@ -1477,7 +1477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SendLocalListResponse>
 
             SendLocalList(this ICSMS                       CSMS,
-                          ChargeBox_Id                     ChargeBoxId,
+                          ChargingStation_Id                     ChargingStationId,
                           UInt64                           ListVersion,
                           UpdateTypes                      UpdateType,
                           IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
@@ -1497,7 +1497,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.SendLocalList(new SendLocalListRequest(
-                                          ChargeBoxId,
+                                          ChargingStationId,
                                           ListVersion,
                                           UpdateType,
                                           LocalAuthorizationList,
@@ -1518,7 +1518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearCache                 (this CSMS, ChargeBoxId, ...)
+        #region ClearCache                 (this CSMS, ChargingStationId, ...)
 
         /// <summary>
         /// Clear the local white liste cache of the given charge box.
@@ -1536,7 +1536,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ClearCacheResponse>
 
             ClearCache(this ICSMS               CSMS,
-                       ChargeBox_Id             ChargeBoxId,
+                       ChargingStation_Id             ChargingStationId,
 
                        IEnumerable<KeyPair>?    SignKeys            = null,
                        IEnumerable<SignInfo>?   SignInfos           = null,
@@ -1553,7 +1553,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.ClearCache(new ClearCacheRequest(
-                                       ChargeBoxId,
+                                       ChargingStationId,
 
                                        SignKeys,
                                        SignInfos,
@@ -1572,7 +1572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region ReserveNow                 (this CSMS, ChargeBoxId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
+        #region ReserveNow                 (this CSMS, ChargingStationId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
 
         /// <summary>
         /// Create a charging reservation of the given charge box connector.
@@ -1596,7 +1596,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ReserveNowResponse>
 
             ReserveNow(this ICSMS               CSMS,
-                       ChargeBox_Id             ChargeBoxId,
+                       ChargingStation_Id             ChargingStationId,
                        Reservation_Id           ReservationId,
                        DateTime                 ExpiryDate,
                        IdToken                  IdToken,
@@ -1619,7 +1619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.ReserveNow(new ReserveNowRequest(
-                                       ChargeBoxId,
+                                       ChargingStationId,
                                        ReservationId,
                                        ExpiryDate,
                                        IdToken,
@@ -1643,7 +1643,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region CancelReservation          (this CSMS, ChargeBoxId, ReservationId, ...)
+        #region CancelReservation          (this CSMS, ChargingStationId, ReservationId, ...)
 
         /// <summary>
         /// Cancel the given charging reservation at the given charge box.
@@ -1662,7 +1662,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.CancelReservationResponse>
 
             CancelReservation(this ICSMS               CSMS,
-                              ChargeBox_Id             ChargeBoxId,
+                              ChargingStation_Id             ChargingStationId,
                               Reservation_Id           ReservationId,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -1680,7 +1680,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.CancelReservation(new CancelReservationRequest(
-                                              ChargeBoxId,
+                                              ChargingStationId,
                                               ReservationId,
 
                                               SignKeys,
@@ -1699,7 +1699,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region StartCharging              (this CSMS, ChargeBoxId, RequestStartTransactionRequestId, IdToken, EVSEId, ChargingProfile, GroupIdToken, ...)
+        #region StartCharging              (this CSMS, ChargingStationId, RequestStartTransactionRequestId, IdToken, EVSEId, ChargingProfile, GroupIdToken, ...)
 
         /// <summary>
         /// Set the charging profile of the given charge box connector.
@@ -1722,7 +1722,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.RequestStartTransactionResponse>
 
             StartCharging(this ICSMS               CSMS,
-                          ChargeBox_Id             ChargeBoxId,
+                          ChargingStation_Id             ChargingStationId,
                           RemoteStart_Id           RequestStartTransactionRequestId,
                           IdToken                  IdToken,
                           EVSE_Id?                 EVSEId              = null,
@@ -1744,7 +1744,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.StartCharging(new RequestStartTransactionRequest(
-                                          ChargeBoxId,
+                                          ChargingStationId,
                                           RequestStartTransactionRequestId,
                                           IdToken,
                                           EVSEId,
@@ -1767,7 +1767,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region StopCharging               (this CSMS, ChargeBoxId, TransactionId, ...)
+        #region StopCharging               (this CSMS, ChargingStationId, TransactionId, ...)
 
         /// <summary>
         /// Set the charging profile of the given charge box connector.
@@ -1786,7 +1786,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.RequestStopTransactionResponse>
 
             StopCharging(this ICSMS               CSMS,
-                         ChargeBox_Id             ChargeBoxId,
+                         ChargingStation_Id             ChargingStationId,
                          Transaction_Id           TransactionId,
 
                          IEnumerable<KeyPair>?    SignKeys            = null,
@@ -1804,7 +1804,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.StopCharging(new RequestStopTransactionRequest(
-                                         ChargeBoxId,
+                                         ChargingStationId,
                                          TransactionId,
 
                                          SignKeys,
@@ -1823,7 +1823,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetTransactionStatus       (this CSMS, ChargeBoxId, ConnectorId, ChargingProfile, ...)
+        #region GetTransactionStatus       (this CSMS, ChargingStationId, ConnectorId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charge box connector.
@@ -1842,7 +1842,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetTransactionStatusResponse>
 
             GetTransactionStatus(this ICSMS               CSMS,
-                                 ChargeBox_Id             ChargeBoxId,
+                                 ChargingStation_Id             ChargingStationId,
                                  Transaction_Id?          TransactionId       = null,
 
                                  IEnumerable<KeyPair>?    SignKeys            = null,
@@ -1860,7 +1860,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.GetTransactionStatus(new GetTransactionStatusRequest(
-                                                 ChargeBoxId,
+                                                 ChargingStationId,
                                                  TransactionId,
 
                                                  SignKeys,
@@ -1879,7 +1879,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SetChargingProfile         (this CSMS, ChargeBoxId, EVSEId, ChargingProfile, ...)
+        #region SetChargingProfile         (this CSMS, ChargingStationId, EVSEId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charge box connector.
@@ -1899,7 +1899,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetChargingProfileResponse>
 
             SetChargingProfile(this ICSMS               CSMS,
-                               ChargeBox_Id             ChargeBoxId,
+                               ChargingStation_Id             ChargingStationId,
                                EVSE_Id                  EVSEId,
                                ChargingProfile          ChargingProfile,
 
@@ -1918,7 +1918,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.SetChargingProfile(new SetChargingProfileRequest(
-                                               ChargeBoxId,
+                                               ChargingStationId,
                                                EVSEId,
                                                ChargingProfile,
 
@@ -1938,7 +1938,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetChargingProfiles        (this CSMS, ChargeBoxId, EVSEId, ChargingProfile, ...)
+        #region GetChargingProfiles        (this CSMS, ChargingStationId, EVSEId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charge box connector.
@@ -1958,7 +1958,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetChargingProfilesResponse>
 
             GetChargingProfiles(this ICSMS                CSMS,
-                                ChargeBox_Id              ChargeBoxId,
+                                ChargingStation_Id              ChargingStationId,
                                 Int64                     GetChargingProfilesRequestId,
                                 ChargingProfileCriterion  ChargingProfile,
                                 EVSE_Id?                  EVSEId              = null,
@@ -1978,7 +1978,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.GetChargingProfiles(new GetChargingProfilesRequest(
-                                                ChargeBoxId,
+                                                ChargingStationId,
                                                 GetChargingProfilesRequestId,
                                                 ChargingProfile,
                                                 EVSEId,
@@ -1999,7 +1999,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearChargingProfile       (this CSMS, ChargeBoxId, ChargingProfileId, ChargingProfileCriteria, ...)
+        #region ClearChargingProfile       (this CSMS, ChargingStationId, ChargingProfileId, ChargingProfileCriteria, ...)
 
         /// <summary>
         /// Remove the charging profile at the given charge box connector.
@@ -2019,7 +2019,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ClearChargingProfileResponse>
 
             ClearChargingProfile(this ICSMS               CSMS,
-                                 ChargeBox_Id             ChargeBoxId,
+                                 ChargingStation_Id             ChargingStationId,
                                  ChargingProfile_Id?      ChargingProfileId         = null,
                                  ClearChargingProfile?    ChargingProfileCriteria   = null,
 
@@ -2038,7 +2038,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.ClearChargingProfile(new ClearChargingProfileRequest(
-                                                 ChargeBoxId,
+                                                 ChargingStationId,
                                                  ChargingProfileId,
                                                  ChargingProfileCriteria,
 
@@ -2058,7 +2058,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetCompositeSchedule       (this CSMS, ChargeBoxId, Duration, EVSEId, ChargingRateUnit = null, ...)
+        #region GetCompositeSchedule       (this CSMS, ChargingStationId, Duration, EVSEId, ChargingRateUnit = null, ...)
 
         /// <summary>
         /// Return the charging schedule of the given charge box connector.
@@ -2079,7 +2079,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetCompositeScheduleResponse>
 
             GetCompositeSchedule(this ICSMS               CSMS,
-                                 ChargeBox_Id             ChargeBoxId,
+                                 ChargingStation_Id             ChargingStationId,
                                  TimeSpan                 Duration,
                                  EVSE_Id                  EVSEId,
                                  ChargingRateUnits?       ChargingRateUnit    = null,
@@ -2099,7 +2099,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.GetCompositeSchedule(new GetCompositeScheduleRequest(
-                                                 ChargeBoxId,
+                                                 ChargingStationId,
                                                  Duration,
                                                  EVSEId,
                                                  ChargingRateUnit,
@@ -2120,7 +2120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UpdateDynamicSchedule      (this CSMS, ChargeBoxId, ChargingProfileId, Limit = null, ...)
+        #region UpdateDynamicSchedule      (this CSMS, ChargingStationId, ChargingProfileId, Limit = null, ...)
 
         /// <summary>
         /// Update the dynamic charging schedule for the given charging profile.
@@ -2155,7 +2155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UpdateDynamicScheduleResponse>
 
             UpdateDynamicSchedule(this ICSMS               CSMS,
-                                  ChargeBox_Id             ChargeBoxId,
+                                  ChargingStation_Id             ChargingStationId,
                                   ChargingProfile_Id       ChargingProfileId,
 
                                   ChargingRateValue?       Limit                 = null,
@@ -2190,7 +2190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.UpdateDynamicSchedule(new UpdateDynamicScheduleRequest(
 
-                                                  ChargeBoxId,
+                                                  ChargingStationId,
                                                   ChargingProfileId,
 
                                                   Limit,
@@ -2226,7 +2226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region NotifyAllowedEnergyTransfer(this CSMS, ChargeBoxId, AllowedEnergyTransferModes, ...)
+        #region NotifyAllowedEnergyTransfer(this CSMS, ChargingStationId, AllowedEnergyTransferModes, ...)
 
         /// <summary>
         /// Unlock the given charge box connector.
@@ -2245,7 +2245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.NotifyAllowedEnergyTransferResponse>
 
             NotifyAllowedEnergyTransfer(this ICSMS                        CSMS,
-                                        ChargeBox_Id                      ChargeBoxId,
+                                        ChargingStation_Id                      ChargingStationId,
                                         IEnumerable<EnergyTransferModes>  AllowedEnergyTransferModes,
 
                                         IEnumerable<KeyPair>?             SignKeys            = null,
@@ -2263,7 +2263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.NotifyAllowedEnergyTransfer(new NotifyAllowedEnergyTransferRequest(
-                                                        ChargeBoxId,
+                                                        ChargingStationId,
                                                         AllowedEnergyTransferModes,
 
                                                         SignKeys,
@@ -2282,7 +2282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UsePriorityCharging        (this CSMS, ChargeBoxId, TransactionId, Activate, ...)
+        #region UsePriorityCharging        (this CSMS, ChargingStationId, TransactionId, Activate, ...)
 
         /// <summary>
         /// Switch to the priority charging profile.
@@ -2302,7 +2302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UsePriorityChargingResponse>
 
             UsePriorityCharging(this ICSMS               CSMS,
-                                ChargeBox_Id             ChargeBoxId,
+                                ChargingStation_Id             ChargingStationId,
                                 Transaction_Id           TransactionId,
                                 Boolean                  Activate,
 
@@ -2321,7 +2321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.UsePriorityCharging(new UsePriorityChargingRequest(
-                                                ChargeBoxId,
+                                                ChargingStationId,
                                                 TransactionId,
                                                 Activate,
 
@@ -2341,7 +2341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UnlockConnector            (this CSMS, ChargeBoxId, EVSEId, ConnectorId, ...)
+        #region UnlockConnector            (this CSMS, ChargingStationId, EVSEId, ConnectorId, ...)
 
         /// <summary>
         /// Unlock the given charge box connector.
@@ -2360,7 +2360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UnlockConnectorResponse>
 
             UnlockConnector(this ICSMS               CSMS,
-                            ChargeBox_Id             ChargeBoxId,
+                            ChargingStation_Id             ChargingStationId,
                             EVSE_Id                  EVSEId,
                             Connector_Id             ConnectorId,
 
@@ -2379,7 +2379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.UnlockConnector(new UnlockConnectorRequest(
-                                            ChargeBoxId,
+                                            ChargingStationId,
                                             EVSEId,
                                             ConnectorId,
 
@@ -2400,7 +2400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SendAFRRSignal             (this CSMS, ChargeBoxId, ActivationTimestamp, Signal, ...)
+        #region SendAFRRSignal             (this CSMS, ChargingStationId, ActivationTimestamp, Signal, ...)
 
         /// <summary>
         /// Send an aFRR signal to the charging station.
@@ -2422,7 +2422,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.AFRRSignalResponse>
 
             SendAFRRSignal(this ICSMS               CSMS,
-                           ChargeBox_Id             ChargeBoxId,
+                           ChargingStation_Id             ChargingStationId,
                            DateTime                 ActivationTimestamp,
                            AFRR_Signal              Signal,
 
@@ -2441,7 +2441,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.SendAFRRSignal(new AFRRSignalRequest(
-                                           ChargeBoxId,
+                                           ChargingStationId,
                                            ActivationTimestamp,
                                            Signal,
 
@@ -2462,7 +2462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetDisplayMessage          (this CSMS, ChargeBoxId, Message, ...)
+        #region SetDisplayMessage          (this CSMS, ChargingStationId, Message, ...)
 
         /// <summary>
         /// Set a display message.
@@ -2480,7 +2480,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetDisplayMessageResponse>
 
             SetDisplayMessage(this ICSMS               CSMS,
-                              ChargeBox_Id             ChargeBoxId,
+                              ChargingStation_Id             ChargingStationId,
                               MessageInfo              Message,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -2498,7 +2498,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.SetDisplayMessage(new SetDisplayMessageRequest(
-                                              ChargeBoxId,
+                                              ChargingStationId,
                                               Message,
 
                                               SignKeys,
@@ -2517,7 +2517,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region GetDisplayMessages         (this CSMS, ChargeBoxId, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null, ...)
+        #region GetDisplayMessages         (this CSMS, ChargingStationId, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null, ...)
 
         /// <summary>
         /// Get all display messages.
@@ -2538,7 +2538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetDisplayMessagesResponse>
 
             GetDisplayMessages(this ICSMS                       CSMS,
-                               ChargeBox_Id                     ChargeBoxId,
+                               ChargingStation_Id                     ChargingStationId,
                                Int32                            GetDisplayMessagesRequestId,
                                IEnumerable<DisplayMessage_Id>?  Ids                 = null,
                                MessagePriorities?               Priority            = null,
@@ -2559,7 +2559,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.GetDisplayMessages(new GetDisplayMessagesRequest(
-                                               ChargeBoxId,
+                                               ChargingStationId,
                                                GetDisplayMessagesRequestId,
                                                Ids,
                                                Priority,
@@ -2581,7 +2581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ClearDisplayMessage        (this CSMS, ChargeBoxId, DisplayMessageId, ...)
+        #region ClearDisplayMessage        (this CSMS, ChargingStationId, DisplayMessageId, ...)
 
         /// <summary>
         /// Remove a display message.
@@ -2599,7 +2599,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ClearDisplayMessageResponse>
 
             ClearDisplayMessage(this ICSMS               CSMS,
-                                ChargeBox_Id             ChargeBoxId,
+                                ChargingStation_Id             ChargingStationId,
                                 DisplayMessage_Id        DisplayMessageId,
 
                                 IEnumerable<KeyPair>?    SignKeys            = null,
@@ -2617,7 +2617,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.ClearDisplayMessage(new ClearDisplayMessageRequest(
-                                                ChargeBoxId,
+                                                ChargingStationId,
                                                 DisplayMessageId,
 
                                                 SignKeys,
@@ -2636,7 +2636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SendCostUpdated            (this CSMS, ChargeBoxId, TotalCost, TransactionId, ...)
+        #region SendCostUpdated            (this CSMS, ChargingStationId, TotalCost, TransactionId, ...)
 
         /// <summary>
         /// Send updated total costs.
@@ -2655,7 +2655,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.CostUpdatedResponse>
 
             SendCostUpdated(this ICSMS               CSMS,
-                            ChargeBox_Id             ChargeBoxId,
+                            ChargingStation_Id             ChargingStationId,
                             Decimal                  TotalCost,
                             Transaction_Id           TransactionId,
 
@@ -2674,7 +2674,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.SendCostUpdated(new CostUpdatedRequest(
-                                            ChargeBoxId,
+                                            ChargingStationId,
                                             TotalCost,
                                             TransactionId,
 
@@ -2694,7 +2694,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region RequestCustomerInformation (this CSMS, ChargeBoxId, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
+        #region RequestCustomerInformation (this CSMS, ChargingStationId, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
 
         /// <summary>
         /// Request customer information.
@@ -2717,7 +2717,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.CustomerInformationResponse>
 
             RequestCustomerInformation(this ICSMS               CSMS,
-                                       ChargeBox_Id             ChargeBoxId,
+                                       ChargingStation_Id             ChargingStationId,
                                        Int64                    CustomerInformationRequestId,
                                        Boolean                  Report,
                                        Boolean                  Clear,
@@ -2740,7 +2740,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.RequestCustomerInformation(new CustomerInformationRequest(
-                                                       ChargeBoxId,
+                                                       ChargingStationId,
                                                        CustomerInformationRequestId,
                                                        Report,
                                                        Clear,
