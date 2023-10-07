@@ -29,15 +29,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// A clear cache request.
     /// </summary>
-    public class ClearCacheRequest : ARequest<ClearCacheRequest>
+    public class ClearCacheRequest : ARequest<ClearCacheRequest>,
+                                     IRequest
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/clearCacheRequest");
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
+
+        #endregion
 
         #region Constructor(s)
 
         /// <summary>
         /// Create a new ClearCache request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -47,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ClearCacheRequest(ChargingStation_Id             ChargeBoxId,
+        public ClearCacheRequest(ChargingStation_Id       ChargingStationId,
 
                                  IEnumerable<KeyPair>?    SignKeys            = null,
                                  IEnumerable<SignInfo>?   SignInfos           = null,
@@ -62,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  EventTracking_Id?        EventTrackingId     = null,
                                  CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "ClearCache",
 
                    SignKeys,
@@ -78,7 +98,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    EventTrackingId,
                    CancellationToken)
 
-        { }
+        {
+
+            unchecked
+            {
+
+                hashCode = base.GetHashCode();
+
+            }
+
+        }
 
         #endregion
 
@@ -116,24 +145,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomClearCacheRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomClearCacheRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a clear cache request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomClearCacheRequestParser">A delegate to parse custom ClearCache requests.</param>
         public static ClearCacheRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
-                                              ChargingStation_Id                                     ChargeBoxId,
+                                              ChargingStation_Id                               ChargingStationId,
                                               CustomJObjectParserDelegate<ClearCacheRequest>?  CustomClearCacheRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var clearCacheRequest,
                          out var errorResponse,
                          CustomClearCacheRequestParser))
@@ -148,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out ClearCacheRequest, out ErrorResponse, CustomClearCacheRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out ClearCacheRequest, out ErrorResponse, CustomClearCacheRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -157,18 +186,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ClearCacheRequest">The parsed ClearCache request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                 JSON,
                                        Request_Id              RequestId,
-                                       ChargingStation_Id            ChargeBoxId,
+                                       ChargingStation_Id      ChargingStationId,
                                        out ClearCacheRequest?  ClearCacheRequest,
                                        out String?             ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out ClearCacheRequest,
                         out ErrorResponse,
                         null);
@@ -179,13 +208,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ClearCacheRequest">The parsed ClearCache request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomClearCacheRequestParser">A delegate to parse custom ClearCache requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
-                                       ChargingStation_Id                                     ChargeBoxId,
+                                       ChargingStation_Id                               ChargingStationId,
                                        out ClearCacheRequest?                           ClearCacheRequest,
                                        out String?                                      ErrorResponse,
                                        CustomJObjectParserDelegate<ClearCacheRequest>?  CustomClearCacheRequestParser)
@@ -196,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 ClearCacheRequest = default;
 
-                #region Signatures     [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -210,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData     [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -224,20 +253,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId    [optional, OCPP_CSE]
+                #region ChargingStationId    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -245,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 ClearCacheRequest = new ClearCacheRequest(
-                                        ChargeBoxId,
+                                        ChargingStationId,
                                         null,
                                         null,
                                         null,
@@ -385,13 +414,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
+        private readonly Int32 hashCode;
 
-            => base.GetHashCode();
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
 
         #endregion
 

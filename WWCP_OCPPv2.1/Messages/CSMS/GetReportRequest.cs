@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The get report request.
     /// </summary>
-    public class GetReportRequest : ARequest<GetReportRequest>
+    public class GetReportRequest : ARequest<GetReportRequest>,
+                                    IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/getReportRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext                   Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The get report request identification.
@@ -59,8 +75,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new get report request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="GetReportRequestId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="GetReportRequestId">The charging station identification.</param>
         /// <param name="ComponentCriteria">An optional enumeration of criteria for components for which a report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a report is requested.</param>
         /// 
@@ -72,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetReportRequest(ChargingStation_Id                     ChargeBoxId,
+        public GetReportRequest(ChargingStation_Id               ChargingStationId,
                                 Int32                            GetReportRequestId,
                                 IEnumerable<ComponentCriteria>?  ComponentCriteria    = null,
                                 IEnumerable<ComponentVariable>?  ComponentVariables   = null,
@@ -90,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                 EventTracking_Id?                EventTrackingId      = null,
                                 CancellationToken                CancellationToken    = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "GetReport",
 
                    SignKeys,
@@ -111,6 +127,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.GetReportRequestId  = GetReportRequestId;
             this.ComponentCriteria   = ComponentCriteria?. Distinct() ?? Array.Empty<ComponentCriteria>();
             this.ComponentVariables  = ComponentVariables?.Distinct() ?? Array.Empty<ComponentVariable>();
+
+            unchecked
+            {
+
+                hashCode = this.GetReportRequestId.GetHashCode()  * 7 ^
+                           this.ComponentCriteria .CalcHashCode() * 5 ^
+                           this.ComponentVariables.CalcHashCode() * 3 ^
+                           base.                   GetHashCode();
+
+            }
 
         }
 
@@ -279,24 +305,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomGetReportRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomGetReportRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a get report request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomGetReportRequestParser">A delegate to parse custom get report requests.</param>
         public static GetReportRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
-                                             ChargingStation_Id                                    ChargeBoxId,
+                                             ChargingStation_Id                              ChargingStationId,
                                              CustomJObjectParserDelegate<GetReportRequest>?  CustomGetReportRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var getReportRequest,
                          out var errorResponse,
                          CustomGetReportRequestParser))
@@ -311,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out GetReportRequest, out ErrorResponse, CustomGetReportRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out GetReportRequest, out ErrorResponse, CustomGetReportRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -320,18 +346,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="GetReportRequest">The parsed get report request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                JSON,
                                        Request_Id             RequestId,
-                                       ChargingStation_Id           ChargeBoxId,
+                                       ChargingStation_Id     ChargingStationId,
                                        out GetReportRequest?  GetReportRequest,
                                        out String?            ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out GetReportRequest,
                         out ErrorResponse,
                         null);
@@ -342,13 +368,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="GetReportRequest">The parsed get report request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetReportRequestParser">A delegate to parse custom get report requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
-                                       ChargingStation_Id                                    ChargeBoxId,
+                                       ChargingStation_Id                              ChargingStationId,
                                        out GetReportRequest?                           GetReportRequest,
                                        out String?                                     ErrorResponse,
                                        CustomJObjectParserDelegate<GetReportRequest>?  CustomGetReportRequestParser)
@@ -427,20 +453,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId           [optional, OCPP_CSE]
+                #region ChargingStationId     [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -448,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 GetReportRequest = new GetReportRequest(
-                                       ChargeBoxId,
+                                       ChargingStationId,
                                        GetReportRequestId,
                                        ComponentCriteria,
                                        ComponentVariables,
@@ -621,23 +647,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return GetReportRequestId.GetHashCode()  * 7 ^
-                       ComponentCriteria .CalcHashCode() * 5 ^
-                       ComponentVariables.CalcHashCode() * 3 ^
-
-                       base.              GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

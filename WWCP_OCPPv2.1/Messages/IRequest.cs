@@ -31,10 +31,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     {
 
         /// <summary>
-        /// The charge box identification.
+        /// The charging station identification.
         /// </summary>
         [Mandatory]
-        ChargingStation_Id        ChargingStationId          { get; }
+        ChargingStation_Id  ChargingStationId    { get; }
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        JSONLDContext       Context              { get; }
 
         /// <summary>
         /// The request identification.
@@ -75,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An optional token to cancel this request.
         /// </summary>
-        CancellationToken  CancellationToken    { get; }
+        CancellationToken   CancellationToken    { get; }
 
     }
 

@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// A notify display messages request.
     /// </summary>
-    public class NotifyDisplayMessagesRequest : ARequest<NotifyDisplayMessagesRequest>
+    public class NotifyDisplayMessagesRequest : ARequest<NotifyDisplayMessagesRequest>,
+                                                IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/notifyDisplayMessagesRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext             Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The unique identification of the notify display messages request.
@@ -61,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a notify display messages request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="NotifyDisplayMessagesRequestId">The unique identification of the notify display messages request.</param>
         /// <param name="MessageInfos">The requested display messages as configured in the charging station.</param>
         /// <param name="ToBeContinued">The optional "to be continued" indicator whether another part of the monitoring data follows in an upcoming NotifyDisplayMessagesRequest message. Default value when omitted is false.</param>
@@ -74,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyDisplayMessagesRequest(ChargingStation_Id              ChargeBoxId,
+        public NotifyDisplayMessagesRequest(ChargingStation_Id        ChargingStationId,
                                             Int32                     NotifyDisplayMessagesRequestId,
                                             IEnumerable<MessageInfo>  MessageInfos,
                                             Boolean?                  ToBeContinued       = null,
@@ -91,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             EventTracking_Id?         EventTrackingId     = null,
                                             CancellationToken         CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "NotifyDisplayMessages",
 
                    SignKeys,
@@ -116,6 +132,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.NotifyDisplayMessagesRequestId  = NotifyDisplayMessagesRequestId;
             this.MessageInfos                    = MessageInfos.Distinct();
             this.ToBeContinued                   = ToBeContinued;
+
+            unchecked
+            {
+
+                hashCode = this.NotifyDisplayMessagesRequestId.GetHashCode()       * 7 ^
+                           this.MessageInfos.                  CalcHashCode()      * 5 ^
+                          (this.ToBeContinued?.                GetHashCode() ?? 0) * 3 ^
+                           base.                               GetHashCode();
+
+            }
 
         }
 
@@ -334,24 +360,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomNotifyDisplayMessagesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomNotifyDisplayMessagesRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a notify display messages request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomNotifyDisplayMessagesRequestParser">A delegate to parse custom notify display messages requests.</param>
         public static NotifyDisplayMessagesRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         ChargingStation_Id                                                ChargeBoxId,
+                                                         ChargingStation_Id                                          ChargingStationId,
                                                          CustomJObjectParserDelegate<NotifyDisplayMessagesRequest>?  CustomNotifyDisplayMessagesRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var notifyDisplayMessagesRequest,
                          out var errorResponse,
                          CustomNotifyDisplayMessagesRequestParser))
@@ -366,20 +392,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out NotifyDisplayMessagesRequest, out ErrorResponse, CustomNotifyDisplayMessagesRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out NotifyDisplayMessagesRequest, out ErrorResponse, CustomNotifyDisplayMessagesRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a notify display messages request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NotifyDisplayMessagesRequest">The parsed notify display messages request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                            JSON,
+                                       Request_Id                         RequestId,
+                                       ChargingStation_Id                 ChargingStationId,
+                                       out NotifyDisplayMessagesRequest?  NotifyDisplayMessagesRequest,
+                                       out String?                        ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargingStationId,
+                        out NotifyDisplayMessagesRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a notify display messages request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="NotifyDisplayMessagesRequest">The parsed notify display messages request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyDisplayMessagesRequestParser">A delegate to parse custom notify display messages requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       ChargingStation_Id                                                ChargeBoxId,
+                                       ChargingStation_Id                                          ChargingStationId,
                                        out NotifyDisplayMessagesRequest?                           NotifyDisplayMessagesRequest,
                                        out String?                                                 ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyDisplayMessagesRequest>?  CustomNotifyDisplayMessagesRequestParser)
@@ -456,20 +506,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargeBoxId                       [optional, OCPP_CSE]
+                #region ChargingStationId                 [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -477,7 +527,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 NotifyDisplayMessagesRequest = new NotifyDisplayMessagesRequest(
-                                                   ChargeBoxId,
+                                                   ChargingStationId,
                                                    NotifyDisplayMessagesRequestId,
                                                    MessageInfos,
                                                    ToBeContinued,
@@ -645,23 +695,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return NotifyDisplayMessagesRequestId.GetHashCode()       * 7 ^
-                       MessageInfos.                  CalcHashCode()      * 5 ^
-                      (ToBeContinued?.                GetHashCode() ?? 0) * 3 ^
-
-                       base.                          GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -672,10 +712,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-                   NotifyDisplayMessagesRequestId, ", ",
-                   MessageInfos.Count(), " message info(s)"
-               );
+            => $"{NotifyDisplayMessagesRequestId}, {MessageInfos.Count()} message info(s)";
 
         #endregion
 

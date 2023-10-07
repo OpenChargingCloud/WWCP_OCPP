@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The reserve now request.
     /// </summary>
-    public class ReserveNowRequest : ARequest<ReserveNowRequest>
+    public class ReserveNowRequest : ARequest<ReserveNowRequest>,
+                                     IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/reserveNowRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext    Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The unique identification of this reservation.
@@ -79,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new reserve now request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="Id">The unique identification of this reservation.</param>
         /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
         /// <param name="IdToken">The unique token identification for which the reservation is being made.</param>
@@ -95,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ReserveNowRequest(ChargingStation_Id             ChargeBoxId,
+        public ReserveNowRequest(ChargingStation_Id       ChargingStationId,
                                  Reservation_Id           Id,
                                  DateTime                 ExpiryDate,
                                  IdToken                  IdToken,
@@ -116,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  EventTracking_Id?        EventTrackingId     = null,
                                  CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "ReserveNow",
 
                    SignKeys,
@@ -140,6 +156,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.ConnectorType  = ConnectorType;
             this.EVSEId         = EVSEId;
             this.GroupIdToken   = GroupIdToken;
+
+            unchecked
+            {
+
+                hashCode = this.Id.            GetHashCode()       * 17 ^
+                           this.ExpiryDate.    GetHashCode()       * 13 ^
+                           this.IdToken.       GetHashCode()       * 11 ^
+
+                          (this.ConnectorType?.GetHashCode() ?? 0) *  7 ^
+                          (this.EVSEId?.       GetHashCode() ?? 0) *  5 ^
+                          (this.GroupIdToken?. GetHashCode() ?? 0) *  3 ^
+
+                           base.               GetHashCode();
+
+            }
 
         }
 
@@ -308,24 +339,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomReserveNowRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomReserveNowRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a reserve now request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomReserveNowRequestParser">A delegate to parse custom reserve now requests.</param>
         public static ReserveNowRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
-                                              ChargingStation_Id                                     ChargeBoxId,
+                                              ChargingStation_Id                               ChargingStationId,
                                               CustomJObjectParserDelegate<ReserveNowRequest>?  CustomReserveNowRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var reserveNowRequest,
                          out var errorResponse,
                          CustomReserveNowRequestParser))
@@ -340,7 +371,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out ReserveNowRequest, out ErrorResponse, CustomReserveNowRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out ReserveNowRequest, out ErrorResponse, CustomReserveNowRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -349,18 +380,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                 JSON,
                                        Request_Id              RequestId,
-                                       ChargingStation_Id            ChargeBoxId,
+                                       ChargingStation_Id      ChargingStationId,
                                        out ReserveNowRequest?  ReserveNowRequest,
                                        out String?             ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out ReserveNowRequest,
                         out ErrorResponse,
                         null);
@@ -371,13 +402,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ReserveNowRequest">The parsed reserve now request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomReserveNowRequestParser">A delegate to parse custom ReserveNowRequest requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
-                                       ChargingStation_Id                                     ChargeBoxId,
+                                       ChargingStation_Id                               ChargingStationId,
                                        out ReserveNowRequest?                           ReserveNowRequest,
                                        out String?                                      ErrorResponse,
                                        CustomJObjectParserDelegate<ReserveNowRequest>?  CustomReserveNowRequestParser)
@@ -388,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 ReserveNowRequest = null;
 
-                #region Id                [mandatory]
+                #region Id                   [mandatory]
 
                 if (!JSON.ParseMandatory("id",
                                          "reservation identification",
@@ -401,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ExpiryDateTime    [mandatory]
+                #region ExpiryDateTime       [mandatory]
 
                 if (!JSON.ParseMandatory("expiryDateTime",
                                          "expiry timestamp",
@@ -413,7 +444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region IdToken           [mandatory]
+                #region IdToken              [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("idToken",
                                              "identification token",
@@ -427,7 +458,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ConnectorType     [optional]
+                #region ConnectorType        [optional]
 
                 if (JSON.ParseOptional("connectorType",
                                        "connector type",
@@ -441,7 +472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region EVSEId            [optional]
+                #region EVSEId               [optional]
 
                 if (JSON.ParseOptional("evseId",
                                        "evse identification",
@@ -455,7 +486,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region GroupIdToken      [optional]
+                #region GroupIdToken         [optional]
 
                 if (JSON.ParseOptionalJSON("groupIdToken",
                                            "group identification token",
@@ -469,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures        [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -483,7 +514,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData        [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -497,20 +528,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId       [optional, OCPP_CSE]
+                #region ChargingStationId    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -518,7 +549,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 ReserveNowRequest = new ReserveNowRequest(
-                                        ChargeBoxId,
+                                        ChargingStationId,
                                         Id,
                                         ExpiryDateTime,
                                         IdToken,
@@ -701,26 +732,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Id.            GetHashCode()       * 17 ^
-                       ExpiryDate.    GetHashCode()       * 13 ^
-                       IdToken.       GetHashCode()       * 11 ^
-                      (ConnectorType?.GetHashCode() ?? 0) *  7 ^
-                      (EVSEId?.       GetHashCode() ?? 0) *  5 ^
-                      (GroupIdToken?. GetHashCode() ?? 0) *  3 ^
-
-                       base.          GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

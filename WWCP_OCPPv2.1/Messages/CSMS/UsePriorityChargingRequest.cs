@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// A use priority charging request.
     /// </summary>
-    public class UsePriorityChargingRequest : ARequest<UsePriorityChargingRequest>
+    public class UsePriorityChargingRequest : ARequest<UsePriorityChargingRequest>,
+                                              IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/usePriorityChargingRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext   Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The transaction for which priority charging is requested.
@@ -54,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a use priority charging request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
         /// <param name="Activate">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
         /// 
@@ -66,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UsePriorityChargingRequest(ChargingStation_Id             ChargeBoxId,
+        public UsePriorityChargingRequest(ChargingStation_Id       ChargingStationId,
                                           Transaction_Id           TransactionId,
                                           Boolean                  Activate,
 
@@ -83,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           EventTracking_Id?        EventTrackingId     = null,
                                           CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "UsePriorityCharging",
 
                    SignKeys,
@@ -109,7 +125,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 hashCode = TransactionId.GetHashCode() * 5 ^
                            Activate.     GetHashCode() * 3 ^
-
                            base.         GetHashCode();
 
             }
@@ -126,24 +141,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomUsePriorityChargingRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomUsePriorityChargingRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a use priority charging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomUsePriorityChargingRequestParser">A delegate to parse custom use priority charging requests.</param>
         public static UsePriorityChargingRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       ChargingStation_Id                                              ChargeBoxId,
+                                                       ChargingStation_Id                                        ChargingStationId,
                                                        CustomJObjectParserDelegate<UsePriorityChargingRequest>?  CustomUsePriorityChargingRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var usePriorityChargingRequest,
                          out var errorResponse,
                          CustomUsePriorityChargingRequestParser))
@@ -158,20 +173,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out UsePriorityChargingRequest, out ErrorResponse, CustomUsePriorityChargingRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out UsePriorityChargingRequest, out ErrorResponse, CustomUsePriorityChargingRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a use priority charging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="UsePriorityChargingRequest">The parsed use priority charging request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomUsePriorityChargingRequestParser">A delegate to parse custom use priority charging requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       ChargingStation_Id                                              ChargeBoxId,
+                                       ChargingStation_Id                                        ChargingStationId,
                                        out UsePriorityChargingRequest?                           UsePriorityChargingRequest,
                                        out String?                                               ErrorResponse,
                                        CustomJObjectParserDelegate<UsePriorityChargingRequest>?  CustomUsePriorityChargingRequestParser)
@@ -182,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 UsePriorityChargingRequest = null;
 
-                #region TransactionId    [mandatory]
+                #region TransactionId        [mandatory]
 
                 if (!JSON.ParseMandatory("transactionId",
                                          "transaction identification",
@@ -195,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Activate         [mandatory]
+                #region Activate             [mandatory]
 
                 if (!JSON.ParseMandatory("activate",
                                          "activate",
@@ -207,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures       [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -221,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData       [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -235,20 +250,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId      [optional, OCPP_CSE]
+                #region ChargingStationId    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -256,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 UsePriorityChargingRequest = new UsePriorityChargingRequest(
-                                                 ChargeBoxId,
+                                                 ChargingStationId,
                                                  TransactionId,
                                                  Activate,
                                                  null,

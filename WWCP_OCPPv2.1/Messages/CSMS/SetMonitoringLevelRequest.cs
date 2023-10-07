@@ -29,17 +29,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The set monitoring level request.
     /// </summary>
-    public class SetMonitoringLevelRequest : ARequest<SetMonitoringLevelRequest>
+    public class SetMonitoringLevelRequest : ARequest<SetMonitoringLevelRequest>,
+                                             IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/setMonitoringLevelRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The charging station SHALL only report events with a severity number lower than or equal to this severity.
         /// The severity range is 0-9, with 0 as the highest and 9 as the lowest severity level.
         /// </summary>
         [Mandatory]
-        public Severities  Severity    { get; }
+        public Severities     Severity    { get; }
 
         #endregion
 
@@ -48,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new set monitoring level request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="Severity">The charging station SHALL only report events with a severity number lower than or equal to this severity.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -59,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetMonitoringLevelRequest(ChargingStation_Id             ChargeBoxId,
+        public SetMonitoringLevelRequest(ChargingStation_Id       ChargingStationId,
                                          Severities               Severity,
 
                                          IEnumerable<KeyPair>?    SignKeys            = null,
@@ -75,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          EventTracking_Id?        EventTrackingId     = null,
                                          CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "SetMonitoringLevel",
 
                    SignKeys,
@@ -94,6 +110,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         {
 
             this.Severity = Severity;
+
+            unchecked
+            {
+
+                hashCode = this.Severity.GetHashCode() * 3 ^
+                           base.         GetHashCode();
+
+            }
 
         }
 
@@ -140,24 +164,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomSetMonitoringLevelRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomSetMonitoringLevelRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a set monitoring level request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomSetMonitoringLevelRequestParser">A delegate to parse custom set monitoring level requests.</param>
         public static SetMonitoringLevelRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      ChargingStation_Id                                             ChargeBoxId,
+                                                      ChargingStation_Id                                       ChargingStationId,
                                                       CustomJObjectParserDelegate<SetMonitoringLevelRequest>?  CustomSetMonitoringLevelRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var setMonitoringLevelRequest,
                          out var errorResponse,
                          CustomSetMonitoringLevelRequestParser))
@@ -172,7 +196,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out SetMonitoringLevelRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out SetMonitoringLevelRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -181,18 +205,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="SetMonitoringLevelRequest">The parsed set monitoring level request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                         JSON,
                                        Request_Id                      RequestId,
-                                       ChargingStation_Id                    ChargeBoxId,
+                                       ChargingStation_Id              ChargingStationId,
                                        out SetMonitoringLevelRequest?  SetMonitoringLevelRequest,
                                        out String?                     ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out SetMonitoringLevelRequest,
                         out ErrorResponse,
                         null);
@@ -203,13 +227,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="SetMonitoringLevelRequest">The parsed set monitoring level request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetMonitoringLevelRequestParser">A delegate to parse custom set monitoring level requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       ChargingStation_Id                                             ChargeBoxId,
+                                       ChargingStation_Id                                       ChargingStationId,
                                        out SetMonitoringLevelRequest?                           SetMonitoringLevelRequest,
                                        out String?                                              ErrorResponse,
                                        CustomJObjectParserDelegate<SetMonitoringLevelRequest>?  CustomSetMonitoringLevelRequestParser)
@@ -220,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 SetMonitoringLevelRequest = null;
 
-                #region Severity       [mandatory]
+                #region Severity             [mandatory]
 
                 if (!JSON.ParseMandatory("severity",
                                          "severity",
@@ -237,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures     [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -251,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData     [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -265,20 +289,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId    [optional, OCPP_CSE]
+                #region ChargingStationId    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -286,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 SetMonitoringLevelRequest = new SetMonitoringLevelRequest(
-                                                ChargeBoxId,
+                                                ChargingStationId,
                                                 Severity.Value,
                                                 null,
                                                 null,
@@ -431,20 +455,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Severity.GetHashCode() * 3 ^
-                       base.    GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

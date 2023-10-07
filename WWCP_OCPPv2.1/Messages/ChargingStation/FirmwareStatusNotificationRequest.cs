@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The firmware status notification request.
     /// </summary>
-    public class FirmwareStatusNotificationRequest : ARequest<FirmwareStatusNotificationRequest>
+    public class FirmwareStatusNotificationRequest : ARequest<FirmwareStatusNotificationRequest>,
+                                                     IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/firmwareStatusNotificationRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext   Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The status of the firmware installation.
@@ -54,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new firmware status notification request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="Status">The status of the firmware installation.</param>
         /// <param name="UpdateFirmwareRequestId">The (optional) request id that was provided in the UpdateFirmwareRequest that started this firmware update.</param>
         /// 
@@ -66,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public FirmwareStatusNotificationRequest(ChargingStation_Id             ChargeBoxId,
+        public FirmwareStatusNotificationRequest(ChargingStation_Id       ChargingStationId,
                                                  FirmwareStatus           Status,
                                                  Int64?                   UpdateFirmwareRequestId   = null,
 
@@ -83,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                  EventTracking_Id?        EventTrackingId           = null,
                                                  CancellationToken        CancellationToken         = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "FirmwareStatusNotification",
 
                    SignKeys,
@@ -103,6 +119,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             this.Status                   = Status;
             this.UpdateFirmwareRequestId  = UpdateFirmwareRequestId;
+
+            unchecked
+            {
+
+                hashCode = this.Status.                  GetHashCode()       * 5 ^
+                          (this.UpdateFirmwareRequestId?.GetHashCode() ?? 0) * 3 ^
+                           base.                         GetHashCode();
+
+            }
 
         }
 
@@ -174,24 +199,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomFirmwareStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomFirmwareStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a firmware status notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomFirmwareStatusNotificationRequestParser">A delegate to parse custom firmware status notification requests.</param>
         public static FirmwareStatusNotificationRequest Parse(JObject                                                          JSON,
                                                               Request_Id                                                       RequestId,
-                                                              ChargingStation_Id                                                     ChargeBoxId,
+                                                              ChargingStation_Id                                               ChargingStationId,
                                                               CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>?  CustomFirmwareStatusNotificationRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var firmwareStatusNotificationRequest,
                          out var errorResponse,
                          CustomFirmwareStatusNotificationRequestParser))
@@ -206,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out FirmwareStatusNotificationRequest, out ErrorResponse)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out FirmwareStatusNotificationRequest, out ErrorResponse)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -215,18 +240,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="FirmwareStatusNotificationRequest">The parsed firmware status notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                 JSON,
                                        Request_Id                              RequestId,
-                                       ChargingStation_Id                            ChargeBoxId,
+                                       ChargingStation_Id                      ChargingStationId,
                                        out FirmwareStatusNotificationRequest?  FirmwareStatusNotificationRequest,
                                        out String?                             ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out FirmwareStatusNotificationRequest,
                         out ErrorResponse,
                         null);
@@ -237,13 +262,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="FirmwareStatusNotificationRequest">The parsed firmware status notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomFirmwareStatusNotificationRequestParser">A delegate to parse custom FirmwareStatusNotification requests.</param>
         public static Boolean TryParse(JObject                                                          JSON,
                                        Request_Id                                                       RequestId,
-                                       ChargingStation_Id                                                     ChargeBoxId,
+                                       ChargingStation_Id                                               ChargingStationId,
                                        out FirmwareStatusNotificationRequest?                           FirmwareStatusNotificationRequest,
                                        out String?                                                      ErrorResponse,
                                        CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>?  CustomFirmwareStatusNotificationRequestParser)
@@ -308,20 +333,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargeBoxId                [optional, OCPP_CSE]
+                #region ChargingStationId          [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -329,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 FirmwareStatusNotificationRequest = new FirmwareStatusNotificationRequest(
-                                                        ChargeBoxId,
+                                                        ChargingStationId,
                                                         Status,
                                                         UpdateFirmwareRequestId,
                                                         null,
@@ -483,23 +508,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Status.                  GetHashCode()       * 5 ^
-
-                      (UpdateFirmwareRequestId?.GetHashCode() ?? 0) * 3 ^
-
-                       base.                    GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

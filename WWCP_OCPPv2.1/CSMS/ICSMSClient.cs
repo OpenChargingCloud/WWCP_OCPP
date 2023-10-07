@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Reset                       (Request)
 
         /// <summary>
-        /// Reset the given charge box.
+        /// Reset the given charging station.
         /// </summary>
         /// <param name="Request">A reset request.</param>
         Task<ResetResponse> Reset(ResetRequest Request);
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region UpdateFirmware              (Request)
 
         /// <summary>
-        /// Initiate a firmware download from the given location at the given charge box.
+        /// Initiate a firmware download from the given location at the given charging station.
         /// </summary>
         /// <param name="Request">An update firmware request.</param>
         Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request);

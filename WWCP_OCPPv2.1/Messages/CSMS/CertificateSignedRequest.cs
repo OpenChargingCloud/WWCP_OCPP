@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The certificate signed request.
     /// </summary>
-    public class CertificateSignedRequest : ARequest<CertificateSignedRequest>
+    public class CertificateSignedRequest : ARequest<CertificateSignedRequest>,
+                                            IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/certificateSignedRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext           Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The signed PEM encoded X.509 certificates.
@@ -43,8 +59,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// certificate chain, starting from the leaf certificate.
         /// The Configuration Variable MaxCertificateChainSize can
         /// be used to limit the maximum size of this field.
-        /// 
-        /// [max 10000]
         /// </summary>
         [Mandatory]
         public CertificateChain        CertificateChain    { get; }
@@ -70,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a certificate signing request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CertificateChain">The signed PEM encoded X.509 certificates. This can also contain the necessary sub CA certificates.</param>
         /// <param name="CertificateType">The certificate/key usage.</param>
         /// 
@@ -82,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public CertificateSignedRequest(ChargingStation_Id             ChargeBoxId,
+        public CertificateSignedRequest(ChargingStation_Id       ChargingStationId,
                                         CertificateChain         CertificateChain,
                                         CertificateSigningUse?   CertificateType     = null,
 
@@ -99,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         EventTracking_Id?        EventTrackingId     = null,
                                         CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "CertificateSigned",
 
                    SignKeys,
@@ -119,6 +133,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             this.CertificateChain  = CertificateChain;
             this.CertificateType   = CertificateType;
+
+            unchecked
+            {
+
+                hashCode = this.CertificateChain.GetHashCode()       * 5 ^
+                          (this.CertificateType?.GetHashCode() ?? 0) * 3 ^
+                           base.                 GetHashCode();
+
+            }
 
         }
 
@@ -179,24 +202,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomCertificateSignedRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomCertificateSignedRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a certificate signed request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomCertificateSignedRequestParser">A delegate to parse custom certificate signed requests.</param>
         public static CertificateSignedRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
-                                                     ChargingStation_Id                                            ChargeBoxId,
+                                                     ChargingStation_Id                                      ChargingStationId,
                                                      CustomJObjectParserDelegate<CertificateSignedRequest>?  CustomCertificateSignedRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var certificateSignedRequest,
                          out var errorResponse,
                          CustomCertificateSignedRequestParser))
@@ -211,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out CertificateSignedRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out CertificateSignedRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -220,18 +243,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CertificateSignedRequest">The parsed CertificateSigned request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                        JSON,
                                        Request_Id                     RequestId,
-                                       ChargingStation_Id                   ChargeBoxId,
+                                       ChargingStation_Id             ChargingStationId,
                                        out CertificateSignedRequest?  CertificateSignedRequest,
                                        out String?                    ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out CertificateSignedRequest,
                         out ErrorResponse,
                         null);
@@ -242,13 +265,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CertificateSignedRequest">The parsed certificate signed request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomCertificateSignedRequestParser">A delegate to parse custom certificate signed requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
-                                       ChargingStation_Id                                            ChargeBoxId,
+                                       ChargingStation_Id                                      ChargingStationId,
                                        out CertificateSignedRequest?                           CertificateSignedRequest,
                                        out String?                                             ErrorResponse,
                                        CustomJObjectParserDelegate<CertificateSignedRequest>?  CustomCertificateSignedRequestParser)
@@ -259,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 CertificateSignedRequest = null;
 
-                #region CertificateChain    [mandatory]
+                #region CertificateChain     [mandatory]
 
                 if (!JSON.ParseMandatoryText("certificateChain",
                                              "certificate chain",
@@ -279,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CertificateType     [optional]
+                #region CertificateType      [optional]
 
                 if (JSON.ParseOptional("certificateType",
                                        "certificate signing use",
@@ -293,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures          [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -307,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData          [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -321,20 +344,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId         [optional, OCPP_CSE]
+                #region ChargingStationId    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -342,7 +365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 CertificateSignedRequest = new CertificateSignedRequest(
-                                               ChargeBoxId,
+                                               ChargingStationId,
                                                CertificateChain,
                                                CertificateType,
                                                null,
@@ -495,23 +518,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return CertificateChain.GetHashCode()       * 5 ^
-
-                      (CertificateType?.GetHashCode() ?? 0) * 3 ^
-
-                       base.            GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

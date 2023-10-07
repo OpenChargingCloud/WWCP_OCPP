@@ -29,16 +29,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The set display message request.
     /// </summary>
-    public class SetDisplayMessageRequest : ARequest<SetDisplayMessageRequest>
+    public class SetDisplayMessageRequest : ARequest<SetDisplayMessageRequest>,
+                                            IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/setDisplayMessageRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The display message to be shown at the charging station.
         /// </summary>
         [Mandatory]
-        public MessageInfo  Message    { get; }
+        public MessageInfo    Message    { get; }
 
         #endregion
 
@@ -47,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new set display message request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="Message">A display message to be shown at the charging station.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -58,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetDisplayMessageRequest(ChargingStation_Id             ChargeBoxId,
+        public SetDisplayMessageRequest(ChargingStation_Id       ChargingStationId,
                                         MessageInfo              Message,
 
                                         IEnumerable<KeyPair>?    SignKeys            = null,
@@ -74,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         EventTracking_Id?        EventTrackingId     = null,
                                         CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "SetDisplayMessage",
 
                    SignKeys,
@@ -93,6 +109,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         {
 
             this.Message = Message;
+
+            unchecked
+            {
+
+                hashCode = this.Message.GetHashCode() * 3 ^
+                           base.        GetHashCode();
+
+            }
 
         }
 
@@ -297,24 +321,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomSetDisplayMessageRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomSetDisplayMessageRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a set display message request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomSetDisplayMessageRequestParser">A delegate to parse custom set display message requests.</param>
         public static SetDisplayMessageRequest Parse(JObject                                                 JSON,
                                                      Request_Id                                              RequestId,
-                                                     ChargingStation_Id                                            ChargeBoxId,
+                                                     ChargingStation_Id                                      ChargingStationId,
                                                      CustomJObjectParserDelegate<SetDisplayMessageRequest>?  CustomSetDisplayMessageRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var setDisplayMessageRequest,
                          out var errorResponse,
                          CustomSetDisplayMessageRequestParser))
@@ -329,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out SetDisplayMessageRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out SetDisplayMessageRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -338,18 +362,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="SetDisplayMessageRequest">The parsed set display message request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                        JSON,
                                        Request_Id                     RequestId,
-                                       ChargingStation_Id                   ChargeBoxId,
+                                       ChargingStation_Id             ChargingStationId,
                                        out SetDisplayMessageRequest?  SetDisplayMessageRequest,
                                        out String?                    ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out SetDisplayMessageRequest,
                         out ErrorResponse,
                         null);
@@ -360,13 +384,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="SetDisplayMessageRequest">The parsed set display message request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetDisplayMessageRequestParser">A delegate to parse custom set display message requests.</param>
         public static Boolean TryParse(JObject                                                 JSON,
                                        Request_Id                                              RequestId,
-                                       ChargingStation_Id                                            ChargeBoxId,
+                                       ChargingStation_Id                                      ChargingStationId,
                                        out SetDisplayMessageRequest?                           SetDisplayMessageRequest,
                                        out String?                                             ErrorResponse,
                                        CustomJObjectParserDelegate<SetDisplayMessageRequest>?  CustomSetDisplayMessageRequestParser)
@@ -377,7 +401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 SetDisplayMessageRequest = null;
 
-                #region Message        [mandatory]
+                #region Message              [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("message",
                                              "display message",
@@ -391,7 +415,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures     [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -405,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData     [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -419,20 +443,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId    [optional, OCPP_CSE]
+                #region ChargingStationId    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -440,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 SetDisplayMessageRequest = new SetDisplayMessageRequest(
-                                               ChargeBoxId,
+                                               ChargingStationId,
                                                Message,
                                                null,
                                                null,
@@ -597,20 +621,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Message.GetHashCode() * 3 ^
-                       base.   GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

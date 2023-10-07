@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The reset request.
     /// </summary>
-    public class ResetRequest : ARequest<ResetRequest>
+    public class ResetRequest : ARequest<ResetRequest>,
+                                IRequest
     {
 
         #region Data
@@ -44,16 +45,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Properties
 
         /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
+
+        /// <summary>
         /// The type of reset that the charging station should perform.
         /// </summary>
         [Mandatory]
-        public ResetTypes  ResetType    { get; }
+        public ResetTypes     ResetType    { get; }
 
         /// <summary>
         /// The optional EVSE identification.
         /// </summary>
         [Optional]
-        public EVSE_Id?    EVSEId       { get; }
+        public EVSE_Id?       EVSEId       { get; }
 
         #endregion
 
@@ -62,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new reset request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ResetType">The type of reset that the charging station should perform.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
         /// 
@@ -74,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ResetRequest(ChargingStation_Id             ChargeBoxId,
+        public ResetRequest(ChargingStation_Id       ChargingStationId,
                             ResetTypes               ResetType,
                             EVSE_Id?                 EVSEId              = null,
 
@@ -92,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             CancellationToken        CancellationToken   = default)
 
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "Reset",
 
                    SignKeys,
@@ -112,6 +119,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             this.ResetType  = ResetType;
             this.EVSEId     = EVSEId;
+
+            unchecked
+            {
+
+                hashCode = this.ResetType.GetHashCode()       * 5 ^
+                          (this.EVSEId?.  GetHashCode() ?? 0) * 3 ^
+                           base.          GetHashCode();
+
+            }
 
         }
 
@@ -171,24 +187,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomResetRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomResetRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a reset request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomResetRequestParser">A delegate to parse custom reset requests.</param>
         public static ResetRequest Parse(JObject                                     JSON,
                                          Request_Id                                  RequestId,
-                                         ChargingStation_Id                                ChargeBoxId,
+                                         ChargingStation_Id                          ChargingStationId,
                                          CustomJObjectParserDelegate<ResetRequest>?  CustomResetRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var resetRequest,
                          out var errorResponse,
                          CustomResetRequestParser))
@@ -203,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out ResetRequest, out ErrorResponse, CustomResetRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out ResetRequest, out ErrorResponse, CustomResetRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -212,18 +228,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="ResetRequestJSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ResetRequest">The parsed reset request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject            ResetRequestJSON,
-                                       Request_Id         RequestId,
-                                       ChargingStation_Id       ChargeBoxId,
-                                       out ResetRequest?  ResetRequest,
-                                       out String?        ErrorResponse)
+        public static Boolean TryParse(JObject             ResetRequestJSON,
+                                       Request_Id          RequestId,
+                                       ChargingStation_Id  ChargingStationId,
+                                       out ResetRequest?   ResetRequest,
+                                       out String?         ErrorResponse)
 
             => TryParse(ResetRequestJSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out ResetRequest,
                         out ErrorResponse,
                         null);
@@ -234,13 +250,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ResetRequest">The parsed reset request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomResetRequestParser">A delegate to parse custom Reset requests.</param>
         public static Boolean TryParse(JObject                                     JSON,
                                        Request_Id                                  RequestId,
-                                       ChargingStation_Id                                ChargeBoxId,
+                                       ChargingStation_Id                          ChargingStationId,
                                        out ResetRequest?                           ResetRequest,
                                        out String?                                 ErrorResponse,
                                        CustomJObjectParserDelegate<ResetRequest>?  CustomResetRequestParser)
@@ -251,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 ResetRequest = null;
 
-                #region ResetType      [mandatory]
+                #region ResetType            [mandatory]
 
                 if (!JSON.ParseMandatory("type",
                                          "reset type",
@@ -264,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region EVSEId         [optional]
+                #region EVSEId               [optional]
 
                 if (JSON.ParseOptional("evseId",
                                        "evse identification",
@@ -278,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures     [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -292,7 +308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData     [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -306,20 +322,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId    [optional, OCPP_CSE]
+                #region ChargingStationId    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -327,7 +343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 ResetRequest = new ResetRequest(
-                                   ChargeBoxId,
+                                   ChargingStationId,
                                    ResetType,
                                    EVSEId,
                                    null,
@@ -480,22 +496,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ResetType.GetHashCode()       * 5 ^
-                      (EVSEId?.  GetHashCode() ?? 0) * 3 ^
-
-                       base.     GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

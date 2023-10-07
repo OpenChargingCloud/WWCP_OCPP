@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The security event notification request.
     /// </summary>
-    public class SecurityEventNotificationRequest : ARequest<SecurityEventNotificationRequest>
+    public class SecurityEventNotificationRequest : ARequest<SecurityEventNotificationRequest>,
+                                                    IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/securityEventNotificationRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext      Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// Type of the security event.
@@ -59,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new security event notification request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="Type">Type of the security event.</param>
         /// <param name="Timestamp">The timestamp of the security event.</param>
         /// <param name="TechInfo">Optional additional information about the occurred security event.</param>
@@ -72,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SecurityEventNotificationRequest(ChargingStation_Id             ChargeBoxId,
+        public SecurityEventNotificationRequest(ChargingStation_Id       ChargingStationId,
                                                 SecurityEventType        Type,
                                                 DateTime                 Timestamp,
                                                 String?                  TechInfo            = null,
@@ -90,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 EventTracking_Id?        EventTrackingId     = null,
                                                 CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "SecurityEventNotification",
 
                    SignKeys,
@@ -111,6 +127,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.Type       = Type;
             this.Timestamp  = Timestamp;
             this.TechInfo   = TechInfo;
+
+            unchecked
+            {
+
+                hashCode = this.Type.     GetHashCode()       * 7 ^
+                           this.Timestamp.GetHashCode()       * 5 ^
+                          (this.TechInfo?.GetHashCode() ?? 0) * 3 ^
+                           base.          GetHashCode();
+
+            }
 
         }
 
@@ -169,24 +195,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomSecurityEventNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomSecurityEventNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a security event notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomSecurityEventNotificationRequestParser">A delegate to parse custom security event notification requests.</param>
         public static SecurityEventNotificationRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
-                                                             ChargingStation_Id                                                    ChargeBoxId,
+                                                             ChargingStation_Id                                              ChargingStationId,
                                                              CustomJObjectParserDelegate<SecurityEventNotificationRequest>?  CustomSecurityEventNotificationRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var securityEventNotificationRequest,
                          out var errorResponse,
                          CustomSecurityEventNotificationRequestParser))
@@ -201,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out SecurityEventNotificationRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out SecurityEventNotificationRequest, OnException = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -210,18 +236,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="SecurityEventNotificationRequest">The parsed security event notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                JSON,
                                        Request_Id                             RequestId,
-                                       ChargingStation_Id                           ChargeBoxId,
+                                       ChargingStation_Id                     ChargingStationId,
                                        out SecurityEventNotificationRequest?  SecurityEventNotificationRequest,
                                        out String?                            ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out SecurityEventNotificationRequest,
                         out ErrorResponse,
                         null);
@@ -232,13 +258,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="SecurityEventNotificationRequest">The parsed security event notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSecurityEventNotificationRequestParser">A delegate to parse custom security event notification requests.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
-                                       ChargingStation_Id                                                    ChargeBoxId,
+                                       ChargingStation_Id                                              ChargingStationId,
                                        out SecurityEventNotificationRequest?                           SecurityEventNotificationRequest,
                                        out String?                                                     ErrorResponse,
                                        CustomJObjectParserDelegate<SecurityEventNotificationRequest>?  CustomSecurityEventNotificationRequestParser)
@@ -249,7 +275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 SecurityEventNotificationRequest = null;
 
-                #region Type           [mandatory]
+                #region Type                 [mandatory]
 
                 if (!JSON.ParseMandatory("type",
                                          "security event type",
@@ -262,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region Timestamp      [mandatory]
+                #region Timestamp            [mandatory]
 
                 if (!JSON.ParseMandatory("timestamp",
                                          "timestamp",
@@ -274,13 +300,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region TechInfo       [optional]
+                #region TechInfo             [optional]
 
                 var TechInfo = JSON.GetOptional("techInfo");
 
                 #endregion
 
-                #region Signatures     [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -294,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region CustomData     [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -308,20 +334,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargeBoxId    [optional, OCPP_CSE]
+                #region ChargingStationId    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -329,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 SecurityEventNotificationRequest = new SecurityEventNotificationRequest(
-                                                       ChargeBoxId,
+                                                       ChargingStationId,
                                                        Type,
                                                        Timestamp,
                                                        TechInfo,
@@ -486,23 +512,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Type.     GetHashCode()       * 7 ^
-                       Timestamp.GetHashCode()       * 5 ^
-                      (TechInfo?.GetHashCode() ?? 0) * 3 ^
-
-                       base.     GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -513,9 +529,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Type,
-                             " @ ",
-                             Timestamp.ToIso8601());
+            => $"{Type} ({Timestamp})";
 
         #endregion
 

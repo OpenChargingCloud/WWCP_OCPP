@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The request stop transaction request.
     /// </summary>
-    public class RequestStopTransactionRequest : ARequest<RequestStopTransactionRequest>
+    public class RequestStopTransactionRequest : ARequest<RequestStopTransactionRequest>,
+                                                 IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/requestStopTransactionRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext   Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The identification of the transaction which the charing
@@ -49,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new request stop transaction request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="TransactionId">The identification of the transaction which the charging station is requested to stop.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -60,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public RequestStopTransactionRequest(ChargingStation_Id             ChargeBoxId,
+        public RequestStopTransactionRequest(ChargingStation_Id       ChargingStationId,
                                              Transaction_Id           TransactionId,
 
                                              IEnumerable<KeyPair>?    SignKeys            = null,
@@ -76,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              EventTracking_Id?        EventTrackingId     = null,
                                              CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "RequestStopTransaction",
 
                    SignKeys,
@@ -95,6 +111,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         {
 
             this.TransactionId = TransactionId;
+
+            unchecked
+            {
+
+                hashCode = this.TransactionId.GetHashCode() * 3 ^
+                           base.              GetHashCode();
+
+            }
 
         }
 
@@ -142,24 +166,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomRequestStopTransactionRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomRequestStopTransactionRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a request stop transaction request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomRequestStopTransactionRequestParser">A delegate to parse custom request stop transaction requests.</param>
         public static RequestStopTransactionRequest Parse(JObject                                                      JSON,
                                                           Request_Id                                                   RequestId,
-                                                          ChargingStation_Id                                                 ChargeBoxId,
+                                                          ChargingStation_Id                                           ChargingStationId,
                                                           CustomJObjectParserDelegate<RequestStopTransactionRequest>?  CustomRequestStopTransactionRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var requestStopTransactionRequest,
                          out var errorResponse,
                          CustomRequestStopTransactionRequestParser))
@@ -174,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out RequestStopTransactionRequest, out ErrorResponse, CustomRequestStopTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out RequestStopTransactionRequest, out ErrorResponse, CustomRequestStopTransactionRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -183,18 +207,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="RequestStopTransactionRequest">The parsed request stop transaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                             JSON,
                                        Request_Id                          RequestId,
-                                       ChargingStation_Id                        ChargeBoxId,
+                                       ChargingStation_Id                  ChargingStationId,
                                        out RequestStopTransactionRequest?  RequestStopTransactionRequest,
                                        out String?                         ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out RequestStopTransactionRequest,
                         out ErrorResponse,
                         null);
@@ -205,13 +229,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="RequestStopTransactionRequest">The parsed request stop transaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomRequestStopTransactionRequestParser">A delegate to parse custom request stop transaction requests.</param>
         public static Boolean TryParse(JObject                                                      JSON,
                                        Request_Id                                                   RequestId,
-                                       ChargingStation_Id                                                 ChargeBoxId,
+                                       ChargingStation_Id                                           ChargingStationId,
                                        out RequestStopTransactionRequest?                           RequestStopTransactionRequest,
                                        out String?                                                  ErrorResponse,
                                        CustomJObjectParserDelegate<RequestStopTransactionRequest>?  CustomRequestStopTransactionRequestParser)
@@ -222,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 RequestStopTransactionRequest = null;
 
-                #region TransactionId    [mandatory]
+                #region TransactionId        [mandatory]
 
                 if (!JSON.ParseMandatory("transactionId",
                                          "transaction identification",
@@ -235,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures       [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -249,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData       [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -263,20 +287,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId      [optional, OCPP_CSE]
+                #region ChargingStationId    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -284,7 +308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 RequestStopTransactionRequest = new RequestStopTransactionRequest(
-                                                    ChargeBoxId,
+                                                    ChargingStationId,
                                                     TransactionId,
                                                     null,
                                                     null,
@@ -429,20 +453,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return TransactionId.GetHashCode() * 3 ^
-                       base.         GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

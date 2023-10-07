@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// An authorize request.
     /// </summary>
-    public class AuthorizeRequest : ARequest<AuthorizeRequest>
+    public class AuthorizeRequest : ARequest<AuthorizeRequest>,
+                                    IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/authorizeRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext                 Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The identifier that needs to be authorized.
@@ -59,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new authorize request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// 
         /// <param name="IdToken">The identifier that needs to be authorized.</param>
         /// <param name="Certificate">An optional X.509 certificated presented by the electric vehicle/user (PEM format).</param>
@@ -73,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public AuthorizeRequest(ChargingStation_Id                   ChargeBoxId,
+        public AuthorizeRequest(ChargingStation_Id             ChargingStationId,
 
                                 IdToken                        IdToken,
                                 Certificate?                   Certificate                   = null,
@@ -92,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                 EventTracking_Id?              EventTrackingId               = null,
                                 CancellationToken              CancellationToken             = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "Authorize",
 
                    SignKeys,
@@ -113,6 +129,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.IdToken                      = IdToken;
             this.Certificate                  = Certificate;
             this.ISO15118CertificateHashData  = ISO15118CertificateHashData?.Distinct() ?? Array.Empty<OCSPRequestData>();
+
+            unchecked
+            {
+
+                hashCode = this.IdToken.                    GetHashCode()       * 7 ^
+                          (this.Certificate?.               GetHashCode() ?? 0) * 5 ^
+                           this.ISO15118CertificateHashData.CalcHashCode()      * 3 ^
+                           base.                            GetHashCode();
+
+            }
 
         }
 
@@ -295,24 +321,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomAuthorizeRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomAuthorizeRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an authorize request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom authorize requests.</param>
         public static AuthorizeRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
-                                             ChargingStation_Id                                    ChargeBoxId,
+                                             ChargingStation_Id                              ChargingStationId,
                                              CustomJObjectParserDelegate<AuthorizeRequest>?  CustomAuthorizeRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var authorizeRequest,
                          out var errorResponse,
                          CustomAuthorizeRequestParser))
@@ -327,20 +353,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out AuthorizeRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out AuthorizeRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of an authorize request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="AuthorizeRequest">The parsed authorize request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                JSON,
+                                       Request_Id             RequestId,
+                                       ChargingStation_Id     ChargingStationId,
+                                       out AuthorizeRequest?  AuthorizeRequest,
+                                       out String?            ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargingStationId,
+                        out AuthorizeRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of an authorize request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom authorize requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
-                                       ChargingStation_Id                                    ChargeBoxId,
+                                       ChargingStation_Id                              ChargingStationId,
                                        out AuthorizeRequest?                           AuthorizeRequest,
                                        out String?                                     ErrorResponse,
                                        CustomJObjectParserDelegate<AuthorizeRequest>?  CustomAuthorizeRequestParser)
@@ -423,20 +473,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargeBoxId                    [optional, OCPP_CSE]
+                #region ChargingStationId              [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -444,7 +494,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 AuthorizeRequest = new AuthorizeRequest(
-                                       ChargeBoxId,
+                                       ChargingStationId,
                                        IdToken,
                                        Certificate,
                                        ISO15118CertificateHashData,
@@ -614,23 +664,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return IdToken.                    GetHashCode()       * 7 ^
-                      (Certificate?.               GetHashCode() ?? 0) * 5 ^
-                       ISO15118CertificateHashData.CalcHashCode()      * 3 ^
-
-                       base.                       GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

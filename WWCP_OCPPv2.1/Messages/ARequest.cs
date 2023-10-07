@@ -31,8 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// An abstract generic OCPP request.
     /// </summary>
     /// <typeparam name="TRequest">The type of the OCPP request.</typeparam>
-    public abstract class ARequest<TRequest> : IRequest,
-                                               IEquatable<TRequest>
+    public abstract class ARequest<TRequest> : IEquatable<TRequest>
 
         where TRequest : class, IRequest
 
@@ -55,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The charging station identification.
         /// </summary>
         [Mandatory]
-        public ChargingStation_Id            ChargingStationId    { get; }
+        public ChargingStation_Id      ChargingStationId    { get; }
 
         /// <summary>
         /// The request identification.
@@ -128,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ARequest(ChargingStation_Id             ChargingStationId,
+        public ARequest(ChargingStation_Id       ChargingStationId,
                         String                   Action,
 
                         IEnumerable<KeyPair>?    SignKeys            = null,

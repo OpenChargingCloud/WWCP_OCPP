@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// A report charging profiles request.
     /// </summary>
-    public class ReportChargingProfilesRequest : ARequest<ReportChargingProfilesRequest>
+    public class ReportChargingProfilesRequest : ARequest<ReportChargingProfilesRequest>,
+                                                 IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/reportChargingProfilesRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext                 Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The request identification used to match the GetChargingProfilesRequest message with the resulting ReportChargingProfilesRequest messages.
@@ -74,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a report charging profiles request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ReportChargingProfilesRequestId">The request identification used to match the GetChargingProfilesRequest message with the resulting ReportChargingProfilesRequest messages. When the CSMS provided a requestId in the GetChargingProfilesRequest, this field SHALL contain the same value.</param>
         /// <param name="ChargingLimitSource">The source that has installed this charging profile.</param>
         /// <param name="EVSEId">The evse to which the charging profile applies. If evseId = 0, the message contains an overall limit for the charging station.</param>
@@ -89,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ReportChargingProfilesRequest(ChargingStation_Id                  ChargeBoxId,
+        public ReportChargingProfilesRequest(ChargingStation_Id            ChargingStationId,
                                              Int32                         ReportChargingProfilesRequestId,
                                              ChargingLimitSources          ChargingLimitSource,
                                              EVSE_Id                       EVSEId,
@@ -109,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              EventTracking_Id?             EventTrackingId     = null,
                                              CancellationToken             CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "ReportChargingProfiles",
 
                    SignKeys,
@@ -136,6 +152,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.EVSEId                           = EVSEId;
             this.ChargingProfiles                 = ChargingProfiles.Distinct();
             this.ToBeContinued                    = ToBeContinued;
+
+            unchecked
+            {
+
+                hashCode = this.ReportChargingProfilesRequestId.GetHashCode()       * 17 ^
+                           this.ChargingLimitSource.            GetHashCode()       * 13 ^
+                           this.EVSEId.                         GetHashCode()       * 11 ^
+                           this.ChargingProfiles.               CalcHashCode()      *  7 ^
+                          (this.ToBeContinued?.                 GetHashCode() ?? 0) *  5 ^
+                          (this.CustomData?.                    GetHashCode() ?? 0) *  3 ^
+                           base.                                GetHashCode();
+
+            }
 
         }
 
@@ -553,24 +582,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomReportChargingProfilesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomReportChargingProfilesRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a report charging profiles request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomReportChargingProfilesRequestParser">A delegate to parse custom report charging profiles requests.</param>
         public static ReportChargingProfilesRequest Parse(JObject                                                      JSON,
                                                           Request_Id                                                   RequestId,
-                                                          ChargingStation_Id                                                 ChargeBoxId,
+                                                          ChargingStation_Id                                           ChargingStationId,
                                                           CustomJObjectParserDelegate<ReportChargingProfilesRequest>?  CustomReportChargingProfilesRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var reportChargingProfilesRequest,
                          out var errorResponse,
                          CustomReportChargingProfilesRequestParser))
@@ -585,20 +614,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out ReportChargingProfilesRequest, out ErrorResponse, CustomReportChargingProfilesRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out ReportChargingProfilesRequest, out ErrorResponse, CustomReportChargingProfilesRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a report charging profiles request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="ReportChargingProfilesRequest">The parsed report charging profiles request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                             JSON,
+                                       Request_Id                          RequestId,
+                                       ChargingStation_Id                  ChargingStationId,
+                                       out ReportChargingProfilesRequest?  ReportChargingProfilesRequest,
+                                       out String?                         ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargingStationId,
+                        out ReportChargingProfilesRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a report charging profiles request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ReportChargingProfilesRequest">The parsed report charging profiles request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomReportChargingProfilesRequestParser">A delegate to parse custom report charging profiles requests.</param>
         public static Boolean TryParse(JObject                                                      JSON,
                                        Request_Id                                                   RequestId,
-                                       ChargingStation_Id                                                 ChargeBoxId,
+                                       ChargingStation_Id                                                 ChargingStationId,
                                        out ReportChargingProfilesRequest?                           ReportChargingProfilesRequest,
                                        out String?                                                  ErrorResponse,
                                        CustomJObjectParserDelegate<ReportChargingProfilesRequest>?  CustomReportChargingProfilesRequestParser)
@@ -701,20 +754,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargeBoxId                        [optional, OCPP_CSE]
+                #region ChargingStationId                        [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -722,7 +775,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 ReportChargingProfilesRequest = new ReportChargingProfilesRequest(
-                                                    ChargeBoxId,
+                                                    ChargingStationId,
                                                     ReportChargingProfilesRequestId,
                                                     ChargingLimitSource,
                                                     EVSEId,
@@ -954,26 +1007,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ReportChargingProfilesRequestId.GetHashCode()       * 17 ^
-                       ChargingLimitSource.            GetHashCode()       * 13 ^
-                       EVSEId.                         GetHashCode()       * 11 ^
-                       ChargingProfiles.               CalcHashCode()      *  7 ^
-                      (ToBeContinued?.                 GetHashCode() ?? 0) *  5 ^
-                      (CustomData?.                    GetHashCode() ?? 0) *  3 ^
-
-                       base.                           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -984,14 +1024,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-
-                   ReportChargingProfilesRequestId, ", ",
-                   ChargingLimitSource,             ", ",
-                   EVSEId,                          ", ",
-                   ChargingProfiles.Count(), " charging profile(s)"
-
-               );
+            => $"{ReportChargingProfilesRequestId}, {ChargingLimitSource}, {EVSEId}, {ChargingProfiles.Count()} charging profile(s)";
 
         #endregion
 

@@ -34,11 +34,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     {
 
 
-        IEnumerable<ChargeBox>     ChargeBoxes     { get; }
+        IEnumerable<ChargeBox>           ChargeBoxes           { get; }
 
-        IEnumerable<ChargingStation_Id>  ChargeBoxIds    { get; }
+     //   IEnumerable<ChargingStation_Id>  ChargingStationIds    { get; }
 
-        Boolean TryGetChargeBox(ChargingStation_Id ChargeBoxId, out ChargeBox? ChargeBox);
+        Boolean TryGetChargeBox(ChargingStation_Id ChargingStationId, out ChargeBox? ChargeBox);
 
     }
 

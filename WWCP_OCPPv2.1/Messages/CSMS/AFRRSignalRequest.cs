@@ -29,22 +29,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// An automatic frequency restoration reserve (AFRR) signal request.
     /// </summary>
-    public class AFRRSignalRequest : ARequest<AFRRSignalRequest>
+    public class AFRRSignalRequest : ARequest<AFRRSignalRequest>,
+                                     IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/aFRRSignalRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The time when the AFRR signal becomes active.
         /// </summary>
         [Mandatory]
-        public DateTime     ActivationTimestamp    { get; }
+        public DateTime       ActivationTimestamp    { get; }
 
         /// <summary>
         /// The value of the AFRR signal in v2xSignalWattCurve. Usually between -1 and 1.
         /// </summary>
         [Mandatory]
-        public AFRR_Signal  Signal                 { get; }
+        public AFRR_Signal    Signal                 { get; }
 
         #endregion
 
@@ -53,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new automatic frequency restoration reserve (AFRR) signal request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ActivationTimestamp">The time when the signal becomes active.</param>
         /// <param name="Signal">The value of the AFRR signal in v2xSignalWattCurve. Usually between -1 and 1.</param>
         /// 
@@ -65,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public AFRRSignalRequest(ChargingStation_Id             ChargeBoxId,
+        public AFRRSignalRequest(ChargingStation_Id       ChargingStationId,
                                  DateTime                 ActivationTimestamp,
                                  AFRR_Signal              Signal,
 
@@ -82,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  EventTracking_Id?        EventTrackingId     = null,
                                  CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "AFRRSignal",
 
                    SignKeys,
@@ -106,10 +122,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             unchecked
             {
 
-                hashCode = ActivationTimestamp.GetHashCode() * 5 ^
-                           Signal.             GetHashCode() * 3 ^
-
-                           base.               GetHashCode();
+                hashCode = this.ActivationTimestamp.GetHashCode() * 5 ^
+                           this.Signal.             GetHashCode() * 3 ^
+                           base.                    GetHashCode();
 
             }
 
@@ -125,24 +140,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomAFRRSignalRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomAFRRSignalRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an AFRR signal request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomAFRRSignalRequestParser">A delegate to parse custom AFRR signal requests.</param>
         public static AFRRSignalRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
-                                              ChargingStation_Id                                     ChargeBoxId,
+                                              ChargingStation_Id                               ChargingStationId,
                                               CustomJObjectParserDelegate<AFRRSignalRequest>?  CustomAFRRSignalRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var afrrSignalRequest,
                          out var errorResponse,
                          CustomAFRRSignalRequestParser))
@@ -157,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON,  RequestId, ChargeBoxId, out AFRRSignalRequest, out ErrorResponse, CustomAFRRSignalRequestParser = null)
+        #region (static) TryParse(JSON,  RequestId, ChargingStationId, out AFRRSignalRequest, out ErrorResponse, CustomAFRRSignalRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -166,18 +181,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="AFRRSignalRequest">The parsed AFRR signal request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                 JSON,
                                        Request_Id              RequestId,
-                                       ChargingStation_Id            ChargeBoxId,
+                                       ChargingStation_Id      ChargingStationId,
                                        out AFRRSignalRequest?  AFRRSignalRequest,
                                        out String?             ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out AFRRSignalRequest,
                         out ErrorResponse,
                         null);
@@ -188,13 +203,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="AFRRSignalRequest">The parsed AFRR signal request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomAFRRSignalRequestParser">A delegate to parse custom AFRR signal requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
-                                       ChargingStation_Id                                     ChargeBoxId,
+                                       ChargingStation_Id                               ChargingStationId,
                                        out AFRRSignalRequest?                           AFRRSignalRequest,
                                        out String?                                      ErrorResponse,
                                        CustomJObjectParserDelegate<AFRRSignalRequest>?  CustomAFRRSignalRequestParser)
@@ -258,20 +273,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId            [optional, OCPP_CSE]
+                #region ChargingStationId      [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -279,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 AFRRSignalRequest = new AFRRSignalRequest(
-                                        ChargeBoxId,
+                                        ChargingStationId,
                                         ActivationTimestamp,
                                         Signal,
                                         null,

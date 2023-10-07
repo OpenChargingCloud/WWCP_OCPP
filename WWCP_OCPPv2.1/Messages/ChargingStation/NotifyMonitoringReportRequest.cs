@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// A notify monitoring report request.
     /// </summary>
-    public class NotifyMonitoringReportRequest : ARequest<NotifyMonitoringReportRequest>
+    public class NotifyMonitoringReportRequest : ARequest<NotifyMonitoringReportRequest>,
+                                                 IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/notifyMonitoringReportRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext                Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The unique identification of the notify monitoring report request.
@@ -76,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a notify monitoring report request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="NotifyMonitoringReportRequestId">The unique identification of the notify monitoring report request.</param>
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
         /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
@@ -91,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyMonitoringReportRequest(ChargingStation_Id                 ChargeBoxId,
+        public NotifyMonitoringReportRequest(ChargingStation_Id           ChargingStationId,
                                              Int32                        NotifyMonitoringReportRequestId,
                                              UInt32                       SequenceNumber,
                                              DateTime                     GeneratedAt,
@@ -111,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              EventTracking_Id?            EventTrackingId     = null,
                                              CancellationToken            CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "NotifyMonitoringReport",
 
                    SignKeys,
@@ -142,14 +158,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             unchecked
             {
 
-                hashCode = NotifyMonitoringReportRequestId.GetHashCode()       * 17 ^
-                           SequenceNumber.                 GetHashCode()       * 13 ^
-                           GeneratedAt.                    GetHashCode()       * 11 ^
-                           MonitoringData.                 CalcHashCode()      *  7 ^
-                          (ToBeContinued?.                 GetHashCode() ?? 0) *  5 ^
-                          (CustomData?.                    GetHashCode() ?? 0) *  3 ^
-
-                           base.                           GetHashCode();
+                hashCode = this.NotifyMonitoringReportRequestId.GetHashCode()       * 17 ^
+                           this.SequenceNumber.                 GetHashCode()       * 13 ^
+                           this.GeneratedAt.                    GetHashCode()       * 11 ^
+                           this.MonitoringData.                 CalcHashCode()      *  7 ^
+                          (this.ToBeContinued?.                 GetHashCode() ?? 0) *  5 ^
+                          (this.CustomData?.                    GetHashCode() ?? 0) *  3 ^
+                           base.                                GetHashCode();
 
             }
 
@@ -157,8 +172,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-
-        //WTF: monitor is optional, but minItems == 1?
 
         #region Documentation
 
@@ -377,24 +390,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomNotifyMonitoringReportRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomNotifyMonitoringReportRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a notify monitoring report request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomNotifyMonitoringReportRequestParser">A delegate to parse custom notify monitoring report requests.</param>
         public static NotifyMonitoringReportRequest Parse(JObject                                                      JSON,
                                                           Request_Id                                                   RequestId,
-                                                          ChargingStation_Id                                                 ChargeBoxId,
+                                                          ChargingStation_Id                                           ChargingStationId,
                                                           CustomJObjectParserDelegate<NotifyMonitoringReportRequest>?  CustomNotifyMonitoringReportRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var notifyMonitoringReportRequest,
                          out var errorResponse,
                          CustomNotifyMonitoringReportRequestParser))
@@ -409,20 +422,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out NotifyMonitoringReportRequest, out ErrorResponse, CustomNotifyMonitoringReportRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out NotifyMonitoringReportRequest, out ErrorResponse, CustomNotifyMonitoringReportRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a notify monitoring report request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NotifyMonitoringReportRequest">The parsed notify monitoring report request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                             JSON,
+                                       Request_Id                          RequestId,
+                                       ChargingStation_Id                  ChargingStationId,
+                                       out NotifyMonitoringReportRequest?  NotifyMonitoringReportRequest,
+                                       out String?                         ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargingStationId,
+                        out NotifyMonitoringReportRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a notify monitoring report request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="NotifyMonitoringReportRequest">The parsed notify monitoring report request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyMonitoringReportRequestParser">A delegate to parse custom notify monitoring report requests.</param>
         public static Boolean TryParse(JObject                                                      JSON,
                                        Request_Id                                                   RequestId,
-                                       ChargingStation_Id                                                 ChargeBoxId,
+                                       ChargingStation_Id                                           ChargingStationId,
                                        out NotifyMonitoringReportRequest?                           NotifyMonitoringReportRequest,
                                        out String?                                                  ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyMonitoringReportRequest>?  CustomNotifyMonitoringReportRequestParser)
@@ -523,20 +560,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargeBoxId                        [optional, OCPP_CSE]
+                #region ChargingStationId                  [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -544,7 +581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 NotifyMonitoringReportRequest = new NotifyMonitoringReportRequest(
-                                                    ChargeBoxId,
+                                                    ChargingStationId,
                                                     NotifyMonitoringReportRequestId,
                                                     SequenceNumber,
                                                     GeneratedAt,
@@ -739,7 +776,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => $"{NotifyMonitoringReportRequestId}: {GeneratedAt.ToIso8601()}";
+            => $"{NotifyMonitoringReportRequestId} ({GeneratedAt})";
 
         #endregion
 

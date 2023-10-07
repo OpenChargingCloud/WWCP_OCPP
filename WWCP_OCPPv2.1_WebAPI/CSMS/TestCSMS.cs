@@ -111,10 +111,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => centralSystemServers;
 
         /// <summary>
-        /// The unique identifications of all connected or reachable charge boxes.
+        /// The unique identifications of all connected or reachable charging stations.
         /// </summary>
-        public IEnumerable<ChargingStation_Id> ChargeBoxIds
-            => reachableChargingStations.Values.SelectMany(csmsChannel => csmsChannel.Item1.ChargeBoxIds);
+        public IEnumerable<ChargingStation_Id> ChargingStationIds
+            => reachableChargingStations.Values.SelectMany(csmsChannel => csmsChannel.Item1.ChargingStationIds);
 
 
         public Dictionary<String, Transaction_Id> TransactionIds = new ();

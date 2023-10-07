@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The trigger message request.
     /// </summary>
-    public class TriggerMessageRequest : ARequest<TriggerMessageRequest>
+    public class TriggerMessageRequest : ARequest<TriggerMessageRequest>,
+                                         IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/triggerMessageRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext    Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The message to trigger.
@@ -54,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new trigger message request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
         /// 
@@ -66,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public TriggerMessageRequest(ChargingStation_Id             ChargeBoxId,
+        public TriggerMessageRequest(ChargingStation_Id       ChargingStationId,
                                      MessageTriggers          RequestedMessage,
                                      EVSE?                    EVSE                = null,
 
@@ -83,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      EventTracking_Id?        EventTrackingId     = null,
                                      CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "TriggerMessage",
 
                    SignKeys,
@@ -103,6 +119,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             this.RequestedMessage  = RequestedMessage;
             this.EVSE              = EVSE;
+
+            unchecked
+            {
+
+                hashCode = this.RequestedMessage.GetHashCode()       * 5 ^
+                          (this.EVSE?.           GetHashCode() ?? 0) * 3 ^
+                           base.                 GetHashCode();
+
+            }
 
         }
 
@@ -192,24 +217,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomTriggerMessageRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomTriggerMessageRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a trigger message request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom trigger message requests.</param>
         public static TriggerMessageRequest Parse(JObject                                              JSON,
                                                   Request_Id                                           RequestId,
-                                                  ChargingStation_Id                                         ChargeBoxId,
+                                                  ChargingStation_Id                                   ChargingStationId,
                                                   CustomJObjectParserDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var triggerMessageRequest,
                          out var errorResponse,
                          CustomTriggerMessageRequestParser))
@@ -224,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out TriggerMessageRequest, out ErrorResponse, CustomTriggerMessageRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out TriggerMessageRequest, out ErrorResponse, CustomTriggerMessageRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -233,18 +258,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                     JSON,
                                        Request_Id                  RequestId,
-                                       ChargingStation_Id                ChargeBoxId,
+                                       ChargingStation_Id          ChargingStationId,
                                        out TriggerMessageRequest?  TriggerMessageRequest,
                                        out String?                 ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out TriggerMessageRequest,
                         out ErrorResponse,
                         null);
@@ -255,13 +280,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom trigger message requests.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        Request_Id                                           RequestId,
-                                       ChargingStation_Id                                         ChargeBoxId,
+                                       ChargingStation_Id                                   ChargingStationId,
                                        out TriggerMessageRequest?                           TriggerMessageRequest,
                                        out String?                                          ErrorResponse,
                                        CustomJObjectParserDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestParser)
@@ -272,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 TriggerMessageRequest = null;
 
-                #region MessageTriggers    [mandatory]
+                #region MessageTriggers      [mandatory]
 
                 if (!JSON.ParseMandatory("requestedMessage",
                                          "requested message",
@@ -285,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region EVSE               [optional]
+                #region EVSE                 [optional]
 
                 if (JSON.ParseOptionalJSON("evse",
                                            "evse",
@@ -299,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures         [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -313,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData         [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -327,20 +352,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId        [optional, OCPP_CSE]
+                #region ChargingStationId    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -348,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 TriggerMessageRequest = new TriggerMessageRequest(
-                                            ChargeBoxId,
+                                            ChargingStationId,
                                             MessageTriggers,
                                             EVSE,
                                             null,
@@ -504,22 +529,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return RequestedMessage.GetHashCode()       * 5 ^
-                      (EVSE?.           GetHashCode() ?? 0) * 3 ^
-
-                       base.            GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

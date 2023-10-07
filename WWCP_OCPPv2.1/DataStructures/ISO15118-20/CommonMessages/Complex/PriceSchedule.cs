@@ -20,7 +20,6 @@
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes;
-using System;
 
 #endregion
 

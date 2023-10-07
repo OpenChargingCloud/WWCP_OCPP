@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The enumeration of all connected charging stations.
         /// </summary>
-        public IEnumerable<ChargingStation_Id> ChargeBoxIds
+        public IEnumerable<ChargingStation_Id> ChargingStationIds
             => connectedChargingStations.Keys;
 
         /// <summary>
@@ -6927,11 +6927,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SendRequest(EventTrackingId, RequestId, ChargeBoxId, OCPPAction, JSONPayload, RequestTimeout = null)
+        #region SendRequest(EventTrackingId, RequestId, ChargingStationId, OCPPAction, JSONPayload, RequestTimeout = null)
 
         public async Task<SendRequestState> SendRequest(EventTracking_Id  EventTrackingId,
                                                         Request_Id        RequestId,
-                                                        ChargingStation_Id      ChargeBoxId,
+                                                        ChargingStation_Id      ChargingStationId,
                                                         String            OCPPAction,
                                                         JObject           JSONPayload,
                                                         TimeSpan?         RequestTimeout   = null)
@@ -6942,7 +6942,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             var sendJSONResult  = await SendJSON(
                                       EventTrackingId,
                                       RequestId,
-                                      ChargeBoxId,
+                                      ChargingStationId,
                                       OCPPAction,
                                       JSONPayload,
                                       endTime
@@ -7015,7 +7015,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             return new SendRequestState(
                        Timestamp:           now,
-                       ChargingStationId:         ChargeBoxId,
+                       ChargingStationId:         ChargingStationId,
                        WSRequestMessage:    new OCPP_WebSocket_RequestMessage(
                                                 RequestId,
                                                 OCPPAction,
@@ -7033,7 +7033,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region SendJSON   (EventTrackingId, RequestId, ChargeBoxId, Action, JSON, RequestTimeout)
+        #region SendJSON   (EventTrackingId, RequestId, ChargingStationId, Action, JSON, RequestTimeout)
 
         /// <summary>
         /// Send (and forget) the given JSON.
@@ -7046,7 +7046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">A request timeout.</param>
         public async Task<SendJSONResults> SendJSON(EventTracking_Id  EventTrackingId,
                                                     Request_Id        RequestId,
-                                                    ChargingStation_Id      ChargeBoxId,
+                                                    ChargingStation_Id      ChargingStationId,
                                                     String            Action,
                                                     JObject           JSON,
                                                     DateTime          RequestTimeout)
@@ -7063,7 +7063,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<ChargingStation_Id>(chargingStationId_WebSocketKey) == ChargeBoxId).
+                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<ChargingStation_Id>(chargingStationId_WebSocketKey) == ChargingStationId).
                                                                  ToArray();
 
                 if (webSocketConnections.Any())
@@ -7072,7 +7072,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     requests.TryAdd(RequestId,
                                     new SendRequestState(
                                         Timestamp.Now,
-                                        ChargeBoxId,
+                                        ChargingStationId,
                                         wsRequestMessage,
                                         RequestTimeout
                                     ));

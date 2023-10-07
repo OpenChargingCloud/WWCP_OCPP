@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// A status notification request.
     /// </summary>
-    public class StatusNotificationRequest : ARequest<StatusNotificationRequest>
+    public class StatusNotificationRequest : ARequest<StatusNotificationRequest>,
+                                             IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/statusNotificationRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext    Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The time for which the status is reported.
@@ -65,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a status notification request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="Timestamp">The time for which the status is reported.</param>
         /// <param name="ConnectorStatus">The current status of the connector.</param>
         /// <param name="EVSEId">The identification of the EVSE to which the connector belongs for which the the status is reported.</param>
@@ -79,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public StatusNotificationRequest(ChargingStation_Id             ChargeBoxId,
+        public StatusNotificationRequest(ChargingStation_Id       ChargingStationId,
                                          DateTime                 Timestamp,
                                          ConnectorStatus          ConnectorStatus,
                                          EVSE_Id                  EVSEId,
@@ -98,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          EventTracking_Id?        EventTrackingId     = null,
                                          CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "StatusNotification",
 
                    SignKeys,
@@ -120,6 +136,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.ConnectorStatus  = ConnectorStatus;
             this.EVSEId           = EVSEId;
             this.ConnectorId      = ConnectorId;
+
+            unchecked
+            {
+
+                hashCode = this.Timestamp.      GetHashCode() * 11 ^
+                           this.ConnectorStatus.GetHashCode() *  7 ^
+                           this.EVSEId.         GetHashCode() *  5 ^
+                           this.ConnectorId.    GetHashCode() *  3 ^
+                           base.                GetHashCode();
+
+            }
 
         }
 
@@ -194,24 +221,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a status notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom status notification requests.</param>
         public static StatusNotificationRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      ChargingStation_Id                                             ChargeBoxId,
+                                                      ChargingStation_Id                                       ChargingStationId,
                                                       CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var statusNotificationRequest,
                          out var errorResponse,
                          CustomStatusNotificationRequestParser))
@@ -226,20 +253,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out StatusNotificationRequest, out ErrorResponse, CustomStatusNotificationRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out StatusNotificationRequest, out ErrorResponse, CustomStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a status notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom status notification requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       ChargingStation_Id                                             ChargeBoxId,
+                                       ChargingStation_Id                                       ChargingStationId,
                                        out StatusNotificationRequest?                           StatusNotificationRequest,
                                        out String?                                              ErrorResponse,
                                        CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser)
@@ -250,7 +277,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 StatusNotificationRequest = null;
 
-                #region Timestamp          [mandatory]
+                #region Timestamp            [mandatory]
 
                 if (!JSON.ParseMandatory("timestamp",
                                          "timestamp",
@@ -262,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ConnectorStatus    [mandatory]
+                #region ConnectorStatus      [mandatory]
 
                 if (!JSON.ParseMandatory("connectorStatus",
                                          "connector status",
@@ -275,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region EVSEId             [mandatory]
+                #region EVSEId               [mandatory]
 
                 if (!JSON.ParseMandatory("evseId",
                                          "EVSE identification",
@@ -288,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ConnectorId        [mandatory]
+                #region ConnectorId          [mandatory]
 
                 if (!JSON.ParseMandatory("connectorId",
                                          "connector identification",
@@ -301,7 +328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region Signatures         [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -315,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region CustomData         [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -331,20 +358,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargeBoxId        [optional, OCPP_CSE]
+                #region ChargingStationId    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -352,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 StatusNotificationRequest = new StatusNotificationRequest(
-                                                ChargeBoxId,
+                                                ChargingStationId,
                                                 Timestamp,
                                                 ConnectorStatus,
                                                 EVSEId,
@@ -504,24 +531,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Timestamp.      GetHashCode() * 11 ^
-                       ConnectorStatus.GetHashCode() *  7 ^
-                       EVSEId.         GetHashCode() *  5 ^
-                       ConnectorId.    GetHashCode() *  3 ^
-
-                       base.           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -532,9 +548,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Timestamp,
-                             EVSEId, "-", ConnectorId,
-                             " => ", ConnectorStatus);
+            => $"{Timestamp}: {EVSEId} / {ConnectorId} => {ConnectorStatus.AsText()}";
 
         #endregion
 

@@ -29,28 +29,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The data transfer request.
     /// </summary>
-    public class DataTransferRequest : ARequest<DataTransferRequest>
-{
+    public class DataTransferRequest : ARequest<DataTransferRequest>,
+                                       IRequest
+    {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/dataTransferRequest");
+
+        #endregion
 
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The vendor identification or namespace of the given message.
         /// </summary>
         [Mandatory]
-        public Vendor_Id  VendorId     { get; }
+        public Vendor_Id      VendorId     { get; }
 
         /// <summary>
         /// An optional message identification field.
         /// </summary>
         [Optional]
-        public String?    MessageId    { get; }
+        public String?        MessageId    { get; }
 
         /// <summary>
         /// Optional message data without specified length or format.
         /// </summary>
         [Optional]
-        public JToken?    Data         { get; }
+        public JToken?        Data         { get; }
 
         #endregion
 
@@ -59,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new data transfer request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification.</param>
         /// <param name="Data">Optional vendor-specific data (a JSON token).</param>
@@ -72,7 +88,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public DataTransferRequest(ChargingStation_Id             ChargeBoxId,
+        public DataTransferRequest(ChargingStation_Id       ChargingStationId,
                                    Vendor_Id                VendorId,
                                    String?                  MessageId           = null,
                                    JToken?                  Data                = null,
@@ -90,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                    EventTracking_Id?        EventTrackingId     = null,
                                    CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "DataTransfer",
 
                    SignKeys,
@@ -111,6 +127,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.VendorId   = VendorId;
             this.MessageId  = MessageId?.Trim();
             this.Data       = Data;
+
+            unchecked
+            {
+
+                hashCode = this.VendorId.  GetHashCode()       * 7 ^
+                          (this.MessageId?.GetHashCode() ?? 0) * 5 ^
+                          (this.Data?.     GetHashCode() ?? 0) * 3 ^
+                           base.           GetHashCode();
+
+            }
 
         }
 
@@ -166,24 +192,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomDataTransferRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomDataTransferRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a data transfer request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomDataTransferRequestParser">A delegate to parse custom data transfer requests.</param>
         public static DataTransferRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
-                                                ChargingStation_Id                                       ChargeBoxId,
+                                                ChargingStation_Id                                 ChargingStationId,
                                                 CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var dataTransferRequest,
                          out var errorResponse,
                          CustomDataTransferRequestParser))
@@ -198,7 +224,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out DataTransferRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out DataTransferRequest, OnException = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -207,18 +233,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                   JSON,
                                        Request_Id                RequestId,
-                                       ChargingStation_Id              ChargeBoxId,
+                                       ChargingStation_Id        ChargingStationId,
                                        out DataTransferRequest?  DataTransferRequest,
                                        out String?               ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out DataTransferRequest,
                         out ErrorResponse,
                         null);
@@ -229,13 +255,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomDataTransferRequestParser">A delegate to parse custom DataTransfer requests.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
-                                       ChargingStation_Id                                       ChargeBoxId,
+                                       ChargingStation_Id                                 ChargingStationId,
                                        out DataTransferRequest?                           DataTransferRequest,
                                        out String?                                        ErrorResponse,
                                        CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser)
@@ -246,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 DataTransferRequest = null;
 
-                #region VendorId        [mandatory]
+                #region VendorId             [mandatory]
 
                 if (!JSON.ParseMandatory("vendorId",
                                          "vendor identification",
@@ -259,19 +285,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region MessageId       [optional]
+                #region MessageId            [optional]
 
                 var MessageId = JSON.GetString("messageId");
 
                 #endregion
 
-                #region Data            [optional]
+                #region Data                 [optional]
 
                 var Data = JSON["data"];
 
                 #endregion
 
-                #region Signatures      [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -285,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData      [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -299,20 +325,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId     [optional, OCPP_CSE]
+                #region ChargingStationId    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -320,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 DataTransferRequest = new DataTransferRequest(
-                                          ChargeBoxId,
+                                          ChargingStationId,
                                           VendorId,
                                           MessageId,
                                           Data,
@@ -481,23 +507,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return VendorId.  GetHashCode()       * 7 ^
-                      (MessageId?.GetHashCode() ?? 0) * 5 ^
-                      (Data?.     GetHashCode() ?? 0) * 3 ^
-
-                       base.      GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

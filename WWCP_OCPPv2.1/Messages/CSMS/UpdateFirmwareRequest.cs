@@ -30,22 +30,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The update firmware request.
     /// </summary>
-    public class UpdateFirmwareRequest : ARequest<UpdateFirmwareRequest>
+    public class UpdateFirmwareRequest : ARequest<UpdateFirmwareRequest>,
+                                         IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/updateFirmwareRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The firmware image to be installed at the charging station.
         /// </summary>
         [Mandatory]
-        public Firmware   Firmware                   { get; }
+        public Firmware       Firmware                   { get; }
 
         /// <summary>
         /// The update firmware request identification.
         /// </summary>
         [Mandatory]
-        public Int32      UpdateFirmwareRequestId    { get; }
+        public Int32          UpdateFirmwareRequestId    { get; }
 
         /// <summary>
         /// The optional number of retries of a charge point for trying to
@@ -54,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// it wants to retry.
         /// </summary>
         [Optional]
-        public Byte?      Retries                    { get; }
+        public Byte?          Retries                    { get; }
 
         /// <summary>
         /// The interval after which a retry may be attempted. If this field
@@ -62,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// wait between attempts.
         /// </summary>
         [Optional]
-        public TimeSpan?  RetryInterval              { get; }
+        public TimeSpan?      RetryInterval              { get; }
 
         #endregion
 
@@ -71,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new update firmware request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="Firmware">The firmware image to be installed at the charging station.</param>
         /// <param name="UpdateFirmwareRequestId">The update firmware request identification.</param>
         /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
@@ -85,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UpdateFirmwareRequest(ChargingStation_Id             ChargeBoxId,
+        public UpdateFirmwareRequest(ChargingStation_Id       ChargingStationId,
                                      Firmware                 Firmware,
                                      Int32                    UpdateFirmwareRequestId,
                                      Byte?                    Retries             = null,
@@ -104,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      EventTracking_Id?        EventTrackingId     = null,
                                      CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "UpdateFirmware",
 
                    SignKeys,
@@ -126,6 +142,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.UpdateFirmwareRequestId  = UpdateFirmwareRequestId;
             this.Retries                  = Retries;
             this.RetryInterval            = RetryInterval;
+
+            unchecked
+            {
+
+                hashCode = this.Firmware.               GetHashCode()       * 11 ^
+                           this.UpdateFirmwareRequestId.GetHashCode()       *  7 ^
+
+                          (this.Retries?.               GetHashCode() ?? 0) *  5 ^
+                          (this.RetryInterval?.         GetHashCode() ?? 0) *  3 ^
+
+                           base.                        GetHashCode();
+
+            }
 
         }
 
@@ -224,24 +253,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomUpdateFirmwareRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomUpdateFirmwareRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an update firmware request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomUpdateFirmwareRequestParser">A delegate to parse custom update firmware requests.</param>
         public static UpdateFirmwareRequest Parse(JObject                                              JSON,
                                                   Request_Id                                           RequestId,
-                                                  ChargingStation_Id                                         ChargeBoxId,
+                                                  ChargingStation_Id                                   ChargingStationId,
                                                   CustomJObjectParserDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var updateFirmwareRequest,
                          out var errorResponse,
                          CustomUpdateFirmwareRequestParser))
@@ -256,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out UpdateFirmwareRequest, out ErrorResponse, CustomUpdateFirmwareRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out UpdateFirmwareRequest, out ErrorResponse, CustomUpdateFirmwareRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -265,18 +294,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                     JSON,
                                        Request_Id                  RequestId,
-                                       ChargingStation_Id                ChargeBoxId,
+                                       ChargingStation_Id          ChargingStationId,
                                        out UpdateFirmwareRequest?  UpdateFirmwareRequest,
                                        out String?                 ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out UpdateFirmwareRequest,
                         out ErrorResponse,
                         null);
@@ -287,13 +316,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="UpdateFirmwareRequest">The parsed update firmware request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomUpdateFirmwareRequestParser">A delegate to parse custom update firmware requests.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        Request_Id                                           RequestId,
-                                       ChargingStation_Id                                         ChargeBoxId,
+                                       ChargingStation_Id                                   ChargingStationId,
                                        out UpdateFirmwareRequest?                           UpdateFirmwareRequest,
                                        out String?                                          ErrorResponse,
                                        CustomJObjectParserDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestParser)
@@ -384,20 +413,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId                [optional, OCPP_CSE]
+                #region ChargingStationId          [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -405,7 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 UpdateFirmwareRequest = new UpdateFirmwareRequest(
-                                            ChargeBoxId,
+                                            ChargingStationId,
                                             Firmware,
                                             UpdateFirmwareRequestId,
                                             Retries,
@@ -573,24 +602,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Firmware.               GetHashCode()       * 11 ^
-                       UpdateFirmwareRequestId.GetHashCode()       *  7 ^
-                      (Retries?.               GetHashCode() ?? 0) *  5 ^
-                      (RetryInterval?.         GetHashCode() ?? 0) *  3 ^
-
-                       base.                   GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

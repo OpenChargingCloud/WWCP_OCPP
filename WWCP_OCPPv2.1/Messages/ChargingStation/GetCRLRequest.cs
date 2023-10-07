@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// Get a certificate revocation list from CSMS for the specified certificate.
     /// </summary>
-    public class GetCRLRequest : ARequest<GetCRLRequest>
+    public class GetCRLRequest : ARequest<GetCRLRequest>,
+                                 IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/getCRLRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext        Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The identification of this request.
@@ -53,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new get certificate revocation list request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="GetCRLRequestId">The identification of this request.</param>
         /// <param name="CertificateHashData">Certificate hash data.</param>
         /// 
@@ -65,24 +81,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetCRLRequest(ChargingStation_Id             ChargeBoxId,
+        public GetCRLRequest(ChargingStation_Id       ChargingStationId,
                              UInt32                   GetCRLRequestId,
                              CertificateHashData      CertificateHashData,
 
-                             IEnumerable<KeyPair>?    SignKeys                           = null,
-                             IEnumerable<SignInfo>?   SignInfos                          = null,
-                             SignaturePolicy?         SignaturePolicy                    = null,
-                             IEnumerable<Signature>?  Signatures                         = null,
+                             IEnumerable<KeyPair>?    SignKeys            = null,
+                             IEnumerable<SignInfo>?   SignInfos           = null,
+                             SignaturePolicy?         SignaturePolicy     = null,
+                             IEnumerable<Signature>?  Signatures          = null,
 
-                             CustomData?              CustomData                         = null,
+                             CustomData?              CustomData          = null,
 
-                             Request_Id?              RequestId                          = null,
-                             DateTime?                RequestTimestamp                   = null,
-                             TimeSpan?                RequestTimeout                     = null,
-                             EventTracking_Id?        EventTrackingId                    = null,
-                             CancellationToken        CancellationToken                  = default)
+                             Request_Id?              RequestId           = null,
+                             DateTime?                RequestTimestamp    = null,
+                             TimeSpan?                RequestTimeout      = null,
+                             EventTracking_Id?        EventTrackingId     = null,
+                             CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "GetCRL",
 
                    SignKeys,
@@ -103,6 +119,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.GetCRLRequestId      = GetCRLRequestId;
             this.CertificateHashData  = CertificateHashData;
 
+            unchecked
+            {
+
+                hashCode = this.GetCRLRequestId.    GetHashCode() * 5 ^
+                           this.CertificateHashData.GetHashCode() * 3 ^
+                           base.                    GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -115,24 +140,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomGetCRLRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomGetCRLRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a get certificate revocation list request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomGetCRLRequestParser">A delegate to parse custom get certificate revocation list requests.</param>
         public static GetCRLRequest Parse(JObject                                      JSON,
                                           Request_Id                                   RequestId,
-                                          ChargingStation_Id                                 ChargeBoxId,
+                                          ChargingStation_Id                           ChargingStationId,
                                           CustomJObjectParserDelegate<GetCRLRequest>?  CustomGetCRLRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var get15118EVCertificateRequest,
                          out var errorResponse,
                          CustomGetCRLRequestParser))
@@ -147,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out GetCRLRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out GetCRLRequest, OnException = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -156,18 +181,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="GetCRLRequest">The parsed GetCRL request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject             JSON,
                                        Request_Id          RequestId,
-                                       ChargingStation_Id        ChargeBoxId,
+                                       ChargingStation_Id  ChargingStationId,
                                        out GetCRLRequest?  GetCRLRequest,
                                        out String?         ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out GetCRLRequest,
                         out ErrorResponse,
                         null);
@@ -178,13 +203,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="GetCRLRequest">The parsed GetCRL request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetCRLRequestParser">A delegate to parse custom GetCRL requests.</param>
         public static Boolean TryParse(JObject                                      JSON,
                                        Request_Id                                   RequestId,
-                                       ChargingStation_Id                                 ChargeBoxId,
+                                       ChargingStation_Id                           ChargingStationId,
                                        out GetCRLRequest?                           GetCRLRequest,
                                        out String?                                  ErrorResponse,
                                        CustomJObjectParserDelegate<GetCRLRequest>?  CustomGetCRLRequestParser)
@@ -249,20 +274,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargeBoxId            [optional, OCPP_CSE]
+                #region ChargingStationId      [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -270,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 GetCRLRequest = new GetCRLRequest(
-                                    ChargeBoxId,
+                                    ChargingStationId,
                                     GetCRLRequestId,
                                     CertificateHashData,
                                     null,
@@ -421,21 +446,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return GetCRLRequestId.    GetHashCode() * 5 ^
-                       CertificateHashData.GetHashCode() * 3 ^
-                       base.               GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -449,7 +466,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => $"Id: {GetCRLRequestId}: {CertificateHashData}";
 
         #endregion
-
 
     }
 

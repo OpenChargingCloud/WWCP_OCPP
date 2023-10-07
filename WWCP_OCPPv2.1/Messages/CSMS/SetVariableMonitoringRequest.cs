@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The set variable monitoring request.
     /// </summary>
-    public class SetVariableMonitoringRequest : ARequest<SetVariableMonitoringRequest>
+    public class SetVariableMonitoringRequest : ARequest<SetVariableMonitoringRequest>,
+                                                IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/setVariableMonitoringRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext                   Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The enumeration of set monitoring data.
@@ -47,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new set variable monitoring request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="MonitoringData">An enumeration of monitoring data.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -58,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetVariableMonitoringRequest(ChargingStation_Id                    ChargeBoxId,
+        public SetVariableMonitoringRequest(ChargingStation_Id              ChargingStationId,
                                             IEnumerable<SetMonitoringData>  MonitoringData,
 
                                             IEnumerable<KeyPair>?           SignKeys            = null,
@@ -74,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             EventTracking_Id?               EventTrackingId     = null,
                                             CancellationToken               CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "SetVariableMonitoring",
 
                    SignKeys,
@@ -97,6 +113,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             nameof(MonitoringData));
 
             this.MonitoringData = MonitoringData.Distinct();
+
+            unchecked
+            {
+
+                hashCode = this.MonitoringData.CalcHashCode() * 3 ^
+                           base.               GetHashCode();
+
+            }
 
         }
 
@@ -277,24 +301,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomSetVariableMonitoringRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomSetVariableMonitoringRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a set variable monitoring request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomSetVariableMonitoringRequestParser">A delegate to parse custom set variable monitoring requests.</param>
         public static SetVariableMonitoringRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         ChargingStation_Id                                                ChargeBoxId,
+                                                         ChargingStation_Id                                          ChargingStationId,
                                                          CustomJObjectParserDelegate<SetVariableMonitoringRequest>?  CustomSetVariableMonitoringRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var setVariableMonitoringRequest,
                          out var errorResponse,
                          CustomSetVariableMonitoringRequestParser))
@@ -309,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out SetVariableMonitoringRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out SetVariableMonitoringRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -318,18 +342,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="SetVariableMonitoringRequest">The parsed set variable monitoring request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                            JSON,
                                        Request_Id                         RequestId,
-                                       ChargingStation_Id                       ChargeBoxId,
+                                       ChargingStation_Id                 ChargingStationId,
                                        out SetVariableMonitoringRequest?  SetVariableMonitoringRequest,
                                        out String?                        ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out SetVariableMonitoringRequest,
                         out ErrorResponse,
                         null);
@@ -340,13 +364,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="SetVariableMonitoringRequest">The parsed set variable monitoring request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetVariableMonitoringRequestParser">A delegate to parse custom set variable monitoring requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       ChargingStation_Id                                                ChargeBoxId,
+                                       ChargingStation_Id                                          ChargingStationId,
                                        out SetVariableMonitoringRequest?                           SetVariableMonitoringRequest,
                                        out String?                                                 ErrorResponse,
                                        CustomJObjectParserDelegate<SetVariableMonitoringRequest>?  CustomSetVariableMonitoringRequestParser)
@@ -357,7 +381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 SetVariableMonitoringRequest = null;
 
-                #region MonitoringData    [mandatory]
+                #region MonitoringData       [mandatory]
 
                 if (!JSON.ParseMandatoryHashSet("setMonitoringData",
                                                 "variable monitoring data",
@@ -370,7 +394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures        [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -384,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData        [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -398,20 +422,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargeBoxId       [optional, OCPP_CSE]
+                #region ChargingStationId    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -419,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 SetVariableMonitoringRequest = new SetVariableMonitoringRequest(
-                                                   ChargeBoxId,
+                                                   ChargingStationId,
                                                    MonitoringData,
                                                    null,
                                                    null,
@@ -577,20 +601,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return MonitoringData.CalcHashCode() * 3 ^
-                       base.          GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -601,12 +618,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-
-                   MonitoringData.Count(),
-                   " monitoring data set(s)"
-
-               );
+            => $"{MonitoringData.Count()} monitoring data set(s)";
 
         #endregion
 

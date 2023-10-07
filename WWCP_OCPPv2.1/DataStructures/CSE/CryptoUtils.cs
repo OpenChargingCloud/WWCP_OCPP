@@ -221,18 +221,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSONMessage">The JSON representation of the request message.</param>
         /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
         /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the request message.</param>
-        public static Boolean SignRequestMessage<TRequest>(ARequest<TRequest>  RequestMessage,
-                                                           JObject             JSONMessage,
-                                                           JSONLDContext       JSONLDContext,
-                                                           SignaturePolicy?    SignaturePolicy,
-                                                           out String?         ErrorResponse,
-                                                           params SignInfo[]   SignInfos)
-
-            where TRequest : class, IRequest
-
+        public static Boolean SignRequestMessage(IRequest           RequestMessage,
+                                                 JObject            JSONMessage,
+                                                 JSONLDContext      JSONLDContext,
+                                                 SignaturePolicy?   SignaturePolicy,
+                                                 out String?        ErrorResponse,
+                                                 params SignInfo[]  SignInfos)
         {
 
-            JSONMessage.AddFirst(new JProperty("@context", $"https://open.charging.cloud/context/ocpp/{RequestMessage.Action.FirstCharToLower()}Request"));
+            JSONMessage.AddFirst(new JProperty("@context",  RequestMessage.Context.ToString()));
+                //$"https://open.charging.cloud/context/ocpp/{RequestMessage.Action.FirstCharToLower()}Request"));
 
             return SignMessage(RequestMessage,
                                JSONMessage,
@@ -364,16 +362,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSONMessage">The JSON representation of the request message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
         /// <param name="AllMustBeValid">Whether all or just one cryptographic signature has to match.</param>
-        public static Boolean VerifyRequestMessage<TRequest>(ARequest<TRequest>  RequestMessage,
-                                                             JObject             JSONMessage,
-                                                             out String?         ErrorResponse,
-                                                             Boolean             AllMustBeValid)
-
-            where TRequest : class, IRequest
-
+        public static Boolean VerifyRequestMessage(IRequest     RequestMessage,
+                                                   JObject      JSONMessage,
+                                                   out String?  ErrorResponse,
+                                                   Boolean      AllMustBeValid)
         {
 
-            JSONMessage.AddFirst(new JProperty("@context", $"https://open.charging.cloud/context/ocpp/{RequestMessage.Action.FirstCharToLower()}Request"));
+            JSONMessage.AddFirst(new JProperty("@context",  RequestMessage.Context.ToString()));
+                //$"https://open.charging.cloud/context/ocpp/{RequestMessage.Action.FirstCharToLower()}Request"));
 
             return VerifyMessage(RequestMessage,
                                  JSONMessage,

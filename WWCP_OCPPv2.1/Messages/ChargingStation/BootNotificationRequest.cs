@@ -33,7 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// A boot notification request.
     /// </summary>
-    public class BootNotificationRequest : ARequest<BootNotificationRequest>
+    public class BootNotificationRequest : ARequest<BootNotificationRequest>,
+                                           IRequest
     {
 
         #region Data
@@ -46,6 +47,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext    Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// A physical system where an electrical vehicle (EV) can be charged.
@@ -66,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new boot notification request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="ChargingStation">A physical system where an electrical vehicle (EV) can be charged.</param>
         /// <param name="Reason">The the reason for sending this boot notification to the CSMS.</param>
         /// 
@@ -78,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public BootNotificationRequest(ChargingStation_Id             ChargeBoxId,
+        public BootNotificationRequest(ChargingStation_Id       ChargingStationId,
                                        ChargingStation          ChargingStation,
                                        BootReason               Reason,
 
@@ -95,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        EventTracking_Id?        EventTrackingId     = null,
                                        CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "BootNotification",
 
                    SignKeys,
@@ -115,6 +122,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             this.ChargingStation  = ChargingStation;
             this.Reason           = Reason;
+
+            unchecked
+            {
+
+                hashCode = this.ChargingStation.GetHashCode() * 5 ^
+                           this.Reason.         GetHashCode() * 3 ^
+                           base.                GetHashCode();
+
+            }
 
         }
 
@@ -240,25 +256,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomBootNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomBootNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a boot notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom boot notification requests.</param>
         public static BootNotificationRequest Parse(JObject                                                JSON,
                                                     Request_Id                                             RequestId,
-                                                    ChargingStation_Id                                           ChargeBoxId,
+                                                    ChargingStation_Id                                     ChargingStationId,
                                                     CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var bootNotificationRequest,
                          out var errorResponse,
                          CustomBootNotificationRequestParser))
@@ -273,20 +289,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out BootNotificationRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out BootNotificationRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a boot notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="BootNotificationRequest">The parsed boot notification request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                       JSON,
+                                       Request_Id                    RequestId,
+                                       ChargingStation_Id            ChargingStationId,
+                                       out BootNotificationRequest?  BootNotificationRequest,
+                                       out String?                   ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargingStationId,
+                        out BootNotificationRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a boot notification request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="BootNotificationRequest">The parsed boot notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom boot notification requests.</param>
         public static Boolean TryParse(JObject                                                JSON,
                                        Request_Id                                             RequestId,
-                                       ChargingStation_Id                                           ChargeBoxId,
+                                       ChargingStation_Id                                     ChargingStationId,
                                        out BootNotificationRequest?                           BootNotificationRequest,
                                        out String?                                            ErrorResponse,
                                        CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser)
@@ -297,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 BootNotificationRequest = null;
 
-                #region ChargingStation    [mandatory]
+                #region ChargingStation      [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("chargingStation",
                                              "charging station",
@@ -311,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region Reason             [mandatory]
+                #region Reason               [mandatory]
 
                 if (!JSON.ParseMandatory("reason",
                                          "boot reason",
@@ -324,7 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region Signatures         [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -338,7 +378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region CustomData         [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -352,9 +392,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
+                #region ChargingStationId    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
+                                       ChargingStation_Id.TryParse,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse is not null)
+                        return false;
+
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
+
+                }
+
+                #endregion
+
 
                 BootNotificationRequest = new BootNotificationRequest(
-                                              ChargeBoxId,
+                                              ChargingStationId,
                                               ChargingStation,
                                               Reason,
                                               null,
@@ -504,22 +563,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ChargingStation.GetHashCode() * 5 ^
-                       Reason.         GetHashCode() * 3 ^
-
-                       base.           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

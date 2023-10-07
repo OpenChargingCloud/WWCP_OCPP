@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// A transaction event request.
     /// </summary>
-    public class TransactionEventRequest : ARequest<TransactionEventRequest>
+    public class TransactionEventRequest : ARequest<TransactionEventRequest>,
+                                           IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/transactionEventRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext            Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The type of this transaction event.
@@ -121,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a transaction event request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="EventType">The type of this transaction event. The first event of a transaction SHALL be of type "started", the last of type "ended". All others should be of type "updated".</param>
         /// <param name="Timestamp">The timestamp at which this transaction event occurred.</param>
         /// <param name="TriggerReason">The reason the charging station sends this message.</param>
@@ -145,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public TransactionEventRequest(ChargingStation_Id              ChargeBoxId,
+        public TransactionEventRequest(ChargingStation_Id        ChargingStationId,
                                        TransactionEvents         EventType,
                                        DateTime                  Timestamp,
                                        TriggerReasons            TriggerReason,
@@ -174,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        EventTracking_Id?         EventTrackingId         = null,
                                        CancellationToken         CancellationToken       = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "TransactionEvent",
 
                    SignKeys,
@@ -206,6 +222,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.EVSE                   = EVSE;
             this.MeterValues            = MeterValues?.Distinct() ?? Array.Empty<MeterValue>();
             this.PreconditioningStatus  = PreconditioningStatus;
+
+            unchecked
+            {
+
+                hashCode = this.EventType.             GetHashCode()       * 43 ^
+                           this.Timestamp.             GetHashCode()       * 41 ^
+                           this.TriggerReason.         GetHashCode()       * 37 ^
+                           this.SequenceNumber.        GetHashCode()       * 31 ^
+                           this.TransactionInfo.       GetHashCode()       * 29 ^
+                          (this.Offline?.              GetHashCode() ?? 0) * 23 ^
+                          (this.NumberOfPhasesUsed?.   GetHashCode() ?? 0) * 19 ^
+                          (this.CableMaxCurrent?.      GetHashCode() ?? 0) * 17 ^
+                          (this.ReservationId?.        GetHashCode() ?? 0) * 13 ^
+                          (this.IdToken?.              GetHashCode() ?? 0) * 11 ^
+                          (this.EVSE?.                 GetHashCode() ?? 0) *  7 ^
+                          (this.PreconditioningStatus?.GetHashCode() ?? 0) *  5 ^
+                           this.MeterValues.           CalcHashCode()      *  3 ^
+                           base.                       GetHashCode();
+
+            }
 
         }
 
@@ -714,24 +750,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomTransactionEventRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomTransactionEventRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a transaction event request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomTransactionEventRequestParser">A delegate to parse custom transaction event requests.</param>
         public static TransactionEventRequest Parse(JObject                                                JSON,
                                                     Request_Id                                             RequestId,
-                                                    ChargingStation_Id                                           ChargeBoxId,
+                                                    ChargingStation_Id                                     ChargingStationId,
                                                     CustomJObjectParserDelegate<TransactionEventRequest>?  CustomTransactionEventRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var transactionEventRequest,
                          out var errorResponse,
                          CustomTransactionEventRequestParser))
@@ -746,20 +782,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out TransactionEventRequest, out ErrorResponse, CustomTransactionEventRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out TransactionEventRequest, out ErrorResponse, CustomTransactionEventRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a transaction event request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="TransactionEventRequest">The parsed transaction event request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                       JSON,
+                                       Request_Id                    RequestId,
+                                       ChargingStation_Id            ChargingStationId,
+                                       out TransactionEventRequest?  TransactionEventRequest,
+                                       out String?                   ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        ChargingStationId,
+                        out TransactionEventRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a transaction event request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="TransactionEventRequest">The parsed transaction event request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomTransactionEventRequestParser">A delegate to parse custom transaction event requests.</param>
         public static Boolean TryParse(JObject                                                JSON,
                                        Request_Id                                             RequestId,
-                                       ChargingStation_Id                                           ChargeBoxId,
+                                       ChargingStation_Id                                     ChargingStationId,
                                        out TransactionEventRequest?                           TransactionEventRequest,
                                        out String?                                            ErrorResponse,
                                        CustomJObjectParserDelegate<TransactionEventRequest>?  CustomTransactionEventRequestParser)
@@ -976,20 +1036,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargeBoxId              [optional, OCPP_CSE]
+                #region ChargingStationId        [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -998,7 +1058,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 TransactionEventRequest = new TransactionEventRequest(
 
-                                              ChargeBoxId,
+                                              ChargingStationId,
 
                                               EventType,
                                               Timestamp,
@@ -1245,34 +1305,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return EventType.             GetHashCode()       * 43 ^
-                       Timestamp.             GetHashCode()       * 41 ^
-                       TriggerReason.         GetHashCode()       * 37 ^
-                       SequenceNumber.        GetHashCode()       * 31 ^
-                       TransactionInfo.       GetHashCode()       * 29 ^
-
-                      (Offline?.              GetHashCode() ?? 0) * 23 ^
-                      (NumberOfPhasesUsed?.   GetHashCode() ?? 0) * 19 ^
-                      (CableMaxCurrent?.      GetHashCode() ?? 0) * 17 ^
-                      (ReservationId?.        GetHashCode() ?? 0) * 13 ^
-                      (IdToken?.              GetHashCode() ?? 0) * 11 ^
-                      (EVSE?.                 GetHashCode() ?? 0) *  7 ^
-                      (PreconditioningStatus?.GetHashCode() ?? 0) *  5 ^
-                       MeterValues.           CalcHashCode()      *  3 ^
-
-                       base.                  GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

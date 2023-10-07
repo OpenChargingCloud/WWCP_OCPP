@@ -35,13 +35,13 @@
 //    public static class ICSMSClientExtensions
 //    {
 
-//        #region Reset                      (ChargeBoxId, ResetType, EVSEId = null, ...)
+//        #region Reset                      (ChargingStationId, ResetType, EVSEId = null, ...)
 
 //        /// <summary>
-//        /// Reset the given charge box.
+//        /// Reset the given charging station.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="ResetType">The type of reset that the charging station should perform.</param>
 //        /// <param name="EVSEId">An optional EVSE identification.</param>
 //        /// 
@@ -54,7 +54,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<ResetResponse> Reset(this ICSMSClient         ICSMSClient,
-//                                                ChargeBox_Id             ChargeBoxId,
+//                                                ChargeBox_Id             ChargingStationId,
 //                                                ResetTypes               ResetType,
 //                                                EVSE_Id?                 EVSEId              = null,
 
@@ -73,7 +73,7 @@
 
 //            => ICSMSClient.Reset(
 //                   new ResetRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       ResetType,
 //                       EVSEId,
 
@@ -94,10 +94,10 @@
 
 //        #endregion
 
-//        #region UpdateFirmware             (ChargeBoxId, FirmwareURL, RetrieveDate, Retries = null, RetryInterval = null, ...)
+//        #region UpdateFirmware             (ChargingStationId, FirmwareURL, RetrieveDate, Retries = null, RetryInterval = null, ...)
 
 //        /// <summary>
-//        /// Initiate a firmware download from the given location at the given charge box.
+//        /// Initiate a firmware download from the given location at the given charging station.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
 //        /// <param name="Firmware">The firmware image to be installed at the charging station.</param>
@@ -114,7 +114,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<UpdateFirmwareResponse> UpdateFirmware(this ICSMSClient         ICSMSClient,
-//                                                                  ChargeBox_Id             ChargeBoxId,
+//                                                                  ChargeBox_Id             ChargingStationId,
 //                                                                  Firmware                 Firmware,
 //                                                                  Int32                    UpdateFirmwareRequestId,
 //                                                                  Byte?                    Retries             = null,
@@ -135,7 +135,7 @@
 
 //            => ICSMSClient.UpdateFirmware(
 //                   new UpdateFirmwareRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       Firmware,
 //                       UpdateFirmwareRequestId,
 //                       Retries,
@@ -158,7 +158,7 @@
 
 //        #endregion
 
-//        #region PublishFirmware            (ChargeBoxId, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
+//        #region PublishFirmware            (ChargingStationId, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
 
 //        /// <summary>
 //        /// Publish a firmware image.
@@ -179,7 +179,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<PublishFirmwareResponse> PublishFirmware(this ICSMSClient         ICSMSClient,
-//                                                                    ChargeBox_Id             ChargeBoxId,
+//                                                                    ChargeBox_Id             ChargingStationId,
 //                                                                    Int32                    PublishFirmwareRequestId,
 //                                                                    URL                      DownloadLocation,
 //                                                                    String                   MD5Checksum,
@@ -201,7 +201,7 @@
 
 //            => ICSMSClient.PublishFirmware(
 //                   new PublishFirmwareRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       PublishFirmwareRequestId,
 //                       DownloadLocation,
 //                       MD5Checksum,
@@ -225,7 +225,7 @@
 
 //        #endregion
 
-//        #region UnpublishFirmware          (ChargeBoxId, MD5Checksum, ...)
+//        #region UnpublishFirmware          (ChargingStationId, MD5Checksum, ...)
 
 //        /// <summary>
 //        /// Unpublish a firmware image.
@@ -242,7 +242,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<UnpublishFirmwareResponse> UnpublishFirmware(this ICSMSClient         ICSMSClient,
-//                                                                        ChargeBox_Id             ChargeBoxId,
+//                                                                        ChargeBox_Id             ChargingStationId,
 //                                                                        String                   MD5Checksum,
 
 //                                                                        IEnumerable<KeyPair>?    SignKeys            = null,
@@ -260,7 +260,7 @@
 
 //            => ICSMSClient.UnpublishFirmware(
 //                   new UnpublishFirmwareRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       MD5Checksum,
 
 //                       SignKeys,
@@ -280,7 +280,7 @@
 
 //        #endregion
 
-//        #region GetBaseReport              (ChargeBoxId, GetBaseReportRequestId, ReportBase, ...)
+//        #region GetBaseReport              (ChargingStationId, GetBaseReportRequestId, ReportBase, ...)
 
 //        /// <summary>
 //        /// Get a base report.
@@ -298,7 +298,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<GetBaseReportResponse> GetBaseReport(this ICSMSClient         ICSMSClient,
-//                                                                ChargeBox_Id             ChargeBoxId,
+//                                                                ChargeBox_Id             ChargingStationId,
 //                                                                Int64                    GetBaseReportRequestId,
 //                                                                ReportBases              ReportBase,
 
@@ -317,7 +317,7 @@
 
 //            => ICSMSClient.GetBaseReport(
 //                   new GetBaseReportRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       GetBaseReportRequestId,
 //                       ReportBase,
 
@@ -338,13 +338,13 @@
 
 //        #endregion
 
-//        #region GetReport                  (ChargeBoxId, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
+//        #region GetReport                  (ChargingStationId, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
 
 //        /// <summary>
 //        /// Get a report.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="GetReportRequestId">The charge box identification.</param>
+//        /// <param name="GetReportRequestId">The charging station identification.</param>
 //        /// <param name="ComponentCriteria">An optional enumeration of criteria for components for which a report is requested.</param>
 //        /// <param name="ComponentVariables">An optional enumeration of components and variables for which a report is requested.</param>
 //        /// 
@@ -357,7 +357,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<GetReportResponse> GetReport(this ICSMSClient                ICSMSClient,
-//                                                        ChargeBox_Id                    ChargeBoxId,
+//                                                        ChargeBox_Id                    ChargingStationId,
 //                                                        Int32                           GetReportRequestId,
 //                                                        IEnumerable<ComponentCriteria>  ComponentCriteria,
 //                                                        IEnumerable<ComponentVariable>  ComponentVariables,
@@ -373,7 +373,7 @@
 
 //            => ICSMSClient.GetReport(
 //                   new GetReportRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       GetReportRequestId,
 //                       ComponentCriteria,
 //                       ComponentVariables,
@@ -391,7 +391,7 @@
 
 //        #endregion
 
-//        #region GetLog                     (ChargeBoxId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
+//        #region GetLog                     (ChargingStationId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
 
 //        /// <summary>
 //        /// Get a log(file).
@@ -412,7 +412,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<GetLogResponse> GetLog(this ICSMSClient         ICSMSClient,
-//                                                  ChargeBox_Id             ChargeBoxId,
+//                                                  ChargeBox_Id             ChargingStationId,
 //                                                  LogTypes                 LogType,
 //                                                  Int32                    LogRequestId,
 //                                                  LogParameters            Log,
@@ -430,7 +430,7 @@
 
 //            => ICSMSClient.GetLog(
 //                   new GetLogRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       LogType,
 //                       LogRequestId,
 //                       Log,
@@ -450,7 +450,7 @@
 
 //        #endregion
 
-//        #region SetVariables               (ChargeBoxId, VariableData, ...)
+//        #region SetVariables               (ChargingStationId, VariableData, ...)
 
 //        /// <summary>
 //        /// Set variables.
@@ -467,7 +467,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<SetVariablesResponse> SetVariables(this ICSMSClient              ICSMSClient,
-//                                                              ChargeBox_Id                  ChargeBoxId,
+//                                                              ChargeBox_Id                  ChargingStationId,
 //                                                              IEnumerable<SetVariableData>  VariableData,
 
 //                                                              IEnumerable<Signature>?       Signatures          = null,
@@ -481,7 +481,7 @@
 
 //            => ICSMSClient.SetVariables(
 //                   new SetVariablesRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       VariableData,
 
 //                       Signatures,
@@ -497,7 +497,7 @@
 
 //        #endregion
 
-//        #region GetVariables               (ChargeBoxId, VariableData, ...)
+//        #region GetVariables               (ChargingStationId, VariableData, ...)
 
 //        /// <summary>
 //        /// Get variables.
@@ -514,7 +514,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<GetVariablesResponse> GetVariables(this ICSMSClient              ICSMSClient,
-//                                                              ChargeBox_Id                  ChargeBoxId,
+//                                                              ChargeBox_Id                  ChargingStationId,
 //                                                              IEnumerable<GetVariableData>  VariableData,
 
 //                                                              IEnumerable<Signature>?       Signatures          = null,
@@ -528,7 +528,7 @@
 
 //            => ICSMSClient.GetVariables(
 //                   new GetVariablesRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       VariableData,
 
 //                       Signatures,
@@ -544,7 +544,7 @@
 
 //        #endregion
 
-//        #region SetMonitoringBase          (ChargeBoxId, MonitoringBase, ...)
+//        #region SetMonitoringBase          (ChargingStationId, MonitoringBase, ...)
 
 //        /// <summary>
 //        /// Set the monitoring base.
@@ -561,7 +561,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<SetMonitoringBaseResponse> SetMonitoringBase(this ICSMSClient         ICSMSClient,
-//                                                                        ChargeBox_Id             ChargeBoxId,
+//                                                                        ChargeBox_Id             ChargingStationId,
 //                                                                        MonitoringBases          MonitoringBase,
 
 //                                                                        IEnumerable<Signature>?  Signatures          = null,
@@ -575,7 +575,7 @@
 
 //            => ICSMSClient.SetMonitoringBase(
 //                   new SetMonitoringBaseRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       MonitoringBase,
 
 //                       Signatures,
@@ -591,13 +591,13 @@
 
 //        #endregion
 
-//        #region GetMonitoringReport        (ChargeBoxId, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
+//        #region GetMonitoringReport        (ChargingStationId, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
 
 //        /// <summary>
 //        /// Get a monitoring report.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="GetMonitoringReportRequestId">The charge box identification.</param>
+//        /// <param name="GetMonitoringReportRequestId">The charging station identification.</param>
 //        /// <param name="MonitoringCriteria">An optional enumeration of criteria for components for which a monitoring report is requested.</param>
 //        /// <param name="ComponentVariables">An optional enumeration of components and variables for which a monitoring report is requested.</param>
 //        /// 
@@ -610,7 +610,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<GetMonitoringReportResponse> GetMonitoringReport(this ICSMSClient                 ICSMSClient,
-//                                                                            ChargeBox_Id                     ChargeBoxId,
+//                                                                            ChargeBox_Id                     ChargingStationId,
 //                                                                            Int32                            GetMonitoringReportRequestId,
 //                                                                            IEnumerable<MonitoringCriteria>  MonitoringCriteria,
 //                                                                            IEnumerable<ComponentVariable>   ComponentVariables,
@@ -626,7 +626,7 @@
 
 //            => ICSMSClient.GetMonitoringReport(
 //                   new GetMonitoringReportRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       GetMonitoringReportRequestId,
 //                       MonitoringCriteria,
 //                       ComponentVariables,
@@ -644,7 +644,7 @@
 
 //        #endregion
 
-//        #region SetMonitoringLevel         (ChargeBoxId, Severity, ...)
+//        #region SetMonitoringLevel         (ChargingStationId, Severity, ...)
 
 //        /// <summary>
 //        /// Set the monitoring level.
@@ -661,7 +661,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<SetMonitoringLevelResponse> SetMonitoringLevel(this ICSMSClient         ICSMSClient,
-//                                                                          ChargeBox_Id             ChargeBoxId,
+//                                                                          ChargeBox_Id             ChargingStationId,
 //                                                                          Severities               Severity,
 
 //                                                                          IEnumerable<Signature>?  Signatures          = null,
@@ -675,7 +675,7 @@
 
 //            => ICSMSClient.SetMonitoringLevel(
 //                   new SetMonitoringLevelRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       Severity,
 
 //                       Signatures,
@@ -691,7 +691,7 @@
 
 //        #endregion
 
-//        #region SetVariableMonitoring      (ChargeBoxId, MonitoringData, ...)
+//        #region SetVariableMonitoring      (ChargingStationId, MonitoringData, ...)
 
 //        /// <summary>
 //        /// Set a variable monitoring.
@@ -708,7 +708,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<SetVariableMonitoringResponse> SetVariableMonitoring(this ICSMSClient                ICSMSClient,
-//                                                                                ChargeBox_Id                    ChargeBoxId,
+//                                                                                ChargeBox_Id                    ChargingStationId,
 //                                                                                IEnumerable<SetMonitoringData>  MonitoringData,
 
 //                                                                                IEnumerable<Signature>?         Signatures          = null,
@@ -722,7 +722,7 @@
 
 //            => ICSMSClient.SetVariableMonitoring(
 //                   new SetVariableMonitoringRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       MonitoringData,
 
 //                       Signatures,
@@ -738,7 +738,7 @@
 
 //        #endregion
 
-//        #region ClearVariableMonitoring    (ChargeBoxId, VariableMonitoringIds, ...)
+//        #region ClearVariableMonitoring    (ChargingStationId, VariableMonitoringIds, ...)
 
 //        /// <summary>
 //        /// Remove the given variable monitoring.
@@ -755,7 +755,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<ClearVariableMonitoringResponse> ClearVariableMonitoring(this ICSMSClient                    ICSMSClient,
-//                                                                                    ChargeBox_Id                        ChargeBoxId,
+//                                                                                    ChargeBox_Id                        ChargingStationId,
 //                                                                                    IEnumerable<VariableMonitoring_Id>  VariableMonitoringIds,
 
 //                                                                                    IEnumerable<Signature>?             Signatures          = null,
@@ -769,7 +769,7 @@
 
 //            => ICSMSClient.ClearVariableMonitoring(
 //                   new ClearVariableMonitoringRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       VariableMonitoringIds,
 
 //                       Signatures,
@@ -785,7 +785,7 @@
 
 //        #endregion
 
-//        #region SetNetworkProfile          (ChargeBoxId, ConfigurationSlot, NetworkConnectionProfile, ...)
+//        #region SetNetworkProfile          (ChargingStationId, ConfigurationSlot, NetworkConnectionProfile, ...)
 
 //        /// <summary>
 //        /// Set the network profile.
@@ -803,7 +803,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<SetNetworkProfileResponse> SetNetworkProfile(this ICSMSClient          ICSMSClient,
-//                                                                        ChargeBox_Id              ChargeBoxId,
+//                                                                        ChargeBox_Id              ChargingStationId,
 //                                                                        Int32                     ConfigurationSlot,
 //                                                                        NetworkConnectionProfile  NetworkConnectionProfile,
 
@@ -818,7 +818,7 @@
 
 //            => ICSMSClient.SetNetworkProfile(
 //                   new SetNetworkProfileRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       ConfigurationSlot,
 //                       NetworkConnectionProfile,
 
@@ -835,7 +835,7 @@
 
 //        #endregion
 
-//        #region ChangeAvailability         (ChargeBoxId, OperationalStatus, EVSE, ...)
+//        #region ChangeAvailability         (ChargingStationId, OperationalStatus, EVSE, ...)
 
 //        /// <summary>
 //        /// Change the availability of the given charging station or EVSE.
@@ -853,7 +853,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<ChangeAvailabilityResponse> ChangeAvailability(this ICSMSClient         ICSMSClient,
-//                                                                          ChargeBox_Id             ChargeBoxId,
+//                                                                          ChargeBox_Id             ChargingStationId,
 //                                                                          OperationalStatus        OperationalStatus,
 //                                                                          EVSE?                    EVSE                = null,
 
@@ -868,7 +868,7 @@
 
 //            => ICSMSClient.ChangeAvailability(
 //                   new ChangeAvailabilityRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       OperationalStatus,
 //                       EVSE,
 
@@ -885,13 +885,13 @@
 
 //        #endregion
 
-//        #region TriggerMessage             (ChargeBoxId, RequestedMessage, EVSE = null, ...)
+//        #region TriggerMessage             (ChargingStationId, RequestedMessage, EVSE = null, ...)
 
 //        /// <summary>
 //        /// Create a trigger for the given message at the given charging station or EVSE.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="RequestedMessage">The message to trigger.</param>
 //        /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
 //        /// 
@@ -904,7 +904,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<TriggerMessageResponse> TriggerMessage(this ICSMSClient         ICSMSClient,
-//                                                                  ChargeBox_Id             ChargeBoxId,
+//                                                                  ChargeBox_Id             ChargingStationId,
 //                                                                  MessageTriggers          RequestedMessage,
 //                                                                  EVSE?                    EVSE                = null,
 
@@ -919,7 +919,7 @@
 
 //            => ICSMSClient.TriggerMessage(
 //                   new TriggerMessageRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       RequestedMessage,
 //                       EVSE,
 
@@ -936,13 +936,13 @@
 
 //        #endregion
 
-//        #region TransferData               (ChargeBoxId, VendorId, MessageId, Data, ...)
+//        #region TransferData               (ChargingStationId, VendorId, MessageId, Data, ...)
 
 //        /// <summary>
 //        /// Send the given vendor-specific data.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
 //        /// <param name="MessageId">An optional message identification field.</param>
 //        /// <param name="Data">Optional message data without specified length or format.</param>
@@ -956,7 +956,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<CS.DataTransferResponse> TransferData(this ICSMSClient         ICSMSClient,
-//                                                                 ChargeBox_Id             ChargeBoxId,
+//                                                                 ChargeBox_Id             ChargingStationId,
 //                                                                 Vendor_Id                VendorId,
 //                                                                 String?                  MessageId           = null,
 //                                                                 JToken?                  Data                = null,
@@ -972,7 +972,7 @@
 
 //            => ICSMSClient.TransferData(
 //                   new DataTransferRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       VendorId,
 //                       MessageId,
 //                       Data,
@@ -991,7 +991,7 @@
 //        #endregion
 
 
-//        #region SendSignedCertificate      (ChargeBoxId, CertificateChain, CertificateType, ...)
+//        #region SendSignedCertificate      (ChargingStationId, CertificateChain, CertificateType, ...)
 
 //        /// <summary>
 //        /// Send the signed certificate to the charging station.
@@ -1009,7 +1009,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<CertificateSignedResponse> SendSignedCertificate(this ICSMSClient         ICSMSClient,
-//                                                                            ChargeBox_Id             ChargeBoxId,
+//                                                                            ChargeBox_Id             ChargingStationId,
 //                                                                            CertificateChain         CertificateChain,
 //                                                                            CertificateSigningUse?   CertificateType     = null,
 
@@ -1024,7 +1024,7 @@
 
 //            => ICSMSClient.SendSignedCertificate(
 //                   new CertificateSignedRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       CertificateChain,
 //                       CertificateType,
 
@@ -1041,13 +1041,13 @@
 
 //        #endregion
 
-//        #region InstallCertificate         (ChargeBoxId, CertificateType, Certificate, ...)
+//        #region InstallCertificate         (ChargingStationId, CertificateType, Certificate, ...)
 
 //        /// <summary>
 //        /// Install the given certificate within the charging station.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="CertificateType">The type of the certificate.</param>
 //        /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
 //        /// 
@@ -1060,7 +1060,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<InstallCertificateResponse> InstallCertificate(this ICSMSClient         ICSMSClient,
-//                                                                          ChargeBox_Id             ChargeBoxId,
+//                                                                          ChargeBox_Id             ChargingStationId,
 //                                                                          CertificateUse           CertificateType,
 //                                                                          Certificate              Certificate,
 //                                                                          IEnumerable<Signature>?  Signatures          = null,
@@ -1074,7 +1074,7 @@
 
 //            => ICSMSClient.InstallCertificate(
 //                   new InstallCertificateRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       CertificateType,
 //                       Certificate,
 
@@ -1091,13 +1091,13 @@
 
 //        #endregion
 
-//        #region GetInstalledCertificateIds (ChargeBoxId, CertificateTypes, ...)
+//        #region GetInstalledCertificateIds (ChargingStationId, CertificateTypes, ...)
 
 //        /// <summary>
 //        /// Retrieve a list of all installed certificates within the charging station.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="CertificateTypes">An optional enumeration of certificate types requested.</param>
 //        /// 
 //        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1109,7 +1109,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(this ICSMSClient              ICSMSClient,
-//                                                                                          ChargeBox_Id                  ChargeBoxId,
+//                                                                                          ChargeBox_Id                  ChargingStationId,
 //                                                                                          IEnumerable<CertificateUse>?  CertificateTypes    = null,
 
 //                                                                                          IEnumerable<Signature>?       Signatures          = null,
@@ -1123,7 +1123,7 @@
 
 //            => ICSMSClient.GetInstalledCertificateIds(
 //                   new GetInstalledCertificateIdsRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       CertificateTypes,
 
 //                       Signatures,
@@ -1139,13 +1139,13 @@
 
 //        #endregion
 
-//        #region DeleteCertificate          (ChargeBoxId, CertificateHashData, ...)
+//        #region DeleteCertificate          (ChargingStationId, CertificateHashData, ...)
 
 //        /// <summary>
 //        /// Remove the given certificate from the charging station.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="CertificateHashData">Indicates the certificate which should be deleted.</param>
 //        /// 
 //        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1157,7 +1157,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<DeleteCertificateResponse> DeleteCertificate(this ICSMSClient         ICSMSClient,
-//                                                                        ChargeBox_Id             ChargeBoxId,
+//                                                                        ChargeBox_Id             ChargingStationId,
 //                                                                        CertificateHashData      CertificateHashData,
 
 //                                                                        IEnumerable<Signature>?  Signatures          = null,
@@ -1171,7 +1171,7 @@
 
 //            => ICSMSClient.DeleteCertificate(
 //                   new DeleteCertificateRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       CertificateHashData,
 
 //                       Signatures,
@@ -1187,13 +1187,13 @@
 
 //        #endregion
 
-//        #region NotifyCRLAvailability      (ChargeBoxId, NotifyCRLRequestId, Availability, Location, ...)
+//        #region NotifyCRLAvailability      (ChargingStationId, NotifyCRLRequestId, Availability, Location, ...)
 
 //        /// <summary>
 //        /// Notify the charging station about the status of a certificate revocation list.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="NotifyCRLRequestId">An unique identification of this request.</param>
 //        /// <param name="Availability">An availability status of the certificate revocation list.</param>
 //        /// <param name="Location">An optional location of the certificate revocation list.</param>
@@ -1207,7 +1207,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<NotifyCRLResponse> NotifyCRLAvailability(this ICSMSClient         ICSMSClient,
-//                                                                    ChargeBox_Id             ChargeBoxId,
+//                                                                    ChargeBox_Id             ChargingStationId,
 //                                                                    Int32                    NotifyCRLRequestId,
 //                                                                    NotifyCRLStatus          Availability,
 //                                                                    URL?                     Location,
@@ -1223,7 +1223,7 @@
 
 //            => ICSMSClient.NotifyCRLAvailability(
 //                   new NotifyCRLRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       NotifyCRLRequestId,
 //                       Availability,
 //                       Location,
@@ -1242,13 +1242,13 @@
 //        #endregion
 
 
-//        #region GetLocalListVersion        (ChargeBoxId, ...)
+//        #region GetLocalListVersion        (ChargingStationId, ...)
 
 //        /// <summary>
 //        /// Return the local white list of the given charging station.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// 
 //        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
 //        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -1259,7 +1259,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<GetLocalListVersionResponse> GetLocalListVersion(this ICSMSClient         ICSMSClient,
-//                                                                            ChargeBox_Id             ChargeBoxId,
+//                                                                            ChargeBox_Id             ChargingStationId,
 
 //                                                                            IEnumerable<Signature>?  Signatures          = null,
 //                                                                            CustomData?              CustomData          = null,
@@ -1272,7 +1272,7 @@
 
 //            => ICSMSClient.GetLocalListVersion(
 //                   new GetLocalListVersionRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 
 //                       Signatures,
 //                       CustomData,
@@ -1287,7 +1287,7 @@
 
 //        #endregion
 
-//        #region SendLocalList              (ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
+//        #region SendLocalList              (ChargingStationId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
 
 //        /// <summary>
 //        /// Set the local white liste at the given charging station.
@@ -1306,7 +1306,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<SendLocalListResponse> SendLocalList(this ICSMSClient                 ICSMSClient,
-//                                                                ChargeBox_Id                     ChargeBoxId,
+//                                                                ChargeBox_Id                     ChargingStationId,
 //                                                                UInt64                           ListVersion,
 //                                                                UpdateTypes                      UpdateType,
 //                                                                IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
@@ -1322,7 +1322,7 @@
 
 //            => ICSMSClient.SendLocalList(
 //                   new SendLocalListRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       ListVersion,
 //                       UpdateType,
 //                       LocalAuthorizationList,
@@ -1340,13 +1340,13 @@
 
 //        #endregion
 
-//        #region ClearCache                 (ChargeBoxId, ...)
+//        #region ClearCache                 (ChargingStationId, ...)
 
 //        /// <summary>
 //        /// Clear the local white liste cache of the given charging station.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// 
 //        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
 //        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -1357,7 +1357,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<ClearCacheResponse> ClearCache(this ICSMSClient         ICSMSClient,
-//                                                          ChargeBox_Id             ChargeBoxId,
+//                                                          ChargeBox_Id             ChargingStationId,
 
 //                                                          IEnumerable<Signature>?  Signatures          = null,
 //                                                          CustomData?              CustomData          = null,
@@ -1370,7 +1370,7 @@
 
 //            => ICSMSClient.ClearCache(
 //                   new ClearCacheRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 
 //                       Signatures,
 //                       CustomData,
@@ -1386,7 +1386,7 @@
 //        #endregion
 
 
-//        #region ReserveNow                 (ChargeBoxId, ReservationId, ExpiryDate, IdToken, ConnectorType = null, EVSEId = null, GroupIdToken = null, ...)
+//        #region ReserveNow                 (ChargingStationId, ReservationId, ExpiryDate, IdToken, ConnectorType = null, EVSEId = null, GroupIdToken = null, ...)
 
 //        /// <summary>
 //        /// Create a charging reservation at the given charging station.
@@ -1408,7 +1408,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<ReserveNowResponse> ReserveNow(this ICSMSClient         ICSMSClient,
-//                                                          ChargeBox_Id             ChargeBoxId,
+//                                                          ChargeBox_Id             ChargingStationId,
 //                                                          Reservation_Id           ReservationId,
 //                                                          DateTime                 ExpiryDate,
 //                                                          IdToken                  IdToken,
@@ -1427,7 +1427,7 @@
 
 //            => ICSMSClient.ReserveNow(
 //                   new ReserveNowRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       ReservationId,
 //                       ExpiryDate,
 //                       IdToken,
@@ -1448,7 +1448,7 @@
 
 //        #endregion
 
-//        #region CancelReservation          (ChargeBoxId, ReservationId, ...)
+//        #region CancelReservation          (ChargingStationId, ReservationId, ...)
 
 //        /// <summary>
 //        /// Cancel the given charging reservation.
@@ -1465,7 +1465,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<CancelReservationResponse> CancelReservation(this ICSMSClient         ICSMSClient,
-//                                                                        ChargeBox_Id             ChargeBoxId,
+//                                                                        ChargeBox_Id             ChargingStationId,
 //                                                                        Reservation_Id           ReservationId,
 
 //                                                                        IEnumerable<Signature>?  Signatures          = null,
@@ -1479,7 +1479,7 @@
 
 //            => ICSMSClient.CancelReservation(
 //                   new CancelReservationRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       ReservationId,
 
 //                       Signatures,
@@ -1495,7 +1495,7 @@
 
 //        #endregion
 
-//        #region StartCharging              (ChargeBoxId, RequestStartTransactionRequestId, IdToken, EVSEId = null, ChargingProfile = null, GroupIdToken = null, ...)
+//        #region StartCharging              (ChargingStationId, RequestStartTransactionRequestId, IdToken, EVSEId = null, ChargingProfile = null, GroupIdToken = null, ...)
 
 //        /// <summary>
 //        /// Start a charging process (transaction).
@@ -1516,7 +1516,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<RequestStartTransactionResponse> StartCharging(this ICSMSClient         ICSMSClient,
-//                                                                          ChargeBox_Id             ChargeBoxId,
+//                                                                          ChargeBox_Id             ChargingStationId,
 //                                                                          RemoteStart_Id           RequestStartTransactionRequestId,
 //                                                                          IdToken                  IdToken,
 //                                                                          EVSE_Id?                 EVSEId              = null,
@@ -1534,7 +1534,7 @@
 
 //            => ICSMSClient.StartCharging(
 //                   new RequestStartTransactionRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       RequestStartTransactionRequestId,
 //                       IdToken,
 //                       EVSEId,
@@ -1554,7 +1554,7 @@
 
 //        #endregion
 
-//        #region StopCharging               (ChargeBoxId, TransactionId, ...)
+//        #region StopCharging               (ChargingStationId, TransactionId, ...)
 
 //        /// <summary>
 //        /// Start a charging process (transaction).
@@ -1571,7 +1571,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<RequestStopTransactionResponse> StopCharging(this ICSMSClient         ICSMSClient,
-//                                                                        ChargeBox_Id             ChargeBoxId,
+//                                                                        ChargeBox_Id             ChargingStationId,
 //                                                                        Transaction_Id           TransactionId,
 
 //                                                                        IEnumerable<Signature>?  Signatures          = null,
@@ -1585,7 +1585,7 @@
 
 //            => ICSMSClient.StopCharging(
 //                   new RequestStopTransactionRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       TransactionId,
 
 //                       Signatures,
@@ -1601,7 +1601,7 @@
 
 //        #endregion
 
-//        #region GetTransactionStatus       (ChargeBoxId, TransactionId, ...)
+//        #region GetTransactionStatus       (ChargingStationId, TransactionId, ...)
 
 //        /// <summary>
 //        /// Get the status of a charging process (transaction).
@@ -1618,7 +1618,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<GetTransactionStatusResponse> GetTransactionStatus(this ICSMSClient         ICSMSClient,
-//                                                                              ChargeBox_Id             ChargeBoxId,
+//                                                                              ChargeBox_Id             ChargingStationId,
 //                                                                              Transaction_Id?          TransactionId,
 
 //                                                                              IEnumerable<Signature>?  Signatures          = null,
@@ -1632,7 +1632,7 @@
 
 //            => ICSMSClient.GetTransactionStatus(
 //                   new GetTransactionStatusRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       TransactionId,
 
 //                       Signatures,
@@ -1648,7 +1648,7 @@
 
 //        #endregion
 
-//        #region SetChargingProfile         (ChargeBoxId, EVSEId, ChargingProfile, ...)
+//        #region SetChargingProfile         (ChargingStationId, EVSEId, ChargingProfile, ...)
 
 //        /// <summary>
 //        /// Set the charging profile of the given EVSE at the given charging station.
@@ -1666,7 +1666,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<SetChargingProfileResponse> SetChargingProfile(this ICSMSClient         ICSMSClient,
-//                                                                          ChargeBox_Id             ChargeBoxId,
+//                                                                          ChargeBox_Id             ChargingStationId,
 //                                                                          EVSE_Id                  EVSEId,
 //                                                                          ChargingProfile          ChargingProfile,
 
@@ -1681,7 +1681,7 @@
 
 //            => ICSMSClient.SetChargingProfile(
 //                   new SetChargingProfileRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       EVSEId,
 //                       ChargingProfile,
 
@@ -1698,7 +1698,7 @@
 
 //        #endregion
 
-//        #region GetChargingProfiles        (ChargeBoxId, GetChargingProfilesRequestId, ChargingProfile, EVSEId = null, ...)
+//        #region GetChargingProfiles        (ChargingStationId, GetChargingProfilesRequestId, ChargingProfile, EVSEId = null, ...)
 
 //        /// <summary>
 //        /// Get all charging profiles from the given charging station.
@@ -1717,7 +1717,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<GetChargingProfilesResponse> GetChargingProfiles(this ICSMSClient          ICSMSClient,
-//                                                                            ChargeBox_Id              ChargeBoxId,
+//                                                                            ChargeBox_Id              ChargingStationId,
 //                                                                            Int64                     GetChargingProfilesRequestId,
 //                                                                            ChargingProfileCriterion  ChargingProfile,
 //                                                                            EVSE_Id?                  EVSEId              = null,
@@ -1733,7 +1733,7 @@
 
 //            => ICSMSClient.GetChargingProfiles(
 //                   new GetChargingProfilesRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       GetChargingProfilesRequestId,
 //                       ChargingProfile,
 //                       EVSEId,
@@ -1751,13 +1751,13 @@
 
 //        #endregion
 
-//        #region ClearChargingProfile       (ChargeBoxId, ChargingProfileId = null, ChargingProfileCriteria = null, ...)
+//        #region ClearChargingProfile       (ChargingStationId, ChargingProfileId = null, ChargingProfileCriteria = null, ...)
 
 //        /// <summary>
 //        /// Remove matching charging profiles from the given charging station.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="ChargingProfileId">The optional identification of the charging profile to clear.</param>
 //        /// <param name="ChargingProfileCriteria">An optional specification of the charging profile to clear.</param>
 //        /// 
@@ -1770,7 +1770,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<ClearChargingProfileResponse> ClearChargingProfile(this ICSMSClient         ICSMSClient,
-//                                                                              ChargeBox_Id             ChargeBoxId,
+//                                                                              ChargeBox_Id             ChargingStationId,
 //                                                                              ChargingProfile_Id?      ChargingProfileId         = null,
 //                                                                              ClearChargingProfile?    ChargingProfileCriteria   = null,
 
@@ -1785,7 +1785,7 @@
 
 //            => ICSMSClient.ClearChargingProfile(
 //                   new ClearChargingProfileRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       ChargingProfileId,
 //                       ChargingProfileCriteria,
 
@@ -1802,13 +1802,13 @@
 
 //        #endregion
 
-//        #region GetCompositeSchedule       (ChargeBoxId, Duration, EVSEId, ChargingRateUnit = null, ...)
+//        #region GetCompositeSchedule       (ChargingStationId, Duration, EVSEId, ChargingRateUnit = null, ...)
 
 //        /// <summary>
 //        /// Return the charging schedule at the given charging station and EVSE
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="Duration">The length of requested schedule.</param>
 //        /// <param name="EVSEId">The EVSE identification for which the schedule is requested. EVSE identification is 0, the charging station will calculate the expected consumption for the grid connection.</param>
 //        /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
@@ -1822,7 +1822,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<GetCompositeScheduleResponse> GetCompositeSchedule(this ICSMSClient         ICSMSClient,
-//                                                                              ChargeBox_Id             ChargeBoxId,
+//                                                                              ChargeBox_Id             ChargingStationId,
 //                                                                              TimeSpan                 Duration,
 //                                                                              EVSE_Id                  EVSEId,
 //                                                                              ChargingRateUnits?       ChargingRateUnit    = null,
@@ -1838,7 +1838,7 @@
 
 //            => ICSMSClient.GetCompositeSchedule(
 //                   new GetCompositeScheduleRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       Duration,
 //                       EVSEId,
 //                       ChargingRateUnit,
@@ -1856,13 +1856,13 @@
 
 //        #endregion
 
-//        #region UpdateDynamicSchedule      (ChargeBoxId, ChargingProfileId, Limit = null, ...)
+//        #region UpdateDynamicSchedule      (ChargingStationId, ChargingProfileId, Limit = null, ...)
 
 //        /// <summary>
 //        /// Update the dynamic charging schedule for the given charging profile.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="ChargingProfileId">The identification of the charging profile to update.</param>
 //        /// 
 //        /// <param name="Limit">Optional charging rate limit in chargingRateUnit.</param>
@@ -1892,7 +1892,7 @@
 //        public static Task<CS.UpdateDynamicScheduleResponse>
 
 //            UpdateDynamicSchedule(this ICSMSClient         ICSMSClient,
-//                                  ChargeBox_Id             ChargeBoxId,
+//                                  ChargeBox_Id             ChargingStationId,
 //                                  ChargingProfile_Id       ChargingProfileId,
 
 //                                  ChargingRateValue?       Limit                 = null,
@@ -1924,7 +1924,7 @@
 //                => ICSMSClient.UpdateDynamicSchedule(
 //                       new UpdateDynamicScheduleRequest(
 
-//                           ChargeBoxId,
+//                           ChargingStationId,
 //                           ChargingProfileId,
 
 //                           Limit,
@@ -1957,13 +1957,13 @@
 
 //        #endregion
 
-//        #region NotifyAllowedEnergyTransfer(ChargeBoxId, AllowedEnergyTransferModes, ...)
+//        #region NotifyAllowedEnergyTransfer(ChargingStationId, AllowedEnergyTransferModes, ...)
 
 //        /// <summary>
 //        /// Update the list of authorized energy services.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="AllowedEnergyTransferModes">An enumeration of allowed energy transfer modes.</param>
 //        /// 
 //        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1975,7 +1975,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<NotifyAllowedEnergyTransferResponse> NotifyAllowedEnergyTransfer(this ICSMSClient                  ICSMSClient,
-//                                                                                            ChargeBox_Id                      ChargeBoxId,
+//                                                                                            ChargeBox_Id                      ChargingStationId,
 //                                                                                            IEnumerable<EnergyTransferModes>  AllowedEnergyTransferModes,
 
 //                                                                                            IEnumerable<Signature>?           Signatures          = null,
@@ -1989,7 +1989,7 @@
 
 //            => ICSMSClient.NotifyAllowedEnergyTransfer(
 //                   new NotifyAllowedEnergyTransferRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       AllowedEnergyTransferModes,
 
 //                       Signatures,
@@ -2005,13 +2005,13 @@
 
 //        #endregion
 
-//        #region UsePriorityCharging(ChargeBoxId, TransactionId, Activate, ...)
+//        #region UsePriorityCharging(ChargingStationId, TransactionId, Activate, ...)
 
 //        /// <summary>
 //        /// Whether to allow priority charging.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
 //        /// <param name="Activate">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
 //        /// 
@@ -2024,7 +2024,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<UsePriorityChargingResponse> UsePriorityCharging(this ICSMSClient         ICSMSClient,
-//                                                                            ChargeBox_Id             ChargeBoxId,
+//                                                                            ChargeBox_Id             ChargingStationId,
 //                                                                            Transaction_Id           TransactionId,
 //                                                                            Boolean                  Activate,
 
@@ -2039,7 +2039,7 @@
 
 //            => ICSMSClient.UsePriorityCharging(
 //                   new UsePriorityChargingRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       TransactionId,
 //                       Activate,
 
@@ -2056,13 +2056,13 @@
 
 //        #endregion
 
-//        #region UnlockConnector            (ChargeBoxId, EVSEId, ConnectorId, ...)
+//        #region UnlockConnector            (ChargingStationId, EVSEId, ConnectorId, ...)
 
 //        /// <summary>
 //        /// Unlock the given EVSE/connector at the given charging station.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="EVSEId">The identifier of the EVSE to be unlocked.</param>
 //        /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
 //        /// 
@@ -2075,7 +2075,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<UnlockConnectorResponse> UnlockConnector(this ICSMSClient         ICSMSClient,
-//                                                                    ChargeBox_Id             ChargeBoxId,
+//                                                                    ChargeBox_Id             ChargingStationId,
 //                                                                    EVSE_Id                  EVSEId,
 //                                                                    Connector_Id             ConnectorId,
 
@@ -2090,7 +2090,7 @@
 
 //            => ICSMSClient.UnlockConnector(
 //                   new UnlockConnectorRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       EVSEId,
 //                       ConnectorId,
 
@@ -2108,13 +2108,13 @@
 //        #endregion
 
 
-//        #region SendAFRRSignal             (ChargeBoxId, EVSEId, ConnectorId, ...)
+//        #region SendAFRRSignal             (ChargingStationId, EVSEId, ConnectorId, ...)
 
 //        /// <summary>
 //        /// Send an automatic frequency restoration reserve (AFRR) signal.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="ActivationTimestamp">The time when the signal becomes active.</param>
 //        /// <param name="Signal">The value of the AFRR signal in v2xSignalWattCurve. Usually between -1 and 1.</param>
 //        /// 
@@ -2127,7 +2127,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<AFRRSignalResponse> SendAFRRSignal(this ICSMSClient         ICSMSClient,
-//                                                              ChargeBox_Id             ChargeBoxId,
+//                                                              ChargeBox_Id             ChargingStationId,
 //                                                              DateTime                 ActivationTimestamp,
 //                                                              AFRR_Signal              Signal,
 
@@ -2142,7 +2142,7 @@
 
 //            => ICSMSClient.SendAFRRSignal(
 //                   new AFRRSignalRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       ActivationTimestamp,
 //                       Signal,
 
@@ -2160,13 +2160,13 @@
 //        #endregion
 
 
-//        #region SetDisplayMessage          (ChargeBoxId, Message, ...)
+//        #region SetDisplayMessage          (ChargingStationId, Message, ...)
 
 //        /// <summary>
 //        /// Set a display message.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="Message">A display message to be shown at the charging station.</param>
 //        /// 
 //        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2178,7 +2178,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<SetDisplayMessageResponse> SetDisplayMessage(this ICSMSClient         ICSMSClient,
-//                                                                        ChargeBox_Id             ChargeBoxId,
+//                                                                        ChargeBox_Id             ChargingStationId,
 //                                                                        MessageInfo              Message,
 
 //                                                                        IEnumerable<Signature>?  Signatures          = null,
@@ -2192,7 +2192,7 @@
 
 //            => ICSMSClient.SetDisplayMessage(
 //                   new SetDisplayMessageRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       Message,
 
 //                       Signatures,
@@ -2208,13 +2208,13 @@
 
 //        #endregion
 
-//        #region GetDisplayMessages         (ChargeBoxId, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null,...)
+//        #region GetDisplayMessages         (ChargingStationId, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null,...)
 
 //        /// <summary>
 //        /// Get all display messages.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="GetDisplayMessagesRequestId">The unique identification of this get display messages request.</param>
 //        /// <param name="Ids">An optional filter on display message identifications. This field SHALL NOT contain more ids than set in NumberOfDisplayMessages.maxLimit.</param>
 //        /// <param name="Priority">The optional filter on message priorities.</param>
@@ -2229,7 +2229,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<GetDisplayMessagesResponse> GetDisplayMessages(this ICSMSClient                 ICSMSClient,
-//                                                                          ChargeBox_Id                     ChargeBoxId,
+//                                                                          ChargeBox_Id                     ChargingStationId,
 //                                                                          Int32                            GetDisplayMessagesRequestId,
 //                                                                          IEnumerable<DisplayMessage_Id>?  Ids                 = null,
 //                                                                          MessagePriorities?               Priority            = null,
@@ -2246,7 +2246,7 @@
 
 //            => ICSMSClient.GetDisplayMessages(
 //                   new GetDisplayMessagesRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       GetDisplayMessagesRequestId,
 //                       Ids,
 //                       Priority,
@@ -2265,13 +2265,13 @@
 
 //        #endregion
 
-//        #region ClearDisplayMessage        (ChargeBoxId, DisplayMessageId,...)
+//        #region ClearDisplayMessage        (ChargingStationId, DisplayMessageId,...)
 
 //        /// <summary>
 //        /// Remove the given display message.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="DisplayMessageId">The identification of the display message to be removed.</param>
 //        /// 
 //        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2283,7 +2283,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<ClearDisplayMessageResponse> ClearDisplayMessage(this ICSMSClient         ICSMSClient,
-//                                                                            ChargeBox_Id             ChargeBoxId,
+//                                                                            ChargeBox_Id             ChargingStationId,
 //                                                                            DisplayMessage_Id        DisplayMessageId,
 
 //                                                                            IEnumerable<Signature>?  Signatures          = null,
@@ -2297,7 +2297,7 @@
 
 //            => ICSMSClient.ClearDisplayMessage(
 //                   new ClearDisplayMessageRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       DisplayMessageId,
 
 //                       Signatures,
@@ -2313,13 +2313,13 @@
 
 //        #endregion
 
-//        #region CostUpdated                (ChargeBoxId, TotalCost, TransactionId, ...)
+//        #region CostUpdated                (ChargingStationId, TotalCost, TransactionId, ...)
 
 //        /// <summary>
 //        /// Send updated cost(s).
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="TotalCost">The current total cost, based on the information known by the CSMS, of the transaction including taxes. In the currency configured with the configuration Variable: [Currency]</param>
 //        /// <param name="TransactionId">The unique transaction identification the costs are asked for.</param>
 //        /// 
@@ -2332,7 +2332,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<CostUpdatedResponse> SendCostUpdated(this ICSMSClient         ICSMSClient,
-//                                                                ChargeBox_Id             ChargeBoxId,
+//                                                                ChargeBox_Id             ChargingStationId,
 //                                                                Decimal                  TotalCost,
 //                                                                Transaction_Id           TransactionId,
 
@@ -2347,7 +2347,7 @@
 
 //            => ICSMSClient.SendCostUpdated(
 //                   new CostUpdatedRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       TotalCost,
 //                       TransactionId,
 
@@ -2364,13 +2364,13 @@
 
 //        #endregion
 
-//        #region RequestCustomerInformation (ChargeBoxId, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
+//        #region RequestCustomerInformation (ChargingStationId, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
 
 //        /// <summary>
 //        /// Request customer information.
 //        /// </summary>
 //        /// <param name="ICSMSClient">A CSMS client.</param>
-//        /// <param name="ChargeBoxId">The charge box identification.</param>
+//        /// <param name="ChargingStationId">The charging station identification.</param>
 //        /// <param name="CustomerInformationRequestId">An unique identification of the customer information request.</param>
 //        /// <param name="Report">Whether the charging station should return NotifyCustomerInformationRequest messages containing information about the customer referred to.</param>
 //        /// <param name="Clear">Whether the charging station should clear all information about the customer referred to.</param>
@@ -2387,7 +2387,7 @@
 //        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
 //        /// <param name="CancellationToken">An optional token to cancel this request.</param>
 //        public static Task<CustomerInformationResponse> RequestCustomerInformation(this ICSMSClient         ICSMSClient,
-//                                                                                   ChargeBox_Id             ChargeBoxId,
+//                                                                                   ChargeBox_Id             ChargingStationId,
 //                                                                                   Int64                    CustomerInformationRequestId,
 //                                                                                   Boolean                  Report,
 //                                                                                   Boolean                  Clear,
@@ -2406,7 +2406,7 @@
 
 //            => ICSMSClient.RequestCustomerInformation(
 //                   new CustomerInformationRequest(
-//                       ChargeBoxId,
+//                       ChargingStationId,
 //                       CustomerInformationRequestId,
 //                       Report,
 //                       Clear,

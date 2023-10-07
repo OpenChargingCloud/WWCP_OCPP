@@ -29,10 +29,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The get certificate status request.
     /// </summary>
-    public class GetCertificateStatusRequest : ARequest<GetCertificateStatusRequest>
+    public class GetCertificateStatusRequest : ARequest<GetCertificateStatusRequest>,
+                                               IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/getCertificateStatusRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext    Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The certificate of which the status is requested.
@@ -47,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new get certificate status request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="OCSPRequestData">The certificate of which the status is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -58,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetCertificateStatusRequest(ChargingStation_Id             ChargeBoxId,
+        public GetCertificateStatusRequest(ChargingStation_Id       ChargingStationId,
                                            OCSPRequestData          OCSPRequestData,
 
                                            IEnumerable<KeyPair>?    SignKeys            = null,
@@ -74,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            EventTracking_Id?        EventTrackingId     = null,
                                            CancellationToken        CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(ChargingStationId,
                    "GetCertificateStatus",
                    SignKeys,
                    SignInfos,
@@ -90,6 +106,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         {
 
             this.OCSPRequestData = OCSPRequestData;
+
+            unchecked
+            {
+
+                hashCode = this.OCSPRequestData.GetHashCode() * 3 ^
+                           base.                GetHashCode();
+
+            }
 
         }
 
@@ -186,24 +210,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomGetCertificateStatusRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomGetCertificateStatusRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a get certificate status request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CustomGetCertificateStatusRequestParser">A delegate to parse custom get certificate status requests.</param>
         public static GetCertificateStatusRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
-                                                        ChargingStation_Id                                               ChargeBoxId,
+                                                        ChargingStation_Id                                         ChargingStationId,
                                                         CustomJObjectParserDelegate<GetCertificateStatusRequest>?  CustomGetCertificateStatusRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         ChargingStationId,
                          out var getCertificateStatusRequest,
                          out var errorResponse,
                          CustomGetCertificateStatusRequestParser))
@@ -218,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out GetCertificateStatusRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out GetCertificateStatusRequest, OnException = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -227,18 +251,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="GetCertificateStatusRequest">The parsed GetCertificateStatus request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                           JSON,
                                        Request_Id                        RequestId,
-                                       ChargingStation_Id                      ChargeBoxId,
+                                       ChargingStation_Id                ChargingStationId,
                                        out GetCertificateStatusRequest?  GetCertificateStatusRequest,
                                        out String?                       ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        ChargingStationId,
                         out GetCertificateStatusRequest,
                         out ErrorResponse,
                         null);
@@ -249,13 +273,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="GetCertificateStatusRequest">The parsed GetCertificateStatus request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetCertificateStatusRequestParser">A delegate to parse custom GetCertificateStatus requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
-                                       ChargingStation_Id                                               ChargeBoxId,
+                                       ChargingStation_Id                                         ChargingStationId,
                                        out GetCertificateStatusRequest?                           GetCertificateStatusRequest,
                                        out String?                                                ErrorResponse,
                                        CustomJObjectParserDelegate<GetCertificateStatusRequest>?  CustomGetCertificateStatusRequestParser)
@@ -266,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 GetCertificateStatusRequest = null;
 
-                #region OCSPRequestData    [mandatory]
+                #region OCSPRequestData      [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("ocspRequestData",
                                              "OCSP request data",
@@ -280,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region Signatures         [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -294,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region CustomData         [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -308,20 +332,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargeBoxId        [optional, OCPP_CSE]
+                #region ChargingStationId    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
+                if (JSON.ParseOptional("chargingStationId",
+                                       "charging station identification",
                                        ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargeBoxId_PayLoad,
+                                       out ChargingStation_Id? chargingStationId_PayLoad,
                                        out ErrorResponse))
                 {
 
                     if (ErrorResponse is not null)
                         return false;
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                    if (chargingStationId_PayLoad.HasValue)
+                        ChargingStationId = chargingStationId_PayLoad.Value;
 
                 }
 
@@ -329,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 GetCertificateStatusRequest = new GetCertificateStatusRequest(
-                                                  ChargeBoxId,
+                                                  ChargingStationId,
                                                   OCSPRequestData,
                                                   null,
                                                   null,
@@ -477,20 +501,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return OCSPRequestData.GetHashCode() * 3 ^
-                       base.           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
