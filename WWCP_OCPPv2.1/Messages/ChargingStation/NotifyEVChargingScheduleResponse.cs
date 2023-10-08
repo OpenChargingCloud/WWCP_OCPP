@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A notify EV charging schedule response.
     /// </summary>
     public class NotifyEVChargingScheduleResponse : AResponse<CS.NotifyEVChargingScheduleRequest,
-                                                                 NotifyEVChargingScheduleResponse>
+                                                                 NotifyEVChargingScheduleResponse>,
+                                                    IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/notifyEVChargingScheduleResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// Whether the CSMS has been able to process the message successfully.

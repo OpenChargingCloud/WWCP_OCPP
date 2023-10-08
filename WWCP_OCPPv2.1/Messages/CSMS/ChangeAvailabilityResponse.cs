@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A change availability response.
     /// </summary>
     public class ChangeAvailabilityResponse : AResponse<CSMS.ChangeAvailabilityRequest,
-                                                        ChangeAvailabilityResponse>
+                                                        ChangeAvailabilityResponse>,
+                                              IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/changeAvailabilityResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext             Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The success or failure of the change availability command.

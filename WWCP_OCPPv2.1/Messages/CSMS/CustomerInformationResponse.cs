@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A customer information response.
     /// </summary>
     public class CustomerInformationResponse : AResponse<CSMS.CustomerInformationRequest,
-                                                         CustomerInformationResponse>
+                                                         CustomerInformationResponse>,
+                                               IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/customerInformationResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext              Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The success or failure of the customer information command.

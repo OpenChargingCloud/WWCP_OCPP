@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A get charging profiles response.
     /// </summary>
     public class GetChargingProfilesResponse : AResponse<CSMS.GetChargingProfilesRequest,
-                                                         GetChargingProfilesResponse>
+                                                         GetChargingProfilesResponse>,
+                                               IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/getChargingProfilesResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext             Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// Whether the charging station is able to accept this request.

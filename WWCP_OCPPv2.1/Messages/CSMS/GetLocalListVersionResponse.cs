@@ -30,16 +30,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A get local list version response.
     /// </summary>
     public class GetLocalListVersionResponse : AResponse<CSMS.GetLocalListVersionRequest,
-                                                         GetLocalListVersionResponse>
+                                                         GetLocalListVersionResponse>,
+                                               IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/getLocalListVersionResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The current version number of the local authorization list within the charging station.
         /// </summary>
         [Mandatory]
-        public UInt64  VersionNumber    { get; }
+        public UInt64         VersionNumber    { get; }
 
         #endregion
 

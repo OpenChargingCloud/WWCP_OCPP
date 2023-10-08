@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A get display messages response.
     /// </summary>
     public class GetDisplayMessagesResponse : AResponse<CSMS.GetDisplayMessagesRequest,
-                                                           GetDisplayMessagesResponse>
+                                                           GetDisplayMessagesResponse>,
+                                              IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/getDisplayMessagesResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext             Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The charging station will indicate whether it has display messages

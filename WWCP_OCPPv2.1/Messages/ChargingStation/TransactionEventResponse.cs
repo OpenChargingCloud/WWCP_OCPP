@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A transaction event response.
     /// </summary>
     public class TransactionEventResponse : AResponse<CS.TransactionEventRequest,
-                                                      TransactionEventResponse>
+                                                      TransactionEventResponse>,
+                                            IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/transactionEventResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext    Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The optional final total cost of the charging transaction, including taxes.

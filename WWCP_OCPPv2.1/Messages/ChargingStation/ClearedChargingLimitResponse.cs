@@ -30,8 +30,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A cleared charging limit response.
     /// </summary>
     public class ClearedChargingLimitResponse : AResponse<CS.ClearedChargingLimitRequest,
-                                                          ClearedChargingLimitResponse>
+                                                          ClearedChargingLimitResponse>,
+                                                IResponse
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/clearedChargingLimitResponse");
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext Context
+            => DefaultJSONLDContext;
+
+        #endregion
 
         #region Constructor(s)
 

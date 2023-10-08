@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A get variables response.
     /// </summary>
     public class GetVariablesResponse : AResponse<CSMS.GetVariablesRequest,
-                                                  GetVariablesResponse>
+                                                  GetVariablesResponse>,
+                                        IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/getVariablesResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext                   Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The get variables results.

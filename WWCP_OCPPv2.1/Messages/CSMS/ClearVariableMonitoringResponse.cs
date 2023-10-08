@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A clear variable monitoring response.
     /// </summary>
     public class ClearVariableMonitoringResponse : AResponse<CSMS.ClearVariableMonitoringRequest,
-                                                             ClearVariableMonitoringResponse>
+                                                             ClearVariableMonitoringResponse>,
+                                                   IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/clearVariableMonitoringResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext                       Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The enumeration of clear variable monitoring results.

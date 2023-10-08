@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A get composite schedule response.
     /// </summary>
     public class GetCompositeScheduleResponse : AResponse<CSMS.GetCompositeScheduleRequest,
-                                                          GetCompositeScheduleResponse>
+                                                          GetCompositeScheduleResponse>,
+                                                IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/getCompositeScheduleResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext       Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The charging station will indicate if it was able to process the request.

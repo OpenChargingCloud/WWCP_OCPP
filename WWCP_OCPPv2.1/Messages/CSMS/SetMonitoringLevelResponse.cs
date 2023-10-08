@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A set monitoring level response.
     /// </summary>
     public class SetMonitoringLevelResponse : AResponse<CSMS.SetMonitoringLevelRequest,
-                                                        SetMonitoringLevelResponse>
+                                                        SetMonitoringLevelResponse>,
+                                              IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/setMonitoringLevelResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// Whether the charging station was able to accept the request.

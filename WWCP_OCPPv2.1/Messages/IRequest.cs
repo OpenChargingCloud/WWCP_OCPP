@@ -31,17 +31,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     {
 
         /// <summary>
-        /// The charging station identification.
-        /// </summary>
-        [Mandatory]
-        ChargingStation_Id  ChargingStationId    { get; }
-
-        /// <summary>
-        /// The JSON-LD context of this object.
-        /// </summary>
-        JSONLDContext       Context              { get; }
-
-        /// <summary>
         /// The request identification.
         /// </summary>
         [Mandatory]
@@ -64,6 +53,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         [Mandatory]
         EventTracking_Id    EventTrackingId      { get; }
+
+        /// <summary>
+        /// The charging station identification.
+        /// </summary>
+        [Mandatory]
+        ChargingStation_Id  ChargingStationId    { get; }
 
         /// <summary>
         /// The OCPP HTTP Web Socket action.

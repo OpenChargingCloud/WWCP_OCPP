@@ -30,8 +30,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A status notification response.
     /// </summary>
     public class StatusNotificationResponse : AResponse<CS.StatusNotificationRequest,
-                                                        StatusNotificationResponse>
+                                                        StatusNotificationResponse>,
+                                              IResponse
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/statusNotificationResponse");
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext Context
+            => DefaultJSONLDContext;
+
+        #endregion
 
         #region Constructor(s)
 

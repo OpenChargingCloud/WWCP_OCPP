@@ -30,8 +30,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A notify charging limit response.
     /// </summary>
     public class NotifyChargingLimitResponse : AResponse<CS.NotifyChargingLimitRequest,
-                                                         NotifyChargingLimitResponse>
+                                                         NotifyChargingLimitResponse>,
+                                               IResponse
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/notifyChargingLimitResponse");
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext Context
+            => DefaultJSONLDContext;
+
+        #endregion
 
         #region Constructor(s)
 

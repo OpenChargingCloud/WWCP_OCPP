@@ -169,8 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// An abstract generic response.
     /// </summary>
-    public abstract class AResponse<TResponse> : IResponse,
-                                                 IEquatable<TResponse>
+    public abstract class AResponse<TResponse> : IEquatable<TResponse>
 
         where TResponse : class, IResponse
 

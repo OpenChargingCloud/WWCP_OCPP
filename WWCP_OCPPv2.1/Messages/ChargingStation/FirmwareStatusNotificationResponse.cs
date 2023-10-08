@@ -30,8 +30,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A firmware status notification response.
     /// </summary>
     public class FirmwareStatusNotificationResponse : AResponse<CS.FirmwareStatusNotificationRequest,
-                                                                FirmwareStatusNotificationResponse>
+                                                                FirmwareStatusNotificationResponse>,
+                                                      IResponse
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/firmwareStatusNotificationResponse");
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext Context
+            => DefaultJSONLDContext;
+
+        #endregion
 
         #region Constructor(s)
 

@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A clear display message response.
     /// </summary>
     public class ClearDisplayMessageResponse : AResponse<CSMS.ClearDisplayMessageRequest,
-                                                         ClearDisplayMessageResponse>
+                                                         ClearDisplayMessageResponse>,
+                                               IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/clearDisplayMessageResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext       Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The success or failure of the clear display message command.

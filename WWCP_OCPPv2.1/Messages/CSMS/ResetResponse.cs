@@ -30,7 +30,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A reset response.
     /// </summary>
     public class ResetResponse : AResponse<CSMS.ResetRequest,
-                                              ResetResponse>
+                                                ResetResponse>,
+                                 IResponse
     {
 
         #region Data
@@ -45,16 +46,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Properties
 
         /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
+
+        /// <summary>
         /// The success or failure of the reset command.
         /// </summary>
         [Mandatory]
-        public ResetStatus  Status        { get; }
+        public ResetStatus    Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?  StatusInfo    { get; }
+        public StatusInfo?    StatusInfo    { get; }
 
         #endregion
 

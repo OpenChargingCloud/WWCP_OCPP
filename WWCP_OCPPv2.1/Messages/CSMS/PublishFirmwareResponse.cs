@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A publish firmware response.
     /// </summary>
     public class PublishFirmwareResponse : AResponse<CSMS.PublishFirmwareRequest,
-                                                     PublishFirmwareResponse>
+                                                     PublishFirmwareResponse>,
+                                           IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/publishFirmwareResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The success or failure of the publish firmware request.

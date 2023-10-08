@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A set charging profile response.
     /// </summary>
     public class SetChargingProfileResponse : AResponse<CSMS.SetChargingProfileRequest,
-                                                        SetChargingProfileResponse>
+                                                        SetChargingProfileResponse>,
+                                              IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/setChargingProfileResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext          Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The success or failure of the set charging profile command.

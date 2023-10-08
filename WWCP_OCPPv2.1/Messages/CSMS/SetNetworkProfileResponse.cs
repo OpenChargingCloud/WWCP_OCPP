@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A set network profile response.
     /// </summary>
     public class SetNetworkProfileResponse : AResponse<CSMS.SetNetworkProfileRequest,
-                                                       SetNetworkProfileResponse>
+                                                       SetNetworkProfileResponse>,
+                                             IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/setNetworkProfileResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext            Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// Whether the charging station was able to accept the request.

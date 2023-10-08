@@ -30,21 +30,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// An unlock connector response.
     /// </summary>
     public class UnlockConnectorResponse : AResponse<CSMS.UnlockConnectorRequest,
-                                                     UnlockConnectorResponse>
+                                                     UnlockConnectorResponse>,
+                                           IResponse
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/unlockConnectorResponse");
+
+        #endregion
 
         #region Properties
 
         /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
+
+        /// <summary>
         /// The success or failure of the unlock connector request.
         /// </summary>
-        public UnlockStatus  Status        { get; }
+        public UnlockStatus   Status        { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?   StatusInfo    { get; }
+        public StatusInfo?    StatusInfo    { get; }
 
         #endregion
 

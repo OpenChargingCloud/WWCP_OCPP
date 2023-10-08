@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using org.GraphDefined.Vanaheimr.Illias;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
@@ -24,13 +30,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public interface ISignableMessage
     {
 
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        [Mandatory]
+        JSONLDContext           Context       { get; }
+
+
+        [Optional]
         IEnumerable<KeyPair>    SignKeys      { get; }
 
+
+        [Optional]
         IEnumerable<SignInfo>   SignInfos     { get; }
 
         /// <summary>
         /// The enumeration of all cryptographic signatures.
         /// </summary>
+        [Optional]
         IEnumerable<Signature>  Signatures    { get; }
 
 

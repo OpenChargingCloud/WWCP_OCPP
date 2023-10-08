@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A get base report response.
     /// </summary>
     public class GetBaseReportResponse : AResponse<CSMS.GetBaseReportRequest,
-                                                   GetBaseReportResponse>
+                                                   GetBaseReportResponse>,
+                                         IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/getBaseReportResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext             Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// Whether the charging station is able to accept this request.

@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// An automatic frequency restoration reserve (AFRR) signal response.
     /// </summary>
     public class AFRRSignalResponse : AResponse<CSMS.AFRRSignalRequest,
-                                                     AFRRSignalResponse>
+                                                     AFRRSignalResponse>,
+                                      IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/aFRRSignalResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The success or failure of the AFRR signal request.

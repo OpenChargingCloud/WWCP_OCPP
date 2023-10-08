@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// The get certificate revocation list response.
     /// </summary>
     public class GetCRLResponse : AResponse<CS.GetCRLRequest,
-                                               GetCRLResponse>
+                                               GetCRLResponse>,
+                                  IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/getCRLResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The get certificate revocation list request identification.

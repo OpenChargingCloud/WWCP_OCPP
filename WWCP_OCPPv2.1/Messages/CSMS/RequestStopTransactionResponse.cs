@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A request stop transaction response.
     /// </summary>
     public class RequestStopTransactionResponse : AResponse<CSMS.RequestStopTransactionRequest,
-                                                            RequestStopTransactionResponse>
+                                                            RequestStopTransactionResponse>,
+                                                  IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/requestStopTransactionResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext           Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The status indicating whether the charging station accepts the request to stop the charging transaction.

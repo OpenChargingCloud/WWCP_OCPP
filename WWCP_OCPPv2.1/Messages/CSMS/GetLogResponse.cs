@@ -30,29 +30,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A get log response.
     /// </summary>
     public class GetLogResponse : AResponse<CSMS.GetLogRequest,
-                                            GetLogResponse>
+                                            GetLogResponse>,
+                                  IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/getLogResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The success or failure of the get log command.
         /// </summary>
         [Mandatory]
-        public LogStatus    Status        { get; }
+        public LogStatus      Status        { get; }
 
         /// <summary>
         /// The name of the log file that will be uploaded.
         /// This field is not present when no logging information is available.
         /// </summary>
         [Optional]
-        public String?      Filename      { get; }
+        public String?        Filename      { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?  StatusInfo    { get; }
+        public StatusInfo?    StatusInfo    { get; }
 
         #endregion
 

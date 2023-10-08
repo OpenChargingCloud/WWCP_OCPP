@@ -63,18 +63,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region (static) SignMessage        (SignableMessage, JSONMessage, out ErrorResponse, params SignInfos)
+        #region (static) SignMessage        (SignableMessage, JSONMessage, SignaturePolicy, out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given message.
         /// </summary>
         /// <param name="SignableMessage">A signable message.</param>
         /// <param name="JSONMessage">The JSON representation of the signable message.</param>
+        /// <param name="SignaturePolicy">An optional signature policy.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="SignInfos">An enumeration of cryptographic signature information or key pairs to sign the given message.</param>
         public static Boolean SignMessage(ISignableMessage   SignableMessage,
                                           JObject            JSONMessage,
-                                          JSONLDContext      JSONLDContext,
                                           SignaturePolicy?   SignaturePolicy,
                                           out String?        ErrorResponse,
                                           params SignInfo[]  SignInfos)
@@ -99,13 +99,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             try
             {
 
+                if (JSONMessage["@context"] is null)
+                    JSONMessage.AddFirst(new JProperty("@context", SignableMessage.Context.ToString()));
+
                 IEnumerable<SignaturePolicyEntry>? signaturePolicyEntries = null;
 
                 if ((SignInfos                 is not null && SignInfos.                Any()) ||
                     (SignableMessage.SignKeys  is not null && SignableMessage.SignKeys. Any()) ||
                     (SignableMessage.SignInfos is not null && SignableMessage.SignInfos.Any()) ||
-                    (SignaturePolicy           is not null && SignaturePolicy.Has(JSONLDContext,
-                                                                                  out signaturePolicyEntries)))
+                    (SignaturePolicy           is not null && SignaturePolicy.Has(SignableMessage.Context, out signaturePolicyEntries)))
                 {
 
                     var signInfos = new List<SignInfo>();
@@ -211,30 +213,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) SignRequestMessage (RequestMessage,  JSONMessage, out ErrorResponse, params SignInfos)
+        #region (static) SignRequestMessage (RequestMessage,  JSONMessage, SignaturePolicy, out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given request message.
         /// </summary>
-        /// <typeparam name="TRequest">The type of the request message.</typeparam>
         /// <param name="RequestMessage">The request message.</param>
         /// <param name="JSONMessage">The JSON representation of the request message.</param>
+        /// <param name="SignaturePolicy">An optional signature policy.</param>
         /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
         /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the request message.</param>
         public static Boolean SignRequestMessage(IRequest           RequestMessage,
                                                  JObject            JSONMessage,
-                                                 JSONLDContext      JSONLDContext,
                                                  SignaturePolicy?   SignaturePolicy,
                                                  out String?        ErrorResponse,
                                                  params SignInfo[]  SignInfos)
         {
 
-            JSONMessage.AddFirst(new JProperty("@context",  RequestMessage.Context.ToString()));
-                //$"https://open.charging.cloud/context/ocpp/{RequestMessage.Action.FirstCharToLower()}Request"));
-
             return SignMessage(RequestMessage,
                                JSONMessage,
-                               JSONLDContext,
                                SignaturePolicy,
                                out ErrorResponse,
                                SignInfos);
@@ -243,34 +240,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) SignResponseMessage(ResponseMessage, JSONMessage, out ErrorResponse, params SignInfos)
+        #region (static) SignResponseMessage(ResponseMessage, JSONMessage, SignaturePolicy, out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given response message.
         /// </summary>
-        /// <typeparam name="TRequest">The type of the request message.</typeparam>
-        /// <typeparam name="TResponse">The type of the response message.</typeparam>
         /// <param name="ResponseMessage">A response message.</param>
         /// <param name="JSONMessage">The JSON representation of the response message.</param>
+        /// <param name="SignaturePolicy">An optional signature policy.</param>
         /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
         /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the response message.</param>
-        public static Boolean SignResponseMessage<TRequest, TResponse>(AResponse<TRequest, TResponse>  ResponseMessage,
-                                                                       JObject                         JSONMessage,
-                                                                       JSONLDContext                   JSONLDContext,
-                                                                       SignaturePolicy?                SignaturePolicy,
-                                                                       out String?                     ErrorResponse,
-                                                                       params SignInfo[]               SignInfos)
-
-            where TRequest  : class, IRequest
-            where TResponse : class, IResponse
-
+        public static Boolean SignResponseMessage(IResponse          ResponseMessage,
+                                                  JObject            JSONMessage,
+                                                  SignaturePolicy?   SignaturePolicy,
+                                                  out String?        ErrorResponse,
+                                                  params SignInfo[]  SignInfos)
         {
-
-            JSONMessage.AddFirst(new JProperty("@context", $"https://open.charging.cloud/context/ocpp/{ResponseMessage.Request.Action.FirstCharToLower()}Response"));
 
             return SignMessage(ResponseMessage,
                                JSONMessage,
-                               JSONLDContext,
                                SignaturePolicy,
                                out ErrorResponse,
                                SignInfos);
@@ -303,6 +291,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             try
             {
+
+                if (JSONMessage["@context"] is null)
+                    JSONMessage.AddFirst(new JProperty("@context", SignableMessage.Context.ToString()));
 
                 var jsonMessageCopy  = JObject.Parse(JSONMessage.ToString(Formatting.None, defaultJSONConverters));
                 jsonMessageCopy.Remove("signatures");
@@ -357,7 +348,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Verify the given request message.
         /// </summary>
-        /// <typeparam name="TRequest">he type of the request message.</typeparam>
         /// <param name="RequestMessage">The request message.</param>
         /// <param name="JSONMessage">The JSON representation of the request message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
@@ -367,9 +357,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                    out String?  ErrorResponse,
                                                    Boolean      AllMustBeValid)
         {
-
-            JSONMessage.AddFirst(new JProperty("@context",  RequestMessage.Context.ToString()));
-                //$"https://open.charging.cloud/context/ocpp/{RequestMessage.Action.FirstCharToLower()}Request"));
 
             return VerifyMessage(RequestMessage,
                                  JSONMessage,
@@ -385,23 +372,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Verify the given request message.
         /// </summary>
-        /// <typeparam name="TRequest">The type of the request message.</typeparam>
-        /// <typeparam name="TResponse">The type of the response message.</typeparam>
         /// <param name="ResponseMessage">A response message.</param>
         /// <param name="JSONMessage">The JSON representation of the request message.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
         /// <param name="AllMustBeValid">Whether all or just one cryptographic signature has to match.</param>
-        public static Boolean VerifyResponseMessage<TRequest, TResponse>(AResponse<TRequest, TResponse>  ResponseMessage,
-                                                                         JObject                         JSONMessage,
-                                                                         out String?                     ErrorResponse,
-                                                                         Boolean                         AllMustBeValid)
-
-            where TRequest  : class, IRequest
-            where TResponse : class, IResponse
-
+        public static Boolean VerifyResponseMessage(IResponse    ResponseMessage,
+                                                    JObject      JSONMessage,
+                                                    out String?  ErrorResponse,
+                                                    Boolean      AllMustBeValid)
         {
-
-            JSONMessage.AddFirst(new JProperty("@context", $"https://open.charging.cloud/context/ocpp/{ResponseMessage.Request.Action.FirstCharToLower()}Response"));
 
             return VerifyMessage(ResponseMessage,
                                  JSONMessage,

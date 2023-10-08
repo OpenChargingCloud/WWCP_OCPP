@@ -30,7 +30,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A boot notification response.
     /// </summary>
     public class BootNotificationResponse : AResponse<CS.BootNotificationRequest,
-                                                      BootNotificationResponse>
+                                                      BootNotificationResponse>,
+                                            IResponse
     {
 
         #region Data
@@ -43,6 +44,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext       Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The registration status.

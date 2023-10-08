@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// The get certificate status response.
     /// </summary>
     public class GetCertificateStatusResponse : AResponse<CS.GetCertificateStatusRequest,
-                                                          GetCertificateStatusResponse>
+                                                          GetCertificateStatusResponse>,
+                                                IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/getCertificateStatusResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext         Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// Whether the central system was able to retrieve the OCSP certificate status.

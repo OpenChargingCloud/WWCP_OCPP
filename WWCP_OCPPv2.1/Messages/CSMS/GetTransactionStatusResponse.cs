@@ -30,22 +30,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A get transaction status response.
     /// </summary>
     public class GetTransactionStatusResponse : AResponse<CSMS.GetTransactionStatusRequest,
-                                                          GetTransactionStatusResponse>
+                                                          GetTransactionStatusResponse>,
+                                                IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/getTransactionStatusResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// Whether there are still message to be delivered.
         /// </summary>
         [Mandatory]
-        public Boolean   MessagesInQueue     { get; }
+        public Boolean        MessagesInQueue     { get; }
 
         /// <summary>
         /// The optional indication whether the transaction is still ongoing.
         /// </summary>
         [Optional]
-        public Boolean?  OngoingIndicator    { get; }
+        public Boolean?       OngoingIndicator    { get; }
 
         #endregion
 

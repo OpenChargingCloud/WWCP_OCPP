@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// The get 15118 EV certificate response.
     /// </summary>
     public class Get15118EVCertificateResponse : AResponse<CS.Get15118EVCertificateRequest,
-                                                           Get15118EVCertificateResponse>
+                                                           Get15118EVCertificateResponse>,
+                                                 IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/get15118EVCertificateResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext                Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The success or failure of the EXI message processing.
@@ -559,7 +575,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => Status.ToString();
 
         #endregion
-
 
     }
 

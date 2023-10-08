@@ -30,15 +30,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A heartbeat response.
     /// </summary>
     public class HeartbeatResponse : AResponse<CS.HeartbeatRequest,
-                                               HeartbeatResponse>
+                                               HeartbeatResponse>,
+                                     IResponse
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/heartbeatResponse");
+
+        #endregion
 
         #region Properties
 
         /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
+
+        /// <summary>
         /// The current time at the central system.
         /// </summary>
-        public DateTime  CurrentTime    { get; }
+        public DateTime       CurrentTime    { get; }
 
         #endregion
 

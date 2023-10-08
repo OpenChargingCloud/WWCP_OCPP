@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// An update dynamic schedule response.
     /// </summary>
     public class UpdateDynamicScheduleResponse : AResponse<CSMS.UpdateDynamicScheduleRequest,
-                                                                UpdateDynamicScheduleResponse>
+                                                                UpdateDynamicScheduleResponse>,
+                                                 IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/updateDynamicScheduleResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext          Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The success or failure of the update.

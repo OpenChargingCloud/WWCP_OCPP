@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// An use priority charging response.
     /// </summary>
     public class UsePriorityChargingResponse : AResponse<CSMS.UsePriorityChargingRequest,
-                                                              UsePriorityChargingResponse>
+                                                              UsePriorityChargingResponse>,
+                                               IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/usePriorityChargingResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The success or failure of the use priority chargingl request.

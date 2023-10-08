@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// An install certificate response.
     /// </summary>
     public class InstallCertificateResponse : AResponse<CSMS.InstallCertificateRequest,
-                                                        InstallCertificateResponse>
+                                                        InstallCertificateResponse>,
+                                              IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/installCertificateResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext      Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The success or failure of the install certificate request.

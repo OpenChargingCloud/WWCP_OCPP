@@ -2193,7 +2193,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                             CustomSignatureSerializer,
                             CustomCustomDataSerializer
                         ),
-                        BootNotificationResponse.DefaultJSONLDContext,
                         SignaturePolicy,
                         out var errorResponse2,
                         signInfos.ToArray());
@@ -5283,16 +5282,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           CustomSignatureSerializer,
                                           CustomCustomDataSerializer
                                       ),
-                                      ResetRequest.DefaultJSONLDContext,
                                       SignaturePolicy,
-                                      out var errorResponse)
+                                      out var errorResponse
+                                  )
 
-                                  ? await centralSystem.Item1.Reset(Request)
+                                      ? await centralSystem.Item1.Reset(Request)
 
-                                  : new CS.ResetResponse(
-                                        Request,
-                                        Result.SignatureError(errorResponse)
-                                    )
+                                      : new CS.ResetResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
 
                                 : new CS.ResetResponse(
                                       Request,

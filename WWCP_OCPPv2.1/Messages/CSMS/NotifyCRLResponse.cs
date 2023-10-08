@@ -30,8 +30,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A notify notify certificate revocation list response.
     /// </summary>
     public class NotifyCRLResponse : AResponse<CSMS.NotifyCRLRequest,
-                                                    NotifyCRLResponse>
+                                                    NotifyCRLResponse>,
+                                     IResponse
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/notifyCRLResponse");
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext Context
+            => DefaultJSONLDContext;
+
+        #endregion
 
         #region Constructor(s)
 

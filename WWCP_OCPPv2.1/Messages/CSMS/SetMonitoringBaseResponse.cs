@@ -30,10 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A set monitoring base response.
     /// </summary>
     public class SetMonitoringBaseResponse : AResponse<CSMS.SetMonitoringBaseRequest,
-                                                       SetMonitoringBaseResponse>
+                                                       SetMonitoringBaseResponse>,
+                                             IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/setMonitoringBaseResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext             Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// Whether the charging station was able to accept the request.
