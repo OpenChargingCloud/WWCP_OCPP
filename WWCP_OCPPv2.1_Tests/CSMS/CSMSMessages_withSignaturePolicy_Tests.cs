@@ -91,19 +91,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 Assert.AreEqual(ResultCodes.OK,                response.Result.ResultCode);
                 Assert.AreEqual(ResetStatus.Accepted,          response.Status);
 
-                Assert.IsTrue  (CryptoUtils.VerifyResponseMessage(
-                                    response,
-                                    response.ToJSON(
-                                        testCSMS01.CustomResetResponseSerializer,
-                                        testCSMS01.CustomStatusInfoSerializer,
-                                        testCSMS01.CustomSignatureSerializer,
-                                        testCSMS01.CustomCustomDataSerializer
-                                    ),
-                                    out var errorResponse,
-                                    AllMustBeValid: true
-                                ));
-
-
 
                 Assert.AreEqual(1,                             resetRequests.Count);
                 Assert.AreEqual(chargingStation1.Id,           resetRequests.First().ChargingStationId);

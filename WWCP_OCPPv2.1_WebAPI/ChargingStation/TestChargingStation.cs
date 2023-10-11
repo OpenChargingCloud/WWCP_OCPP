@@ -1922,6 +1922,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
+                             SignaturePolicy,
                              out var errorResponse,
                              AllMustBeValid: true
                          ))

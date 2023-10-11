@@ -95,6 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                         testCSMS01.CustomSignatureSerializer,
                                         testCSMS01.CustomCustomDataSerializer
                                     ),
+                                    null,
                                     out var errorResponse,
                                     AllMustBeValid: true
                                 ));

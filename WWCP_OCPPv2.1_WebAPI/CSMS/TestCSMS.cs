@@ -2151,6 +2151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 CustomSignatureSerializer,
                                 CustomCustomDataSerializer
                             ),
+                            SignaturePolicy,
                             out var errorResponse,
                             AllMustBeValid: true
                         ))
@@ -5297,6 +5298,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomResetResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnResetResponse event

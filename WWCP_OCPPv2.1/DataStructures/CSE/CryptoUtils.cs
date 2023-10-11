@@ -268,17 +268,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region (static) VerifyMessage      (SignableMessage, JSONMessage, out ErrorResponse, AllMustBeValid = true)
+        #region (static) VerifyMessage      (SignableMessage, JSONMessage, SignaturePolicy, out ErrorResponse, AllMustBeValid = true)
 
         /// <summary>
         /// Verify the given message.
         /// </summary>
         /// <param name="SignableMessage">A signable/verifiable message.</param>
         /// <param name="JSONMessage">The JSON representation of the signable/verifiable message.</param>
+        /// <param name="SignaturePolicy">An optional signature policy.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
         /// <param name="AllMustBeValid">Whether all or just one cryptographic signature has to match.</param>
         public static Boolean VerifyMessage(ISignableMessage  SignableMessage,
                                             JObject           JSONMessage,
+                                            SignaturePolicy?  SignaturePolicy,
                                             out String?       ErrorResponse,
                                             Boolean           AllMustBeValid = true)
         {
@@ -343,23 +345,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) VerifyMessage      (RequestMessage,  JSONMessage, out ErrorResponse, AllMustBeValid = true)
+        #region (static) VerifyMessage      (RequestMessage,  JSONMessage, SignaturePolicy, out ErrorResponse, AllMustBeValid = true)
 
         /// <summary>
         /// Verify the given request message.
         /// </summary>
         /// <param name="RequestMessage">The request message.</param>
         /// <param name="JSONMessage">The JSON representation of the request message.</param>
+        /// <param name="SignaturePolicy">An optional signature policy.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
         /// <param name="AllMustBeValid">Whether all or just one cryptographic signature has to match.</param>
-        public static Boolean VerifyRequestMessage(IRequest     RequestMessage,
-                                                   JObject      JSONMessage,
-                                                   out String?  ErrorResponse,
-                                                   Boolean      AllMustBeValid)
+        public static Boolean VerifyRequestMessage(IRequest          RequestMessage,
+                                                   JObject           JSONMessage,
+                                                   SignaturePolicy?  SignaturePolicy,
+                                                   out String?       ErrorResponse,
+                                                   Boolean           AllMustBeValid)
         {
 
             return VerifyMessage(RequestMessage,
                                  JSONMessage,
+                                 SignaturePolicy,
                                  out ErrorResponse,
                                  AllMustBeValid);
 
@@ -367,23 +372,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) VerifyMessage      (RequestMessage,  JSONMessage, out ErrorResponse, AllMustBeValid = true)
+        #region (static) VerifyMessage      (RequestMessage,  JSONMessage, SignaturePolicy, out ErrorResponse, AllMustBeValid = true)
 
         /// <summary>
         /// Verify the given request message.
         /// </summary>
         /// <param name="ResponseMessage">A response message.</param>
         /// <param name="JSONMessage">The JSON representation of the request message.</param>
+        /// <param name="SignaturePolicy">An optional signature policy.</param>
         /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
         /// <param name="AllMustBeValid">Whether all or just one cryptographic signature has to match.</param>
-        public static Boolean VerifyResponseMessage(IResponse    ResponseMessage,
-                                                    JObject      JSONMessage,
-                                                    out String?  ErrorResponse,
-                                                    Boolean      AllMustBeValid)
+        public static Boolean VerifyResponseMessage(IResponse         ResponseMessage,
+                                                    JObject           JSONMessage,
+                                                    SignaturePolicy?  SignaturePolicy,
+                                                    out String?       ErrorResponse,
+                                                    Boolean           AllMustBeValid)
         {
 
             return VerifyMessage(ResponseMessage,
                                  JSONMessage,
+                                 SignaturePolicy,
                                  out ErrorResponse,
                                  AllMustBeValid);
 
